@@ -1,0 +1,54 @@
+{
+	"name": "emi",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@material-ui/core": "^4.11.0",
+		"@material-ui/icons": "^4.9.1",
+		"@material-ui/lab": "^4.0.0-alpha.57",
+		"@testing-library/jest-dom": "^4.2.4",
+		"@testing-library/react": "^9.5.0",
+		"@testing-library/user-event": "^7.2.1",
+		"axios": "^0.21.1",
+		"dayjs": "^1.9.4",
+		"react": "^16.13.1",
+		"react-colorful": "^4.4.2",
+		"react-dom": "^16.13.1",
+		"react-dropzone": "^11.2.3",
+		"react-router-dom": "^5.2.0",
+		"react-scripts": "^3.4.4",
+		"react-spinners-css": "^1.2.2",
+		"styled-components": "^5.2.1",
+		"yup": "^0.32.8"
+	},
+	"scripts": {
+		"start": "npm run predeploy:dev",
+		"build": "react-scripts build",
+		"predeploy:dev": "env-cmd -f .env.development react-scripts build",
+		"deploy:dev": "aws s3 sync build/ s3://emi3-frontend-test-deploy",
+		"postdeploy:dev": "aws cloudfront create-invalidation --distribution-id EUI7SR933CLTU --paths /*",
+		"predeploy:staging": "env-cmd -f .env.staging react-scripts build",
+		"deploy:staging": "aws s3 sync build/ s3://emi3-staging-frontend",
+		"postdeploy:staging": "aws cloudfront create-invalidation --distribution-id E314WA9UIE8SBF --paths /*",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": "react-app"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"env-cmd": "^10.1.0"
+	}
+}

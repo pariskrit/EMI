@@ -1,0 +1,19 @@
+/*
+  This is the "global" CSS for the application (see: https://github.com/facebook/create-react-app/issues/2720).
+
+  Generally, this is used to normalise the CSS to ensure a consistent "base" accross browsers.
+*/
+
+body {
+	margin: 0;
+	font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+		"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code {
+	font-family: "Roboto", source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
+}

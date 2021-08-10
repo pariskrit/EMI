@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="27.286" height="20.801" viewBox="0 0 27.286 20.801">
+  <defs>
+    <clipPath id="clip-path">
+      <path id="Path_400" data-name="Path 400" d="M1038.458,929.191l6.349-6.349h6.675l-8.8,8.8h-4.226Zm19.769-6.349h3.939v2.449l-6.349,6.349h-6.389Zm-.609-4.548v2.759h-14.612v-2.759h-1.789v2.759h-4.548v12.376h4.548v5.665h1.789v-5.665h14.612v5.665h1.789v-5.665h4.548V921.052h-4.548v-2.759Z" transform="translate(-1036.669 -918.293)" fill="#fff" clip-rule="evenodd"/>
+    </clipPath>
+  </defs>
+  <g id="defects" transform="translate(-1036.669 -918.293)">
+    <path id="Path_399" data-name="Path 399" d="M1038.458,929.191l6.349-6.349h6.675l-8.8,8.8h-4.226Zm19.769-6.349h3.939v2.449l-6.349,6.349h-6.389Zm-.609-4.548v2.759h-14.612v-2.759h-1.789v2.759h-4.548v12.376h4.548v5.665h1.789v-5.665h14.612v5.665h1.789v-5.665h4.548V921.052h-4.548v-2.759Z" transform="translate(0 0)" fill="#fff" fill-rule="evenodd"/>
+    <g id="Group_241" data-name="Group 241" transform="translate(1036.669 918.293)" clip-path="url(#clip-path)">
+      <rect id="Rectangle_132" data-name="Rectangle 132" width="44.341" height="37.855" transform="translate(-8.527 -8.526)" fill="#fff"/>
+    </g>
+  </g>
+</svg>
