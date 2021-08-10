@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 	linkContainer: {
 		display: "flex",
 		alignItems: "center",
-		paddingLeft: 19,
+		padding: "16px 10px",
 	},
 	imgLink: {
 		textDecoration: "underline",
@@ -73,78 +73,30 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ProvidedAsset = ({
-	src,
-	alt,
-	name,
-	handleDelete,
-	noBottomDivider,
-	isRec,
-}) => {
-	// Init hooks
+function ProvidedAssetNoImage({ name, showBottomDivider }) {
 	const classes = useStyles();
-
-	// Init state
-	const [openDialog, setOpenDialog] = useState(false);
-
-	// Handlers
-	const closeDialogHandler = () => {
-		setOpenDialog(false);
-	};
-
-	// Handling non-provided alt text
-	if (alt === undefined) {
-		alt = "User uploaded image asset";
-	}
-	// Handling non-provided noBottomDivider
-	if (noBottomDivider === undefined) {
-		noBottomDivider = false;
-	}
-	// Handling non-provided isSquare
-	if (isRec === undefined) {
-		isRec = false;
-	}
-
 	return (
-		<>
-			<DeleteDialog
-				open={openDialog}
-				closeHandler={closeDialogHandler}
-				name={name}
-				handleDelete={handleDelete}
-			/>
-			<div className={classes.assetParentContainer}>
-				<Divider className={classes.dividerStyle} />
-
-				<div
-					className={clsx(classes.always, {
-						[classes.imageAssetContainer]: !isRec,
-						[classes.imageAssetContainerRec]: isRec,
-					})}
-				>
-					<img src={src} alt={alt} className={classes.assetImage} />
-				</div>
-
-				<div className={classes.linkContainer}>
-					<Typography>
-						<Link className={classes.imgLink}>{name}</Link>
-					</Typography>
-				</div>
-
-				<div className={classes.deleteContainer}>
-					<DeleteIcon
-						className={classes.deleteButton}
-						alt="Delete icon"
-						onClick={() => {
-							setOpenDialog(true);
-						}}
-					/>
-				</div>
-
-				{noBottomDivider ? null : <Divider className={classes.dividerStyle} />}
+		<div className={classes.assetParentContainer}>
+			<Divider className={classes.dividerStyle} />
+			<div className={classes.linkContainer}>
+				<Typography>
+					<Link className={classes.imgLink}>{name}</Link>
+				</Typography>
 			</div>
-		</>
-	);
-};
 
-export default ProvidedAsset;
+			<div className={classes.deleteContainer}>
+				<DeleteIcon
+					className={classes.deleteButton}
+					alt="Delete icon"
+					// onClick={() => {
+					// 	setOpenDialog(true);
+					// }}
+				/>
+			</div>
+
+			{showBottomDivider && <Divider className={classes.dividerStyle} />}
+		</div>
+	);
+}
+
+export default ProvidedAssetNoImage;
