@@ -27,6 +27,7 @@ import FeedbackStatuses from "./routes/Applications/FeedbackStatuses/FeedbackSta
 import Roles from "./routes/Applications/Roles/Roles";
 import ClientList from "./routes/Clients/ClientList/ClientList";
 import Client from "./routes/Clients/Client/Client";
+import Rujal from "./routes/Rujal";
 
 function App() {
 	return (
@@ -136,6 +137,9 @@ function App() {
 					<Route path="/client/:id" exact>
 						<Client />
 					</Route>
+					<Router path="/rujal" exact>
+						<Rujal />
+					</Router>
 				</Switch>
 			</Router>
 		</div>
