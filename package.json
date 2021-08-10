@@ -22,7 +22,7 @@
 		"yup": "^0.32.8"
 	},
 	"scripts": {
-		"start": "npm run predeploy:dev",
+		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"predeploy:dev": "env-cmd -f .env.development react-scripts build",
 		"deploy:dev": "aws s3 sync build/ s3://emi3-frontend-test-deploy",
