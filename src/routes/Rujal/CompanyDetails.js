@@ -1,14 +1,19 @@
 import React from "react";
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import {
 	Accordion,
 	AccordionDetails,
 	AccordionSummary,
 	Grid,
+	InputAdornment,
 	TextField,
 	Typography,
 } from "@material-ui/core";
 import ColourConstants from "../../helpers/colourConstants";
+import ArrowIcon from "../../assets/icons/arrowIcon.svg";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -41,6 +46,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 const CompanyDetails = () => {
 	const classes = useStyles();
+	const [companyDetails, setCompanyDetails] = useState({
+		company_name: "",
+		licence_type: { label: "Total Users", value: 0 },
+		total_liscense: null,
+	});
+
+	const handleInputChange = (e) =>
+		setCompanyDetails((detail) => ({
+			...detail,
+			[e.target.name]: e.target.value,
+		}));
 
 	return (
 		<Accordion className={classes.detailAccordion} expanded={true}>
@@ -58,6 +74,7 @@ const CompanyDetails = () => {
 							Company Name<span style={{ color: "red" }}>*</span>
 						</Typography>
 						<TextField
+							name="company_name"
 							variant="outlined"
 							fullWidth
 							InputProps={{
@@ -65,20 +82,54 @@ const CompanyDetails = () => {
 									input: classes.inputText,
 								},
 							}}
+							onChange={handleInputChange}
+							value={companyDetails.company_name}
 						/>
 					</Grid>
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
-							Liscense Type<span style={{ color: "red" }}>*</span>
+							Licence Type<span style={{ color: "red" }}>*</span>
 						</Typography>
-						<TextField
-							variant="outlined"
-							fullWidth
-							InputProps={{
-								classes: {
-									input: classes.inputText,
-								},
-							}}
+
+						<Autocomplete
+							id="combo-box-demo"
+							onChange={(e, value) =>
+								setCompanyDetails((th) => ({ ...th, licence_type: value }))
+							}
+							options={[
+								{ label: "Total Users", value: 0 },
+								{ label: "Concurrent Users", value: 1 },
+								{ label: "Per Job", value: 2 },
+								{ label: "Site-Based Licencing", value: 3 },
+							]}
+							getOptionLabel={(option) => option.label}
+							getOptionSelected={(option, value) =>
+								option.label === value.label
+							}
+							value={companyDetails.licence_type}
+							renderInput={(params) => (
+								<TextField
+									name="licence_type"
+									{...params}
+									fullWidth
+									variant="outlined"
+									InputProps={{
+										...params.InputProps,
+										classes: {
+											input: classes.inputText,
+										},
+										endAdornment: (
+											<InputAdornment style={{ marginRight: -50 }}>
+												<img
+													alt="Expand icon"
+													src={ArrowIcon}
+													className={classes.expandIcon}
+												/>
+											</InputAdornment>
+										),
+									}}
+								/>
+							)}
 						/>
 					</Grid>
 					<Grid item sm={6}>
@@ -86,6 +137,10 @@ const CompanyDetails = () => {
 							Total Liscense Count<span style={{ color: "red" }}>*</span>
 						</Typography>
 						<TextField
+							disabled={
+								companyDetails.licence_type.label !== "Site-Based Licencing"
+							}
+							type="number"
 							variant="outlined"
 							fullWidth
 							InputProps={{
@@ -100,17 +155,37 @@ const CompanyDetails = () => {
 							Registration Date<span style={{ color: "red" }}>*</span>
 						</Typography>
 						<TextField
-							value="18/11/2019"
+							id="date"
 							variant="outlined"
 							fullWidth
+							type="date"
+							defaultValue="2017-05-24"
 							InputProps={{
 								classes: {
 									input: classes.inputText,
 								},
 								readOnly: true,
+								startAdornment: (
+									<InputAdornment style={{ marginRight: 10 }}>
+										<CalendarTodayOutlinedIcon
+											style={{ fontSize: 19, marginTop: "-3px" }}
+										/>
+									</InputAdornment>
+								),
+								endAdornment: (
+									<InputAdornment>
+										<img
+											alt="Expand icon"
+											src={ArrowIcon}
+											className={classes.expandIcon}
+										/>
+									</InputAdornment>
+								),
 							}}
+							InputLabelProps={{ shrink: true }}
 						/>
 					</Grid>
+
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
 							Registered By<span style={{ color: "red" }}>*</span>
