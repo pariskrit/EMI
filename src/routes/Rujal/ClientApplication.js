@@ -17,6 +17,7 @@ import ArrowIcon from "../../assets/icons/arrowIcon.svg";
 import ColourConstants from "../../helpers/colourConstants";
 import { useState } from "react";
 import IOSSwitch from "../../components/IOSSwitch";
+import AddAppDialog from "./AddAppDialog";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -51,10 +52,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientApplication = () => {
 	const classes = useStyles();
+	const [open, setOpen] = useState(false);
 	const [currentStatus, setCurrentStatus] = useState(true);
 
 	return (
 		<div className={classes.appContainer}>
+			<AddAppDialog open={open} handleClose={() => setOpen(false)} />
 			<Accordion className={classes.appAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -101,7 +104,9 @@ const ClientApplication = () => {
 					</Table>
 				</AccordionDetails>
 				<AccordionActions className={classes.actionButton}>
-					<CurveButton>Add Application</CurveButton>
+					<CurveButton onClick={() => setOpen(true)}>
+						Add Application
+					</CurveButton>
 				</AccordionActions>
 			</Accordion>
 		</div>

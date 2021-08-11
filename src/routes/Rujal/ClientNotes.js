@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Accordion,
@@ -16,6 +16,7 @@ import CurveButton from "../../components/CurveButton";
 import ArrowIcon from "../../assets/icons/arrowIcon.svg";
 import ColourConstants from "../../helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
+import AddNoteDialog from "./AddNoteDialog";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -61,9 +62,11 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientNotes = () => {
 	const classes = useStyles();
+	const [open, setOpen] = useState(false);
 
 	return (
 		<div className={classes.noteContainer}>
+			<AddNoteDialog open={open} handleClose={() => setOpen(false)} />
 			<Accordion className={classes.noteAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -112,7 +115,7 @@ const ClientNotes = () => {
 					</Table>
 				</AccordionDetails>
 				<AccordionActions className={classes.actionButton}>
-					<CurveButton>Add Note</CurveButton>
+					<CurveButton onClick={() => setOpen(true)}>Add Note</CurveButton>
 				</AccordionActions>
 			</Accordion>
 		</div>
