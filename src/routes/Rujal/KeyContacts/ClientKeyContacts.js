@@ -11,8 +11,10 @@ import {
 	TableRow,
 	Typography,
 } from "@material-ui/core";
-import ArrowIcon from "../../assets/icons/arrowIcon.svg";
-import ColourConstants from "../../helpers/colourConstants";
+import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import ColourConstants from "../../../helpers/colourConstants";
+import { useState } from "react";
+import ClientKeyRow from "./ClientKeyRow";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -40,8 +42,18 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const KeyContacts = () => {
+const ClientKeyContacts = () => {
 	const classes = useStyles();
+	const [data] = useState([
+		{
+			id: 1,
+			name: "Sarah",
+			site: "Africe",
+			product: "Product One",
+			email: "test@gmail.com",
+			phone: "986544542",
+		},
+	]);
 
 	return (
 		<div className={classes.keyContainer}>
@@ -75,13 +87,9 @@ const KeyContacts = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							<TableRow>
-								<TableCell>Sarah MacPherson</TableCell>
-								<TableCell>Africa</TableCell>
-								<TableCell>Product 1</TableCell>
-								<TableCell>myinfo@email.com</TableCell>
-								<TableCell>986678634</TableCell>
-							</TableRow>
+							{data.map((row) => (
+								<ClientKeyRow key={row.id} row={row} />
+							))}
 						</TableBody>
 					</Table>
 				</AccordionDetails>
@@ -90,4 +98,4 @@ const KeyContacts = () => {
 	);
 };
 
-export default KeyContacts;
+export default ClientKeyContacts;

@@ -12,12 +12,12 @@ import {
 	TableRow,
 	Typography,
 } from "@material-ui/core";
-import CurveButton from "../../components/CurveButton";
-import ArrowIcon from "../../assets/icons/arrowIcon.svg";
-import ColourConstants from "../../helpers/colourConstants";
+import CurveButton from "../../../components/CurveButton";
+import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import ColourConstants from "../../../helpers/colourConstants";
 import { useState } from "react";
-import IOSSwitch from "../../components/IOSSwitch";
 import AddAppDialog from "./AddAppDialog";
+import ClientAppRow from "./ClientAppRow";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -53,7 +53,11 @@ const useStyles = makeStyles((theme) => ({
 const ClientApplication = () => {
 	const classes = useStyles();
 	const [open, setOpen] = useState(false);
-	const [currentStatus, setCurrentStatus] = useState(true);
+	const [data] = useState([
+		{ id: 1, name: "First App", qty: 2, location: "Nepal" },
+		{ id: 2, name: "Second App", qty: 5, location: "India" },
+		{ id: 3, name: "Third App", qty: 2, location: "China" },
+	]);
 
 	return (
 		<div className={classes.appContainer}>
@@ -87,19 +91,9 @@ const ClientApplication = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							<TableRow>
-								<TableCell>
-									<span className={classes.appName}>Zone Maintenance</span>
-								</TableCell>
-								<TableCell>3</TableCell>
-								<TableCell>Tamani</TableCell>
-								<TableCell>
-									<IOSSwitch
-										onChange={() => setCurrentStatus(!currentStatus)}
-										currentStatus={currentStatus}
-									/>
-								</TableCell>
-							</TableRow>
+							{data.map((row) => (
+								<ClientAppRow key={row.id} row={row} classes={classes} />
+							))}
 						</TableBody>
 					</Table>
 				</AccordionDetails>

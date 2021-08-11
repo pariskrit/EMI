@@ -12,11 +12,11 @@ import {
 	TableRow,
 	Typography,
 } from "@material-ui/core";
-import CurveButton from "../../components/CurveButton";
-import ArrowIcon from "../../assets/icons/arrowIcon.svg";
-import ColourConstants from "../../helpers/colourConstants";
-import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
+import CurveButton from "../../../components/CurveButton";
+import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import ColourConstants from "../../../helpers/colourConstants";
 import AddNoteDialog from "./AddNoteDialog";
+import ClientNoteRow from "./ClientNoteRow";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -63,6 +63,20 @@ const useStyles = makeStyles((theme) => ({
 const ClientNotes = () => {
 	const classes = useStyles();
 	const [open, setOpen] = useState(false);
+	const [data] = useState([
+		{
+			id: 1,
+			name: "Sarah MacPherson",
+			date: "18/12/2019",
+			note: "Lorem Ipson, this is the description with various features in its",
+		},
+		{
+			id: 2,
+			name: "Lara MacPherson",
+			date: "18/12/2019",
+			note: "Gorem Ipson, this is the description with various features in its",
+		},
+	]);
 
 	return (
 		<div className={classes.noteContainer}>
@@ -97,20 +111,9 @@ const ClientNotes = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							<TableRow>
-								<TableCell>Sarah MacPherson</TableCell>
-								<TableCell>18/11/2020</TableCell>
-								<TableCell>
-									Lorem Ipson, this is the description with various features in
-									its
-								</TableCell>
-								<TableCell>
-									<span className={classes.view}>View</span>
-								</TableCell>
-								<TableCell>
-									<DeleteIcon className={classes.deleteIcon} />
-								</TableCell>
-							</TableRow>
+							{data.map((row) => (
+								<ClientNoteRow key={row.id} row={row} classes={classes} />
+							))}
 						</TableBody>
 					</Table>
 				</AccordionDetails>

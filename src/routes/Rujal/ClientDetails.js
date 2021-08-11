@@ -2,9 +2,9 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import CompanyDetails from "./CompanyDetails";
-import ClientApplication from "./ClientApplication";
-import ClientNotes from "./ClientNotes";
-import KeyContacts from "./KeyContacts";
+import ClientApplication from "./Applications/ClientApplication";
+import ClientNotes from "./Notes/ClientNotes";
+import KeyContacts from "./KeyContacts/ClientKeyContacts";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {

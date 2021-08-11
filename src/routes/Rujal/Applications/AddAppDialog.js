@@ -8,24 +8,25 @@ import {
 	Typography,
 } from "@material-ui/core";
 import * as yup from "yup";
-import AddDialogStyle from "../../styles/application/AddDialogStyle";
-import { handleValidateObj, generateErrorState } from "../../helpers/utils";
+import AddDialogStyle from "../../../styles/application/AddDialogStyle";
+import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 
 const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	date: yup
-		.string("This field must be a string")
+	qty: yup
+		.number("This field must be a number")
 		.required("This field is required"),
-	note: yup
+	location: yup
 		.string("This field must be a string")
 		.required("This field is required"),
 });
 
 const ADD = AddDialogStyle();
-const defaultData = { name: "", date: "", note: "" };
-const defaultError = { name: null, date: null, note: null };
+const defaultData = { name: "", qty: "", location: "" };
+const defaultError = { name: null, qty: null, location: null };
+
 const useStyles = makeStyles({
 	dialogContent: {
 		display: "flex",
@@ -40,7 +41,7 @@ const useStyles = makeStyles({
 		fontSize: "14px",
 	},
 });
-const AddNoteDialog = ({ open, handleClose, createHandler }) => {
+const AddAppDialog = ({ open, handleClose, createHandler }) => {
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
@@ -97,29 +98,24 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 					/>
 				</div>
 				<div>
-					<Typography className={classes.labelText}>Date</Typography>
+					<Typography className={classes.labelText}>Qty</Typography>
 					<TextField
-						error={errors.date === null ? false : true}
-						helperText={errors.date === null ? null : errors.date}
-						id="date"
+						error={errors.qty === null ? false : true}
+						helperText={errors.qty === null ? null : errors.qty}
 						fullWidth
-						type="date"
-						defaultValue="2019-11-11"
+						type="number"
 						className={classes.textField}
-						InputLabelProps={{
-							shrink: true,
-						}}
-						onChange={(e) => setInput({ ...input, date: e.target.value })}
+						onChange={(e) => setInput({ ...input, qty: e.target.value })}
 					/>
 				</div>
 				<div>
-					<Typography className={classes.labelText}>Note</Typography>
+					<Typography className={classes.labelText}>Location</Typography>
 					<TextField
-						error={errors.note === null ? false : true}
-						helperText={errors.note === null ? null : errors.note}
+						error={errors.location === null ? false : true}
+						helperText={errors.location === null ? null : errors.location}
 						fullWidth
 						multiline
-						onChange={(e) => setInput({ ...input, note: e.target.value })}
+						onChange={(e) => setInput({ ...input, location: e.target.value })}
 					/>
 				</div>
 			</DialogContent>
@@ -127,4 +123,4 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 	);
 };
 
-export default AddNoteDialog;
+export default AddAppDialog;
