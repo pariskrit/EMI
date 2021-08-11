@@ -4,6 +4,7 @@ import { Grid } from "@material-ui/core";
 import CompanyDetails from "./CompanyDetails";
 import ClientApplication from "./ClientApplication";
 import ClientNotes from "./ClientNotes";
+import KeyContacts from "./KeyContacts";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -17,7 +18,7 @@ const ClientDetails = () => {
 	const classes = useStyles();
 	return (
 		<div className={classes.detailContainer}>
-			<Grid container>
+			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<CompanyDetails />
 				</Grid>
@@ -26,6 +27,9 @@ const ClientDetails = () => {
 				</Grid>
 				<Grid item xs={6}>
 					<ClientNotes />
+				</Grid>
+				<Grid item xs={6}>
+					<KeyContacts />
 				</Grid>
 			</Grid>
 		</div>

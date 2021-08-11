@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Accordion,
-	AccordionActions,
 	AccordionDetails,
 	AccordionSummary,
 	Table,
@@ -12,14 +11,11 @@ import {
 	TableRow,
 	Typography,
 } from "@material-ui/core";
-import CurveButton from "../../components/CurveButton";
 import ArrowIcon from "../../assets/icons/arrowIcon.svg";
 import ColourConstants from "../../helpers/colourConstants";
-import { useState } from "react";
-import IOSSwitch from "../../components/IOSSwitch";
 
 const useStyles = makeStyles((theme) => ({
-	appContainer: {
+	keyContainer: {
 		marginTop: 25,
 		display: "flex",
 		justifyContent: "center",
@@ -32,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: "bold",
 		fontSize: "17px",
 	},
-	appAccordion: {
+	keyAccordion: {
 		borderColor: ColourConstants.commonBorder,
 		borderStyle: "solid",
 		borderWidth: 1,
@@ -42,20 +38,14 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",
 	},
-	appName: {
-		color: "#307AD6",
-		textDecoration: "underline",
-	},
-	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ClientApplication = () => {
+const KeyContacts = () => {
 	const classes = useStyles();
-	const [currentStatus, setCurrentStatus] = useState(true);
 
 	return (
-		<div className={classes.appContainer}>
-			<Accordion className={classes.appAccordion}>
+		<div className={classes.keyContainer}>
+			<Accordion className={classes.keyAccordion}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -69,7 +59,7 @@ const ClientApplication = () => {
 				>
 					<div>
 						<Typography className={classes.sectionHeading}>
-							Application (3)
+							Key Contacts
 						</Typography>
 					</div>
 				</AccordionSummary>
@@ -77,35 +67,27 @@ const ClientApplication = () => {
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
-								<TableCell>Name</TableCell>
-								<TableCell>Sites(Qty)</TableCell>
-								<TableCell>Sites(Locations)</TableCell>
-								<TableCell>Status</TableCell>
+								<TableCell>Full Name</TableCell>
+								<TableCell>Site</TableCell>
+								<TableCell>Product</TableCell>
+								<TableCell>Email</TableCell>
+								<TableCell>Phone</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							<TableRow>
-								<TableCell>
-									<span className={classes.appName}>Zone Maintenance</span>
-								</TableCell>
-								<TableCell>3</TableCell>
-								<TableCell>Tamani</TableCell>
-								<TableCell>
-									<IOSSwitch
-										onChange={() => setCurrentStatus(!currentStatus)}
-										currentStatus={currentStatus}
-									/>
-								</TableCell>
+								<TableCell>Sarah MacPherson</TableCell>
+								<TableCell>Africa</TableCell>
+								<TableCell>Product 1</TableCell>
+								<TableCell>myinfo@email.com</TableCell>
+								<TableCell>986678634</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>
 				</AccordionDetails>
-				<AccordionActions className={classes.actionButton}>
-					<CurveButton>Add Application</CurveButton>
-				</AccordionActions>
 			</Accordion>
 		</div>
 	);
 };
 
-export default ClientApplication;
+export default KeyContacts;

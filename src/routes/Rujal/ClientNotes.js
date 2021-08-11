@@ -5,7 +5,6 @@ import {
 	AccordionActions,
 	AccordionDetails,
 	AccordionSummary,
-	Button,
 	Table,
 	TableBody,
 	TableCell,
@@ -13,6 +12,7 @@ import {
 	TableRow,
 	Typography,
 } from "@material-ui/core";
+import CurveButton from "../../components/CurveButton";
 import ArrowIcon from "../../assets/icons/arrowIcon.svg";
 import ColourConstants from "../../helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
@@ -41,21 +41,7 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",
 	},
-	curveButton: {
-		borderRadius: 50,
-		padding: "6px 26px",
-		borderWidth: 1,
-		borderColor: ColourConstants.navButtonOnHover,
-		fontWeight: "bold",
-		fontSize: "12px",
-		fontFamily: "Roboto Condensed",
-		letterSpacing: 0,
-		backgroundColor: "#24BA78",
-		float: "right",
-		color: "white",
-		textTransform: "none",
-		"&:hover": { backgroundColor: "#D2D2D9" },
-	},
+
 	deleteIcon: {
 		transform: "scale(0.7)",
 		color: ColourConstants.deleteButton,
@@ -126,7 +112,7 @@ const ClientNotes = () => {
 					</Table>
 				</AccordionDetails>
 				<AccordionActions className={classes.actionButton}>
-					<Button className={classes.curveButton}>Add new</Button>
+					<CurveButton>Add Note</CurveButton>
 				</AccordionActions>
 			</Accordion>
 		</div>

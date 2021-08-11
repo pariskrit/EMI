@@ -4,6 +4,8 @@ import {
 	Accordion,
 	AccordionDetails,
 	AccordionSummary,
+	Grid,
+	TextField,
 	Typography,
 } from "@material-ui/core";
 import ColourConstants from "../../helpers/colourConstants";
@@ -28,6 +30,14 @@ const useStyles = makeStyles((theme) => ({
 		borderWidth: 1,
 		width: "99%",
 	},
+	labelText: {
+		fontFamily: "Roboto Condensed",
+		fontWeight: "bold",
+		fontSize: "14px",
+	},
+	inputText: {
+		fontSize: 14,
+	},
 }));
 const CompanyDetails = () => {
 	const classes = useStyles();
@@ -41,7 +51,84 @@ const CompanyDetails = () => {
 					</Typography>
 				</div>
 			</AccordionSummary>
-			<AccordionDetails>This is detail section</AccordionDetails>
+			<AccordionDetails>
+				<Grid container spacing={5}>
+					<Grid item sm={6}>
+						<Typography className={classes.labelText}>
+							Company Name<span style={{ color: "red" }}>*</span>
+						</Typography>
+						<TextField
+							variant="outlined"
+							fullWidth
+							InputProps={{
+								classes: {
+									input: classes.inputText,
+								},
+							}}
+						/>
+					</Grid>
+					<Grid item sm={6}>
+						<Typography className={classes.labelText}>
+							Liscense Type<span style={{ color: "red" }}>*</span>
+						</Typography>
+						<TextField
+							variant="outlined"
+							fullWidth
+							InputProps={{
+								classes: {
+									input: classes.inputText,
+								},
+							}}
+						/>
+					</Grid>
+					<Grid item sm={6}>
+						<Typography className={classes.labelText}>
+							Total Liscense Count<span style={{ color: "red" }}>*</span>
+						</Typography>
+						<TextField
+							variant="outlined"
+							fullWidth
+							InputProps={{
+								classes: {
+									input: classes.inputText,
+								},
+							}}
+						/>
+					</Grid>
+					<Grid item sm={6}>
+						<Typography className={classes.labelText}>
+							Registration Date<span style={{ color: "red" }}>*</span>
+						</Typography>
+						<TextField
+							value="18/11/2019"
+							variant="outlined"
+							fullWidth
+							InputProps={{
+								classes: {
+									input: classes.inputText,
+								},
+								readOnly: true,
+							}}
+						/>
+					</Grid>
+					<Grid item sm={6}>
+						<Typography className={classes.labelText}>
+							Registered By<span style={{ color: "red" }}>*</span>
+						</Typography>
+						<TextField
+							value="Russel Harland"
+							variant="outlined"
+							fullWidth
+							InputProps={{
+								classes: {
+									input: classes.inputText,
+								},
+								readOnly: true,
+							}}
+						/>
+					</Grid>
+				</Grid>
+			</AccordionDetails>
 		</Accordion>
 	);
 };
