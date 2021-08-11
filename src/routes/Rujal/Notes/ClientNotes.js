@@ -17,6 +17,7 @@ import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import ColourConstants from "../../../helpers/colourConstants";
 import AddNoteDialog from "./AddNoteDialog";
 import ClientNoteRow from "./ClientNoteRow";
+import API from "../../../helpers/api";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -77,6 +78,16 @@ const ClientNotes = () => {
 			note: "Gorem Ipson, this is the description with various features in its",
 		},
 	]);
+
+	const fetchNotes = async () => {
+		try {
+			const result = await API.get(`/clientnotes?clientid=8`);
+			console.log(result);
+		} catch (err) {}
+	};
+	React.useEffect(() => {
+		fetchNotes();
+	}, []);
 
 	return (
 		<div className={classes.noteContainer}>

@@ -52,11 +52,13 @@ const CompanyDetails = () => {
 		total_liscense: null,
 	});
 
-	const handleInputChange = (e) =>
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
 		setCompanyDetails((detail) => ({
 			...detail,
-			[e.target.name]: e.target.value,
+			[name]: value,
 		}));
+	};
 
 	return (
 		<Accordion className={classes.detailAccordion} expanded={true}>
