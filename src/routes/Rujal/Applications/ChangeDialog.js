@@ -65,8 +65,16 @@ const ChangeDialog = ({
 			<Dialog open={open} onClose={closeHandler}>
 				{isUpdating ? <LinearProgress /> : null}
 				<DialogActions>
-					<Button onClick={handleChangeConfirm}>Confirm</Button>
-					<Button onClick={closeHandler}>Cancel</Button>
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={handleChangeConfirm}
+					>
+						Confirm
+					</Button>
+					<Button variant="contained" color="secondary" onClick={closeHandler}>
+						Cancel
+					</Button>
 				</DialogActions>
 				<DialogContent>
 					<DialogContentText>You are about to change</DialogContentText>
