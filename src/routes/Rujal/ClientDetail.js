@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import {
@@ -16,6 +15,14 @@ import ArrowIcon from "../../assets/icons/arrowIcon.svg";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import API from "../../helpers/api";
 import { BASE_API_PATH } from "../../helpers/constants";
+import { changeDate } from "../../helpers/date";
+
+const options = [
+	{ label: "Total Users", value: 0 },
+	{ label: "Concurrent Users", value: 1 },
+	{ label: "Per Job", value: 2 },
+	{ label: "Site-Based Licencing", value: 3 },
+];
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -50,10 +57,30 @@ const useStyles = makeStyles((theme) => ({
 const ClientDetail = () => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState({
-		company_name: "",
-		licence_type: { label: "Total Users", value: 0 },
-		total_liscense: null,
+		name: "",
+		licenseType: 0,
+		licenses: null,
+		registeredBy: "",
+		registeredDate: "",
 	});
+
+	useEffect(() => {
+		const fetchClient = async () => {
+			try {
+				const result = await API.get(`${BASE_API_PATH}Clients/${8}`);
+				if (result.status === 200) {
+					console.log(result.data);
+					setClientDetail(result.data);
+				} else {
+					throw new Error(result);
+				}
+			} catch (err) {
+				console.log(err);
+				return err;
+			}
+		};
+		fetchClient();
+	}, []);
 
 	const changeClientDetails = async (path, value) => {
 		try {
@@ -73,7 +100,7 @@ const ClientDetail = () => {
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		// changeClientDetails(name, value);
+		changeClientDetails(name, value);
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
@@ -81,12 +108,16 @@ const ClientDetail = () => {
 	};
 
 	const handleLicenceType = (value) => {
-		// changeClientDetails("licence_type", value.value);
+		changeClientDetails("licenseType", value.value);
 		setClientDetail((th) => ({
 			...th,
 			licence_type: value,
 		}));
 	};
+
+	const requiredLicenseType = options.find(
+		(x) => x.value === clientDetail.licenseType
+	);
 
 	return (
 		<Accordion className={classes.detailAccordion} expanded={true}>
@@ -104,7 +135,7 @@ const ClientDetail = () => {
 							Company Name<span style={{ color: "red" }}>*</span>
 						</Typography>
 						<TextField
-							name="company_name"
+							name="name"
 							variant="outlined"
 							fullWidth
 							InputProps={{
@@ -113,7 +144,7 @@ const ClientDetail = () => {
 								},
 							}}
 							onChange={handleInputChange}
-							value={clientDetail.company_name}
+							value={clientDetail.name}
 						/>
 					</Grid>
 					<Grid item sm={6}>
@@ -124,20 +155,15 @@ const ClientDetail = () => {
 						<Autocomplete
 							id="combo-box-demo"
 							onChange={(e, value) => handleLicenceType(value)}
-							options={[
-								{ label: "Total Users", value: 0 },
-								{ label: "Concurrent Users", value: 1 },
-								{ label: "Per Job", value: 2 },
-								{ label: "Site-Based Licencing", value: 3 },
-							]}
+							options={options}
 							getOptionLabel={(option) => option.label}
 							getOptionSelected={(option, value) =>
-								option.label === value.label
+								option.value === value.value
 							}
-							value={clientDetail.licence_type}
+							value={requiredLicenseType}
 							renderInput={(params) => (
 								<TextField
-									name="licence_type"
+									name="licenseType"
 									{...params}
 									fullWidth
 									variant="outlined"
@@ -162,12 +188,11 @@ const ClientDetail = () => {
 					</Grid>
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
-							Total Liscense Count<span style={{ color: "red" }}>*</span>
+							Total Licence Count<span style={{ color: "red" }}>*</span>
 						</Typography>
 						<TextField
-							disabled={
-								clientDetail.licence_type.label !== "Site-Based Licencing"
-							}
+							name="licenses"
+							disabled={requiredLicenseType.label !== "Site-Based Licencing"}
 							type="number"
 							variant="outlined"
 							fullWidth
@@ -176,7 +201,8 @@ const ClientDetail = () => {
 									input: classes.inputText,
 								},
 							}}
-							value={clientDetail.total_liscense}
+							value={clientDetail.licenses}
+							onChange={handleInputChange}
 						/>
 					</Grid>
 					<Grid item sm={6}>
@@ -187,8 +213,8 @@ const ClientDetail = () => {
 							id="date"
 							variant="outlined"
 							fullWidth
-							type="date"
-							defaultValue="2017-05-24"
+							type="date-local"
+							value={changeDate(clientDetail.registeredDate)}
 							InputProps={{
 								classes: {
 									input: classes.inputText,
@@ -220,7 +246,7 @@ const ClientDetail = () => {
 							Registered By<span style={{ color: "red" }}>*</span>
 						</Typography>
 						<TextField
-							value="Russel Harland"
+							value={clientDetail.registeredBy}
 							variant="outlined"
 							fullWidth
 							InputProps={{
