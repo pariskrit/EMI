@@ -18,6 +18,7 @@ import ColourConstants from "../../../helpers/colourConstants";
 import AddNoteDialog from "./AddNoteDialog";
 import ClientNoteRow from "./ClientNoteRow";
 import API from "../../../helpers/api";
+import { BASE_API_PATH } from "../../../helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -81,8 +82,8 @@ const ClientNotes = () => {
 
 	const fetchNotes = async () => {
 		try {
-			const result = await API.get(`/clientnotes?clientid=8`);
-			console.log(result);
+			//const result = await API.get(`${BASE_API_PATH}clientnotes?clientid=8`);
+			// console.log(result);
 		} catch (err) {}
 	};
 	React.useEffect(() => {

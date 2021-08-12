@@ -5,8 +5,10 @@ const ClientKeyRow = ({ row }) => (
 	<TableRow>
 		<TableCell>{row.name}</TableCell>
 		<TableCell>{row.site}</TableCell>
-		<TableCell>{row.product}</TableCell>
-		<TableCell>{row.email}</TableCell>
+		<TableCell>{row.application}</TableCell>
+		<TableCell style={{ wordBreak: "break-word" }}>
+			<p>{row.email}</p>
+		</TableCell>
 		<TableCell>{row.phone}</TableCell>
 	</TableRow>
 );

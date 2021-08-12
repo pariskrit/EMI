@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Accordion,
@@ -15,6 +15,9 @@ import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import ColourConstants from "../../../helpers/colourConstants";
 import { useState } from "react";
 import ClientKeyRow from "./ClientKeyRow";
+import API from "../../../helpers/api";
+import { BASE_API_PATH } from "../../../helpers/constants";
+import { handleSort } from "../../../helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -44,16 +47,22 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientKeyContacts = () => {
 	const classes = useStyles();
-	const [data] = useState([
-		{
-			id: 1,
-			name: "Sarah",
-			site: "Africe",
-			product: "Product One",
-			email: "test@gmail.com",
-			phone: "986544542",
-		},
-	]);
+	const [data, setData] = useState([]);
+	useEffect(() => {
+		const fetchKeyContacts = async () => {
+			try {
+				let result = await API.get(`${BASE_API_PATH}Clients/${8}/keycontacts`);
+				if (result.status === 200) {
+					result = result.data;
+					handleSort(result, setData, "name", "asc");
+				} else {
+					//Throw error if failed to fetch
+					throw new Error(`Error: Status ${result.status}`);
+				}
+			} catch (error) {}
+		};
+		fetchKeyContacts();
+	}, []);
 
 	return (
 		<div className={classes.keyContainer}>
@@ -81,7 +90,7 @@ const ClientKeyContacts = () => {
 							<TableRow>
 								<TableCell>Full Name</TableCell>
 								<TableCell>Site</TableCell>
-								<TableCell>Product</TableCell>
+								<TableCell>Application</TableCell>
 								<TableCell>Email</TableCell>
 								<TableCell>Phone</TableCell>
 							</TableRow>
