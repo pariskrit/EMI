@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 	detailsContainer: {
 		borderBottom: "1px solid rgba(0, 0, 0, .125)",
 		borderTop: "1px solid rgba(0, 0, 0, .125)",
-		padding: "2px 20px",
+		padding: "14px 20px",
 		alignItems: "center",
 	},
 	regionText: {
@@ -98,6 +98,7 @@ function Region({
 				input={siteInput}
 				setInput={setSiteInput}
 				createHandler={onAddSite}
+				reference={name}
 			/>
 			<Accordion className={classes.accordionParent}>
 				<AccordionSummary
@@ -130,10 +131,10 @@ function Region({
 							<Link>{site.name}</Link>
 						</Typography>
 						<div className={classes.statusSwitch}>
-							<IOSSwitch
+							{/* <IOSSwitch
 								onChange={() => onStatusChange(region.id, site.id)}
 								currentStatus={site.isActive ? true : false}
-							/>
+							/> */}
 						</div>
 					</AccordionDetails>
 				))}

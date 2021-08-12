@@ -7,6 +7,8 @@ import Divider from "@material-ui/core/Divider";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
 import DeleteDialog from "./DeleteDialog";
 import ColourConstants from "../../helpers/colourConstants";
+import { BASE_API_PATH } from "../../helpers/constants";
+import API from "../../helpers/api";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
@@ -73,12 +75,27 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ProvidedAssetNoImage({ name, showBottomDivider }) {
+function ProvidedAssetNoImage({
+	document,
+	showBottomDivider,
+	fetchClientDocuments,
+}) {
 	const classes = useStyles();
+	const { id, name } = document;
 	const [openDialog, setOpenDialog] = useState(false);
 
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
+	};
+
+	const onDocumentDelete = async () => {
+		try {
+			await API.delete(`${BASE_API_PATH}ClientDocuments/${id}`);
+			fetchClientDocuments();
+			setOpenDialog(false);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
@@ -87,7 +104,7 @@ function ProvidedAssetNoImage({ name, showBottomDivider }) {
 				open={openDialog}
 				closeHandler={closeDialogHandler}
 				name={name}
-				// handleDelete={handleDelete}
+				handleDelete={onDocumentDelete}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />

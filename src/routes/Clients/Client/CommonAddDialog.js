@@ -16,6 +16,9 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
+	cancelButton: {
+		width: "90px",
+	},
 });
 
 const CommonAddDialog = ({
@@ -25,6 +28,7 @@ const CommonAddDialog = ({
 	label,
 	input,
 	setInput,
+	reference,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -52,10 +56,18 @@ const CommonAddDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add {label}</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								Add {label} {reference && `(${reference})`}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeHandler} variant="contained">
+						<ADD.CancelButton
+							onClick={closeHandler}
+							variant="contained"
+							className={classes.cancelButton}
+						>
 							Cancel
 						</ADD.CancelButton>
 						<ADD.ConfirmButton

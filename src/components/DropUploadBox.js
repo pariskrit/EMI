@@ -7,6 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { ReactComponent as UploadIcon } from "../assets/icons/uploadIcon.svg";
 import API from "../helpers/api";
 import ColourConstants from "../helpers/colourConstants";
+import { BASE_API_PATH } from "../helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	dragContainer: {
@@ -43,7 +44,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // BIG TODO: Need to have handling for single vs. multi uploads
-const DropUpload = ({ uploadReturn, applicationID }) => {
+const DropUpload = ({
+	uploadReturn,
+	clientID,
+	isImageUploaded = false,
+	filesUploading,
+	setFilesUploading,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -56,23 +63,68 @@ const DropUpload = ({ uploadReturn, applicationID }) => {
 			// Getting filetype
 			const fileType = acceptedFiles[0].type.split("/").pop();
 
-			// checking if the file is of image type
-			if (["jpg", "jpeg", "png"].indexOf(fileType) < 0) {
-				setFilesUploading(false);
-				alert("Please upload image");
-				return;
+			if (isImageUploaded) {
+				// checking if the file is of image type
+				if (["jpg", "jpeg", "png"].indexOf(fileType) < 0) {
+					setFilesUploading(false);
+					alert("Please upload image");
+					return;
+				}
 			}
 
 			// Getting upload url and attempting upload
 			// NOTE: currently handling single file
+			getUploadLink(fileType).then((uploadDetails) =>
+				uploadFile(acceptedFiles[0], uploadDetails.url).then((res) => {
+					uploadReturn(uploadDetails.key, uploadDetails.url);
+				})
+			);
 		},
 		// eslint-disable-next-line
 		[uploadReturn]
 	);
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+	console.log(filesUploading);
+	// Helpers
+	const getUploadLink = async (fileType) => {
+		// Attemptong to get signed s3 upload link
+		try {
+			let uploadLink = await API.post(
+				`${BASE_API_PATH}Clients/${clientID}/upload`,
+				{
+					fileType: fileType,
+				}
+			);
+			console.log(uploadLink);
+			// Getting URL from stream if success
+			if (uploadLink.status === 200) {
+				return uploadLink.data;
+			} else {
+				// Printing failure
+				console.log(uploadLink);
+				throw new Error(`Unable to get link`);
+			}
+		} catch (err) {
+			// TODO: real error handling
+			console.log(err);
 
-	// Init state
-	const [filesUploading, setFilesUploading] = useState(false);
+			return false;
+		}
+	};
+
+	const uploadFile = async (file, uploadURL) => {
+		// Attempting file upload
+		try {
+			// Attempting upload
+			await fetch(uploadURL, { method: "PUT", body: file });
+
+			return true;
+		} catch (err) {
+			// TODO: real error handling
+			console.log(err);
+			return false;
+		}
+	};
 
 	// Showing uploader. Otherwise, showing spinner
 	if (!filesUploading) {

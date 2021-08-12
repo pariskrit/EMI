@@ -67,6 +67,7 @@ function ClientRegionAndSites() {
 	const classes = useStyles();
 	const { id } = useParams();
 	const [listOfRegions, setListOfRegions] = useState([]);
+
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
 	const [isLoading, setIsLoading] = useState(true);

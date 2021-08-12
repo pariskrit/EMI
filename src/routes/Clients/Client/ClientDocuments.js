@@ -6,10 +6,11 @@ import ColourConstants from "../../../helpers/colourConstants";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
-import DropUpload from "../../../components/DropUpload";
+import DropUploadBox from "../../../components/DropUploadBox";
 import ProvidedAssetNoImage from "../../../components/ProvidedAsset/ProvidedAssetNoImage";
 import API from "../../../helpers/api";
 import { useParams } from "react-router-dom";
+import { BASE_API_PATH } from "../../../helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -56,31 +57,46 @@ const useStyles = makeStyles((theme) => ({
 function ClientDocuments() {
 	const classes = useStyles();
 	const { id } = useParams();
+	const [listOfDocuments, setListOfDocuments] = useState([]);
+	const [filesUploading, setFilesUploading] = useState(false);
 
-	const [listOfDocuments, setListOfDocuments] = useState([
-		{ id: 1, name: "document1.pdf" },
-		{ id: 2, name: "document2.pdf" },
-	]);
+	const onDocumentUpload = async (key, url) => {
+		try {
+			await API.post(BASE_API_PATH + "ClientDocuments", {
+				clientId: +id,
+				documentKey: key,
+				documentURL: url,
+			});
 
-	const handleLogoUpload = (e) => {
-		let photo = document.getElementById("image-file").files[0];
-		let formData = new FormData();
-
-		formData.append("photo", photo);
-		fetch("/upload/image", { method: "POST", body: formData });
+			fetchClientDocuments();
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
-	const fetchDocuments = async () => {
-		console.log("fetching...");
+	const fetchClientDocuments = async () => {
 		try {
-			const result = await API.get("/api/ClientDocuments", { clientId: id });
-			console.log(result);
-		} catch (error) {}
+			const result = await API.get(
+				`${BASE_API_PATH}ClientDocuments?clientId=${id}`
+			);
+
+			setListOfDocuments([
+				...result.data.map((doc) => ({
+					id: doc.id,
+					name: doc?.documentKey?.split("/")[2],
+				})),
+			]);
+
+			setFilesUploading(false);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	useEffect(() => {
-		// fetchDocuments();
+		fetchClientDocuments();
 	}, []);
+
 	return (
 		<div className={classes.logoContainer}>
 			<Accordion className={classes.logoAccordion}>
@@ -96,7 +112,7 @@ function ClientDocuments() {
 					id="panel1a-header"
 				>
 					<Typography className={classes.sectionHeading}>
-						Client documents (3)
+						Client documents ({listOfDocuments.length})
 					</Typography>
 				</AccordionSummary>
 
@@ -107,20 +123,30 @@ function ClientDocuments() {
 							if (index === listOfDocuments.length - 1) {
 								return (
 									<ProvidedAssetNoImage
-										key={index}
-										name={document.name}
+										key={document.id}
+										document={document}
 										showBottomDivider={true}
+										fetchClientDocuments={fetchClientDocuments}
 									/>
 								);
 							} else {
 								return (
-									<ProvidedAssetNoImage key={index} name={document.name} />
+									<ProvidedAssetNoImage
+										key={document.id}
+										document={document}
+										fetchClientDocuments={fetchClientDocuments}
+									/>
 								);
 							}
 						})}
 
 						<div className={classes.uploaderContainer}>
-							<DropUpload uploadReturn={handleLogoUpload} applicationID={1} />
+							<DropUploadBox
+								uploadReturn={onDocumentUpload}
+								clientID={id}
+								filesUploading={filesUploading}
+								setFilesUploading={setFilesUploading}
+							/>
 						</div>
 					</div>
 				</AccordionDetails>
