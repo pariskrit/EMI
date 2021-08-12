@@ -75,27 +75,41 @@ const useStyles = makeStyles((theme) => ({
 
 function ProvidedAssetNoImage({ name, showBottomDivider }) {
 	const classes = useStyles();
+	const [openDialog, setOpenDialog] = useState(false);
+
+	const closeDialogHandler = () => {
+		setOpenDialog(false);
+	};
+
 	return (
-		<div className={classes.assetParentContainer}>
-			<Divider className={classes.dividerStyle} />
-			<div className={classes.linkContainer}>
-				<Typography>
-					<Link className={classes.imgLink}>{name}</Link>
-				</Typography>
-			</div>
+		<>
+			<DeleteDialog
+				open={openDialog}
+				closeHandler={closeDialogHandler}
+				name={name}
+				// handleDelete={handleDelete}
+			/>
+			<div className={classes.assetParentContainer}>
+				<Divider className={classes.dividerStyle} />
+				<div className={classes.linkContainer}>
+					<Typography>
+						<Link className={classes.imgLink}>{name}</Link>
+					</Typography>
+				</div>
 
-			<div className={classes.deleteContainer}>
-				<DeleteIcon
-					className={classes.deleteButton}
-					alt="Delete icon"
-					// onClick={() => {
-					// 	setOpenDialog(true);
-					// }}
-				/>
-			</div>
+				<div className={classes.deleteContainer}>
+					<DeleteIcon
+						className={classes.deleteButton}
+						alt="Delete icon"
+						onClick={() => {
+							setOpenDialog(true);
+						}}
+					/>
+				</div>
 
-			{showBottomDivider && <Divider className={classes.dividerStyle} />}
-		</div>
+				{showBottomDivider && <Divider className={classes.dividerStyle} />}
+			</div>
+		</>
 	);
 }
 

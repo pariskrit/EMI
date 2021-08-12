@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -7,6 +7,11 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
 import Region from "./Region";
+import CommonAddDialog from "./CommonAddDialog";
+import API from "../../../helpers/api";
+import CurveButton from "../../../components/CurveButton";
+import { BASE_API_PATH } from "../../../helpers/constants";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -49,13 +54,91 @@ const useStyles = makeStyles((theme) => ({
 	dividerStyle: {
 		width: "100%",
 	},
+	regionSiteContainer: {
+		display: "block",
+		padding: "0 16px",
+	},
+	addButton: {
+		marginBottom: "10px",
+	},
 }));
 
 function ClientRegionAndSites() {
 	const classes = useStyles();
+	const { id } = useParams();
+	const [listOfRegions, setListOfRegions] = useState([]);
+	const [openAddDialog, setOpenAddDialog] = useState(false);
+	const [regionInput, setRegionInput] = useState("");
+	const [isLoading, setIsLoading] = useState(true);
+
+	const handleStatusChange = (regionId, siteId) => {
+		setListOfRegions([
+			...listOfRegions.map((region) =>
+				region.id === regionId
+					? {
+							...region,
+							sites: [
+								...region.sites.map((site) =>
+									site.id === siteId
+										? { ...site, isActive: !site.isActive }
+										: site
+								),
+							],
+					  }
+					: region
+			),
+		]);
+	};
+
+	//add region
+	const onAddRegion = async (e) => {
+		e.preventDefault();
+		let intId = +id;
+
+		setOpenAddDialog(false);
+		setIsLoading(true);
+		try {
+			await API.post(BASE_API_PATH + "Regions", {
+				clientID: intId,
+				name: regionInput,
+				sites: [],
+			});
+			fetchRegionsAndSites();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	// fetch RegionsAndSites of client
+	const fetchRegionsAndSites = async () => {
+		try {
+			const result = await API.get(`${BASE_API_PATH}Regions?clientId=${id}`);
+			setListOfRegions(result.data);
+			setIsLoading(false);
+		} catch (error) {
+			console.log(error);
+			setIsLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchRegionsAndSites();
+	}, []);
+
+	if (isLoading) {
+		return <h1>Loading...</h1>;
+	}
 
 	return (
 		<div className={classes.logoContainer}>
+			<CommonAddDialog
+				open={openAddDialog}
+				closeHandler={() => setOpenAddDialog(false)}
+				label="Region"
+				input={regionInput}
+				setInput={setRegionInput}
+				createHandler={onAddRegion}
+			/>
 			<Accordion className={classes.logoAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -69,12 +152,26 @@ function ClientRegionAndSites() {
 					id="panel1a-header"
 				>
 					<Typography className={classes.sectionHeading}>
-						Regions & Sites (2/4)
+						Regions & Sites ({listOfRegions.length}/5)
 					</Typography>
 				</AccordionSummary>
 
-				<AccordionDetails>
-					<Region region="Africa" sites={["tanami", "Boddington"]} />
+				<AccordionDetails className={classes.regionSiteContainer}>
+					<div className={classes.addButton}>
+						<CurveButton onClick={() => setOpenAddDialog(true)}>
+							Add Region
+						</CurveButton>
+					</div>
+
+					{listOfRegions.map((region) => (
+						<Region
+							key={region.id}
+							region={region}
+							fetchRegionsAndSites={fetchRegionsAndSites}
+							setIsLoading={setIsLoading}
+							onStatusChange={handleStatusChange}
+						/>
+					))}
 				</AccordionDetails>
 			</Accordion>
 		</div>

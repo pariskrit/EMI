@@ -10,8 +10,10 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "../../../components/EMICheckbox";
 import ProviderAsset from "../../../components/ProvidedAsset/ProvidedAsset";
-import DropUpload from "../../../components/DropUpload";
+import DropUploadBox from "../../../components/DropUploadBox";
 import logo from "../../../assets/rm.png";
+import API from "../../../helpers/api";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -52,8 +54,13 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientLogo = () => {
 	const classes = useStyles();
-
-	const [showUpload, setShowUpload] = useState(false);
+	const { id } = useParams();
+	const [showUpload, setShowUpload] = useState(true);
+	const [logo, setLogo] = useState({
+		name: "",
+		src: "",
+		alt: "",
+	});
 
 	const handleLogoUpload = (fileKey, fileName) => {};
 
@@ -78,14 +85,17 @@ const ClientLogo = () => {
 				<AccordionDetails>
 					{showUpload ? (
 						<div className={classes.logoContentParent}>
-							<DropUpload uploadReturn={handleLogoUpload} applicationID={1} />
+							<DropUploadBox
+								uploadReturn={handleLogoUpload}
+								applicationID={id}
+							/>
 						</div>
 					) : (
 						<div className={classes.logoContentParent}>
 							<ProviderAsset
-								name="pari"
-								src={logo}
-								alt="some image"
+								name={logo.name}
+								src={logo.src}
+								alt={logo.alt}
 								// handleDelete={handleDelete}
 							/>
 

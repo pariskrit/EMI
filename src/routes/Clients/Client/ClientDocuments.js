@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -8,6 +8,8 @@ import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
 import DropUpload from "../../../components/DropUpload";
 import ProvidedAssetNoImage from "../../../components/ProvidedAsset/ProvidedAssetNoImage";
+import API from "../../../helpers/api";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -53,13 +55,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 function ClientDocuments() {
 	const classes = useStyles();
+	const { id } = useParams();
 
 	const [listOfDocuments, setListOfDocuments] = useState([
 		{ id: 1, name: "document1.pdf" },
 		{ id: 2, name: "document2.pdf" },
 	]);
 
-	const handleLogoUpload = (fileKey, fileName) => {};
+	const handleLogoUpload = (e) => {
+		let photo = document.getElementById("image-file").files[0];
+		let formData = new FormData();
+
+		formData.append("photo", photo);
+		fetch("/upload/image", { method: "POST", body: formData });
+	};
+
+	const fetchDocuments = async () => {
+		console.log("fetching...");
+		try {
+			const result = await API.get("/api/ClientDocuments", { clientId: id });
+			console.log(result);
+		} catch (error) {}
+	};
+
+	useEffect(() => {
+		// fetchDocuments();
+	}, []);
 	return (
 		<div className={classes.logoContainer}>
 			<Accordion className={classes.logoAccordion}>
