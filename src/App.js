@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
+import "./App.scss";
 import Home from "./routes/Home/Home";
 import Login from "./routes/Login/Login";
 import Launch from "./routes/Launch/Launch";
@@ -27,6 +28,7 @@ import FeedbackStatuses from "./routes/Applications/FeedbackStatuses/FeedbackSta
 import Roles from "./routes/Applications/Roles/Roles";
 import ClientList from "./routes/Clients/ClientList/ClientList";
 import Client from "./routes/Clients/Client/Client";
+import Test from "./pages/Test"
 
 function App() {
 	return (
@@ -135,6 +137,9 @@ function App() {
 
 					<Route path="/client/:id" exact>
 						<Client />
+					</Route>
+					<Route path="/test" exact>
+						<Test />
 					</Route>
 				</Switch>
 			</Router>
