@@ -19,6 +19,7 @@ import AddNoteDialog from "./AddNoteDialog";
 import ClientNoteRow from "./ClientNoteRow";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
+import { handleSort } from "../../../helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -65,25 +66,15 @@ const useStyles = makeStyles((theme) => ({
 const ClientNotes = () => {
 	const classes = useStyles();
 	const [open, setOpen] = useState(false);
-	const [data] = useState([
-		{
-			id: 1,
-			name: "Sarah MacPherson",
-			date: "18/12/2019",
-			note: "Lorem Ipson, this is the description with various features in its",
-		},
-		{
-			id: 2,
-			name: "Lara MacPherson",
-			date: "18/12/2019",
-			note: "Gorem Ipson, this is the description with various features in its",
-		},
-	]);
+	const [data, setData] = useState([]);
 
 	const fetchNotes = async () => {
 		try {
-			//const result = await API.get(`${BASE_API_PATH}clientnotes?clientid=8`);
-			// console.log(result);
+			let result = await API.get(`${BASE_API_PATH}clientnotes?clientid=8`);
+			if (result.status === 200) {
+				result = result.data;
+				handleSort(result, setData, "name", "asc");
+			}
 		} catch (err) {}
 	};
 	React.useEffect(() => {
@@ -107,7 +98,7 @@ const ClientNotes = () => {
 				>
 					<div>
 						<Typography className={classes.sectionHeading}>
-							Notes (3)
+							Notes ({data.length})
 						</Typography>
 					</div>
 				</AccordionSummary>

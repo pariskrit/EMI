@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 const ClientKeyContacts = () => {
 	const classes = useStyles();
 	const [data, setData] = useState([]);
+
 	useEffect(() => {
 		const fetchKeyContacts = async () => {
 			try {
@@ -59,7 +60,10 @@ const ClientKeyContacts = () => {
 					//Throw error if failed to fetch
 					throw new Error(`Error: Status ${result.status}`);
 				}
-			} catch (error) {}
+			} catch (error) {
+				console.log(error);
+				return error;
+			}
 		};
 		fetchKeyContacts();
 	}, []);

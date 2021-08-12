@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Accordion,
@@ -15,9 +15,11 @@ import {
 import CurveButton from "../../../components/CurveButton";
 import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import ColourConstants from "../../../helpers/colourConstants";
-import { useState } from "react";
 import AddAppDialog from "./AddAppDialog";
 import ClientAppRow from "./ClientAppRow";
+import API from "../../../helpers/api";
+import { BASE_API_PATH } from "../../../helpers/constants";
+import { handleSort } from "../../../helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -43,6 +45,13 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",
 	},
+	deleteIcon: {
+		transform: "scale(0.7)",
+		color: ColourConstants.deleteButton,
+		"&:hover": {
+			cursor: "pointer",
+		},
+	},
 	appName: {
 		color: "#307AD6",
 		textDecoration: "underline",
@@ -53,11 +62,23 @@ const useStyles = makeStyles((theme) => ({
 const ClientApplication = () => {
 	const classes = useStyles();
 	const [open, setOpen] = useState(false);
-	const [data] = useState([
-		{ id: 1, name: "First App", qty: 2, location: "Nepal" },
-		{ id: 2, name: "Second App", qty: 5, location: "India" },
-		{ id: 3, name: "Third App", qty: 2, location: "China" },
-	]);
+	const [data, setData] = useState([]);
+
+	const fetchNotes = async () => {
+		try {
+			let result = await API.get(
+				`${BASE_API_PATH}clientApplications?clientid=8`
+			);
+			if (result.status === 200) {
+				console.log(result.data);
+				result = result.data;
+				handleSort(result, setData, "name", "asc");
+			}
+		} catch (err) {}
+	};
+	useEffect(() => {
+		fetchNotes();
+	}, []);
 
 	return (
 		<div className={classes.appContainer}>
@@ -76,7 +97,7 @@ const ClientApplication = () => {
 				>
 					<div>
 						<Typography className={classes.sectionHeading}>
-							Application (3)
+							Application ({data.length})
 						</Typography>
 					</div>
 				</AccordionSummary>
@@ -86,8 +107,8 @@ const ClientApplication = () => {
 							<TableRow>
 								<TableCell>Name</TableCell>
 								<TableCell>Sites(Qty)</TableCell>
-								<TableCell>Sites(Locations)</TableCell>
 								<TableCell>Status</TableCell>
+								<TableCell></TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

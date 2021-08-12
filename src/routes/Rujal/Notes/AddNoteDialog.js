@@ -82,7 +82,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 						variant="contained"
 						className={classes.createButton}
 					>
-						Create Application
+						Add Note
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>

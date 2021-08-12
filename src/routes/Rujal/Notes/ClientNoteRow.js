@@ -1,19 +1,24 @@
 import React from "react";
 import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/deleteIcon.svg";
+import { changeDate } from "../../../helpers/date";
 
 const ClientNoteRow = ({ row, classes }) => {
 	const [full, setFull] = React.useState(false);
+
 	return (
 		<TableRow>
-			<TableCell>{row.name}</TableCell>
-			<TableCell>{row.date}</TableCell>
+			<TableCell style={{ whiteSpace: "nowrap" }}>{row.name}</TableCell>
+			<TableCell>{changeDate(row.date)}</TableCell>
 			<TableCell>
 				<p
 					onMouseEnter={() => setFull(true)}
 					onMouseLeave={() => setFull(false)}
+					style={
+						!full ? { height: "3em", overflow: "hidden" } : { minHeight: "3em" }
+					}
 				>
-					{!full ? row.note.substring(0, 50) : row.note}
+					{row.note}
 				</p>
 			</TableCell>
 			<TableCell>
