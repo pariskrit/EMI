@@ -21,6 +21,7 @@ import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
 import { handleSort } from "../../../helpers/utils";
 import DeleteDialog from "../../../components/DeleteDialog";
+import ChangeDialog from "./ChangeDialog";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -64,6 +65,8 @@ const ClientApplication = () => {
 	const classes = useStyles();
 	const [addModal, setAddModal] = useState(false);
 	const [deleteModal, setDeleteModal] = useState(false);
+	const [changeModal, setChangeModal] = useState(false);
+	const [appStatus, setStatus] = useState(false);
 	const [appId, setAppId] = useState(null);
 	const [data, setData] = useState([]);
 
@@ -111,6 +114,26 @@ const ClientApplication = () => {
 		setData(filteredData);
 	};
 
+	// Setting data to be sent to api
+	const handleChangeApp = (id) => {
+		setAppId(id);
+		setChangeModal(true);
+
+		// Find the data to get toggled
+		const getStatus = [...data].find((x) => x.id === id);
+
+		// Reverse the isActive status
+		setStatus(!getStatus.isActive);
+	};
+
+	// Change in particular data of state after successful patching
+	const getChangedValue = (id, stat) => {
+		const main = [...data].map((x) =>
+			x.id === id ? { ...x, isActive: stat } : x
+		);
+		setData(main);
+	};
+
 	return (
 		<div className={classes.appContainer}>
 			<AddAppDialog
@@ -125,6 +148,13 @@ const ClientApplication = () => {
 				deleteEndpoint={`${BASE_API_PATH}ClientApplications`}
 				deleteID={appId}
 				handleRemoveData={handleRemoveData}
+			/>
+			<ChangeDialog
+				open={changeModal}
+				closeHandler={() => setChangeModal(false)}
+				changeId={appId}
+				status={appStatus}
+				getChangedValue={getChangedValue}
 			/>
 			<Accordion className={classes.appAccordion}>
 				<AccordionSummary
@@ -161,6 +191,7 @@ const ClientApplication = () => {
 									row={row}
 									classes={classes}
 									onDeleteApp={() => handleDeleteApp(row.id)}
+									onChangeApp={() => handleChangeApp(row.id)}
 								/>
 							))}
 						</TableBody>
