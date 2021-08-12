@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TableCell, TableRow } from "@material-ui/core";
 import IOSSwitch from "../../../components/IOSSwitch";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/deleteIcon.svg";

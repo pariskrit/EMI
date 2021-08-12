@@ -1,10 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
-import CompanyDetails from "./CompanyDetails";
 import ClientApplication from "./Applications/ClientApplication";
 import ClientNotes from "./Notes/ClientNotes";
 import KeyContacts from "./KeyContacts/ClientKeyContacts";
+import ClientDetail from "./ClientDetail";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -20,7 +20,7 @@ const ClientDetails = () => {
 		<div className={classes.detailContainer}>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<CompanyDetails />
+					<ClientDetail />
 				</Grid>
 				<Grid item xs={6}>
 					<ClientApplication />

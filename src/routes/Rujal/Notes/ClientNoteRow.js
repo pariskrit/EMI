@@ -10,12 +10,15 @@ const ClientNoteRow = ({ row, classes, onDeleteNote }) => {
 		<TableRow>
 			<TableCell style={{ whiteSpace: "nowrap" }}>{row.name}</TableCell>
 			<TableCell>{changeDate(row.date)}</TableCell>
-			<TableCell>
+			<TableCell
+				onMouseEnter={() => setFull(true)}
+				onMouseLeave={() => setFull(false)}
+			>
 				<p
-					onMouseEnter={() => setFull(true)}
-					onMouseLeave={() => setFull(false)}
 					style={
-						!full ? { height: "3em", overflow: "hidden" } : { minHeight: "3em" }
+						!full
+							? { height: "3em", overflow: "hidden", marginTop: 33 }
+							: { minHeight: "3em", marginTop: 33 }
 					}
 				>
 					{row.note}

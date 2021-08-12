@@ -27,10 +27,9 @@ const ChangeDialog = ({
 		// Attempting to delete data
 		try {
 			// Making DELETE to backend
-			const data = [{ op: "replace", path: "isActive", value: status }];
 			const result = await API.patch(
 				`${BASE_API_PATH}ClientApplications/${changeId}`,
-				data
+				[{ op: "replace", path: "isActive", value: status }]
 			);
 
 			// Handling success

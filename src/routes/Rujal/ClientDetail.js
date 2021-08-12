@@ -14,6 +14,8 @@ import {
 import ColourConstants from "../../helpers/colourConstants";
 import ArrowIcon from "../../assets/icons/arrowIcon.svg";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import API from "../../helpers/api";
+import { BASE_API_PATH } from "../../helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -44,19 +46,43 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: 14,
 	},
 }));
-const CompanyDetails = () => {
+
+const ClientDetail = () => {
 	const classes = useStyles();
-	const [companyDetails, setCompanyDetails] = useState({
+	const [clientDetail, setClientDetail] = useState({
 		company_name: "",
 		licence_type: { label: "Total Users", value: 0 },
 		total_liscense: null,
 	});
 
+	const changeClientDetails = async (path, value) => {
+		try {
+			const result = await API.patch(`${BASE_API_PATH}Clients/${8}`, [
+				{ op: "replace", path, value },
+			]);
+			if (result.status === 200) {
+				return true;
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {
+			console.log(err);
+			return err;
+		}
+	};
+
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		setCompanyDetails((detail) => ({
+		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
+		}));
+	};
+
+	const handleLicenceType = (value) => {
+		setClientDetail((th) => ({
+			...th,
+			licence_type: value,
 		}));
 	};
 
@@ -85,7 +111,7 @@ const CompanyDetails = () => {
 								},
 							}}
 							onChange={handleInputChange}
-							value={companyDetails.company_name}
+							value={clientDetail.company_name}
 						/>
 					</Grid>
 					<Grid item sm={6}>
@@ -95,9 +121,7 @@ const CompanyDetails = () => {
 
 						<Autocomplete
 							id="combo-box-demo"
-							onChange={(e, value) =>
-								setCompanyDetails((th) => ({ ...th, licence_type: value }))
-							}
+							onChange={(e, value) => handleLicenceType(value)}
 							options={[
 								{ label: "Total Users", value: 0 },
 								{ label: "Concurrent Users", value: 1 },
@@ -108,7 +132,7 @@ const CompanyDetails = () => {
 							getOptionSelected={(option, value) =>
 								option.label === value.label
 							}
-							value={companyDetails.licence_type}
+							value={clientDetail.licence_type}
 							renderInput={(params) => (
 								<TextField
 									name="licence_type"
@@ -140,7 +164,7 @@ const CompanyDetails = () => {
 						</Typography>
 						<TextField
 							disabled={
-								companyDetails.licence_type.label !== "Site-Based Licencing"
+								clientDetail.licence_type.label !== "Site-Based Licencing"
 							}
 							type="number"
 							variant="outlined"
@@ -150,6 +174,7 @@ const CompanyDetails = () => {
 									input: classes.inputText,
 								},
 							}}
+							value={clientDetail.total_liscense}
 						/>
 					</Grid>
 					<Grid item sm={6}>
@@ -210,4 +235,4 @@ const CompanyDetails = () => {
 	);
 };
 
-export default CompanyDetails;
+export default ClientDetail;
