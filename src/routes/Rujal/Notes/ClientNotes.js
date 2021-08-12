@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Accordion,
@@ -20,6 +20,7 @@ import ClientNoteRow from "./ClientNoteRow";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
 import { handleSort } from "../../../helpers/utils";
+import DeleteDialog from "../../../components/DeleteDialog";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -65,25 +66,46 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientNotes = () => {
 	const classes = useStyles();
-	const [open, setOpen] = useState(false);
+	const [addModal, setAddModal] = useState(false);
+	const [deleteModal, setDeleteModal] = useState(false);
+	const [noteId, setNoteId] = useState(null);
 	const [data, setData] = useState([]);
 
 	const fetchNotes = async () => {
 		try {
 			let result = await API.get(`${BASE_API_PATH}clientnotes?clientid=8`);
 			if (result.status === 200) {
+				console.log(result.data);
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
 		} catch (err) {}
 	};
-	React.useEffect(() => {
+
+	useEffect(() => {
 		fetchNotes();
 	}, []);
 
+	const handleDeleteNote = (id) => {
+		setNoteId(id);
+		setDeleteModal(true);
+	};
+
+	const handleRemoveData = (id) => {
+		const filteredData = [...data].filter((x) => x.id !== id);
+		setData(filteredData);
+	};
 	return (
 		<div className={classes.noteContainer}>
-			<AddNoteDialog open={open} handleClose={() => setOpen(false)} />
+			<AddNoteDialog open={addModal} handleClose={() => setAddModal(false)} />
+			<DeleteDialog
+				entityName="Note"
+				open={deleteModal}
+				closeHandler={() => setDeleteModal(false)}
+				deleteEndpoint={`${BASE_API_PATH}Clientnotes`}
+				deleteID={noteId}
+				handleRemoveData={handleRemoveData}
+			/>{" "}
 			<Accordion className={classes.noteAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -115,13 +137,18 @@ const ClientNotes = () => {
 						</TableHead>
 						<TableBody>
 							{data.map((row) => (
-								<ClientNoteRow key={row.id} row={row} classes={classes} />
+								<ClientNoteRow
+									key={row.id}
+									row={row}
+									classes={classes}
+									onDeleteNote={() => handleDeleteNote(row.id)}
+								/>
 							))}
 						</TableBody>
 					</Table>
 				</AccordionDetails>
 				<AccordionActions className={classes.actionButton}>
-					<CurveButton onClick={() => setOpen(true)}>Add Note</CurveButton>
+					<CurveButton onClick={() => setAddModal(true)}>Add Note</CurveButton>
 				</AccordionActions>
 			</Accordion>
 		</div>

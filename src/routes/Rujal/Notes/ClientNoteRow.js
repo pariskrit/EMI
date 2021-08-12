@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/deleteIcon.svg";
 import { changeDate } from "../../../helpers/date";
 
-const ClientNoteRow = ({ row, classes }) => {
+const ClientNoteRow = ({ row, classes, onDeleteNote }) => {
 	const [full, setFull] = React.useState(false);
 
 	return (
@@ -25,7 +25,7 @@ const ClientNoteRow = ({ row, classes }) => {
 				<span className={classes.view}>View</span>
 			</TableCell>
 			<TableCell>
-				<DeleteIcon className={classes.deleteIcon} />
+				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteNote} />
 			</TableCell>
 		</TableRow>
 	);

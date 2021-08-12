@@ -64,8 +64,8 @@ const ClientApplication = () => {
 	const classes = useStyles();
 	const [addModal, setAddModal] = useState(false);
 	const [deleteModal, setDeleteModal] = useState(false);
-	const [data, setData] = useState([]);
 	const [appId, setAppId] = useState(null);
+	const [data, setData] = useState([]);
 
 	const fetchNotes = async () => {
 		try {
@@ -73,7 +73,6 @@ const ClientApplication = () => {
 				`${BASE_API_PATH}clientApplications?clientid=8`
 			);
 			if (result.status === 200) {
-				console.log(result.data);
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
