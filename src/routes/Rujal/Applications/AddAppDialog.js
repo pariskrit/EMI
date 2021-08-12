@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Dialog,
@@ -6,26 +6,26 @@ import {
 	DialogContent,
 	TextField,
 	Typography,
+	LinearProgress,
+	InputAdornment,
 } from "@material-ui/core";
 import * as yup from "yup";
+import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import AddDialogStyle from "../../../styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import API from "../../../helpers/api";
+import { BASE_API_PATH } from "../../../helpers/constants";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const schema = yup.object({
-	name: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	qty: yup
+	applicationId: yup
 		.number("This field must be a number")
-		.required("This field is required"),
-	location: yup
-		.string("This field must be a string")
 		.required("This field is required"),
 });
 
 const ADD = AddDialogStyle();
-const defaultData = { name: "", qty: "", location: "" };
-const defaultError = { name: null, qty: null, location: null };
+const defaultData = { applicationId: null };
+const defaultError = { applicationId: null };
 
 const useStyles = makeStyles({
 	dialogContent: {
@@ -40,11 +40,45 @@ const useStyles = makeStyles({
 		fontWeight: "bold",
 		fontSize: "14px",
 	},
+	expandIcon: {
+		transform: "scale(0.8)",
+	},
+	inputText: {
+		fontSize: 14,
+	},
 });
 const AddAppDialog = ({ open, handleClose, createHandler }) => {
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
+	const [availableApp, setAvailableApp] = useState([]);
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		const fetchAvailableApp = async () => {
+			setLoading(true);
+			try {
+				let result = await API.get(
+					`${BASE_API_PATH}ClientApplications/${8}/available`
+				);
+				if (result.status === 200) {
+					result = result.data.map((x) => ({ label: x.name, value: x.id }));
+					setAvailableApp(result);
+					setLoading(false);
+				} else {
+					throw new Error(result);
+				}
+			} catch (err) {
+				console.log(err);
+				setLoading(false);
+				return err;
+			}
+		};
+		if (open) {
+			fetchAvailableApp();
+		}
+		return () => setAvailableApp([]);
+	}, [open]);
 
 	const closeOverride = () => {
 		setInput(defaultData);
@@ -54,12 +88,29 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 	};
 
 	const handleCreateData = async () => {
-		const localChecker = await handleValidateObj(schema, input);
-		if (!localChecker.some((el) => el.valid === false)) {
-		} else {
-			const newErrors = generateErrorState(localChecker);
+		setLoading(true);
+		try {
+			const localChecker = await handleValidateObj(schema, input);
+			if (!localChecker.some((el) => el.valid === false)) {
+				const newData = await createHandler(input.applicationId);
+				if (newData.success) {
+					setLoading(false);
+					closeOverride();
+				} else {
+					console.log(newData);
+					setErrors({ ...errors, ...newData.errors });
+					setLoading(false);
+				}
+			} else {
+				const newErrors = generateErrorState(localChecker);
+				setErrors({ ...errors, ...newErrors });
+				setLoading(false);
+			}
+		} catch (err) {
+			console.log(err);
 
-			setErrors({ ...errors, ...newErrors });
+			setLoading(false);
+			closeOverride();
 		}
 	};
 
@@ -70,9 +121,10 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
+			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					{<ADD.HeaderText>Add Note</ADD.HeaderText>}
+					{<ADD.HeaderText>Add Application</ADD.HeaderText>}
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={handleClose} variant="contained">
@@ -88,36 +140,43 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
-				<div>
-					<Typography className={classes.labelText}>Name</Typography>
-					<TextField
-						error={errors.name === null ? false : true}
-						helperText={errors.name === null ? null : errors.name}
-						fullWidth
-						onChange={(e) => setInput({ ...input, name: e.target.value })}
-					/>
-				</div>
-				<div>
-					<Typography className={classes.labelText}>Qty</Typography>
-					<TextField
-						error={errors.qty === null ? false : true}
-						helperText={errors.qty === null ? null : errors.qty}
-						fullWidth
-						type="number"
-						className={classes.textField}
-						onChange={(e) => setInput({ ...input, qty: e.target.value })}
-					/>
-				</div>
-				<div>
-					<Typography className={classes.labelText}>Location</Typography>
-					<TextField
-						error={errors.location === null ? false : true}
-						helperText={errors.location === null ? null : errors.location}
-						fullWidth
-						multiline
-						onChange={(e) => setInput({ ...input, location: e.target.value })}
-					/>
-				</div>
+				<Typography className={classes.labelText}>
+					Select Application
+				</Typography>
+				<Autocomplete
+					id="combo-box-demo"
+					onChange={(e, value) => setInput({ applicationId: value.value })}
+					options={availableApp}
+					getOptionLabel={(option) => option.label}
+					getOptionSelected={(option, value) => option.label === value.label}
+					renderInput={(params) => (
+						<TextField
+							name="application"
+							error={errors.applicationId === null ? false : true}
+							helperText={
+								errors.applicationId === null ? null : errors.applicationId
+							}
+							{...params}
+							fullWidth
+							variant="outlined"
+							InputProps={{
+								...params.InputProps,
+								classes: {
+									input: classes.inputText,
+								},
+								endAdornment: (
+									<InputAdornment style={{ marginRight: -50 }}>
+										<img
+											alt="Expand icon"
+											src={ArrowIcon}
+											className={classes.expandIcon}
+										/>
+									</InputAdornment>
+								),
+							}}
+						/>
+					)}
+				/>
 			</DialogContent>
 		</Dialog>
 	);

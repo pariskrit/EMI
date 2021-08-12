@@ -75,16 +75,35 @@ const ClientNotes = () => {
 		try {
 			let result = await API.get(`${BASE_API_PATH}clientnotes?clientid=8`);
 			if (result.status === 200) {
-				console.log(result.data);
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
-		} catch (err) {}
+		} catch (err) {
+			console.log(err);
+			return err;
+		}
 	};
 
 	useEffect(() => {
 		fetchNotes();
 	}, []);
+
+	const handleCreateData = async (note) => {
+		try {
+			let result = await API.post(`${BASE_API_PATH}ClientNotes`, {
+				note,
+				clientID: 8,
+			});
+			if (result.status === 201 || result.status === 200) {
+				result = result.data;
+				setData([]);
+				await fetchNotes();
+				return { success: true };
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {}
+	};
 
 	const handleDeleteNote = (id) => {
 		setNoteId(id);
@@ -97,7 +116,11 @@ const ClientNotes = () => {
 	};
 	return (
 		<div className={classes.noteContainer}>
-			<AddNoteDialog open={addModal} handleClose={() => setAddModal(false)} />
+			<AddNoteDialog
+				open={addModal}
+				handleClose={() => setAddModal(false)}
+				createHandler={handleCreateData}
+			/>
 			<DeleteDialog
 				entityName="Note"
 				open={deleteModal}

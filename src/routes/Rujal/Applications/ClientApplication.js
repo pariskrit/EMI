@@ -67,7 +67,7 @@ const ClientApplication = () => {
 	const [appId, setAppId] = useState(null);
 	const [data, setData] = useState([]);
 
-	const fetchNotes = async () => {
+	const fetchApplications = async () => {
 		try {
 			let result = await API.get(
 				`${BASE_API_PATH}clientApplications?clientid=8`
@@ -78,9 +78,28 @@ const ClientApplication = () => {
 			}
 		} catch (err) {}
 	};
+
 	useEffect(() => {
-		fetchNotes();
+		fetchApplications();
 	}, []);
+
+	const handleCreateData = async (applicationId) => {
+		try {
+			let result = await API.post(`${BASE_API_PATH}ClientApplications`, {
+				applicationId,
+				clientID: 8,
+				isActive: true,
+			});
+			if (result.status === 201 || result.status === 200) {
+				result = result.data;
+				setData([]);
+				await fetchApplications();
+				return { success: true };
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {}
+	};
 
 	const handleDeleteApp = (id) => {
 		setAppId(id);
@@ -94,7 +113,11 @@ const ClientApplication = () => {
 
 	return (
 		<div className={classes.appContainer}>
-			<AddAppDialog open={addModal} handleClose={() => setAddModal(false)} />
+			<AddAppDialog
+				open={addModal}
+				handleClose={() => setAddModal(false)}
+				createHandler={handleCreateData}
+			/>
 			<DeleteDialog
 				entityName="Application"
 				open={deleteModal}
