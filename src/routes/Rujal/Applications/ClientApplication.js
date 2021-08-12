@@ -20,6 +20,7 @@ import ClientAppRow from "./ClientAppRow";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
 import { handleSort } from "../../../helpers/utils";
+import DeleteDialog from "../../../components/DeleteDialog";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -61,8 +62,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientApplication = () => {
 	const classes = useStyles();
-	const [open, setOpen] = useState(false);
+	const [addModal, setAddModal] = useState(false);
+	const [deleteModal, setDeleteModal] = useState(false);
 	const [data, setData] = useState([]);
+	const [appId, setAppId] = useState(null);
 
 	const fetchNotes = async () => {
 		try {
@@ -80,9 +83,27 @@ const ClientApplication = () => {
 		fetchNotes();
 	}, []);
 
+	const handleDeleteApp = (id) => {
+		setAppId(id);
+		setDeleteModal(true);
+	};
+
+	const handleRemoveData = (id) => {
+		const filteredData = [...data].filter((x) => x.id !== id);
+		setData(filteredData);
+	};
+
 	return (
 		<div className={classes.appContainer}>
-			<AddAppDialog open={open} handleClose={() => setOpen(false)} />
+			<AddAppDialog open={addModal} handleClose={() => setAddModal(false)} />
+			<DeleteDialog
+				entityName="Application"
+				open={deleteModal}
+				closeHandler={() => setDeleteModal(false)}
+				deleteEndpoint={`${BASE_API_PATH}ClientApplications`}
+				deleteID={appId}
+				handleRemoveData={handleRemoveData}
+			/>
 			<Accordion className={classes.appAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -113,13 +134,18 @@ const ClientApplication = () => {
 						</TableHead>
 						<TableBody>
 							{data.map((row) => (
-								<ClientAppRow key={row.id} row={row} classes={classes} />
+								<ClientAppRow
+									key={row.id}
+									row={row}
+									classes={classes}
+									onDeleteApp={() => handleDeleteApp(row.id)}
+								/>
 							))}
 						</TableBody>
 					</Table>
 				</AccordionDetails>
 				<AccordionActions className={classes.actionButton}>
-					<CurveButton onClick={() => setOpen(true)}>
+					<CurveButton onClick={() => setAddModal(true)}>
 						Add Application
 					</CurveButton>
 				</AccordionActions>

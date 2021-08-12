@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "@material-ui/core";
 import IOSSwitch from "../../../components/IOSSwitch";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/deleteIcon.svg";
 
-const ClientAppRow = ({ row, classes }) => {
+const ClientAppRow = ({ row, classes, onDeleteApp }) => {
 	const [currentStatus, setCurrentStatus] = useState(row.isActive);
 
 	return (
@@ -20,7 +20,9 @@ const ClientAppRow = ({ row, classes }) => {
 			</TableCell>
 			<TableCell>
 				{" "}
-				<DeleteIcon className={classes.deleteIcon} />
+				{!row.isActive && (
+					<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
+				)}
 			</TableCell>
 		</TableRow>
 	);
