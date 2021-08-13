@@ -11,18 +11,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import Dropdown from "components/Dropdown";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
+import API from "helpers/api";
 import { changeDate } from "helpers/date";
 import React, { useEffect, useState } from "react";
-
-const options = [
-	{ label: "Total Users", value: 0 },
-	{ label: "Concurrent Users", value: 1 },
-	{ label: "Per Job", value: 2 },
-	{ label: "Site-Based Licencing", value: 3 },
-];
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -62,30 +55,13 @@ const detail = {
 	registeredDate: "11/11/2019",
 };
 
-const ClientDetail = ({ clientId, getClientDetail }) => {
+const ClientDetail = ({ clientId, options, clientData }) => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState(detail);
 
 	useEffect(() => {
-		const fetchClient = async () => {
-			try {
-				const result = await API.get(`${BASE_API_PATH}Clients/${clientId}`);
-				if (result.status === 200) {
-					const licenseType = options.find(
-						(x) => x.value === result.data.licenseType
-					);
-					getClientDetail(result.data);
-					setClientDetail({ ...result.data, licenseType });
-				} else {
-					throw new Error(result);
-				}
-			} catch (err) {
-				console.log(err);
-				return err;
-			}
-		};
-		fetchClient();
-	}, [clientId]);
+		setClientDetail(clientData);
+	}, [clientData]);
 
 	const changeClientDetails = async (path, value) => {
 		try {

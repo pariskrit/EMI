@@ -76,7 +76,6 @@ const ClientLogo = () => {
 	const fetchClientLogo = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Clients/${id}`);
-			console.log(result);
 			if (result.data.logoURL) {
 				setLogo({
 					name: result.data.logoFilename,

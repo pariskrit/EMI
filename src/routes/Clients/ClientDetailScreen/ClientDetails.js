@@ -10,6 +10,15 @@ import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
 import Navcrumbs from "../../../components/Navcrumbs";
+import { BASE_API_PATH } from "helpers/constants";
+import API from "helpers/api";
+
+const options = [
+	{ label: "Total Users", value: 0 },
+	{ label: "Concurrent Users", value: 1 },
+	{ label: "Per Job", value: 2 },
+	{ label: "Site-Based Licencing", value: 3 },
+];
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -24,19 +33,45 @@ const useStyles = makeStyles((theme) => ({
 		margin: "5px 5px 0px 5px",
 	},
 }));
+const detail = {
+	name: "",
+	licenseType: { label: "", value: "" },
+	licenses: 0,
+	registeredBy: "",
+	registeredDate: "11/11/2019",
+	logoFilename: "",
+	logoURL: "",
+	logoKey: "",
+};
 
 const ClientDetails = () => {
 	const classes = useStyles();
 	const { id } = useParams();
-	const [clientName, setClientName] = useState("");
+	const [clientDetail, setClientDetail] = useState(detail);
 
-	const getClientDetail = (detail) => {
-		setClientName(detail.name);
-	};
+	React.useEffect(() => {
+		const fetchClient = async () => {
+			try {
+				const result = await API.get(`${BASE_API_PATH}Clients/${id}`);
+				if (result.status === 200) {
+					const licenseType = options.find(
+						(x) => x.value === result.data.licenseType
+					);
+					setClientDetail({ ...result.data, licenseType });
+				} else {
+					throw new Error(result);
+				}
+			} catch (err) {
+				console.log(err);
+				return err;
+			}
+		};
+		fetchClient();
+	}, [id]);
 
 	return (
 		<>
-			<Navcrumbs crumbs={["Client", clientName]} />
+			<Navcrumbs crumbs={["Client", clientDetail.name]} />
 			<div style={{ display: "flex", gap: 20 }}>
 				<div style={{ display: "flex" }}>
 					<b>Status:</b>{" "}
@@ -55,7 +90,11 @@ const ClientDetails = () => {
 			<div className={classes.detailContainer + " client-details"}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
-						<ClientDetail clientId={+id} getClientDetail={getClientDetail} />
+						<ClientDetail
+							clientId={+id}
+							options={options}
+							clientData={clientDetail}
+						/>
 					</Grid>
 					<Grid item xs={6}>
 						<CompanyLogo />
