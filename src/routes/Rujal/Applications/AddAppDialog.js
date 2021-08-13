@@ -78,7 +78,7 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 		if (open) {
 			fetchAvailableApp();
 		}
-		return () => setAvailableApp([]);
+		// return () => setAvailableApp([]);
 	}, [open]);
 
 	const closeOverride = () => {

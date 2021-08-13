@@ -4,12 +4,10 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogContentText,
-	Button,
 	LinearProgress,
 } from "@material-ui/core";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
-import ColourConstants from "../../../helpers/colourConstants";
 import AddDialogStyle from "../../../styles/application/AddDialogStyle";
 
 // Init styled components
@@ -28,9 +26,9 @@ const ChangeDialog = ({
 
 	// Handlers
 	const handleChangeData = async () => {
-		// Attempting to delete data
+		// Attempting to change data
 		try {
-			// Making DELETE to backend
+			// Making Change to backend
 			const result = await API.patch(
 				`${BASE_API_PATH}ClientApplications/${changeId}`,
 				[{ op: "replace", path: "isActive", value: status }]
@@ -57,7 +55,7 @@ const ChangeDialog = ({
 
 		// Deleting status change
 		handleChangeData().then(() => {
-			// Once deleted, closing dialog and updating state
+			// Once Changed, closing dialog and updating state
 			closeHandler();
 			setIsUpdating(false);
 		});

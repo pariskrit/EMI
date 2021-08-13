@@ -61,7 +61,7 @@ const ClientDetail = () => {
 		licenseType: { label: "", value: null },
 		licenses: null,
 		registeredBy: "",
-		registeredDate: "",
+		registeredDate: "11/11/2019",
 	});
 
 	useEffect(() => {
