@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ClientNotes = () => {
+const ClientNotes = ({ clientId }) => {
 	const classes = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
@@ -77,7 +77,9 @@ const ClientNotes = () => {
 
 	const fetchNotes = async () => {
 		try {
-			let result = await API.get(`${BASE_API_PATH}clientnotes?clientid=8`);
+			let result = await API.get(
+				`${BASE_API_PATH}clientnotes?clientid=${clientId}`
+			);
 			if (result.status === 200) {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
@@ -96,7 +98,7 @@ const ClientNotes = () => {
 		try {
 			let result = await API.post(`${BASE_API_PATH}ClientNotes`, {
 				note,
-				clientID: 8,
+				clientID: clientId,
 			});
 			if (result.status === 201 || result.status === 200) {
 				result = result.data;
@@ -128,6 +130,7 @@ const ClientNotes = () => {
 				open={addModal}
 				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
 				createHandler={handleCreateData}
+				clientId={clientId}
 			/>
 			<DeleteDialog
 				entityName="Note"

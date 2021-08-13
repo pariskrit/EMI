@@ -5,7 +5,7 @@ import {
 	Grid,
 	InputAdornment,
 	TextField,
-	Typography
+	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientDetail = () => {
+const ClientDetail = ({ clientId, getClientDetail }) => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState({
 		name: "",
@@ -67,11 +67,13 @@ const ClientDetail = () => {
 	useEffect(() => {
 		const fetchClient = async () => {
 			try {
-				const result = await API.get(`${BASE_API_PATH}Clients/${8}`);
+				const result = await API.get(`${BASE_API_PATH}Clients/${clientId}`);
 				if (result.status === 200) {
 					const licenseType = options.find(
 						(x) => x.value === result.data.licenseType
 					);
+					console.log(result);
+					getClientDetail(result.data);
 					setClientDetail({ ...result.data, licenseType });
 				} else {
 					throw new Error(result);
@@ -82,11 +84,11 @@ const ClientDetail = () => {
 			}
 		};
 		fetchClient();
-	}, []);
+	}, [clientId]);
 
 	const changeClientDetails = async (path, value) => {
 		try {
-			const result = await API.patch(`${BASE_API_PATH}Clients/${8}`, [
+			const result = await API.patch(`${BASE_API_PATH}Clients/${clientId}`, [
 				{ op: "replace", path, value },
 			]);
 			if (result.status === 200) {

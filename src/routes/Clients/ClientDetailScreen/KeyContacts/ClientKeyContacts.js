@@ -7,7 +7,7 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-	Typography
+	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
@@ -44,14 +44,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientKeyContacts = () => {
+const ClientKeyContacts = ({ clientId }) => {
 	const classes = useStyles();
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		const fetchKeyContacts = async () => {
 			try {
-				let result = await API.get(`${BASE_API_PATH}Clients/${8}/keycontacts`);
+				let result = await API.get(
+					`${BASE_API_PATH}Clients/${clientId}/keycontacts`
+				);
 				if (result.status === 200) {
 					result = result.data;
 					handleSort(result, setData, "name", "asc");
@@ -65,7 +67,7 @@ const ClientKeyContacts = () => {
 			}
 		};
 		fetchKeyContacts();
-	}, []);
+	}, [clientId]);
 
 	return (
 		<div className={classes.keyContainer}>
