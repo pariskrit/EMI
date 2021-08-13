@@ -70,7 +70,7 @@ function ClientDocuments() {
 				documentKey: key,
 			});
 
-			if (response.status !== 200) {
+			if (response.status !== 201) {
 				throw new Error("Cannot upload document!");
 			}
 
@@ -78,6 +78,7 @@ function ClientDocuments() {
 		} catch (error) {
 			console.log(error);
 			setOpen(true);
+			setFilesUploading(false);
 			setErrorMessage("Something went wrong!");
 		}
 	};
