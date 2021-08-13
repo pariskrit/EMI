@@ -6,9 +6,7 @@ const ClientKeyRow = ({ row }) => (
 		<TableCell style={{ whiteSpace: "nowrap" }}>{row.name}</TableCell>
 		<TableCell style={{ whiteSpace: "nowrap" }}>{row.site}</TableCell>
 		<TableCell style={{ whiteSpace: "nowrap" }}>{row.application}</TableCell>
-		<TableCell style={{ wordBreak: "break-word" }}>
-			<p>{row.email}</p>
-		</TableCell>
+		<TableCell style={{ wordBreak: "break-word" }}>{row.email}</TableCell>
 		<TableCell>{row.phone}</TableCell>
 	</TableRow>
 );
