@@ -58,7 +58,7 @@ const ClientDetail = () => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState({
 		name: "",
-		licenseType: 0,
+		licenseType: { label: "", value: null },
 		licenses: null,
 		registeredBy: "",
 		registeredDate: "",
@@ -69,8 +69,10 @@ const ClientDetail = () => {
 			try {
 				const result = await API.get(`${BASE_API_PATH}Clients/${8}`);
 				if (result.status === 200) {
-					console.log(result.data);
-					setClientDetail(result.data);
+					const licenseType = options.find(
+						(x) => x.value === result.data.licenseType
+					);
+					setClientDetail({ ...result.data, licenseType });
 				} else {
 					throw new Error(result);
 				}
@@ -111,13 +113,9 @@ const ClientDetail = () => {
 		changeClientDetails("licenseType", value.value);
 		setClientDetail((th) => ({
 			...th,
-			licence_type: value,
+			licenseType: value,
 		}));
 	};
-
-	const requiredLicenseType = options.find(
-		(x) => x.value === clientDetail.licenseType
-	);
 
 	return (
 		<Accordion className={classes.detailAccordion} expanded={true}>
@@ -160,7 +158,7 @@ const ClientDetail = () => {
 							getOptionSelected={(option, value) =>
 								option.value === value.value
 							}
-							value={requiredLicenseType}
+							value={clientDetail.licenseType}
 							renderInput={(params) => (
 								<TextField
 									name="licenseType"
@@ -192,7 +190,9 @@ const ClientDetail = () => {
 						</Typography>
 						<TextField
 							name="licenses"
-							disabled={requiredLicenseType.label !== "Site-Based Licencing"}
+							disabled={
+								clientDetail.licenseType.label !== "Site-Based Licencing"
+							}
 							type="number"
 							variant="outlined"
 							fullWidth
