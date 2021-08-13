@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import Navcrumbs from "../../../components/Navcrumbs";
 import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
+import RestoreIcon from "@material-ui/icons/Restore";
 
 const options = [
 	{ label: "Total Users", value: 0 },
@@ -70,24 +71,35 @@ const ClientDetails = () => {
 	}, [id]);
 
 	return (
-		<>
-			<Navcrumbs crumbs={["Client", clientDetail.name]} />
-			<div style={{ display: "flex", gap: 20 }}>
-				<div style={{ display: "flex" }}>
-					<b>Status:</b>{" "}
-					<div
-						className={classes.icon}
-						style={{
-							backgroundColor: "#24BA78",
-						}}
-					></div>
-					Active
-				</div>
+		<div className="client-details">
+			<div className="flex justify-between">
 				<div>
-					<b>Last saved:</b> 21.10.20/1137 AEST
+					<Navcrumbs crumbs={["Client", clientDetail.name]} />
+					<div>
+						<div className="left-section flex" style={{ gap: "12px" }}>
+							<div style={{ display: "flex" }}>
+								<b>Status:</b>{" "}
+								<div
+									className={classes.icon}
+									style={{
+										backgroundColor: "#24BA78",
+									}}
+								></div>
+								Active
+							</div>
+							<div>
+								<b>Last saved:</b> 21.10.20/1137 AEST
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="right-section">
+					<div className="restore">
+						<RestoreIcon />
+					</div>
 				</div>
 			</div>
-			<div className={classes.detailContainer + " client-details"}>
+			<div className={classes.detailContainer}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<ClientDetail
@@ -108,7 +120,7 @@ const ClientDetails = () => {
 					</Grid>
 				</Grid>
 			</div>
-		</>
+		</div>
 	);
 };
 
