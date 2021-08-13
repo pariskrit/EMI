@@ -11,6 +11,7 @@ import ProvidedAssetNoImage from "../../../components/ProvidedAsset/ProvidedAsse
 import API from "../../../helpers/api";
 import { useParams } from "react-router-dom";
 import { BASE_API_PATH } from "../../../helpers/constants";
+import ErrorDialog from "../../../components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -59,18 +60,25 @@ function ClientDocuments() {
 	const { id } = useParams();
 	const [listOfDocuments, setListOfDocuments] = useState([]);
 	const [filesUploading, setFilesUploading] = useState(false);
+	const [open, setOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const onDocumentUpload = async (key, url) => {
 		try {
-			await API.post(BASE_API_PATH + "ClientDocuments", {
+			const response = await API.post(BASE_API_PATH + "ClientDocuments", {
 				clientId: +id,
 				documentKey: key,
-				documentURL: url,
 			});
+
+			if (response.status !== 200) {
+				throw new Error("Cannot upload document!");
+			}
 
 			fetchClientDocuments();
 		} catch (error) {
 			console.log(error);
+			setOpen(true);
+			setErrorMessage("Something went wrong!");
 		}
 	};
 
@@ -79,11 +87,11 @@ function ClientDocuments() {
 			const result = await API.get(
 				`${BASE_API_PATH}ClientDocuments?clientId=${id}`
 			);
-
+			console.log(result);
 			setListOfDocuments([
 				...result.data.map((doc) => ({
-					id: doc.id,
-					name: doc?.documentKey?.split("/")[2],
+					id: doc?.id,
+					name: doc?.filename,
 				})),
 			]);
 
@@ -99,6 +107,12 @@ function ClientDocuments() {
 
 	return (
 		<div className={classes.logoContainer}>
+			<ErrorDialog
+				open={open}
+				handleClose={() => setOpen(false)}
+				message={errorMessage}
+			/>
+
 			<Accordion className={classes.logoAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -126,6 +140,8 @@ function ClientDocuments() {
 										key={document.id}
 										document={document}
 										showBottomDivider={true}
+										setOpenErrorModal={setOpen}
+										setErrorMessage={setErrorMessage}
 										fetchClientDocuments={fetchClientDocuments}
 									/>
 								);
@@ -134,6 +150,8 @@ function ClientDocuments() {
 									<ProvidedAssetNoImage
 										key={document.id}
 										document={document}
+										setOpenErrorModal={setOpen}
+										setErrorMessage={setErrorMessage}
 										fetchClientDocuments={fetchClientDocuments}
 									/>
 								);

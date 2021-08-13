@@ -32,11 +32,37 @@ const CommonAddDialog = ({
 }) => {
 	// Init hooks
 	const classes = useStyles();
+	const [isUpdating, setIsUpdating] = useState(false);
+	const [isError, setIsError] = useState(false);
+
+	const handleNameInputChange = (e) => {
+		if (isError) {
+			//if error present remove error message
+			setIsError(false);
+		}
+		setInput(e.target.value);
+	};
+
+	const onAddRegion = (e) => {
+		// checking if the input field is empty
+		const isInputEmpty = input === "";
+
+		if (isInputEmpty) {
+			//if input is empty show error
+			setIsError(true);
+		} else {
+			setIsUpdating(true);
+			createHandler(e).then(() => {
+				setIsUpdating(false);
+				closeHandler();
+			});
+		}
+	};
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
-			createHandler(e);
+			onAddRegion(e);
 		}
 	};
 
@@ -52,7 +78,7 @@ const CommonAddDialog = ({
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
-				{/* {isUpdating ? <LinearProgress /> : null} */}
+				{isUpdating ? <LinearProgress /> : null}
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
@@ -71,7 +97,7 @@ const CommonAddDialog = ({
 							Cancel
 						</ADD.CancelButton>
 						<ADD.ConfirmButton
-							onClick={createHandler}
+							onClick={onAddRegion}
 							variant="contained"
 							className={classes.createButton}
 						>
@@ -83,14 +109,13 @@ const CommonAddDialog = ({
 				<DialogContent className={classes.dialogContent}>
 					<ADD.InputContainer>
 						<ADD.NameInput
-							error={false}
+							error={isError}
+							helperText={isError ? "Name is required" : null}
 							required
 							label={`${label} name`}
 							value={input}
 							onKeyDown={handleEnterPress}
-							onChange={(e) => {
-								setInput(e.target.value);
-							}}
+							onChange={handleNameInputChange}
 						/>
 					</ADD.InputContainer>
 				</DialogContent>

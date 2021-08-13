@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 	dragContainer: {
 		padding: 25,
 		borderStyle: "dashed",
-		borderColor: ColourConstants.uploaderBorder,
+		borderColor: "#307AD6",
 		borderWidth: 2,
 		borderRadius: "11px",
 		width: "100%",
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	imgLink: {
 		textDecoration: "underline",
+		color: "#307AD6",
 		"&:hover": {
 			cursor: "pointer",
 		},
@@ -50,6 +51,8 @@ const DropUpload = ({
 	isImageUploaded = false,
 	filesUploading,
 	setFilesUploading,
+	setErrorMessage,
+	setOpenErrorModal,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -62,19 +65,35 @@ const DropUpload = ({
 
 			// Getting filetype
 			const fileType = acceptedFiles[0].type.split("/").pop();
+			const fileName = acceptedFiles[0].name;
 
 			if (isImageUploaded) {
 				// checking if the file is of image type
-				if (["jpg", "jpeg", "png"].indexOf(fileType) < 0) {
+				const isFileOfImageType = ["jpg", "jpeg", "png"].indexOf(fileType) > 0;
+
+				// checking if the file size is less than 1mb
+				const isFileSizeLessThan1Mb = acceptedFiles[0].size < 1000000;
+
+				if (!isFileOfImageType) {
 					setFilesUploading(false);
-					alert("Please upload image");
+					setErrorMessage("Please upload file of image type!");
+					setOpenErrorModal(true);
+
+					return;
+				}
+
+				if (!isFileSizeLessThan1Mb) {
+					setFilesUploading(false);
+					setErrorMessage("Please upload image of size less than 1mb!");
+					setOpenErrorModal(true);
+
 					return;
 				}
 			}
 
 			// Getting upload url and attempting upload
 			// NOTE: currently handling single file
-			getUploadLink(fileType).then((uploadDetails) =>
+			getUploadLink(fileName).then((uploadDetails) =>
 				uploadFile(acceptedFiles[0], uploadDetails.url).then((res) => {
 					uploadReturn(uploadDetails.key, uploadDetails.url);
 				})
@@ -86,16 +105,16 @@ const DropUpload = ({
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 	console.log(filesUploading);
 	// Helpers
-	const getUploadLink = async (fileType) => {
+	const getUploadLink = async (fileName) => {
 		// Attemptong to get signed s3 upload link
 		try {
 			let uploadLink = await API.post(
 				`${BASE_API_PATH}Clients/${clientID}/upload`,
 				{
-					fileType: fileType,
+					Filename: fileName,
 				}
 			);
-			console.log(uploadLink);
+
 			// Getting URL from stream if success
 			if (uploadLink.status === 200) {
 				return uploadLink.data;

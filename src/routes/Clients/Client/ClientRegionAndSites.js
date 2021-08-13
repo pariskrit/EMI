@@ -12,6 +12,7 @@ import API from "../../../helpers/api";
 import CurveButton from "../../../components/CurveButton";
 import { BASE_API_PATH } from "../../../helpers/constants";
 import { useParams } from "react-router-dom";
+import { handleSort } from "../../../helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -96,8 +97,6 @@ function ClientRegionAndSites() {
 		e.preventDefault();
 		let intId = +id;
 
-		setOpenAddDialog(false);
-		setIsLoading(true);
 		try {
 			await API.post(BASE_API_PATH + "Regions", {
 				clientID: intId,
@@ -105,8 +104,10 @@ function ClientRegionAndSites() {
 				sites: [],
 			});
 			fetchRegionsAndSites();
+			return true;
 		} catch (error) {
 			console.log(error);
+			return false;
 		}
 	};
 
@@ -114,7 +115,7 @@ function ClientRegionAndSites() {
 	const fetchRegionsAndSites = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Regions?clientId=${id}`);
-			setListOfRegions(result.data);
+			handleSort(result.data, setListOfRegions, "name", "asc");
 			setIsLoading(false);
 		} catch (error) {
 			console.log(error);

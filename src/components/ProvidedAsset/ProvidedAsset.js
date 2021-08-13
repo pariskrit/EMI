@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 			cursor: "pointer",
 		},
 		fontSize: "14px",
+		color: "#307AD6",
 	},
 	deleteContainer: {
 		display: "flex",

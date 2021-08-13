@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -11,6 +11,7 @@ import CurveButton from "../../../components/CurveButton";
 import CommonAddDialog from "./CommonAddDialog";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
+import { handleSort } from "../../../helpers/utils";
 
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
@@ -58,6 +59,10 @@ const useStyles = makeStyles((theme) => ({
 	addButton: {
 		textAlign: "right",
 	},
+	siteLink: {
+		color: "#307AD6",
+		margin: "0 4px",
+	},
 }));
 
 function Region({
@@ -70,11 +75,12 @@ function Region({
 	const classes = useStyles();
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [siteInput, setSiteInput] = useState("");
+	const [modifiedSites, setModifiedSites] = useState([]);
 
 	//add site to a specific region
 	const onAddSite = async (e) => {
 		e.preventDefault();
-		setIsLoading(true);
+
 		try {
 			await API.post(BASE_API_PATH + "Sites", {
 				regionID: id,
@@ -82,12 +88,17 @@ function Region({
 			});
 
 			fetchRegionsAndSites();
-			setOpenAddDialog(false);
+			return true;
 		} catch (error) {
 			console.log(error);
 			setOpenAddDialog(false);
+			return false;
 		}
 	};
+
+	useEffect(() => {
+		handleSort(sites, setModifiedSites, "name", "asc");
+	}, [sites]);
 
 	return (
 		<div className={classes.singleRegion}>
@@ -122,13 +133,13 @@ function Region({
 					</div>
 				</AccordionSummary>
 
-				{sites.map((site) => (
+				{modifiedSites.map((site) => (
 					<AccordionDetails className={classes.detailsContainer} key={site.id}>
 						<Typography gutterBottom className={classes.siteText}>
 							Site:
 						</Typography>
 						<Typography>
-							<Link>{site.name}</Link>
+							<Link className={classes.siteLink}>{site.name}</Link>
 						</Typography>
 						<div className={classes.statusSwitch}>
 							{/* <IOSSwitch

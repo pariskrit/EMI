@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	imgLink: {
 		textDecoration: "underline",
+		color: "#307AD6",
 		"&:hover": {
 			cursor: "pointer",
 		},
@@ -79,22 +80,38 @@ function ProvidedAssetNoImage({
 	document,
 	showBottomDivider,
 	fetchClientDocuments,
+	setOpenErrorModal,
+	setErrorMessage,
 }) {
 	const classes = useStyles();
 	const { id, name } = document;
 	const [openDialog, setOpenDialog] = useState(false);
+	const [isUpdating, setIsUpdating] = useState(false);
 
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};
 
 	const onDocumentDelete = async () => {
+		setIsUpdating(true);
 		try {
-			await API.delete(`${BASE_API_PATH}ClientDocuments/${id}`);
-			fetchClientDocuments();
-			setOpenDialog(false);
+			const response = await API.delete(
+				`${BASE_API_PATH}ClientDocuments/${id}`
+			);
+
+			if (response.status !== 200) {
+				closeDialogHandler();
+				throw new Error("Cannot upload document!");
+			} else {
+				fetchClientDocuments();
+				setIsUpdating(false);
+				closeDialogHandler();
+			}
 		} catch (error) {
 			console.log(error);
+			closeDialogHandler();
+			setOpenErrorModal(true);
+			setErrorMessage("Something went wrong!");
 		}
 	};
 
@@ -105,6 +122,7 @@ function ProvidedAssetNoImage({
 				closeHandler={closeDialogHandler}
 				name={name}
 				handleDelete={onDocumentDelete}
+				isUpdating={isUpdating}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />

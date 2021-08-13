@@ -14,6 +14,7 @@ import DropUploadBox from "../../../components/DropUploadBox";
 import API from "../../../helpers/api";
 import { useParams } from "react-router-dom";
 import { BASE_API_PATH } from "../../../helpers/constants";
+import ErrorDialog from "../../../components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -56,12 +57,10 @@ const ClientLogo = () => {
 	const classes = useStyles();
 	const { id } = useParams();
 	const [showUpload, setShowUpload] = useState(true);
-	const [logo, setLogo] = useState({
-		name: "",
-		src: "",
-		alt: "",
-	});
+	const [logo, setLogo] = useState({});
 	const [filesUploading, setFilesUploading] = useState(false);
+	const [open, setOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const onLogoUpload = async (key, url) => {
 		try {
@@ -80,9 +79,9 @@ const ClientLogo = () => {
 			console.log(result);
 			if (result.data.logoURL) {
 				setLogo({
-					name: "trial.jpg",
+					name: result.data.logoFilename,
 					src: result.data.logoURL,
-					alt: "trial.jpg",
+					alt: result.data.logoFilename,
 				});
 				setShowUpload(false);
 			}
@@ -106,6 +105,11 @@ const ClientLogo = () => {
 
 	return (
 		<div className={classes.logoContainer}>
+			<ErrorDialog
+				open={open}
+				handleClose={() => setOpen(false)}
+				message={errorMessage}
+			/>
 			<Accordion className={classes.logoAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -131,6 +135,8 @@ const ClientLogo = () => {
 								isImageUploaded={true}
 								filesUploading={filesUploading}
 								setFilesUploading={setFilesUploading}
+								setErrorMessage={setErrorMessage}
+								setOpenErrorModal={setOpen}
 							/>
 						</div>
 					) : (
