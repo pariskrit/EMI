@@ -32,6 +32,9 @@ function Dropdown(props) {
 			}
 		});
 		setFilteredList(options);
+		return () => {
+			document.removeEventListener("click", () => {});
+		};
 	}, [options]);
 
 	const onFilter = (val) => {

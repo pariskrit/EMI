@@ -9,7 +9,8 @@ import CompanyLogo from "./CompanyLogo";
 import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
-import Navcrumbs from "../../../components/Navcrumbs";
+import Navcrumbs from "components/Navcrumbs";
+import RestoreIcon from "@material-ui/icons/Restore";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -35,24 +36,35 @@ const ClientDetails = () => {
 	};
 
 	return (
-		<>
-			<Navcrumbs crumbs={["Client", clientName]} />
-			<div style={{ display: "flex", gap: 20 }}>
-				<div style={{ display: "flex" }}>
-					<b>Status:</b>{" "}
-					<div
-						className={classes.icon}
-						style={{
-							backgroundColor: "#24BA78",
-						}}
-					></div>
-					Active
-				</div>
+		<div className="client-details">
+			<div className="flex justify-between">
 				<div>
-					<b>Last saved:</b> 21.10.20/1137 AEST
+					<Navcrumbs crumbs={["Client", clientName]} />
+					<div>
+						<div className="left-section flex">
+							<div style={{ display: "flex" }}>
+								<b>Status:</b>{" "}
+								<div
+									className={classes.icon}
+									style={{
+										backgroundColor: "#24BA78",
+									}}
+								></div>
+								Active
+							</div>
+							<div>
+								<b>Last saved:</b> 21.10.20/1137 AEST
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="right-section">
+					<div className="restore">
+						<RestoreIcon />
+					</div>
 				</div>
 			</div>
-			<div className={classes.detailContainer + " client-details"}>
+			<div className={classes.detailContainer}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<ClientDetail clientId={+id} getClientDetail={getClientDetail} />
@@ -69,7 +81,7 @@ const ClientDetails = () => {
 					</Grid>
 				</Grid>
 			</div>
-		</>
+		</div>
 	);
 };
 
