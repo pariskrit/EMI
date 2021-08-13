@@ -72,7 +72,6 @@ const ClientDetail = ({ clientId, getClientDetail }) => {
 					const licenseType = options.find(
 						(x) => x.value === result.data.licenseType
 					);
-					console.log(result);
 					getClientDetail(result.data);
 					setClientDetail({ ...result.data, licenseType });
 				} else {
