@@ -22,6 +22,7 @@ import { BASE_API_PATH } from "../../../helpers/constants";
 import { handleSort } from "../../../helpers/utils";
 import DeleteDialog from "../../../components/DeleteDialog";
 import ChangeDialog from "./ChangeDialog";
+import ErrorDialog from "../../../components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -63,9 +64,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientApplication = () => {
 	const classes = useStyles();
-	const [addModal, setAddModal] = useState(false);
-	const [deleteModal, setDeleteModal] = useState(false);
-	const [changeModal, setChangeModal] = useState(false);
+	const [modal, setModal] = useState({
+		addModal: false,
+		deleteModal: false,
+		changeModal: false,
+		errorModal: false,
+	});
 	const [appStatus, setStatus] = useState(false);
 	const [appId, setAppId] = useState(null);
 	const [data, setData] = useState([]);
@@ -101,12 +105,15 @@ const ClientApplication = () => {
 			} else {
 				throw new Error(result);
 			}
-		} catch (err) {}
+		} catch (err) {
+			console.log(err.response);
+			setModal((th) => ({ ...th, errorModal: true }));
+		}
 	};
 
 	const handleDeleteApp = (id) => {
 		setAppId(id);
-		setDeleteModal(true);
+		setModal((th) => ({ ...th, deleteModal: true }));
 	};
 
 	const handleRemoveData = (id) => {
@@ -117,8 +124,7 @@ const ClientApplication = () => {
 	// Setting data to be sent to api
 	const handleChangeApp = (id) => {
 		setAppId(id);
-		setChangeModal(true);
-
+		setModal((th) => ({ ...th, changeModal: true }));
 		// Find the data to get toggled
 		const getStatus = [...data].find((x) => x.id === id);
 
@@ -134,27 +140,33 @@ const ClientApplication = () => {
 		setData(main);
 	};
 
+	const { addModal, deleteModal, changeModal, errorModal } = modal;
+
 	return (
 		<div className={classes.appContainer}>
 			<AddAppDialog
 				open={addModal}
-				handleClose={() => setAddModal(false)}
+				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
 				createHandler={handleCreateData}
 			/>
 			<DeleteDialog
 				entityName="Application"
 				open={deleteModal}
-				closeHandler={() => setDeleteModal(false)}
+				closeHandler={() => setModal((th) => ({ ...th, deleteModal: false }))}
 				deleteEndpoint={`${BASE_API_PATH}ClientApplications`}
 				deleteID={appId}
 				handleRemoveData={handleRemoveData}
 			/>
 			<ChangeDialog
 				open={changeModal}
-				closeHandler={() => setChangeModal(false)}
+				closeHandler={() => setModal((th) => ({ ...th, changeModal: false }))}
 				changeId={appId}
 				status={appStatus}
 				getChangedValue={getChangedValue}
+			/>
+			<ErrorDialog
+				open={errorModal}
+				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
 			/>
 			<Accordion className={classes.appAccordion}>
 				<AccordionSummary
@@ -198,7 +210,9 @@ const ClientApplication = () => {
 					</Table>
 				</AccordionDetails>
 				<AccordionActions className={classes.actionButton}>
-					<CurveButton onClick={() => setAddModal(true)}>
+					<CurveButton
+						onClick={() => setModal((th) => ({ ...th, addModal: true }))}
+					>
 						Add Application
 					</CurveButton>
 				</AccordionActions>

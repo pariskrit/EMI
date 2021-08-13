@@ -21,6 +21,7 @@ import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
 import { handleSort } from "../../../helpers/utils";
 import DeleteDialog from "../../../components/DeleteDialog";
+import ErrorDialog from "../../../components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -66,8 +67,11 @@ const useStyles = makeStyles((theme) => ({
 
 const ClientNotes = () => {
 	const classes = useStyles();
-	const [addModal, setAddModal] = useState(false);
-	const [deleteModal, setDeleteModal] = useState(false);
+	const [modal, setModal] = useState({
+		addModal: false,
+		deleteModal: false,
+		errorModal: false,
+	});
 	const [noteId, setNoteId] = useState(null);
 	const [data, setData] = useState([]);
 
@@ -90,7 +94,7 @@ const ClientNotes = () => {
 
 	const handleCreateData = async (note) => {
 		try {
-			let result = await API.post(`${BASE_API_PATH}ClientNotes`, {
+			let result = await API.post(`${BASE_API_PATH}ClientNotes/1`, {
 				note,
 				clientID: 8,
 			});
@@ -102,33 +106,41 @@ const ClientNotes = () => {
 			} else {
 				throw new Error(result);
 			}
-		} catch (err) {}
+		} catch (err) {
+			console.log(err.response);
+			setModal((th) => ({ ...th, errorModal: true }));
+		}
 	};
 
 	const handleDeleteNote = (id) => {
 		setNoteId(id);
-		setDeleteModal(true);
+		setModal((th) => ({ ...th, deleteModal: true }));
 	};
 
 	const handleRemoveData = (id) => {
 		const filteredData = [...data].filter((x) => x.id !== id);
 		setData(filteredData);
 	};
+	const { addModal, errorModal, deleteModal } = modal;
 	return (
 		<div className={classes.noteContainer}>
 			<AddNoteDialog
 				open={addModal}
-				handleClose={() => setAddModal(false)}
+				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
 				createHandler={handleCreateData}
 			/>
 			<DeleteDialog
 				entityName="Note"
 				open={deleteModal}
-				closeHandler={() => setDeleteModal(false)}
+				closeHandler={() => setModal((th) => ({ ...th, deleteModal: false }))}
 				deleteEndpoint={`${BASE_API_PATH}Clientnotes`}
 				deleteID={noteId}
 				handleRemoveData={handleRemoveData}
 			/>{" "}
+			<ErrorDialog
+				open={errorModal}
+				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
+			/>
 			<Accordion className={classes.noteAccordion}>
 				<AccordionSummary
 					expandIcon={
@@ -171,7 +183,11 @@ const ClientNotes = () => {
 					</Table>
 				</AccordionDetails>
 				<AccordionActions className={classes.actionButton}>
-					<CurveButton onClick={() => setAddModal(true)}>Add Note</CurveButton>
+					<CurveButton
+						onClick={() => setModal((th) => ({ ...th, addModal: true }))}
+					>
+						Add Note
+					</CurveButton>
 				</AccordionActions>
 			</Accordion>
 		</div>

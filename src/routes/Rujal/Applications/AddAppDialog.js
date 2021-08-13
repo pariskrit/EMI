@@ -4,18 +4,14 @@ import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
-	TextField,
 	Typography,
 	LinearProgress,
-	InputAdornment,
 } from "@material-ui/core";
 import * as yup from "yup";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import AddDialogStyle from "../../../styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
-// import { Autocomplete } from "@material-ui/lab";
 import Dropdown from "../../../components/Dropdown";
 
 const schema = yup.object({
@@ -144,6 +140,10 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 				<Typography className={classes.labelText}>
 					Select Application
 				</Typography>
+
+				{errors.applicationId === null ? null : (
+					<span style={{ color: "#E31212" }}>{errors.applicationId}</span>
+				)}
 				<Dropdown
 					options={availableApp}
 					selectedValue={availableApp.find(
@@ -154,40 +154,6 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 					required={true}
 					width="100%"
 				/>
-				{/* <Autocomplete
-					id="combo-box-demo"
-					onChange={(e, value) => setInput({ applicationId: value.value })}
-					options={availableApp}
-					getOptionLabel={(option) => option.label}
-					getOptionSelected={(option, value) => option.label === value.label}
-					renderInput={(params) => (
-						<TextField
-							name="application"
-							error={errors.applicationId === null ? false : true}
-							helperText={
-								errors.applicationId === null ? null : errors.applicationId
-							}
-							{...params}
-							fullWidth
-							variant="outlined"
-							InputProps={{
-								...params.InputProps,
-								classes: {
-									input: classes.inputText,
-								},
-								endAdornment: (
-									<InputAdornment style={{ marginRight: -50 }}>
-										<img
-											alt="Expand icon"
-											src={ArrowIcon}
-											className={classes.expandIcon}
-										/>
-									</InputAdornment>
-								),
-							}}
-						/>
-					)}
-				/> */}
 			</DialogContent>
 		</Dialog>
 	);

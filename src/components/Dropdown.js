@@ -19,17 +19,17 @@ function Dropdown(props) {
 	const [filteredList, setFilteredList] = useState([]);
 
 	useEffect(() => {
-		document.addEventListener("click", function (event) {
-			let specifiedElement =
-				document.getElementsByClassName("dropdown-expand")[0];
-			let dropbox = document.getElementsByClassName("dropbox")[0];
-			let isClickInside =
-				specifiedElement?.contains(event.target) ||
-				dropbox?.contains(event.target);
-			if (!isClickInside) {
-				setDropActive(false);
-			}
-		});
+		// document.addEventListener("click", function (event) {
+		// 	let specifiedElement =
+		// 		document.getElementsByClassName("dropdown-expand")[0];
+		// 	let dropbox = document.getElementsByClassName("dropbox")[0];
+		// 	let isClickInside =
+		// 		specifiedElement?.contains(event.target) ||
+		// 		dropbox?.contains(event.target);
+		// 	if (!isClickInside) {
+		// 		setDropActive(false);
+		// 	}
+		// });
 		setFilteredList(options);
 	}, [options]);
 
