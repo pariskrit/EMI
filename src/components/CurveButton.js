@@ -37,7 +37,6 @@ CurveButton.defaultProps = {
 };
 
 CurveButton.propTypes = {
-	children: PropTypes.element.isRequired,
 	onClick: PropTypes.func.isRequired,
 	style: PropTypes.object,
 };

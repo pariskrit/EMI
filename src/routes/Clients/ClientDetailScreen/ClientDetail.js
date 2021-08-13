@@ -59,7 +59,7 @@ const ClientDetail = ({ clientId, getClientDetail }) => {
 	const [clientDetail, setClientDetail] = useState({
 		name: "",
 		licenseType: { label: "", value: null },
-		licenses: null,
+		licenses: 0,
 		registeredBy: "",
 		registeredDate: "11/11/2019",
 	});
