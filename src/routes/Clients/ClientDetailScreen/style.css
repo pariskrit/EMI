@@ -1,0 +1,12 @@
+.MuiTableCell-root {
+	border-bottom: 1px solid !important;
+}
+
+.client-details .MuiAccordion-root.Mui-expanded {
+	margin: 0;
+}
+
+.client-details .MuiAccordion-rounded {
+	border-radius: 4px;
+	border-color: #cecece;
+}

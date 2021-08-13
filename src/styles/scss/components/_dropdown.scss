@@ -8,8 +8,8 @@ $border-color: #c1c1c1;
 		font-family: Roboto Condensed;
 		font-weight: bold;
 		font-size: 17px;
-        color: rgba(0, 0, 0, 0.87);
-        margin-bottom: 0.35em;
+		color: rgba(0, 0, 0, 0.87);
+		margin-bottom: 0.35em;
 	}
 	.dropbox {
 		label {
@@ -35,6 +35,7 @@ $border-color: #c1c1c1;
 		background: #fff;
 		box-shadow: 1px 1px 5px #7d7d7d;
 		border-radius: 5px;
+		z-index: 100;
 		.search-box {
 			margin: 15px;
 

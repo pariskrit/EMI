@@ -1,34 +1,34 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
 import "./App.css";
 import "./App.scss";
-import Home from "./routes/Home/Home";
-import Login from "./routes/Login/Login";
-import Launch from "./routes/Launch/Launch";
-import ApplicationList from "./routes/Applications/ApplicationList/ApplicationList";
-import Application from "./routes/Applications/Application/Application";
-import CustomCaptions from "./routes/Applications/CustomCaptions/CustomCaptions";
-import ModelStatuses from "./routes/Applications/ModelStatuses/ModelStatuses";
-import OperatingModes from "./routes/Applications/OperatingModes/OperatingModes";
-import Positions from "./routes/Applications/Positions/Positions";
-import Pauses from "./routes/Applications/Pauses/Pauses";
-import Stops from "./routes/Applications/Stops/Stops";
-import SkippedTasks from "./routes/Applications/SkippedTasks/SkippedTasks";
-import MissingItems from "./routes/Applications/MissingItems/MissingItems";
-import StatusChanges from "./routes/Applications/StatusChanges/StatusChanges";
-import ModelTypes from "./routes/Applications/ModelTypes/ModelType";
+import Test from "./pages/Test";
 import Actions from "./routes/Applications/Actions/Action";
-import Systems from "./routes/Applications/Systems/System";
+import Application from "./routes/Applications/Application/Application";
+import ApplicationList from "./routes/Applications/ApplicationList/ApplicationList";
+import CustomCaptions from "./routes/Applications/CustomCaptions/CustomCaptions";
 import DefectRiskRatings from "./routes/Applications/DefectRiskRatings/DefectRiskRatings";
 import DefectStatuses from "./routes/Applications/DefectStatuses/DefectStatuses";
 import DefectTypes from "./routes/Applications/DefectTypes/DefectTypes";
 import FeedbackClassifications from "./routes/Applications/FeedbackClassifications/FeedbackClassifications";
 import FeedbackPriorities from "./routes/Applications/FeedbackPriorities/FeedbackPriorities";
 import FeedbackStatuses from "./routes/Applications/FeedbackStatuses/FeedbackStatuses";
+import MissingItems from "./routes/Applications/MissingItems/MissingItems";
+import ModelStatuses from "./routes/Applications/ModelStatuses/ModelStatuses";
+import ModelTypes from "./routes/Applications/ModelTypes/ModelType";
+import OperatingModes from "./routes/Applications/OperatingModes/OperatingModes";
+import Pauses from "./routes/Applications/Pauses/Pauses";
+import Positions from "./routes/Applications/Positions/Positions";
 import Roles from "./routes/Applications/Roles/Roles";
+import SkippedTasks from "./routes/Applications/SkippedTasks/SkippedTasks";
+import StatusChanges from "./routes/Applications/StatusChanges/StatusChanges";
+import Stops from "./routes/Applications/Stops/Stops";
+import Systems from "./routes/Applications/Systems/System";
 import ClientList from "./routes/Clients/ClientList/ClientList";
-import Client from "./routes/Clients/Client/Client";
-import Test from "./pages/Test"
+import Home from "./routes/Home/Home";
+import Launch from "./routes/Launch/Launch";
+import Login from "./routes/Login/Login";
 
 function App() {
 	return (
@@ -136,7 +136,7 @@ function App() {
 					</Route>
 
 					<Route path="/client/:id" exact>
-						<Client />
+						<ClientDetailScreen />
 					</Route>
 					<Route path="/test" exact>
 						<Test />

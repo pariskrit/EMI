@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import Typography from "@material-ui/core/Typography";
 import CheckIcon from "@material-ui/icons/Check";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import ArrowIcon from "../assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "../assets/icons/search.svg";
-import Typography from "@material-ui/core/Typography";
 
 function Dropdown(props) {
 	const {
@@ -20,9 +20,10 @@ function Dropdown(props) {
 
 	useEffect(() => {
 		document.addEventListener("click", function (event) {
-			let specifiedElement =
-				document.getElementsByClassName("dropdown-expand")[0];
-			let dropbox = document.getElementsByClassName("dropbox")[0];
+			let specifiedElement = document.getElementsByClassName(
+				"dropdown-expand active"
+			)[0];
+			let dropbox = document.getElementsByClassName("dropbox active")[0];
 			let isClickInside =
 				specifiedElement?.contains(event.target) ||
 				dropbox?.contains(event.target);
@@ -38,12 +39,16 @@ function Dropdown(props) {
 		options.map((x) => {
 			if (x.label.toLowerCase().startsWith(val.toLowerCase()))
 				filteredSearchList.push(x);
+			return x;
 		});
 		setFilteredList(filteredSearchList);
 	};
 	return (
 		<div className="dropdown">
-			<div className="dropbox" onClick={() => setDropActive(true)}>
+			<div
+				className={`dropbox ${dropActive ? "active" : ""}`}
+				onClick={() => setDropActive(true)}
+			>
 				{label.length > 0 && (
 					<Typography className="label">
 						{label}
@@ -61,7 +66,7 @@ function Dropdown(props) {
 				</div>
 			</div>
 			{dropActive && (
-				<div className="dropdown-expand">
+				<div className={`dropdown-expand ${dropActive ? "active" : ""}`}>
 					<div className="search-box flex justify-between">
 						<div className="input-field flex">
 							<SearchIcon style={{ width: "20px" }} />
