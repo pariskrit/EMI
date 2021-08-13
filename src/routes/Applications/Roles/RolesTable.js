@@ -50,7 +50,7 @@ const RolesTable = ({
 	currentTableSort,
 	setCurrentTableSort,
 	searchedData,
-	setSearchedData
+	setSearchedData,
 }) => {
 	// Init hooks
 	const classes = useStyles();

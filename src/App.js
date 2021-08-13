@@ -138,9 +138,6 @@ function App() {
 					<Route path="/client/:id" exact>
 						<ClientDetailScreen />
 					</Route>
-					<Route path="/test" exact>
-						<Test />
-					</Route>
 				</Switch>
 			</Router>
 		</div>
