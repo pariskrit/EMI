@@ -1,5 +1,6 @@
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionActions from "@material-ui/core/AccordionActions";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -62,6 +63,10 @@ const useStyles = makeStyles((theme) => ({
 	addButton: {
 		marginBottom: "10px",
 	},
+	actionButton: {
+		padding: "8px 0",
+		justifyContent: "flex-start",
+	},
 }));
 
 function ClientRegionAndSites() {
@@ -71,26 +76,6 @@ function ClientRegionAndSites() {
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
-
-	const handleStatusChange = (regionId, siteId) => {
-		setListOfRegions([
-			...listOfRegions.map((region) =>
-				region.id === regionId
-					? {
-							...region,
-							sites: [
-								...region.sites.map((site) =>
-									site.id === siteId
-										? { ...site, isActive: !site.isActive }
-										: site
-								),
-							],
-					  }
-					: region
-			),
-		]);
-	};
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -116,20 +101,14 @@ function ClientRegionAndSites() {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Regions?clientId=${id}`);
 			handleSort(result.data, setListOfRegions, "name", "asc");
-			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
-			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
 		fetchRegionsAndSites();
 	}, []);
-
-	if (isLoading) {
-		return <h1>Loading...</h1>;
-	}
 
 	return (
 		<div className={classes.logoContainer}>
@@ -159,19 +138,17 @@ function ClientRegionAndSites() {
 				</AccordionSummary>
 
 				<AccordionDetails className={classes.regionSiteContainer}>
-					<div className={classes.addButton}>
+					<AccordionActions className={classes.actionButton}>
 						<CurveButton onClick={() => setOpenAddDialog(true)}>
 							Add Region
 						</CurveButton>
-					</div>
+					</AccordionActions>
 
 					{listOfRegions.map((region) => (
 						<Region
 							key={region.id}
 							region={region}
 							fetchRegionsAndSites={fetchRegionsAndSites}
-							setIsLoading={setIsLoading}
-							onStatusChange={handleStatusChange}
 						/>
 					))}
 				</AccordionDetails>
