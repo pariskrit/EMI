@@ -73,25 +73,6 @@ function ClientRegionAndSites() {
 	const [regionInput, setRegionInput] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 
-	const handleStatusChange = (regionId, siteId) => {
-		setListOfRegions([
-			...listOfRegions.map((region) =>
-				region.id === regionId
-					? {
-							...region,
-							sites: [
-								...region.sites.map((site) =>
-									site.id === siteId
-										? { ...site, isActive: !site.isActive }
-										: site
-								),
-							],
-					  }
-					: region
-			),
-		]);
-	};
-
 	//add region
 	const onAddRegion = async (e) => {
 		e.preventDefault();
@@ -171,7 +152,6 @@ function ClientRegionAndSites() {
 							region={region}
 							fetchRegionsAndSites={fetchRegionsAndSites}
 							setIsLoading={setIsLoading}
-							onStatusChange={handleStatusChange}
 						/>
 					))}
 				</AccordionDetails>

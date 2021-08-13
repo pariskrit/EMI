@@ -65,6 +65,7 @@ const DropUpload = ({
 
 			// Getting filetype
 			const fileType = acceptedFiles[0].type.split("/").pop();
+			// GEtting fileName
 			const fileName = acceptedFiles[0].name;
 
 			if (isImageUploaded) {
