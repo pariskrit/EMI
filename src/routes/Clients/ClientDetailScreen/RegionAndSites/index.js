@@ -76,26 +76,6 @@ function ClientRegionAndSites() {
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
-
-	const handleStatusChange = (regionId, siteId) => {
-		setListOfRegions([
-			...listOfRegions.map((region) =>
-				region.id === regionId
-					? {
-							...region,
-							sites: [
-								...region.sites.map((site) =>
-									site.id === siteId
-										? { ...site, isActive: !site.isActive }
-										: site
-								),
-							],
-					  }
-					: region
-			),
-		]);
-	};
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -121,20 +101,14 @@ function ClientRegionAndSites() {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Regions?clientId=${id}`);
 			handleSort(result.data, setListOfRegions, "name", "asc");
-			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
-			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
 		fetchRegionsAndSites();
 	}, []);
-
-	if (isLoading) {
-		return <h1>Loading...</h1>;
-	}
 
 	return (
 		<div className={classes.logoContainer}>
@@ -175,8 +149,6 @@ function ClientRegionAndSites() {
 							key={region.id}
 							region={region}
 							fetchRegionsAndSites={fetchRegionsAndSites}
-							setIsLoading={setIsLoading}
-							onStatusChange={handleStatusChange}
 						/>
 					))}
 				</AccordionDetails>

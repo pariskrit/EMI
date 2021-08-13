@@ -66,12 +66,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Region({
-	region,
-	onStatusChange,
-	setIsLoading,
-	fetchRegionsAndSites,
-}) {
+function Region({ region, fetchRegionsAndSites }) {
 	const { id, name, sites } = region;
 	const classes = useStyles();
 	const [openAddDialog, setOpenAddDialog] = useState(false);
@@ -142,12 +137,6 @@ function Region({
 						<Typography>
 							<Link className={classes.siteLink}>{site.name}</Link>
 						</Typography>
-						<div className={classes.statusSwitch}>
-							{/* <IOSSwitch
-								onChange={() => onStatusChange(region.id, site.id)}
-								currentStatus={site.isActive ? true : false}
-							/> */}
-						</div>
 					</AccordionDetails>
 				))}
 			</Accordion>
