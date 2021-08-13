@@ -7,6 +7,8 @@ import Divider from "@material-ui/core/Divider";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
 import DeleteDialog from "./DeleteDialog";
 import ColourConstants from "../../helpers/colourConstants";
+import { BASE_API_PATH } from "../../helpers/constants";
+import API from "../../helpers/api";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
@@ -50,15 +52,15 @@ const useStyles = makeStyles((theme) => ({
 	linkContainer: {
 		display: "flex",
 		alignItems: "center",
-		paddingLeft: 19,
+		padding: "16px 10px",
 	},
 	imgLink: {
 		textDecoration: "underline",
+		color: "#307AD6",
 		"&:hover": {
 			cursor: "pointer",
 		},
 		fontSize: "14px",
-		color: "#307AD6",
 	},
 	deleteContainer: {
 		display: "flex",
@@ -74,37 +76,44 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ProvidedAsset = ({
-	src,
-	alt,
-	name,
-	handleDelete,
-	noBottomDivider,
-	isRec,
-}) => {
-	// Init hooks
+function ProvidedAssetNoImage({
+	document,
+	showBottomDivider,
+	fetchClientDocuments,
+	setOpenErrorModal,
+	setErrorMessage,
+}) {
 	const classes = useStyles();
-
-	// Init state
+	const { id, name } = document;
 	const [openDialog, setOpenDialog] = useState(false);
+	const [isUpdating, setIsUpdating] = useState(false);
 
-	// Handlers
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};
 
-	// Handling non-provided alt text
-	if (alt === undefined) {
-		alt = "User uploaded image asset";
-	}
-	// Handling non-provided noBottomDivider
-	if (noBottomDivider === undefined) {
-		noBottomDivider = false;
-	}
-	// Handling non-provided isSquare
-	if (isRec === undefined) {
-		isRec = false;
-	}
+	const onDocumentDelete = async () => {
+		setIsUpdating(true);
+		try {
+			const response = await API.delete(
+				`${BASE_API_PATH}ClientDocuments/${id}`
+			);
+
+			if (response.status !== 200) {
+				closeDialogHandler();
+				throw new Error("Cannot upload document!");
+			} else {
+				fetchClientDocuments();
+				setIsUpdating(false);
+				closeDialogHandler();
+			}
+		} catch (error) {
+			console.log(error);
+			closeDialogHandler();
+			setOpenErrorModal(true);
+			setErrorMessage("Something went wrong!");
+		}
+	};
 
 	return (
 		<>
@@ -112,20 +121,11 @@ const ProvidedAsset = ({
 				open={openDialog}
 				closeHandler={closeDialogHandler}
 				name={name}
-				handleDelete={handleDelete}
+				handleDelete={onDocumentDelete}
+				isUpdating={isUpdating}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />
-
-				<div
-					className={clsx(classes.always, {
-						[classes.imageAssetContainer]: !isRec,
-						[classes.imageAssetContainerRec]: isRec,
-					})}
-				>
-					<img src={src} alt={alt} className={classes.assetImage} />
-				</div>
-
 				<div className={classes.linkContainer}>
 					<Typography>
 						<Link className={classes.imgLink}>{name}</Link>
@@ -142,10 +142,10 @@ const ProvidedAsset = ({
 					/>
 				</div>
 
-				{noBottomDivider ? null : <Divider className={classes.dividerStyle} />}
+				{showBottomDivider && <Divider className={classes.dividerStyle} />}
 			</div>
 		</>
 	);
-};
+}
 
-export default ProvidedAsset;
+export default ProvidedAssetNoImage;

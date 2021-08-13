@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-const DeleteDialog = ({ open, closeHandler, name, handleDelete }) => {
-	const handleDeleteConfirm = () => {
-		handleDelete();
-		closeHandler();
-	};
-
+const DeleteDialog = ({
+	open,
+	closeHandler,
+	name,
+	handleDelete,
+	isUpdating,
+}) => {
 	return (
 		<div>
 			<Dialog
@@ -20,6 +22,7 @@ const DeleteDialog = ({ open, closeHandler, name, handleDelete }) => {
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
+				{isUpdating ? <LinearProgress /> : null}
 				<DialogTitle id="alert-dialog-title">{"Are you sure?"}</DialogTitle>
 				<DialogContent>
 					<DialogContentText id="alert-dialog-description">
@@ -34,11 +37,7 @@ const DeleteDialog = ({ open, closeHandler, name, handleDelete }) => {
 					<Button onClick={closeHandler} color="primary" variant="contained">
 						No
 					</Button>
-					<Button
-						onClick={handleDeleteConfirm}
-						color="secondary"
-						variant="contained"
-					>
+					<Button onClick={handleDelete} color="secondary" variant="contained">
 						Yes
 					</Button>
 				</DialogActions>

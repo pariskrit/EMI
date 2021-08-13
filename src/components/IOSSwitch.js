@@ -75,7 +75,7 @@ const SwitchButton = withStyles((theme) => ({
 	);
 });
 
-const IOSSwitch = ({ name, onChange, currentStatus }) => {
+const IOSSwitch = ({ name = "status", onChange, currentStatus }) => {
 	const classes = useStyles();
 	return (
 		<FormControlLabel

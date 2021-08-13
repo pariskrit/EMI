@@ -30,6 +30,7 @@ import ClientList from "./routes/Clients/ClientList/ClientList";
 import Client from "./routes/Clients/Client/Client";
 import Rujal from "./routes/Rujal";
 import Test from "./pages/Test";
+import DevelopmentPage from "./routes/Clients/Client/DevelopmentPage";
 
 function App() {
 	return (
@@ -137,7 +138,8 @@ function App() {
 					</Route>
 
 					<Route path="/client/:id" exact>
-						<Client />
+						{/* <Client /> */}
+						<DevelopmentPage />
 					</Route>
 					<Router path="/rujal" exact>
 						<Rujal />
