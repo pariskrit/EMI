@@ -1,16 +1,17 @@
 import Accordion from "@material-ui/core/Accordion";
+import AccordionActions from "@material-ui/core/AccordionActions";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import CurveButton from "components/CurveButton";
+import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CommonAddDialog from "../CommonAddDialog";
-import API from "helpers/api";
 
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	addButton: {
 		textAlign: "right",
+		padding:"8px 0"
 	},
 	siteLink: {
 		color: "#307AD6",
@@ -149,11 +151,11 @@ function Region({
 					</AccordionDetails>
 				))}
 			</Accordion>
-			<div className={classes.addButton}>
+			<AccordionActions className={classes.addButton}>
 				<CurveButton onClick={() => setOpenAddDialog(true)}>
 					Add Site
 				</CurveButton>
-			</div>
+			</AccordionActions>
 		</div>
 	);
 }
