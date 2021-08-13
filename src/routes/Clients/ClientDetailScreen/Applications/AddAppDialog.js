@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 		fontSize: 14,
 	},
 });
-const AddAppDialog = ({ open, handleClose, createHandler }) => {
+const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
@@ -56,7 +56,7 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 			setLoading(true);
 			try {
 				let result = await API.get(
-					`${BASE_API_PATH}ClientApplications/${8}/available`
+					`${BASE_API_PATH}ClientApplications/${clientId}/available`
 				);
 				if (result.status === 200) {
 					result = result.data.map((x) => ({ label: x.name, value: x.id }));
@@ -74,8 +74,7 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 		if (open) {
 			fetchAvailableApp();
 		}
-		// return () => setAvailableApp([]);
-	}, [open]);
+	}, [open, clientId]);
 
 	const closeOverride = () => {
 		setInput(defaultData);

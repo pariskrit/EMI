@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ClientApplication = () => {
+const ClientApplication = ({ clientId }) => {
 	const classes = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
@@ -77,7 +77,7 @@ const ClientApplication = () => {
 	const fetchApplications = async () => {
 		try {
 			let result = await API.get(
-				`${BASE_API_PATH}clientApplications?clientid=8`
+				`${BASE_API_PATH}clientApplications?clientid=${clientId}`
 			);
 			if (result.status === 200) {
 				result = result.data;
@@ -94,7 +94,7 @@ const ClientApplication = () => {
 		try {
 			let result = await API.post(`${BASE_API_PATH}ClientApplications`, {
 				applicationId,
-				clientID: 8,
+				clientID: clientId,
 				isActive: true,
 			});
 			if (result.status === 201 || result.status === 200) {
@@ -148,6 +148,7 @@ const ClientApplication = () => {
 				open={addModal}
 				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
 				createHandler={handleCreateData}
+				clientId={clientId}
 			/>
 			<DeleteDialog
 				entityName="Application"

@@ -5,7 +5,7 @@ import {
 	Grid,
 	InputAdornment,
 	TextField,
-	Typography
+	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
@@ -54,24 +54,27 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientDetail = () => {
+const detail = {
+	name: "",
+	licenseType: { label: "", value: "" },
+	licenses: 0,
+	registeredBy: "",
+	registeredDate: "11/11/2019",
+};
+
+const ClientDetail = ({ clientId, getClientDetail }) => {
 	const classes = useStyles();
-	const [clientDetail, setClientDetail] = useState({
-		name: "",
-		licenseType: { label: "", value: null },
-		licenses: null,
-		registeredBy: "",
-		registeredDate: "11/11/2019",
-	});
+	const [clientDetail, setClientDetail] = useState(detail);
 
 	useEffect(() => {
 		const fetchClient = async () => {
 			try {
-				const result = await API.get(`${BASE_API_PATH}Clients/${8}`);
+				const result = await API.get(`${BASE_API_PATH}Clients/${clientId}`);
 				if (result.status === 200) {
 					const licenseType = options.find(
 						(x) => x.value === result.data.licenseType
 					);
+					getClientDetail(result.data);
 					setClientDetail({ ...result.data, licenseType });
 				} else {
 					throw new Error(result);
@@ -82,11 +85,11 @@ const ClientDetail = () => {
 			}
 		};
 		fetchClient();
-	}, []);
+	}, [clientId]);
 
 	const changeClientDetails = async (path, value) => {
 		try {
-			const result = await API.patch(`${BASE_API_PATH}Clients/${8}`, [
+			const result = await API.patch(`${BASE_API_PATH}Clients/${clientId}`, [
 				{ op: "replace", path, value },
 			]);
 			if (result.status === 200) {
@@ -175,7 +178,7 @@ const ClientDetail = () => {
 									input: classes.inputText,
 								},
 							}}
-							value={clientDetail.licenses}
+							value={clientDetail.licenses || ""}
 							onChange={handleInputChange}
 						/>
 					</Grid>
@@ -220,7 +223,7 @@ const ClientDetail = () => {
 							Registered By<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
-							value={clientDetail.registeredBy}
+							value={clientDetail.registeredBy || ""}
 							variant="outlined"
 							fullWidth
 							InputProps={{
