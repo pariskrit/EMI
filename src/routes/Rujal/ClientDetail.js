@@ -12,10 +12,10 @@ import {
 } from "@material-ui/core";
 import ColourConstants from "../../helpers/colourConstants";
 import ArrowIcon from "../../assets/icons/arrowIcon.svg";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import API from "../../helpers/api";
 import { BASE_API_PATH } from "../../helpers/constants";
 import { changeDate } from "../../helpers/date";
+import Dropdown from "../../components/Dropdown";
 
 const options = [
 	{ label: "Total Users", value: 0 },
@@ -130,7 +130,7 @@ const ClientDetail = () => {
 				<Grid container spacing={5}>
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
-							Company Name<span style={{ color: "red" }}>*</span>
+							Company Name<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
 							name="name"
@@ -147,46 +147,20 @@ const ClientDetail = () => {
 					</Grid>
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
-							Licence Type<span style={{ color: "red" }}>*</span>
+							Licence Type<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
-
-						<Autocomplete
-							id="combo-box-demo"
-							onChange={(e, value) => handleLicenceType(value)}
+						<Dropdown
 							options={options}
-							getOptionLabel={(option) => option.label}
-							getOptionSelected={(option, value) =>
-								option.value === value.value
-							}
-							value={clientDetail.licenseType}
-							renderInput={(params) => (
-								<TextField
-									name="licenseType"
-									{...params}
-									fullWidth
-									variant="outlined"
-									InputProps={{
-										...params.InputProps,
-										classes: {
-											input: classes.inputText,
-										},
-										endAdornment: (
-											<InputAdornment style={{ marginRight: -50 }}>
-												<img
-													alt="Expand icon"
-													src={ArrowIcon}
-													className={classes.expandIcon}
-												/>
-											</InputAdornment>
-										),
-									}}
-								/>
-							)}
+							selectedValue={clientDetail.licenseType}
+							onChange={(value) => handleLicenceType(value)}
+							label=""
+							required={true}
+							width="100%"
 						/>
 					</Grid>
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
-							Total Licence Count<span style={{ color: "red" }}>*</span>
+							Total Licence Count<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
 							name="licenses"
@@ -207,7 +181,7 @@ const ClientDetail = () => {
 					</Grid>
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
-							Registration Date<span style={{ color: "red" }}>*</span>
+							Registration Date<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
 							id="date"
@@ -243,7 +217,7 @@ const ClientDetail = () => {
 
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
-							Registered By<span style={{ color: "red" }}>*</span>
+							Registered By<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
 							value={clientDetail.registeredBy}
