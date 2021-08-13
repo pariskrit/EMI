@@ -54,15 +54,17 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const detail = {
+	name: "",
+	licenseType: { label: "", value: "" },
+	licenses: 0,
+	registeredBy: "",
+	registeredDate: "11/11/2019",
+};
+
 const ClientDetail = ({ clientId, getClientDetail }) => {
 	const classes = useStyles();
-	const [clientDetail, setClientDetail] = useState({
-		name: "",
-		licenseType: { label: "", value: null },
-		licenses: 0,
-		registeredBy: "",
-		registeredDate: "11/11/2019",
-	});
+	const [clientDetail, setClientDetail] = useState(detail);
 
 	useEffect(() => {
 		const fetchClient = async () => {
@@ -176,7 +178,7 @@ const ClientDetail = ({ clientId, getClientDetail }) => {
 									input: classes.inputText,
 								},
 							}}
-							value={clientDetail.licenses}
+							value={clientDetail.licenses || ""}
 							onChange={handleInputChange}
 						/>
 					</Grid>
@@ -221,7 +223,7 @@ const ClientDetail = ({ clientId, getClientDetail }) => {
 							Registered By<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
-							value={clientDetail.registeredBy}
+							value={clientDetail.registeredBy || ""}
 							variant="outlined"
 							fullWidth
 							InputProps={{
