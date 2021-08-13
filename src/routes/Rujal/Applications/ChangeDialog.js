@@ -9,8 +9,12 @@ import {
 } from "@material-ui/core";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
+import ColourConstants from "../../../helpers/colourConstants";
+import AddDialogStyle from "../../../styles/application/AddDialogStyle";
 
 // Init styled components
+
+const AT = AddDialogStyle();
 
 const ChangeDialog = ({
 	open,
@@ -64,16 +68,12 @@ const ChangeDialog = ({
 			<Dialog open={open} onClose={closeHandler}>
 				{isUpdating ? <LinearProgress /> : null}
 				<DialogActions>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={handleChangeConfirm}
-					>
+					<AT.ConfirmButton onClick={handleChangeConfirm} variant="contained">
 						Confirm
-					</Button>
-					<Button variant="contained" color="secondary" onClick={closeHandler}>
+					</AT.ConfirmButton>
+					<AT.CancelButton onClick={closeHandler} variant="contained">
 						Cancel
-					</Button>
+					</AT.CancelButton>
 				</DialogActions>
 				<DialogContent>
 					<DialogContentText>You are about to change</DialogContentText>

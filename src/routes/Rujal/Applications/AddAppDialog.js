@@ -15,7 +15,8 @@ import AddDialogStyle from "../../../styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 import API from "../../../helpers/api";
 import { BASE_API_PATH } from "../../../helpers/constants";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+// import { Autocomplete } from "@material-ui/lab";
+import Dropdown from "../../../components/Dropdown";
 
 const schema = yup.object({
 	applicationId: yup
@@ -143,7 +144,17 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 				<Typography className={classes.labelText}>
 					Select Application
 				</Typography>
-				<Autocomplete
+				<Dropdown
+					options={availableApp}
+					selectedValue={availableApp.find(
+						(x) => x.value === input.applicationId
+					)}
+					onChange={(value) => setInput({ applicationId: value.value })}
+					label=""
+					required={true}
+					width="100%"
+				/>
+				{/* <Autocomplete
 					id="combo-box-demo"
 					onChange={(e, value) => setInput({ applicationId: value.value })}
 					options={availableApp}
@@ -176,7 +187,7 @@ const AddAppDialog = ({ open, handleClose, createHandler }) => {
 							}}
 						/>
 					)}
-				/>
+				/> */}
 			</DialogContent>
 		</Dialog>
 	);
