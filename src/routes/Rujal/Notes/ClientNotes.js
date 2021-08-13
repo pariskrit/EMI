@@ -94,7 +94,7 @@ const ClientNotes = () => {
 
 	const handleCreateData = async (note) => {
 		try {
-			let result = await API.post(`${BASE_API_PATH}ClientNotes/1`, {
+			let result = await API.post(`${BASE_API_PATH}ClientNotes`, {
 				note,
 				clientID: 8,
 			});
