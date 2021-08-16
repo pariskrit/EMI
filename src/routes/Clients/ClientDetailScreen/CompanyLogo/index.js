@@ -99,6 +99,7 @@ const ClientLogo = () => {
 	const onDeleteLogo = (id) => {
 		setLogo({});
 		setShowUpload(true);
+		setFilesUploading(false);
 	};
 
 	useEffect(() => {
