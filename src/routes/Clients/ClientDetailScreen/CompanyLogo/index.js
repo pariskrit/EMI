@@ -61,7 +61,6 @@ const ClientLogo = () => {
 	const [filesUploading, setFilesUploading] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-	const [isDeleting, setIsDeleting] = useState(false);
 
 	const onLogoUpload = async (key, url) => {
 		try {
@@ -70,6 +69,9 @@ const ClientLogo = () => {
 			]);
 			fetchClientLogo();
 		} catch (error) {
+			setOpen(true);
+			setErrorMessage("Something went wrong");
+			setFilesUploading(false);
 			console.log(error);
 		}
 	};

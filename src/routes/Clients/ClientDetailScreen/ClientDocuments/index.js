@@ -69,7 +69,7 @@ function ClientDocuments() {
 				clientId: +id,
 				documentKey: key,
 			});
-
+			console.log(response);
 			if (response.status !== 201) {
 				throw new Error("Cannot upload document!");
 			}
@@ -88,7 +88,7 @@ function ClientDocuments() {
 			const result = await API.get(
 				`${BASE_API_PATH}ClientDocuments?clientId=${id}`
 			);
-			console.log(result);
+
 			setListOfDocuments([
 				...result.data.map((doc) => ({
 					id: doc?.id,
