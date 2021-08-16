@@ -24,3 +24,8 @@
 .restore svg {
 	transform: rotate(35deg);
 }
+
+.client-details .MuiTableCell-root {
+	white-space: nowrap;
+}
+
