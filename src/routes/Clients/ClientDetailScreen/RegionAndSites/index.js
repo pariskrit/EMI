@@ -1,31 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import ColourConstants from "../../../helpers/colourConstants";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import AccordionActions from "@material-ui/core/AccordionActions";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Region from "./Region";
-import CommonAddDialog from "./CommonAddDialog";
-import API from "../../../helpers/api";
-import CurveButton from "../../../components/CurveButton";
-import { BASE_API_PATH } from "../../../helpers/constants";
+import ArrowIcon from "assets/icons/arrowIcon.svg";
+import CurveButton from "components/CurveButton";
+import API from "helpers/api";
+import ColourConstants from "helpers/colourConstants";
+import { BASE_API_PATH } from "helpers/constants";
+import { handleSort } from "helpers/utils";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { handleSort } from "../../../helpers/utils";
+import CommonAddDialog from "../CommonAddDialog";
+import Region from "./Region";
+import ErrorDialog from "components/ErrorDialog";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
 		marginTop: 25,
 		display: "flex",
-		justifyContent: "center",
-		paddingLeft: "2%",
+		justifyContent: "flex-start",
+		//paddingLeft: "2%",
 	},
 	logoAccordion: {
 		borderColor: ColourConstants.commonBorder,
 		borderStyle: "solid",
 		borderWidth: 1,
-		width: "99%",
+		width: "100%",
 	},
 	expandIcon: {
 		transform: "scale(0.8)",
@@ -62,6 +65,10 @@ const useStyles = makeStyles((theme) => ({
 	addButton: {
 		marginBottom: "10px",
 	},
+	actionButton: {
+		padding: "8px 0",
+		justifyContent: "flex-end",
+	},
 }));
 
 function ClientRegionAndSites() {
@@ -71,7 +78,8 @@ function ClientRegionAndSites() {
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
+	const [openErrorDialog, setOpenErrorDialog] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -87,7 +95,9 @@ function ClientRegionAndSites() {
 			fetchRegionsAndSites();
 			return true;
 		} catch (error) {
-			console.log(error);
+			setOpenAddDialog(false);
+			setOpenErrorDialog(true);
+			setErrorMessage("Something went wrong!");
 			return false;
 		}
 	};
@@ -96,21 +106,16 @@ function ClientRegionAndSites() {
 	const fetchRegionsAndSites = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Regions?clientId=${id}`);
+
 			handleSort(result.data, setListOfRegions, "name", "asc");
-			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
-			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
 		fetchRegionsAndSites();
 	}, []);
-
-	if (isLoading) {
-		return <h1>Loading...</h1>;
-	}
 
 	return (
 		<div className={classes.logoContainer}>
@@ -122,7 +127,12 @@ function ClientRegionAndSites() {
 				setInput={setRegionInput}
 				createHandler={onAddRegion}
 			/>
-			<Accordion className={classes.logoAccordion}>
+			<ErrorDialog
+				open={openErrorDialog}
+				handleClose={() => setOpenErrorDialog(false)}
+				message={errorMessage}
+			/>
+			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -140,18 +150,16 @@ function ClientRegionAndSites() {
 				</AccordionSummary>
 
 				<AccordionDetails className={classes.regionSiteContainer}>
-					<div className={classes.addButton}>
+					<AccordionActions className={classes.actionButton}>
 						<CurveButton onClick={() => setOpenAddDialog(true)}>
 							Add Region
 						</CurveButton>
-					</div>
-
+					</AccordionActions>
 					{listOfRegions.map((region) => (
 						<Region
 							key={region.id}
 							region={region}
 							fetchRegionsAndSites={fetchRegionsAndSites}
-							setIsLoading={setIsLoading}
 						/>
 					))}
 				</AccordionDetails>
