@@ -152,7 +152,8 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 														setInputData({
 															...inputData,
 															...{
-																equipmentModelStructure: !inputData.equipmentModelStructure,
+																equipmentModelStructure:
+																	!inputData.equipmentModelStructure,
 															},
 														});
 													}}
@@ -177,7 +178,8 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 														setInputData({
 															...inputData,
 															...{
-																assetModelStructure: !inputData.assetModelStructure,
+																assetModelStructure:
+																	!inputData.assetModelStructure,
 															},
 														});
 													}}
@@ -341,7 +343,6 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 										/>
 									</FormGroup>
 								</div>
-
 							</div>
 						</Grid>
 					</Grid>

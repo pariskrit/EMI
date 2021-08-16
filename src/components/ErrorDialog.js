@@ -32,7 +32,7 @@ const ErrorDialog = ({ open, handleClose, message }) => {
 				<CancelIcon style={{ fontSize: "9rem" }} />
 			</DialogTitle>
 			<DialogContent style={{ textAlign: "center" }}>
-				<h1>Oh snap!</h1>
+				<h1>Oh shap!</h1>
 				<p>{message}</p>
 			</DialogContent>
 			<DialogActions className={classes.dialogAction}>

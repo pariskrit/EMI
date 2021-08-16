@@ -38,12 +38,7 @@ const Client = () => {
 			<ThemeProvider theme={theme}>
 				<Navbar
 					Content={() => {
-						return (
-							<ClientContent
-								id={id}
-								setIs404={setIs404}
-							/>
-						);
+						return <ClientContent id={id} setIs404={setIs404} />;
 					}}
 				/>
 			</ThemeProvider>

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "../helpers/colourConstants";
 import { Button } from "@material-ui/core";
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 		fontFamily: "Roboto Condensed",
 		letterSpacing: 0,
 		backgroundColor: "#24BA78",
-
+		float: "right",
 		color: "white",
 		textTransform: "none",
 		"&:hover": { backgroundColor: "#D2D2D9" },
@@ -30,3 +31,13 @@ const CurveButton = ({ onClick, children, style }) => {
 };
 
 export default CurveButton;
+
+CurveButton.defaultProps = {
+	style: {},
+};
+
+CurveButton.propTypes = {
+	children: PropTypes.element.isRequired,
+	onClick: PropTypes.func.isRequired,
+	style: PropTypes.object,
+};

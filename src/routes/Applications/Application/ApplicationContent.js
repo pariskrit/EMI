@@ -57,8 +57,7 @@ const schema = yup.object({
 	isLogoTrademarked: yup
 		.boolean("This field must be a boolean (true or false)")
 		.nullable(),
-	logoURL: yup.string("This field must be a string")
-		.nullable(),
+	logoURL: yup.string("This field must be a string").nullable(),
 });
 
 // Default state schemas
