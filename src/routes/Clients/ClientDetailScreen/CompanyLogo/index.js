@@ -85,7 +85,7 @@ const ClientLogo = () => {
 				});
 				setShowUpload(false);
 			}
-			console.log(result);
+
 			if (filesUploading) {
 				setFilesUploading(false);
 			}

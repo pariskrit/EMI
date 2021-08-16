@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CommonAddDialog from "../CommonAddDialog";
 import Region from "./Region";
+import ErrorDialog from "components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -65,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	actionButton: {
 		padding: "8px 0",
-		justifyContent: "flex-start",
+		justifyContent: "flex-end",
 	},
 }));
 
@@ -76,6 +77,8 @@ function ClientRegionAndSites() {
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
+	const [openErrorDialog, setOpenErrorDialog] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -91,7 +94,9 @@ function ClientRegionAndSites() {
 			fetchRegionsAndSites();
 			return true;
 		} catch (error) {
-			console.log(error);
+			setOpenAddDialog(false);
+			setOpenErrorDialog(true);
+			setErrorMessage("Something went wrong!");
 			return false;
 		}
 	};
@@ -100,6 +105,7 @@ function ClientRegionAndSites() {
 	const fetchRegionsAndSites = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Regions?clientId=${id}`);
+
 			handleSort(result.data, setListOfRegions, "name", "asc");
 		} catch (error) {
 			console.log(error);
@@ -119,6 +125,11 @@ function ClientRegionAndSites() {
 				input={regionInput}
 				setInput={setRegionInput}
 				createHandler={onAddRegion}
+			/>
+			<ErrorDialog
+				open={openErrorDialog}
+				handleClose={() => setOpenErrorDialog(false)}
+				message={errorMessage}
 			/>
 			<Accordion className={classes.logoAccordion}>
 				<AccordionSummary

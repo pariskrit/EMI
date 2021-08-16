@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import CurveButton from "components/CurveButton";
+import ErrorDialog from "components/ErrorDialog";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	addButton: {
 		textAlign: "right",
-		padding:"8px 0"
+		padding: "8px 0",
 	},
 	siteLink: {
 		color: "#307AD6",
@@ -72,6 +73,8 @@ function Region({ region, fetchRegionsAndSites }) {
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [siteInput, setSiteInput] = useState("");
 	const [modifiedSites, setModifiedSites] = useState([]);
+	const [openErrorDialog, setOpenErrorDialog] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	//add site to a specific region
 	const onAddSite = async (e) => {
@@ -88,6 +91,8 @@ function Region({ region, fetchRegionsAndSites }) {
 		} catch (error) {
 			console.log(error);
 			setOpenAddDialog(false);
+			setOpenErrorDialog(true);
+			setErrorMessage("Something went wrong!");
 			return false;
 		}
 	};
@@ -106,6 +111,12 @@ function Region({ region, fetchRegionsAndSites }) {
 				setInput={setSiteInput}
 				createHandler={onAddSite}
 				reference={name}
+			/>
+
+			<ErrorDialog
+				open={openErrorDialog}
+				handleClose={() => setOpenErrorDialog(false)}
+				message={errorMessage}
 			/>
 			<Accordion className={classes.accordionParent}>
 				<AccordionSummary
