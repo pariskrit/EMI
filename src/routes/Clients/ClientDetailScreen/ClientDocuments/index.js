@@ -88,12 +88,12 @@ function ClientDocuments() {
 			const result = await API.get(
 				`${BASE_API_PATH}ClientDocuments?clientId=${id}`
 			);
-
+			console.log(result);
 			setListOfDocuments([
 				...result.data.map((doc) => ({
 					id: doc?.id,
 					name: doc?.filename,
-					documentURL: doc?.documentURL,
+					url: doc?.documentURL,
 				})),
 			]);
 
@@ -145,6 +145,7 @@ function ClientDocuments() {
 										setOpenErrorModal={setOpen}
 										setErrorMessage={setErrorMessage}
 										fetchClientDocuments={fetchClientDocuments}
+										errorMessage={errorMessage}
 									/>
 								);
 							} else {
@@ -155,6 +156,7 @@ function ClientDocuments() {
 										setOpenErrorModal={setOpen}
 										setErrorMessage={setErrorMessage}
 										fetchClientDocuments={fetchClientDocuments}
+										errorMessage={errorMessage}
 									/>
 								);
 							}

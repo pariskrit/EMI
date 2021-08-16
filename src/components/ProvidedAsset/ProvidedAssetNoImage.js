@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
-import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
+import Link from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import DeleteDialog from "components/DeleteDialog";
+import ErrorDialog from "components/ErrorDialog";
+import React, { useEffect, useState } from "react";
+import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
 import ColourConstants from "../../helpers/colourConstants";
 import { BASE_API_PATH } from "../../helpers/constants";
-import API from "../../helpers/api";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
@@ -81,37 +80,53 @@ function ProvidedAssetNoImage({
 	showBottomDivider,
 	fetchClientDocuments,
 	setOpenErrorModal,
+	errorMessage,
 	setErrorMessage,
 }) {
 	const classes = useStyles();
-	const { id, name, documentURL } = document;
+	const { id, name, url } = document;
 	const [openDialog, setOpenDialog] = useState(false);
 	const [objectURL, setObjectURL] = useState(false);
+	const [serverError, setServerError] = useState(false);
 
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};
 
-	const fetch = (id) => {
+	const fetchDocument = (id) => {
 		fetchClientDocuments();
 	};
 	useEffect(() => {
-		fetch(documentURL)
-			.then((res) => res.blob()) // Gets the response and returns it as a blob
-			.then((blob) => {
+		async function fetchImage() {
+			try {
+				//console.log(url);
+				let res = await fetch(url);
+				let blob = await res?.blob();
 				setObjectURL(URL.createObjectURL(blob));
-			});
-	}, [documentURL]);
+			} catch (e) {
+				console.log("error occured in fetching");
+				setServerError(true);
+
+				setErrorMessage("Error occured while fetching image!");
+			}
+		}
+		fetchImage();
+	}, [url]);
 
 	return (
 		<>
+			<ErrorDialog
+				open={serverError}
+				handleClose={() => setServerError(false)}
+				message={errorMessage}
+			/>
 			<DeleteDialog
 				open={openDialog}
 				closeHandler={closeDialogHandler}
 				entityName="document"
 				deleteEndpoint={`${BASE_API_PATH}ClientDocuments`}
 				deleteID={id}
-				handleRemoveData={fetch}
+				handleRemoveData={fetchDocument}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />
