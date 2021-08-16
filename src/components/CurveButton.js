@@ -34,10 +34,10 @@ export default CurveButton;
 
 CurveButton.defaultProps = {
 	style: {},
+	children: "Button",
 };
 
 CurveButton.propTypes = {
-	children: PropTypes.element.isRequired,
 	onClick: PropTypes.func.isRequired,
 	style: PropTypes.object,
 };
