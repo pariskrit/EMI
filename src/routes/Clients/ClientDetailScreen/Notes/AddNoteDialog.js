@@ -74,8 +74,10 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
-		if (e.keyCode === 13) {
-			handleCreateProcess();
+		if (!isUpdating) {
+			if (e.keyCode === 13) {
+				handleCreateProcess();
+			}
 		}
 	};
 
@@ -99,6 +101,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 						onClick={handleCreateProcess}
 						variant="contained"
 						className={classes.createButton}
+						disabled={isUpdating}
 					>
 						Add Note
 					</ADD.ConfirmButton>

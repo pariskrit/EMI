@@ -55,13 +55,7 @@ const useStyles = makeStyles((theme) => ({
 			cursor: "pointer",
 		},
 	},
-	view: {
-		color: "#307AD6",
-		textDecoration: "underline",
-		"&:hover": {
-			cursor: "pointer",
-		},
-	},
+
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
