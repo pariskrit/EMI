@@ -61,6 +61,7 @@ const ClientLogo = () => {
 	const [filesUploading, setFilesUploading] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	const onLogoUpload = async (key, url) => {
 		try {
@@ -84,7 +85,7 @@ const ClientLogo = () => {
 				});
 				setShowUpload(false);
 			}
-
+			console.log(result);
 			if (filesUploading) {
 				setFilesUploading(false);
 			}
@@ -93,9 +94,19 @@ const ClientLogo = () => {
 		}
 	};
 
-	const onDeleteLogo = () => {
-		setLogo({});
-		setShowUpload(true);
+	const onDeleteLogo = async () => {
+		setIsDeleting(true);
+
+		try {
+			await API.patch(`${BASE_API_PATH}Clients/${id}`, [
+				{ op: "replace", path: "logoKey", value: "" },
+			]);
+			setIsDeleting(false);
+			setLogo({});
+			setShowUpload(true);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	useEffect(() => {
@@ -145,27 +156,8 @@ const ClientLogo = () => {
 								src={logo.src}
 								alt={logo.alt}
 								handleDelete={onDeleteLogo}
+								isDeleting={isDeleting}
 							/>
-
-							<div>
-								<FormGroup className={classes.trademarkContainer}>
-									<FormControlLabel
-										control={
-											<EMICheckbox
-												state={true}
-												changeHandler={() => {
-													console.log("checked");
-												}}
-											/>
-										}
-										label={
-											<Typography className={classes.trademarkText}>
-												Is logo trademarked?
-											</Typography>
-										}
-									/>
-								</FormGroup>
-							</div>
 						</div>
 					)}
 				</AccordionDetails>

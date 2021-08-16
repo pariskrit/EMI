@@ -81,6 +81,7 @@ const ProvidedAsset = ({
 	handleDelete,
 	noBottomDivider,
 	isRec,
+	isDeleting,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -113,6 +114,7 @@ const ProvidedAsset = ({
 				closeHandler={closeDialogHandler}
 				name={name}
 				handleDelete={handleDelete}
+				isUpdating={isDeleting}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />
