@@ -19,9 +19,9 @@ const ClientNoteRow = ({ row, classes, onDeleteNote }) => (
 		<TableCell style={{ width: "170px" }}>{row.name}</TableCell>
 		<TableCell>{changeDate(row.date)}</TableCell>
 		<TableCell>
-			{row.note.length > 57 ? (
-				<HtmlTooltip title={<React.Fragment>{row.note}</React.Fragment>}>
-					<p>{row.note.substring(0, 57) + "..."}</p>
+			{row.note.length > 50 ? (
+				<HtmlTooltip title={row.note}>
+					<p>{row.note.substring(0, 50) + "..."}</p>
 				</HtmlTooltip>
 			) : (
 				<p>{row.note}</p>

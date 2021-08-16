@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 	tableHead: {
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",
+		width: "100%",
 	},
 	deleteIcon: {
 		transform: "scale(0.7)",
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
 	appName: {
 		color: "#307AD6",
 		textDecoration: "underline",
+		wordBreak: "break-word",
 	},
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
@@ -187,7 +189,7 @@ const ClientApplication = ({ clientId }) => {
 						</Typography>
 					</div>
 				</AccordionSummary>
-				<AccordionDetails>
+				<AccordionDetails style={{ width: "100%" }}>
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
