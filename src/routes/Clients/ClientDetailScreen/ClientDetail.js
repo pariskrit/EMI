@@ -89,7 +89,6 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		changeClientDetails(name, value);
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
@@ -97,6 +96,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 	};
 
 	const handleLicenceType = (value) => {
+		changeClientDetails("licenseType", value.value);
 		setClientDetail((th) => ({
 			...th,
 			licenseType: value,
