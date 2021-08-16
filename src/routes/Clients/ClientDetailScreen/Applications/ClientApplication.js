@@ -169,7 +169,7 @@ const ClientApplication = ({ clientId }) => {
 				open={errorModal}
 				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
 			/>
-			<Accordion className={classes.appAccordion}>
+			<Accordion className={classes.appAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -193,8 +193,9 @@ const ClientApplication = ({ clientId }) => {
 							<TableRow>
 								<TableCell>Name</TableCell>
 								<TableCell>Sites(Qty)</TableCell>
-								<TableCell>Status</TableCell>
-								<TableCell></TableCell>
+								<TableCell style={{ paddingRight: 65 }} align="center">
+									Status
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

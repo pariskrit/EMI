@@ -144,7 +144,7 @@ const ClientNotes = ({ clientId }) => {
 				open={errorModal}
 				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
 			/>
-			<Accordion className={classes.noteAccordion}>
+			<Accordion className={classes.noteAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -166,10 +166,9 @@ const ClientNotes = ({ clientId }) => {
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
-								<TableCell>Name</TableCell>
+								<TableCell style={{ width: "170px" }}>Name</TableCell>
 								<TableCell>Date</TableCell>
 								<TableCell>Note</TableCell>
-								<TableCell></TableCell>
 								<TableCell></TableCell>
 							</TableRow>
 						</TableHead>
