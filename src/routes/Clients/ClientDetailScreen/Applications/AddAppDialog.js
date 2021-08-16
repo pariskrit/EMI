@@ -111,7 +111,6 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 					setLoading(false);
 					closeOverride();
 				} else {
-					console.log(newData);
 					setErrors({ ...errors, ...newData.errors });
 					setLoading(false);
 				}
