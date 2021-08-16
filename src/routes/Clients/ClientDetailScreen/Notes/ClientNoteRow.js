@@ -21,7 +21,7 @@ const ClientNoteRow = ({ row, classes, onDeleteNote }) => (
 		<TableCell style={{ textJustify: "inter-word", textAlign: "justify" }}>
 			{row.note.length > 44 ? (
 				<HtmlTooltip title={row.note}>
-					<>{row.note.substring(0, 44) + "..."}</>
+					<p>{row.note.substring(0, 44) + "..."}</p>
 				</HtmlTooltip>
 			) : (
 				row.note
