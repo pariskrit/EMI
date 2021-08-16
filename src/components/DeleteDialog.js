@@ -67,7 +67,7 @@ const DeleteDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="delete-dialog-title">
-						{<ADD.HeaderText>Delete a {entityName}</ADD.HeaderText>}
+						{<ADD.HeaderText>Delete {entityName}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeHandler} variant="contained">

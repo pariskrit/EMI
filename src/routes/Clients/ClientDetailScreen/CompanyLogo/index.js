@@ -94,19 +94,9 @@ const ClientLogo = () => {
 		}
 	};
 
-	const onDeleteLogo = async () => {
-		setIsDeleting(true);
-
-		try {
-			await API.patch(`${BASE_API_PATH}Clients/${id}`, [
-				{ op: "replace", path: "logoKey", value: "" },
-			]);
-			setIsDeleting(false);
-			setLogo({});
-			setShowUpload(true);
-		} catch (error) {
-			console.log(error);
-		}
+	const onDeleteLogo = (id) => {
+		setLogo({});
+		setShowUpload(true);
 	};
 
 	useEffect(() => {
@@ -120,7 +110,7 @@ const ClientLogo = () => {
 				handleClose={() => setOpen(false)}
 				message={errorMessage}
 			/>
-			<Accordion className={classes.logoAccordion}>
+			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -155,8 +145,7 @@ const ClientLogo = () => {
 								name={logo.name}
 								src={logo.src}
 								alt={logo.alt}
-								handleDelete={onDeleteLogo}
-								isDeleting={isDeleting}
+								deleteLogo={onDeleteLogo}
 							/>
 						</div>
 					)}

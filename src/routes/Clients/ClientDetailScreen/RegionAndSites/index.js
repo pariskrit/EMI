@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import CommonAddDialog from "../CommonAddDialog";
 import Region from "./Region";
 import ErrorDialog from "components/ErrorDialog";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -131,7 +132,7 @@ function ClientRegionAndSites() {
 				handleClose={() => setOpenErrorDialog(false)}
 				message={errorMessage}
 			/>
-			<Accordion className={classes.logoAccordion}>
+			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -154,7 +155,6 @@ function ClientRegionAndSites() {
 							Add Region
 						</CurveButton>
 					</AccordionActions>
-
 					{listOfRegions.map((region) => (
 						<Region
 							key={region.id}

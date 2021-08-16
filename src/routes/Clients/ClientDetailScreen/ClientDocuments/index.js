@@ -93,8 +93,10 @@ function ClientDocuments() {
 				...result.data.map((doc) => ({
 					id: doc?.id,
 					name: doc?.filename,
+					url: doc.documentURL,
 				})),
 			]);
+
 			setFilesUploading(false);
 		} catch (error) {
 			console.log(error);
@@ -113,7 +115,7 @@ function ClientDocuments() {
 				message={errorMessage}
 			/>
 
-			<Accordion className={classes.logoAccordion}>
+			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
