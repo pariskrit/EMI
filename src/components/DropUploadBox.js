@@ -103,9 +103,10 @@ const DropUpload = ({
 		[uploadReturn]
 	);
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-	console.log(filesUploading);
+
 	// Helpers
 	const getUploadLink = async (fileName) => {
+		console.log(clientID, fileName);
 		// Attemptong to get signed s3 upload link
 		try {
 			let uploadLink = await API.post(

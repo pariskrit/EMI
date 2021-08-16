@@ -1,33 +1,33 @@
-import Accordion from "@material-ui/core/Accordion";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
-import DropUploadBox from "components/DropUploadBox";
-import EMICheckbox from "components/EMICheckbox";
-import ErrorDialog from "components/ErrorDialog";
-import ProviderAsset from "components/ProvidedAsset/ProvidedAsset";
-import API from "helpers/api";
-import ColourConstants from "helpers/colourConstants";
-import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import ColourConstants from "../../../helpers/colourConstants";
+import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import Typography from "@material-ui/core/Typography";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import EMICheckbox from "../../../components/EMICheckbox";
+import ProviderAsset from "../../../components/ProvidedAsset/ProvidedAsset";
+import DropUploadBox from "../../../components/DropUploadBox";
+import API from "../../../helpers/api";
 import { useParams } from "react-router-dom";
+import { BASE_API_PATH } from "../../../helpers/constants";
+import ErrorDialog from "../../../components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
-		marginTop: 15,
+		marginTop: 25,
 		display: "flex",
-		justifyContent: "flex-start",
-		//paddingLeft: "2%",
+		justifyContent: "center",
+		paddingLeft: "2%",
 	},
 	logoAccordion: {
 		borderColor: ColourConstants.commonBorder,
 		borderStyle: "solid",
 		borderWidth: 1,
-		width: "100%",
+		width: "99%",
 	},
 	expandIcon: {
 		transform: "scale(0.8)",
@@ -69,9 +69,6 @@ const ClientLogo = () => {
 			]);
 			fetchClientLogo();
 		} catch (error) {
-			setOpen(true);
-			setErrorMessage("Something went wrong");
-			setFilesUploading(false);
 			console.log(error);
 		}
 	};
@@ -79,6 +76,7 @@ const ClientLogo = () => {
 	const fetchClientLogo = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Clients/${id}`);
+			console.log(result);
 			if (result.data.logoURL) {
 				setLogo({
 					name: result.data.logoFilename,
@@ -96,7 +94,7 @@ const ClientLogo = () => {
 		}
 	};
 
-	const onDeleteLogo = (id) => {
+	const onDeleteLogo = () => {
 		setLogo({});
 		setShowUpload(true);
 	};
@@ -112,7 +110,7 @@ const ClientLogo = () => {
 				handleClose={() => setOpen(false)}
 				message={errorMessage}
 			/>
-			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
+			<Accordion className={classes.logoAccordion}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -147,8 +145,28 @@ const ClientLogo = () => {
 								name={logo.name}
 								src={logo.src}
 								alt={logo.alt}
-								deleteLogo={onDeleteLogo}
+								handleDelete={onDeleteLogo}
 							/>
+
+							<div>
+								<FormGroup className={classes.trademarkContainer}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={true}
+												changeHandler={() => {
+													console.log("checked");
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.trademarkText}>
+												Is logo trademarked?
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
 						</div>
 					)}
 				</AccordionDetails>

@@ -1,18 +1,17 @@
-import Accordion from "@material-ui/core/Accordion";
-import AccordionActions from "@material-ui/core/AccordionActions";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
-import CurveButton from "components/CurveButton";
-import ErrorDialog from "components/ErrorDialog";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
-import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import CommonAddDialog from "../CommonAddDialog";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import IOSSwitch from "../../../components/IOSSwitch";
+import CurveButton from "../../../components/CurveButton";
+import CommonAddDialog from "./CommonAddDialog";
+import API from "../../../helpers/api";
+import { BASE_API_PATH } from "../../../helpers/constants";
+import { handleSort } from "../../../helpers/utils";
 
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
@@ -59,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	addButton: {
 		textAlign: "right",
-		padding: "8px 0",
 	},
 	siteLink: {
 		color: "#307AD6",
@@ -67,14 +65,17 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Region({ region, fetchRegionsAndSites }) {
+function Region({
+	region,
+	onStatusChange,
+	setIsLoading,
+	fetchRegionsAndSites,
+}) {
 	const { id, name, sites } = region;
 	const classes = useStyles();
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [siteInput, setSiteInput] = useState("");
 	const [modifiedSites, setModifiedSites] = useState([]);
-	const [openErrorDialog, setOpenErrorDialog] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
 
 	//add site to a specific region
 	const onAddSite = async (e) => {
@@ -91,8 +92,6 @@ function Region({ region, fetchRegionsAndSites }) {
 		} catch (error) {
 			console.log(error);
 			setOpenAddDialog(false);
-			setOpenErrorDialog(true);
-			setErrorMessage("Something went wrong!");
 			return false;
 		}
 	};
@@ -111,12 +110,6 @@ function Region({ region, fetchRegionsAndSites }) {
 				setInput={setSiteInput}
 				createHandler={onAddSite}
 				reference={name}
-			/>
-
-			<ErrorDialog
-				open={openErrorDialog}
-				handleClose={() => setOpenErrorDialog(false)}
-				message={errorMessage}
 			/>
 			<Accordion className={classes.accordionParent}>
 				<AccordionSummary
@@ -148,14 +141,20 @@ function Region({ region, fetchRegionsAndSites }) {
 						<Typography>
 							<Link className={classes.siteLink}>{site.name}</Link>
 						</Typography>
+						<div className={classes.statusSwitch}>
+							{/* <IOSSwitch
+								onChange={() => onStatusChange(region.id, site.id)}
+								currentStatus={site.isActive ? true : false}
+							/> */}
+						</div>
 					</AccordionDetails>
 				))}
 			</Accordion>
-			<AccordionActions className={classes.addButton}>
+			<div className={classes.addButton}>
 				<CurveButton onClick={() => setOpenAddDialog(true)}>
 					Add Site
 				</CurveButton>
-			</AccordionActions>
+			</div>
 		</div>
 	);
 }

@@ -5,8 +5,10 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
-import DeleteDialog from "./DeleteDialog";
+import DeleteDialog from "components/DeleteDialog";
 import ColourConstants from "../../helpers/colourConstants";
+import { BASE_API_PATH } from "../../helpers/constants";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
@@ -14,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 		flexWrap: "wrap",
 		width: "100%",
 	},
+
 	dividerStyle: {
 		width: "100%",
 		backgroundColor: ColourConstants.divider,
@@ -57,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
 			cursor: "pointer",
 		},
 		fontSize: "14px",
+		color: "#307AD6",
 	},
 	deleteContainer: {
 		display: "flex",
@@ -64,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 		marginLeft: "auto",
 	},
 	deleteButton: {
-		transform: "scale(1)",
+		transform: "scale(0.7)",
 		color: ColourConstants.deleteButton,
 		"&:hover": {
 			cursor: "pointer",
@@ -76,12 +80,14 @@ const ProvidedAsset = ({
 	src,
 	alt,
 	name,
-	handleDelete,
+	deleteLogo,
 	noBottomDivider,
 	isRec,
 }) => {
 	// Init hooks
 	const classes = useStyles();
+
+	const { id } = useParams();
 
 	// Init state
 	const [openDialog, setOpenDialog] = useState(false);
@@ -109,8 +115,10 @@ const ProvidedAsset = ({
 			<DeleteDialog
 				open={openDialog}
 				closeHandler={closeDialogHandler}
-				name={name}
-				handleDelete={handleDelete}
+				entityName="logo"
+				deleteEndpoint={`${BASE_API_PATH}Clients`}
+				deleteID={id}
+				handleRemoveData={deleteLogo}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />

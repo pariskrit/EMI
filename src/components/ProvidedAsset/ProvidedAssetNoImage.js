@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
-import DeleteDialog from "./DeleteDialog";
+import DeleteDialog from "components/DeleteDialog";
 import ColourConstants from "../../helpers/colourConstants";
 import { BASE_API_PATH } from "../../helpers/constants";
 import API from "../../helpers/api";
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 		marginLeft: "auto",
 	},
 	deleteButton: {
-		transform: "scale(1)",
+		transform: "scale(0.7)",
 		color: ColourConstants.deleteButton,
 		"&:hover": {
 			cursor: "pointer",
@@ -86,34 +86,14 @@ function ProvidedAssetNoImage({
 	const classes = useStyles();
 	const { id, name, documentURL } = document;
 	const [openDialog, setOpenDialog] = useState(false);
-	const [isUpdating, setIsUpdating] = useState(false);
 	const [objectURL, setObjectURL] = useState(false);
 
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};
 
-	const onDocumentDelete = async () => {
-		setIsUpdating(true);
-		try {
-			const response = await API.delete(
-				`${BASE_API_PATH}ClientDocuments/${id}`
-			);
-
-			if (response.status !== 200) {
-				closeDialogHandler();
-				throw new Error("Cannot upload document!");
-			} else {
-				fetchClientDocuments();
-				setIsUpdating(false);
-				closeDialogHandler();
-			}
-		} catch (error) {
-			console.log(error);
-			closeDialogHandler();
-			setOpenErrorModal(true);
-			setErrorMessage("Something went wrong!");
-		}
+	const fetch = (id) => {
+		fetchClientDocuments();
 	};
 	useEffect(() => {
 		fetch(documentURL)
@@ -128,9 +108,10 @@ function ProvidedAssetNoImage({
 			<DeleteDialog
 				open={openDialog}
 				closeHandler={closeDialogHandler}
-				name={name}
-				handleDelete={onDocumentDelete}
-				isUpdating={isUpdating}
+				entityName="document"
+				deleteEndpoint={`${BASE_API_PATH}ClientDocuments`}
+				deleteID={id}
+				handleRemoveData={fetch}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />
