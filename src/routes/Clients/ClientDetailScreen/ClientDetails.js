@@ -115,8 +115,8 @@ const ClientDetails = () => {
 					</Grid>
 					<Grid item xs={6}>
 						<ClientApplication clientId={+id} />
-						<ClientNotes clientId={+id} />
 						<KeyContacts clientId={+id} />
+						<ClientNotes clientId={+id} />
 					</Grid>
 				</Grid>
 			</div>
