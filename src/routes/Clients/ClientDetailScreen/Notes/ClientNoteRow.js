@@ -18,13 +18,13 @@ const ClientNoteRow = ({ row, classes, onDeleteNote }) => (
 	<TableRow>
 		<TableCell style={{ width: "170px" }}>{row.name}</TableCell>
 		<TableCell>{changeDate(row.date)}</TableCell>
-		<TableCell>
-			{row.note.length > 50 ? (
+		<TableCell style={{ textJustify: "inter-word", textAlign: "justify" }}>
+			{row.note.length > 44 ? (
 				<HtmlTooltip title={row.note}>
-					<p>{row.note.substring(0, 50) + "..."}</p>
+					<>{row.note.substring(0, 44) + "..."}</>
 				</HtmlTooltip>
 			) : (
-				<p>{row.note}</p>
+				row.note
 			)}
 		</TableCell>
 		<TableCell>
