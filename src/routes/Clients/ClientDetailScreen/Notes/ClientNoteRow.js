@@ -1,12 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import {
-	TableCell,
-	TableRow,
-	Tooltip,
-	Button,
-	Typography,
-} from "@material-ui/core";
+import { TableCell, TableRow, Tooltip } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { changeDate } from "helpers/date";
 
