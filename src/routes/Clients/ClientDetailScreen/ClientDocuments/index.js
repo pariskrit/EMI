@@ -93,6 +93,7 @@ function ClientDocuments() {
 				...result.data.map((doc) => ({
 					id: doc?.id,
 					name: doc?.filename,
+					documentURL: doc?.documentURL,
 				})),
 			]);
 			setFilesUploading(false);

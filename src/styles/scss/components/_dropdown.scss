@@ -17,7 +17,7 @@ $border-color: #c1c1c1;
 			display: block;
 		}
 		.inputbox {
-			padding: 13px;
+			padding: 15.5px 14px;
 			border: 0.9px solid #b9b9b9;
 			border-radius: 3px;
 			cursor: pointer;
@@ -84,10 +84,10 @@ $border-color: #c1c1c1;
 				&:hover {
 					background: #307ad6;
 					color: #fff;
-					padding: 10px 15px;
-					.check {
-						display: block;
-					}
+					//padding: 10px 15px;
+					// .check {
+					// 	display: block;
+					// }
 				}
 				.check {
 					font-size: 28px;

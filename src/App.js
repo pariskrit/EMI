@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
 import "./App.css";
 import "./App.scss";
-import Test from "./pages/Test";
 import Actions from "./routes/Applications/Actions/Action";
 import Application from "./routes/Applications/Application/Application";
 import ApplicationList from "./routes/Applications/ApplicationList/ApplicationList";

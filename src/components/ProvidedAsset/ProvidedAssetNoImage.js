@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Typography from "@material-ui/core/Typography";
@@ -84,9 +84,10 @@ function ProvidedAssetNoImage({
 	setErrorMessage,
 }) {
 	const classes = useStyles();
-	const { id, name } = document;
+	const { id, name, documentURL } = document;
 	const [openDialog, setOpenDialog] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [objectURL, setObjectURL] = useState(false);
 
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
@@ -114,6 +115,13 @@ function ProvidedAssetNoImage({
 			setErrorMessage("Something went wrong!");
 		}
 	};
+	useEffect(() => {
+		fetch(documentURL)
+			.then((res) => res.blob()) // Gets the response and returns it as a blob
+			.then((blob) => {
+				setObjectURL(URL.createObjectURL(blob));
+			});
+	}, [documentURL]);
 
 	return (
 		<>
@@ -128,7 +136,9 @@ function ProvidedAssetNoImage({
 				<Divider className={classes.dividerStyle} />
 				<div className={classes.linkContainer}>
 					<Typography>
-						<Link className={classes.imgLink}>{name}</Link>
+						<Link href={objectURL} download={name}>
+							{name}
+						</Link>
 					</Typography>
 				</div>
 

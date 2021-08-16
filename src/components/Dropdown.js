@@ -40,7 +40,7 @@ function Dropdown(props) {
 	const onFilter = (val) => {
 		let filteredSearchList = [];
 		options.map((x) => {
-			if (x.label.toLowerCase().startsWith(val.toLowerCase()))
+			if (x.label.toLowerCase().includes(val.toLowerCase()))
 				filteredSearchList.push(x);
 			return x;
 		});
@@ -50,7 +50,10 @@ function Dropdown(props) {
 		<div className="dropdown">
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
-				onClick={() => setDropActive(true)}
+				onClick={() => {
+					setDropActive(true);
+					onFilter("");
+				}}
 			>
 				{label.length > 0 && (
 					<Typography className="label">
