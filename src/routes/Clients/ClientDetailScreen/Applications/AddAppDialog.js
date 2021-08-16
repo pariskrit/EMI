@@ -10,6 +10,7 @@ import Dropdown from "components/Dropdown";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
+import useDidMountEffect from "hooks/useDidMountEffect";
 import React, { useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
@@ -44,13 +45,19 @@ const useStyles = makeStyles({
 		fontSize: 14,
 	},
 });
+const selectedDefault = {
+	id: null,
+	logoURL: "",
+	name: "",
+	purpose: "",
+};
 const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [availableApp, setAvailableApp] = useState([]);
+	const [selectedApp, setSelectedApp] = useState(selectedDefault);
 	const [loading, setLoading] = useState(false);
-
 	useEffect(() => {
 		const fetchAvailableApp = async () => {
 			setLoading(true);
@@ -59,7 +66,7 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 					`${BASE_API_PATH}ClientApplications/${clientId}/available`
 				);
 				if (result.status === 200) {
-					result = result.data.map((x) => ({ label: x.name, value: x.id }));
+					result = result.data;
 					setAvailableApp(result);
 					setLoading(false);
 				} else {
@@ -76,11 +83,22 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 		}
 	}, [open, clientId]);
 
+	// This hook won't called in first render or when mounted like ComponentDidUpdate
+	useDidMountEffect(() => {
+		const selectedOne = availableApp.find((x) => x.id === input.applicationId);
+		if (selectedOne) {
+			setSelectedApp(selectedOne);
+		} else {
+			setSelectedApp(selectedDefault);
+		}
+	}, [input]);
+
 	const closeOverride = () => {
+		handleClose();
+		setSelectedApp(selectedDefault);
 		setInput(defaultData);
 		setErrors(defaultError);
-
-		handleClose();
+		setAvailableApp([]);
 	};
 
 	const handleCreateData = async () => {
@@ -93,7 +111,6 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 					setLoading(false);
 					closeOverride();
 				} else {
-					console.log(newData);
 					setErrors({ ...errors, ...newData.errors });
 					setLoading(false);
 				}
@@ -104,7 +121,6 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 			}
 		} catch (err) {
 			console.log(err);
-
 			setLoading(false);
 			closeOverride();
 		}
@@ -124,13 +140,14 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 					{<ADD.HeaderText>Add Application</ADD.HeaderText>}
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={handleClose} variant="contained">
+					<ADD.CancelButton onClick={closeOverride} variant="contained">
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton
 						onClick={handleCreateData}
 						variant="contained"
 						className={classes.createButton}
+						disabled={loading}
 					>
 						Add Application
 					</ADD.ConfirmButton>
@@ -145,15 +162,17 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 					<span style={{ color: "#E31212" }}>{errors.applicationId}</span>
 				)}
 				<Dropdown
-					options={availableApp}
-					selectedValue={availableApp.find(
-						(x) => x.value === input.applicationId
-					)}
+					options={availableApp.map((x) => ({ label: x.name, value: x.id }))}
+					selectedValue={{ label: selectedApp.name, value: selectedApp.id }}
 					onChange={(value) => setInput({ applicationId: value.value })}
 					label=""
 					required={true}
 					width="100%"
 				/>
+				<div style={{ marginTop: 12 }}>
+					<img src={selectedApp.logoURL} alt={selectedApp.name} />
+					<p>{selectedApp.purpose}</p>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);

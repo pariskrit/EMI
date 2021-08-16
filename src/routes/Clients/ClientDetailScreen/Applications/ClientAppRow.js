@@ -9,13 +9,18 @@ const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
 			<span className={classes.appName}>{row.name}</span>
 		</TableCell>
 		<TableCell>{row.totalSites}</TableCell>
-		<TableCell>
-			<IOSSwitch onChange={onChangeApp} currentStatus={row.isActive} />
-		</TableCell>
-		<TableCell>
-			{" "}
-			{!row.isActive && (
+		<TableCell
+			style={{
+				display: "flex",
+				justifyContent: "flex-end",
+				alignItems: "center",
+			}}
+		>
+			<IOSSwitch onChange={onChangeApp} currentStatus={row.isActive} /> &nbsp;
+			{!row.isActive ? (
 				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
+			) : (
+				<div style={{ width: "32px" }}></div>
 			)}
 		</TableCell>
 	</TableRow>

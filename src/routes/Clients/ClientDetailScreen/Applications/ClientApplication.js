@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 	tableHead: {
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",
+		width: "100%",
 	},
 	deleteIcon: {
 		transform: "scale(0.7)",
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
 	appName: {
 		color: "#307AD6",
 		textDecoration: "underline",
+		wordBreak: "break-word",
 	},
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
@@ -169,7 +171,7 @@ const ClientApplication = ({ clientId }) => {
 				open={errorModal}
 				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
 			/>
-			<Accordion className={classes.appAccordion}>
+			<Accordion className={classes.appAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -187,14 +189,15 @@ const ClientApplication = ({ clientId }) => {
 						</Typography>
 					</div>
 				</AccordionSummary>
-				<AccordionDetails>
+				<AccordionDetails style={{ width: "100%" }}>
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
 								<TableCell>Name</TableCell>
 								<TableCell>Sites(Qty)</TableCell>
-								<TableCell>Status</TableCell>
-								<TableCell></TableCell>
+								<TableCell style={{ paddingRight: 65 }} align="center">
+									Status
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

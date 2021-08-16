@@ -16,6 +16,7 @@ import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import { changeDate } from "helpers/date";
 import React, { useEffect, useState } from "react";
+import ErrorDialog from "components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -58,6 +59,7 @@ const detail = {
 const ClientDetail = ({ clientId, options, clientData }) => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState(detail);
+	const [error, setError] = useState({ message: "", status: false });
 
 	useEffect(() => {
 		setClientDetail(clientData);
@@ -74,14 +76,19 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 				throw new Error(result);
 			}
 		} catch (err) {
-			console.log(err);
+			//console.log(err);
+			if (err.response.data.detail) {
+				setError({ status: true, message: err.response.data.detail });
+			}
+			if (err.response.data.errors.name) {
+				setError({ status: true, message: err.response.data.errors.name[0] });
+			}
 			return err;
 		}
 	};
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		changeClientDetails(name, value);
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
@@ -96,123 +103,143 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 		}));
 	};
 
-	return (
-		<Accordion className={classes.detailAccordion} expanded={true}>
-			<AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-				<div>
-					<Typography className={classes.sectionHeading}>
-						Company Details
-					</Typography>
-				</div>
-			</AccordionSummary>
-			<AccordionDetails>
-				<Grid container spacing={5}>
-					<Grid item sm={6}>
-						<Typography className={classes.labelText}>
-							Company Name<span style={{ color: "#E31212" }}>*</span>
-						</Typography>
-						<TextField
-							name="name"
-							variant="outlined"
-							fullWidth
-							InputProps={{
-								classes: {
-									input: classes.inputText,
-								},
-							}}
-							onChange={handleInputChange}
-							value={clientDetail.name}
-						/>
-					</Grid>
-					<Grid item sm={6}>
-						<Typography className={classes.labelText}>
-							Licence Type<span style={{ color: "#E31212" }}>*</span>
-						</Typography>
-						<Dropdown
-							options={options}
-							selectedValue={clientDetail.licenseType}
-							onChange={(value) => handleLicenceType(value)}
-							label=""
-							required={true}
-							width="100%"
-						/>
-					</Grid>
-					<Grid item sm={6}>
-						<Typography className={classes.labelText}>
-							Total Licence Count<span style={{ color: "#E31212" }}>*</span>
-						</Typography>
-						<TextField
-							name="licenses"
-							disabled={
-								clientDetail.licenseType.label !== "Site-Based Licencing"
-							}
-							type="number"
-							variant="outlined"
-							fullWidth
-							InputProps={{
-								classes: {
-									input: classes.inputText,
-								},
-							}}
-							value={clientDetail.licenses || ""}
-							onChange={handleInputChange}
-						/>
-					</Grid>
-					<Grid item sm={6}>
-						<Typography className={classes.labelText}>
-							Registration Date<span style={{ color: "#E31212" }}>*</span>
-						</Typography>
-						<TextField
-							id="date"
-							variant="outlined"
-							fullWidth
-							type="date-local"
-							value={changeDate(clientDetail.registeredDate)}
-							InputProps={{
-								classes: {
-									input: classes.inputText,
-								},
-								readOnly: true,
-								startAdornment: (
-									<InputAdornment style={{ marginRight: 10 }}>
-										<CalendarTodayOutlinedIcon
-											style={{ fontSize: 19, marginTop: "-3px" }}
-										/>
-									</InputAdornment>
-								),
-								endAdornment: (
-									<InputAdornment>
-										<img
-											alt="Expand icon"
-											src={ArrowIcon}
-											className={classes.expandIcon}
-										/>
-									</InputAdornment>
-								),
-							}}
-							InputLabelProps={{ shrink: true }}
-						/>
-					</Grid>
+	const disabledLicenses = () => {
+		if (clientDetail.licenseType.label === "Total Users") {
+			return false;
+		}
+		if (clientDetail.licenseType.label === "Concurrent Users") {
+			return false;
+		}
+		return true;
+	};
 
-					<Grid item sm={6}>
-						<Typography className={classes.labelText}>
-							Registered By<span style={{ color: "#E31212" }}>*</span>
+	return (
+		<>
+			<ErrorDialog
+				open={error.status}
+				handleClose={() => setError((e) => ({ message: "", status: false }))}
+				message={error.message}
+			/>
+			<Accordion className={classes.detailAccordion} expanded={true}>
+				<AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+					<div>
+						<Typography className={classes.sectionHeading}>
+							Company Details
 						</Typography>
-						<TextField
-							value={clientDetail.registeredBy || ""}
-							variant="outlined"
-							fullWidth
-							InputProps={{
-								classes: {
-									input: classes.inputText,
-								},
-								readOnly: true,
-							}}
-						/>
+					</div>
+				</AccordionSummary>
+				<AccordionDetails>
+					<Grid container spacing={5}>
+						<Grid item sm={12}>
+							<Typography className={classes.labelText}>
+								Company Name<span style={{ color: "#E31212" }}>*</span>
+							</Typography>
+							<TextField
+								name="name"
+								variant="outlined"
+								fullWidth
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+								}}
+								onChange={handleInputChange}
+								value={clientDetail.name}
+								onBlur={(e) =>
+									changeClientDetails(e.target.name, e.target.value)
+								}
+							/>
+						</Grid>
+						<Grid item sm={6}>
+							<Typography className={classes.labelText}>
+								Licence Type<span style={{ color: "#E31212" }}>*</span>
+							</Typography>
+							<Dropdown
+								options={options}
+								selectedValue={clientDetail.licenseType}
+								onChange={(value) => handleLicenceType(value)}
+								label=""
+								required={true}
+								width="100%"
+							/>
+						</Grid>
+						<Grid item sm={6}>
+							<Typography className={classes.labelText}>
+								Total Licence Count<span style={{ color: "#E31212" }}>*</span>
+							</Typography>
+							<TextField
+								name="licenses"
+								disabled={disabledLicenses()}
+								type="number"
+								variant="outlined"
+								fullWidth
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+								}}
+								value={clientDetail.licenses || ""}
+								onChange={handleInputChange}
+								onBlur={(e) =>
+									changeClientDetails(e.target.name, e.target.value)
+								}
+							/>
+						</Grid>
+						<Grid item sm={6}>
+							<Typography className={classes.labelText}>
+								Registered By<span style={{ color: "#E31212" }}>*</span>
+							</Typography>
+							<TextField
+								value={clientDetail.registeredBy || ""}
+								variant="outlined"
+								fullWidth
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+									readOnly: true,
+								}}
+							/>
+						</Grid>
+						<Grid item sm={6}>
+							<Typography className={classes.labelText}>
+								Registration Date<span style={{ color: "#E31212" }}>*</span>
+							</Typography>
+							<TextField
+								id="date"
+								variant="outlined"
+								fullWidth
+								type="date-local"
+								value={changeDate(clientDetail.registeredDate)}
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+									readOnly: true,
+									startAdornment: (
+										<InputAdornment style={{ marginRight: 10 }}>
+											<CalendarTodayOutlinedIcon
+												style={{ fontSize: 19, marginTop: "-3px" }}
+											/>
+										</InputAdornment>
+									),
+									endAdornment: (
+										<InputAdornment>
+											<img
+												alt="Expand icon"
+												src={ArrowIcon}
+												className={classes.expandIcon}
+											/>
+										</InputAdornment>
+									),
+								}}
+								InputLabelProps={{ shrink: true }}
+							/>
+						</Grid>
 					</Grid>
-				</Grid>
-			</AccordionDetails>
-		</Accordion>
+				</AccordionDetails>
+			</Accordion>
+		</>
 	);
 };
 

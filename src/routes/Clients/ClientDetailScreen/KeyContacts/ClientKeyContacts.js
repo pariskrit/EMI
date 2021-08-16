@@ -71,7 +71,7 @@ const ClientKeyContacts = ({ clientId }) => {
 
 	return (
 		<div className={classes.keyContainer}>
-			<Accordion className={classes.keyAccordion}>
+			<Accordion className={classes.keyAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -93,7 +93,7 @@ const ClientKeyContacts = ({ clientId }) => {
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
-								<TableCell>Full Name</TableCell>
+								<TableCell>Name</TableCell>
 								<TableCell>Site</TableCell>
 								<TableCell>Application</TableCell>
 								<TableCell>Email</TableCell>
