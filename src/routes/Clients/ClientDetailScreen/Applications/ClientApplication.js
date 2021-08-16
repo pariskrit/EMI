@@ -90,7 +90,7 @@ const ClientApplication = ({ clientId }) => {
 
 	useEffect(() => {
 		fetchApplications();
-	});
+	}, []);
 
 	const handleCreateData = async (applicationId) => {
 		try {

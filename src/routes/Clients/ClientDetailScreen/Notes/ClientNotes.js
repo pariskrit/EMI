@@ -86,7 +86,7 @@ const ClientNotes = ({ clientId }) => {
 
 	useEffect(() => {
 		fetchNotes();
-	});
+	}, []);
 
 	const handleCreateData = async (note) => {
 		try {
