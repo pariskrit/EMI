@@ -11,8 +11,6 @@ const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
 		<TableCell>{row.totalSites}</TableCell>
 		<TableCell
 			style={{
-				display: "flex",
-				alignItems: "center",
 				paddingLeft: 90,
 			}}
 		>

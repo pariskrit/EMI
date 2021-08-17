@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 		"&:hover": {
 			cursor: "pointer",
 		},
+		verticalAlign: "middle",
 	},
 	appName: {
 		color: "#307AD6",
