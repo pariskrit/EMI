@@ -119,6 +119,7 @@ const ProvidedAsset = ({
 				deleteEndpoint={`${BASE_API_PATH}Clients`}
 				deleteID={id}
 				handleRemoveData={deleteLogo}
+				isLogo={true}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />

@@ -15,6 +15,7 @@ const DeleteDialog = ({
 	deleteEndpoint,
 	deleteID,
 	handleRemoveData,
+	isLogo = false,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -23,8 +24,21 @@ const DeleteDialog = ({
 	const handleDeleteData = async () => {
 		// Attempting to delete data
 		try {
+			let result = null;
+
 			// Making DELETE to backend
-			const result = await API.delete(`${deleteEndpoint}/${deleteID}`);
+			if (isLogo) {
+				result = await API.patch(`${deleteEndpoint}/${deleteID}`, [
+					{
+						op: "replace",
+						path: "logoKey",
+						value: null,
+					},
+				]);
+			} else {
+				console.log("dlete whole");
+				result = await API.delete(`${deleteEndpoint}/${deleteID}`);
+			}
 
 			// Handling success
 			if (result.status === 200) {
