@@ -156,7 +156,7 @@ const ClientNotes = ({ clientId }) => {
 						</Typography>
 					</div>
 				</AccordionSummary>
-				<AccordionDetails>
+				<AccordionDetails className="table-container">
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>

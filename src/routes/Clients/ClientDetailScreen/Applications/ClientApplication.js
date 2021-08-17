@@ -189,7 +189,7 @@ const ClientApplication = ({ clientId }) => {
 						</Typography>
 					</div>
 				</AccordionSummary>
-				<AccordionDetails style={{ width: "100%" }}>
+				<AccordionDetails className="table-container">
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
