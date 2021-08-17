@@ -6,8 +6,9 @@ import DeleteDialog from "components/DeleteDialog";
 import ErrorDialog from "components/ErrorDialog";
 import React, { useEffect, useState } from "react";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
-import ColourConstants from "../../helpers/colourConstants";
-import { BASE_API_PATH } from "../../helpers/constants";
+import ColourConstants from "helpers/colourConstants";
+import { BASE_API_PATH } from "helpers/constants";
+import { checkIsFileImageType } from "helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
@@ -86,7 +87,7 @@ function ProvidedAssetNoImage({
 	const classes = useStyles();
 	const { id, name, url } = document;
 	const [openDialog, setOpenDialog] = useState(false);
-	const [objectURL, setObjectURL] = useState(false);
+	const [imgURL, setImgURL] = useState(false);
 	const [serverError, setServerError] = useState(false);
 
 	const closeDialogHandler = () => {
@@ -96,13 +97,14 @@ function ProvidedAssetNoImage({
 	const fetchDocument = (id) => {
 		fetchClientDocuments();
 	};
+	const isImageFile = name && checkIsFileImageType(name);
 	useEffect(() => {
 		async function fetchImage() {
 			try {
 				//console.log(url);
 				let res = await fetch(url);
 				let blob = await res?.blob();
-				setObjectURL(URL.createObjectURL(blob));
+				setImgURL(URL.createObjectURL(blob));
 			} catch (e) {
 				console.log("error occured in fetching");
 				setServerError(true);
@@ -110,7 +112,7 @@ function ProvidedAssetNoImage({
 				setErrorMessage("Error occured while fetching image!");
 			}
 		}
-		fetchImage();
+		isImageFile && fetchImage();
 	}, [url]);
 
 	return (
@@ -132,7 +134,7 @@ function ProvidedAssetNoImage({
 				<Divider className={classes.dividerStyle} />
 				<div className={classes.linkContainer}>
 					<Typography>
-						<Link href={objectURL} download={name}>
+						<Link href={isImageFile ? imgURL : url} download={name}>
 							{name}
 						</Link>
 					</Typography>
