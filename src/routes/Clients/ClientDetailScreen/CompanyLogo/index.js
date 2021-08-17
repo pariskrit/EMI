@@ -64,15 +64,32 @@ const ClientLogo = () => {
 
 	const onLogoUpload = async (key, url) => {
 		try {
-			await API.patch(`${BASE_API_PATH}Clients/${id}`, [
+			const response = await API.patch(`${BASE_API_PATH}Clients/${id}`, [
 				{ op: "replace", path: "logoKey", value: key },
 			]);
-			fetchClientLogo();
+
+			if (response.status === 200 || response.status === 201) {
+				fetchClientLogo();
+			} else {
+				throw new Error(response);
+			}
 		} catch (error) {
 			setOpen(true);
-			setErrorMessage("Something went wrong");
+
 			setFilesUploading(false);
-			console.log(error);
+			if (
+				error.response.data.errors !== undefined &&
+				error.response.data.detail === undefined
+			) {
+				setErrorMessage(error.response.data.errors.name);
+			} else if (
+				error.response.data.errors !== undefined &&
+				error.response.data.detail !== undefined
+			) {
+				setErrorMessage(error.response.data.detail.name);
+			} else {
+				setErrorMessage("Something went wrong!");
+			}
 		}
 	};
 

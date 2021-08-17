@@ -81,19 +81,45 @@ function Region({ region, fetchRegionsAndSites }) {
 		e.preventDefault();
 
 		try {
-			await API.post(BASE_API_PATH + "Sites", {
+			let result = await API.post(BASE_API_PATH + "Sites", {
 				regionID: id,
 				name: siteInput,
 			});
 
-			fetchRegionsAndSites();
-			return true;
-		} catch (error) {
-			console.log(error);
-			setOpenAddDialog(false);
-			setOpenErrorDialog(true);
-			setErrorMessage("Something went wrong!");
-			return false;
+			if (result.status === 201 || result.status === 200) {
+				// Getting response
+				result = result.data;
+
+				await fetchRegionsAndSites();
+
+				return { success: true };
+			} else {
+				// Throwing response if error
+				throw new Error(result);
+			}
+		} catch (err) {
+			console.log(err);
+
+			if (
+				err.response.data.errors !== undefined &&
+				err.response.data.detail === undefined
+			) {
+				return { success: false, errors: err.response.data.errors };
+			} else if (
+				err.response.data.errors !== undefined &&
+				err.response.data.detail !== undefined
+			) {
+				return {
+					success: false,
+					errors: { name: err.response.data.detail },
+				};
+			} else {
+				setOpenAddDialog(false);
+				setOpenErrorDialog(true);
+				setErrorMessage("Something went wrong!");
+
+				return false;
+			}
 		}
 	};
 
@@ -118,7 +144,10 @@ function Region({ region, fetchRegionsAndSites }) {
 				handleClose={() => setOpenErrorDialog(false)}
 				message={errorMessage}
 			/>
-			<Accordion className={classes.accordionParent}>
+			<Accordion
+				className={classes.accordionParent}
+				expanded={sites.length > 0}
+			>
 				<AccordionSummary
 					className={classes.summary}
 					expandIcon={

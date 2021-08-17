@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DeleteDialogStyle from "../styles/application/DeleteDialogStyle";
 import API from "../helpers/api";
 import Dialog from "@material-ui/core/Dialog";
@@ -15,6 +15,7 @@ const DeleteDialog = ({
 	deleteEndpoint,
 	deleteID,
 	handleRemoveData,
+	isLogo = false,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -23,8 +24,21 @@ const DeleteDialog = ({
 	const handleDeleteData = async () => {
 		// Attempting to delete data
 		try {
+			let result = null;
+
 			// Making DELETE to backend
-			const result = await API.delete(`${deleteEndpoint}/${deleteID}`);
+			if (isLogo) {
+				result = await API.patch(`${deleteEndpoint}/${deleteID}`, [
+					{
+						op: "replace",
+						path: "logoKey",
+						value: null,
+					},
+				]);
+			} else {
+				console.log("dlete whole");
+				result = await API.delete(`${deleteEndpoint}/${deleteID}`);
+			}
 
 			// Handling success
 			if (result.status === 200) {
@@ -50,10 +64,13 @@ const DeleteDialog = ({
 		// Deleting status change
 		handleDeleteData().then(() => {
 			// Once deleted, closing dialog and updating state
-			closeHandler();
-			setIsUpdating(false);
+			console.log("success");
 		});
 	};
+
+	useEffect(() => {
+		return () => setIsUpdating(false);
+	}, []);
 
 	return (
 		<div>
