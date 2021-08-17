@@ -10,11 +10,10 @@ const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
 		</TableCell>
 		<TableCell>{row.totalSites}</TableCell>
 		<TableCell
-			align="center"
 			style={{
 				display: "flex",
 				alignItems: "center",
-				justifyItems: "flex-start",
+				paddingLeft: 90,
 			}}
 		>
 			<IOSSwitch onChange={onChangeApp} currentStatus={row.isActive} /> &nbsp;

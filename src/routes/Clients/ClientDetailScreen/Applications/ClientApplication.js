@@ -195,7 +195,7 @@ const ClientApplication = ({ clientId }) => {
 							<TableRow>
 								<TableCell>Name</TableCell>
 								<TableCell>Sites(Qty)</TableCell>
-								<TableCell align="center">Status</TableCell>
+								<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
