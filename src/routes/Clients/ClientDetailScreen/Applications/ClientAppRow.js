@@ -1,7 +1,7 @@
+import React from "react";
 import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import IOSSwitch from "components/IOSSwitch";
-import React from "react";
 
 const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
 	<TableRow>
@@ -12,8 +12,8 @@ const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
 		<TableCell
 			style={{
 				display: "flex",
-				justifyContent: "flex-end",
 				alignItems: "center",
+				paddingLeft: 90,
 			}}
 		>
 			<IOSSwitch onChange={onChangeApp} currentStatus={row.isActive} /> &nbsp;

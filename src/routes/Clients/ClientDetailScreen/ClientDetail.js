@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useCallback } from "react";
 import {
 	Accordion,
 	AccordionDetails,
@@ -15,8 +16,19 @@ import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import { changeDate } from "helpers/date";
-import React, { useEffect, useState } from "react";
 import ErrorDialog from "components/ErrorDialog";
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -87,12 +99,20 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 		}
 	};
 
+	const debounceDropDown = useCallback(
+		debounce((name, val) => changeClientDetails(name, val), 1000),
+		[]
+	);
+
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
 		}));
+
+		//call this when user stops typing
+		debounceDropDown(name, value);
 	};
 
 	const handleLicenceType = (value) => {
@@ -145,9 +165,6 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 								}}
 								onChange={handleInputChange}
 								value={clientDetail.name}
-								onBlur={(e) =>
-									changeClientDetails(e.target.name, e.target.value)
-								}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -180,9 +197,6 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 								}}
 								value={clientDetail.licenses || ""}
 								onChange={handleInputChange}
-								onBlur={(e) =>
-									changeClientDetails(e.target.name, e.target.value)
-								}
 							/>
 						</Grid>
 						<Grid item sm={6}>
