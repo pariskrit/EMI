@@ -33,29 +33,34 @@ const CommonAddDialog = ({
 	// Init hooks
 	const classes = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
-	const [isError, setIsError] = useState(false);
+	const [error, setError] = useState({ isError: false });
 
 	const handleNameInputChange = (e) => {
-		if (isError) {
+		if (Error.isError) {
 			//if error present remove error message
-			setIsError(false);
+			setError({ isError: false });
 		}
 		setInput(e.target.value);
 	};
 
-	const onAddRegion = (e) => {
+	const onAddRegion = async (e) => {
 		// checking if the input field is empty
 		const isInputEmpty = input === "";
 
 		if (isInputEmpty) {
 			//if input is empty show error
-			setIsError(true);
+			setError({ name: "Name is required", isError: true });
 		} else {
 			setIsUpdating(true);
-			createHandler(e).then(() => {
-				setIsUpdating(false);
+			const result = await createHandler(e);
+			if (result.success) {
 				closeHandler();
-			});
+			} else {
+				if (result.errors) {
+					setError({ ...result.errors, isError: true });
+					setIsUpdating(false);
+				}
+			}
 		}
 	};
 
@@ -67,7 +72,10 @@ const CommonAddDialog = ({
 	};
 
 	useEffect(() => {
-		return () => setInput("");
+		return () => {
+			setInput("");
+			setError({});
+		};
 	}, [open]);
 
 	return (
@@ -109,8 +117,8 @@ const CommonAddDialog = ({
 				<DialogContent className={classes.dialogContent}>
 					<ADD.InputContainer>
 						<ADD.NameInput
-							error={isError}
-							helperText={isError ? "Name is required" : null}
+							error={error.isError}
+							helperText={error.isError ? error.name : null}
 							required
 							label={`${label} name`}
 							value={input}

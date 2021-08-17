@@ -6,8 +6,8 @@ import DeleteDialog from "components/DeleteDialog";
 import ErrorDialog from "components/ErrorDialog";
 import React, { useEffect, useState } from "react";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
-import ColourConstants from "../../helpers/colourConstants";
-import { BASE_API_PATH } from "../../helpers/constants";
+import ColourConstants from "helpers/colourConstants";
+import { BASE_API_PATH } from "helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
