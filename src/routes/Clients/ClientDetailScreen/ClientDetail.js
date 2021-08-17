@@ -98,6 +98,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 			return err;
 		}
 	};
+
 	const debounceDropDown = useCallback(
 		debounce((name, val) => changeClientDetails(name, val), 1000),
 		[]
@@ -109,6 +110,8 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 			...detail,
 			[name]: value,
 		}));
+
+		//call this when user stops typing
 		debounceDropDown(name, value);
 	};
 
