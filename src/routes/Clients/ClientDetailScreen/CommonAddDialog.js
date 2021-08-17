@@ -34,6 +34,7 @@ const CommonAddDialog = ({
 	const classes = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [error, setError] = useState({ isError: false });
+	const [isDisabled, setIsDisabled] = useState(false);
 
 	const handleNameInputChange = (e) => {
 		if (Error.isError) {
@@ -51,6 +52,7 @@ const CommonAddDialog = ({
 			//if input is empty show error
 			setError({ name: "Name is required", isError: true });
 		} else {
+			setIsDisabled(true);
 			setIsUpdating(true);
 			const result = await createHandler(e);
 			if (result.success) {
@@ -75,6 +77,8 @@ const CommonAddDialog = ({
 		return () => {
 			setInput("");
 			setError({});
+			setIsDisabled(false);
+			setIsUpdating(false);
 		};
 	}, [open]);
 
@@ -108,6 +112,7 @@ const CommonAddDialog = ({
 							onClick={onAddRegion}
 							variant="contained"
 							className={classes.createButton}
+							disabled={isDisabled}
 						>
 							Create {label}
 						</ADD.ConfirmButton>

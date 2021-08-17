@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Typography from "@material-ui/core/Typography";
@@ -109,6 +109,10 @@ const ProvidedAsset = ({
 	if (isRec === undefined) {
 		isRec = false;
 	}
+
+	useEffect(() => {
+		return () => setOpenDialog(false);
+	}, []);
 
 	return (
 		<>

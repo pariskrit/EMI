@@ -69,17 +69,29 @@ function ClientDocuments() {
 				clientId: +id,
 				documentKey: key,
 			});
-			console.log(response);
+
 			if (response.status !== 201) {
-				throw new Error("Cannot upload document!");
+				throw new Error(response);
 			}
 
 			fetchClientDocuments();
 		} catch (error) {
-			console.log(error);
 			setOpen(true);
 			setFilesUploading(false);
-			setErrorMessage("Something went wrong!");
+
+			if (
+				error.response.data.errors !== undefined &&
+				error.response.data.detail === undefined
+			) {
+				setErrorMessage(error.response.data.errors.name);
+			} else if (
+				error.response.data.errors !== undefined &&
+				error.response.data.detail !== undefined
+			) {
+				setErrorMessage(error.response.data.detail.name);
+			} else {
+				setErrorMessage("Something went wrong!");
+			}
 		}
 	};
 

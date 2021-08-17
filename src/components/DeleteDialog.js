@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DeleteDialogStyle from "../styles/application/DeleteDialogStyle";
 import API from "../helpers/api";
 import Dialog from "@material-ui/core/Dialog";
@@ -64,10 +64,13 @@ const DeleteDialog = ({
 		// Deleting status change
 		handleDeleteData().then(() => {
 			// Once deleted, closing dialog and updating state
-			closeHandler();
-			setIsUpdating(false);
+			console.log("success");
 		});
 	};
+
+	useEffect(() => {
+		return () => setIsUpdating(false);
+	}, []);
 
 	return (
 		<div>
