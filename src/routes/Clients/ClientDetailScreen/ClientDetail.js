@@ -82,17 +82,17 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 			const result = await API.patch(`${BASE_API_PATH}Clients/${clientId}`, [
 				{ op: "replace", path, value },
 			]);
-			if (result.status === 200) {
+			if (result?.status === 200) {
 				return true;
 			} else {
 				throw new Error(result);
 			}
 		} catch (err) {
-			//console.log(err);
-			if (err.response.data.detail) {
-				setError({ status: true, message: err.response.data.detail });
+			//console.log("rr",err);
+			if (err?.response?.data?.detail) {
+				setError({ status: true, message: err?.response.data.detail });
 			}
-			if (err.response.data.errors.name) {
+			if (err?.response?.data?.errors?.name) {
 				setError({ status: true, message: err.response.data.errors.name[0] });
 			}
 			return err;
