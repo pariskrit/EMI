@@ -203,7 +203,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 										input: classes.inputText,
 									},
 								}}
-								value={clientDetail.licenses || ""}
+								value={clientDetail.licenses || ""} // String to integer using '+'
 								onChange={(e) => handleInputChange("licenses", +e.target.value)}
 							/>
 						</Grid>
