@@ -72,9 +72,12 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState(detail);
 	const [error, setError] = useState({ message: "", status: false });
+	const [changedState, setChange] = useState(detail);
+	// This state is used to check current state data with pervious
 
 	useEffect(() => {
 		setClientDetail(clientData);
+		setChange(clientData);
 	}, [clientData]);
 
 	const changeClientDetails = async (path, value) => {
@@ -83,6 +86,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 				{ op: "replace", path, value },
 			]);
 			if (result?.status === 200) {
+				setChange(result.data);
 				return true;
 			} else {
 				throw new Error(result);
@@ -100,23 +104,27 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 	};
 
 	const debounceDropDown = useCallback(
-		debounce((name, val) => changeClientDetails(name, val), 1000),
-		[]
+		debounce((name, val) => {
+			// Check previous data with current data and then patch
+			if (changedState[`${name}`] !== val) changeClientDetails(name, val);
+		}, 1000),
+		[changedState]
 	);
 
-	const handleInputChange = (e) => {
-		const { name, value } = e.target;
+	const handleInputChange = (name, value) => {
+		//call this function when user stops typing
+		debounceDropDown(name, value);
+
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
 		}));
-
-		//call this when user stops typing
-		debounceDropDown(name, value);
 	};
 
 	const handleLicenceType = (value) => {
-		changeClientDetails("licenseType", value.value);
+		if (value?.label !== clientDetail?.licenseType?.label) {
+			changeClientDetails("licenseType", value.value);
+		}
 		setClientDetail((th) => ({
 			...th,
 			licenseType: value,
@@ -163,7 +171,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 										input: classes.inputText,
 									},
 								}}
-								onChange={handleInputChange}
+								onChange={(e) => handleInputChange("name", e.target.value)}
 								value={clientDetail.name}
 							/>
 						</Grid>
@@ -196,7 +204,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 									},
 								}}
 								value={clientDetail.licenses || ""}
-								onChange={handleInputChange}
+								onChange={(e) => handleInputChange("licenses", +e.target.value)}
 							/>
 						</Grid>
 						<Grid item sm={6}>
