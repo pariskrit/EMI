@@ -12,6 +12,7 @@ const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
 		<TableCell
 			style={{
 				paddingLeft: 90,
+				width: "245px",
 			}}
 		>
 			<IOSSwitch onChange={onChangeApp} currentStatus={row.isActive} /> &nbsp;

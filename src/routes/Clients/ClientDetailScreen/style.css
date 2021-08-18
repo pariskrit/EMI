@@ -25,18 +25,26 @@
 	transform: rotate(35deg);
 }
 
-.client-details .MuiTableCell-root {
+/* .client-details .MuiTableCell-root {
 	white-space: nowrap;
-}
+} */
 
 .client-details .note-field {
 	min-width: 240px;
 }
 
-.client-details .note-field p {
-	display: -webkit-box;
-	line-clamp: 2;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
+@media (max-width: 1280px) {
+	.client-details .MuiGrid-grid-md-6 {
+		flex-grow: 0;
+		max-width: 100%;
+		flex-basis: 100%;
+	}
+}
+
+@media (min-width: 1280px) {
+	.client-details .MuiGrid-grid-lg-6 {
+		flex-grow: 0;
+		max-width: 50%;
+		flex-basis: 50%;
+	}
 }

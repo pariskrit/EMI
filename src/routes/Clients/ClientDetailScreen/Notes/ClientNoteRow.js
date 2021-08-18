@@ -21,7 +21,7 @@ const ClientNoteRow = ({ row, classes, onDeleteNote }) => {
 			<TableCell style={{ width: "100px" }}>{changeDate(row.date)}</TableCell>
 			<TableCell className="note-field" style={{ whiteSpace: "unset" }}>
 				<HtmlTooltip title={row.note}>
-					<p>{row.note}</p>
+					<p className="max-two-line">{row.note}</p>
 				</HtmlTooltip>
 			</TableCell>
 			<TableCell style={{ width: "50px" }}>
