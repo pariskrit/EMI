@@ -1,13 +1,10 @@
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import DropUploadBox from "components/DropUploadBox";
-import EMICheckbox from "components/EMICheckbox";
 import ErrorDialog from "components/ErrorDialog";
 import ProviderAsset from "components/ProvidedAsset/ProvidedAsset";
 import API from "helpers/api";
@@ -62,7 +59,7 @@ const ClientLogo = () => {
 	const [open, setOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
-	const onLogoUpload = async (key, url) => {
+	const onLogoUpload = async (key) => {
 		try {
 			const response = await API.patch(`${BASE_API_PATH}Clients/${id}`, [
 				{ op: "replace", path: "logoKey", value: key },
@@ -96,6 +93,7 @@ const ClientLogo = () => {
 	const fetchClientLogo = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}Clients/${id}`);
+			console.log(result);
 			if (result.data.logoURL) {
 				setLogo({
 					name: result.data.logoFilename,
@@ -151,7 +149,7 @@ const ClientLogo = () => {
 						<div className={classes.logoContentParent}>
 							<DropUploadBox
 								uploadReturn={onLogoUpload}
-								clientID={id}
+								apiPath={`${BASE_API_PATH}Clients/${id}/upload`}
 								isImageUploaded={true}
 								filesUploading={filesUploading}
 								setFilesUploading={setFilesUploading}

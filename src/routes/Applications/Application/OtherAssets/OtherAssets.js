@@ -1,14 +1,15 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ArrowIcon from "../../../../assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
-import DropUpload from "../../../../components/DropUpload";
+import DropUploadBox from "../../../../components/DropUploadBox";
 import ProviderAsset from "../../../../components/ProvidedAsset/ProvidedAsset";
 import { AssetReducer } from "./reducer";
 import ColourConstants from "../../../../helpers/colourConstants";
+import { BASE_API_PATH } from "helpers/constants";
 
 // TODO: Below for dev. In prod, they will come from API call
 import PLACEHOLER from "../../../../assets/PLACEHOLD.jpg";
@@ -66,6 +67,8 @@ const OtherAssets = () => {
 
 	// Init state
 	const [assets, dispatch] = useReducer(AssetReducer, INIT_ASSETS);
+	const [filesUploading, setFilesUploading] = useState(false);
+	const id = 1;
 
 	// Handlers
 	const addAssetHandler = (name, alt, src) => {
@@ -84,10 +87,11 @@ const OtherAssets = () => {
 			index,
 		});
 	};
-	const newUploadHandler = (files) => {
-		files.forEach((file) => {
-			addAssetHandler(file.name, "User uploaded file", file.preview);
-		});
+	const newUploadHandler = (key) => {
+		console.log(key);
+		// files.forEach((file) => {
+		// 	addAssetHandler(file.name, "User uploaded file", file.preview);
+		// });
 	};
 
 	return (
@@ -144,7 +148,16 @@ const OtherAssets = () => {
 						})}
 
 						<div className={classes.uploaderContainer}>
-							<DropUpload uploadReturn={newUploadHandler} />
+							{/* <DropUpload uploadReturn={newUploadHandler} /> */}
+							<DropUploadBox
+								uploadReturn={newUploadHandler}
+								apiPath={`${BASE_API_PATH}Applications/${id}/upload`}
+								filesUploading={filesUploading}
+								setFilesUploading={setFilesUploading}
+								// isImageUploaded={true}
+								// setErrorMessage={setErrorMessage}
+								// setOpenErrorModal={setOpen}
+							/>
 						</div>
 					</div>
 				</AccordionDetails>

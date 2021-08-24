@@ -16,6 +16,7 @@ import CommonAddDialog from "../CommonAddDialog";
 import Region from "./Region";
 import ErrorDialog from "components/ErrorDialog";
 import { CircularProgress } from "@material-ui/core";
+import AccordionBox from "components/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -23,12 +24,6 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "flex-start",
 		//paddingLeft: "2%",
-	},
-	logoAccordion: {
-		borderColor: ColourConstants.commonBorder,
-		borderStyle: "solid",
-		borderWidth: 1,
-		width: "100%",
 	},
 	expandIcon: {
 		transform: "scale(0.8)",
@@ -38,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: "bold",
 		fontSize: "17px",
 	},
+
 	logoContentParent: {
 		width: "100%",
 	},
@@ -45,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
+	},
+	regionSiteContainer: {
+		display: "block",
+		padding: "0 16px",
 	},
 	trademarkContainer: {
 		marginTop: 10,
@@ -58,10 +58,7 @@ const useStyles = makeStyles((theme) => ({
 	dividerStyle: {
 		width: "100%",
 	},
-	regionSiteContainer: {
-		display: "block",
-		padding: "0 16px",
-	},
+
 	addButton: {
 		marginBottom: "10px",
 	},
@@ -158,7 +155,8 @@ function ClientRegionAndSites() {
 				handleClose={() => setOpenErrorDialog(false)}
 				message={errorMessage}
 			/>
-			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
+
+			<AccordionBox>
 				<AccordionSummary
 					expandIcon={
 						<img
@@ -171,10 +169,10 @@ function ClientRegionAndSites() {
 					id="panel1a-header"
 				>
 					<Typography className={classes.sectionHeading}>
-						Regions & Sites ({listOfRegions.length}/5)
+						Regions & Sites
+						{/* ({listOfRegions.length}/5) */}
 					</Typography>
 				</AccordionSummary>
-
 				<AccordionDetails className={classes.regionSiteContainer}>
 					<AccordionActions className={classes.actionButton}>
 						<CurveButton onClick={() => setOpenAddDialog(true)}>
@@ -189,7 +187,7 @@ function ClientRegionAndSites() {
 						/>
 					))}
 				</AccordionDetails>
-			</Accordion>
+			</AccordionBox>
 		</div>
 	);
 }
