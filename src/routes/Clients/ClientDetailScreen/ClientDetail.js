@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useCallback } from "react";
 import {
 	Accordion,
 	AccordionDetails,
@@ -15,8 +16,19 @@ import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import { changeDate } from "helpers/date";
-import React, { useEffect, useState } from "react";
 import ErrorDialog from "components/ErrorDialog";
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -60,9 +72,12 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState(detail);
 	const [error, setError] = useState({ message: "", status: false });
+	const [changedState, setChange] = useState(detail);
+	// This state is used to check current state data with pervious
 
 	useEffect(() => {
 		setClientDetail(clientData);
+		setChange(clientData);
 	}, [clientData]);
 
 	const changeClientDetails = async (path, value) => {
@@ -70,25 +85,36 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 			const result = await API.patch(`${BASE_API_PATH}Clients/${clientId}`, [
 				{ op: "replace", path, value },
 			]);
-			if (result.status === 200) {
+			if (result?.status === 200) {
+				setChange(result.data);
 				return true;
 			} else {
 				throw new Error(result);
 			}
 		} catch (err) {
-			//console.log(err);
-			if (err.response.data.detail) {
-				setError({ status: true, message: err.response.data.detail });
+			//console.log("rr",err);
+			if (err?.response?.data?.detail) {
+				setError({ status: true, message: err?.response.data.detail });
 			}
-			if (err.response.data.errors.name) {
+			if (err?.response?.data?.errors?.name) {
 				setError({ status: true, message: err.response.data.errors.name[0] });
 			}
 			return err;
 		}
 	};
 
-	const handleInputChange = (e) => {
-		const { name, value } = e.target;
+	const debounceDropDown = useCallback(
+		debounce((name, val) => {
+			// Check previous data with current data and then patch
+			if (changedState[`${name}`] !== val) changeClientDetails(name, val);
+		}, 1000),
+		[changedState]
+	);
+
+	const handleInputChange = (name, value) => {
+		//call this function when user stops typing
+		debounceDropDown(name, value);
+
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
@@ -96,7 +122,9 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 	};
 
 	const handleLicenceType = (value) => {
-		changeClientDetails("licenseType", value.value);
+		if (value?.label !== clientDetail?.licenseType?.label) {
+			changeClientDetails("licenseType", value.value);
+		}
 		setClientDetail((th) => ({
 			...th,
 			licenseType: value,
@@ -143,11 +171,8 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 										input: classes.inputText,
 									},
 								}}
-								onChange={handleInputChange}
+								onChange={(e) => handleInputChange("name", e.target.value)}
 								value={clientDetail.name}
-								onBlur={(e) =>
-									changeClientDetails(e.target.name, e.target.value)
-								}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -178,11 +203,8 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 										input: classes.inputText,
 									},
 								}}
-								value={clientDetail.licenses || ""}
-								onChange={handleInputChange}
-								onBlur={(e) =>
-									changeClientDetails(e.target.name, e.target.value)
-								}
+								value={clientDetail.licenses || ""} // String to integer using '+'
+								onChange={(e) => handleInputChange("licenses", +e.target.value)}
 							/>
 						</Grid>
 						<Grid item sm={6}>

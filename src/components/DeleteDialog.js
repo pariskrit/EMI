@@ -64,6 +64,8 @@ const DeleteDialog = ({
 		// Deleting status change
 		handleDeleteData().then(() => {
 			// Once deleted, closing dialog and updating state
+			closeHandler();
+			setIsUpdating(false);
 			console.log("success");
 		});
 	};

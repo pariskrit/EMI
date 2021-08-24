@@ -61,6 +61,7 @@ const CommonAddDialog = ({
 				if (result.errors) {
 					setError({ ...result.errors, isError: true });
 					setIsUpdating(false);
+					setIsDisabled(false);
 				}
 			}
 		}

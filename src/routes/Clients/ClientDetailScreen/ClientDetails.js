@@ -108,12 +108,12 @@ const ClientDetails = () => {
 							clientData={clientDetail}
 						/>
 					</Grid>
-					<Grid item lg={6} md={6} sm={12} xs={12}>
+					<Grid item lg={6} md={6} xs={12}>
 						<CompanyLogo />
 						<RegionAndSites />
 						<ClientDocuments />
 					</Grid>
-					<Grid item lg={6} md={6} sm={12} xs={12}>
+					<Grid item lg={6} md={6} xs={12}>
 						<ClientApplication clientId={+id} />
 						<KeyContacts clientId={+id} />
 						<ClientNotes clientId={+id} />
