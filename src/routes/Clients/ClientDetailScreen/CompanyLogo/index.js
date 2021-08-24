@@ -1,9 +1,5 @@
-import Accordion from "@material-ui/core/Accordion";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
 import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
+import AccordionBox from "components/AccordionBox";
 import DropUploadBox from "components/DropUploadBox";
 import ErrorDialog from "components/ErrorDialog";
 import ProviderAsset from "components/ProvidedAsset/ProvidedAsset";
@@ -34,9 +30,7 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: "bold",
 		fontSize: "17px",
 	},
-	logoContentParent: {
-		width: "100%",
-	},
+
 	spinnerContainer: {
 		display: "flex",
 		alignItems: "center",
@@ -55,7 +49,7 @@ const ClientLogo = () => {
 	const { id } = useParams();
 	const [showUpload, setShowUpload] = useState(true);
 	const [logo, setLogo] = useState({});
-	const [filesUploading, setFilesUploading] = useState(false);
+	const [filesUploading, setFilesUploading] = useState(true);
 	const [open, setOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
@@ -128,47 +122,26 @@ const ClientLogo = () => {
 				handleClose={() => setOpen(false)}
 				message={errorMessage}
 			/>
-			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
-						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<Typography className={classes.sectionHeading}>
-						Company Logo (1)
-					</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					{showUpload ? (
-						<div className={classes.logoContentParent}>
-							<DropUploadBox
-								uploadReturn={onLogoUpload}
-								apiPath={`${BASE_API_PATH}Clients/${id}/upload`}
-								isImageUploaded={true}
-								filesUploading={filesUploading}
-								setFilesUploading={setFilesUploading}
-								setErrorMessage={setErrorMessage}
-								setOpenErrorModal={setOpen}
-							/>
-						</div>
-					) : (
-						<div className={classes.logoContentParent}>
-							<ProviderAsset
-								name={logo.name}
-								src={logo.src}
-								alt={logo.alt}
-								deleteLogo={onDeleteLogo}
-							/>
-						</div>
-					)}
-				</AccordionDetails>
-			</Accordion>
+			<AccordionBox title="Company Logo (1)">
+				{showUpload ? (
+					<DropUploadBox
+						uploadReturn={onLogoUpload}
+						apiPath={`${BASE_API_PATH}Clients/${id}/upload`}
+						isImageUploaded={true}
+						filesUploading={filesUploading}
+						setFilesUploading={setFilesUploading}
+						setErrorMessage={setErrorMessage}
+						setOpenErrorModal={setOpen}
+					/>
+				) : (
+					<ProviderAsset
+						name={logo.name}
+						src={logo.src}
+						alt={logo.alt}
+						deleteLogo={onDeleteLogo}
+					/>
+				)}
+			</AccordionBox>
 		</div>
 	);
 };

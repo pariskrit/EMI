@@ -96,7 +96,7 @@ const DropUpload = ({
 			// NOTE: currently handling single file
 			getUploadLink(fileName).then((uploadDetails) =>
 				uploadFile(acceptedFiles[0], uploadDetails.url).then((res) => {
-					uploadReturn(uploadDetails.key);
+					uploadReturn(uploadDetails.key, acceptedFiles[0].path);
 				})
 			);
 		},

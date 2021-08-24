@@ -7,9 +7,10 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
 import ProviderAsset from "../../../components/ProvidedAsset/ProvidedAsset";
-import DropUpload from "../../../components/DropUpload";
+import DropUploadBox from "../../../components/DropUploadBox";
 import API from "../../../helpers/api";
 import ColourConstants from "../../../helpers/colourConstants";
+import { BASE_API_PATH } from "helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -192,9 +193,10 @@ const SmallNavLogo = ({
 					<AccordionDetails>
 						{showUpload ? (
 							<div className={classes.logoContentParent}>
-								<DropUpload
+								<DropUploadBox
 									uploadReturn={handleLogoUpload}
-									applicationID={id}
+									apiPath={`${BASE_API_PATH}Applications/${id}/upload`}
+									filesUploading={loading}
 								/>
 							</div>
 						) : (

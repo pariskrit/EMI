@@ -148,7 +148,6 @@ const OtherAssets = () => {
 						})}
 
 						<div className={classes.uploaderContainer}>
-							{/* <DropUpload uploadReturn={newUploadHandler} /> */}
 							<DropUploadBox
 								uploadReturn={newUploadHandler}
 								apiPath={`${BASE_API_PATH}Applications/${id}/upload`}

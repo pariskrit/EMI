@@ -1,18 +1,12 @@
 import {
-	Accordion,
-	AccordionActions,
-	AccordionDetails,
-	AccordionSummary,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
-	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
-import CurveButton from "components/CurveButton";
+import AccordionBox from "components/AccordionBox";
 import DeleteDialog from "components/DeleteDialog";
 import ErrorDialog from "components/ErrorDialog";
 import API from "helpers/api";
@@ -138,54 +132,33 @@ const ClientNotes = ({ clientId }) => {
 				open={errorModal}
 				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
 			/>
-			<Accordion className={classes.noteAccordion} defaultExpanded={true}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
-						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Notes ({data.length})
-						</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails className="table-container">
-					<Table>
-						<TableHead className={classes.tableHead}>
-							<TableRow>
-								<TableCell style={{ width: "170px" }}>Name</TableCell>
-								<TableCell>Date</TableCell>
-								<TableCell>Note</TableCell>
-								<TableCell></TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{data.map((row) => (
-								<ClientNoteRow
-									key={row.id}
-									row={row}
-									classes={classes}
-									onDeleteNote={() => handleDeleteNote(row.id)}
-								/>
-							))}
-						</TableBody>
-					</Table>
-				</AccordionDetails>
-				<AccordionActions className={classes.actionButton}>
-					<CurveButton
-						onClick={() => setModal((th) => ({ ...th, addModal: true }))}
-					>
-						Add Note
-					</CurveButton>
-				</AccordionActions>
-			</Accordion>
+			<AccordionBox
+				title={`Notes (${data.length})`}
+				isActionsPresent={true}
+				buttonName="Add Note"
+				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
+			>
+				<Table>
+					<TableHead className={classes.tableHead}>
+						<TableRow>
+							<TableCell style={{ width: "170px" }}>Name</TableCell>
+							<TableCell>Date</TableCell>
+							<TableCell>Note</TableCell>
+							<TableCell></TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{data.map((row) => (
+							<ClientNoteRow
+								key={row.id}
+								row={row}
+								classes={classes}
+								onDeleteNote={() => handleDeleteNote(row.id)}
+							/>
+						))}
+					</TableBody>
+				</Table>
+			</AccordionBox>
 		</div>
 	);
 };

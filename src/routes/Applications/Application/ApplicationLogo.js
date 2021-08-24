@@ -10,9 +10,10 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "../../../components/EMICheckbox";
 import ProviderAsset from "../../../components/ProvidedAsset/ProvidedAsset";
-import DropUpload from "../../../components/DropUpload";
+import DropUploadBox from "../../../components/DropUploadBox";
 import API from "../../../helpers/api";
 import ColourConstants from "../../../helpers/colourConstants";
+import { BASE_API_PATH } from "helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -203,9 +204,10 @@ const ApplicationLogo = ({
 					<AccordionDetails>
 						{showUpload ? (
 							<div className={classes.logoContentParent}>
-								<DropUpload
+								<DropUploadBox
 									uploadReturn={handleLogoUpload}
-									applicationID={id}
+									apiPath={`${BASE_API_PATH}Applications/${id}/upload`}
+									filesUploading={loading}
 								/>
 							</div>
 						) : (
