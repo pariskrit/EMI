@@ -40,7 +40,11 @@ function AccordionBox({
 	const classes = useStyles();
 
 	return (
-		<Accordion className={classes.logoAccordion} defaultExpanded={true}>
+		<Accordion
+			className={classes.logoAccordion}
+			defaultExpanded={true}
+			expanded={noExpand}
+		>
 			<AccordionSummary
 				expandIcon={
 					noExpand ? null : (
