@@ -73,7 +73,11 @@ const ClientDetails = ({ clientDetail, fetchClientDetail }) => {
 						<ClientDetail clientId={+id} clientData={clientDetail} />
 					</Grid>
 					<Grid item lg={6} md={6} xs={12}>
-						<CompanyLogo clientId={+id} />
+						<CompanyLogo
+							clientDetail={clientDetail}
+							clientId={+id}
+							fetchClientDetail={fetchClientDetail}
+						/>
 						<RegionAndSites />
 						<ClientDocuments />
 					</Grid>

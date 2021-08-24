@@ -48,13 +48,18 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientLogo = ({ clientId }) => {
+const ClientLogo = ({ clientId, clientDetail, fetchClientDetail }) => {
 	const classes = useStyles();
 	const [showUpload, setShowUpload] = useState(true);
-	const [logo, setLogo] = useState({});
 	const [filesUploading, setFilesUploading] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+
+	useEffect(() => {
+		if (clientDetail.logoURL) {
+			setShowUpload(false);
+		}
+	}, [clientDetail]);
 
 	const onLogoUpload = async (key, url) => {
 		try {
@@ -63,7 +68,7 @@ const ClientLogo = ({ clientId }) => {
 			]);
 
 			if (response.status === 200 || response.status === 201) {
-				fetchClientLogo();
+				fetchClientDetail(clientId);
 			} else {
 				throw new Error(response);
 			}
@@ -87,35 +92,10 @@ const ClientLogo = ({ clientId }) => {
 		}
 	};
 
-	const fetchClientLogo = async () => {
-		try {
-			const result = await API.get(`${BASE_API_PATH}Clients/${clientId}`);
-			if (result.data.logoURL) {
-				setLogo({
-					name: result.data.logoFilename,
-					src: result.data.logoURL,
-					alt: result.data.logoFilename,
-				});
-				setShowUpload(false);
-			}
-
-			if (filesUploading) {
-				setFilesUploading(false);
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	const onDeleteLogo = (id) => {
-		setLogo({});
 		setShowUpload(true);
 		setFilesUploading(false);
 	};
-
-	useEffect(() => {
-		fetchClientLogo();
-	}, []);
 
 	return (
 		<div className={classes.logoContainer}>
@@ -137,7 +117,7 @@ const ClientLogo = ({ clientId }) => {
 					id="panel1a-header"
 				>
 					<Typography className={classes.sectionHeading}>
-						Company Logo (1)
+						Company Logo
 					</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
@@ -156,9 +136,9 @@ const ClientLogo = ({ clientId }) => {
 					) : (
 						<div className={classes.logoContentParent}>
 							<ProviderAsset
-								name={logo.name}
-								src={logo.src}
-								alt={logo.alt}
+								name={clientDetail.logoFilename}
+								src={clientDetail.logoURL}
+								alt={clientDetail.logoFilename}
 								deleteLogo={onDeleteLogo}
 							/>
 						</div>

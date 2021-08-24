@@ -101,7 +101,6 @@ const ClientDetail = ({ clientId, clientData }) => {
 				{ op: "replace", path, value },
 			]);
 			if (result?.status === 200) {
-				console.log(result.data);
 				setChange(result.data);
 				return true;
 			} else {
