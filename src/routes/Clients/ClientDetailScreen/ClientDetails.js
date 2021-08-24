@@ -11,7 +11,7 @@ import CompanyLogo from "./CompanyLogo";
 import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
-import Navcrumbs from "../../../components/Navcrumbs";
+import Navcrumbs from "components/Navcrumbs";
 import { fetchClientDetail } from "redux/clientDetail/actions";
 
 const useStyles = makeStyles((theme) => ({
