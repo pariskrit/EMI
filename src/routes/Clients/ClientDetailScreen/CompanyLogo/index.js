@@ -1,27 +1,22 @@
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import DropUploadBox from "components/DropUploadBox";
-import EMICheckbox from "components/EMICheckbox";
 import ErrorDialog from "components/ErrorDialog";
 import ProviderAsset from "components/ProvidedAsset/ProvidedAsset";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
 		marginTop: 15,
 		display: "flex",
 		justifyContent: "flex-start",
-		//paddingLeft: "2%",
 	},
 	logoAccordion: {
 		borderColor: ColourConstants.commonBorder,
@@ -53,9 +48,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientLogo = () => {
+const ClientLogo = ({ clientId }) => {
 	const classes = useStyles();
-	const { id } = useParams();
 	const [showUpload, setShowUpload] = useState(true);
 	const [logo, setLogo] = useState({});
 	const [filesUploading, setFilesUploading] = useState(false);
@@ -64,7 +58,7 @@ const ClientLogo = () => {
 
 	const onLogoUpload = async (key, url) => {
 		try {
-			const response = await API.patch(`${BASE_API_PATH}Clients/${id}`, [
+			const response = await API.patch(`${BASE_API_PATH}Clients/${clientId}`, [
 				{ op: "replace", path: "logoKey", value: key },
 			]);
 
@@ -95,7 +89,7 @@ const ClientLogo = () => {
 
 	const fetchClientLogo = async () => {
 		try {
-			const result = await API.get(`${BASE_API_PATH}Clients/${id}`);
+			const result = await API.get(`${BASE_API_PATH}Clients/${clientId}`);
 			if (result.data.logoURL) {
 				setLogo({
 					name: result.data.logoFilename,
@@ -151,7 +145,7 @@ const ClientLogo = () => {
 						<div className={classes.logoContentParent}>
 							<DropUploadBox
 								uploadReturn={onLogoUpload}
-								clientID={id}
+								clientID={clientId}
 								isImageUploaded={true}
 								filesUploading={filesUploading}
 								setFilesUploading={setFilesUploading}

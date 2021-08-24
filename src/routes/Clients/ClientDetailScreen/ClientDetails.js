@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import RestoreIcon from "@material-ui/icons/Restore";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
 import ClientApplication from "./Applications/ClientApplication";
 import ClientDetail from "./ClientDetail";
 import KeyContacts from "./KeyContacts/ClientKeyContacts";
@@ -10,16 +12,7 @@ import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
 import Navcrumbs from "../../../components/Navcrumbs";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
-import RestoreIcon from "@material-ui/icons/Restore";
-
-const options = [
-	{ label: "Total Users", value: 0 },
-	{ label: "Concurrent Users", value: 1 },
-	{ label: "Per Job", value: 2 },
-	{ label: "Site-Based Licencing", value: 3 },
-];
+import { fetchClientDetail } from "redux/clientDetail/actions";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -34,41 +27,16 @@ const useStyles = makeStyles((theme) => ({
 		margin: "5px 5px 0px 5px",
 	},
 }));
-const detail = {
-	name: "",
-	licenseType: { label: "", value: "" },
-	licenses: 0,
-	registeredBy: "",
-	registeredDate: "11/11/2019",
-	logoFilename: "",
-	logoURL: "",
-	logoKey: "",
-};
 
-const ClientDetails = () => {
+const ClientDetails = ({ clientDetail, fetchClientDetail }) => {
 	const classes = useStyles();
 	const { id } = useParams();
-	const [clientDetail, setClientDetail] = useState(detail);
 
-	React.useEffect(() => {
-		const fetchClient = async () => {
-			try {
-				const result = await API.get(`${BASE_API_PATH}Clients/${id}`);
-				if (result.status === 200) {
-					const licenseType = options.find(
-						(x) => x.value === result.data.licenseType
-					);
-					setClientDetail({ ...result.data, licenseType });
-				} else {
-					throw new Error(result);
-				}
-			} catch (err) {
-				console.log(err);
-				return err;
-			}
-		};
-		fetchClient();
-	}, [id]);
+	React.useEffect(
+		() => fetchClientDetail(id),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[]
+	);
 
 	return (
 		<div className="client-details">
@@ -102,14 +70,10 @@ const ClientDetails = () => {
 			<div className={classes.detailContainer}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
-						<ClientDetail
-							clientId={+id}
-							options={options}
-							clientData={clientDetail}
-						/>
+						<ClientDetail clientId={+id} clientData={clientDetail} />
 					</Grid>
 					<Grid item lg={6} md={6} xs={12}>
-						<CompanyLogo />
+						<CompanyLogo clientId={+id} />
 						<RegionAndSites />
 						<ClientDocuments />
 					</Grid>
@@ -124,4 +88,8 @@ const ClientDetails = () => {
 	);
 };
 
-export default ClientDetails;
+const mapStateToProps = ({
+	clientDetailData: { clientDetail, clientDetailLoading },
+}) => ({ clientDetail, clientDetailLoading });
+
+export default connect(mapStateToProps, { fetchClientDetail })(ClientDetails);

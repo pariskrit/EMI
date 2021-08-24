@@ -18,6 +18,13 @@ import API from "helpers/api";
 import { changeDate } from "helpers/date";
 import ErrorDialog from "components/ErrorDialog";
 
+const options = [
+	{ label: "Total Users", value: 0 },
+	{ label: "Concurrent Users", value: 1 },
+	{ label: "Per Job", value: 2 },
+	{ label: "Site-Based Licencing", value: 3 },
+];
+
 const debounce = (func, delay) => {
 	let timer;
 	return function () {
@@ -68,7 +75,7 @@ const detail = {
 	registeredDate: "11/11/2019",
 };
 
-const ClientDetail = ({ clientId, options, clientData }) => {
+const ClientDetail = ({ clientId, clientData }) => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState(detail);
 	const [error, setError] = useState({ message: "", status: false });
@@ -76,8 +83,16 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 	// This state is used to check current state data with pervious
 
 	useEffect(() => {
-		setClientDetail(clientData);
-		setChange(clientData);
+		const licenseType = options.find((x) => x.value === clientData.licenseType);
+		const data = {
+			name: clientData.name,
+			licenseType,
+			licenses: clientData.licenses,
+			registeredBy: clientData.registeredBy,
+			registeredDate: clientData.registeredDate,
+		};
+		setClientDetail(data);
+		setChange(data);
 	}, [clientData]);
 
 	const changeClientDetails = async (path, value) => {
@@ -86,6 +101,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 				{ op: "replace", path, value },
 			]);
 			if (result?.status === 200) {
+				console.log(result.data);
 				setChange(result.data);
 				return true;
 			} else {
@@ -113,29 +129,25 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 
 	const handleInputChange = (name, value) => {
 		//call this function when user stops typing
-		debounceDropDown(name, value);
-
+		// debounceDropDown(name, value);
+		if (name === "licenseType") {
+			if (value?.label !== clientDetail?.licenseType?.label) {
+				changeClientDetails("licenseType", value.value);
+			}
+		} else {
+			debounceDropDown(name, value);
+		}
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
 		}));
 	};
 
-	const handleLicenceType = (value) => {
-		if (value?.label !== clientDetail?.licenseType?.label) {
-			changeClientDetails("licenseType", value.value);
-		}
-		setClientDetail((th) => ({
-			...th,
-			licenseType: value,
-		}));
-	};
-
 	const disabledLicenses = () => {
-		if (clientDetail.licenseType.label === "Total Users") {
+		if (clientDetail?.licenseType?.label === "Total Users") {
 			return false;
 		}
-		if (clientDetail.licenseType.label === "Concurrent Users") {
+		if (clientDetail?.licenseType?.label === "Concurrent Users") {
 			return false;
 		}
 		return true;
@@ -182,7 +194,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 							<Dropdown
 								options={options}
 								selectedValue={clientDetail.licenseType}
-								onChange={(value) => handleLicenceType(value)}
+								onChange={(value) => handleInputChange("licenseType", value)}
 								label=""
 								required={true}
 								width="100%"
