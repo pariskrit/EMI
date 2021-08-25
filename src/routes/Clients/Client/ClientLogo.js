@@ -14,7 +14,6 @@ import DropUploadBox from "../../../components/DropUploadBox";
 import API from "../../../helpers/api";
 import { useParams } from "react-router-dom";
 import { BASE_API_PATH } from "../../../helpers/constants";
-import ErrorDialog from "../../../components/ErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -105,11 +104,6 @@ const ClientLogo = () => {
 
 	return (
 		<div className={classes.logoContainer}>
-			<ErrorDialog
-				open={open}
-				handleClose={() => setOpen(false)}
-				message={errorMessage}
-			/>
 			<Accordion className={classes.logoAccordion}>
 				<AccordionSummary
 					expandIcon={

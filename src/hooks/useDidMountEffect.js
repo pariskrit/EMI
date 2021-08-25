@@ -5,6 +5,7 @@ function useDidMountEffect(func, depen) {
 	useEffect(() => {
 		if (ref.current) func();
 		else ref.current = true;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, depen);
 }
 

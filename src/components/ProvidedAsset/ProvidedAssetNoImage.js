@@ -3,7 +3,6 @@ import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import DeleteDialog from "components/DeleteDialog";
-import ErrorDialog from "components/ErrorDialog";
 import React, { useEffect, useState } from "react";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
 import ColourConstants from "helpers/colourConstants";
@@ -80,16 +79,12 @@ function ProvidedAssetNoImage({
 	document,
 	showBottomDivider,
 	fetchClientDocuments,
-	setOpenErrorModal,
-	errorMessage,
-	setErrorMessage,
+	getError,
 }) {
 	const classes = useStyles();
 	const { id, name, url } = document;
 	const [openDialog, setOpenDialog] = useState(false);
 	const [imgURL, setImgURL] = useState(false);
-	const [serverError, setServerError] = useState(false);
-
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};
@@ -107,21 +102,15 @@ function ProvidedAssetNoImage({
 				setImgURL(URL.createObjectURL(blob));
 			} catch (e) {
 				console.log("error occured in fetching");
-				setServerError(true);
-
-				setErrorMessage("Error occured while fetching image!");
+				getError("Error occured while fetching image!");
 			}
 		}
 		isImageFile && fetchImage();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [url]);
 
 	return (
 		<>
-			<ErrorDialog
-				open={serverError}
-				handleClose={() => setServerError(false)}
-				message={errorMessage}
-			/>
 			<DeleteDialog
 				open={openDialog}
 				closeHandler={closeDialogHandler}
