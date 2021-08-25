@@ -12,7 +12,7 @@ import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
 import Navcrumbs from "components/Navcrumbs";
-import { fetchClientDetail } from "redux/clientDetail/actions";
+import { fetchClientDetail, resetClient } from "redux/clientDetail/actions";
 import { showError } from "redux/common/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -23,13 +23,19 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientDetails = ({ clientDetail, fetchClientData, getError }) => {
+const ClientDetails = ({
+	clientDetail,
+	fetchClientData,
+	getError,
+	resetPage,
+}) => {
 	const classes = useStyles();
 	const { id } = useParams();
 
 	React.useEffect(
 		() => {
 			fetchClientData(id);
+			return () => resetPage();
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[]
@@ -87,6 +93,7 @@ const mapStateToProps = ({
 const mapDispatchToProps = (dispatch) => ({
 	getError: (message) => dispatch(showError(message)),
 	fetchClientData: (id) => dispatch(fetchClientDetail(id)),
+	resetPage: () => dispatch(resetClient()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClientDetails);

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initial = {
 	clientDetail: {
 		name: "",
 		licenseType: { label: "", value: "" },
@@ -13,7 +13,7 @@ const initialState = {
 
 export const clientDetailSlice = createSlice({
 	name: "clientDetailData",
-	initialState,
+	initialState: initial,
 	reducers: {
 		clientDetailInitialize: (state) => {
 			state.clientDetailLoading = true;
@@ -24,6 +24,9 @@ export const clientDetailSlice = createSlice({
 		},
 		clientDetailFailure: (state) => {
 			state.clientDetailLoading = false;
+		},
+		clientReset: (state) => {
+			state.clientDetail = initial.clientDetail;
 		},
 	},
 });
