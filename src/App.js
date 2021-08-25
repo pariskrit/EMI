@@ -1,3 +1,4 @@
+import ErrorDialog from "components/ErrorDialog";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
@@ -32,6 +33,7 @@ import Login from "./routes/Login/Login";
 function App() {
 	return (
 		<div className="App">
+			<ErrorDialog />
 			<Router>
 				<Switch>
 					<Route path="/" exact>

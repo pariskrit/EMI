@@ -14,7 +14,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import CurveButton from "components/CurveButton";
 import DeleteDialog from "components/DeleteDialog";
-import ErrorDialog from "components/ErrorDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
@@ -59,12 +58,11 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ClientNotes = ({ clientId }) => {
+const ClientNotes = ({ clientId, getError }) => {
 	const classes = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
 		deleteModal: false,
-		errorModal: false,
 	});
 	const [noteId, setNoteId] = useState(null);
 	const [data, setData] = useState([]);
@@ -86,6 +84,7 @@ const ClientNotes = ({ clientId }) => {
 
 	useEffect(() => {
 		fetchNotes();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleCreateData = async (note) => {
@@ -104,7 +103,7 @@ const ClientNotes = ({ clientId }) => {
 			}
 		} catch (err) {
 			console.log(err.response);
-			setModal((th) => ({ ...th, errorModal: true }));
+			getError("Error Creating Note");
 		}
 	};
 
@@ -117,7 +116,7 @@ const ClientNotes = ({ clientId }) => {
 		const filteredData = [...data].filter((x) => x.id !== id);
 		setData(filteredData);
 	};
-	const { addModal, errorModal, deleteModal } = modal;
+	const { addModal, deleteModal } = modal;
 	return (
 		<div className={classes.noteContainer}>
 			<AddNoteDialog
@@ -134,10 +133,10 @@ const ClientNotes = ({ clientId }) => {
 				deleteID={noteId}
 				handleRemoveData={handleRemoveData}
 			/>{" "}
-			<ErrorDialog
+			{/* <ErrorDialog
 				open={errorModal}
 				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
-			/>
+			/> */}
 			<Accordion className={classes.noteAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={

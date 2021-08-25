@@ -16,7 +16,6 @@ import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import { changeDate } from "helpers/date";
-import ErrorDialog from "components/ErrorDialog";
 
 const options = [
 	{ label: "Total Users", value: 0 },
@@ -25,17 +24,17 @@ const options = [
 	{ label: "Site-Based Licencing", value: 3 },
 ];
 
-const debounce = (func, delay) => {
-	let timer;
-	return function () {
-		let self = this;
-		let args = arguments;
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			func.apply(self, args);
-		}, delay);
-	};
-};
+// const debounce = (func, delay) => {
+// 	let timer;
+// 	return function () {
+// 		let self = this;
+// 		let args = arguments;
+// 		clearTimeout(timer);
+// 		timer = setTimeout(() => {
+// 			func.apply(self, args);
+// 		}, delay);
+// 	};
+// };
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -67,19 +66,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const detail = {
-	name: "",
-	licenseType: { label: "", value: "" },
-	licenses: 0,
-	registeredBy: "",
-	registeredDate: "11/11/2019",
-};
-
-const ClientDetail = ({ clientId, clientData }) => {
+const ClientDetail = ({ clientId, clientData, getError }) => {
 	const classes = useStyles();
-	const [clientDetail, setClientDetail] = useState(detail);
-	const [error, setError] = useState({ message: "", status: false });
-	const [changedState, setChange] = useState(detail);
+	const [clientDetail, setClientDetail] = useState({});
+	const [changedState, setChange] = useState({});
 	// This state is used to check current state data with pervious
 
 	useEffect(() => {
@@ -107,39 +97,39 @@ const ClientDetail = ({ clientId, clientData }) => {
 				throw new Error(result);
 			}
 		} catch (err) {
-			//console.log("rr",err);
 			if (err?.response?.data?.detail) {
-				setError({ status: true, message: err?.response.data.detail });
+				getError(err.response.data.detail);
 			}
 			if (err?.response?.data?.errors?.name) {
-				setError({ status: true, message: err.response.data.errors.name[0] });
+				getError(err.response.data.errors.name[0]);
 			}
 			return err;
 		}
 	};
 
-	const debounceDropDown = useCallback(
-		debounce((name, val) => {
-			// Check previous data with current data and then patch
-			if (changedState[`${name}`] !== val) changeClientDetails(name, val);
-		}, 1000),
-		[changedState]
-	);
+	// const debounceDropDown = useCallback(
+	// 	debounce((name, val) => {
+	// 		// Check previous data with current data and then patch
+	// 		if (changedState[`${name}`] !== val) changeClientDetails(name, val);
+	// 	}, 1000),
+	// 	[changedState]
+	// );
 
 	const handleInputChange = (name, value) => {
-		//call this function when user stops typing
-		// debounceDropDown(name, value);
 		if (name === "licenseType") {
 			if (value?.label !== clientDetail?.licenseType?.label) {
 				changeClientDetails("licenseType", value.value);
 			}
-		} else {
-			debounceDropDown(name, value);
 		}
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
 		}));
+	};
+
+	// OnBlur Company Name and Liscenses count
+	const handleApiCall = (name, value) => {
+		if (changedState[`${name}`] !== value) changeClientDetails(name, value);
 	};
 
 	const disabledLicenses = () => {
@@ -154,11 +144,6 @@ const ClientDetail = ({ clientId, clientData }) => {
 
 	return (
 		<>
-			<ErrorDialog
-				open={error.status}
-				handleClose={() => setError((e) => ({ message: "", status: false }))}
-				message={error.message}
-			/>
 			<Accordion className={classes.detailAccordion} expanded={true}>
 				<AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
 					<div>
@@ -183,6 +168,7 @@ const ClientDetail = ({ clientId, clientData }) => {
 									},
 								}}
 								onChange={(e) => handleInputChange("name", e.target.value)}
+								onBlur={(e) => handleApiCall("name", e.target.value)}
 								value={clientDetail.name}
 							/>
 						</Grid>
@@ -216,6 +202,7 @@ const ClientDetail = ({ clientId, clientData }) => {
 								}}
 								value={clientDetail.licenses || ""} // String to integer using '+'
 								onChange={(e) => handleInputChange("licenses", +e.target.value)}
+								onBlur={(e) => handleApiCall("licenses", +e.target.value)}
 							/>
 						</Grid>
 						<Grid item sm={6}>

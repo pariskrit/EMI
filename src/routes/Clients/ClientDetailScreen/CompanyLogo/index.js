@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import DropUploadBox from "components/DropUploadBox";
-import ErrorDialog from "components/ErrorDialog";
 import ProviderAsset from "components/ProvidedAsset/ProvidedAsset";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
@@ -48,12 +47,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientLogo = ({ clientId, clientDetail, fetchClientDetail }) => {
+const ClientLogo = ({
+	clientId,
+	clientDetail,
+	fetchClientDetail,
+	getError,
+}) => {
 	const classes = useStyles();
 	const [showUpload, setShowUpload] = useState(true);
 	const [filesUploading, setFilesUploading] = useState(false);
-	const [open, setOpen] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
 
 	useEffect(() => {
 		if (clientDetail.logoURL) {
@@ -73,21 +75,19 @@ const ClientLogo = ({ clientId, clientDetail, fetchClientDetail }) => {
 				throw new Error(response);
 			}
 		} catch (error) {
-			setOpen(true);
-
 			setFilesUploading(false);
 			if (
 				error.response.data.errors !== undefined &&
 				error.response.data.detail === undefined
 			) {
-				setErrorMessage(error.response.data.errors.name);
+				getError(error.response.data.errors.name);
 			} else if (
 				error.response.data.errors !== undefined &&
 				error.response.data.detail !== undefined
 			) {
-				setErrorMessage(error.response.data.detail.name);
+				getError(error.response.data.detail.name);
 			} else {
-				setErrorMessage("Something went wrong!");
+				getError("Something went wrong!");
 			}
 		}
 	};
@@ -99,11 +99,6 @@ const ClientLogo = ({ clientId, clientDetail, fetchClientDetail }) => {
 
 	return (
 		<div className={classes.logoContainer}>
-			<ErrorDialog
-				open={open}
-				handleClose={() => setOpen(false)}
-				message={errorMessage}
-			/>
 			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={
@@ -129,8 +124,7 @@ const ClientLogo = ({ clientId, clientDetail, fetchClientDetail }) => {
 								isImageUploaded={true}
 								filesUploading={filesUploading}
 								setFilesUploading={setFilesUploading}
-								setErrorMessage={setErrorMessage}
-								setOpenErrorModal={setOpen}
+								getError={getError}
 							/>
 						</div>
 					) : (

@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-	clientDetail: {},
+	clientDetail: {
+		name: "",
+		licenseType: { label: "", value: "" },
+		licenses: 0,
+		registeredBy: "",
+		registeredDate: "11/11/2019",
+	},
 	clientDetailLoading: false,
 };
 
