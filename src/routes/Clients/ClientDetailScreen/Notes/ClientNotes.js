@@ -132,11 +132,8 @@ const ClientNotes = ({ clientId, getError }) => {
 				deleteEndpoint={`${BASE_API_PATH}Clientnotes`}
 				deleteID={noteId}
 				handleRemoveData={handleRemoveData}
-			/>{" "}
-			{/* <ErrorDialog
-				open={errorModal}
-				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
-			/> */}
+			/>
+
 			<Accordion className={classes.noteAccordion} defaultExpanded={true}>
 				<AccordionSummary
 					expandIcon={

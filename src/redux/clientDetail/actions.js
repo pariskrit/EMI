@@ -6,6 +6,7 @@ const {
 	clientDetailInitialize,
 	clientDetailFetchSuccess,
 	clientDetailFailure,
+	clientReset,
 } = clientDetailSlice.actions;
 
 export const fetchClientDetail = (id) => async (dispatch) => {
@@ -22,3 +23,5 @@ export const fetchClientDetail = (id) => async (dispatch) => {
 		dispatch(clientDetailFailure());
 	}
 };
+
+export const resetClient = () => (dispatch) => dispatch(clientReset());
