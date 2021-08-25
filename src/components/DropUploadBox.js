@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -52,8 +52,7 @@ const DropUpload = ({
 	isImageUploaded = false,
 	filesUploading,
 	setFilesUploading,
-	setErrorMessage,
-	setOpenErrorModal,
+	getError,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -77,16 +76,14 @@ const DropUpload = ({
 
 				if (!isFileOfImageType) {
 					setFilesUploading(false);
-					setErrorMessage("Please upload file of image type!");
-					setOpenErrorModal(true);
+					getError("Please upload file of image type!");
 
 					return;
 				}
 
 				if (!isFileSizeLessThan1Mb) {
 					setFilesUploading(false);
-					setErrorMessage("Please upload image of size less than 1mb!");
-					setOpenErrorModal(true);
+					getError("Please upload image of size less than 1mb!");
 
 					return;
 				}

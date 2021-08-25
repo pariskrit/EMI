@@ -10,7 +10,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 
 import DeleteDialog from "components/DeleteDialog";
-import ErrorDialog from "components/ErrorDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
@@ -61,13 +60,12 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ClientApplication = ({ clientId }) => {
+const ClientApplication = ({ clientId, getError }) => {
 	const classes = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
 		deleteModal: false,
 		changeModal: false,
-		errorModal: false,
 	});
 	const [appStatus, setStatus] = useState(false);
 	const [appId, setAppId] = useState(null);
@@ -87,6 +85,7 @@ const ClientApplication = ({ clientId }) => {
 
 	useEffect(() => {
 		fetchApplications();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleCreateData = async (applicationId) => {
@@ -106,7 +105,7 @@ const ClientApplication = ({ clientId }) => {
 			}
 		} catch (err) {
 			console.log(err.response);
-			setModal((th) => ({ ...th, errorModal: true }));
+			getError("Error Creating Application");
 		}
 	};
 
@@ -139,7 +138,7 @@ const ClientApplication = ({ clientId }) => {
 		setData(main);
 	};
 
-	const { addModal, deleteModal, changeModal, errorModal } = modal;
+	const { addModal, deleteModal, changeModal } = modal;
 
 	return (
 		<div className={classes.appContainer}>
@@ -164,10 +163,7 @@ const ClientApplication = ({ clientId }) => {
 				status={appStatus}
 				getChangedValue={getChangedValue}
 			/>
-			<ErrorDialog
-				open={errorModal}
-				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
-			/>
+
 			<AccordionBox
 				title={`Application (${data.length})`}
 				isActionsPresent={true}

@@ -6,10 +6,8 @@ import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import CommonAddDialog from "../CommonAddDialog";
 import Region from "./Region";
-import ErrorDialog from "components/ErrorDialog";
 import AccordionBox from "components/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
@@ -55,20 +53,17 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ClientRegionAndSites() {
+function ClientRegionAndSites({ clientId, getError }) {
 	const classes = useStyles();
-	const { id } = useParams();
 	const [listOfRegions, setListOfRegions] = useState([]);
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
-	const [openErrorDialog, setOpenErrorDialog] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
 
 	//add region
 	const onAddRegion = async (e) => {
 		e.preventDefault();
-		let intId = +id;
+		let intId = clientId;
 
 		try {
 			let result = await API.post(BASE_API_PATH + "Regions", {
@@ -104,8 +99,8 @@ function ClientRegionAndSites() {
 				};
 			} else {
 				setOpenAddDialog(false);
-				setOpenErrorDialog(true);
-				setErrorMessage("Something went wrong!");
+
+				getError("Something went wrong!");
 
 				return false;
 			}
@@ -115,7 +110,9 @@ function ClientRegionAndSites() {
 	// fetch RegionsAndSites of client
 	const fetchRegionsAndSites = async () => {
 		try {
-			const result = await API.get(`${BASE_API_PATH}Regions?clientId=${id}`);
+			const result = await API.get(
+				`${BASE_API_PATH}Regions?clientId=${clientId}`
+			);
 
 			handleSort(result.data, setListOfRegions, "name", "asc");
 		} catch (error) {
@@ -125,6 +122,7 @@ function ClientRegionAndSites() {
 
 	useEffect(() => {
 		fetchRegionsAndSites();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
@@ -136,11 +134,6 @@ function ClientRegionAndSites() {
 				input={regionInput}
 				setInput={setRegionInput}
 				createHandler={onAddRegion}
-			/>
-			<ErrorDialog
-				open={openErrorDialog}
-				handleClose={() => setOpenErrorDialog(false)}
-				message={errorMessage}
 			/>
 
 			<AccordionBox
@@ -157,6 +150,7 @@ function ClientRegionAndSites() {
 						key={region.id}
 						region={region}
 						fetchRegionsAndSites={fetchRegionsAndSites}
+						getError={getError}
 					/>
 				))}
 			</AccordionBox>

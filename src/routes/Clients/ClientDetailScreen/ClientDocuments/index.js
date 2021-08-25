@@ -1,20 +1,17 @@
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import DropUploadBox from "components/DropUploadBox";
-import ErrorDialog from "components/ErrorDialog";
 import ProvidedAssetNoImage from "components/ProvidedAsset/ProvidedAssetNoImage";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
 		marginTop: 25,
 		display: "flex",
 		justifyContent: "flex-start",
-		//paddingLeft: "2%",
 	},
 	logoAccordion: {
 		borderColor: ColourConstants.commonBorder,
@@ -51,18 +48,15 @@ const useStyles = makeStyles((theme) => ({
 		width: "100%",
 	},
 }));
-function ClientDocuments() {
+function ClientDocuments({ clientId, getError }) {
 	const classes = useStyles();
-	const { id } = useParams();
 	const [listOfDocuments, setListOfDocuments] = useState([]);
 	const [filesUploading, setFilesUploading] = useState(false);
-	const [open, setOpen] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
 
 	const onDocumentUpload = async (key, url) => {
 		try {
 			const response = await API.post(BASE_API_PATH + "ClientDocuments", {
-				clientId: +id,
+				clientId,
 				documentKey: key,
 			});
 
@@ -72,29 +66,31 @@ function ClientDocuments() {
 
 			fetchClientDocuments();
 		} catch (error) {
-			setOpen(true);
 			setFilesUploading(false);
+
+			let errorMessage = "";
 
 			if (
 				error.response.data.errors !== undefined &&
 				error.response.data.detail === undefined
 			) {
-				setErrorMessage(error.response.data.errors.name);
+				errorMessage = error.response.data.errors.name;
 			} else if (
 				error.response.data.errors !== undefined &&
 				error.response.data.detail !== undefined
 			) {
-				setErrorMessage(error.response.data.detail.name);
+				errorMessage = error.response.data.detail.name;
 			} else {
-				setErrorMessage("Something went wrong!");
+				errorMessage = "Something went wrong!";
 			}
+			getError(errorMessage);
 		}
 	};
 
 	const fetchClientDocuments = async () => {
 		try {
 			const result = await API.get(
-				`${BASE_API_PATH}ClientDocuments?clientId=${id}`
+				`${BASE_API_PATH}ClientDocuments?clientId=${clientId}`
 			);
 			console.log(result);
 			setListOfDocuments([
@@ -113,16 +109,11 @@ function ClientDocuments() {
 
 	useEffect(() => {
 		fetchClientDocuments();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
 		<div className={classes.logoContainer}>
-			<ErrorDialog
-				open={open}
-				handleClose={() => setOpen(false)}
-				message={errorMessage}
-			/>
-
 			<AccordionBox title={`Client Documents (${listOfDocuments.length})`}>
 				<div className={classes.logoContentParent}>
 					{listOfDocuments.map((document, index) => {
@@ -133,10 +124,8 @@ function ClientDocuments() {
 									key={document.id}
 									document={document}
 									showBottomDivider={true}
-									setOpenErrorModal={setOpen}
-									setErrorMessage={setErrorMessage}
+									getError={getError}
 									fetchClientDocuments={fetchClientDocuments}
-									errorMessage={errorMessage}
 								/>
 							);
 						} else {
@@ -144,10 +133,8 @@ function ClientDocuments() {
 								<ProvidedAssetNoImage
 									key={document.id}
 									document={document}
-									setOpenErrorModal={setOpen}
-									setErrorMessage={setErrorMessage}
+									getError={getError}
 									fetchClientDocuments={fetchClientDocuments}
-									errorMessage={errorMessage}
 								/>
 							);
 						}
@@ -156,7 +143,7 @@ function ClientDocuments() {
 					<div className={classes.uploaderContainer}>
 						<DropUploadBox
 							uploadReturn={onDocumentUpload}
-							apiPath={`${BASE_API_PATH}Clients/${id}/upload`}
+							clientID={clientId}
 							filesUploading={filesUploading}
 							setFilesUploading={setFilesUploading}
 						/>
