@@ -229,7 +229,7 @@ const ClientListContent = () => {
 	}, [searchQuery]);
 
 	return (
-		<div>
+		<div className='clientListContentContainer'>
 			<AddClientDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
@@ -272,7 +272,7 @@ const ClientListContent = () => {
 
 					{haveData ? (
 						<AC.SearchContainer>
-							<AC.SearchInner>
+							<AC.SearchInner className='applicationSearchBtn'>
 								<Grid container spacing={1} alignItems="flex-end">
 									<Grid item>
 										<SearchIcon />

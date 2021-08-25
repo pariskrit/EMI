@@ -23,6 +23,7 @@ import React, { useEffect, useState } from "react";
 import AddAppDialog from "./AddAppDialog";
 import ChangeDialog from "./ChangeDialog";
 import ClientAppRow from "./ClientAppRow";
+import './application.css'
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -41,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
 	appAccordion: {
 		borderColor: ColourConstants.commonBorder,
 		borderStyle: "solid",
-		borderWidth: 1,
-		width: "100%",
+		borderWidth: 1,		
+		width: '100%'
 	},
 	tableHead: {
 		backgroundColor: "#D2D2D9",

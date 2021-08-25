@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
 	tickboxSpacing: {
 		marginLeft: "15%",
 	},
+	tickboxSpacingMobile:{
+		marginLeft: '0%'
+	}
 }));
 
 const ApplicationDetails = ({ inputData, setInputData, errors }) => {
@@ -87,8 +90,9 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 					</div>
 				</AccordionSummary>
 				<AccordionDetails>
-					<Grid container>
-						<Grid item xs={6}>
+					{/* --------------- Desktop View ------------ */}
+					<Grid container className='desktopViewGrid' >
+						<Grid item xs={6} >
 							<div className={classes.textInputContainer}>
 								<Typography gutterBottom className={classes.labelText}>
 									Name
@@ -346,6 +350,271 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 							</div>
 						</Grid>
 					</Grid>
+
+
+
+					{/* ------------------------- Mobile View -------------------- */}
+					
+					<Grid container className='mobileViewGrid' >
+						<Grid item xs={12} >
+							<div className={classes.textInputContainer}>
+								<Typography gutterBottom className={classes.labelText}>
+									Name
+								</Typography>
+
+								<TextField
+									error={errors.name === null ? false : true}
+									helperText={errors.name === null ? null : errors.name}
+									variant="outlined"
+									fullWidth
+									value={inputData.name}
+									onChange={(e) => {
+										setInputData({ ...inputData, ...{ name: e.target.value } });
+									}}
+									InputProps={{
+										classes: {
+											input: classes.inputText,
+										},
+									}}
+								/>
+							</div>
+
+							<div className={classes.textInputContainer}>
+								<Typography gutterBottom className={classes.labelText}>
+									Purpose
+								</Typography>
+
+								<TextField
+									error={errors.purpose === null ? false : true}
+									helperText={errors.purpose === null ? null : errors.purpose}
+									variant="outlined"
+									fullWidth
+									multiline
+									rows={2}
+									rowsMax={4}
+									value={inputData.purpose}
+									onChange={(e) => {
+										setInputData({
+											...inputData,
+											...{ purpose: e.target.value },
+										});
+									}}
+									InputProps={{
+										classes: {
+											input: classes.inputText,
+										},
+									}}
+								/>
+							</div>
+						</Grid>
+
+						<Grid item xs={12}>
+							<div className={classes.tickContainer}>
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.equipmentModelStructure}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																equipmentModelStructure:
+																	!inputData.equipmentModelStructure,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Individual Asset Model
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.assetModelStructure}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																assetModelStructure:
+																	!inputData.assetModelStructure,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Facility-Based Model
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.showLocations}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																showLocations: !inputData.showLocations,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Show Locations
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.showLubricants}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																showLubricants: !inputData.showLubricants,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Show Lubricants
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.showParts}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																showParts: !inputData.showParts,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Show Parts
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.showOperatingMode}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																showOperatingMode: !inputData.showOperatingMode,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Show Operating Mode
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.showSystem}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																showSystem: !inputData.showSystem,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Show System
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+
+								<div className={classes.tickInputContainer}>
+									<FormGroup className={classes.tickboxSpacingMobile}>
+										<FormControlLabel
+											control={
+												<EMICheckbox
+													state={inputData.showDefectParts}
+													changeHandler={() => {
+														setInputData({
+															...inputData,
+															...{
+																showDefectParts: !inputData.showDefectParts,
+															},
+														});
+													}}
+												/>
+											}
+											label={
+												<Typography className={classes.inputText}>
+													Show Locations
+												</Typography>
+											}
+										/>
+									</FormGroup>
+								</div>
+							</div>
+						</Grid>
+					</Grid>
+
 				</AccordionDetails>
 			</Accordion>
 		</div>

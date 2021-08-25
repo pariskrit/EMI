@@ -95,7 +95,7 @@ const ColourDetails = ({ inputColour, setInputColour }) => {
 				handleUpdateColour={handleUpdateColour}
 				currentColour={inputColour}
 			/>
-			<div className={classes.colourContainer}>
+			<div className={`${classes.colourContainer} colorContainer`}>
 				<Accordion className={classes.colourAccordion}>
 					<AccordionSummary
 						expandIcon={

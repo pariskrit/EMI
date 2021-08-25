@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 	linkContainer: {
 		display: "flex",
 		alignItems: "center",
-		paddingLeft: 19,
+		paddingLeft: 10,
 	},
 	imgLink: {
 		textDecoration: "underline",

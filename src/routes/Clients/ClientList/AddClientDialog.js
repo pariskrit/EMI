@@ -8,6 +8,8 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 
+import './clientList.css'
+
 // Init styled components
 const ADD = AddDialogStyle();
 
@@ -108,16 +110,21 @@ const AddClientDialog = ({ open, closeHandler, createHandler }) => {
 						{<ADD.HeaderText>Add Client</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
+						<div className="modalButton">
+
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
 							Cancel
 						</ADD.CancelButton>
+						</div>
+						<div className="modalButton">
 						<ADD.ConfirmButton
 							onClick={handleCreateProcess}
 							variant="contained"
 							className={classes.createButton}
-						>
+							>
 							Create Client
 						</ADD.ConfirmButton>
+							</div>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>
 

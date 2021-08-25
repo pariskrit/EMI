@@ -143,7 +143,7 @@ const SmallNavLogo = ({
 
 	if (loading) {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainerRight`}>
 				<Accordion className={classes.logoAccordion}>
 					<AccordionSummary
 						expandIcon={
@@ -172,7 +172,7 @@ const SmallNavLogo = ({
 		);
 	} else {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainerRight`}>
 				<Accordion className={classes.logoAccordion}>
 					<AccordionSummary
 						expandIcon={

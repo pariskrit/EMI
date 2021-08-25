@@ -91,7 +91,7 @@ const OtherAssets = () => {
 	};
 
 	return (
-		<div className={classes.otherAssetContainer}>
+		<div className={`${classes.otherAssetContainer} otherAssets`}>
 			<Accordion className={classes.otherAssetAccordion}>
 				<AccordionSummary
 					expandIcon={

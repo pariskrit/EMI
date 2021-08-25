@@ -1,0 +1,78 @@
+.mobileViewGrid{
+    display: none !important
+}
+
+.mobileViewGridWithDiffDisplay{
+    display: none !important
+}
+
+@media only screen and (max-width: 840px){
+    .applicationNav{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .actionButtonContainer{
+        margin-left: 0 !important
+    }
+}
+
+@media only screen and (max-width: 414px){
+    .applicationContentContainer{
+       margin-bottom: 50px;
+    }
+
+    .actionButtonContainer{
+        width: 100% !important;
+        display: flex;
+        justify-content: center;
+    }
+
+    .actionButtonsBtn{
+        width: 100px !important
+    }
+
+    .buttonGroup{
+       max-width: 84vw;
+       overflow: auto;
+       margin: 0 auto
+    }
+
+    .largeBtn{
+        min-width: 170px !important;
+        font-size: 12px !important
+    }
+
+    .desktopViewGrid{
+        display: none !important;
+    }
+
+    .mobileViewGrid{
+        display: flex !important
+    }
+
+    .mobileViewGridWithDiffDisplay {
+        display: block !important
+    }
+
+    .ticketBox{
+        margin-left: 0% !important
+    }
+
+    .colorContainer{
+        padding-right: 0% !important
+    }
+
+    .logoContainer{
+        padding-left: 0% !important
+    }
+
+    .logoContainerRight{
+        padding-right: 0% !important
+    }
+
+    .otherAssets{
+        padding-left: 0% !important
+    }
+
+}

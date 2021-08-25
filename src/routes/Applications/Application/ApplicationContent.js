@@ -16,6 +16,8 @@ import API from "../../../helpers/api";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 
+import './application2.css'
+
 // Init styled components
 const AC = ContentStyle();
 
@@ -297,8 +299,8 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 		return <CircularProgress />;
 	} else {
 		return (
-			<div>
-				<AC.TopContainer>
+			<div className='applicationContentContainer'>
+				<AC.TopContainer className='applicationNav'>
 					<Navcrumbs crumbs={["Application", data.name]} />
 					<ApplicationActionButtons
 						handleSave={handleSave}
@@ -324,7 +326,9 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							errors={errors}
 						/>
 					</Grid>
-					<Grid item xs={6}>
+
+					{/*----------------------- Desktop View ----------------------- */}
+					<Grid item xs={6} className='desktopViewGrid'>
 						<ColourDetails
 							inputColour={inputData.colour}
 							setInputColour={(newColour) => {
@@ -332,7 +336,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={6}>
+					<Grid item xs={6} className='desktopViewGrid'>
 						<ApplicationLogo
 							logoTrademark={inputData.isLogoTrademarked}
 							logoURL={data.logoURL}
@@ -355,7 +359,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							handleSave={handleSave}
 						/>
 					</Grid>
-					<Grid item xs={6}>
+					<Grid item xs={6} className='desktopViewGrid'>
 						<SmallNavLogo
 							logoURL={data.logoURL}
 							newLogoKey={(newLogoKey) => {
@@ -371,9 +375,62 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							handleSave={handleSave}
 						/>
 					</Grid>
-					<Grid item xs={6}>
+					<Grid item xs={6} className='desktopViewGrid'>
 						<OtherAssets />
 					</Grid>
+
+					{/* ----------------------- Mobile View ----------------------- */}
+					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+						<ColourDetails
+							inputColour={inputData.colour}
+							setInputColour={(newColour) => {
+								setInputData({ ...inputData, ...{ colour: newColour } });
+							}}
+						/>
+					</Grid>
+					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+						<ApplicationLogo
+							logoTrademark={inputData.isLogoTrademarked}
+							logoURL={data.logoURL}
+							newLogoKey={(newLogoKey) => {
+								setInputData({ ...inputData, ...{ logoKey: newLogoKey } });
+							}}
+							newLogoFilename={(newLogoFilename) => {
+								setInputData({
+									...inputData,
+									...{ logoFilename: newLogoFilename },
+								});
+							}}
+							newLogoTrademark={(newTrademark) => {
+								setInputData({
+									...inputData,
+									...{ isLogoTrademarked: newTrademark },
+								});
+							}}
+							id={id}
+							handleSave={handleSave}
+						/>
+					</Grid>
+					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+						<SmallNavLogo
+							logoURL={data.logoURL}
+							newLogoKey={(newLogoKey) => {
+								setInputData({ ...inputData, ...{ logoKey: newLogoKey } });
+							}}
+							newLogoFilename={(newLogoFilename) => {
+								setInputData({
+									...inputData,
+									...{ logoFilename: newLogoFilename },
+								});
+							}}
+							id={id}
+							handleSave={handleSave}
+						/>
+					</Grid>
+					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+						<OtherAssets />
+					</Grid>
+
 				</Grid>
 			</div>
 		);

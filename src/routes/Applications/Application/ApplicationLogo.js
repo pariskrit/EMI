@@ -154,7 +154,7 @@ const ApplicationLogo = ({
 
 	if (loading) {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainer`}>
 				<Accordion className={classes.logoAccordion}>
 					<AccordionSummary
 						expandIcon={
@@ -183,7 +183,7 @@ const ApplicationLogo = ({
 		);
 	} else {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainer`}>
 				<Accordion className={classes.logoAccordion}>
 					<AccordionSummary
 						expandIcon={

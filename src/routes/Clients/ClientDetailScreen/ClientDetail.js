@@ -148,7 +148,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 				handleClose={() => setError((e) => ({ message: "", status: false }))}
 				message={error.message}
 			/>
-			<Accordion className={classes.detailAccordion} expanded={true}>
+			<Accordion className={`${classes.detailAccordion} companyDetail`} expanded={true}>
 				<AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
 					<div>
 						<Typography className={classes.sectionHeading}>
@@ -157,7 +157,7 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 					</div>
 				</AccordionSummary>
 				<AccordionDetails>
-					<Grid container spacing={5}>
+					<Grid container spacing={5} className='companyDetailGrid'>
 						<Grid item sm={12}>
 							<Typography className={classes.labelText}>
 								Company Name<span style={{ color: "#E31212" }}>*</span>

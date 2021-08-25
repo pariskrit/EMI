@@ -33,6 +33,12 @@
 	min-width: 240px;
 }
 
+.companyDetail{
+	width: 100% !important;
+}
+
+
+
 @media (max-width: 1280px) {
 	.client-details .MuiGrid-grid-md-6 {
 		flex-grow: 0;
@@ -48,3 +54,16 @@
 		flex-basis: 50%;
 	}
 }
+
+@media (max-width: 414px){
+	.companyDetailGrid{
+		display: flex;
+		flex-direction: column;
+	}
+
+	.client-details{
+		margin-bottom: 45px
+	}
+}
+
+

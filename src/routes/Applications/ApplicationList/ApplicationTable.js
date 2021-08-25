@@ -13,6 +13,8 @@ import Typography from "@material-ui/core/Typography";
 import PopupMenu from "../../../components/PopupMenu";
 import ColourConstants from "../../../helpers/colourConstants";
 
+import './applicationtable.css'
+
 // Icon imports
 import { ReactComponent as MenuIcon } from "../../../assets/icons/3dot-icon.svg";
 
@@ -99,8 +101,8 @@ const ApplicationTable = ({
 	};
 
 	return (
-		<AT.TableContainer component={Paper} elevation={0}>
-			<Table aria-label="Table">
+		<AT.TableContainer component={Paper} elevation={0} className='applicationTableContainer'>
+			<Table aria-label="Table" >
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
 						<TableCell

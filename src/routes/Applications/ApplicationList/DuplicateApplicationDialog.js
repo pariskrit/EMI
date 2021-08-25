@@ -8,6 +8,8 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 
+import './applicationtable.css'
+
 // Init styled components
 const ADD = DuplicateDialogStyle();
 
@@ -92,7 +94,7 @@ const DuplicateApplicationDialog = ({ id, open, closeHandler, duplicateHandler }
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Duplicate Application</ADD.HeaderText>}
+						{<ADD.HeaderText className='modalText'>Duplicate Application</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
