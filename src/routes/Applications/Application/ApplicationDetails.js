@@ -1,9 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -59,9 +55,6 @@ const useStyles = makeStyles((theme) => ({
 const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 	// Init hooks
 	const classes = useStyles();
-
-	// Init state
-	const [detailsPanel, setDetailsPanel] = useState(true);
 
 	return (
 		<div className={classes.detailsContainer}>
