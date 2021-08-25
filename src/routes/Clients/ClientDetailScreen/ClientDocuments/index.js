@@ -143,10 +143,16 @@ function ClientDocuments({ clientId, getError }) {
 					<div className={classes.uploaderContainer}>
 						<DropUploadBox
 							uploadReturn={onDocumentUpload}
-							clientID={clientId}
+							apiPath={`${BASE_API_PATH}Clients/${clientId}/upload`}
 							filesUploading={filesUploading}
 							setFilesUploading={setFilesUploading}
 						/>
+						{/* <DropUploadBox
+							uploadReturn={onDocumentUpload}
+							clientID={clientId}
+							filesUploading={filesUploading}
+							setFilesUploading={setFilesUploading}
+						/> */}
 					</div>
 				</div>
 			</AccordionBox>

@@ -166,7 +166,9 @@ function Region({ region, fetchRegionsAndSites, getError }) {
 							Site:
 						</Typography>
 						<Typography>
-							<Link className={classes.siteLink}>{site.name}</Link>
+							<Link className={classes.siteLink} to="">
+								{site.name}
+							</Link>
 						</Typography>
 					</AccordionDetails>
 				))}

@@ -95,25 +95,30 @@ const ClientLogo = ({
 		<div className={classes.logoContainer}>
 			<AccordionBox title="Company Logo (1)">
 				{showUpload ? (
-					<div className={classes.logoContentParent}>
-						<DropUploadBox
-							uploadReturn={onLogoUpload}
-							clientID={clientId}
-							isImageUploaded={true}
-							filesUploading={filesUploading}
-							setFilesUploading={setFilesUploading}
-							getError={getError}
-						/>
-					</div>
+					<DropUploadBox
+						uploadReturn={onLogoUpload}
+						apiPath={`${BASE_API_PATH}Clients/${clientId}/upload`}
+						isImageUploaded={true}
+						filesUploading={filesUploading}
+						setFilesUploading={setFilesUploading}
+						// setErrorMessage={setErrorMessage}
+						// setOpenErrorModal={setOpen}
+					/>
 				) : (
-					<div className={classes.logoContentParent}>
-						<ProviderAsset
-							name={clientDetail.logoFilename}
-							src={clientDetail.logoURL}
-							alt={clientDetail.logoFilename}
-							deleteLogo={onDeleteLogo}
-						/>
-					</div>
+					// <DropUploadBox
+					// 	uploadReturn={onLogoUpload}
+					// 	clientID={clientId}
+					// 	isImageUploaded={true}
+					// 	filesUploading={filesUploading}
+					// 	setFilesUploading={setFilesUploading}
+					// 	getError={getError}
+					// />
+					<ProviderAsset
+						name={clientDetail.logoFilename}
+						src={clientDetail.logoURL}
+						alt={clientDetail.logoFilename}
+						deleteLogo={onDeleteLogo}
+					/>
 				)}
 			</AccordionBox>
 		</div>
