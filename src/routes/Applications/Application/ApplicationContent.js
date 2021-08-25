@@ -299,7 +299,11 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 		return (
 			<div>
 				<AC.TopContainer>
-					<Navcrumbs crumbs={["Application", data.name]} />
+					<Navcrumbs
+						crumbs={["Application", data.name]}
+						status=""
+						lastSaved=""
+					/>
 					<ApplicationActionButtons
 						handleSave={handleSave}
 						handleRedirect={handleRedirect}
@@ -310,7 +314,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 						handleUpdateIsActive={handleUpdateIsActive}
 					/>
 				</AC.TopContainer>
-				<SaveHistory />
+				{/* <SaveHistory /> */}
 				<NavButtons
 					navigation={navigation}
 					applicationName={data.name}

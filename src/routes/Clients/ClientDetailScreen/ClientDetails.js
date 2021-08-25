@@ -9,7 +9,7 @@ import CompanyLogo from "./CompanyLogo";
 import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
-import Navcrumbs from "../../../components/Navcrumbs";
+import Navcrumbs from "components/Navcrumbs";
 import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import RestoreIcon from "@material-ui/icons/Restore";
@@ -26,12 +26,6 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: 25,
 		display: "flex",
 		justifyContent: "center",
-	},
-	icon: {
-		width: 10,
-		height: 10,
-		borderRadius: "50%",
-		margin: "5px 5px 0px 5px",
 	},
 }));
 const detail = {
@@ -73,26 +67,12 @@ const ClientDetails = () => {
 	return (
 		<div className="client-details">
 			<div className="flex justify-between">
-				<div>
-					<Navcrumbs crumbs={["Client", clientDetail.name]} />
-					<div>
-						<div className="left-section flex" style={{ gap: "12px" }}>
-							<div style={{ display: "flex" }}>
-								<b>Status:</b>{" "}
-								<div
-									className={classes.icon}
-									style={{
-										backgroundColor: "#24BA78",
-									}}
-								></div>
-								Active
-							</div>
-							<div>
-								<b>Last saved:</b> 21.10.20/1137 AEST
-							</div>
-						</div>
-					</div>
-				</div>
+				<Navcrumbs
+					crumbs={["Client", clientDetail.name]}
+					status=""
+					lastSaved=""
+				/>
+
 				<div className="right-section">
 					<div className="restore">
 						<RestoreIcon />
