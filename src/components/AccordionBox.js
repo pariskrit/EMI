@@ -36,13 +36,14 @@ function AccordionBox({
 	isActionsPresent = false,
 	noExpand,
 	children,
+	defaultExpanded = true,
 }) {
 	const classes = useStyles();
 
 	return (
 		<Accordion
 			className={classes.logoAccordion}
-			defaultExpanded={true}
+			defaultExpanded={defaultExpanded}
 			expanded={noExpand}
 		>
 			<AccordionSummary

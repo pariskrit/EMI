@@ -1,10 +1,5 @@
 import React, { useReducer, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ArrowIcon from "../../../../assets/icons/arrowIcon.svg";
-import Typography from "@material-ui/core/Typography";
 import DropUploadBox from "../../../../components/DropUploadBox";
 import ProviderAsset from "../../../../components/ProvidedAsset/ProvidedAsset";
 import { AssetReducer } from "./reducer";
@@ -13,6 +8,7 @@ import { BASE_API_PATH } from "helpers/constants";
 
 // TODO: Below for dev. In prod, they will come from API call
 import PLACEHOLER from "../../../../assets/PLACEHOLD.jpg";
+import AccordionBox from "components/AccordionBox";
 
 const INIT_ASSETS = [
 	{
@@ -96,71 +92,52 @@ const OtherAssets = () => {
 
 	return (
 		<div className={classes.otherAssetContainer}>
-			<Accordion className={classes.otherAssetAccordion}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
+			<AccordionBox title="Other Assets" defaultExpanded={false}>
+				<div className={classes.detailsParentContainer}>
+					{assets.map((asset, index) => {
+						const handleDelete = () => {
+							deleteAssetHandler(index);
+						};
+
+						// Preventing duplication of dividers
+						if (index === assets.length - 1) {
+							return (
+								<ProviderAsset
+									key={`asset-${index}`}
+									noBottomDivider={false}
+									name={asset.name}
+									src={asset.src}
+									alt={asset.alt}
+									handleDelete={handleDelete}
+								/>
+							);
+						} else {
+							return (
+								<ProviderAsset
+									key={`asset-${index}`}
+									noBottomDivider={true}
+									name={asset.name}
+									src={asset.src}
+									alt={asset.alt}
+									handleDelete={handleDelete}
+								/>
+							);
+						}
+					})}
+
+					<div className={classes.uploaderContainer}>
+						<DropUploadBox
+							uploadReturn={newUploadHandler}
+							apiPath={`${BASE_API_PATH}Applications/${id}/upload`}
+							filesUploading={filesUploading}
+							setFilesUploading={setFilesUploading}
+							// isImageUploaded={true}
+							// setErrorMessage={setErrorMessage}
+							// setOpenErrorModal={setOpen}
 						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Other Assets
-						</Typography>
 					</div>
-				</AccordionSummary>
-				<AccordionDetails>
-					<div className={classes.detailsParentContainer}>
-						{assets.map((asset, index) => {
-							const handleDelete = () => {
-								deleteAssetHandler(index);
-							};
-
-							// Preventing duplication of dividers
-							if (index === assets.length - 1) {
-								return (
-									<ProviderAsset
-										key={`asset-${index}`}
-										noBottomDivider={false}
-										name={asset.name}
-										src={asset.src}
-										alt={asset.alt}
-										handleDelete={handleDelete}
-									/>
-								);
-							} else {
-								return (
-									<ProviderAsset
-										key={`asset-${index}`}
-										noBottomDivider={true}
-										name={asset.name}
-										src={asset.src}
-										alt={asset.alt}
-										handleDelete={handleDelete}
-									/>
-								);
-							}
-						})}
-
-						<div className={classes.uploaderContainer}>
-							<DropUploadBox
-								uploadReturn={newUploadHandler}
-								apiPath={`${BASE_API_PATH}Applications/${id}/upload`}
-								filesUploading={filesUploading}
-								setFilesUploading={setFilesUploading}
-								// isImageUploaded={true}
-								// setErrorMessage={setErrorMessage}
-								// setOpenErrorModal={setOpen}
-							/>
-						</div>
-					</div>
-				</AccordionDetails>
-			</Accordion>
+				</div>
+			</AccordionBox>
 		</div>
 	);
 };
