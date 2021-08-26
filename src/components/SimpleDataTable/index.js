@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
-import ClientKeyRow from "./KeyContactsRow";
+import ClientKeyRow from "./TableRow";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -40,22 +40,20 @@ const useStyles = makeStyles((theme) => ({
 function KeyContacts({ data, tableHeaders }) {
 	const classes = useStyles();
 	return (
-		<AccordionBox title="Key Contacts">
-			<Table>
-				<TableHead className={classes.tableHead}>
-					<TableRow>
-						{tableHeaders.map((header) => (
-							<TableCell>{header}</TableCell>
-						))}
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{data.map((row) => (
-						<ClientKeyRow key={row.id} row={row} />
+		<Table>
+			<TableHead className={classes.tableHead}>
+				<TableRow>
+					{tableHeaders.map((header) => (
+						<TableCell>{header}</TableCell>
 					))}
-				</TableBody>
-			</Table>
-		</AccordionBox>
+				</TableRow>
+			</TableHead>
+			<TableBody>
+				{data.map((row) => (
+					<ClientKeyRow key={row.id} row={row} />
+				))}
+			</TableBody>
+		</Table>
 	);
 }
 

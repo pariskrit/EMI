@@ -1,10 +1,3 @@
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableRow,
-} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import API from "helpers/api";
@@ -12,7 +5,7 @@ import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
-import ClientKeyRow from "./ClientKeyRow";
+import DataTable from "components/SimpleDataTable";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -68,22 +61,10 @@ const ClientKeyContacts = ({ clientId }) => {
 	return (
 		<div className={classes.keyContainer}>
 			<AccordionBox title="Key Contacts" accordianDetailsCss="table-container">
-				<Table>
-					<TableHead className={classes.tableHead}>
-						<TableRow>
-							<TableCell>Name</TableCell>
-							<TableCell>Site</TableCell>
-							<TableCell>Application</TableCell>
-							<TableCell>Email</TableCell>
-							<TableCell>Phone</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{data.map((row) => (
-							<ClientKeyRow key={row.id} row={row} />
-						))}
-					</TableBody>
-				</Table>
+				<DataTable
+					data={data}
+					tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
+				/>
 			</AccordionBox>
 		</div>
 	);

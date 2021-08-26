@@ -1,6 +1,6 @@
 import React from "react";
 
-import KeyContacts from "./KeyContacts";
+import KeyContacts from "components/SimpleDataTable";
 
 export default {
 	title: "Components/Key Contacts",
