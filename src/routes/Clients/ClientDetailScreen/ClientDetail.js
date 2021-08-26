@@ -1,13 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
-import {
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
-	Grid,
-	InputAdornment,
-	TextField,
-	Typography,
-} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Grid, InputAdornment, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
@@ -16,19 +8,26 @@ import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import { changeDate } from "helpers/date";
-import ErrorDialog from "components/ErrorDialog";
+import AccordionBox from "components/AccordionBox";
 
-const debounce = (func, delay) => {
-	let timer;
-	return function () {
-		let self = this;
-		let args = arguments;
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			func.apply(self, args);
-		}, delay);
-	};
-};
+const options = [
+	{ label: "Total Users", value: 0 },
+	{ label: "Concurrent Users", value: 1 },
+	{ label: "Per Job", value: 2 },
+	{ label: "Site-Based Licencing", value: 3 },
+];
+
+// const debounce = (func, delay) => {
+// 	let timer;
+// 	return function () {
+// 		let self = this;
+// 		let args = arguments;
+// 		clearTimeout(timer);
+// 		timer = setTimeout(() => {
+// 			func.apply(self, args);
+// 		}, delay);
+// 	};
+// };
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -60,24 +59,23 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const detail = {
-	name: "",
-	licenseType: { label: "", value: "" },
-	licenses: 0,
-	registeredBy: "",
-	registeredDate: "11/11/2019",
-};
-
-const ClientDetail = ({ clientId, options, clientData }) => {
+const ClientDetail = ({ clientId, clientData, getError }) => {
 	const classes = useStyles();
-	const [clientDetail, setClientDetail] = useState(detail);
-	const [error, setError] = useState({ message: "", status: false });
-	const [changedState, setChange] = useState(detail);
+	const [clientDetail, setClientDetail] = useState({});
+	const [changedState, setChange] = useState({});
 	// This state is used to check current state data with pervious
 
 	useEffect(() => {
-		setClientDetail(clientData);
-		setChange(clientData);
+		const licenseType = options.find((x) => x.value === clientData.licenseType);
+		const data = {
+			name: clientData.name,
+			licenseType,
+			licenses: clientData.licenses,
+			registeredBy: clientData.registeredBy,
+			registeredDate: clientData.registeredDate,
+		};
+		setClientDetail(data);
+		setChange(data);
 	}, [clientData]);
 
 	const changeClientDetails = async (path, value) => {
@@ -92,176 +90,158 @@ const ClientDetail = ({ clientId, options, clientData }) => {
 				throw new Error(result);
 			}
 		} catch (err) {
-			//console.log("rr",err);
 			if (err?.response?.data?.detail) {
-				setError({ status: true, message: err?.response.data.detail });
+				getError(err.response.data.detail);
 			}
 			if (err?.response?.data?.errors?.name) {
-				setError({ status: true, message: err.response.data.errors.name[0] });
+				getError(err.response.data.errors.name[0]);
 			}
 			return err;
 		}
 	};
 
-	const debounceDropDown = useCallback(
-		debounce((name, val) => {
-			// Check previous data with current data and then patch
-			if (changedState[`${name}`] !== val) changeClientDetails(name, val);
-		}, 1000),
-		[changedState]
-	);
+	// const debounceDropDown = useCallback(
+	// 	debounce((name, val) => {
+	// 		// Check previous data with current data and then patch
+	// 		if (changedState[`${name}`] !== val) changeClientDetails(name, val);
+	// 	}, 1000),
+	// 	[changedState]
+	// );
 
 	const handleInputChange = (name, value) => {
-		//call this function when user stops typing
-		debounceDropDown(name, value);
-
+		if (name === "licenseType") {
+			if (value?.label !== clientDetail?.licenseType?.label) {
+				changeClientDetails("licenseType", value.value);
+			}
+		}
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
 		}));
 	};
 
-	const handleLicenceType = (value) => {
-		if (value?.label !== clientDetail?.licenseType?.label) {
-			changeClientDetails("licenseType", value.value);
-		}
-		setClientDetail((th) => ({
-			...th,
-			licenseType: value,
-		}));
+	// OnBlur Company Name and Liscenses count
+	const handleApiCall = (name, value) => {
+		if (changedState[`${name}`] !== value) changeClientDetails(name, value);
 	};
 
 	const disabledLicenses = () => {
-		if (clientDetail.licenseType.label === "Total Users") {
+		if (clientDetail?.licenseType?.label === "Total Users") {
 			return false;
 		}
-		if (clientDetail.licenseType.label === "Concurrent Users") {
+		if (clientDetail?.licenseType?.label === "Concurrent Users") {
 			return false;
 		}
 		return true;
 	};
 
 	return (
-		<>
-			<ErrorDialog
-				open={error.status}
-				handleClose={() => setError((e) => ({ message: "", status: false }))}
-				message={error.message}
-			/>
-			<Accordion className={`${classes.detailAccordion} companyDetail`} expanded={true}>
-				<AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Company Details
-						</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails>
-					<Grid container spacing={5} className='companyDetailGrid'>
-						<Grid item sm={12}>
-							<Typography className={classes.labelText}>
-								Company Name<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								name="name"
-								variant="outlined"
-								fullWidth
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-								}}
-								onChange={(e) => handleInputChange("name", e.target.value)}
-								value={clientDetail.name}
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Licence Type<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<Dropdown
-								options={options}
-								selectedValue={clientDetail.licenseType}
-								onChange={(value) => handleLicenceType(value)}
-								label=""
-								required={true}
-								width="100%"
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Total Licence Count<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								name="licenses"
-								disabled={disabledLicenses()}
-								type="number"
-								variant="outlined"
-								fullWidth
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-								}}
-								value={clientDetail.licenses || ""} // String to integer using '+'
-								onChange={(e) => handleInputChange("licenses", +e.target.value)}
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Registered By<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								value={clientDetail.registeredBy || ""}
-								variant="outlined"
-								fullWidth
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-									readOnly: true,
-								}}
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Registration Date<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								id="date"
-								variant="outlined"
-								fullWidth
-								type="date-local"
-								value={changeDate(clientDetail.registeredDate)}
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-									readOnly: true,
-									startAdornment: (
-										<InputAdornment style={{ marginRight: 10 }}>
-											<CalendarTodayOutlinedIcon
-												style={{ fontSize: 19, marginTop: "-3px" }}
-											/>
-										</InputAdornment>
-									),
-									endAdornment: (
-										<InputAdornment>
-											<img
-												alt="Expand icon"
-												src={ArrowIcon}
-												className={classes.expandIcon}
-											/>
-										</InputAdornment>
-									),
-								}}
-								InputLabelProps={{ shrink: true }}
-							/>
-						</Grid>
-					</Grid>
-				</AccordionDetails>
-			</Accordion>
-		</>
+		<AccordionBox title="Company Details" noExpand={true} accordionClass='companyDetail'>
+			<Grid container spacing={5} className='companyDetailGrid'>
+				<Grid item sm={12}>
+					<Typography className={classes.labelText}>
+						Company Name<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						name="name"
+						variant="outlined"
+						fullWidth
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+						}}
+						onChange={(e) => handleInputChange("name", e.target.value)}
+						onBlur={(e) => handleApiCall("name", e.target.value)}
+						value={clientDetail.name}
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Licence Type<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<Dropdown
+						options={options}
+						selectedValue={clientDetail.licenseType}
+						onChange={(value) => handleInputChange("licenseType", value)}
+						label=""
+						required={true}
+						width="100%"
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Total Licence Count<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						name="licenses"
+						disabled={disabledLicenses()}
+						type="number"
+						variant="outlined"
+						fullWidth
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+						}}
+						value={clientDetail.licenses || ""} // String to integer using '+'
+						onChange={(e) => handleInputChange("licenses", +e.target.value)}
+						onBlur={(e) => handleApiCall("licenses", +e.target.value)}
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Registered By<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						value={clientDetail.registeredBy || ""}
+						variant="outlined"
+						fullWidth
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+							readOnly: true,
+						}}
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Registration Date<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						id="date"
+						variant="outlined"
+						fullWidth
+						type="date-local"
+						value={changeDate(clientDetail.registeredDate)}
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+							readOnly: true,
+							startAdornment: (
+								<InputAdornment style={{ marginRight: 10 }}>
+									<CalendarTodayOutlinedIcon
+										style={{ fontSize: 19, marginTop: "-3px" }}
+									/>
+								</InputAdornment>
+							),
+							endAdornment: (
+								<InputAdornment>
+									<img
+										alt="Expand icon"
+										src={ArrowIcon}
+										className={classes.expandIcon}
+									/>
+								</InputAdornment>
+							),
+						}}
+						InputLabelProps={{ shrink: true }}
+					/>
+				</Grid>
+			</Grid>
+		</AccordionBox>
 	);
 };
 

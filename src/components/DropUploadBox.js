@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -47,12 +47,12 @@ const useStyles = makeStyles((theme) => ({
 // BIG TODO: Need to have handling for single vs. multi uploads
 const DropUpload = ({
 	uploadReturn,
-	clientID,
+
+	apiPath,
 	isImageUploaded = false,
 	filesUploading,
 	setFilesUploading,
-	setErrorMessage,
-	setOpenErrorModal,
+	getError,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -76,16 +76,14 @@ const DropUpload = ({
 
 				if (!isFileOfImageType) {
 					setFilesUploading(false);
-					setErrorMessage("Please upload file of image type!");
-					setOpenErrorModal(true);
+					getError("Please upload file of image type!");
 
 					return;
 				}
 
 				if (!isFileSizeLessThan1Mb) {
 					setFilesUploading(false);
-					setErrorMessage("Please upload image of size less than 1mb!");
-					setOpenErrorModal(true);
+					getError("Please upload image of size less than 1mb!");
 
 					return;
 				}
@@ -95,7 +93,7 @@ const DropUpload = ({
 			// NOTE: currently handling single file
 			getUploadLink(fileName).then((uploadDetails) =>
 				uploadFile(acceptedFiles[0], uploadDetails.url).then((res) => {
-					uploadReturn(uploadDetails.key, uploadDetails.url);
+					uploadReturn(uploadDetails.key, acceptedFiles[0].path);
 				})
 			);
 		},
@@ -106,15 +104,11 @@ const DropUpload = ({
 
 	// Helpers
 	const getUploadLink = async (fileName) => {
-		console.log(clientID, fileName);
 		// Attemptong to get signed s3 upload link
 		try {
-			let uploadLink = await API.post(
-				`${BASE_API_PATH}Clients/${clientID}/upload`,
-				{
-					Filename: fileName,
-				}
-			);
+			let uploadLink = await API.post(apiPath, {
+				Filename: fileName,
+			});
 
 			// Getting URL from stream if success
 			if (uploadLink.status === 200) {

@@ -242,7 +242,7 @@ function Navbar({ Content }) {
 						// when implemented
 						if (index === 1) {
 							return (
-								<Link to={item[2]} className={classes.navLink}>
+								<Link to={item[2]} className={classes.navLink} key={item[0]}>
 									<div className={classes.navListContainer}>
 										<ListItem
 											button
@@ -267,7 +267,7 @@ function Navbar({ Content }) {
 							);
 						} else {
 							return (
-								<Link to={item[2]} className={classes.navLink}>
+								<Link to={item[2]} className={classes.navLink} key={item[0]}>
 									<div className={classes.navListContainer}>
 										<ListItem button key={item[0]}>
 											<ListItemIcon className={classes.navIconContainer}>

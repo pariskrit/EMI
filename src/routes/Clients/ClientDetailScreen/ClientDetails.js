@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import RestoreIcon from "@material-ui/icons/Restore";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
 import ClientApplication from "./Applications/ClientApplication";
 import ClientDetail from "./ClientDetail";
 import KeyContacts from "./KeyContacts/ClientKeyContacts";
@@ -9,17 +11,9 @@ import CompanyLogo from "./CompanyLogo";
 import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
-import Navcrumbs from "../../../components/Navcrumbs";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
-import RestoreIcon from "@material-ui/icons/Restore";
-
-const options = [
-	{ label: "Total Users", value: 0 },
-	{ label: "Concurrent Users", value: 1 },
-	{ label: "Per Job", value: 2 },
-	{ label: "Site-Based Licencing", value: 3 },
-];
+import Navcrumbs from "components/Navcrumbs";
+import { fetchClientDetail, resetClient } from "redux/clientDetail/actions";
+import { showError } from "redux/common/actions";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -27,72 +21,35 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "center",
 	},
-	icon: {
-		width: 10,
-		height: 10,
-		borderRadius: "50%",
-		margin: "5px 5px 0px 5px",
-	},
 }));
-const detail = {
-	name: "",
-	licenseType: { label: "", value: "" },
-	licenses: 0,
-	registeredBy: "",
-	registeredDate: "11/11/2019",
-	logoFilename: "",
-	logoURL: "",
-	logoKey: "",
-};
 
-const ClientDetails = () => {
+const ClientDetails = ({
+	clientDetail,
+	fetchClientData,
+	getError,
+	resetPage,
+}) => {
 	const classes = useStyles();
 	const { id } = useParams();
-	const [clientDetail, setClientDetail] = useState(detail);
 
-	React.useEffect(() => {
-		const fetchClient = async () => {
-			try {
-				const result = await API.get(`${BASE_API_PATH}Clients/${id}`);
-				if (result.status === 200) {
-					const licenseType = options.find(
-						(x) => x.value === result.data.licenseType
-					);
-					setClientDetail({ ...result.data, licenseType });
-				} else {
-					throw new Error(result);
-				}
-			} catch (err) {
-				console.log(err);
-				return err;
-			}
-		};
-		fetchClient();
-	}, [id]);
+	React.useEffect(
+		() => {
+			fetchClientData(id);
+			return () => resetPage();
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[]
+	);
 
 	return (
 		<div className="client-details">
 			<div className="flex justify-between">
-				<div>
-					<Navcrumbs crumbs={["Client", clientDetail.name]} />
-					<div>
-						<div className="left-section flex" style={{ gap: "12px" }}>
-							<div style={{ display: "flex" }}>
-								<b>Status:</b>{" "}
-								<div
-									className={classes.icon}
-									style={{
-										backgroundColor: "#24BA78",
-									}}
-								></div>
-								Active
-							</div>
-							<div>
-								<b>Last saved:</b> 21.10.20/1137 AEST
-							</div>
-						</div>
-					</div>
-				</div>
+				<Navcrumbs
+					crumbs={["Client", clientDetail.name]}
+					status=""
+					lastSaved=""
+				/>
+
 				<div className="right-section">
 					<div className="restore">
 						<RestoreIcon />
@@ -104,19 +61,24 @@ const ClientDetails = () => {
 					<Grid item xs={12}>
 						<ClientDetail
 							clientId={+id}
-							options={options}
 							clientData={clientDetail}
+							getError={getError}
 						/>
 					</Grid>
 					<Grid item lg={6} md={6} xs={12}>
-						<CompanyLogo />
-						<RegionAndSites />
-						<ClientDocuments />
+						<CompanyLogo
+							clientDetail={clientDetail}
+							clientId={+id}
+							fetchClientDetail={fetchClientData}
+							getError={getError}
+						/>
+						<RegionAndSites clientId={+id} getError={getError} />
+						<ClientDocuments clientId={+id} getError={getError} />
 					</Grid>
 					<Grid item lg={6} md={6} xs={12}>
-						<ClientApplication clientId={+id} />
+						<ClientApplication clientId={+id} getError={getError} />
 						<KeyContacts clientId={+id} />
-						<ClientNotes clientId={+id} />
+						<ClientNotes clientId={+id} getError={getError} />
 					</Grid>
 				</Grid>
 			</div>
@@ -124,4 +86,14 @@ const ClientDetails = () => {
 	);
 };
 
-export default ClientDetails;
+const mapStateToProps = ({
+	clientDetailData: { clientDetail, clientDetailLoading },
+}) => ({ clientDetail, clientDetailLoading });
+
+const mapDispatchToProps = (dispatch) => ({
+	getError: (message) => dispatch(showError(message)),
+	fetchClientData: (id) => dispatch(fetchClientDetail(id)),
+	resetPage: () => dispatch(resetClient()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ClientDetails);

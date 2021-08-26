@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "@material-ui/core/Link";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
 import ColourEditDialog from "./ColourEditDialog";
 import ColourConstants from "../../../helpers/colourConstants";
+import AccordionBox from "components/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	colourContainer: {
@@ -96,38 +93,22 @@ const ColourDetails = ({ inputColour, setInputColour }) => {
 				currentColour={inputColour}
 			/>
 			<div className={`${classes.colourContainer} colorContainer`}>
-				<Accordion className={classes.colourAccordion}>
-					<AccordionSummary
-						expandIcon={
-							<img
-								alt="Expand icon"
-								src={ArrowIcon}
-								className={classes.expandIcon}
-							/>
-						}
-						aria-controls="panel1a-content"
-						id="panel1a-header"
-					>
-						<div>
-							<Typography className={classes.sectionHeading}>
-								Primary Application Colour
+				<AccordionBox
+					title="Primary Application Colour"
+					defaultExpanded={false}
+				>
+					<div className={classes.colourContent}>
+						<div className={classes.colourExample} style={bgColour}></div>
+						<div className={classes.colourText}>
+							<Typography>{inputColour}</Typography>
+						</div>
+						<div className={classes.linkTextContainer}>
+							<Typography onClick={handleEditOpen}>
+								<Link className={classes.editLink}>Edit</Link>
 							</Typography>
 						</div>
-					</AccordionSummary>
-					<AccordionDetails>
-						<div className={classes.colourContent}>
-							<div className={classes.colourExample} style={bgColour}></div>
-							<div className={classes.colourText}>
-								<Typography>{inputColour}</Typography>
-							</div>
-							<div className={classes.linkTextContainer}>
-								<Typography onClick={handleEditOpen}>
-									<Link className={classes.editLink}>Edit</Link>
-								</Typography>
-							</div>
-						</div>
-					</AccordionDetails>
-				</Accordion>
+					</div>
+				</AccordionBox>
 			</div>
 		</>
 	);

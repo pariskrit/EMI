@@ -312,7 +312,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 						handleUpdateIsActive={handleUpdateIsActive}
 					/>
 				</AC.TopContainer>
-				<SaveHistory />
+				{/* <SaveHistory /> */}
 				<NavButtons
 					navigation={navigation}
 					applicationName={data.name}

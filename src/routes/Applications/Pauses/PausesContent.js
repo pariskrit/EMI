@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import API from "../../../helpers/api";
 import ContentStyle from "../../../styles/application/ContentStyle";
+import TableStyle from "styles/application/TableStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Navcrumbs from "../../../components/Navcrumbs";
 import ActionButtons from "./ActionButtons";
@@ -9,16 +10,21 @@ import NavButtons from "../../../components/NavButtons";
 import DetailsPanel from "../../../components/DetailsPanel";
 import DeleteDialog from "../../../components/DeleteDialog";
 import Grid from "@material-ui/core/Grid";
-import PauseTable from "./PausesTable";
 import AddPauseDialog from "./AddDialog/AddDialog";
 import EditPauseDialog from "./EditDialog/EditDialog";
 import { handleSort } from "../../../helpers/utils";
+import PopupMenu from "components/PopupMenu";
+import TableRow from "@material-ui/core/TableRow";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import DoubleHeadTable from "components/DoubleHeadTable";
 
 // Init styled components
 const AC = ContentStyle();
+// Init styled components
+const AT = TableStyle();
 
 const PausesContent = ({ navigation, id, setIs404, state }) => {
 	// Init state
@@ -34,6 +40,9 @@ const PausesContent = ({ navigation, id, setIs404, state }) => {
 	const [deleteID, setDeleteID] = useState(null);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [searchedData, setSearchedData] = useState([]);
+	// Init State
+	const [selectedData, setSelectedData] = useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
 
 	const handleAddSubcat = (parentId, id, name) => {
 		const newData = [...data];
@@ -388,18 +397,76 @@ const PausesContent = ({ navigation, id, setIs404, state }) => {
 						</AC.SearchContainer>
 					</AC.DetailsContainer>
 
-					<PauseTable
+					<DoubleHeadTable
 						data={data}
 						setData={setData}
 						handleSort={handleSort}
 						searchQuery={searchQuery}
-						handleDeleteDialogOpen={handleDeleteDialogOpen}
-						handleEditDialogOpen={handleEditDialogOpen}
 						currentTableSort={currentTableSort}
 						setCurrentTableSort={setCurrentTableSort}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
-					/>
+					>
+						{(searchQuery === "" ? data : searchedData).map((d, index) => (
+							<TableRow>
+								<AT.DataCell>
+									<AT.TableBodyText>{d.name}</AT.TableBodyText>
+								</AT.DataCell>
+								<AT.DataCell>
+									<AT.CellContainer>
+										<AT.TableBodyText>
+											{d.pauseSubcategories.length
+												? d.pauseSubcategories.length
+												: null}
+										</AT.TableBodyText>
+
+										<AT.DotMenu
+											onClick={(e) => {
+												setAnchorEl(
+													anchorEl === e.currentTarget ? null : e.currentTarget
+												);
+												setSelectedData(
+													anchorEl === e.currentTarget ? null : index
+												);
+											}}
+										>
+											<AT.TableMenuButton>
+												<MenuIcon />
+											</AT.TableMenuButton>
+
+											<PopupMenu
+												index={index}
+												selectedData={selectedData}
+												anchorEl={anchorEl}
+												isLast={
+													searchQuery === ""
+														? index === data.length - 1
+														: index === searchedData.length - 1
+												}
+												id={d.id}
+												clickAwayHandler={() => {
+													setAnchorEl(null);
+													setSelectedData(null);
+												}}
+												menuData={[
+													{
+														name: "Edit",
+														handler: handleEditDialogOpen,
+														isDelete: false,
+													},
+													{
+														name: "Delete",
+														handler: handleDeleteDialogOpen,
+														isDelete: true,
+													},
+												]}
+											/>
+										</AT.DotMenu>
+									</AT.CellContainer>
+								</AT.DataCell>
+							</TableRow>
+						))}
+					</DoubleHeadTable>
 				</>
 			) : (
 				<AC.SpinnerContainer>

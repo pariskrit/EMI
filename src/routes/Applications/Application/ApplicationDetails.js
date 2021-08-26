@@ -1,9 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -11,6 +7,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "../../../components/EMICheckbox";
 import ColourConstants from "../../../helpers/colourConstants";
+import AccordionBox from "components/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	detailsContainer: {
@@ -62,563 +59,538 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 	// Init hooks
 	const classes = useStyles();
 
-	// Init state
-	const [detailsPanel, setDetailsPanel] = useState(true);
-
 	return (
 		<div className={classes.detailsContainer}>
-			<Accordion
-				expanded={detailsPanel}
-				onChange={() => {
-					setDetailsPanel(!detailsPanel);
-				}}
-				className={classes.detailsAccordion}
-			>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
-						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<div>
-						<Typography className={classes.sectionHeading}>Details</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails>
-					{/* --------------- Desktop View ------------ */}
-					<Grid container className='desktopViewGrid' >
-						<Grid item xs={6} >
-							<div className={classes.textInputContainer}>
-								<Typography gutterBottom className={classes.labelText}>
-									Name
-								</Typography>
+			<AccordionBox title="Details">
 
-								<TextField
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
-									variant="outlined"
-									fullWidth
-									value={inputData.name}
-									onChange={(e) => {
-										setInputData({ ...inputData, ...{ name: e.target.value } });
-									}}
-									InputProps={{
-										classes: {
-											input: classes.inputText,
-										},
-									}}
-								/>
-							</div>
+				{/* --- Desktop View --- */}
+				<Grid container  className='desktopViewGrid' >
+					<Grid item xs={6}>
+						<div className={classes.textInputContainer}>
+							<Typography gutterBottom className={classes.labelText}>
+								Name
+							</Typography>
 
-							<div className={classes.textInputContainer}>
-								<Typography gutterBottom className={classes.labelText}>
-									Purpose
-								</Typography>
+							<TextField
+								error={errors.name === null ? false : true}
+								helperText={errors.name === null ? null : errors.name}
+								variant="outlined"
+								fullWidth
+								value={inputData.name}
+								onChange={(e) => {
+									setInputData({ ...inputData, ...{ name: e.target.value } });
+								}}
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+								}}
+							/>
+						</div>
 
-								<TextField
-									error={errors.purpose === null ? false : true}
-									helperText={errors.purpose === null ? null : errors.purpose}
-									variant="outlined"
-									fullWidth
-									multiline
-									rows={2}
-									rowsMax={4}
-									value={inputData.purpose}
-									onChange={(e) => {
-										setInputData({
-											...inputData,
-											...{ purpose: e.target.value },
-										});
-									}}
-									InputProps={{
-										classes: {
-											input: classes.inputText,
-										},
-									}}
-								/>
-							</div>
-						</Grid>
+						<div className={classes.textInputContainer}>
+							<Typography gutterBottom className={classes.labelText}>
+								Purpose
+							</Typography>
 
-						<Grid item xs={6}>
-							<div className={classes.tickContainer}>
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.equipmentModelStructure}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																equipmentModelStructure:
-																	!inputData.equipmentModelStructure,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Individual Asset Model
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.assetModelStructure}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																assetModelStructure:
-																	!inputData.assetModelStructure,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Facility-Based Model
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showLocations}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showLocations: !inputData.showLocations,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Locations
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showLubricants}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showLubricants: !inputData.showLubricants,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Lubricants
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showParts}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showParts: !inputData.showParts,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Parts
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showOperatingMode}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showOperatingMode: !inputData.showOperatingMode,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Operating Mode
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showSystem}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showSystem: !inputData.showSystem,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show System
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacing}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showDefectParts}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showDefectParts: !inputData.showDefectParts,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Locations
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-							</div>
-						</Grid>
+							<TextField
+								error={errors.purpose === null ? false : true}
+								helperText={errors.purpose === null ? null : errors.purpose}
+								variant="outlined"
+								fullWidth
+								multiline
+								rows={2}
+								rowsMax={4}
+								value={inputData.purpose}
+								onChange={(e) => {
+									setInputData({
+										...inputData,
+										...{ purpose: e.target.value },
+									});
+								}}
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+								}}
+							/>
+						</div>
 					</Grid>
 
-
-
-					{/* ------------------------- Mobile View -------------------- */}
-					
-					<Grid container className='mobileViewGrid' >
-						<Grid item xs={12} >
-							<div className={classes.textInputContainer}>
-								<Typography gutterBottom className={classes.labelText}>
-									Name
-								</Typography>
-
-								<TextField
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
-									variant="outlined"
-									fullWidth
-									value={inputData.name}
-									onChange={(e) => {
-										setInputData({ ...inputData, ...{ name: e.target.value } });
-									}}
-									InputProps={{
-										classes: {
-											input: classes.inputText,
-										},
-									}}
-								/>
+					<Grid item xs={6}>
+						<div className={classes.tickContainer}>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.equipmentModelStructure}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															equipmentModelStructure:
+																!inputData.equipmentModelStructure,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Individual Asset Model
+											</Typography>
+										}
+									/>
+								</FormGroup>
 							</div>
 
-							<div className={classes.textInputContainer}>
-								<Typography gutterBottom className={classes.labelText}>
-									Purpose
-								</Typography>
-
-								<TextField
-									error={errors.purpose === null ? false : true}
-									helperText={errors.purpose === null ? null : errors.purpose}
-									variant="outlined"
-									fullWidth
-									multiline
-									rows={2}
-									rowsMax={4}
-									value={inputData.purpose}
-									onChange={(e) => {
-										setInputData({
-											...inputData,
-											...{ purpose: e.target.value },
-										});
-									}}
-									InputProps={{
-										classes: {
-											input: classes.inputText,
-										},
-									}}
-								/>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.assetModelStructure}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															assetModelStructure:
+																!inputData.assetModelStructure,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Facility-Based Model
+											</Typography>
+										}
+									/>
+								</FormGroup>
 							</div>
-						</Grid>
 
-						<Grid item xs={12}>
-							<div className={classes.tickContainer}>
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.equipmentModelStructure}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																equipmentModelStructure:
-																	!inputData.equipmentModelStructure,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Individual Asset Model
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.assetModelStructure}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																assetModelStructure:
-																	!inputData.assetModelStructure,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Facility-Based Model
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showLocations}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showLocations: !inputData.showLocations,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Locations
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showLubricants}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showLubricants: !inputData.showLubricants,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Lubricants
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showParts}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showParts: !inputData.showParts,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Parts
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showOperatingMode}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showOperatingMode: !inputData.showOperatingMode,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Operating Mode
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showSystem}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showSystem: !inputData.showSystem,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show System
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
-
-								<div className={classes.tickInputContainer}>
-									<FormGroup className={classes.tickboxSpacingMobile}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={inputData.showDefectParts}
-													changeHandler={() => {
-														setInputData({
-															...inputData,
-															...{
-																showDefectParts: !inputData.showDefectParts,
-															},
-														});
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.inputText}>
-													Show Locations
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showLocations}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showLocations: !inputData.showLocations,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Locations
+											</Typography>
+										}
+									/>
+								</FormGroup>
 							</div>
-						</Grid>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showLubricants}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showLubricants: !inputData.showLubricants,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Lubricants
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showParts}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showParts: !inputData.showParts,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Parts
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showOperatingMode}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showOperatingMode: !inputData.showOperatingMode,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Operating Mode
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showSystem}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showSystem: !inputData.showSystem,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show System
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showDefectParts}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showDefectParts: !inputData.showDefectParts,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Locations
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+						</div>
+					</Grid>
+				</Grid>
+
+
+				{/* --- Mobile View --- */}
+				<Grid container  className='mobileViewGrid' >
+					<Grid item xs={12}>
+						<div className={classes.textInputContainer}>
+							<Typography gutterBottom className={classes.labelText}>
+								Name
+							</Typography>
+
+							<TextField
+								error={errors.name === null ? false : true}
+								helperText={errors.name === null ? null : errors.name}
+								variant="outlined"
+								fullWidth
+								value={inputData.name}
+								onChange={(e) => {
+									setInputData({ ...inputData, ...{ name: e.target.value } });
+								}}
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+								}}
+							/>
+						</div>
+
+						<div className={classes.textInputContainer}>
+							<Typography gutterBottom className={classes.labelText}>
+								Purpose
+							</Typography>
+
+							<TextField
+								error={errors.purpose === null ? false : true}
+								helperText={errors.purpose === null ? null : errors.purpose}
+								variant="outlined"
+								fullWidth
+								multiline
+								rows={2}
+								rowsMax={4}
+								value={inputData.purpose}
+								onChange={(e) => {
+									setInputData({
+										...inputData,
+										...{ purpose: e.target.value },
+									});
+								}}
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+								}}
+							/>
+						</div>
 					</Grid>
 
-				</AccordionDetails>
-			</Accordion>
+					<Grid item xs={12}>
+						<div className={classes.tickContainer}>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.equipmentModelStructure}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															equipmentModelStructure:
+																!inputData.equipmentModelStructure,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Individual Asset Model
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.assetModelStructure}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															assetModelStructure:
+																!inputData.assetModelStructure,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Facility-Based Model
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showLocations}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showLocations: !inputData.showLocations,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Locations
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showLubricants}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showLubricants: !inputData.showLubricants,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Lubricants
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showParts}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showParts: !inputData.showParts,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Parts
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showOperatingMode}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showOperatingMode: !inputData.showOperatingMode,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Operating Mode
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showSystem}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showSystem: !inputData.showSystem,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show System
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={inputData.showDefectParts}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showDefectParts: !inputData.showDefectParts,
+														},
+													});
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Locations
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+						</div>
+					</Grid>
+				</Grid>
+
+			</AccordionBox>
 		</div>
 	);
 };
 
 export default ApplicationDetails;
+
+

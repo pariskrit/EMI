@@ -1,20 +1,15 @@
 import {
-	Accordion,
-	AccordionActions,
-	AccordionDetails,
-	AccordionSummary,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
-	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
-import CurveButton from "components/CurveButton";
+
+import AccordionBox from "components/AccordionBox";
+
 import DeleteDialog from "components/DeleteDialog";
-import ErrorDialog from "components/ErrorDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
@@ -66,13 +61,12 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ClientApplication = ({ clientId }) => {
+const ClientApplication = ({ clientId, getError }) => {
 	const classes = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
 		deleteModal: false,
 		changeModal: false,
-		errorModal: false,
 	});
 	const [appStatus, setStatus] = useState(false);
 	const [appId, setAppId] = useState(null);
@@ -92,6 +86,7 @@ const ClientApplication = ({ clientId }) => {
 
 	useEffect(() => {
 		fetchApplications();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleCreateData = async (applicationId) => {
@@ -111,7 +106,7 @@ const ClientApplication = ({ clientId }) => {
 			}
 		} catch (err) {
 			console.log(err.response);
-			setModal((th) => ({ ...th, errorModal: true }));
+			getError("Error Creating Application");
 		}
 	};
 
@@ -144,7 +139,7 @@ const ClientApplication = ({ clientId }) => {
 		setData(main);
 	};
 
-	const { addModal, deleteModal, changeModal, errorModal } = modal;
+	const { addModal, deleteModal, changeModal } = modal;
 
 	return (
 		<div className={classes.appContainer}>
@@ -169,58 +164,35 @@ const ClientApplication = ({ clientId }) => {
 				status={appStatus}
 				getChangedValue={getChangedValue}
 			/>
-			<ErrorDialog
-				open={errorModal}
-				handleClose={() => setModal((th) => ({ ...th, errorModal: false }))}
-			/>
-			<Accordion className={classes.appAccordion} defaultExpanded={true}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
-						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Application ({data.length})
-						</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails className="table-container">
-					<Table>
-						<TableHead className={classes.tableHead}>
-							<TableRow>
-								<TableCell>Name</TableCell>
-								<TableCell>Sites(Qty)</TableCell>
-								<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{data.map((row) => (
-								<ClientAppRow
-									key={row.id}
-									row={row}
-									classes={classes}
-									onDeleteApp={() => handleDeleteApp(row.id)}
-									onChangeApp={() => handleChangeApp(row.id)}
-								/>
-							))}
-						</TableBody>
-					</Table>
-				</AccordionDetails>
-				<AccordionActions className={classes.actionButton}>
-					<CurveButton
-						onClick={() => setModal((th) => ({ ...th, addModal: true }))}
-					>
-						Add Application
-					</CurveButton>
-				</AccordionActions>
-			</Accordion>
+
+			<AccordionBox
+				title={`Application (${data.length})`}
+				isActionsPresent={true}
+				buttonName="Add Application"
+				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
+				accordianDetailsCss = 'table-container'
+			>
+				<Table>
+					<TableHead className={classes.tableHead}>
+						<TableRow>
+							<TableCell>Name</TableCell>
+							<TableCell>Sites(Qty)</TableCell>
+							<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{data.map((row) => (
+							<ClientAppRow
+								key={row.id}
+								row={row}
+								classes={classes}
+								onDeleteApp={() => handleDeleteApp(row.id)}
+								onChangeApp={() => handleChangeApp(row.id)}
+							/>
+						))}
+					</TableBody>
+				</Table>
+			</AccordionBox>
 		</div>
 	);
 };
