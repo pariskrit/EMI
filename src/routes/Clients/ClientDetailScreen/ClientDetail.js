@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
-	Grid,
-	InputAdornment,
-	TextField,
-	Typography,
-} from "@material-ui/core";
+import { Grid, InputAdornment, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
@@ -16,6 +8,7 @@ import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import { changeDate } from "helpers/date";
+import AccordionBox from "components/AccordionBox";
 
 const options = [
 	{ label: "Total Users", value: 0 },
@@ -143,123 +136,112 @@ const ClientDetail = ({ clientId, clientData, getError }) => {
 	};
 
 	return (
-		<>
-			<Accordion className={classes.detailAccordion} expanded={true}>
-				<AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Company Details
-						</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails>
-					<Grid container spacing={5}>
-						<Grid item sm={12}>
-							<Typography className={classes.labelText}>
-								Company Name<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								name="name"
-								variant="outlined"
-								fullWidth
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-								}}
-								onChange={(e) => handleInputChange("name", e.target.value)}
-								onBlur={(e) => handleApiCall("name", e.target.value)}
-								value={clientDetail.name}
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Licence Type<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<Dropdown
-								options={options}
-								selectedValue={clientDetail.licenseType}
-								onChange={(value) => handleInputChange("licenseType", value)}
-								label=""
-								required={true}
-								width="100%"
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Total Licence Count<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								name="licenses"
-								disabled={disabledLicenses()}
-								type="number"
-								variant="outlined"
-								fullWidth
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-								}}
-								value={clientDetail.licenses || ""} // String to integer using '+'
-								onChange={(e) => handleInputChange("licenses", +e.target.value)}
-								onBlur={(e) => handleApiCall("licenses", +e.target.value)}
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Registered By<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								value={clientDetail.registeredBy || ""}
-								variant="outlined"
-								fullWidth
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-									readOnly: true,
-								}}
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<Typography className={classes.labelText}>
-								Registration Date<span style={{ color: "#E31212" }}>*</span>
-							</Typography>
-							<TextField
-								id="date"
-								variant="outlined"
-								fullWidth
-								type="date-local"
-								value={changeDate(clientDetail.registeredDate)}
-								InputProps={{
-									classes: {
-										input: classes.inputText,
-									},
-									readOnly: true,
-									startAdornment: (
-										<InputAdornment style={{ marginRight: 10 }}>
-											<CalendarTodayOutlinedIcon
-												style={{ fontSize: 19, marginTop: "-3px" }}
-											/>
-										</InputAdornment>
-									),
-									endAdornment: (
-										<InputAdornment>
-											<img
-												alt="Expand icon"
-												src={ArrowIcon}
-												className={classes.expandIcon}
-											/>
-										</InputAdornment>
-									),
-								}}
-								InputLabelProps={{ shrink: true }}
-							/>
-						</Grid>
-					</Grid>
-				</AccordionDetails>
-			</Accordion>
-		</>
+		<AccordionBox title="Company Details" noExpand={true}>
+			<Grid container spacing={5}>
+				<Grid item sm={12}>
+					<Typography className={classes.labelText}>
+						Company Name<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						name="name"
+						variant="outlined"
+						fullWidth
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+						}}
+						onChange={(e) => handleInputChange("name", e.target.value)}
+						onBlur={(e) => handleApiCall("name", e.target.value)}
+						value={clientDetail.name}
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Licence Type<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<Dropdown
+						options={options}
+						selectedValue={clientDetail.licenseType}
+						onChange={(value) => handleInputChange("licenseType", value)}
+						label=""
+						required={true}
+						width="100%"
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Total Licence Count<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						name="licenses"
+						disabled={disabledLicenses()}
+						type="number"
+						variant="outlined"
+						fullWidth
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+						}}
+						value={clientDetail.licenses || ""} // String to integer using '+'
+						onChange={(e) => handleInputChange("licenses", +e.target.value)}
+						onBlur={(e) => handleApiCall("licenses", +e.target.value)}
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Registered By<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						value={clientDetail.registeredBy || ""}
+						variant="outlined"
+						fullWidth
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+							readOnly: true,
+						}}
+					/>
+				</Grid>
+				<Grid item sm={6}>
+					<Typography className={classes.labelText}>
+						Registration Date<span style={{ color: "#E31212" }}>*</span>
+					</Typography>
+					<TextField
+						id="date"
+						variant="outlined"
+						fullWidth
+						type="date-local"
+						value={changeDate(clientDetail.registeredDate)}
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+							readOnly: true,
+							startAdornment: (
+								<InputAdornment style={{ marginRight: 10 }}>
+									<CalendarTodayOutlinedIcon
+										style={{ fontSize: 19, marginTop: "-3px" }}
+									/>
+								</InputAdornment>
+							),
+							endAdornment: (
+								<InputAdornment>
+									<img
+										alt="Expand icon"
+										src={ArrowIcon}
+										className={classes.expandIcon}
+									/>
+								</InputAdornment>
+							),
+						}}
+						InputLabelProps={{ shrink: true }}
+					/>
+				</Grid>
+			</Grid>
+		</AccordionBox>
 	);
 };
 

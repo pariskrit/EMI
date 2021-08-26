@@ -47,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
 // BIG TODO: Need to have handling for single vs. multi uploads
 const DropUpload = ({
 	uploadReturn,
-	clientID,
+
+	apiPath,
 	isImageUploaded = false,
 	filesUploading,
 	setFilesUploading,
@@ -92,7 +93,7 @@ const DropUpload = ({
 			// NOTE: currently handling single file
 			getUploadLink(fileName).then((uploadDetails) =>
 				uploadFile(acceptedFiles[0], uploadDetails.url).then((res) => {
-					uploadReturn(uploadDetails.key, uploadDetails.url);
+					uploadReturn(uploadDetails.key, acceptedFiles[0].path);
 				})
 			);
 		},
@@ -103,15 +104,11 @@ const DropUpload = ({
 
 	// Helpers
 	const getUploadLink = async (fileName) => {
-		console.log(clientID, fileName);
 		// Attemptong to get signed s3 upload link
 		try {
-			let uploadLink = await API.post(
-				`${BASE_API_PATH}Clients/${clientID}/upload`,
-				{
-					Filename: fileName,
-				}
-			);
+			let uploadLink = await API.post(apiPath, {
+				Filename: fileName,
+			});
 
 			// Getting URL from stream if success
 			if (uploadLink.status === 200) {

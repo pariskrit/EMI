@@ -1,18 +1,12 @@
 import {
-	Accordion,
-	AccordionActions,
-	AccordionDetails,
-	AccordionSummary,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
-	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
-import CurveButton from "components/CurveButton";
+import AccordionBox from "components/AccordionBox";
 import DeleteDialog from "components/DeleteDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
@@ -132,6 +126,7 @@ const ClientNotes = ({ clientId, getError }) => {
 				deleteEndpoint={`${BASE_API_PATH}Clientnotes`}
 				deleteID={noteId}
 				handleRemoveData={handleRemoveData}
+<<<<<<< HEAD
 			/>
 
 			<Accordion className={classes.noteAccordion} defaultExpanded={true}>
@@ -182,6 +177,36 @@ const ClientNotes = ({ clientId, getError }) => {
 					</CurveButton>
 				</AccordionActions>
 			</Accordion>
+=======
+			/>{" "}
+			<AccordionBox
+				title={`Notes (${data.length})`}
+				isActionsPresent={true}
+				buttonName="Add Note"
+				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
+			>
+				<Table>
+					<TableHead className={classes.tableHead}>
+						<TableRow>
+							<TableCell style={{ width: "170px" }}>Name</TableCell>
+							<TableCell>Date</TableCell>
+							<TableCell>Note</TableCell>
+							<TableCell></TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{data.map((row) => (
+							<ClientNoteRow
+								key={row.id}
+								row={row}
+								classes={classes}
+								onDeleteNote={() => handleDeleteNote(row.id)}
+							/>
+						))}
+					</TableBody>
+				</Table>
+			</AccordionBox>
+>>>>>>> pariskrit
 		</div>
 	);
 };
