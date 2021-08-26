@@ -143,7 +143,7 @@ function PausesTable({
 
 				<TableBody>
 					{(searchQuery === "" ? data : searchedData).map((d, index) => (
-						<TableRow>
+						<TableRow key={index}>
 							<AT.DataCell>
 								<AT.TableBodyText>{d.name}</AT.TableBodyText>
 							</AT.DataCell>

@@ -44,10 +44,16 @@ const EditDialogStyle = () => {
 		InputContainer: styled(DialogContentText)({
 			width: "100%",
 			display: "flex",
-			marginBottom: 20, 
+			marginBottom: 20,
 		}),
+
 		NameInputContainer: styled("div")({
 			width: "50%",
+		}),
+
+		FieldInputContainer: styled("div")({
+			width: "50%",
+			paddingRight: 15,
 		}),
 		InputLabel: styled(Typography)({
 			fontFamily: "Roboto Condensed",
@@ -57,7 +63,7 @@ const EditDialogStyle = () => {
 			paddingBottom: 5,
 			width: "100%",
 		}),
-		LeftInputContainer: styled("div") ({
+		LeftInputContainer: styled("div")({
 			paddingRight: 15,
 			width: "50%",
 		}),
@@ -72,7 +78,7 @@ const EditDialogStyle = () => {
 		RequiredStar: styled("span")({
 			color: ColourConstants.requiredStar,
 		}),
-		RightInputContainer: styled("div") ({
+		RightInputContainer: styled("div")({
 			paddingLeft: 15,
 			width: "50%",
 		}),

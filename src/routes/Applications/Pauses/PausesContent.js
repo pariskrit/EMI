@@ -349,7 +349,7 @@ const PausesContent = ({ navigation, id, setIs404, state }) => {
 
 			{haveData ? (
 				<>
-					<SaveHistory />
+					{/* <SaveHistory /> */}
 
 					<NavButtons
 						navigation={navigation}
