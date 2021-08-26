@@ -59,6 +59,18 @@ const ApplicationTable = ({ data, onDeleteApp, onChangeApp }) => {
 	);
 };
 
+ApplicationTable.defaultProps = {
+	data: [
+		{
+			applicationID: 1,
+			id: 34,
+			isActive: false,
+			name: "ComponentStatus",
+			totalSites: 0,
+		},
+	],
+};
+
 ApplicationTable.propTypes = {
 	data: PropTypes.array,
 	onDeleteApp: PropTypes.func,
