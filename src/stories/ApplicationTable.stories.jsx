@@ -4,10 +4,6 @@ import ApplicationTable from "components/ApplicationTable";
 export default {
 	title: "Table/ApplicationTable",
 	component: ApplicationTable,
-	// argTypes: {
-	// 	onDeleteApp: { action: "clicked" },
-	// 	onChangeApp: { action: "clicked" },
-	// },
 	parameters: { actions: { argTypesRegex: "^on.*" } },
 };
 
