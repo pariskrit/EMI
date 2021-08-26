@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
 	Table,
 	TableBody,
@@ -56,6 +57,12 @@ const ApplicationTable = ({ data, onDeleteApp, onChangeApp }) => {
 			</TableBody>
 		</Table>
 	);
+};
+
+ApplicationTable.propTypes = {
+	data: PropTypes.array,
+	onDeleteApp: PropTypes.func,
+	onChangeApp: PropTypes.func,
 };
 
 export default ApplicationTable;

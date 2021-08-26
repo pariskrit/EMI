@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { TableCell, TableRow } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
@@ -45,16 +44,6 @@ const Row = ({ row, onDeleteApp, onChangeApp }) => {
 			</TableCell>
 		</TableRow>
 	);
-};
-
-Row.defaultProps = {
-	row: { name: "Rujal", isActive: true },
-};
-
-Row.propTypes = {
-	row: PropTypes.object,
-	onDeleteApp: PropTypes.func,
-	onChangeApp: PropTypes.func,
 };
 
 export default Row;
