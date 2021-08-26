@@ -132,63 +132,58 @@ const ClientTable = ({
 									[classes.lastCell]: index === data.length - 1,
 								})}
 							>
-									<AT.CellContainer>
-
-										<AT.TableBodyText>
-										<Link
-											className={classes.nameLink}
-											to={`/client/${row.id}`}
-										>
+								<AT.CellContainer>
+									<AT.TableBodyText>
+										<Link className={classes.nameLink} to={`/client/${row.id}`}>
 											{row.name}
 										</Link>
-										</AT.TableBodyText>
+									</AT.TableBodyText>
 
-										<AT.DotMenu
-											onClick={(e) => {
-												setAnchorEl(
-													anchorEl === e.currentTarget ? null : e.currentTarget
-												);
-												setSelectedData(
-													anchorEl === e.currentTarget ? null : index
-												);
+									<AT.DotMenu
+										onClick={(e) => {
+											setAnchorEl(
+												anchorEl === e.currentTarget ? null : e.currentTarget
+											);
+											setSelectedData(
+												anchorEl === e.currentTarget ? null : index
+											);
+										}}
+									>
+										<AT.TableMenuButton>
+											<MenuIcon />
+										</AT.TableMenuButton>
+
+										<PopupMenu
+											index={index}
+											selectedData={selectedData}
+											anchorEl={anchorEl}
+											isLast={
+												searchQuery === ""
+													? index === data.length - 1
+													: index === searchedData.length - 1
+											}
+											id={row.id}
+											clickAwayHandler={() => {
+												setAnchorEl(null);
+												setSelectedData(null);
 											}}
-										>
-											<AT.TableMenuButton>
-												<MenuIcon />
-											</AT.TableMenuButton>
-
-											<PopupMenu
-												index={index}
-												selectedData={selectedData}
-												anchorEl={anchorEl}
-												isLast={
-													searchQuery === ""
-														? index === data.length - 1
-														: index === searchedData.length - 1
-												}
-												id={row.id}
-												clickAwayHandler={() => {
-													setAnchorEl(null);
-													setSelectedData(null);
-												}}
-												menuData={[
-													{
-														name: "Edit",
-														handler: () => {
-															history.push(`/client/${row.id}`);
-														},
-														isDelete: false,
+											menuData={[
+												{
+													name: "Edit",
+													handler: () => {
+														history.push(`/client/${row.id}`);
 													},
-													{
-														name: "Delete",
-														handler: handleDeleteDialogOpen,
-														isDelete: true,
-													},
-												]}
-											/>
-										</AT.DotMenu>
-									</AT.CellContainer>
-
+													isDelete: false,
+												},
+												{
+													name: "Delete",
+													handler: handleDeleteDialogOpen,
+													isDelete: true,
+												},
+											]}
+										/>
+									</AT.DotMenu>
+								</AT.CellContainer>
 							</TableCell>
 						</TableRow>
 					))}
