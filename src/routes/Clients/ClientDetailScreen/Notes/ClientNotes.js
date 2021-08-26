@@ -126,58 +126,6 @@ const ClientNotes = ({ clientId, getError }) => {
 				deleteEndpoint={`${BASE_API_PATH}Clientnotes`}
 				deleteID={noteId}
 				handleRemoveData={handleRemoveData}
-<<<<<<< HEAD
-			/>
-
-			<Accordion className={classes.noteAccordion} defaultExpanded={true}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
-						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Notes ({data.length})
-						</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails className="table-container">
-					<Table>
-						<TableHead className={classes.tableHead}>
-							<TableRow>
-								<TableCell style={{ width: "170px" }}>Name</TableCell>
-								<TableCell>Date</TableCell>
-								<TableCell>Note</TableCell>
-								<TableCell></TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{data.map((row) => (
-								<ClientNoteRow
-									key={row.id}
-									row={row}
-									classes={classes}
-									onDeleteNote={() => handleDeleteNote(row.id)}
-								/>
-							))}
-						</TableBody>
-					</Table>
-				</AccordionDetails>
-				<AccordionActions className={classes.actionButton}>
-					<CurveButton
-						onClick={() => setModal((th) => ({ ...th, addModal: true }))}
-					>
-						Add Note
-					</CurveButton>
-				</AccordionActions>
-			</Accordion>
-=======
 			/>{" "}
 			<AccordionBox
 				title={`Notes (${data.length})`}
@@ -206,7 +154,6 @@ const ClientNotes = ({ clientId, getError }) => {
 					</TableBody>
 				</Table>
 			</AccordionBox>
->>>>>>> pariskrit
 		</div>
 	);
 };
