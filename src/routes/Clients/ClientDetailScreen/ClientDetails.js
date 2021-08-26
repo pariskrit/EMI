@@ -21,12 +21,6 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "center",
 	},
-	icon: {
-		width: 10,
-		height: 10,
-		borderRadius: "50%",
-		margin: "5px 5px 0px 5px",
-	},
 }));
 
 const ClientDetails = ({
@@ -50,26 +44,12 @@ const ClientDetails = ({
 	return (
 		<div className="client-details">
 			<div className="flex justify-between">
-				<div>
-					<Navcrumbs crumbs={["Client", clientDetail.name]} />
-					<div>
-						<div className="left-section flex" style={{ gap: "12px" }}>
-							<div style={{ display: "flex" }}>
-								<b>Status:</b>{" "}
-								<div
-									className={classes.icon}
-									style={{
-										backgroundColor: "#24BA78",
-									}}
-								></div>
-								Active
-							</div>
-							<div>
-								<b>Last saved:</b> 21.10.20/1137 AEST
-							</div>
-						</div>
-					</div>
-				</div>
+				<Navcrumbs
+					crumbs={["Client", clientDetail.name]}
+					status=""
+					lastSaved=""
+				/>
+
 				<div className="right-section">
 					<div className="restore">
 						<RestoreIcon />

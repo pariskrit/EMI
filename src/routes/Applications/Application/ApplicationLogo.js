@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "../../../components/EMICheckbox";
 import ProviderAsset from "../../../components/ProvidedAsset/ProvidedAsset";
-import DropUpload from "../../../components/DropUpload";
+import DropUploadBox from "../../../components/DropUploadBox";
 import API from "../../../helpers/api";
 import ColourConstants from "../../../helpers/colourConstants";
+import { BASE_API_PATH } from "helpers/constants";
+import AccordionBox from "components/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -155,92 +153,59 @@ const ApplicationLogo = ({
 	if (loading) {
 		return (
 			<div className={classes.logoContainer}>
-				<Accordion className={classes.logoAccordion}>
-					<AccordionSummary
-						expandIcon={
-							<img
-								alt="Expand icon"
-								src={ArrowIcon}
-								className={classes.expandIcon}
-							/>
-						}
-						aria-controls="panel1a-content"
-						id="panel1a-header"
-					>
-						<Typography className={classes.sectionHeading}>
-							Application Logo
-						</Typography>
-					</AccordionSummary>
-					<AccordionDetails>
-						<div className={classes.logoContentParent}>
-							<div className={classes.spinnerContainer}>
-								<CircularProgress />
-							</div>
+				<AccordionBox title="Application Logo" defaultExpanded={false}>
+					<div className={classes.logoContentParent}>
+						<div className={classes.spinnerContainer}>
+							<CircularProgress />
 						</div>
-					</AccordionDetails>
-				</Accordion>
+					</div>
+				</AccordionBox>
 			</div>
 		);
 	} else {
 		return (
 			<div className={classes.logoContainer}>
-				<Accordion className={classes.logoAccordion}>
-					<AccordionSummary
-						expandIcon={
-							<img
-								alt="Expand icon"
-								src={ArrowIcon}
-								className={classes.expandIcon}
+				<AccordionBox title="Application Logo" defaultExpanded={false}>
+					{showUpload ? (
+						<div className={classes.logoContentParent}>
+							<DropUploadBox
+								uploadReturn={handleLogoUpload}
+								apiPath={`${BASE_API_PATH}Applications/${id}/upload`}
+								filesUploading={loading}
 							/>
-						}
-						aria-controls="panel1a-content"
-						id="panel1a-header"
-					>
-						<Typography className={classes.sectionHeading}>
-							Application Logo
-						</Typography>
-					</AccordionSummary>
-					<AccordionDetails>
-						{showUpload ? (
-							<div className={classes.logoContentParent}>
-								<DropUpload
-									uploadReturn={handleLogoUpload}
-									applicationID={id}
-								/>
-							</div>
-						) : (
-							<div className={classes.logoContentParent}>
-								<ProviderAsset
-									isRec={true}
-									name={logo.name}
-									src={logo.src}
-									alt={logo.alt}
-									handleDelete={handleDelete}
-								/>
+						</div>
+					) : (
+						<div className={classes.logoContentParent}>
+							<ProviderAsset
+								isRec={true}
+								name={logo.name}
+								src={logo.src}
+								alt={logo.alt}
+								handleDelete={handleDelete}
+							/>
 
-								<div>
-									<FormGroup className={classes.trademarkContainer}>
-										<FormControlLabel
-											control={
-												<EMICheckbox
-													state={logoTrademark}
-													changeHandler={() => {
-														handleTickChange(logoTrademark, newLogoTrademark);
-													}}
-												/>
-											}
-											label={
-												<Typography className={classes.trademarkText}>
-													Is logo trademarked?
-												</Typography>
-											}
-										/>
-									</FormGroup>
-								</div>
+							<div>
+								<FormGroup className={classes.trademarkContainer}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												state={logoTrademark}
+												changeHandler={() => {
+													handleTickChange(logoTrademark, newLogoTrademark);
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.trademarkText}>
+												Is logo trademarked?
+											</Typography>
+										}
+									/>
+								</FormGroup>
 							</div>
-						)}
-					</AccordionDetails>
-				</Accordion>
+						</div>
+					)}
+				</AccordionBox>
 			</div>
 		);
 	}

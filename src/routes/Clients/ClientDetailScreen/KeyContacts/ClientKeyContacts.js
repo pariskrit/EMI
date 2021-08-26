@@ -1,16 +1,12 @@
 import {
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
-	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
+import AccordionBox from "components/AccordionBox";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
@@ -71,43 +67,24 @@ const ClientKeyContacts = ({ clientId }) => {
 
 	return (
 		<div className={classes.keyContainer}>
-			<Accordion className={classes.keyAccordion} defaultExpanded={true}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
-						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Key Contacts
-						</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails className="table-container">
-					<Table>
-						<TableHead className={classes.tableHead}>
-							<TableRow>
-								<TableCell>Name</TableCell>
-								<TableCell>Site</TableCell>
-								<TableCell>Application</TableCell>
-								<TableCell>Email</TableCell>
-								<TableCell>Phone</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{data.map((row) => (
-								<ClientKeyRow key={row.id} row={row} />
-							))}
-						</TableBody>
-					</Table>
-				</AccordionDetails>
-			</Accordion>
+			<AccordionBox title="Key Contacts" accordianDetailsCss="table-container">
+				<Table>
+					<TableHead className={classes.tableHead}>
+						<TableRow>
+							<TableCell>Name</TableCell>
+							<TableCell>Site</TableCell>
+							<TableCell>Application</TableCell>
+							<TableCell>Email</TableCell>
+							<TableCell>Phone</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{data.map((row) => (
+							<ClientKeyRow key={row.id} row={row} />
+						))}
+					</TableBody>
+				</Table>
+			</AccordionBox>
 		</div>
 	);
 };

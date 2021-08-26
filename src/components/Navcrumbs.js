@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import ColourConstants from "../helpers/colourConstants";
+import SaveHistory from "./SaveHistory";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {
@@ -14,9 +15,15 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: "bold",
 		fontSize: "20px",
 	},
+	icon: {
+		width: 10,
+		height: 10,
+		borderRadius: "50%",
+		margin: "5px 5px 0px 5px",
+	},
 }));
 
-const Navcrumbs = ({ crumbs }) => {
+const Navcrumbs = ({ crumbs, status }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -38,6 +45,22 @@ const Navcrumbs = ({ crumbs }) => {
 					</Typography>
 				))}
 			</Breadcrumbs>
+			<div className="left-section flex" style={{ gap: "12px" }}>
+				<div style={{ display: "flex" }}>
+					<b>Status:</b>{" "}
+					<div
+						className={classes.icon}
+						style={{
+							backgroundColor: "#24BA78",
+						}}
+					></div>
+					Active
+				</div>
+				<SaveHistory />
+				{/* <div>
+					<b>Last saved:</b> 21.10.20/1137 AEST
+				</div> */}
+			</div>
 		</div>
 	);
 };

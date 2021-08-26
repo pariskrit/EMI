@@ -9,13 +9,13 @@ import NavButtons from "../../../components/NavButtons";
 import DetailsPanel from "../../../components/DetailsPanel";
 import DeleteDialog from "../../../components/DeleteDialog";
 import Grid from "@material-ui/core/Grid";
-import ActionsTable from "./ActionsTable";
 import AddActionDialog from "./AddDialog";
 import EditActionDialog from "./EditDialog";
 import { handleSort } from "../../../helpers/utils";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import SingleHeadTable from "components/SingleHeadTable";
 
 // Init styled components
 const AC = ContentStyle();
@@ -42,9 +42,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 		// Attempting to get data
 		try {
 			// Getting data from API
-			let result = await API.get(
-				`/api/ApplicationActions?applicationId=${id}`
-			);
+			let result = await API.get(`/api/ApplicationActions?applicationId=${id}`);
 
 			// if success, adding data to state
 			if (result.status === 200) {
@@ -299,7 +297,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 						</AC.SearchContainer>
 					</AC.DetailsContainer>
 
-					<ActionsTable
+					<SingleHeadTable
 						data={data}
 						setData={setData}
 						handleSort={handleSort}

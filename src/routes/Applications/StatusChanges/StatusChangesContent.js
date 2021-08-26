@@ -9,13 +9,13 @@ import NavButtons from "../../../components/NavButtons";
 import DetailsPanel from "../../../components/DetailsPanel";
 import DeleteDialog from "../../../components/DeleteDialog";
 import Grid from "@material-ui/core/Grid";
-import StatusChangesTable from "./StatusChangesTable";
 import AddStatusChangeDialog from "./AddDialog";
 import EditStatusChangeDialog from "./EditDialog";
 import { handleSort } from "../../../helpers/utils";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import SingleHeadTable from "components/SingleHeadTable";
 
 // Init styled components
 const AC = ContentStyle();
@@ -297,7 +297,7 @@ const StatusChangesContent = ({ navigation, id, setIs404, state }) => {
 						</AC.SearchContainer>
 					</AC.DetailsContainer>
 
-					<StatusChangesTable
+					<SingleHeadTable
 						data={data}
 						setData={setData}
 						searchQuery={searchQuery}

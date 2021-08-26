@@ -1,9 +1,5 @@
-import Accordion from "@material-ui/core/Accordion";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
 import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
+import AccordionBox from "components/AccordionBox";
 import DropUploadBox from "components/DropUploadBox";
 import ProvidedAssetNoImage from "components/ProvidedAsset/ProvidedAssetNoImage";
 import API from "helpers/api";
@@ -118,60 +114,48 @@ function ClientDocuments({ clientId, getError }) {
 
 	return (
 		<div className={classes.logoContainer}>
-			<Accordion className={classes.logoAccordion} defaultExpanded={true}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
+			<AccordionBox title={`Client Documents (${listOfDocuments.length})`}>
+				<div className={classes.logoContentParent}>
+					{listOfDocuments.map((document, index) => {
+						// Preventing duplication of dividers
+						if (index === listOfDocuments.length - 1) {
+							return (
+								<ProvidedAssetNoImage
+									key={document.id}
+									document={document}
+									showBottomDivider={true}
+									getError={getError}
+									fetchClientDocuments={fetchClientDocuments}
+								/>
+							);
+						} else {
+							return (
+								<ProvidedAssetNoImage
+									key={document.id}
+									document={document}
+									getError={getError}
+									fetchClientDocuments={fetchClientDocuments}
+								/>
+							);
+						}
+					})}
+
+					<div className={classes.uploaderContainer}>
+						<DropUploadBox
+							uploadReturn={onDocumentUpload}
+							apiPath={`${BASE_API_PATH}Clients/${clientId}/upload`}
+							filesUploading={filesUploading}
+							setFilesUploading={setFilesUploading}
 						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<Typography className={classes.sectionHeading}>
-						Client documents ({listOfDocuments.length})
-					</Typography>
-				</AccordionSummary>
-
-				<AccordionDetails>
-					<div className={classes.logoContentParent}>
-						{listOfDocuments.map((document, index) => {
-							// Preventing duplication of dividers
-							if (index === listOfDocuments.length - 1) {
-								return (
-									<ProvidedAssetNoImage
-										key={document.id}
-										document={document}
-										showBottomDivider={true}
-										getError={getError}
-										fetchClientDocuments={fetchClientDocuments}
-									/>
-								);
-							} else {
-								return (
-									<ProvidedAssetNoImage
-										key={document.id}
-										document={document}
-										getError={getError}
-										fetchClientDocuments={fetchClientDocuments}
-									/>
-								);
-							}
-						})}
-
-						<div className={classes.uploaderContainer}>
-							<DropUploadBox
-								uploadReturn={onDocumentUpload}
-								clientID={clientId}
-								filesUploading={filesUploading}
-								setFilesUploading={setFilesUploading}
-							/>
-						</div>
+						{/* <DropUploadBox
+							uploadReturn={onDocumentUpload}
+							clientID={clientId}
+							filesUploading={filesUploading}
+							setFilesUploading={setFilesUploading}
+						/> */}
 					</div>
-				</AccordionDetails>
-			</Accordion>
+				</div>
+			</AccordionBox>
 		</div>
 	);
 }

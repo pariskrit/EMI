@@ -1,18 +1,14 @@
 import {
-	Accordion,
-	AccordionActions,
-	AccordionDetails,
-	AccordionSummary,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
-	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
-import CurveButton from "components/CurveButton";
+
+import AccordionBox from "components/AccordionBox";
+
 import DeleteDialog from "components/DeleteDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
@@ -167,54 +163,34 @@ const ClientApplication = ({ clientId, getError }) => {
 				status={appStatus}
 				getChangedValue={getChangedValue}
 			/>
-			<Accordion className={classes.appAccordion} defaultExpanded={true}>
-				<AccordionSummary
-					expandIcon={
-						<img
-							alt="Expand icon"
-							src={ArrowIcon}
-							className={classes.expandIcon}
-						/>
-					}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<div>
-						<Typography className={classes.sectionHeading}>
-							Application ({data.length})
-						</Typography>
-					</div>
-				</AccordionSummary>
-				<AccordionDetails className="table-container">
-					<Table>
-						<TableHead className={classes.tableHead}>
-							<TableRow>
-								<TableCell>Name</TableCell>
-								<TableCell>Sites(Qty)</TableCell>
-								<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{data.map((row) => (
-								<ClientAppRow
-									key={row.id}
-									row={row}
-									classes={classes}
-									onDeleteApp={() => handleDeleteApp(row.id)}
-									onChangeApp={() => handleChangeApp(row.id)}
-								/>
-							))}
-						</TableBody>
-					</Table>
-				</AccordionDetails>
-				<AccordionActions className={classes.actionButton}>
-					<CurveButton
-						onClick={() => setModal((th) => ({ ...th, addModal: true }))}
-					>
-						Add Application
-					</CurveButton>
-				</AccordionActions>
-			</Accordion>
+
+			<AccordionBox
+				title={`Application (${data.length})`}
+				isActionsPresent={true}
+				buttonName="Add Application"
+				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
+			>
+				<Table>
+					<TableHead className={classes.tableHead}>
+						<TableRow>
+							<TableCell>Name</TableCell>
+							<TableCell>Sites(Qty)</TableCell>
+							<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{data.map((row) => (
+							<ClientAppRow
+								key={row.id}
+								row={row}
+								classes={classes}
+								onDeleteApp={() => handleDeleteApp(row.id)}
+								onChangeApp={() => handleChangeApp(row.id)}
+							/>
+						))}
+					</TableBody>
+				</Table>
+			</AccordionBox>
 		</div>
 	);
 };
