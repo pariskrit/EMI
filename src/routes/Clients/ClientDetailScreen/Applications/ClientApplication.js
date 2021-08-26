@@ -1,23 +1,14 @@
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableRow,
-} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
 import AccordionBox from "components/AccordionBox";
-
+import ApplicationTable from "components/ApplicationTable";
 import DeleteDialog from "components/DeleteDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
-import React, { useEffect, useState } from "react";
 import AddAppDialog from "./AddAppDialog";
 import ChangeDialog from "./ChangeDialog";
-import ClientAppRow from "./ClientAppRow";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -170,26 +161,11 @@ const ClientApplication = ({ clientId, getError }) => {
 				buttonName="Add Application"
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
 			>
-				<Table>
-					<TableHead className={classes.tableHead}>
-						<TableRow>
-							<TableCell>Name</TableCell>
-							<TableCell>Sites(Qty)</TableCell>
-							<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{data.map((row) => (
-							<ClientAppRow
-								key={row.id}
-								row={row}
-								classes={classes}
-								onDeleteApp={() => handleDeleteApp(row.id)}
-								onChangeApp={() => handleChangeApp(row.id)}
-							/>
-						))}
-					</TableBody>
-				</Table>
+				<ApplicationTable
+					data={data}
+					onDeleteApp={handleDeleteApp}
+					onChangeApp={handleChangeApp}
+				/>
 			</AccordionBox>
 		</div>
 	);
