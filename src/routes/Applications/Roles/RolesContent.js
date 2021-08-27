@@ -12,22 +12,14 @@ import Grid from "@material-ui/core/Grid";
 import AddRoleDialog from "./AddDialog";
 import EditRoleDialog from "./EditDialog";
 import { handleSort } from "../../../helpers/utils";
-import TableStyle from "../../../styles/application/TableStyle";
-import TableRow from "@material-ui/core/TableRow";
-import PopupMenu from "../../../components/PopupMenu";
-
-// Icon imports
-import { ReactComponent as MenuIcon } from "../../../assets/icons/3dot-icon.svg";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
-import DoubleHeadTable from "components/DoubleHeadTable";
+
+import RolesTable from "./RolesTable";
 
 // Init styled components
 const AC = ContentStyle();
-// Init styled components
-const AT = TableStyle();
-
 const RolesContent = ({ navigation, id, setIs404, state }) => {
 	// Init state
 	const [applicationName, setApplicationName] = useState("");
@@ -42,9 +34,6 @@ const RolesContent = ({ navigation, id, setIs404, state }) => {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [deleteID, setDeleteID] = useState(null);
 	const [searchedData, setSearchedData] = useState([]);
-	// Init State
-	const [selectedData, setSelectedData] = useState(null);
-	const [anchorEl, setAnchorEl] = useState(null);
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
@@ -307,7 +296,7 @@ const RolesContent = ({ navigation, id, setIs404, state }) => {
 						</AC.SearchContainer>
 					</AC.DetailsContainer>
 
-					<DoubleHeadTable
+					<RolesTable
 						data={data}
 						setData={setData}
 						handleSort={handleSort}
@@ -316,65 +305,9 @@ const RolesContent = ({ navigation, id, setIs404, state }) => {
 						setCurrentTableSort={setCurrentTableSort}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
-					>
-						{(searchQuery === "" ? data : searchedData).map((d, index) => (
-							<TableRow>
-								<AT.DataCell>
-									<AT.TableBodyText>{d.name}</AT.TableBodyText>
-								</AT.DataCell>
-								<AT.DataCell>
-									<AT.CellContainer>
-										<AT.TableBodyText>
-											{d.canRegisterDefects ? "Yes" : "No"}
-										</AT.TableBodyText>
-
-										<AT.DotMenu
-											onClick={(e) => {
-												setAnchorEl(
-													anchorEl === e.currentTarget ? null : e.currentTarget
-												);
-												setSelectedData(
-													anchorEl === e.currentTarget ? null : index
-												);
-											}}
-										>
-											<AT.TableMenuButton>
-												<MenuIcon />
-											</AT.TableMenuButton>
-
-											<PopupMenu
-												index={index}
-												selectedData={selectedData}
-												anchorEl={anchorEl}
-												isLast={
-													searchQuery === ""
-														? index === data.length - 1
-														: index === searchedData.length - 1
-												}
-												id={d.id}
-												clickAwayHandler={() => {
-													setAnchorEl(null);
-													setSelectedData(null);
-												}}
-												menuData={[
-													{
-														name: "Edit",
-														handler: handleEditDialogOpen,
-														isDelete: false,
-													},
-													{
-														name: "Delete",
-														handler: handleDeleteDialogOpen,
-														isDelete: true,
-													},
-												]}
-											/>
-										</AT.DotMenu>
-									</AT.CellContainer>
-								</AT.DataCell>
-							</TableRow>
-						))}
-					</DoubleHeadTable>
+						handleEditDialogOpen={handleEditDialogOpen}
+						handleDeleteDialogOpen={handleDeleteDialogOpen}
+					/>
 				</>
 			) : (
 				<AC.SpinnerContainer>

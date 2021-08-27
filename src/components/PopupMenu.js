@@ -66,7 +66,6 @@ const PopupMenu = ({
 									}}
 								>
 									<ListItemText
-										key={`menu-link-text-${i}`}
 										primary={
 											item.isDelete ? (
 												<DeleteLink>{item.name}</DeleteLink>

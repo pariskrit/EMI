@@ -71,6 +71,7 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 									setAnchorEl(null);
 									setSelectedButton(null);
 								}}
+								key={index}
 							>
 								{navItem.name}
 								<MenuDropdown
@@ -94,6 +95,7 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 									setAnchorEl(null);
 									setSelectedButton(null);
 								}}
+								key={index}
 							>
 								{navItem.name}
 								<MenuDropdown
