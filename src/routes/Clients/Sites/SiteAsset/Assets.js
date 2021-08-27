@@ -26,7 +26,7 @@ const Assets = ({ children }) => {
 					lastSaved=""
 				/>
 
-				<div className="right-section">
+				<div>
 					<div className="restore">
 						<RestoreIcon className={classes.restore} />
 					</div>

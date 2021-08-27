@@ -4,7 +4,9 @@ import RestoreIcon from "@material-ui/icons/Restore";
 import { makeStyles, createMuiTheme, ThemeProvider } from "@material-ui/core";
 import Navcrumbs from "components/Navcrumbs";
 import Navbar from "components/Navbar";
+import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
+const AT = ActionButtonStyle();
 const theme = createMuiTheme({
 	overrides: {
 		// Accordion override is making the accordion title static vs. default dynamic
@@ -30,8 +32,24 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		color: "#307ad6",
 	},
+	rightSection: {
+		display: "flex",
+		textTransform: "uppercase",
+	},
+	importButton: {
+		background: "#ED8738",
+	},
 });
-const SiteWrapper = ({ crumbs, status, lastSaved, children }) => {
+const SiteWrapper = ({
+	crumbs,
+	status,
+	lastSaved,
+	children,
+	onClickAdd,
+	onClickImport,
+	showAdd,
+	showImport,
+}) => {
 	const classes = useStyles();
 	return (
 		<ThemeProvider theme={theme}>
@@ -44,7 +62,20 @@ const SiteWrapper = ({ crumbs, status, lastSaved, children }) => {
 								status={status}
 								lastSaved={lastSaved}
 							/>
-							<div className="right-section">
+							<div className={classes.rightSection}>
+								{showImport && (
+									<AT.GeneralButton
+										onClick={onClickImport}
+										className={classes.importButton}
+									>
+										Import from list
+									</AT.GeneralButton>
+								)}
+								{showAdd && (
+									<AT.GeneralButton onClick={onClickAdd}>
+										Add New
+									</AT.GeneralButton>
+								)}
 								<div className="restore">
 									<RestoreIcon className={classes.restore} />
 								</div>
@@ -62,6 +93,10 @@ SiteWrapper.defaultProps = {
 	crumbs: ["Client", "Region", "Site"],
 	status: "",
 	lastSaved: "",
+	showAdd: false,
+	showImport: false,
+	onClickAdd: () => {},
+	onClickImport: () => {},
 };
 
 SiteWrapper.propTypes = {
@@ -69,6 +104,10 @@ SiteWrapper.propTypes = {
 	status: PropTypes.string,
 	lastSaved: PropTypes.string,
 	children: PropTypes.element.isRequired,
+	onClickAdd: PropTypes.func,
+	onClickImport: PropTypes.func,
+	showAdd: PropTypes.bool,
+	showImport: PropTypes.bool,
 };
 
 export default SiteWrapper;
