@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import MenuDropdown from "./MenuDropdown";
 import ColourConstants from "../helpers/colourConstants";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -56,24 +57,26 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 				{navigation.map((navItem, index) => {
 					// TODO: below is updated zeroth button to be current. This needs to come
 					// from state in prod
-					if (navItem.name === current) {
-						return (
-							<Button
-								className={`${clsx(
-									classes.curveButton,
-									classes.curveButtonCurrent,
-								)} largeBtn`}
-								onMouseEnter={(e) => {
-									setAnchorEl(e.currentTarget);
-									setSelectedButton(index);
-								}}
-								onMouseLeave={() => {
-									setAnchorEl(null);
-									setSelectedButton(null);
-								}}
-								key={index}
-							>
-								{navItem.name}
+
+					return (
+						<Button
+							className={`${
+								navItem.name === current
+									? clsx(classes.curveButton, classes.curveButtonCurrent)
+									: classes.curveButton
+							} largeBtn`}
+							onMouseEnter={(e) => {
+								setAnchorEl(e.currentTarget);
+								setSelectedButton(index);
+							}}
+							onMouseLeave={() => {
+								setAnchorEl(null);
+								setSelectedButton(null);
+							}}
+							key={index}
+						>
+							{navItem.name}
+							{navItem?.dropdown?.length > 0 && (
 								<MenuDropdown
 									index={index}
 									selectedButton={selectedButton}
@@ -81,37 +84,24 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 									content={navItem.dropdown}
 									applicationName={applicationName}
 								/>
-							</Button>
-						);
-					} else {
-						return (
-							<Button
-								className={`${classes.curveButton} largeBtn`}
-								onMouseEnter={(e) => {
-									setAnchorEl(e.currentTarget);
-									setSelectedButton(index);
-								}}
-								onMouseLeave={() => {
-									setAnchorEl(null);
-									setSelectedButton(null);
-								}}
-								key={index}
-							>
-								{navItem.name}
-								<MenuDropdown
-									index={index}
-									selectedButton={selectedButton}
-									anchorEl={anchorEl}
-									content={navItem.dropdown}
-									applicationName={applicationName}
-								/>
-							</Button>
-						);
-					}
+							)}
+						</Button>
+					);
 				})}
 			</ButtonGroup>
 		</div>
 	);
+};
+
+NavButtons.propTypes = {
+	/** is array of objects containing name of the nav and its dropdown menu if any */
+	navigation: PropTypes.array.isRequired,
+
+	/** the current name of the application or site*/
+	applicationName: PropTypes.string.isRequired,
+
+	//** this is the name of the nav current selected */
+	current: PropTypes.string.isRequired,
 };
 
 export default NavButtons;
