@@ -10,7 +10,7 @@ const SiteDetail = () => {
 	return (
 		<Wrapper>
 			<Grid container>
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<AccordionBox title="Site Details">

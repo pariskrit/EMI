@@ -2,7 +2,7 @@ import React from "react";
 import ClientSiteTable from "components/ClientSiteTable";
 
 export default {
-	title: "Table/ClientSiteTable",
+	title: "Components/ClientSiteTable",
 	component: ClientSiteTable,
 	parameters: { actions: { argTypesRegex: "^on.*" } },
 };

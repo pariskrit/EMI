@@ -15,7 +15,7 @@ const KeyContacts = () => {
 						phone: 123123,
 					},
 				]}
-				tableHeaders={["Name", "Product", "application", "Email", "Phone"]}
+				tableHeaders={["Name", "Product", "Application", "Email", "Phone"]}
 			/>
 		</AccordionBox>
 	);
