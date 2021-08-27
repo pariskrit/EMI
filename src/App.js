@@ -32,6 +32,8 @@ import Home from "./routes/Home/Home";
 import Launch from "./routes/Launch/Launch";
 import Login from "./routes/Login/Login";
 
+import SiteDepartmentsScreen from "./routes/Site/SiteDepartmentsScreen";
+
 function App() {
 	return (
 		<div className="App">
@@ -147,6 +149,9 @@ function App() {
 					</Route>
 					<Route path="/site/:id/assets" exact>
 						<SiteAsset />
+					</Route>
+					<Route path="/site/:id/sitedepartments" exact>
+						<SiteDepartmentsScreen />
 					</Route>
 				</Switch>
 			</Router>

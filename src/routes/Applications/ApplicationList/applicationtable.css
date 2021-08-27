@@ -3,7 +3,8 @@
         background-color: black;
         max-width: 88.0vw !important;
         overflow-x: scroll !important;
-        padding-right: 20px
+        /* padding-right: 20px */
+        padding-right: 0px
     }
     .addNewBtn{
         width: 100px !important

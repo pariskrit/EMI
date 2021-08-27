@@ -1,0 +1,13 @@
+ .restore {
+	border: 2px solid;
+	border-radius: 100%;
+	height: 35px;
+	width: 35px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #307ad6;
+}
+.restore svg {
+	transform: rotate(35deg);
+}
