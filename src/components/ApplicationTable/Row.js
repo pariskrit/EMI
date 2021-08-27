@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import IOSSwitch from "components/IOSSwitch";
 
-const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
+const Row = ({ row, classes, onDeleteApp, onChangeApp }) => (
 	<TableRow>
 		<TableCell>
 			<span className={classes.appName}>{row.name}</span>
@@ -25,4 +25,4 @@ const ClientAppRow = ({ row, classes, onDeleteApp, onChangeApp }) => (
 	</TableRow>
 );
 
-export default ClientAppRow;
+export default Row;
