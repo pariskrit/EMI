@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const NavButtons = ({ navigation, applicationName, current }) => {
+const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -73,6 +73,7 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 								setAnchorEl(null);
 								setSelectedButton(null);
 							}}
+							onClick={() => onClick(navItem.url)}
 							key={index}
 						>
 							{navItem.name}
@@ -102,6 +103,10 @@ NavButtons.propTypes = {
 
 	//** this is the name of the nav current selected */
 	current: PropTypes.string.isRequired,
+};
+
+NavButtons.defaultProps = {
+	onClick: () => {},
 };
 
 export default NavButtons;

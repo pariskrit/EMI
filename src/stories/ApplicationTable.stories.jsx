@@ -2,7 +2,7 @@ import React from "react";
 import ApplicationTable from "components/ApplicationTable";
 
 export default {
-	title: "Table/ApplicationTable",
+	title: "Components/ApplicationTable",
 	component: ApplicationTable,
 	parameters: { actions: { argTypesRegex: "^on.*" } },
 };
