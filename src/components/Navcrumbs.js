@@ -46,7 +46,7 @@ const Navcrumbs = ({ crumbs, status }) => {
 				))}
 			</Breadcrumbs>
 			<div className="left-section flex" style={{ gap: "12px" }}>
-				{status.length > 0 && (
+				{status && status.length > 0 && (
 					<div style={{ display: "flex" }}>
 						<b>Status:</b>{" "}
 						<div

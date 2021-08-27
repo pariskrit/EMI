@@ -10,12 +10,11 @@ const KeyContacts = () => {
 					{
 						name: "pariskrit",
 						product: "abc",
-						application: "run",
 						email: "ggg@gmail.com",
 						phone: 123123,
 					},
 				]}
-				tableHeaders={["Name", "Product", "Application", "Email", "Phone"]}
+				tableHeaders={["Name", "Product", "Email", "Phone"]}
 			/>
 		</AccordionBox>
 	);

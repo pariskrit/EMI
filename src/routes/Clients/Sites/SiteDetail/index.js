@@ -5,10 +5,12 @@ import SiteDetails from "components/SiteDetails";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";
 import SiteWrapper from "components/SiteWrapper";
+import { useHistory } from "react-router-dom";
 
 const SiteDetail = () => {
+	const history = useHistory();
 	return (
-		<SiteWrapper>
+		<SiteWrapper current="Details" onNavClick={(data) => history.push(data)}>
 			<Grid container>
 				<Grid item xs={12}>
 					<Grid container spacing={2}>

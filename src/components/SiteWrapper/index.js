@@ -5,6 +5,8 @@ import { makeStyles, createMuiTheme, ThemeProvider } from "@material-ui/core";
 import Navcrumbs from "components/Navcrumbs";
 import Navbar from "components/Navbar";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
+import NavButtons from "components/NavButtons";
+import { useParams } from "react-router-dom";
 
 const AT = ActionButtonStyle();
 const theme = createMuiTheme({
@@ -32,12 +34,12 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		color: "#307ad6",
 	},
-	rightSection: {
-		display: "flex",
-		textTransform: "uppercase",
-	},
 	importButton: {
 		background: "#ED8738",
+	},
+	buttons: {
+		display: "flex",
+		marginLeft: "auto",
 	},
 });
 const SiteWrapper = ({
@@ -49,8 +51,11 @@ const SiteWrapper = ({
 	onClickImport,
 	showAdd,
 	showImport,
+	current,
+	onNavClick,
 }) => {
 	const classes = useStyles();
+	const { id } = useParams();
 	return (
 		<ThemeProvider theme={theme}>
 			<Navbar
@@ -62,7 +67,7 @@ const SiteWrapper = ({
 								status={status}
 								lastSaved={lastSaved}
 							/>
-							<div className={classes.rightSection}>
+							<div className={classes.buttons}>
 								{showImport && (
 									<AT.GeneralButton
 										onClick={onClickImport}
@@ -76,11 +81,21 @@ const SiteWrapper = ({
 										Add New
 									</AT.GeneralButton>
 								)}
-								<div className="restore">
-									<RestoreIcon className={classes.restore} />
-								</div>
+							</div>
+							<div className="restore">
+								<RestoreIcon className={classes.restore} />
 							</div>
 						</div>
+						<NavButtons
+							navigation={[
+								{ name: "Details", url: "" },
+								{ name: "Assets", url: "/assets" },
+								{ name: "Departments", url: "/department" },
+								{ name: "Locations", url: "/locations" },
+							]}
+							current={current}
+							onClick={(nam) => onNavClick(`/site/${id}${nam}`)}
+						/>
 						{children}
 					</div>
 				)}
@@ -95,8 +110,10 @@ SiteWrapper.defaultProps = {
 	lastSaved: "",
 	showAdd: false,
 	showImport: false,
+	current: "Details",
 	onClickAdd: () => {},
 	onClickImport: () => {},
+	onNavClick: () => {},
 };
 
 SiteWrapper.propTypes = {
@@ -106,6 +123,7 @@ SiteWrapper.propTypes = {
 	children: PropTypes.element.isRequired,
 	onClickAdd: PropTypes.func,
 	onClickImport: PropTypes.func,
+	onNavClick: PropTypes.func,
 	showAdd: PropTypes.bool,
 	showImport: PropTypes.bool,
 };

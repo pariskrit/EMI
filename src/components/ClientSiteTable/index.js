@@ -52,10 +52,9 @@ const ClientSiteTable = ({
 }) => {
 	const classes = useStyles();
 
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
+	const [currentTableSort, setCurrentTableSort] = useState(["asset", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
-
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
@@ -170,14 +169,18 @@ ClientSiteTable.defaultProps = {
 		{
 			id: 1,
 			asset: "Rujal",
-			reference: "2060-100-22-80-BLG007-AIHV",
+			description: "2060-100-22-80-BLG007-AIHV",
+		},
+		{
+			id: 2,
+			asset: "Rudra",
+			description: "2060-100-22-80-BLG007-AIHV",
 		},
 	],
-	columns: ["asset", "reference"],
-	headers: ["Asset", "Reference"],
+	columns: ["asset", "description"],
+	headers: ["Asset", "Description"],
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
-	setData: () => console.log("SetData"),
 };
 
 ClientSiteTable.propTypes = {
