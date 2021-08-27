@@ -4,11 +4,11 @@ import AccordionBox from "components/AccordionBox";
 import SiteDetails from "components/SiteDetails";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";
-import Wrapper from "components/Wrapper";
+import SiteWrapper from "components/SiteWrapper";
 
 const SiteDetail = () => {
 	return (
-		<Wrapper>
+		<SiteWrapper>
 			<Grid container>
 				<Grid item xs={12}>
 					<Grid container spacing={2}>
@@ -29,7 +29,7 @@ const SiteDetail = () => {
 					</Grid>
 				</Grid>
 			</Grid>
-		</Wrapper>
+		</SiteWrapper>
 	);
 };
 

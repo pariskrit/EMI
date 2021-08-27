@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 		color: "#307ad6",
 	},
 });
-const Wrapper = ({ crumbs, status, lastSaved, children }) => {
+const SiteWrapper = ({ crumbs, status, lastSaved, children }) => {
 	const classes = useStyles();
 	return (
 		<ThemeProvider theme={theme}>
@@ -58,17 +58,17 @@ const Wrapper = ({ crumbs, status, lastSaved, children }) => {
 	);
 };
 
-Wrapper.defaultProps = {
+SiteWrapper.defaultProps = {
 	crumbs: ["Client", "Region", "Site"],
 	status: "",
 	lastSaved: "",
 };
 
-Wrapper.propTypes = {
+SiteWrapper.propTypes = {
 	crumbs: PropTypes.array,
 	status: PropTypes.string,
 	lastSaved: PropTypes.string,
-	children: PropTypes.element,
+	children: PropTypes.element.isRequired,
 };
 
-export default Wrapper;
+export default SiteWrapper;
