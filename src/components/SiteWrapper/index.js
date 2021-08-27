@@ -90,7 +90,7 @@ const SiteWrapper = ({
 };
 
 SiteWrapper.defaultProps = {
-	crumbs: ["Client", "Region", "Site"],
+	crumbs: ["Parent", "Child", "so on.."],
 	status: "",
 	lastSaved: "",
 	showAdd: false,
