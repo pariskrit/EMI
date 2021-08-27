@@ -10,7 +10,14 @@ import * as yup from "yup";
 // Init styled components
 const AED = EditDialogStyle();
 
-function EditDialog({ open, title, inputFieldLists, errors, handleSave }) {
+function EditDialog({
+	open,
+	title,
+	inputFieldLists,
+	errors,
+	handleSave,
+	isUpdating,
+}) {
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
@@ -26,7 +33,7 @@ function EditDialog({ open, title, inputFieldLists, errors, handleSave }) {
 			aria-labelledby="edit-title"
 			aria-describedby="edit-description"
 		>
-			{/* {isUpdating ? <LinearProgress /> : null} */}
+			{isUpdating ? <LinearProgress /> : null}
 
 			<AED.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
