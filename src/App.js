@@ -2,6 +2,8 @@ import ErrorDialog from "components/ErrorDialog";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
+import SiteAsset from "routes/Clients/Sites/SiteAsset";
+import SiteDetail from "routes/Clients/Sites/SiteDetail";
 import "./App.css";
 import "./App.scss";
 import Actions from "./routes/Applications/Actions/Action";
@@ -138,6 +140,14 @@ function App() {
 
 					<Route path="/client/:id" exact>
 						<ClientDetailScreen />
+					</Route>
+
+					<Route path="/site/:id" exact>
+						<SiteDetail />
+					</Route>
+
+					<Route path="/site/:id/asset" exact>
+						<SiteAsset />
 					</Route>
 				</Switch>
 			</Router>

@@ -136,8 +136,12 @@ const ClientDetail = ({ clientId, clientData, getError }) => {
 	};
 
 	return (
-		<AccordionBox title="Company Details" noExpand={true} accordionClass='companyDetail'>
-			<Grid container spacing={5} className='companyDetailGrid'>
+		<AccordionBox
+			title="Company Details"
+			noExpand={true}
+			accordionClass="companyDetail"
+		>
+			<Grid container spacing={5} className="companyDetailGrid">
 				<Grid item sm={12}>
 					<Typography className={classes.labelText}>
 						Company Name<span style={{ color: "#E31212" }}>*</span>

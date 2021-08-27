@@ -1,7 +1,7 @@
 import React from "react";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import Navbar from "components/Navbar";
-import Detail from "./Detail";
+import Assets from "./Assets";
 
 const theme = createMuiTheme({
 	overrides: {
@@ -20,7 +20,7 @@ const theme = createMuiTheme({
 const SiteAsset = () => {
 	return (
 		<ThemeProvider theme={theme}>
-			<Navbar Content={() => <Detail />} />
+			<Navbar Content={() => <Assets />} />
 		</ThemeProvider>
 	);
 };
