@@ -8,7 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import ColourConstants from "../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 
 const useStyles = makeStyles((theme) => ({
 	popperPaper: {
@@ -58,7 +58,7 @@ const MenuDropdown = ({
 							<div key={`application-list-container-${index}`}>
 								<ListItem
 									button
-									// component={Link}
+									component={Link}
 									to={{
 										pathname: dropItem.link,
 										state: { applicationName: applicationName },

@@ -53,7 +53,7 @@ function EditDialog({
 				<DialogContentText id="alert-dialog-description">
 					<AED.InputContainer>
 						{inputFieldLists.map((input, index) => (
-							<AED.FieldInputContainer>
+							<AED.FieldInputContainer key={index}>
 								<AED.NameLabel>
 									{input.label}
 									<AED.RequiredStar>*</AED.RequiredStar>
