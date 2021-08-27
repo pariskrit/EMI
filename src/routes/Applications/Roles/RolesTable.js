@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import TableStyle from "styles/application/TableStyle";
+import TableStyle from "../../../styles/application/TableStyle";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import ColourConstants from "helpers/colourConstants";
+import ColourConstants from "../../../helpers/colourConstants";
 import PopupMenu from "components/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 
@@ -33,44 +33,23 @@ const useStyles = makeStyles({
 	nameRow: {
 		width: "20%",
 	},
-	subcatRow: {
+	defectsRow: {
 		width: "20%",
-	},
-	defaultText: {
-		fontFamily: "Roboto Condensed",
-		fontSize: 14,
-		color: ColourConstants.tableBorder,
-		fontStyle: "italic",
-		paddingLeft: 5,
-		display: "inline-flex",
-	},
-	defaultNameText: {
-		fontWeight: "bold",
-	},
-	yesText: {
-		color: ColourConstants.yesText,
-		fontFamily: "Roboto Condensed",
-		fontSize: 14,
-	},
-	noText: {
-		color: ColourConstants.commonText,
-		fontFamily: "Roboto Condensed",
-		fontSize: 14,
 	},
 });
 
-function RolesTable({
+const RolesTable = ({
 	data,
 	setData,
 	handleSort,
 	searchQuery,
+	handleDeleteDialogOpen,
+	handleEditDialogOpen,
 	currentTableSort,
 	setCurrentTableSort,
 	searchedData,
 	setSearchedData,
-	handleEditDialogOpen,
-	handleDeleteDialogOpen,
-}) {
+}) => {
 	// Init hooks
 	const classes = useStyles();
 	// Init State
@@ -93,116 +72,118 @@ function RolesTable({
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};
+
 	return (
-		<AT.TableContainer component={Paper} elevation={0}>
-			<Table aria-label="Model Table">
-				<AT.TableHead>
-					<TableRow>
-						<TableCell
-							onClick={() => {
-								handleSortClick("name");
-							}}
-							className={clsx(classes.nameRow, {
-								[classes.selectedTableHeadRow]: currentTableSort[0] === "name",
-								[classes.tableHeadRow]: currentTableSort[0] !== "name",
-							})}
-						>
-							<AT.CellContainer>
-								Name
-								{currentTableSort[0] === "name" &&
-								currentTableSort[1] === "desc" ? (
-									<AT.DefaultArrow fill="#FFFFFF" />
-								) : (
-									<AT.DescArrow fill="#FFFFFF" />
-								)}
-							</AT.CellContainer>
-						</TableCell>
-						<TableCell
-							onClick={() => {
-								handleSortClick("pauseSubcategories");
-							}}
-							className={clsx(classes.subcatRow, {
-								[classes.selectedTableHeadRow]:
-									currentTableSort[0] === "pauseSubcategories",
-								[classes.tableHeadRow]:
-									currentTableSort[0] !== "pauseSubcategories",
-							})}
-						>
-							<AT.CellContainer>
-								Number of subcategories
-								{currentTableSort[0] === "pauseSubcategories" &&
-								currentTableSort[1] === "desc" ? (
-									<AT.DefaultArrow fill="#FFFFFF" />
-								) : (
-									<AT.DescArrow fill="#FFFFFF" />
-								)}
-							</AT.CellContainer>
-						</TableCell>
-					</TableRow>
-				</AT.TableHead>
-
-				<TableBody>
-					{(searchQuery === "" ? data : searchedData).map((d, index) => (
+		<div>
+			<AT.TableContainer component={Paper} elevation={0}>
+				<Table aria-label="Roles Table">
+					<AT.TableHead>
 						<TableRow>
-							<AT.DataCell>
-								<AT.TableBodyText>{d.name}</AT.TableBodyText>
-							</AT.DataCell>
-							<AT.DataCell>
+							<TableCell
+								onClick={() => {
+									handleSortClick("name");
+								}}
+								className={clsx(classes.nameRow, {
+									[classes.selectedTableHeadRow]:
+										currentTableSort[0] === "name",
+									[classes.tableHeadRow]: currentTableSort[0] !== "name",
+								})}
+							>
 								<AT.CellContainer>
-									<AT.TableBodyText>
-										{d.canRegisterDefects ? "Yes" : "No"}
-									</AT.TableBodyText>
-
-									<AT.DotMenu
-										onClick={(e) => {
-											setAnchorEl(
-												anchorEl === e.currentTarget ? null : e.currentTarget
-											);
-											setSelectedData(
-												anchorEl === e.currentTarget ? null : index
-											);
-										}}
-									>
-										<AT.TableMenuButton>
-											<MenuIcon />
-										</AT.TableMenuButton>
-
-										<PopupMenu
-											index={index}
-											selectedData={selectedData}
-											anchorEl={anchorEl}
-											isLast={
-												searchQuery === ""
-													? index === data.length - 1
-													: index === searchedData.length - 1
-											}
-											id={d.id}
-											clickAwayHandler={() => {
-												setAnchorEl(null);
-												setSelectedData(null);
-											}}
-											menuData={[
-												{
-													name: "Edit",
-													handler: handleEditDialogOpen,
-													isDelete: false,
-												},
-												{
-													name: "Delete",
-													handler: handleDeleteDialogOpen,
-													isDelete: true,
-												},
-											]}
-										/>
-									</AT.DotMenu>
+									Name
+									{currentTableSort[0] === "name" &&
+									currentTableSort[1] === "desc" ? (
+										<AT.DefaultArrow fill="#FFFFFF" />
+									) : (
+										<AT.DescArrow fill="#FFFFFF" />
+									)}
 								</AT.CellContainer>
-							</AT.DataCell>
+							</TableCell>
+							<TableCell
+								onClick={() => {
+									handleSortClick("canRegisterDefects");
+								}}
+								className={clsx(classes.defectsRow, {
+									[classes.selectedTableHeadRow]:
+										currentTableSort[0] === "canRegisterDefects",
+									[classes.tableHeadRow]:
+										currentTableSort[0] !== "canRegisterDefects",
+								})}
+							>
+								<AT.CellContainer>
+									Can Raise Defects
+									{currentTableSort[0] === "canRegisterDefects" &&
+									currentTableSort[1] === "desc" ? (
+										<AT.DefaultArrow fill="#FFFFFF" />
+									) : (
+										<AT.DescArrow fill="#FFFFFF" />
+									)}
+								</AT.CellContainer>
+							</TableCell>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</AT.TableContainer>
+					</AT.TableHead>
+
+					<TableBody>
+						{(searchQuery === "" ? data : searchedData).map((d, index) => (
+							<TableRow key={index}>
+								<AT.DataCell>
+									<AT.TableBodyText>{d.name}</AT.TableBodyText>
+								</AT.DataCell>
+								<AT.DataCell>
+									<AT.CellContainer>
+										<AT.TableBodyText>{d.canRegisterDefects}</AT.TableBodyText>
+
+										<AT.DotMenu
+											onClick={(e) => {
+												setAnchorEl(
+													anchorEl === e.currentTarget ? null : e.currentTarget
+												);
+												setSelectedData(
+													anchorEl === e.currentTarget ? null : index
+												);
+											}}
+										>
+											<AT.TableMenuButton>
+												<MenuIcon />
+											</AT.TableMenuButton>
+
+											<PopupMenu
+												index={index}
+												selectedData={selectedData}
+												anchorEl={anchorEl}
+												isLast={
+													searchQuery === ""
+														? index === data.length - 1
+														: index === searchedData.length - 1
+												}
+												id={d.id}
+												clickAwayHandler={() => {
+													setAnchorEl(null);
+													setSelectedData(null);
+												}}
+												menuData={[
+													{
+														name: "Edit",
+														handler: handleEditDialogOpen,
+														isDelete: false,
+													},
+													{
+														name: "Delete",
+														handler: handleDeleteDialogOpen,
+														isDelete: true,
+													},
+												]}
+											/>
+										</AT.DotMenu>
+									</AT.CellContainer>
+								</AT.DataCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</AT.TableContainer>
+		</div>
 	);
-}
+};
 
 export default RolesTable;

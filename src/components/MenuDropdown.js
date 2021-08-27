@@ -58,7 +58,7 @@ const MenuDropdown = ({
 							<div key={`application-list-container-${index}`}>
 								<ListItem
 									button
-									component={Link}
+									// component={Link}
 									to={{
 										pathname: dropItem.link,
 										state: { applicationName: applicationName },
