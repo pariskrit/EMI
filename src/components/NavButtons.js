@@ -46,10 +46,10 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 
 	return (
-		<div className={classes.root}>
+		<div className={`${classes.root} buttonGroup`}>
 			<ButtonGroup
 				fullWidth={true}
-				className={classes.buttonGroup}
+				className={`${classes.buttonGroup} `}
 				aria-label="outlined primary button group"
 				size="small"
 			>
@@ -59,10 +59,10 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 					if (navItem.name === current) {
 						return (
 							<Button
-								className={clsx(
+								className={`${clsx(
 									classes.curveButton,
-									classes.curveButtonCurrent
-								)}
+									classes.curveButtonCurrent,
+								)} largeBtn`}
 								onMouseEnter={(e) => {
 									setAnchorEl(e.currentTarget);
 									setSelectedButton(index);
@@ -85,7 +85,7 @@ const NavButtons = ({ navigation, applicationName, current }) => {
 					} else {
 						return (
 							<Button
-								className={classes.curveButton}
+								className={`${classes.curveButton} largeBtn`}
 								onMouseEnter={(e) => {
 									setAnchorEl(e.currentTarget);
 									setSelectedButton(index);

@@ -91,7 +91,7 @@ const OtherAssets = () => {
 	};
 
 	return (
-		<div className={classes.otherAssetContainer}>
+		<div className={`${classes.otherAssetContainer} otherAssets`}>
 			<AccordionBox title="Other Assets" defaultExpanded={false}>
 				<div className={classes.detailsParentContainer}>
 					{assets.map((asset, index) => {

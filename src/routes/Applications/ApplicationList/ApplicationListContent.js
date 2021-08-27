@@ -343,7 +343,7 @@ const ApplicationListContent = () => {
 							<div className={classes.buttonContainer}>
 								<Button
 									variant="contained"
-									className={classes.productButton}
+									className={`${classes.productButton} addNewBtn`}
 									onClick={handleAddDialogOpen}
 								>
 									Add New
@@ -354,8 +354,8 @@ const ApplicationListContent = () => {
 
 					{haveData ? (
 						<AC.SearchContainer>
-							<AC.SearchInner>
-								<Grid container spacing={1} alignItems="flex-end">
+							<AC.SearchInner className='applicationSearchBtn'>
+								<Grid container spacing={1} alignItems="flex-end" >
 									<Grid item>
 										<SearchIcon />
 									</Grid>
@@ -366,6 +366,7 @@ const ApplicationListContent = () => {
 												setSearchQuery(e.target.value);
 											}}
 											label="Search Applications"
+											
 										/>
 									</Grid>
 								</Grid>

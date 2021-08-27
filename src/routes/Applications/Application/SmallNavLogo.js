@@ -140,7 +140,7 @@ const SmallNavLogo = ({
 
 	if (loading) {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainerRight`}>
 				<AccordionBox title="Small Navigation Logo" defaultExpanded={false}>
 					<div className={classes.logoContentParent}>
 						<div className={classes.spinnerContainer}>
@@ -152,7 +152,7 @@ const SmallNavLogo = ({
 		);
 	} else {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainerRight`}>
 				<AccordionBox title="Small Navigation Logo" defaultExpanded={false}>
 					{showUpload ? (
 						<div className={classes.logoContentParent}>

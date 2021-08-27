@@ -10,6 +10,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ColourConstants from "../helpers/colourConstants";
+import './componentStyle.css'
 
 // Importing icons
 import { ReactComponent as ClientIcon } from "../assets/icons/clientsIcon.svg";
@@ -25,9 +26,13 @@ import { ReactComponent as UserProfileIcon } from "../assets/icons/user-profile.
 import LargeLogo from "../assets/LargeLogoWhite.png";
 import MiniLogo from "../assets/EMI-symbol.png";
 
+// Bottom Navigation
+import { BottomNavigation,BottomNavigationAction  } from '@material-ui/core';
+
 // Size constants
 const drawerWidth = 240;
 const minDrawerWidth = 62;
+
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -172,6 +177,14 @@ const useStyles = makeStyles((theme) => ({
 			duration: theme.transitions.duration.enteringScreen,
 		}),
 	},
+
+	bottomNavigationContainer : {
+		position: 'fixed',
+		width: '100vw',
+		bottom: 0,
+		zIndex: 50,
+		
+	}
 }));
 
 function Navbar({ Content }) {
@@ -190,6 +203,7 @@ function Navbar({ Content }) {
 		<div className={classes.root}>
 			<CssBaseline />
 
+			<div className='drawerDesktop'>
 			<Drawer
 				variant="permanent"
 				className={clsx(classes.drawer, {
@@ -328,6 +342,48 @@ function Navbar({ Content }) {
 					</List>
 				</div>
 			</Drawer>
+			</div>
+
+			{/* Bottom Navigation for Mobile View */}
+			<BottomNavigation className={`${classes.bottomNavigationContainer} mobileNavigation`} >
+			{[
+						["Clients", ClientIcon, "/clientList"],
+						["Applications", ApplicationIcon, "/applicationList"],
+						["Models", ModelIcon, "/"],
+						["Users", UserIcon, "/"],
+						["Analytics", AnalyticsIcon, "/"],
+					].map((item, index) => {
+						// Storing SVG
+						let NavIcon = item[1];
+
+						// Note: Currently hardcoding current selection -- pull from global state
+						// when implemented
+						if (index === 1) {
+							return (
+								<Link to={item[2]} className={classes.navLink}>
+									<div className={classes.navListContainer}>
+									<BottomNavigationAction label="Recents" key={item[0]} className={classes.currentItemBackground} value="recents" icon={<NavIcon
+													className={classes.navIconCurrent}
+													alt={`${item[0]} icon`}
+												/>} />
+									</div>
+								</Link>
+							);
+						} else {
+							return (
+								<Link to={item[2]} className={classes.navLink}>
+									<div className={classes.navListContainer}>
+									<BottomNavigationAction label="Recents" key={item[0]} className={classes.currentItemBackground} value="recents" icon={<NavIcon
+													className={classes.navIconCurrent}
+													alt={`${item[0]} icon`}
+												/>} />
+									</div>
+								</Link>
+							);
+						}
+					})}
+</BottomNavigation>
+
 			<main className={classes.content}>
 				<Content />
 			</main>

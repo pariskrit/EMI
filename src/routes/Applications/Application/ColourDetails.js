@@ -92,7 +92,7 @@ const ColourDetails = ({ inputColour, setInputColour }) => {
 				handleUpdateColour={handleUpdateColour}
 				currentColour={inputColour}
 			/>
-			<div className={classes.colourContainer}>
+			<div className={`${classes.colourContainer} colorContainer`}>
 				<AccordionBox
 					title="Primary Application Colour"
 					defaultExpanded={false}

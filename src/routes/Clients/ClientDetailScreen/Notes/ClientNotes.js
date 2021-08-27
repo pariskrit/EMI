@@ -126,12 +126,14 @@ const ClientNotes = ({ clientId, getError }) => {
 				deleteEndpoint={`${BASE_API_PATH}Clientnotes`}
 				deleteID={noteId}
 				handleRemoveData={handleRemoveData}
-			/>{" "}
+			/>
+
 			<AccordionBox
 				title={`Notes (${data.length})`}
 				isActionsPresent={true}
 				buttonName="Add Note"
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
+				accordianDetailsCss="table-container"
 			>
 				<Table>
 					<TableHead className={classes.tableHead}>

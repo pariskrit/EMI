@@ -152,7 +152,7 @@ const ApplicationLogo = ({
 
 	if (loading) {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainer`}>
 				<AccordionBox title="Application Logo" defaultExpanded={false}>
 					<div className={classes.logoContentParent}>
 						<div className={classes.spinnerContainer}>
@@ -164,7 +164,7 @@ const ApplicationLogo = ({
 		);
 	} else {
 		return (
-			<div className={classes.logoContainer}>
+			<div className={`${classes.logoContainer} logoContainer`}>
 				<AccordionBox title="Application Logo" defaultExpanded={false}>
 					{showUpload ? (
 						<div className={classes.logoContentParent}>

@@ -37,12 +37,13 @@ function AccordionBox({
 	noExpand,
 	children,
 	defaultExpanded = true,
+	accordionClass = ''
 }) {
 	const classes = useStyles();
 
 	return (
 		<Accordion
-			className={classes.logoAccordion}
+			className={`${classes.logoAccordion} ${accordionClass}`}
 			defaultExpanded={defaultExpanded}
 			expanded={noExpand}
 		>

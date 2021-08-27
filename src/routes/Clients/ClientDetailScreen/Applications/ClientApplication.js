@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import ApplicationTable from "components/ApplicationTable";
@@ -7,7 +6,9 @@ import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
+import React, { useEffect, useState } from "react";
 import AddAppDialog from "./AddAppDialog";
+import './application.css';
 import ChangeDialog from "./ChangeDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
 	appAccordion: {
 		borderColor: ColourConstants.commonBorder,
 		borderStyle: "solid",
-		borderWidth: 1,
-		width: "100%",
+		borderWidth: 1,		
+		width: '100%'
 	},
 	tableHead: {
 		backgroundColor: "#D2D2D9",
@@ -160,6 +161,7 @@ const ClientApplication = ({ clientId, getError }) => {
 				isActionsPresent={true}
 				buttonName="Add Application"
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
+				accordianDetailsCss = 'table-container'
 			>
 				<ApplicationTable
 					data={data}

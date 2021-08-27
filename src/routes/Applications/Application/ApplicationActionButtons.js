@@ -230,7 +230,7 @@ const ActionButtons = ({
 	};
 
 	return (
-		<AAB.ButtonContainer>
+		<AAB.ButtonContainer className='actionButtonContainer'>
 			<DuplicateApplicationDialog
 				open={openDuplicateDialog}
 				closeHandler={handleDuplicateDialogClose}
@@ -287,7 +287,7 @@ const ActionButtons = ({
 			<AAB.GeneralButton
 				disableElevation
 				variant="contained"
-				className={classes.duplicateButton}
+				className={`${classes.duplicateButton} actionButtonsBtn`}
 				onClick={() => {
 					handleDuplicateDialogOpen();
 				}}
@@ -309,6 +309,7 @@ const ActionButtons = ({
 					disableElevation
 					variant="contained"
 					onClick={handleSave}
+					className= 'actionButtonsBtn'
 				>
 					Save
 				</AAB.GeneralButton>

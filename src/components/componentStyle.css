@@ -1,0 +1,16 @@
+.MuiBottomNavigation-root.mobileNavigation{
+    display: none
+}
+
+
+
+@media only screen and (max-width: 414px){
+    .MuiBottomNavigation-root.mobileNavigation{
+        display: flex;
+        /* width: auto; */
+    }    
+
+    .drawerDesktop{
+        display: none
+    }
+}
