@@ -42,3 +42,10 @@ Error.args = {
 		{ isError: false, message: null },
 	],
 };
+
+export const Updating = Template.bind({});
+
+Updating.args = {
+	...Department.args,
+	isUpdating: true,
+};
