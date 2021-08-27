@@ -1,7 +1,7 @@
 import React from "react";
 import { TableCell, TableRow, Tooltip } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import "./style.css";
+import "./style.scss";
 const HtmlTooltip = withStyles((theme) => ({
 	tooltip: {
 		backgroundColor: "#f5f5f9",

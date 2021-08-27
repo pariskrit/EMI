@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
 import SiteAsset from "routes/Clients/Sites/SiteAsset";
 import SiteDetail from "routes/Clients/Sites/SiteDetail";
-import "./App.css";
+import SiteDepartmentsScreen from "routes/Clients/Sites/SiteDepartment/SiteDepartmentsScreen";
 import "./App.scss";
 import Actions from "./routes/Applications/Actions/Action";
 import Application from "./routes/Applications/Application/Application";
@@ -31,8 +31,6 @@ import ClientList from "./routes/Clients/ClientList/ClientList";
 import Home from "./routes/Home/Home";
 import Launch from "./routes/Launch/Launch";
 import Login from "./routes/Login/Login";
-
-import SiteDepartmentsScreen from "./routes/Site/SiteDepartmentsScreen";
 
 function App() {
 	return (

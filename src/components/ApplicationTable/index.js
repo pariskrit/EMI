@@ -10,7 +10,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import Row from "./Row";
-import "./style.css";
+import "./style.scss";
 
 const useStyles = makeStyles((theme) => ({
 	tableHead: {

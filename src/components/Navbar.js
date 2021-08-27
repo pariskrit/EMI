@@ -10,7 +10,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ColourConstants from "../helpers/colourConstants";
-import './componentStyle.css'
+import './componentStyle.scss'
 
 // Importing icons
 import { ReactComponent as ClientIcon } from "../assets/icons/clientsIcon.svg";
