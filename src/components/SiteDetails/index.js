@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const SiteDetails = ({ onChange }) => {
+const SiteDetails = ({ onChange, value }) => {
 	const classes = useStyles();
 
 	return (
@@ -27,6 +27,7 @@ const SiteDetails = ({ onChange }) => {
 				variant="outlined"
 				defaultValue="Boddington"
 				onChange={onChange}
+				value={value}
 			/>
 		</div>
 	);

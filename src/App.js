@@ -145,10 +145,6 @@ function App() {
 					<Route path="/site/:id" exact>
 						<SiteDetail />
 					</Route>
-
-					<Route path="/site/:id/asset" exact>
-						<SiteAsset />
-					</Route>
 				</Switch>
 			</Router>
 		</div>
