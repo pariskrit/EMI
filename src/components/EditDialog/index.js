@@ -73,6 +73,21 @@ function EditDialog({ open, title, inputFieldLists, errors, handleSave }) {
 	);
 }
 
-EditDialog.propTypes = {};
+EditDialog.propTypes = {
+	/** if true opens the dialog otherwise closes */
+	open: PropTypes.bool.isRequired,
+
+	/** the name of the data that you are going to edit */
+	title: PropTypes.string.isRequired,
+
+	/** array of objects containg input field details */
+	inputFieldLists: PropTypes.array.isRequired,
+
+	//** array of errors object */
+	errors: PropTypes.array.isRequired,
+
+	/** this is called when the save button is clicked */
+	handleSave: PropTypes.func.isRequired,
+};
 
 export default EditDialog;
