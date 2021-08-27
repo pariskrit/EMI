@@ -3,7 +3,7 @@ import React from "react";
 import SimpleDataTable from "components/SimpleDataTable";
 
 export default {
-	title: "Components/Key Contacts",
+	title: "Components/SimpleDataTable",
 	component: SimpleDataTable,
 };
 
