@@ -81,7 +81,8 @@ const CommonAddDialog = ({
 			setIsDisabled(false);
 			setIsUpdating(false);
 		};
-	}, [open]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<div>

@@ -126,6 +126,7 @@ SiteWrapper.propTypes = {
 	onNavClick: PropTypes.func,
 	showAdd: PropTypes.bool,
 	showImport: PropTypes.bool,
+	Component: PropTypes.elementType,
 };
 
 export default SiteWrapper;
