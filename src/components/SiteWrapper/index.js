@@ -46,13 +46,13 @@ const SiteWrapper = ({
 	crumbs,
 	status,
 	lastSaved,
-	children,
 	onClickAdd,
 	onClickImport,
 	showAdd,
 	showImport,
 	current,
 	onNavClick,
+	Component,
 }) => {
 	const classes = useStyles();
 	const { id } = useParams();
@@ -96,7 +96,7 @@ const SiteWrapper = ({
 							current={current}
 							onClick={(nam) => onNavClick(`/site/${id}${nam}`)}
 						/>
-						{children}
+						<Component />
 					</div>
 				)}
 			/>
@@ -114,13 +114,13 @@ SiteWrapper.defaultProps = {
 	onClickAdd: () => {},
 	onClickImport: () => {},
 	onNavClick: () => {},
+	Component: () => <div>Provide Component</div>,
 };
 
 SiteWrapper.propTypes = {
 	crumbs: PropTypes.array,
 	status: PropTypes.string,
 	lastSaved: PropTypes.string,
-	children: PropTypes.element.isRequired,
 	onClickAdd: PropTypes.func,
 	onClickImport: PropTypes.func,
 	onNavClick: PropTypes.func,
