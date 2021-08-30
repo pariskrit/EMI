@@ -6,7 +6,7 @@ import Dropdown from "components/Dropdown";
 const options = [
 	{ label: "Total Users", value: 0 },
 	{ label: "Concurrent Users", value: 1 },
-	{ label: "Per Job", value: 2 },
+	{ label: "Per Job per Role", value: 2 },
 	{ label: "Site-Based Licencing", value: 3 },
 ];
 
