@@ -113,7 +113,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 			const result = await API.get(
 				`${BASE_API_PATH}Regions?clientId=${clientId}`
 			);
-
+			console.log(result);
 			handleSort(result.data, setListOfRegions, "name", "asc");
 		} catch (error) {
 			console.log(error);
