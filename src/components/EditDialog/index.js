@@ -43,7 +43,7 @@ function EditDialog({
 					<AED.CancelButton onClick="" variant="contained">
 						Cancel
 					</AED.CancelButton>
-					<AED.ConfirmButton variant="contained" onClick="">
+					<AED.ConfirmButton variant="contained" onClick={handleSave}>
 						Save
 					</AED.ConfirmButton>
 				</AED.ButtonContainer>

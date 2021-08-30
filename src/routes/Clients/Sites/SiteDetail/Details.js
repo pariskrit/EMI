@@ -4,7 +4,10 @@ import AccordionBox from "components/AccordionBox";
 import SiteDetails from "components/SiteDetails";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";
+import { useParams } from "react-router-dom";
+
 const Details = () => {
+	const { id } = useParams();
 	return (
 		<div style={{ marginTop: 22 }}>
 			<Grid container>
@@ -12,17 +15,14 @@ const Details = () => {
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<AccordionBox title="Site Details">
-								<SiteDetails
-									onChange={(e) => console.log(e.target.value)}
-									value="Boddington"
-								/>
+								<SiteDetails siteId={id} />
 							</AccordionBox>
 						</Grid>
 						<Grid item xs={12}>
-							<KeyContacts />
+							<KeyContacts siteId={id} />
 						</Grid>
 						<Grid item xs={12}>
-							<Applications />
+							<Applications siteId={id} />
 						</Grid>
 					</Grid>
 				</Grid>
