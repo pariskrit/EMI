@@ -1,75 +1,80 @@
 {
-  "name": "emi",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.57",
-    "@reduxjs/toolkit": "^1.6.1",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "axios": "^0.21.1",
-    "dayjs": "^1.9.4",
-    "react": "^16.13.1",
-    "react-colorful": "^4.4.2",
-    "react-dom": "^16.13.1",
-    "react-dropzone": "^11.2.3",
-    "react-redux": "^7.2.4",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.4",
-    "react-spinners-css": "^1.2.2",
-    "styled-components": "^5.2.1",
-    "yup": "^0.32.8"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "predeploy:dev": "env-cmd -f .env.development react-scripts build",
-    "deploy:dev": "aws s3 sync build/ s3://emi3-frontend-test-deploy",
-    "postdeploy:dev": "aws cloudfront create-invalidation --distribution-id EUI7SR933CLTU --paths /*",
-    "predeploy:staging": "env-cmd -f .env.staging react-scripts build",
-    "deploy:staging": "aws s3 sync build/ s3://emi3-staging-frontend",
-    "postdeploy:staging": "aws cloudfront create-invalidation --distribution-id E314WA9UIE8SBF --paths /*",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
-  },
-  "eslintConfig": {
-    "extends": "react-app",
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@storybook/addon-actions": "^6.3.7",
-    "@storybook/addon-essentials": "^6.3.7",
-    "@storybook/addon-links": "^6.3.7",
-    "@storybook/node-logger": "^6.3.7",
-    "@storybook/preset-create-react-app": "^3.2.0",
-    "@storybook/react": "^6.3.7",
-    "env-cmd": "^10.1.0",
-    "sass": "^1.37.5"
-  }
+	"name": "emi",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@material-ui/core": "^4.11.0",
+		"@material-ui/icons": "^4.9.1",
+		"@material-ui/lab": "^4.0.0-alpha.57",
+		"@reduxjs/toolkit": "^1.6.1",
+		"@testing-library/jest-dom": "^4.2.4",
+		"@testing-library/react": "^9.5.0",
+		"@testing-library/user-event": "^7.2.1",
+		"axios": "^0.21.1",
+		"dayjs": "^1.9.4",
+		"react": "^16.13.1",
+		"react-colorful": "^4.4.2",
+		"react-dom": "^16.13.1",
+		"react-dropzone": "^11.2.3",
+		"react-redux": "^7.2.4",
+		"react-router-dom": "^5.2.0",
+		"react-scripts": "^3.4.4",
+		"react-spinners-css": "^1.2.2",
+		"styled-components": "^5.2.1",
+		"yup": "^0.32.8"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"predeploy:dev": "env-cmd -f .env.development react-scripts build",
+		"deploy:dev": "aws s3 sync build/ s3://emi3-frontend-test-deploy",
+		"postdeploy:dev": "aws cloudfront create-invalidation --distribution-id EUI7SR933CLTU --paths /*",
+		"predeploy:staging": "env-cmd -f .env.staging react-scripts build",
+		"deploy:staging": "aws s3 sync build/ s3://emi3-staging-frontend",
+		"postdeploy:staging": "aws cloudfront create-invalidation --distribution-id E314WA9UIE8SBF --paths /*",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject",
+		"storybook": "start-storybook -p 6006 -s public",
+		"build-storybook": "build-storybook -s public"
+	},
+	"eslintConfig": {
+		"extends": "react-app",
+		"overrides": [
+			{
+				"files": [
+					"**/*.stories.*"
+				],
+				"rules": {
+					"import/no-anonymous-default-export": "off"
+				}
+			}
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@storybook/addon-actions": "^6.3.7",
+		"@storybook/addon-essentials": "^6.3.7",
+		"@storybook/addon-links": "^6.3.7",
+		"@storybook/node-logger": "^6.3.7",
+		"@storybook/preset-create-react-app": "^3.2.0",
+		"@storybook/preset-scss": "^1.0.3",
+		"@storybook/react": "^6.3.7",
+		"css-loader": "^4.3.0",
+		"env-cmd": "^10.1.0",
+		"postcss-loader": "^4.2.0",
+		"sass": "^1.38.1",
+		"sass-loader": "^10.2.0",
+		"style-loader": "^3.2.1"
+	}
 }

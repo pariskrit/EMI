@@ -2,7 +2,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import Navbar from "components/Navbar";
 import React from "react";
 import ClientDetails from "./ClientDetails";
-import "./style.css";
+import "./style.scss";
 const theme = createMuiTheme({
 	overrides: {
 		// Accordion override is making the accordion title static vs. default dynamic

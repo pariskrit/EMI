@@ -8,7 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import ColourConstants from "../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 
 const useStyles = makeStyles((theme) => ({
 	popperPaper: {
