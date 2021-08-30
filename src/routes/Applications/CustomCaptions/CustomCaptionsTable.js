@@ -822,7 +822,11 @@ const CustomCaptionsTable = ({
 
 	return (
 		<div>
-			<AT.TableContainer component={Paper} elevation={0}>
+			<AT.TableContainer
+				component={Paper}
+				elevation={0}
+				className="customCaptionsTableContainer"
+			>
 				<Table aria-label="Table">
 					<AT.TableHead>
 						<TableRow>

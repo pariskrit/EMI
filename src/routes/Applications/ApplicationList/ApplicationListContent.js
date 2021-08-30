@@ -305,7 +305,7 @@ const ApplicationListContent = () => {
 	}, [searchQuery]);
 
 	return (
-		<div>
+		<div className="container">
 			<AddApplicationDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
@@ -354,8 +354,8 @@ const ApplicationListContent = () => {
 
 					{haveData ? (
 						<AC.SearchContainer>
-							<AC.SearchInner className='applicationSearchBtn'>
-								<Grid container spacing={1} alignItems="flex-end" >
+							<AC.SearchInner className="applicationSearchBtn">
+								<Grid container spacing={1} alignItems="flex-end">
 									<Grid item>
 										<SearchIcon />
 									</Grid>
@@ -366,7 +366,6 @@ const ApplicationListContent = () => {
 												setSearchQuery(e.target.value);
 											}}
 											label="Search Applications"
-											
 										/>
 									</Grid>
 								</Grid>

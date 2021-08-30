@@ -17,3 +17,10 @@ code {
 	font-family: "Roboto", source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
 }
+
+@media only screen and (max-width: 414px) {
+	.container {
+		margin-top: 55px;
+		margin-bottom: 55px;
+	}
+}

@@ -1,9 +1,9 @@
 import React from "react";
-import Details from "routes/Clients/Sites/SiteDetail/Details";
+import SiteDetails from "routes/Clients/Sites/SiteDetail/Details";
 
 export default {
-	title: "Module/SiteDetails",
-	component: Details,
+	title: "Page/SiteDetails",
+	component: SiteDetails,
 };
 
-export const SiteDetailTable = () => <Details />;
+export const SiteDetailTable = () => <SiteDetails />;
