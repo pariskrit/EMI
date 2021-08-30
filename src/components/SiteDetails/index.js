@@ -109,6 +109,20 @@ const SiteDetails = () => {
 					/>
 				</div>
 			</Grid>
+			<Grid item sm={6}>
+				<div className={classes.siteContainer}>
+					<Typography variant="subtitle2">
+						Total Licence Count<span className={classes.required}>*</span>
+					</Typography>
+					<TextField
+						name="address"
+						fullWidth
+						type="number"
+						variant="outlined"
+						defaultValue="4"
+					/>
+				</div>
+			</Grid>
 		</Grid>
 	);
 };
