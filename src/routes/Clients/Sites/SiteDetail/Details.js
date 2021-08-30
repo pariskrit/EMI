@@ -7,24 +7,20 @@ import Applications from "./Applications";
 const Details = () => {
 	return (
 		<div style={{ marginTop: 22 }}>
-			<Grid container>
+			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<AccordionBox title="Site Details">
-								<SiteDetails
-									onChange={(e) => console.log(e.target.value)}
-									value="Boddington"
-								/>
-							</AccordionBox>
-						</Grid>
-						<Grid item xs={12}>
-							<KeyContacts />
-						</Grid>
-						<Grid item xs={12}>
-							<Applications />
-						</Grid>
-					</Grid>
+					<AccordionBox title="Site Details">
+						<SiteDetails
+							onChange={(e) => console.log(e.target.value)}
+							value="Boddington"
+						/>
+					</AccordionBox>
+				</Grid>
+				<Grid item xs={12}>
+					<KeyContacts />
+				</Grid>
+				<Grid item xs={12}>
+					<Applications />
 				</Grid>
 			</Grid>
 		</div>
