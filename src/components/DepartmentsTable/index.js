@@ -101,9 +101,7 @@ const DepartmentsTable = () => {
 					<AT.TableHead>
 						<TableRow>
 							<TableCell className={classes.tableHeadRow}>
-								<AT.CellContainer
-									style={{ display: "flex", justifyContent: "space-between" }}
-								>
+								<AT.CellContainer className="flex justify-between">
 									Name
 									<div className="arrow">
 										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
@@ -112,9 +110,7 @@ const DepartmentsTable = () => {
 								</AT.CellContainer>
 							</TableCell>
 							<TableCell className={classes.tableHeadRow}>
-								<AT.CellContainer
-									style={{ display: "flex", justifyContent: "space-between" }}
-								>
+								<AT.CellContainer className="flex justify-between">
 									Description
 									<div className="arrow">
 										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />

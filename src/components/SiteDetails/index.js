@@ -146,7 +146,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							selectedValue={{ label: "Nepal", value: 0 }}
 							label=""
 							required={true}
-							width="100%"
+							width="auto"
 						/>
 					</div>
 				</Grid>
@@ -202,7 +202,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							selectedValue={{ label: "Total Users", value: 0 }}
 							label=""
 							required={true}
-							width="100%"
+							width="auto"
 						/>
 					</div>
 				</Grid>

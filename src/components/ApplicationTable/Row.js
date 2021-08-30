@@ -15,7 +15,7 @@ const Row = ({ row, classes, onDeleteApp, onChangeApp }) => (
 				width: "245px",
 			}}
 		>
-			<div className="flex" style={{ display: "flex", alignItems: "center" }}>
+			<div className="flex">
 				<IOSSwitch onChange={onChangeApp} currentStatus={row.isActive} /> &nbsp;
 				{!row.isActive ? (
 					<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />

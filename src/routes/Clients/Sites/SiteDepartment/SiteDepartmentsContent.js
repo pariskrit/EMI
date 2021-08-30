@@ -90,10 +90,7 @@ const SiteDepartmentsContent = () => {
 				handleRemoveData={handleRemoveData}
 			/> */}
 
-			<div
-				className="flex justify-between"
-				style={{ display: "flex", alignItems: "center" }}
-			>
+			<div className="flex justify-between" className="flex">
 				<Navcrumbs
 					crumbs={["Site", ""]} // ----------------------- put dynamic value
 					status=""

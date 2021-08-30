@@ -88,9 +88,7 @@ const ClientSiteTable = ({
 										currentTableSort[0] !== columns[index],
 								})}
 							>
-								<AT.CellContainer
-									style={{ display: "flex", justifyContent: "space-between" }}
-								>
+								<AT.CellContainer className="flex justify-between">
 									{header}
 									<div className="arrow">
 										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />

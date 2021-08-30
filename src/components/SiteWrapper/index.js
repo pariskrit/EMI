@@ -61,10 +61,7 @@ const SiteWrapper = ({
 			<Navbar
 				Content={() => (
 					<div>
-						<div
-							className="flex justify-between"
-							style={{ display: "flex", alignItems: "center" }}
-						>
+						<div className="flex justify-between">
 							<Navcrumbs
 								crumbs={crumbs}
 								status={status}

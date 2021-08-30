@@ -283,7 +283,7 @@ const MissingItemsContent = ({ navigation, id, setIs404, state }) => {
 							<AC.SearchContainer>
 								<AC.SearchInner>
 									<Grid container spacing={1} alignItems="flex-end">
-										<div style={{ display: "flex", alignItems: "center" }}>
+										<div className="flex">
 											<Grid item>
 												<SearchIcon
 													style={{ marginTop: "20px", marginRight: "5px" }}
