@@ -1,8 +1,8 @@
 import React from "react";
-import SiteDetails from "components/SiteDetails";
+import SiteDetails from "routes/Clients/Sites/SiteDetail/Details";
 
 export default {
-	title: "Components/SiteDetails",
+	title: "Page/SiteDetails",
 	component: SiteDetails,
 };
 

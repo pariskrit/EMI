@@ -7,7 +7,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { ReactComponent as UploadIcon } from "../assets/icons/uploadIcon.svg";
 import API from "../helpers/api";
 import ColourConstants from "../helpers/colourConstants";
-import { BASE_API_PATH } from "../helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	dragContainer: {

@@ -99,7 +99,7 @@ NavButtons.propTypes = {
 	navigation: PropTypes.array.isRequired,
 
 	/** the current name of the application or site*/
-	applicationName: PropTypes.string.isRequired,
+	applicationName: PropTypes.string,
 
 	//** this is the name of the nav current selected */
 	current: PropTypes.string.isRequired,
