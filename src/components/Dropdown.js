@@ -68,7 +68,7 @@ function Dropdown(props) {
 							? selectedValue.label
 							: placeholder}
 					</span>
-					<img alt="Expand icon" src={ArrowIcon} className="arrow" />
+					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 				</div>
 			</div>
 			{dropActive && (
