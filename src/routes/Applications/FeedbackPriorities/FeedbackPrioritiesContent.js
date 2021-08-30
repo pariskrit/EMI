@@ -214,7 +214,12 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 			}
 		}
 
-		handleSort(results, setSearchedData, currentTableSort[0], currentTableSort[1]);
+		handleSort(
+			results,
+			setSearchedData,
+			currentTableSort[0],
+			currentTableSort[1]
+		);
 
 		return;
 	};
@@ -266,7 +271,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 				console.log("application name updated");
 			})
 			.catch((err) => console.log(err));
-			// eslint-disable-next-line
+		// eslint-disable-next-line
 	}, []);
 
 	// Fetch side effect to update default
@@ -285,7 +290,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 			if (searchQuery !== "") {
 				handleSearch();
 			}
-			
+
 			setDataChanged(false);
 		}
 		// eslint-disable-next-line
@@ -299,7 +304,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 	}, [searchQuery]);
 
 	return (
-		<div>
+		<div className="container">
 			{/* START DIALOGS */}
 			<AddStatusDialog
 				open={openAddDialog}
@@ -330,15 +335,19 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 			/>
 			{/* END DIALOGS */}
 
-			<AC.TopContainer>
+			<div className="topContainerCustomCaptions">
 				<Navcrumbs
 					crumbs={[
 						"Application",
 						state !== undefined ? state.applicationName : applicationName,
 					]}
 				/>
-				{haveData ? <ActionButtons addOpen={handleAddDialogOpen} /> : null}
-			</AC.TopContainer>
+				{haveData ? (
+					<div>
+						<ActionButtons addOpen={handleAddDialogOpen} />
+					</div>
+				) : null}
+			</div>
 			{haveData ? (
 				<>
 					<SaveHistory />
@@ -351,32 +360,57 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 						current="Feedback Definitions"
 					/>
 
-					<AC.DetailsContainer>
+					<div className="detailsContainer">
 						<DetailsPanel
 							header={"Feedback Priorities"}
 							dataCount={haveData ? data.length : 0}
 							description="Create and manage Feedback Priorities"
 						/>
-
-						<AC.SearchContainer>
-							<AC.SearchInner>
-								<Grid container spacing={1} alignItems="flex-end">
-									<Grid item>
-										<SearchIcon />
+						<div className="desktopSearchCustomCaptions">
+							<AC.SearchContainer>
+								<AC.SearchInner>
+									<Grid container spacing={1} alignItems="flex-end">
+										<div style={{ display: "flex", alignItems: "center" }}>
+											<Grid item>
+												<SearchIcon
+													style={{ marginTop: "20px", marginRight: "5px" }}
+												/>
+											</Grid>
+											<Grid item>
+												<AC.SearchInput
+													value={searchQuery}
+													onChange={(e) => {
+														setSearchQuery(e.target.value);
+													}}
+													label="Search Feedback Priorities"
+												/>
+											</Grid>
+										</div>
 									</Grid>
-									<Grid item>
-										<AC.SearchInput
-											value={searchQuery}
-											onChange={(e) => {
-												setSearchQuery(e.target.value);
-											}}
-											label="Search Feedback Priorities"
-										/>
+								</AC.SearchInner>
+							</AC.SearchContainer>
+						</div>
+						<div className="mobileSearchCustomCaptions">
+							<AC.SearchContainerMobile>
+								<AC.SearchInner>
+									<Grid container spacing={1} alignItems="flex-end">
+										<Grid item>
+											<SearchIcon />
+										</Grid>
+										<Grid item>
+											<AC.SearchInput
+												value={searchQuery}
+												onChange={(e) => {
+													setSearchQuery(e.target.value);
+												}}
+												label="Search Feedback Priorities"
+											/>
+										</Grid>
 									</Grid>
-								</Grid>
-							</AC.SearchInner>
-						</AC.SearchContainer>
-					</AC.DetailsContainer>
+								</AC.SearchInner>
+							</AC.SearchContainerMobile>
+						</div>
+					</div>
 
 					<FeedbackPrioritiesTable
 						data={data}

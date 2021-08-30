@@ -297,7 +297,7 @@ const ModelStatusesContent = ({ navigation, id, setIs404, state }) => {
 	}, [searchQuery]);
 
 	return (
-		<div>
+		<div className="container">
 			{/* START DIALOGS */}
 			<AddStatusDialog
 				open={openAddDialog}
@@ -328,15 +328,19 @@ const ModelStatusesContent = ({ navigation, id, setIs404, state }) => {
 			/>
 			{/* END DIALOGS */}
 
-			<AC.TopContainer>
+			<div className="topContainerCustomCaptions">
 				<Navcrumbs
 					crumbs={[
 						"Application",
 						state !== undefined ? state.applicationName : applicationName,
 					]}
 				/>
-				{haveData ? <ActionButtons addOpen={handleAddDialogOpen} /> : null}
-			</AC.TopContainer>
+				{haveData ? (
+					<div>
+						<ActionButtons addOpen={handleAddDialogOpen} />
+					</div>
+				) : null}
+			</div>
 			{haveData ? (
 				<>
 					<SaveHistory />
@@ -349,32 +353,59 @@ const ModelStatusesContent = ({ navigation, id, setIs404, state }) => {
 						current="Model Definitions"
 					/>
 
-					<AC.DetailsContainer>
+					<div className="detailsContainer">
 						<DetailsPanel
 							header={"Model Statuses"}
 							dataCount={haveData ? data.length : 0}
 							description="Create and manage Model Statuses"
 						/>
 
-						<AC.SearchContainer>
-							<AC.SearchInner>
-								<Grid container spacing={1} alignItems="flex-end">
-									<Grid item>
-										<SearchIcon />
+						<div className="desktopSearchCustomCaptions">
+							<AC.SearchContainer>
+								<AC.SearchInner>
+									<Grid container spacing={1} alignItems="flex-end">
+										<div style={{ display: "flex", alignItems: "center" }}>
+											<Grid item>
+												<SearchIcon
+													style={{ marginTop: "20px", marginRight: "5px" }}
+												/>
+											</Grid>
+											<Grid item>
+												<AC.SearchInput
+													value={searchQuery}
+													onChange={(e) => {
+														setSearchQuery(e.target.value);
+													}}
+													label="Search Statuses"
+												/>
+											</Grid>
+										</div>
 									</Grid>
-									<Grid item>
-										<AC.SearchInput
-											value={searchQuery}
-											onChange={(e) => {
-												setSearchQuery(e.target.value);
-											}}
-											label="Search Statuses"
-										/>
+								</AC.SearchInner>
+							</AC.SearchContainer>
+						</div>
+
+						<div className="mobileSearchCustomCaptions">
+							<AC.SearchContainerMobile>
+								<AC.SearchInner>
+									<Grid container spacing={1} alignItems="flex-end">
+										<Grid item>
+											<SearchIcon />
+										</Grid>
+										<Grid item>
+											<AC.SearchInput
+												value={searchQuery}
+												onChange={(e) => {
+													setSearchQuery(e.target.value);
+												}}
+												label="Search Statuses"
+											/>
+										</Grid>
 									</Grid>
-								</Grid>
-							</AC.SearchInner>
-						</AC.SearchContainer>
-					</AC.DetailsContainer>
+								</AC.SearchInner>
+							</AC.SearchContainerMobile>
+						</div>
+					</div>
 
 					<ModelTable
 						data={data}

@@ -1,16 +1,53 @@
-.MuiBottomNavigation-root.mobileNavigation{
-    display: none
+.MuiBottomNavigation-root.mobileNavigation {
+	display: none;
 }
 
+.miniLogoMobile {
+	display: none;
+}
 
+@media only screen and (max-width: 414px) {
+	.MuiBottomNavigation-root.mobileNavigation {
+		display: flex;
+		/* width: auto; */
+	}
 
-@media only screen and (max-width: 414px){
-    .MuiBottomNavigation-root.mobileNavigation{
-        display: flex;
-        /* width: auto; */
-    }    
+	.drawerDesktop {
+		display: none;
+	}
 
-    .drawerDesktop{
-        display: none
-    }
+	.appBar {
+		width: 100vw;
+		height: 55px;
+		background-color: #d98d24;
+		position: fixed;
+		z-index: 100;
+	}
+
+	.bottomNavigation {
+		width: 90vw;
+		position: fixed;
+		z-index: 100;
+		bottom: 0;
+		left: 0;
+	}
+
+	.miniLogoMobile {
+		display: flex;
+	}
+
+	.MuiListItem-gutters {
+		background-color: #d98d24;
+		fill: white;
+	}
+
+	.mobNavListContainer {
+		margin: 0 -6px;
+	}
+}
+
+@media only screen and (max-width: 376px) {
+	.mobNavListContainer {
+		margin: 0 -8px;
+	}
 }

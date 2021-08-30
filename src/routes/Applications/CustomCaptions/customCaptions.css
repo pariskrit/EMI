@@ -1,0 +1,48 @@
+.detailsContainer {
+	display: flex;
+}
+
+.searchContainerCustomCaptions {
+	display: "flex";
+	width: "100%";
+	margin-top: 10;
+	align-items: "center";
+}
+
+.topContainerCustomCaptions {
+	display: flex;
+}
+
+.mobileSearchCustomCaptions {
+	display: none;
+}
+
+@media only screen and (max-width: 414px) {
+	.topContainerCustomCaptions {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.detailsContainer {
+		flex-direction: column;
+		margin-bottom: 40px;
+	}
+
+	.desktopSearchCustomCaptions {
+		display: none;
+	}
+
+	.mobileSearchCustomCaptions {
+		display: block;
+	}
+
+	/* table */
+	.customCaptionsTableContainer {
+		width: 88vw !important;
+		overflow-x: scroll;
+	}
+
+	.inputCustomCaptionRow {
+		width: 200px !important;
+	}
+}

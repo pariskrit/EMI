@@ -1,0 +1,46 @@
+.positionTableContainer {
+	border-style: solid;
+	font-family: "Roboto Condensed";
+	font-size: 14;
+	border-color: #979797;
+	border-width: 1;
+	border-radius: 0;
+	width: 90vw;
+	overflow-x: auto;
+}
+
+@media screen and (max-width: 1423px) and (min-width: 1281px) {
+	.positionTableContainer {
+		width: 92vw;
+	}
+}
+
+@media screen and (max-width: 1601px) and (min-width: 1424px) {
+	.positionTableContainer {
+		width: 92.5vw;
+	}
+}
+
+@media screen and (max-width: 1708px) and (min-width: 1601px) {
+	.positionTableContainer {
+		width: 93vw;
+	}
+}
+
+@media screen and (max-width: 1921px) and (min-width: 1708px) {
+	.positionTableContainer {
+		width: 94vw;
+	}
+}
+
+@media only screen and (min-width: 1921px) {
+	.positionTableContainer {
+		width: 94vw;
+	}
+}
+
+@media only screen and (max-width: 414px) {
+	.positionTableContainer {
+		width: 87vw;
+	}
+}
