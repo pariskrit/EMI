@@ -18,6 +18,10 @@ const ContentStyle = () => {
 			marginTop: 10,
 			alignItems: "center",
 		}),
+		SearchContainerMobile: styled("div")({
+			width: "100%",
+			marginTop: 10,
+		}),
 		SearchInner: styled("div")({
 			marginLeft: "auto",
 		}),

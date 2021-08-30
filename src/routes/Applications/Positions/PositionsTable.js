@@ -11,6 +11,9 @@ import PositionAccessTypes from "../../../helpers/positionAccessTypes";
 import ColourConstants from "../../../helpers/colourConstants";
 import PopupMenu from "../../../components/PopupMenu";
 
+// Position Table CSS
+import "./positionTable.css";
+
 // Icon imports
 import { ReactComponent as MenuIcon } from "../../../assets/icons/3dot-icon.svg";
 
@@ -62,7 +65,7 @@ const PositionsTable = ({
 	currentTableSort,
 	setCurrentTableSort,
 	searchedData,
-	setSearchedData
+	setSearchedData,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -89,7 +92,7 @@ const PositionsTable = ({
 	};
 
 	return (
-		<AT.TableContainer component={Paper} elevation={0}>
+		<div className="positionTableContainer" component={Paper} elevation={0}>
 			<Table aria-label="Positions Table">
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
@@ -438,7 +441,7 @@ const PositionsTable = ({
 					))}
 				</TableBody>
 			</Table>
-		</AT.TableContainer>
+		</div>
 	);
 };
 

@@ -19,7 +19,6 @@ const TableStyle = () => {
 			borderColor: ColourConstants.tableBorder,
 			borderWidth: 1,
 			borderRadius: 0,
-	
 		}),
 		TableHead: styled(TableHead)({
 			userSelect: "none",

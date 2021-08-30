@@ -10,7 +10,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ColourConstants from "../helpers/colourConstants";
-import './componentStyle.scss'
+import "./componentStyle.scss";
 
 // Importing icons
 import { ReactComponent as ClientIcon } from "../assets/icons/clientsIcon.svg";
@@ -27,12 +27,11 @@ import LargeLogo from "../assets/LargeLogoWhite.png";
 import MiniLogo from "../assets/EMI-symbol.png";
 
 // Bottom Navigation
-import { BottomNavigation,BottomNavigationAction  } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 
 // Size constants
 const drawerWidth = 240;
 const minDrawerWidth = 62;
-
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -75,6 +74,12 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: 30,
 		height: "33px",
 		width: "auto",
+	},
+	miniLogoMobile: {
+		height: "33px",
+		width: "auto",
+		marginTop: 10,
+		marginLeft: "10px",
 	},
 	largeLogoContainer: {
 		display: "flex",
@@ -178,13 +183,13 @@ const useStyles = makeStyles((theme) => ({
 		}),
 	},
 
-	bottomNavigationContainer : {
-		position: 'fixed',
-		width: '100vw',
+	bottomNavigationContainer: {
+		position: "fixed",
+		width: "100vw",
 		bottom: 0,
+		left: 0,
 		zIndex: 50,
-		
-	}
+	},
 }));
 
 function Navbar({ Content }) {
@@ -203,31 +208,170 @@ function Navbar({ Content }) {
 		<div className={classes.root}>
 			<CssBaseline />
 
-			<div className='drawerDesktop'>
-			<Drawer
-				variant="permanent"
-				className={clsx(classes.drawer, {
-					[classes.drawerOpen]: open,
-					[classes.drawerClose]: !open,
-				})}
-				classes={{
-					paper: clsx({
+			<div className="drawerDesktop">
+				<Drawer
+					variant="permanent"
+					className={clsx(classes.drawer, {
 						[classes.drawerOpen]: open,
 						[classes.drawerClose]: !open,
-					}),
-				}}
-			>
-				{!open ? (
-					<div className={classes.miniLogoContainer}>
-						<img src={MiniLogo} alt="Logo" className={classes.miniLogo} />
-					</div>
-				) : (
-					<div className={classes.largeLogoContainer}>
-						<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
-					</div>
-				)}
+					})}
+					classes={{
+						paper: clsx({
+							[classes.drawerOpen]: open,
+							[classes.drawerClose]: !open,
+						}),
+					}}
+				>
+					{!open ? (
+						<div className={classes.miniLogoContainer}>
+							<img src={MiniLogo} alt="Logo" className={classes.miniLogo} />
+						</div>
+					) : (
+						<div className={classes.largeLogoContainer}>
+							<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
+						</div>
+					)}
 
-				<List>
+					<List>
+						{[
+							["Clients", ClientIcon, "/clientList"],
+							["Applications", ApplicationIcon, "/applicationList"],
+							["Models", ModelIcon, "/"],
+							["Users", UserIcon, "/"],
+							["Analytics", AnalyticsIcon, "/"],
+						].map((item, index) => {
+							// Storing SVG
+							let NavIcon = item[1];
+
+							// Note: Currently hardcoding current selection -- pull from global state
+							// when implemented
+							if (index === 1) {
+								return (
+									<Link to={item[2]} className={classes.navLink} key={item[0]}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<ListItem
+												button
+												key={item[0]}
+												className={classes.currentItemBackground}
+											>
+												<ListItemIcon className={classes.navIconContainer}>
+													<NavIcon
+														className={classes.navIconCurrent}
+														alt={`${item[0]} icon`}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													classes={{
+														primary: classes.listItemTextPrimaryCurrent,
+													}}
+													primary={item[0]}
+												/>
+											</ListItem>
+										</div>
+									</Link>
+								);
+							} else {
+								return (
+									<Link to={item[2]} className={classes.navLink} key={item[0]}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<ListItem button key={item[0]}>
+												<ListItemIcon className={classes.navIconContainer}>
+													<NavIcon
+														className={classes.navIcon}
+														alt={`${item[0]} icon`}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													classes={{ primary: classes.listItemTextPrimary }}
+													primary={item[0]}
+												/>
+											</ListItem>
+										</div>
+									</Link>
+								);
+							}
+						})}
+					</List>
+
+					<div
+						className={clsx(classes.footerClose, {
+							[classes.footerOpen]: open,
+							[classes.footerClose]: !open,
+						})}
+					>
+						<List>
+							<Divider
+								className={clsx(classes.null, {
+									[classes.expandedProfileDivider]: open,
+									[classes.miniProfileDivider]: !open,
+								})}
+							/>
+
+							<div
+								className={`${classes.navListContainer} mobNavListContainer`}
+							>
+								<ListItem key="userProfileIcon">
+									<ListItemIcon className={classes.navIconContainer}>
+										<UserProfileIcon
+											alt="user profile icon"
+											className={classes.navIcon}
+										/>
+									</ListItemIcon>
+									<ListItemText
+										classes={{
+											primary: classes.listItemTextPrimary,
+											secondary: classes.listItemTextSecondary,
+										}}
+										primary="Russell Harland"
+										secondary="Site: Ahafo - Ghana"
+									/>
+								</ListItem>
+							</div>
+							<div
+								className={`${classes.navListContainer} mobNavListContainer`}
+							>
+								<ListItem
+									button={true}
+									key="navbarExpandButton"
+									onClick={handleDrawerChange}
+								>
+									<ListItemIcon className={classes.navIconContainer}>
+										{open ? (
+											<CloseIcon alt="close icon" className={classes.navIcon} />
+										) : (
+											<OpenIcon alt="open icon" className={classes.navIcon} />
+										)}
+									</ListItemIcon>
+									<ListItemText
+										classes={{ primary: classes.listItemTextPrimary }}
+										primary="Close Panel"
+									/>
+								</ListItem>
+							</div>
+						</List>
+					</div>
+				</Drawer>
+			</div>
+
+			{/* Appbar */}
+			<div style={{ height: "100vh", position: "relative" }}>
+				<div className="appBar mobileNavigation">
+					<img
+						src={MiniLogo}
+						alt="Logo"
+						className={`${classes.miniLogoMobile} miniLogoMobile`}
+					/>
+				</div>
+
+				{/* Bottom Navigation for Mobile View */}
+
+				<BottomNavigation
+					className={`${classes.bottomNavigationContainer} mobileNavigation`}
+				>
 					{[
 						["Clients", ClientIcon, "/clientList"],
 						["Applications", ApplicationIcon, "/applicationList"],
@@ -242,147 +386,61 @@ function Navbar({ Content }) {
 						// when implemented
 						if (index === 1) {
 							return (
-								<Link to={item[2]} className={classes.navLink} key={item[0]}>
-									<div className={classes.navListContainer}>
-										<ListItem
-											button
+								<Link to={item[2]} className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<BottomNavigationAction
+											label="Recents"
 											key={item[0]}
 											className={classes.currentItemBackground}
-										>
-											<ListItemIcon className={classes.navIconContainer}>
+											value="recents"
+											icon={
 												<NavIcon
 													className={classes.navIconCurrent}
 													alt={`${item[0]} icon`}
 												/>
-											</ListItemIcon>
-											<ListItemText
-												classes={{
-													primary: classes.listItemTextPrimaryCurrent,
-												}}
-												primary={item[0]}
-											/>
-										</ListItem>
+											}
+										/>
 									</div>
 								</Link>
 							);
 						} else {
 							return (
-								<Link to={item[2]} className={classes.navLink} key={item[0]}>
-									<div className={classes.navListContainer}>
-										<ListItem button key={item[0]}>
-											<ListItemIcon className={classes.navIconContainer}>
+								<Link to={item[2]} className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<BottomNavigationAction
+											label="Recents"
+											key={item[0]}
+											className={classes.currentItemBackground}
+											value="recents"
+											icon={
 												<NavIcon
-													className={classes.navIcon}
+													className={classes.navIconCurrent}
 													alt={`${item[0]} icon`}
 												/>
-											</ListItemIcon>
-											<ListItemText
-												classes={{ primary: classes.listItemTextPrimary }}
-												primary={item[0]}
-											/>
-										</ListItem>
+											}
+										/>
 									</div>
 								</Link>
 							);
 						}
 					})}
-				</List>
 
-				<div
-					className={clsx(classes.footerClose, {
-						[classes.footerOpen]: open,
-						[classes.footerClose]: !open,
-					})}
-				>
-					<List>
-						<Divider
-							className={clsx(classes.null, {
-								[classes.expandedProfileDivider]: open,
-								[classes.miniProfileDivider]: !open,
-							})}
-						/>
-
-						<div className={classes.navListContainer}>
-							<ListItem key="userProfileIcon">
-								<ListItemIcon className={classes.navIconContainer}>
-									<UserProfileIcon
-										alt="user profile icon"
-										className={classes.navIcon}
-									/>
-								</ListItemIcon>
-								<ListItemText
-									classes={{
-										primary: classes.listItemTextPrimary,
-										secondary: classes.listItemTextSecondary,
-									}}
-									primary="Russell Harland"
-									secondary="Site: Ahafo - Ghana"
+					<div className={`${classes.navListContainer} mobNavListContainer`}>
+						<ListItem key="userProfileIcon">
+							<ListItemIcon className={classes.navIconContainer}>
+								<UserProfileIcon
+									alt="user profile icon"
+									className={classes.navIcon}
 								/>
-							</ListItem>
-						</div>
-						<div className={classes.navListContainer}>
-							<ListItem
-								button={true}
-								key="navbarExpandButton"
-								onClick={handleDrawerChange}
-							>
-								<ListItemIcon className={classes.navIconContainer}>
-									{open ? (
-										<CloseIcon alt="close icon" className={classes.navIcon} />
-									) : (
-										<OpenIcon alt="open icon" className={classes.navIcon} />
-									)}
-								</ListItemIcon>
-								<ListItemText
-									classes={{ primary: classes.listItemTextPrimary }}
-									primary="Close Panel"
-								/>
-							</ListItem>
-						</div>
-					</List>
-				</div>
-			</Drawer>
+							</ListItemIcon>
+						</ListItem>
+					</div>
+				</BottomNavigation>
 			</div>
-
-			{/* Bottom Navigation for Mobile View */}
-			<BottomNavigation className={`${classes.bottomNavigationContainer} mobileNavigation`} >
-			{[
-						["Clients", ClientIcon, "/clientList"],
-						["Applications", ApplicationIcon, "/applicationList"],
-						["Models", ModelIcon, "/"],
-						["Users", UserIcon, "/"],
-						["Analytics", AnalyticsIcon, "/"],
-					].map((item, index) => {
-						// Storing SVG
-						let NavIcon = item[1];
-
-						// Note: Currently hardcoding current selection -- pull from global state
-						// when implemented
-						if (index === 1) {
-							return (
-								<Link to={item[2]} className={classes.navLink}>
-									<div className={classes.navListContainer}>
-									<BottomNavigationAction label="Recents" key={item[0]} className={classes.currentItemBackground} value="recents" icon={<NavIcon
-													className={classes.navIconCurrent}
-													alt={`${item[0]} icon`}
-												/>} />
-									</div>
-								</Link>
-							);
-						} else {
-							return (
-								<Link to={item[2]} className={classes.navLink}>
-									<div className={classes.navListContainer}>
-									<BottomNavigationAction label="Recents" key={item[0]} className={classes.currentItemBackground} value="recents" icon={<NavIcon
-													className={classes.navIconCurrent}
-													alt={`${item[0]} icon`}
-												/>} />
-									</div>
-								</Link>
-							);
-						}
-					})}
-</BottomNavigation>
 
 			<main className={classes.content}>
 				<Content />

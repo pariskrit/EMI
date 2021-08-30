@@ -120,7 +120,7 @@ const CustomCaptionRow = ({
 			<AT.DataCell className={classes.inputCell}>
 				<AT.CellContainer>
 					<TextField
-						className={classes.root}
+						className={`${classes.root} inputCustomCaptionRow`}
 						InputProps={{
 							endAdornment:
 								isUpdating === singularKey ? (
@@ -153,7 +153,7 @@ const CustomCaptionRow = ({
 			<AT.DataCell className={classes.inputCell}>
 				<AT.CellContainer>
 					<TextField
-						className={classes.root}
+						className={`${classes.root} inputCustomCaptionRow`}
 						InputProps={{
 							endAdornment:
 								isUpdating === pluralKey ? (

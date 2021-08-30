@@ -16,7 +16,7 @@ import API from "../../../helpers/api";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 
-import './application2.css'
+import "./application2.css";
 
 // Init styled components
 const AC = ContentStyle();
@@ -296,11 +296,15 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 
 	// Loading spinner while awaiting data. Otherwise, render screen
 	if (isLoading) {
-		return <CircularProgress />;
+		return (
+			<div className="container">
+				<CircularProgress />
+			</div>
+		);
 	} else {
 		return (
-			<div className='applicationContentContainer'>
-				<AC.TopContainer className='applicationNav'>
+			<div className="applicationContentContainer container">
+				<AC.TopContainer className="applicationNav">
 					<Navcrumbs crumbs={["Application", data.name]} />
 					<ApplicationActionButtons
 						handleSave={handleSave}
@@ -328,7 +332,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 					</Grid>
 
 					{/*----------------------- Desktop View ----------------------- */}
-					<Grid item xs={6} className='desktopViewGrid'>
+					<Grid item xs={6} className="desktopViewGrid">
 						<ColourDetails
 							inputColour={inputData.colour}
 							setInputColour={(newColour) => {
@@ -336,7 +340,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={6} className='desktopViewGrid'>
+					<Grid item xs={6} className="desktopViewGrid">
 						<ApplicationLogo
 							logoTrademark={inputData.isLogoTrademarked}
 							logoURL={data.logoURL}
@@ -359,7 +363,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							handleSave={handleSave}
 						/>
 					</Grid>
-					<Grid item xs={6} className='desktopViewGrid'>
+					<Grid item xs={6} className="desktopViewGrid">
 						<SmallNavLogo
 							logoURL={data.logoURL}
 							newLogoKey={(newLogoKey) => {
@@ -375,12 +379,12 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							handleSave={handleSave}
 						/>
 					</Grid>
-					<Grid item xs={6} className='desktopViewGrid'>
+					<Grid item xs={6} className="desktopViewGrid">
 						<OtherAssets />
 					</Grid>
 
 					{/* ----------------------- Mobile View ----------------------- */}
-					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
 						<ColourDetails
 							inputColour={inputData.colour}
 							setInputColour={(newColour) => {
@@ -388,7 +392,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
 						<ApplicationLogo
 							logoTrademark={inputData.isLogoTrademarked}
 							logoURL={data.logoURL}
@@ -411,7 +415,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							handleSave={handleSave}
 						/>
 					</Grid>
-					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
 						<SmallNavLogo
 							logoURL={data.logoURL}
 							newLogoKey={(newLogoKey) => {
@@ -427,10 +431,9 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							handleSave={handleSave}
 						/>
 					</Grid>
-					<Grid item xs={12} className='mobileViewGridWithDiffDisplay'>
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
 						<OtherAssets />
 					</Grid>
-
 				</Grid>
 			</div>
 		);
