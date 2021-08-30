@@ -14,6 +14,8 @@ import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { handleSort } from "helpers/utils";
+import "./arrowStyle.scss";
+import TablePagination from "components/TablePagination";
 
 const AT = TableStyle();
 
@@ -49,6 +51,7 @@ const ClientSiteTable = ({
 	headers,
 	onEdit,
 	onDelete,
+	pagination,
 }) => {
 	const classes = useStyles();
 
@@ -85,14 +88,20 @@ const ClientSiteTable = ({
 										currentTableSort[0] !== columns[index],
 								})}
 							>
-								<AT.CellContainer>
+								<AT.CellContainer
+									style={{ display: "flex", justifyContent: "space-between" }}
+								>
 									{header}
-									{currentTableSort[0] === columns[index] &&
+									<div className="arrow">
+										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
+										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
+									</div>
+									{/* {currentTableSort[0] === columns[index] &&
 									currentTableSort[1] === "desc" ? (
 										<AT.DefaultArrow fill="#FFFFFF" />
 									) : (
 										<AT.DescArrow fill="#FFFFFF" />
-									)}
+									)} */}
 								</AT.CellContainer>
 							</TableCell>
 						))}
@@ -160,6 +169,7 @@ const ClientSiteTable = ({
 					))}
 				</TableBody>
 			</Table>
+			{pagination && <TablePagination />}
 		</AT.TableContainer>
 	);
 };
@@ -181,6 +191,7 @@ ClientSiteTable.defaultProps = {
 	headers: ["Asset", "Description"],
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
+	pagination: true,
 };
 
 ClientSiteTable.propTypes = {
@@ -189,6 +200,7 @@ ClientSiteTable.propTypes = {
 	headers: PropTypes.array,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
+	pagination: PropTypes.bool,
 };
 
 export default ClientSiteTable;

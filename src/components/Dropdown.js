@@ -84,7 +84,7 @@ function Dropdown(props) {
 							/>
 						</div>
 
-						<img alt="Expand icon" src={ArrowIcon} className="arrow" />
+						<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 					</div>
 					<div className="drop-list">
 						{filteredList.length > 0 ? (

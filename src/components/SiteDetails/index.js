@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Typography, TextField, Grid } from "@material-ui/core";
+import { Grid, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Dropdown from "components/Dropdown";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
+import Dropdown from "components/Dropdown";
+import API from "helpers/api";
+import { BASE_API_PATH } from "helpers/constants";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 
@@ -63,7 +63,7 @@ const SiteDetails = ({ siteId, setError }) => {
 		setIsUpdating(true);
 		try {
 			const response = await API.patch(`${BASE_API_PATH}sites/${siteId}`, [
-				{ op: "replace", pat: newInput.label, value: newInput.value },
+				{ op: "replace", path: newInput.label, value: newInput.value },
 			]);
 			setIsUpdating(false);
 			setOpenConfirmDialog(false);
