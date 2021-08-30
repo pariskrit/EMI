@@ -5,6 +5,7 @@ import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
 import SiteAsset from "routes/Clients/Sites/SiteAsset";
 import SiteDetail from "routes/Clients/Sites/SiteDetail";
 import SiteDepartmentsScreen from "routes/Clients/Sites/SiteDepartment/SiteDepartmentsScreen";
+import SiteLocationsScreen from "routes/Clients/Sites/SiteLocations/SiteLocationsScreen";
 import "./App.scss";
 import Actions from "./routes/Applications/Actions/Action";
 import Application from "./routes/Applications/Application/Application";
@@ -148,8 +149,11 @@ function App() {
 					<Route path="/site/:id/assets" exact>
 						<SiteAsset />
 					</Route>
-					<Route path="/site/:id/sitedepartments" exact>
+					<Route path="/site/:id/departments" exact>
 						<SiteDepartmentsScreen />
+					</Route>
+					<Route path="/site/:id/locations" exact>
+						<SiteLocationsScreen />
 					</Route>
 				</Switch>
 			</Router>

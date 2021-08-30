@@ -58,10 +58,7 @@ const Navcrumbs = ({ crumbs, status }) => {
 						Active
 					</div>
 				)}
-				<SaveHistory />
-				{/* <div>
-					<b>Last saved:</b> 21.10.20/1137 AEST
-				</div> */}
+				{/* <SaveHistory /> */}
 			</div>
 		</div>
 	);

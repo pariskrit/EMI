@@ -30,11 +30,11 @@ const useStyles = makeStyles((theme) => ({
 	duplicateButton: {
 		backgroundColor: ColourConstants.duplicateButton,
 	},
-	spinnerButton: {
-		marginRight: 10,
-		width: 150,
-		backgroundColor: "transparent",
-	},
+	// spinnerButton: {
+	// 	marginRight: 10,
+	// 	width: 150,
+	// 	backgroundColor: "transparent",
+	// },
 }));
 
 // Active/Inactive switch
@@ -300,7 +300,7 @@ const ActionButtons = ({
 				<Button
 					disableElevation
 					variant="contained"
-					className={classes.spinnerButton}
+					className='actionSpinnerBtn'
 				>
 					<CircularProgress size={23} />
 				</Button>

@@ -10,18 +10,32 @@ const DeleteDialogStyle = () => {
 	return {
 		ActionContainer: styled("div")({
 			display: "inline-flex",
+			["@media (max-width: 414px)"]: {
+				display: "inline-flex",
+				flexWrap: "wrap",
+			},
 		}),
 		DialogContent: styled(DialogContent)({
 			width: 500,
+			["@media (max-width: 414px)"]: {
+				width: "100%",
+			},
 		}),
 		HeaderText: styled(Typography)({
 			marginRight: "auto",
 			fontFamily: "Roboto Condensed",
 			fontWeight: "bold",
 			fontSize: 21,
+			["@media (max-width: 414px)"]: {
+				fontSize: 18,
+			},
 		}),
 		ButtonContainer: styled(DialogActions)({
 			marginLeft: "auto",
+			["@media (max-width: 414px)"]: {
+				marginLeft: 0,
+				paddingLeft: "20px",
+			},
 		}),
 		CancelButton: styled(Button)({
 			height: 43,

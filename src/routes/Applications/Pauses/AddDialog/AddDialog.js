@@ -69,9 +69,7 @@ const AddPauseDialog = ({
 		// Adding new subcat
 		currentSubcats.push(newSubcatName);
 
-		currentSubcats.sort((a, b) =>
-			a.toString().localeCompare(b.toString())
-		);
+		currentSubcats.sort((a, b) => a.toString().localeCompare(b.toString()));
 
 		// Updating subcats state
 		setSubcats(currentSubcats);
@@ -89,9 +87,7 @@ const AddPauseDialog = ({
 			}
 		});
 
-		currentSubcats.sort((a, b) =>
-			a.toString().localeCompare(b.toString())
-		);
+		currentSubcats.sort((a, b) => a.toString().localeCompare(b.toString()));
 
 		// Updating subcats state
 		setSubcats(currentSubcats);
@@ -109,9 +105,7 @@ const AddPauseDialog = ({
 			}
 		});
 
-		currentSubcats.sort((a, b) =>
-			a.toString().localeCompare(b.toString())
-		);
+		currentSubcats.sort((a, b) => a.toString().localeCompare(b.toString()));
 
 		// Updating subcats state
 		setSubcats(currentSubcats);
@@ -130,27 +124,27 @@ const AddPauseDialog = ({
 			//const localChecker = await handleValidateObj(schema, input);
 
 			//if (!localChecker.some((el) => el.valid === false)) {
-				const result = await API.post("/api/ApplicationPauses", {
-					applicationId: applicationID,
-					name: input.name,
-					pauseSubcategories: subcats.map((name) => ({ name: name })),
-				});
+			const result = await API.post("/api/ApplicationPauses", {
+				applicationId: applicationID,
+				name: input.name,
+				pauseSubcategories: subcats.map((name) => ({ name: name })),
+			});
 
-				// Handling success
-				if (result.status === 201) {
-					// Adding data to state
-					handleAddData(result.data);
+			// Handling success
+			if (result.status === 201) {
+				// Adding data to state
+				handleAddData(result.data);
 
-					// Removing loading indicator
-					setIsUpdating(false);
+				// Removing loading indicator
+				setIsUpdating(false);
 
-					// Closing dialog
-					closeOverride();
+				// Closing dialog
+				closeOverride();
 
-					return true;
-				} else {
-					throw new Error(result);
-				}
+				return true;
+			} else {
+				throw new Error(result);
+			}
 			/*} else {
 				const newErrors = generateErrorState(localChecker);
 

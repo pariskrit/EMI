@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import DuplicateDialogStyle from "../../../styles/application/DuplicateDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import React, { useState } from "react";
+import Dialog from "@material-ui/core/Dialog";
+import { makeStyles } from "@material-ui/core/styles";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import AddDialogStyle from "styles/application/AddDialogStyle";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
-const ADD = DuplicateDialogStyle();
+const ADD = AddDialogStyle();
 
 // Yup validation schema
 const schema = yup.object({
@@ -19,15 +19,22 @@ const schema = yup.object({
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null };
-const defaultStateSchema = { name: "" };
+const defaultErrorSchema = { name: null, description: null };
+const defaultStateSchema = { name: "", description: "" };
 
-const DuplicateApplicationDialog = ({
-	id,
-	open,
-	closeHandler,
-	duplicateHandler,
-}) => {
+const useStyles = makeStyles({
+	dialogContent: {
+		width: 500,
+	},
+	createButton: {
+		width: "auto",
+	},
+});
+
+const AddLocationsDialog = ({ open, closeHandler, createHandler }) => {
+	// Init hooks
+	const classes = useStyles();
+
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -42,37 +49,12 @@ const DuplicateApplicationDialog = ({
 		closeHandler();
 	};
 	const handleCreateProcess = async () => {
-		// Rendering spinner
-		setIsUpdating(true);
-
-		try {
-			const localChecker = await handleValidateObj(schema, input);
-
-			// Attempting API call if no local validaton errors
-			if (!localChecker.some((el) => el.valid === false)) {
-				// Creating new data
-				const newData = await duplicateHandler(id, input);
-
-				if (newData.success) {
-					setIsUpdating(false);
-					closeOverride();
-				} else {
-					setErrors({ ...errors, ...newData.errors });
-
-					setIsUpdating(false);
-				}
-			} else {
-				const newErrors = generateErrorState(localChecker);
-
-				setErrors({ ...errors, ...newErrors });
-				setIsUpdating(false);
-			}
-		} catch (err) {
-			// TODO: handle non validation errors here
-			console.log(err);
-
-			setIsUpdating(false);
-			closeOverride();
+		createHandler();
+	};
+	const handleEnterPress = (e) => {
+		// 13 is the enter keycode
+		if (e.keyCode === 13) {
+			handleCreateProcess();
 		}
 	};
 
@@ -86,9 +68,9 @@ const DuplicateApplicationDialog = ({
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
-				<div className="duplicateTitle">
+				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Duplicate Application</ADD.HeaderText>}
+						{<ADD.HeaderText>Add Location</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -97,29 +79,31 @@ const DuplicateApplicationDialog = ({
 						<ADD.ConfirmButton
 							onClick={handleCreateProcess}
 							variant="contained"
+							className={classes.createButton}
 						>
-							Duplicate
+							Create Location
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
-				</div>
+				</ADD.ActionContainer>
 
-				<DialogContent className="duplicateDialogContent">
-					<div className="duplicateInputContainer">
+				<DialogContent className={classes.dialogContent}>
+					<ADD.InputContainer>
 						<ADD.NameInput
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
 							required
-							label="Application Name"
+							label="Location"
 							value={input.name}
+							onKeyDown={handleEnterPress}
 							onChange={(e) => {
 								setInput({ ...input, name: e.target.value });
 							}}
 						/>
-					</div>
+					</ADD.InputContainer>
 				</DialogContent>
 			</Dialog>
 		</div>
 	);
 };
 
-export default DuplicateApplicationDialog;
+export default AddLocationsDialog;
