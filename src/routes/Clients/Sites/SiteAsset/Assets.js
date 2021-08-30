@@ -11,11 +11,17 @@ const Assets = () => {
 		{
 			id: 1,
 			asset: "Rujal",
+			reference: "2060-10-00-80-BLG007-AIHV",
+			plannerGroups: "213",
+			center: "2DEL",
 			description: "Building Change room M DBS BD007",
 		},
 		{
 			id: 2,
 			asset: "Ram Prasad",
+			reference: "2060-10-00-80-BLG007-AIHV",
+			plannerGroups: "213",
+			center: "2DEL",
 			description: "This is final Testing of the table",
 		},
 	]);
@@ -46,8 +52,20 @@ const Assets = () => {
 			</AC.DetailsContainer>
 			<ClientSiteTable
 				data={data}
-				columns={["asset", "description"]}
-				headers={["Asset", "Description"]}
+				columns={[
+					"asset",
+					"reference",
+					"description",
+					"plannerGroups",
+					"center",
+				]}
+				headers={[
+					"Asset",
+					"Reference",
+					"Description",
+					"Planner Groups",
+					"Main Work Center",
+				]}
 				onEdit={(id) => alert(id)}
 				onDelete={(id) => alert(id)}
 				setData={setData}

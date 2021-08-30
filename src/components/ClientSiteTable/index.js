@@ -14,6 +14,7 @@ import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { handleSort } from "helpers/utils";
+import "./arrowStyle.scss";
 
 const AT = TableStyle();
 
@@ -85,14 +86,20 @@ const ClientSiteTable = ({
 										currentTableSort[0] !== columns[index],
 								})}
 							>
-								<AT.CellContainer>
+								<AT.CellContainer
+									style={{ display: "flex", justifyContent: "space-between" }}
+								>
 									{header}
-									{currentTableSort[0] === columns[index] &&
+									<div className="arrow">
+										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
+										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
+									</div>
+									{/* {currentTableSort[0] === columns[index] &&
 									currentTableSort[1] === "desc" ? (
 										<AT.DefaultArrow fill="#FFFFFF" />
 									) : (
 										<AT.DescArrow fill="#FFFFFF" />
-									)}
+									)} */}
 								</AT.CellContainer>
 							</TableCell>
 						))}
