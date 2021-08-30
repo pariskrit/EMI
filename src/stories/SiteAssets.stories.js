@@ -2,7 +2,7 @@ import React from "react";
 import Assets from "routes/Clients/Sites/SiteAsset/Assets";
 
 export default {
-	title: "Page/SiteAssets",
+	title: "Module/SiteAssets",
 	component: Assets,
 };
 

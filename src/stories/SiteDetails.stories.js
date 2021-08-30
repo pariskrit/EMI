@@ -2,7 +2,7 @@ import React from "react";
 import Details from "routes/Clients/Sites/SiteDetail/Details";
 
 export default {
-	title: "Page/SiteDetails",
+	title: "Module/SiteDetails",
 	component: Details,
 };
 
