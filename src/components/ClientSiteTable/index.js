@@ -15,6 +15,7 @@ import PopupMenu from "components/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { handleSort } from "helpers/utils";
 import "./arrowStyle.scss";
+import TablePagination from "components/TablePagination";
 
 const AT = TableStyle();
 
@@ -50,6 +51,7 @@ const ClientSiteTable = ({
 	headers,
 	onEdit,
 	onDelete,
+	pagination,
 }) => {
 	const classes = useStyles();
 
@@ -167,6 +169,7 @@ const ClientSiteTable = ({
 					))}
 				</TableBody>
 			</Table>
+			{pagination && <TablePagination />}
 		</AT.TableContainer>
 	);
 };
@@ -188,6 +191,7 @@ ClientSiteTable.defaultProps = {
 	headers: ["Asset", "Description"],
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
+	pagination: true,
 };
 
 ClientSiteTable.propTypes = {
@@ -196,6 +200,7 @@ ClientSiteTable.propTypes = {
 	headers: PropTypes.array,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
+	pagination: PropTypes.bool,
 };
 
 export default ClientSiteTable;

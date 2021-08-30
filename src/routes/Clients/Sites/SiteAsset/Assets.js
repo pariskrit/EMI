@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import DetailsPanel from "components/DetailsPanel";
 import { Grid } from "@material-ui/core";
@@ -6,7 +6,8 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import ClientSiteTable from "components/ClientSiteTable";
 
 const AC = ContentStyle();
-const Assets = () => {
+
+const Assets = ({ fetchSiteAssets }) => {
 	const [data, setData] = useState([
 		{
 			id: 1,
@@ -25,6 +26,14 @@ const Assets = () => {
 			description: "This is final Testing of the table",
 		},
 	]);
+
+	useEffect(() => {
+		fetchSiteAssets()
+			.then((res) => console.log(res))
+			.catch((err) => console.log(err));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<div>
 			<AC.DetailsContainer>
