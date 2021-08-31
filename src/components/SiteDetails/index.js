@@ -34,7 +34,7 @@ const SiteDetails = ({ siteId, setError }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const openConfirmChangeDialog = (e) => {
-		console.log(newInput.value, siteDetails.oldData[newInput.label]);
+		console.log(newInput.value, siteDetails.oldData);
 		if (newInput.value === siteDetails.oldData[newInput.label]) {
 			return;
 		}
@@ -56,14 +56,22 @@ const SiteDetails = ({ siteId, setError }) => {
 	};
 
 	const setSelectedInputValue = (e) => {
-		setNewInput({ label: e.target.name, value: e.target.value });
+		console.log(e.target.name, e.target.value);
+		setNewInput({ label: e.target.name, value: e.target.value || null });
+	};
+
+	const onEnterKeyPress = (e) => {
+		if (e.key === "Enter") {
+			e.target.blur();
+			openConfirmChangeDialog();
+		}
 	};
 
 	const onConfirmChange = async () => {
 		setIsUpdating(true);
 		try {
 			const response = await API.patch(`${BASE_API_PATH}sites/${siteId}`, [
-				{ op: "replace", pat: newInput.label, value: newInput.value },
+				{ op: "replace", path: newInput.label, value: newInput.value },
 			]);
 			setIsUpdating(false);
 			setOpenConfirmDialog(false);
@@ -85,6 +93,7 @@ const SiteDetails = ({ siteId, setError }) => {
 			// } else {
 			// 	console.log("Something went wrong!");
 			// }
+			console.log(error, error.response);
 			setIsUpdating(false);
 			setOpenConfirmDialog(false);
 			setError("Something went wrong!");
@@ -130,6 +139,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
@@ -156,11 +166,14 @@ const SiteDetails = ({ siteId, setError }) => {
 							Company Name<span className={classes.required}>*</span>
 						</Typography>
 						<TextField
-							name="companyName"
+							name="company"
 							fullWidth
 							variant="outlined"
 							value={newData?.company || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
@@ -174,7 +187,10 @@ const SiteDetails = ({ siteId, setError }) => {
 							fullWidth
 							variant="outlined"
 							value={newData?.address || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
@@ -184,11 +200,14 @@ const SiteDetails = ({ siteId, setError }) => {
 							Business Number<span className={classes.required}>*</span>
 						</Typography>
 						<TextField
-							name="address"
+							name="businessNumber"
 							fullWidth
 							variant="outlined"
 							value={newData?.businessNumber || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
@@ -212,12 +231,15 @@ const SiteDetails = ({ siteId, setError }) => {
 							Total Licence Count<span className={classes.required}>*</span>
 						</Typography>
 						<TextField
-							name="address"
+							name="licenses"
 							fullWidth
 							type="number"
 							variant="outlined"
 							value={newData?.licenses || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
