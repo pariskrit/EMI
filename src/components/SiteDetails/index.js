@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Typography, TextField, Grid } from "@material-ui/core";
+import { Grid, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Dropdown from "components/Dropdown";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
+import Dropdown from "components/Dropdown";
+import API from "helpers/api";
+import { BASE_API_PATH } from "helpers/constants";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 
@@ -156,7 +156,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							selectedValue={{ label: "Nepal", value: 0 }}
 							label=""
 							required={true}
-							width="100%"
+							width="auto"
 						/>
 					</div>
 				</Grid>
@@ -221,7 +221,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							selectedValue={{ label: "Total Users", value: 0 }}
 							label=""
 							required={true}
-							width="100%"
+							width="auto"
 						/>
 					</div>
 				</Grid>

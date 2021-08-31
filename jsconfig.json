@@ -22,6 +22,6 @@
 		"isolatedModules": true,
 		"jsx": "preserve"
 	},
-	"include": ["**/*.js", "**/*.jsx"],
+	"include": ["**/*.js", "**/*.jsx", "src/components/TablePagination"],
 	"exclude": ["node_modules"]
 }

@@ -10,7 +10,7 @@ const Details = () => {
 	const { id } = useParams();
 	return (
 		<div style={{ marginTop: 22 }}>
-			<Grid container>
+			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>

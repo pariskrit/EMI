@@ -1,7 +1,10 @@
 import React from "react";
 import { addDecorator } from "@storybook/react";
 import { MemoryRouter } from "react-router";
+import { withProvider } from "../src/stories/decorators/withProvider";
+import "../src/App.scss";
 
+addDecorator(withProvider);
 addDecorator((story) => (
 	<MemoryRouter initialEntries={["/"]}>{story()}</MemoryRouter>
 ));

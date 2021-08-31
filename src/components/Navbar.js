@@ -78,8 +78,6 @@ const useStyles = makeStyles((theme) => ({
 	miniLogoMobile: {
 		height: "33px",
 		width: "auto",
-		marginTop: 10,
-		marginLeft: "10px",
 	},
 	largeLogoContainer: {
 		display: "flex",
@@ -360,11 +358,7 @@ function Navbar({ Content }) {
 			{/* Appbar */}
 			<div style={{ height: "100vh", position: "relative" }}>
 				<div className="appBar mobileNavigation">
-					<img
-						src={MiniLogo}
-						alt="Logo"
-						className={`${classes.miniLogoMobile} miniLogoMobile`}
-					/>
+					<img src={MiniLogo} alt="Logo" className="miniLogoMobile" />
 				</div>
 
 				{/* Bottom Navigation for Mobile View */}

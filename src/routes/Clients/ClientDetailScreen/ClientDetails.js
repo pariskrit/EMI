@@ -43,10 +43,7 @@ const ClientDetails = ({
 
 	return (
 		<div className="client-details">
-			<div
-				className="flex justify-between"
-				style={{ display: "flex", alignItems: "center" }}
-			>
+			<div className="flex justify-between" className="flex">
 				<Navcrumbs
 					crumbs={["Client", clientDetail.name]}
 					status=""
