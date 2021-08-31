@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Region({ region, fetchRegionsAndSites, getError }) {
+function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 	const { id, name, sites } = region;
 	const classes = useStyles();
 	const [openAddDialog, setOpenAddDialog] = useState(false);
@@ -166,7 +166,13 @@ function Region({ region, fetchRegionsAndSites, getError }) {
 							Site:
 						</Typography>
 						<Typography>
-							<Link className={classes.siteLink} to="">
+							<Link
+								className={classes.siteLink}
+								to={{
+									pathname: `/site/${site.id}`,
+									state: { clientId, regionName: name, siteName: site.name },
+								}}
+							>
 								{site.name}
 							</Link>
 						</Typography>

@@ -29,7 +29,7 @@ const SaveHistory = () => {
 	const classes = useStyles();
 
 	// Init state
-	const [lastSave, setLastSave] = useState("DATE");
+	const [lastSave, setLastSave] = useState("");
 
 	// Running on pageload to set date
 	// NOTE: IRL this will have an API call for lastsave or get from global state or receive prop

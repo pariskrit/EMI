@@ -9,13 +9,7 @@ import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 import { changeDate } from "helpers/date";
 import AccordionBox from "components/AccordionBox";
-
-const options = [
-	{ label: "Total Users", value: 0 },
-	{ label: "Concurrent Users", value: 1 },
-	{ label: "Per Job", value: 2 },
-	{ label: "Site-Based Licencing", value: 3 },
-];
+import { clientOptions } from "helpers/constants";
 
 // const debounce = (func, delay) => {
 // 	let timer;
@@ -66,7 +60,9 @@ const ClientDetail = ({ clientId, clientData, getError }) => {
 	// This state is used to check current state data with pervious
 
 	useEffect(() => {
-		const licenseType = options.find((x) => x.value === clientData.licenseType);
+		const licenseType = clientOptions.find(
+			(x) => x.value === clientData.licenseType
+		);
 		const data = {
 			name: clientData.name,
 			licenseType,
@@ -165,7 +161,7 @@ const ClientDetail = ({ clientId, clientData, getError }) => {
 						Licence Type<span style={{ color: "#E31212" }}>*</span>
 					</Typography>
 					<Dropdown
-						options={options}
+						options={clientOptions}
 						selectedValue={clientDetail.licenseType}
 						onChange={(value) => handleInputChange("licenseType", value)}
 						label=""

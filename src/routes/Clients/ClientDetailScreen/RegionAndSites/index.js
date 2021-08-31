@@ -150,6 +150,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 						key={region.id}
 						region={region}
 						fetchRegionsAndSites={fetchRegionsAndSites}
+						clientId={clientId}
 						getError={getError}
 					/>
 				))}
