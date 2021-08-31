@@ -4,82 +4,80 @@ import DetailsPanel from "components/DetailsPanel";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import ClientSiteTable from "components/ClientSiteTable";
+import DeleteDialog from "components/DeleteDialog";
+import { BASE_API_PATH } from "helpers/constants";
+import EditAssetDialog from "./EditAssetDialog";
 
 const AC = ContentStyle();
 
-const Assets = ({ fetchSiteAssets }) => {
-	const [data, setData] = useState([
-		{
-			id: 1,
-			asset: "Rujal",
-			reference: "2060-10-00-80-BLG007-AIHV",
-			plannerGroups: "213",
-			center: "2DEL",
-			description: "Building Change room M DBS BD007",
-		},
-		{
-			id: 2,
-			asset: "Ram Prasad",
-			reference: "2060-10-00-80-BLG007-AIHV",
-			plannerGroups: "213",
-			center: "2DEL",
-			description: "This is final Testing of the table",
-		},
-	]);
+const Assets = ({ fetchSiteAssets, data }) => {
+	const [assets, setAsset] = useState([]);
+	const [modal, setModal] = useState({ delete: false, edit: false });
+	const [assetId, setId] = useState(null);
 
 	useEffect(() => {
-		fetchSiteAssets()
-			.then((res) => console.log(res))
-			.catch((err) => console.log(err));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		setAsset(data);
+	}, [data]);
+
+	const deleteSuccess = (id) => {
+		const da = [...assets].filter((x) => x.id !== id);
+		setAsset(da);
+	};
 
 	return (
-		<div>
-			<AC.DetailsContainer>
-				<DetailsPanel
-					header={"Assets"}
-					dataCount={123}
-					description="Create and manage assets that can be assigned in zone maintenance"
-				/>
-
-				<AC.SearchContainer>
-					<AC.SearchInner>
-						<Grid container spacing={1} alignItems="flex-end">
-							<Grid item>
-								<SearchIcon />
-							</Grid>
-							<Grid item>
-								<AC.SearchInput
-									onChange={(e) => console.log(e.target.value)}
-									label="Search"
-								/>
-							</Grid>
-						</Grid>
-					</AC.SearchInner>
-				</AC.SearchContainer>
-			</AC.DetailsContainer>
-			<ClientSiteTable
-				data={data}
-				columns={[
-					"asset",
-					"reference",
-					"description",
-					"plannerGroups",
-					"center",
-				]}
-				headers={[
-					"Asset",
-					"Reference",
-					"Description",
-					"Planner Groups",
-					"Main Work Center",
-				]}
-				onEdit={(id) => alert(id)}
-				onDelete={(id) => alert(id)}
-				setData={setData}
+		<>
+			<DeleteDialog
+				entityName="Site Assets"
+				open={modal.delete}
+				deleteID={assetId}
+				deleteEndpoint={`${BASE_API_PATH}SiteAssets`}
+				handleRemoveData={deleteSuccess}
+				closeHandler={() => setModal((th) => ({ ...th, delete: false }))}
 			/>
-		</div>
+			<EditAssetDialog
+				open={modal.edit}
+				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+			/>
+			<div>
+				<AC.DetailsContainer>
+					<DetailsPanel
+						header={"Assets"}
+						dataCount={123}
+						description="Create and manage assets that can be assigned in zone maintenance"
+					/>
+
+					<AC.SearchContainer>
+						<AC.SearchInner>
+							<Grid container spacing={1} alignItems="flex-end">
+								<Grid item>
+									<SearchIcon />
+								</Grid>
+								<Grid item>
+									<AC.SearchInput
+										onChange={(e) => console.log(e.target.value)}
+										label="Search"
+									/>
+								</Grid>
+							</Grid>
+						</AC.SearchInner>
+					</AC.SearchContainer>
+				</AC.DetailsContainer>
+				<ClientSiteTable
+					data={assets}
+					columns={["name", "references", "description"]}
+					headers={["Asset", "Reference", "Description"]}
+					onEdit={(id) => {
+						setModal((th) => ({ ...th, edit: true }));
+						setId(id);
+					}}
+					onDelete={(id) => {
+						setModal((th) => ({ ...th, delete: true }));
+						setId(id);
+					}}
+					setData={setAsset}
+				/>
+			</div>
+		</>
 	);
 };
 
