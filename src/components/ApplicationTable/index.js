@@ -32,7 +32,13 @@ const useStyles = makeStyles((theme) => ({
 		wordBreak: "break-word",
 	},
 }));
-const ApplicationTable = ({ data, onDeleteApp, onChangeApp }) => {
+const ApplicationTable = ({
+	data,
+	onDeleteApp,
+	onChangeApp,
+	showDeleteIcon,
+	showQuantity,
+}) => {
 	const classes = useStyles();
 
 	return (
@@ -40,7 +46,7 @@ const ApplicationTable = ({ data, onDeleteApp, onChangeApp }) => {
 			<TableHead className={classes.tableHead}>
 				<TableRow>
 					<TableCell>Name</TableCell>
-					{/* <TableCell>Sites(Qty)</TableCell> */}
+					{showQuantity && <TableCell>Sites(Qty)</TableCell>}
 					<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
 				</TableRow>
 			</TableHead>
@@ -50,6 +56,8 @@ const ApplicationTable = ({ data, onDeleteApp, onChangeApp }) => {
 						key={row.id}
 						row={row}
 						classes={classes}
+						showDeleteIcon={showDeleteIcon}
+						showQuantity={showQuantity}
 						onDeleteApp={() => onDeleteApp(row.id)}
 						onChangeApp={() => onChangeApp(row.id)}
 					/>
@@ -69,10 +77,14 @@ ApplicationTable.defaultProps = {
 			totalSites: 0,
 		},
 	],
+	showDeleteIcon: true,
+	showQuantity: true,
 };
 
 ApplicationTable.propTypes = {
 	data: PropTypes.array,
+	showDeleteIcon: PropTypes.bool,
+	showQuantity: PropTypes.bool,
 	onDeleteApp: PropTypes.func,
 	onChangeApp: PropTypes.func,
 };

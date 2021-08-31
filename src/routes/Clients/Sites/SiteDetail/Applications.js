@@ -95,6 +95,8 @@ const Applications = ({ siteId }) => {
 			>
 				<ApplicationTable
 					data={applicationList}
+					showDeleteIcon={false}
+					showQuantity={false}
 					onDeleteApp={onOpenDeleteConfirmDialog}
 					onChangeApp={onOpenChangeConfirmDialog}
 				/>
