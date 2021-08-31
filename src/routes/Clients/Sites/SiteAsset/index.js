@@ -45,8 +45,18 @@ const SiteAsset = () => {
 			} else {
 				throw new Error(response);
 			}
-		} catch (err) {
-			return { success: false };
+		} catch (error) {
+			if (error.response.data.detail) {
+				return {
+					success: false,
+					errors: {
+						name: error.response.data.detail,
+						description: error.response.data.detail,
+					},
+				};
+			} else {
+				return { success: false, errors: { ...error.response.data.errors } };
+			}
 		}
 	};
 
