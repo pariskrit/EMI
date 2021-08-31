@@ -6,27 +6,15 @@ import {
 	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { CloseSharp } from "@material-ui/icons";
 import Dropdown from "components/Dropdown";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
-import useDidMountEffect from "hooks/useDidMountEffect";
 import React, { useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
-import * as yup from "yup";
-
-const schema = yup.object({
-	applicationId: yup
-		.number("This field must be a number")
-		.required("This field is required"),
-});
 
 const ADD = AddDialogStyle();
-const defaultData = { applicationId: null };
-const defaultError = { applicationId: null };
 
 const useStyles = makeStyles({
 	dialogContent: {
@@ -48,12 +36,7 @@ const useStyles = makeStyles({
 		fontSize: 14,
 	},
 });
-const selectedDefault = {
-	id: null,
-	logoURL: "",
-	name: "",
-	purpose: "",
-};
+
 const AddAppDialog = ({
 	open,
 	handleClose,

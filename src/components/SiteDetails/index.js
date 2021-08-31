@@ -31,7 +31,10 @@ const SiteDetails = ({ siteId, setError }) => {
 	const [newInput, setNewInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	console.log(location);
+	console.log(
+		localStorage.getItem("regionName"),
+		localStorage.getItem("siteName")
+	);
 	const openConfirmChangeDialog = (e) => {
 		if (newInput.value === siteDetails.oldData[newInput.label]) {
 			return;
