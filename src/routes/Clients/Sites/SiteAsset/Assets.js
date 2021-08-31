@@ -6,6 +6,7 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import ClientSiteTable from "components/ClientSiteTable";
 import DeleteDialog from "components/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
+import EditAssetDialog from "./EditAssetDialog";
 
 const AC = ContentStyle();
 
@@ -32,6 +33,10 @@ const Assets = ({ fetchSiteAssets, data }) => {
 				deleteEndpoint={`${BASE_API_PATH}SiteAssets`}
 				handleRemoveData={deleteSuccess}
 				closeHandler={() => setModal((th) => ({ ...th, delete: false }))}
+			/>
+			<EditAssetDialog
+				open={modal.edit}
+				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
 			/>
 			<div>
 				<AC.DetailsContainer>
