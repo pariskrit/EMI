@@ -95,6 +95,7 @@ const AddDialogStyle = () => {
 			["@media (max-width:414px)"]: {
 				width: "100%",
 				paddingRight: 0,
+				marginBottom: "20px",
 			},
 		}),
 		NameLabel: styled(Typography)({

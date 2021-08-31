@@ -82,7 +82,6 @@ const defaultStateSchema = {
 };
 
 const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
-
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -557,7 +556,9 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 										/>
 									}
 									label={
-										<Typography>Allow change skipped task status</Typography>
+										<Typography style={{ fontSize: "14px" }}>
+											Allow change skipped task status
+										</Typography>
 									}
 								/>
 							</AED.LeftInputContainer>

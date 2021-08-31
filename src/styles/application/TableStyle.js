@@ -22,6 +22,9 @@ const TableStyle = () => {
 		}),
 		TableHead: styled(TableHead)({
 			userSelect: "none",
+			["@media (max-width: 414px)"]: {
+				whiteSpace: "nowrap",
+			},
 		}),
 		CellContainer: styled("div")({
 			display: "flex",

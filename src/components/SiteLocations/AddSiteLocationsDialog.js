@@ -7,6 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import API from "helpers/api";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -19,8 +20,8 @@ const schema = yup.object({
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null, description: null };
-const defaultStateSchema = { name: "", description: "" };
+const defaultErrorSchema = { name: null };
+const defaultStateSchema = { name: "" };
 
 const useStyles = makeStyles({
 	dialogContent: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const AddLocationsDialog = ({ open, closeHandler, createHandler }) => {
+const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -49,12 +50,77 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler }) => {
 		closeHandler();
 	};
 	const handleCreateProcess = async () => {
-		createHandler();
+		// Adding progress indicator
+		setIsUpdating(true);
+
+		try {
+			const localChecker = await handleValidateObj(schema, input);
+
+			console.log(localChecker);
+
+			// Attempting API call if no local validaton errors
+			if (!localChecker.some((el) => el.valid === false)) {
+				// Creating new data
+				const newData = await handleCreateData();
+
+				if (newData.success) {
+					setIsUpdating(false);
+					closeOverride();
+				} else {
+					setIsUpdating(false);
+				}
+			} else {
+				const newErrors = generateErrorState(localChecker);
+
+				setErrors({ ...errors, ...newErrors });
+				setIsUpdating(false);
+			}
+		} catch (err) {
+			// TODO: handle non validation errors here
+			console.log(err);
+
+			setIsUpdating(false);
+			closeOverride();
+		}
 	};
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
 			handleCreateProcess();
+		}
+	};
+
+	const handleCreateData = async () => {
+		// Attempting to create
+		try {
+			// Submitting to backend
+			const result = await API.post("/api/SiteLocations", {
+				siteId: siteID,
+				name: input.name,
+			});
+
+			// Handling success
+			if (result.status === 201) {
+				// Adding new type to state
+				createHandler({
+					id: result.data,
+					siteID: siteID,
+					name: input.name,
+				});
+
+				return { success: true };
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {
+			if (err.response.data.errors !== undefined) {
+				setErrors({ ...errors, ...err.response.data.errors });
+			} else {
+				// If no explicit errors provided, throws to caller
+				throw new Error(err);
+			}
+
+			return { success: false };
 		}
 	};
 
