@@ -8,7 +8,7 @@ const Row = ({ row, classes, onDeleteApp, onChangeApp }) => (
 		<TableCell>
 			<span className={classes.appName}>{row.name}</span>
 		</TableCell>
-		<TableCell>{row.totalSites}</TableCell>
+		{/* <TableCell>{row.totalSites}</TableCell> */}
 		<TableCell
 			style={{
 				paddingLeft: 90,

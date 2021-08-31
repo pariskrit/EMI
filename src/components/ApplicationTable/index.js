@@ -40,7 +40,7 @@ const ApplicationTable = ({ data, onDeleteApp, onChangeApp }) => {
 			<TableHead className={classes.tableHead}>
 				<TableRow>
 					<TableCell>Name</TableCell>
-					<TableCell>Sites(Qty)</TableCell>
+					{/* <TableCell>Sites(Qty)</TableCell> */}
 					<TableCell style={{ paddingLeft: 90 }}>Status</TableCell>
 				</TableRow>
 			</TableHead>

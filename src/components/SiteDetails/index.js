@@ -32,9 +32,7 @@ const SiteDetails = ({ siteId, setError }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	console.log(location);
-
 	const openConfirmChangeDialog = (e) => {
-		console.log(newInput.value, siteDetails.oldData);
 		if (newInput.value === siteDetails.oldData[newInput.label]) {
 			return;
 		}
@@ -94,24 +92,23 @@ const SiteDetails = ({ siteId, setError }) => {
 				throw new Error(response);
 			}
 		} catch (error) {
-			if (error.response.data.errors !== {}) {
-				console.log(error.response.data.errors.name);
+			if (Object.keys(error.response.data.errors).length !== 0) {
+				setError(error.response.data.errors.name);
 			} else if (error.response.data.detail !== undefined) {
-				console.log(error.response.data.detail);
+				setError(error.response.data.detail);
 			} else {
-				console.log("Something went wrong!");
+				setError("Something went wrong!");
 			}
-			console.log(error, error.response);
+
 			setIsUpdating(false);
 			setOpenConfirmDialog(false);
-			setError("Something went wrong!");
 		}
 	};
 
 	const fetchSiteDetails = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}sites/${siteId}`);
-			console.log(result);
+
 			setSiteDetails({ oldData: result.data, newData: result.data });
 			setNewInput(result.data);
 		} catch (error) {
@@ -223,6 +220,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
 							onKeyDown={onEnterKeyPress}
+							multiline
 						/>
 					</div>
 				</Grid>
