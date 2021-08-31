@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import ColourConstants from "../../helpers/colourConstants";
 import TableStyle from "../../styles/application/TableStyle";
-import "./arrowStyle.scss";
+import "../DepartmentsTable/arrowStyle.scss";
 
 const AT = TableStyle();
 
@@ -42,7 +42,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const DepartmentsTable = () => {
+const LocationsTable = () => {
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
@@ -85,7 +85,7 @@ const DepartmentsTable = () => {
 	return (
 		<>
 			<DeleteDialog
-				entityName="Department"
+				entityName="Location"
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
 				// deleteEndpoint="/api/Applications"
@@ -101,17 +101,10 @@ const DepartmentsTable = () => {
 					<AT.TableHead>
 						<TableRow>
 							<TableCell className={classes.tableHeadRow}>
-								<AT.CellContainer className="flex justify-between">
+								<AT.CellContainer
+									style={{ display: "flex", justifyContent: "space-between" }}
+								>
 									Name
-									<div className="arrow">
-										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
-										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
-									</div>
-								</AT.CellContainer>
-							</TableCell>
-							<TableCell className={classes.tableHeadRow}>
-								<AT.CellContainer className="flex justify-between">
-									Description
 									<div className="arrow">
 										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
 										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
@@ -123,10 +116,9 @@ const DepartmentsTable = () => {
 					<TableBody>
 						{datas.map((data, index) => (
 							<TableRow key={index}>
-								<TableCell>{data.name}</TableCell>
 								<TableCell>
 									<AT.CellContainer>
-										<AT.TableBodyText>{data.desc}</AT.TableBodyText>
+										<AT.TableBodyText>{data.name}</AT.TableBodyText>
 
 										<AT.DotMenu
 											onClick={(e) => {
@@ -183,4 +175,4 @@ const DepartmentsTable = () => {
 	);
 };
 
-export default DepartmentsTable;
+export default LocationsTable;

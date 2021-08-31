@@ -13,6 +13,10 @@ import ColourConstants from "../helpers/colourConstants";
 const useStyles = makeStyles({
 	dialogContent: {
 		width: 500,
+		["@media (max-width:414px)"]: {
+			width: "100%",
+			overflow: "hidden",
+		},
 	},
 	spinnerContainer: {
 		minHeight: 120,
@@ -22,15 +26,27 @@ const useStyles = makeStyles({
 	},
 	actionContainer: {
 		display: "inline-flex",
+		["@media (max-width:414px)"]: {
+			flexWrap: "wrap",
+			overflow: "hidden",
+		},
 	},
 	headerText: {
 		marginRight: "auto",
 		fontFamily: "Roboto Condensed",
 		fontWeight: "bold",
 		fontSize: 21,
+		// width: "100%",
+		["@media (max-width: 414px)"]: {
+			fontSize: 18,
+			width: "80%",
+		},
 	},
 	buttonContainer: {
 		marginLeft: "auto",
+		["@media (max-width:414px)"]: {
+			marginLeft: "18px",
+		},
 	},
 	confirmButon: {
 		height: 43,

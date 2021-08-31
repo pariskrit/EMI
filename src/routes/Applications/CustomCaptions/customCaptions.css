@@ -11,6 +11,7 @@
 
 .topContainerCustomCaptions {
 	display: flex;
+	justify-content: space-between;
 }
 
 .mobileSearchCustomCaptions {

@@ -4,13 +4,13 @@ import { makeStyles } from "@material-ui/core/styles";
 // import DeleteDialog from "components/DeleteDialog";
 import RestoreIcon from "@material-ui/icons/Restore";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import DepartmentsTable from "components/DepartmentsTable";
+import LocationsTable from "components/LocationsTable";
 import Navcrumbs from "components/Navcrumbs";
-import AddSiteDepartmentDialog from "components/SiteDepartment/AddSiteDepartmentDialog";
+import AddSiteLocationsDialog from "components/SiteLocations/AddSiteLocationsDialog";
 import ColourConstants from "helpers/colourConstants";
 import React, { useState } from "react";
 import ContentStyle from "styles/application/ContentStyle";
-import "./site.scss";
+import "../SiteDepartment/site.scss";
 
 const AC = ContentStyle();
 
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const SiteDepartmentsContent = () => {
+const SiteLocationsContent = () => {
 	const classes = useStyles();
 
 	// const [datas,setDatas] = useState([{name:'ABC', desc: 'Company ABC'},{name:'DEF', desc: 'Company DEF'},{name:'XYZ', desc: 'Company XYZ'}])
@@ -76,7 +76,7 @@ const SiteDepartmentsContent = () => {
 
 	return (
 		<div className="container">
-			<AddSiteDepartmentDialog
+			<AddSiteLocationsDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
 				createHandler={handleCreateData}
@@ -90,7 +90,10 @@ const SiteDepartmentsContent = () => {
 				handleRemoveData={handleRemoveData}
 			/> */}
 
-			<div className="flex justify-between" className="flex">
+			<div
+				className="flex justify-between"
+				style={{ display: "flex", alignItems: "center" }}
+			>
 				<Navcrumbs
 					crumbs={["Site", ""]} // ----------------------- put dynamic value
 					status=""
@@ -126,17 +129,17 @@ const SiteDepartmentsContent = () => {
 								onChange={(e) => {
 									setSearchQuery(e.target.value);
 								}}
-								label="Search Departments"
+								label="Search Locations"
 							/>
 						</Grid>
 					</Grid>
 				</AC.SearchInner>
 			</AC.SearchContainer>
-			<h3>Departments</h3>
+			<h3>Locations</h3>
 			{/* <DepartmentsTable {...{datas,handleDeleteDialogOpen}}/> */}
-			<DepartmentsTable />
+			<LocationsTable />
 		</div>
 	);
 };
 
-export default SiteDepartmentsContent;
+export default SiteLocationsContent;
