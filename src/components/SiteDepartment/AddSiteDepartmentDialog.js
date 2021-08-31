@@ -7,6 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import API from "helpers/api";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -16,11 +17,14 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
+	description: yup
+		.string("This field must be a string")
+		.required("This field is required"),
 });
 
 // Default state schemas
 const defaultErrorSchema = { name: null, description: null };
-const defaultStateSchema = { name: "", description: '' };
+const defaultStateSchema = { name: "", description: "" };
 
 const useStyles = makeStyles({
 	dialogContent: {
@@ -31,7 +35,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const AddDepartmentDialog = ({ open, closeHandler, createHandler }) => {
+const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -49,12 +53,79 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler }) => {
 		closeHandler();
 	};
 	const handleCreateProcess = async () => {
-		createHandler()
+		// Adding progress indicator
+		setIsUpdating(true);
+
+		try {
+			const localChecker = await handleValidateObj(schema, input);
+
+			console.log(localChecker);
+
+			// Attempting API call if no local validaton errors
+			if (!localChecker.some((el) => el.valid === false)) {
+				// Creating new data
+				const newData = await handleCreateData();
+
+				if (newData.success) {
+					setIsUpdating(false);
+					closeOverride();
+				} else {
+					setIsUpdating(false);
+				}
+			} else {
+				const newErrors = generateErrorState(localChecker);
+
+				setErrors({ ...errors, ...newErrors });
+				setIsUpdating(false);
+			}
+		} catch (err) {
+			// TODO: handle non validation errors here
+			console.log(err);
+
+			setIsUpdating(false);
+			closeOverride();
+		}
 	};
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
 			handleCreateProcess();
+		}
+	};
+
+	const handleCreateData = async () => {
+		// Attempting to create
+		try {
+			// Submitting to backend
+			const result = await API.post("/api/SiteDepartments", {
+				siteId: siteID,
+				name: input.name,
+				description: input.description,
+			});
+
+			// Handling success
+			if (result.status === 201) {
+				// Adding new type to state
+				createHandler({
+					id: result.data,
+					siteID: siteID,
+					name: input.name,
+					description: input.description,
+				});
+
+				return { success: true };
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {
+			if (err.response.data.errors !== undefined) {
+				setErrors({ ...errors, ...err.response.data.errors });
+			} else {
+				// If no explicit errors provided, throws to caller
+				throw new Error(err);
+			}
+
+			return { success: false };
 		}
 	};
 
@@ -103,7 +174,9 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler }) => {
 					<ADD.InputContainer>
 						<ADD.NameInput
 							error={errors.description === null ? false : true}
-							helperText={errors.description === null ? null : errors.description}
+							helperText={
+								errors.description === null ? null : errors.description
+							}
 							required
 							label="Department Description"
 							value={input.description}

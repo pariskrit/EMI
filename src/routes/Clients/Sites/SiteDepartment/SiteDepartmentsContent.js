@@ -8,9 +8,19 @@ import DepartmentsTable from "components/DepartmentsTable";
 import Navcrumbs from "components/Navcrumbs";
 import AddSiteDepartmentDialog from "components/SiteDepartment/AddSiteDepartmentDialog";
 import ColourConstants from "helpers/colourConstants";
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ContentStyle from "styles/application/ContentStyle";
+
+import DetailsPanel from "components/DetailsPanel";
+
 import "./site.scss";
+
+import { useHistory, useParams } from "react-router-dom";
+
+import NavButtons from "components/NavButtons";
+
+import API from "helpers/api";
+import { handleSort } from "helpers/utils";
 
 const AC = ContentStyle();
 
@@ -29,37 +39,70 @@ const useStyles = makeStyles({
 	},
 });
 
-const SiteDepartmentsContent = () => {
+const SiteDepartmentsContent = ({ setIs404 }) => {
 	const classes = useStyles();
 
-	// const [datas,setDatas] = useState([{name:'ABC', desc: 'Company ABC'},{name:'DEF', desc: 'Company DEF'},{name:'XYZ', desc: 'Company XYZ'}])
+	let current = "Departments";
 
-	// const [selectedID, setSelectedID] = useState(null);
+	const history = useHistory();
+	const { id } = useParams();
+
+	const [data, setData] = useState([]);
+	const [dataChanged, setDataChanged] = useState(false);
+	const [haveData, setHaveData] = useState(false);
+	const [searchedData, setSearchedData] = useState([]);
+	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
+
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openAddDialog, setOpenAddDialog] = useState(false);
-	// const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	// //Delete Modal
-	// const handleDeleteDialogOpen = (id) => {
-	// 	setSelectedID(id);
-	// 	setOpenDeleteDialog(true);
-	// };
 
-	// const handleDeleteDialogClose = () => {
-	// 	setSelectedID(null);
-	// 	setOpenDeleteDialog(false);
-	// };
+	const handleGetData = useCallback(async () => {
+		// Attempting to get data
+		try {
+			// Getting data from API
+			let result = await API.get(`/api/SiteDepartments?siteId=${id}`);
 
-	// const handleRemoveData = (id) => {
-	// 	const newData = [...datas].filter(function (item) {
-	// 		return item.name !== id;
-	// 	});
+			// if success, adding data to state
+			if (result.status === 200) {
+				// Updating state
+				result.data.forEach((d, index) => {
+					d.isDefault = false;
 
-	//     console.log('sagar',id)
+					result.data[index] = d;
+				});
 
-	// 	// Updating state
-	// 	setDatas(newData);
-	// };
+				handleSort(result.data, setData, "name", "asc");
+
+				return true;
+			} // Handling 404
+			else if (result.status === 404) {
+				setIs404(true);
+				return;
+			} else {
+				// If error, throwing to catch
+				throw new Error(result);
+			}
+		} catch (err) {
+			// TODO: real error handling
+			console.log(err);
+			return false;
+		}
+	}, [id, setIs404]);
+
+	useEffect(() => {
+		// Getting data and updating state
+		handleGetData()
+			.then((data) => {
+				if (data) {
+					// Defaulting to asc name for sort
+					setHaveData(true);
+				} else {
+					throw new Error("Unable to get data");
+				}
+			})
+			.catch((err) => console.log(err));
+	}, [handleGetData]);
 
 	//Add Button Modal
 	const handleAddDialogOpen = () => {
@@ -70,9 +113,62 @@ const SiteDepartmentsContent = () => {
 		setOpenAddDialog(false);
 	};
 
-	const handleCreateData = () => {
-		console.log("created");
+	const handleCreateData = (item) => {
+		const newData = [...data];
+
+		newData.push(item);
+
+		setData(newData);
+
+		setDataChanged(true);
 	};
+
+	const onNavClick = (path) => {
+		history.push(path);
+	};
+
+	const handleSearch = () => {
+		// Clearning state and returning if empty
+		if (searchQuery === "") {
+			setSearchedData([]);
+			return;
+		}
+
+		let results = [];
+
+		// Checking data
+		for (let i = 0; i < data.length; i++) {
+			// Pushing current data to results arr if containes search
+			if (data[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
+				results.push(data[i]);
+			}
+		}
+
+		// Updating state
+		setSearchedData(results);
+
+		return;
+	};
+
+	useEffect(() => {
+		if (dataChanged) {
+			handleSort(data, setData, currentTableSort[0], currentTableSort[1]);
+
+			if (searchQuery !== "") {
+				handleSearch();
+			}
+
+			setDataChanged(false);
+		}
+		// eslint-disable-next-line
+	}, [dataChanged]);
+
+	// Search sorting side effect
+	useEffect(() => {
+		// Performing search
+		handleSearch();
+		// eslint-disable-next-line
+	}, [searchQuery]);
 
 	return (
 		<div className="container">
@@ -80,15 +176,8 @@ const SiteDepartmentsContent = () => {
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
 				createHandler={handleCreateData}
+				siteID={id}
 			/>
-			{/* <DeleteDialog
-				entityName="Department"
-				open={openDeleteDialog}
-				closeHandler={handleDeleteDialogClose}
-				// deleteEndpoint="/api/Applications"
-				deleteID={selectedID}
-				handleRemoveData={handleRemoveData}
-			/> */}
 
 			<div className="flex justify-between" className="flex">
 				<Navcrumbs
@@ -114,27 +203,56 @@ const SiteDepartmentsContent = () => {
 				</div>
 			</div>
 
-			<AC.SearchContainer>
-				<AC.SearchInner className="applicationSearchBtn">
-					<Grid container spacing={1} alignItems="flex-end">
-						<Grid item>
-							<SearchIcon />
+			<NavButtons
+				navigation={[
+					{ name: "Details", url: "" },
+					{ name: "Assets", url: "/assets" },
+					{ name: "Departments", url: "/department" },
+					{ name: "Locations", url: "/locations" },
+				]}
+				current={current}
+				onClick={(nam) => onNavClick(`/site/${id}${nam}`)}
+			/>
+
+			<div className="detailsContainer">
+				<DetailsPanel
+					header={"Departments"}
+					dataCount={123}
+					description="Create and manage departments"
+				/>
+				<AC.SearchContainer>
+					<AC.SearchInner className="applicationSearchBtn">
+						<Grid container spacing={1} alignItems="flex-end">
+							<Grid item>
+								<SearchIcon />
+							</Grid>
+							<Grid item>
+								<AC.SearchInput
+									value={searchQuery}
+									onChange={(e) => {
+										setSearchQuery(e.target.value);
+									}}
+									label="Search Departments"
+								/>
+							</Grid>
 						</Grid>
-						<Grid item>
-							<AC.SearchInput
-								value={searchQuery}
-								onChange={(e) => {
-									setSearchQuery(e.target.value);
-								}}
-								label="Search Departments"
-							/>
-						</Grid>
-					</Grid>
-				</AC.SearchInner>
-			</AC.SearchContainer>
-			<h3>Departments</h3>
+					</AC.SearchInner>
+				</AC.SearchContainer>
+			</div>
+
 			{/* <DepartmentsTable {...{datas,handleDeleteDialogOpen}}/> */}
-			<DepartmentsTable />
+			<DepartmentsTable
+				handleSort={handleSort}
+				data={data}
+				setData={setData}
+				searchQuery={searchQuery}
+				searchedData={searchedData}
+				currentTableSort={currentTableSort}
+				setSearchedData={setSearchedData}
+				setCurrentTableSort={setCurrentTableSort}
+				currentTableSort={currentTableSort}
+				setDataChanged={setDataChanged}
+			/>
 		</div>
 	);
 };

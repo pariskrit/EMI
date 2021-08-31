@@ -12,6 +12,9 @@ import { useHistory } from "react-router-dom";
 import ColourConstants from "../../helpers/colourConstants";
 import TableStyle from "../../styles/application/TableStyle";
 import "../DepartmentsTable/arrowStyle.scss";
+import { useParams } from "react-router-dom";
+
+import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
 
 const AT = TableStyle();
 
@@ -42,19 +45,40 @@ const useStyles = makeStyles({
 	},
 });
 
-const LocationsTable = () => {
+const LocationsTable = (
+	data,
+	setData,
+	handleSort,
+	searchQuery,
+	searchedData,
+	setSearchedData,
+	setCurrentTableSort,
+	currentTableSort,
+	setDataChanged
+) => {
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
-	//Delete
-	const [datas, setDatas] = useState([
-		{ name: "ABC", desc: "Company ABC" },
-		{ name: "DEF", desc: "Company DEF" },
-		{ name: "XYZ", desc: "Company XYZ" },
-	]);
+	const handleSortClick = (field) => {
+		// Flipping current method
+		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+
+		// Sorting table
+		handleSort(data, setData, field, newMethod);
+
+		// Sorting searched table if present
+		if (searchQuery !== "") {
+			handleSort(searchedData, setSearchedData, field, newMethod);
+		}
+
+		// Updating header state
+		setCurrentTableSort([field, newMethod]);
+	};
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [selectedID, setSelectedID] = useState(null);
+	const [openEditDialog, setOpenEditDialog] = useState(false);
+	const [editData, setEditData] = useState(null);
 
 	const history = useHistory();
 
@@ -72,14 +96,38 @@ const LocationsTable = () => {
 	};
 
 	const handleRemoveData = (id) => {
-		const newData = [...datas].filter(function (item) {
-			return item.name !== id;
+		const newData = [...data].filter(function (item) {
+			return item.id !== id;
 		});
 
-		console.log("sagar", id);
+		// Updating state
+		setData(newData);
+	};
+
+	// Edit Modal
+	const handleEditData = (d) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === d.id);
+		newData[index] = d;
 
 		// Updating state
-		setDatas(newData);
+		setData(newData);
+
+		setDataChanged(true);
+	};
+
+	const handleEditDialogClose = () => {
+		setOpenEditDialog(false);
+	};
+
+	const handleEditDialogOpen = (id) => {
+		let index = data.findIndex((el) => el.id === id);
+
+		if (index >= 0) {
+			setEditData(data[index]);
+			setOpenEditDialog(true);
+		}
 	};
 
 	return (
@@ -114,11 +162,11 @@ const LocationsTable = () => {
 						</TableRow>
 					</AT.TableHead>
 					<TableBody>
-						{datas.map((data, index) => (
+						{(searchQuery === "" ? data : searchedData)?.map((d, index) => (
 							<TableRow key={index}>
 								<TableCell>
 									<AT.CellContainer>
-										<AT.TableBodyText>{data.name}</AT.TableBodyText>
+										<AT.TableBodyText>{d.name}</AT.TableBodyText>
 
 										<AT.DotMenu
 											onClick={(e) => {
@@ -143,7 +191,7 @@ const LocationsTable = () => {
 												// 		? index === data.length - 1
 												// 		: index === searchedData.length - 1
 												// }
-												id={data.name}
+												id={d.id}
 												clickAwayHandler={() => {
 													setAnchorEl(null);
 													setSelectedData(null);
@@ -151,9 +199,7 @@ const LocationsTable = () => {
 												menuData={[
 													{
 														name: "Edit",
-														handler: () => {
-															history.push(`/SiteDepartments/${data.id}`);
-														},
+														handler: handleEditDialogOpen,
 														isDelete: false,
 													},
 													{
