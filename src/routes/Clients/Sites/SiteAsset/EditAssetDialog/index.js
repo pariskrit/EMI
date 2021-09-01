@@ -15,6 +15,7 @@ import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import NewFunctionalLocations from "./NewFunctionalLocations";
 import CurveButton from "components/CurveButton";
+import ColourConstants from "helpers/colourConstants";
 
 const schema = yup.object({
 	name: yup
@@ -37,6 +38,26 @@ const useStyles = makeStyles({
 		display: "flex",
 		flexDirection: "column",
 		marginBottom: 20,
+	},
+	infoText: {
+		marginTop: 10,
+		marginBottom: 10,
+		fontFamily: "Roboto",
+		color: ColourConstants.commonText,
+		fontSize: 15,
+	},
+	header: {
+		marginRight: "auto",
+		fontFamily: "Roboto Condensed",
+		fontWeight: "bold",
+		fontSize: 21,
+		color: ColourConstants.commonText,
+	},
+	headContainer: {
+		width: "100%",
+		display: "flex",
+		marginBottom: 20,
+		flexDirection: "column",
 	},
 });
 
@@ -216,10 +237,20 @@ const EditAssetDialog = ({
 						/>
 					</div>
 					<div className={classes.divider}></div>
+					<div className={classes.headContainer}>
+						<div className={classes.header}>
+							Sub-categories (
+							{editData === null ? null : editData.references?.length})
+						</div>
+
+						<Typography className={classes.infoText}>
+							Add additional Pause reasons
+						</Typography>
+					</div>
 					{isAddNew ? (
 						<NewFunctionalLocations
 							editData={editData}
-							// setLoading={setLoading}
+							setLoading={setLoading}
 							// handleAddSubcat={handleAddSubcat}
 							// setIsAddNew={setIsAddNew}
 						/>
