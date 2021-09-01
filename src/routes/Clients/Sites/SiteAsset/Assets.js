@@ -53,6 +53,9 @@ const Assets = ({ fetchSiteAssets, data }) => {
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
 				editData={editData}
 				handleEditData={handleEditData}
+				handleRemoveFunctional={() => console.log("Remove Functional")}
+				handleAddFunctional={() => console.log("Add Functional")}
+				handleUpdateFunctional={() => console.log("Update Functional")}
 			/>
 			<div>
 				<AC.DetailsContainer>
