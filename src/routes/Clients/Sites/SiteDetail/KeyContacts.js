@@ -37,11 +37,6 @@ const KeyContacts = ({ siteId }) => {
 				data={contactsList}
 				tableHeaders={["Name", "Product", "Email", "Phone"]}
 			/>
-			{/* {contactsList.length === 0 && (
-				<p style={{ margin: "12px 8px", fontWeight: "500" }}>
-					No Records Found
-				</p>
-			)} */}
 		</AccordionBox>
 	);
 };

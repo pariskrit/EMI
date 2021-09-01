@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import ClientKeyRow from "./TableRow";
 import PropTypes from "prop-types";
-import { Rowing } from "@material-ui/icons";
+import { BorderBottom, Rowing } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",
 	},
+	noDataTableRow: {
+		borderBottom: "none !important",
+	},
 }));
 
 function KeyContacts({ data, tableHeaders }) {
@@ -50,9 +53,15 @@ function KeyContacts({ data, tableHeaders }) {
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{data.map((row) => (
-					<ClientKeyRow key={row.id} row={row} />
-				))}
+				{data.length === 0 ? (
+					<TableRow>
+						<TableCell className={classes.noDataTableRow}>
+							No Record Found
+						</TableCell>
+					</TableRow>
+				) : (
+					data.map((row) => <ClientKeyRow key={row.id} row={row} />)
+				)}
 			</TableBody>
 		</Table>
 	);
