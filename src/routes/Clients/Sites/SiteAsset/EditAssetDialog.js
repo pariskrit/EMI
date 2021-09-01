@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 	paper: { minWidth: "90%" },
 });
 
-const EditAssetDialog = ({ open, closeHandler }) => {
+const EditAssetDialog = ({ open, closeHandler, data }) => {
 	const classes = useStyles();
 	const [loading, setLoading] = useState(false);
 

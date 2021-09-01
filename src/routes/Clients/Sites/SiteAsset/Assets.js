@@ -37,6 +37,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 			<EditAssetDialog
 				open={modal.edit}
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+				data={assets}
 			/>
 			<div>
 				<AC.DetailsContainer>
@@ -64,8 +65,8 @@ const Assets = ({ fetchSiteAssets, data }) => {
 				</AC.DetailsContainer>
 				<ClientSiteTable
 					data={assets}
-					columns={["name", "references", "description"]}
-					headers={["Asset", "Reference", "Description"]}
+					columns={["name", "description"]}
+					headers={["Asset", "Description"]}
 					onEdit={(id) => {
 						setModal((th) => ({ ...th, edit: true }));
 						setId(id);
