@@ -56,7 +56,7 @@ function KeyContacts({ data, tableHeaders }) {
 				{data.length === 0 ? (
 					<TableRow>
 						<TableCell className={classes.noDataTableRow}>
-							No Record Found
+							No Records Found
 						</TableCell>
 					</TableRow>
 				) : (

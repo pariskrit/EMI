@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
 		textDecoration: "underline",
 		wordBreak: "break-word",
 	},
+	noDataTableRow: {
+		borderBottom: "none !important",
+	},
 }));
 const ApplicationTable = ({
 	data,
@@ -51,17 +54,25 @@ const ApplicationTable = ({
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{data.map((row) => (
-					<Row
-						key={row.name}
-						row={row}
-						classes={classes}
-						showDeleteIcon={showDeleteIcon}
-						showQuantity={showQuantity}
-						onDeleteApp={() => onDeleteApp(row.id)}
-						onChangeApp={() => onChangeApp(row.id)}
-					/>
-				))}
+				{data.length === 0 ? (
+					<TableRow>
+						<TableCell className={classes.noDataTableRow}>
+							No Records Found
+						</TableCell>
+					</TableRow>
+				) : (
+					data.map((row) => (
+						<Row
+							key={row.id}
+							row={row}
+							classes={classes}
+							showDeleteIcon={showDeleteIcon}
+							showQuantity={showQuantity}
+							onDeleteApp={() => onDeleteApp(row.id)}
+							onChangeApp={() => onChangeApp(row.id)}
+						/>
+					))
+				)}
 			</TableBody>
 		</Table>
 	);
