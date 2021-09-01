@@ -14,14 +14,28 @@ const Assets = ({ fetchSiteAssets, data }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
+	const [editData, setEditData] = useState({});
 
 	useEffect(() => {
 		setAsset(data);
 	}, [data]);
 
+	const handleEdit = (id) => {
+		const edit = [...assets].find((x) => x.id === id);
+		setEditData(edit);
+		setModal((th) => ({ ...th, edit: true }));
+	};
+
 	const deleteSuccess = (id) => {
 		const da = [...assets].filter((x) => x.id !== id);
 		setAsset(da);
+	};
+
+	const handleEditData = (d) => {
+		const newData = [...assets];
+		let index = newData.findIndex((x) => x.id === d.id);
+		newData[index] = d;
+		setAsset(newData);
 	};
 
 	return (
@@ -37,7 +51,8 @@ const Assets = ({ fetchSiteAssets, data }) => {
 			<EditAssetDialog
 				open={modal.edit}
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
-				data={assets}
+				editData={editData}
+				handleEditData={handleEditData}
 			/>
 			<div>
 				<AC.DetailsContainer>
@@ -67,10 +82,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 					data={assets}
 					columns={["name", "description"]}
 					headers={["Asset", "Description"]}
-					onEdit={(id) => {
-						setModal((th) => ({ ...th, edit: true }));
-						setId(id);
-					}}
+					onEdit={(id) => handleEdit(id)}
 					onDelete={(id) => {
 						setModal((th) => ({ ...th, delete: true }));
 						setId(id);
