@@ -11,7 +11,7 @@ import CompanyLogo from "./CompanyLogo";
 import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
-import Navcrumbs from "components/Navcrumbs";
+import NavDetails from "components/NavDetails";
 import { fetchClientDetail, resetClient } from "redux/clientDetail/actions";
 import { showError } from "redux/common/actions";
 
@@ -43,10 +43,10 @@ const ClientDetails = ({
 
 	return (
 		<div className="client-details">
-			<div className="flex justify-between" className="flex">
-				<Navcrumbs
+			<div className="flex justify-between">
+				<NavDetails
 					crumbs={["Client", clientDetail.name]}
-					status=""
+					status={true}
 					lastSaved=""
 				/>
 

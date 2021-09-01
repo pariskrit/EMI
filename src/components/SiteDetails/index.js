@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const SiteDetails = ({ siteId, setError }) => {
+const SiteDetails = ({ siteId, setError, clientDetail }) => {
 	const classes = useStyles();
 	const location = useLocation();
 	const [siteDetails, setSiteDetails] = useState({ oldData: {}, newData: {} });
@@ -31,10 +31,7 @@ const SiteDetails = ({ siteId, setError }) => {
 	const [newInput, setNewInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	console.log(
-		localStorage.getItem("regionName"),
-		localStorage.getItem("siteName")
-	);
+	// console.log(clientDetail);
 	const openConfirmChangeDialog = (e) => {
 		if (newInput.value === siteDetails.oldData[newInput.label]) {
 			return;
@@ -81,9 +78,9 @@ const SiteDetails = ({ siteId, setError }) => {
 		setOpenConfirmDialog(true);
 	};
 
-	const onConfirmChange = async (path, value) => {
+	const onConfirmChange = async () => {
 		setIsUpdating(true);
-
+		console.log(newInput);
 		try {
 			const response = await API.patch(`${BASE_API_PATH}sites/${siteId}`, [
 				{ op: "replace", path: newInput.label, value: newInput.value },
@@ -111,7 +108,7 @@ const SiteDetails = ({ siteId, setError }) => {
 	const fetchSiteDetails = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}sites/${siteId}`);
-
+			console.log(result);
 			setSiteDetails({ oldData: result.data, newData: result.data });
 			setNewInput(result.data);
 		} catch (error) {
@@ -128,7 +125,7 @@ const SiteDetails = ({ siteId, setError }) => {
 			const result = await API.get(
 				`${BASE_API_PATH}Regions/?clientId=${clientId}`
 			);
-			console.log(result);
+
 			const indexOfSelectedRegion = result.data.findIndex(
 				(region) => region.name === regionName
 			);
@@ -152,9 +149,7 @@ const SiteDetails = ({ siteId, setError }) => {
 				open={openConfirmDialog}
 				isUpdating={isUpdating}
 				closeHandler={closeConfirmChangeDialog}
-				handleChangeConfirm={() =>
-					onConfirmChange(newInput.label, newInput.value)
-				}
+				handleChangeConfirm={onConfirmChange}
 			/>
 			<Grid container spacing={2}>
 				<Grid item sm={6}>
@@ -281,7 +276,13 @@ const SiteDetails = ({ siteId, setError }) => {
 	);
 };
 
-const mapStateToProps = ({ commonData: { error } }) => ({ error });
+const mapStateToProps = ({
+	commonData: { error },
+	clientDetailData: { clientDetail },
+}) => ({
+	error,
+	clientDetail,
+});
 
 const mapDispatchToProps = (dispatch) => ({
 	setError: (message) => dispatch(showError(message)),

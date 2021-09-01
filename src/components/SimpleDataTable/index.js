@@ -44,7 +44,7 @@ function KeyContacts({ data, tableHeaders }) {
 			<TableHead className={classes.tableHead}>
 				<TableRow>
 					{tableHeaders.map((header) => (
-						<TableCell>{header}</TableCell>
+						<TableCell key={header}>{header}</TableCell>
 					))}
 				</TableRow>
 			</TableHead>

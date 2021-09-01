@@ -137,7 +137,7 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 
 			<Accordion
 				className={classes.accordionParent}
-				expanded={sites.length > 0}
+				defaultExpanded={sites.length > 0}
 			>
 				<AccordionSummary
 					className={classes.summary}
