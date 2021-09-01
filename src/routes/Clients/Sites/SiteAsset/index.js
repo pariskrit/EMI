@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SiteWrapper from "components/SiteWrapper";
 import { useHistory, useParams } from "react-router-dom";
 import Assets from "./Assets";
 import API from "helpers/api";
 import AddAssetDialog from "./AddAssetDialog";
 import { BASE_API_PATH } from "helpers/constants";
-import { useEffect } from "react";
 
 const SiteAsset = () => {
 	const history = useHistory();
