@@ -7,16 +7,14 @@ import TableRow from "@material-ui/core/TableRow";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import DeleteDialog from "components/DeleteDialog";
 import PopupMenu from "components/PopupMenu";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import ColourConstants from "../../helpers/colourConstants";
 import TableStyle from "../../styles/application/TableStyle";
-import "./arrowStyle.scss";
+import "../DepartmentsTable/arrowStyle.scss";
 import { useParams } from "react-router-dom";
 
 import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
-
-// import API from "helpers/api";
 
 const AT = TableStyle();
 
@@ -47,7 +45,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const DepartmentsTable = ({
+const LocationsTable = (
 	data,
 	setData,
 	handleSort,
@@ -56,10 +54,8 @@ const DepartmentsTable = ({
 	setSearchedData,
 	setCurrentTableSort,
 	currentTableSort,
-	setDataChanged,
-}) => {
-	const { id } = useParams();
-
+	setDataChanged
+) => {
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
@@ -84,6 +80,7 @@ const DepartmentsTable = ({
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [editData, setEditData] = useState(null);
 
+	const history = useHistory();
 
 	const classes = useStyles();
 
@@ -136,21 +133,13 @@ const DepartmentsTable = ({
 	return (
 		<>
 			<DeleteDialog
-				entityName="Department"
+				entityName="Location"
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
-				deleteEndpoint="/api/SiteDepartments"
+				// deleteEndpoint="/api/Applications"
 				deleteID={selectedID}
 				handleRemoveData={handleRemoveData}
 			/>
-
-			<EditDialog
-				open={openEditDialog}
-				closeHandler={handleEditDialogClose}
-				data={editData}
-				handleEditData={handleEditData}
-			/>
-
 			<AT.TableContainer
 				component={Paper}
 				elevation={0}
@@ -160,17 +149,10 @@ const DepartmentsTable = ({
 					<AT.TableHead>
 						<TableRow>
 							<TableCell className={classes.tableHeadRow}>
-								<AT.CellContainer className="flex justify-between">
+								<AT.CellContainer
+									style={{ display: "flex", justifyContent: "space-between" }}
+								>
 									Name
-									<div className="arrow">
-										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
-										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
-									</div>
-								</AT.CellContainer>
-							</TableCell>
-							<TableCell className={classes.tableHeadRow}>
-								<AT.CellContainer className="flex justify-between">
-									Description
 									<div className="arrow">
 										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
 										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
@@ -180,12 +162,11 @@ const DepartmentsTable = ({
 						</TableRow>
 					</AT.TableHead>
 					<TableBody>
-						{(searchQuery === "" ? data : searchedData).map((d, index) => (
+						{(searchQuery === "" ? data : searchedData)?.map((d, index) => (
 							<TableRow key={index}>
-								<TableCell>{d.name}</TableCell>
 								<TableCell>
 									<AT.CellContainer>
-										<AT.TableBodyText>{d.description}</AT.TableBodyText>
+										<AT.TableBodyText>{d.name}</AT.TableBodyText>
 
 										<AT.DotMenu
 											onClick={(e) => {
@@ -240,4 +221,4 @@ const DepartmentsTable = ({
 	);
 };
 
-export default DepartmentsTable;
+export default LocationsTable;

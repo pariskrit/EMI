@@ -1,78 +1,116 @@
-.mobileViewGrid{
-    display: none !important
+.mobileViewGrid {
+	display: none !important;
 }
 
-.mobileViewGridWithDiffDisplay{
-    display: none !important
+.mobileViewGridWithDiffDisplay {
+	display: none !important;
 }
 
-@media only screen and (max-width: 840px){
-    .applicationNav{
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .actionButtonContainer{
-        margin-left: 0 !important
-    }
+.actionSpinnerBtn {
+	margin-right: 10;
+	width: 150px;
+	background-color: "transparent";
 }
 
-@media only screen and (max-width: 414px){
-    .applicationContentContainer{
-       margin-bottom: 50px;
-    }
+.duplicateTitle {
+	display: inline-flex;
+}
 
-    .actionButtonContainer{
-        width: 100% !important;
-        display: flex;
-        justify-content: center;
-    }
+.duplicateDialogContent {
+	width: 500px;
+}
 
-    .actionButtonsBtn{
-        width: 100px !important
-    }
+.duplicateInputContainer {
+	width: 100%;
+	display: "flex";
+	margin-bottom: 20;
+}
 
-    .buttonGroup{
-       max-width: 84vw;
-       overflow: auto;
-       margin: 0 auto
-    }
+@media only screen and (max-width: 840px) {
+	.applicationNav {
+		flex-direction: column;
+		align-items: flex-start;
+	}
 
-    .largeBtn{
-        min-width: 170px !important;
-        font-size: 12px !important
-    }
+	.actionButtonContainer {
+		margin-left: 0 !important;
+	}
+}
 
-    .desktopViewGrid{
-        display: none !important;
-    }
+@media only screen and (max-width: 414px) {
+	.applicationContentContainer {
+		margin-bottom: 50px;
+	}
 
-    .mobileViewGrid{
-        display: flex !important
-    }
+	.actionButtonContainer {
+		width: 100% !important;
+		display: flex;
+		justify-content: center;
+	}
 
-    .mobileViewGridWithDiffDisplay {
-        display: block !important
-    }
+	.actionButtonsBtn {
+		width: 100px !important;
+	}
 
-    .ticketBox{
-        margin-left: 0% !important
-    }
+	.actionSpinnerBtn {
+		width: 100px;
+	}
 
-    .colorContainer{
-        padding-right: 0% !important
-    }
+	.buttonGroup {
+		max-width: 84vw;
+		overflow: auto;
+		margin: 0 auto;
+	}
 
-    .logoContainer{
-        padding-left: 0% !important
-    }
+	.largeBtn {
+		min-width: 170px !important;
+		font-size: 12px !important;
+	}
 
-    .logoContainerRight{
-        padding-right: 0% !important
-    }
+	.desktopViewGrid {
+		display: none !important;
+	}
 
-    .otherAssets{
-        padding-left: 0% !important
-    }
+	.mobileViewGrid {
+		display: flex !important;
+	}
 
+	.mobileViewGridWithDiffDisplay {
+		display: block !important;
+	}
+
+	.ticketBox {
+		margin-left: 0% !important;
+	}
+
+	.colorContainer {
+		padding-right: 0% !important;
+	}
+
+	.logoContainer {
+		padding-left: 0% !important;
+	}
+
+	.logoContainerRight {
+		padding-right: 0% !important;
+	}
+
+	.otherAssets {
+		padding-left: 0% !important;
+	}
+
+	.duplicateTitle {
+		display: inline;
+		flex-wrap: wrap;
+	}
+
+	.duplicateDialogContent {
+		width: 100%;
+		/* background-color: red; */
+	}
+
+	.duplicateInputContainer {
+		width: 100%;
+		overflow: hidden;
+	}
 }

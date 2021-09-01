@@ -90,7 +90,7 @@ const SiteWrapper = ({
 							navigation={[
 								{ name: "Details", url: "" },
 								{ name: "Assets", url: "/assets" },
-								{ name: "Departments", url: "/department" },
+								{ name: "Departments", url: "/departments" },
 								{ name: "Locations", url: "/locations" },
 							]}
 							current={current}

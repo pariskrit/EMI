@@ -28,6 +28,10 @@ const SubcatStyle = () => {
 			fontSize: 14,
 			border: "none",
 			boxShadow: "none",
+			["@media (max-width: 414px)"]: {
+				width: "75%",
+				overflow: "hidden",
+			},
 			"&:focus": {
 				border: "none",
 				boxShadow: "none",

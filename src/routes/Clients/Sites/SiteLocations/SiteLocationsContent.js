@@ -4,21 +4,18 @@ import { makeStyles } from "@material-ui/core/styles";
 // import DeleteDialog from "components/DeleteDialog";
 import RestoreIcon from "@material-ui/icons/Restore";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import DepartmentsTable from "components/DepartmentsTable";
+import LocationsTable from "components/LocationsTable";
 import Navcrumbs from "components/Navcrumbs";
-import AddSiteDepartmentDialog from "components/SiteDepartment/AddSiteDepartmentDialog";
+import AddSiteLocationsDialog from "components/SiteLocations/AddSiteLocationsDialog";
 import ColourConstants from "helpers/colourConstants";
 import React, { useState, useCallback, useEffect } from "react";
 import ContentStyle from "styles/application/ContentStyle";
-
-import DetailsPanel from "components/DetailsPanel";
-
-import "./site.scss";
+import "../SiteDepartment/site.scss";
 
 import { useHistory, useParams } from "react-router-dom";
+import DetailsPanel from "components/DetailsPanel";
 
 import NavButtons from "components/NavButtons";
-
 import API from "helpers/api";
 import { handleSort } from "helpers/utils";
 
@@ -39,10 +36,10 @@ const useStyles = makeStyles({
 	},
 });
 
-const SiteDepartmentsContent = ({ setIs404 }) => {
+const SiteLocationsContent = ({ setIs404 }) => {
 	const classes = useStyles();
 
-	let current = "Departments";
+	let current = "Locations";
 
 	const history = useHistory();
 	const { id } = useParams();
@@ -56,11 +53,13 @@ const SiteDepartmentsContent = ({ setIs404 }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 
+	console.log("sagar", searchQuery);
+
 	const handleGetData = useCallback(async () => {
 		// Attempting to get data
 		try {
 			// Getting data from API
-			let result = await API.get(`/api/SiteDepartments?siteId=${id}`);
+			let result = await API.get(`/api/SiteLocations?siteId=${id}`);
 
 			// if success, adding data to state
 			if (result.status === 200) {
@@ -171,14 +170,16 @@ const SiteDepartmentsContent = ({ setIs404 }) => {
 
 	return (
 		<div className="container">
-			<AddSiteDepartmentDialog
+			<AddSiteLocationsDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
 				createHandler={handleCreateData}
-				siteID={id}
 			/>
 
-			<div className="flex justify-between" className="flex">
+			<div
+				className="flex justify-between"
+				style={{ display: "flex", alignItems: "center" }}
+			>
 				<Navcrumbs
 					crumbs={["Site", ""]} // ----------------------- put dynamic value
 					status=""
@@ -215,9 +216,9 @@ const SiteDepartmentsContent = ({ setIs404 }) => {
 
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={"Departments"}
+					header={"Locations"}
 					dataCount={123}
-					description="Create and manage departments"
+					description="Create and manage locations"
 				/>
 				<AC.SearchContainer>
 					<AC.SearchInner className="applicationSearchBtn">
@@ -231,16 +232,15 @@ const SiteDepartmentsContent = ({ setIs404 }) => {
 									onChange={(e) => {
 										setSearchQuery(e.target.value);
 									}}
-									label="Search Departments"
+									label="Search Locations"
 								/>
 							</Grid>
 						</Grid>
 					</AC.SearchInner>
 				</AC.SearchContainer>
 			</div>
-
 			{/* <DepartmentsTable {...{datas,handleDeleteDialogOpen}}/> */}
-			<DepartmentsTable
+			<LocationsTable
 				handleSort={handleSort}
 				data={data}
 				setData={setData}
@@ -256,4 +256,4 @@ const SiteDepartmentsContent = ({ setIs404 }) => {
 	);
 };
 
-export default SiteDepartmentsContent;
+export default SiteLocationsContent;

@@ -22,16 +22,12 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const useStyles = makeStyles({
-	dialogContent: {
-		width: 500,
-	},
-});
-
-const DuplicateApplicationDialog = ({ id, open, closeHandler, duplicateHandler }) => {
-	// Init hooks
-	const classes = useStyles();
-
+const DuplicateApplicationDialog = ({
+	id,
+	open,
+	closeHandler,
+	duplicateHandler,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -90,7 +86,7 @@ const DuplicateApplicationDialog = ({ id, open, closeHandler, duplicateHandler }
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
-				<ADD.ActionContainer>
+				<div className="duplicateTitle">
 					<DialogTitle id="alert-dialog-title">
 						{<ADD.HeaderText>Duplicate Application</ADD.HeaderText>}
 					</DialogTitle>
@@ -101,15 +97,14 @@ const DuplicateApplicationDialog = ({ id, open, closeHandler, duplicateHandler }
 						<ADD.ConfirmButton
 							onClick={handleCreateProcess}
 							variant="contained"
-							className={classes.createButton}
 						>
 							Duplicate
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
-				</ADD.ActionContainer>
+				</div>
 
-				<DialogContent className={classes.dialogContent}>
-					<ADD.InputContainer>
+				<DialogContent className="duplicateDialogContent">
+					<div className="duplicateInputContainer">
 						<ADD.NameInput
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
@@ -120,7 +115,7 @@ const DuplicateApplicationDialog = ({ id, open, closeHandler, duplicateHandler }
 								setInput({ ...input, name: e.target.value });
 							}}
 						/>
-					</ADD.InputContainer>
+					</div>
 				</DialogContent>
 			</Dialog>
 		</div>

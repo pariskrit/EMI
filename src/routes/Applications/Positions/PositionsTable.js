@@ -49,9 +49,7 @@ const useStyles = makeStyles({
 	},
 	arrowContainer: {
 		marginLeft: "auto",
-		width: 5,
-		paddingRight: 5,
-		paddingLeft: 5,
+		width: 15,
 	},
 });
 

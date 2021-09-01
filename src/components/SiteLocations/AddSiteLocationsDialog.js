@@ -17,14 +17,11 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	description: yup
-		.string("This field must be a string")
-		.required("This field is required"),
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null, description: null };
-const defaultStateSchema = { name: "", description: "" };
+const defaultErrorSchema = { name: null };
+const defaultStateSchema = { name: "" };
 
 const useStyles = makeStyles({
 	dialogContent: {
@@ -35,7 +32,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
+const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -97,10 +94,9 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/SiteDepartments", {
+			const result = await API.post("/api/SiteLocations", {
 				siteId: siteID,
 				name: input.name,
-				description: input.description,
 			});
 
 			// Handling success
@@ -110,7 +106,6 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 					id: result.data,
 					siteID: siteID,
 					name: input.name,
-					description: input.description,
 				});
 
 				return { success: true };
@@ -141,7 +136,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add Department</ADD.HeaderText>}
+						{<ADD.HeaderText>Add Location</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -152,7 +147,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							variant="contained"
 							className={classes.createButton}
 						>
-							Create Department
+							Create Location
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>
@@ -163,26 +158,11 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
 							required
-							label="Department Name"
+							label="Location"
 							value={input.name}
 							onKeyDown={handleEnterPress}
 							onChange={(e) => {
 								setInput({ ...input, name: e.target.value });
-							}}
-						/>
-					</ADD.InputContainer>
-					<ADD.InputContainer>
-						<ADD.NameInput
-							error={errors.description === null ? false : true}
-							helperText={
-								errors.description === null ? null : errors.description
-							}
-							required
-							label="Department Description"
-							value={input.description}
-							onKeyDown={handleEnterPress}
-							onChange={(e) => {
-								setInput({ ...input, description: e.target.value });
 							}}
 						/>
 					</ADD.InputContainer>
@@ -192,4 +172,4 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	);
 };
 
-export default AddDepartmentDialog;
+export default AddLocationsDialog;

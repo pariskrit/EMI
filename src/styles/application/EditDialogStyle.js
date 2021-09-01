@@ -11,6 +11,9 @@ const EditDialogStyle = () => {
 	return {
 		ActionContainer: styled("div")({
 			display: "inline-flex",
+			["@media (max-width: 414px)"]: {
+				flexWrap: "wrap",
+			},
 		}),
 		HeaderText: styled(Typography)({
 			marginRight: "auto",
@@ -18,9 +21,15 @@ const EditDialogStyle = () => {
 			fontWeight: "bold",
 			fontSize: 21,
 			color: ColourConstants.commonText,
+			["@media (max-width: 414px)"]: {
+				fontSize: 18,
+			},
 		}),
 		ButtonContainer: styled(DialogActions)({
 			marginLeft: "auto",
+			["@media (max-width: 414px)"]: {
+				marginLeft: "18px",
+			},
 		}),
 		ConfirmButton: styled(Button)({
 			height: 43,
@@ -29,6 +38,9 @@ const EditDialogStyle = () => {
 			backgroundColor: ColourConstants.confirmButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
+			["@media (max-width: 414px)"]: {
+				width: "100px",
+			},
 		}),
 		CancelButton: styled(Button)({
 			height: 43,
@@ -37,6 +49,9 @@ const EditDialogStyle = () => {
 			backgroundColor: ColourConstants.cancelButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
+			["@media (max-width: 414px)"]: {
+				width: "100px",
+			},
 		}),
 		DialogContent: styled(DialogContent)({
 			marginBottom: 15,
@@ -45,10 +60,16 @@ const EditDialogStyle = () => {
 			width: "100%",
 			display: "flex",
 			marginBottom: 20,
+			["@media (max-width: 414px)"]: {
+				flexDirection: "column",
+			},
 		}),
 
 		NameInputContainer: styled("div")({
 			width: "50%",
+			["@media (max-width: 414px)"]: {
+				width: "100%",
+			},
 		}),
 
 		FieldInputContainer: styled("div")({
@@ -66,6 +87,11 @@ const EditDialogStyle = () => {
 		LeftInputContainer: styled("div")({
 			paddingRight: 15,
 			width: "50%",
+			["@media (max-width: 414px)"]: {
+				paddingRight: 0,
+				width: "100%",
+				marginBottom: "20px",
+			},
 		}),
 		NameLabel: styled(Typography)({
 			fontFamily: "Roboto Condensed",
@@ -81,6 +107,10 @@ const EditDialogStyle = () => {
 		RightInputContainer: styled("div")({
 			paddingLeft: 15,
 			width: "50%",
+			["@media (max-width: 414px)"]: {
+				paddingLeft: 0,
+				width: "100%",
+			},
 		}),
 		NameInput: styled(TextField)({
 			width: "100%",
@@ -96,6 +126,10 @@ const EditDialogStyle = () => {
 			width: "50%",
 			paddingLeft: "7%",
 			paddingTop: 17,
+			["@media (max-width: 414px)"]: {
+				width: "100%",
+				paddingLeft: "0px",
+			},
 		}),
 		CheckboxLabel: styled(Typography)({
 			fontFamily: "Roboto",
