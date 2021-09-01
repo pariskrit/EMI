@@ -20,6 +20,18 @@ const Assets = ({ fetchSiteAssets, data }) => {
 		setAsset(data);
 	}, [data]);
 
+	const handleAddFunctional = (parentId, id, inputs) => {
+		const newData = [...assets];
+		let index = newData.findIndex((x) => x.id === parentId);
+
+		newData[index].references.push({
+			siteAssetID: parentId,
+			id,
+			...inputs,
+		});
+		setAsset(newData);
+	};
+
 	const handleEdit = (id) => {
 		const edit = [...assets].find((x) => x.id === id);
 		setEditData(edit);
@@ -54,7 +66,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 				editData={editData}
 				handleEditData={handleEditData}
 				handleRemoveFunctional={() => console.log("Remove Functional")}
-				handleAddFunctional={() => console.log("Add Functional")}
+				handleAddFunctional={handleAddFunctional}
 				handleUpdateFunctional={() => console.log("Update Functional")}
 			/>
 			<div>

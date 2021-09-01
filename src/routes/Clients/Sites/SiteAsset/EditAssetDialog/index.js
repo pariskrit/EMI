@@ -237,12 +237,12 @@ const EditAssetDialog = ({
 					<div className={classes.divider}></div>
 					<div className={classes.headContainer}>
 						<div className={classes.header}>
-							Sub-categories (
+							Functional Locations (
 							{editData === null ? null : editData.references?.length})
 						</div>
 
 						<Typography className={classes.infoText}>
-							Add additional Pause reasons
+							Add additional References
 						</Typography>
 					</div>
 					{isAddNew ? (
@@ -250,7 +250,7 @@ const EditAssetDialog = ({
 							editData={editData}
 							setLoading={setLoading}
 							handleAddFunctional={handleAddFunctional}
-							// setIsAddNew={setIsAddNew}
+							setIsAddNew={setIsAddNew}
 						/>
 					) : null}
 

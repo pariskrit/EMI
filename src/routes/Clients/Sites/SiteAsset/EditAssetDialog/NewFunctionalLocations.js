@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 const NewFunctionalLocations = ({
 	editData,
 	setLoading,
+	setIsAddNew,
 	handleAddFunctional,
 }) => {
 	const classes = useStyles();
@@ -107,7 +108,8 @@ const NewFunctionalLocations = ({
 		}
 	};
 
-	const saveFuncLoc = async () => {
+	const saveFuncLoc = async (e) => {
+		e.preventDefault();
 		setLoading(true);
 		setErrors(defaultErrorSchema);
 		try {
@@ -129,21 +131,20 @@ const NewFunctionalLocations = ({
 		}
 	};
 
-	const handleEnterPress = (e) => {
-		// 13 is the enter keycode
-		if (e.keyCode === 13) {
-			saveFuncLoc();
-		}
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setInput((th) => ({ ...th, [name]: value }));
 	};
 
 	return (
-		<div>
+		<form onSubmit={saveFuncLoc}>
 			<div className={classes.container}>
 				<TextField
 					fullWidth
 					name="name"
 					label="Name"
-					onKeyDown={handleEnterPress}
+					onChange={handleChange}
+					value={input.name}
 				/>
 			</div>
 			<div className={classes.container}>
@@ -151,7 +152,8 @@ const NewFunctionalLocations = ({
 					fullWidth
 					name="description"
 					label="Description"
-					onKeyDown={handleEnterPress}
+					onChange={handleChange}
+					value={input.description}
 				/>
 			</div>
 			<div className={classes.container}>
@@ -159,7 +161,8 @@ const NewFunctionalLocations = ({
 					fullWidth
 					name="plannerGroup"
 					label="Planner Group"
-					onKeyDown={handleEnterPress}
+					onChange={handleChange}
+					value={input.plannerGroup}
 				/>
 			</div>
 			<div className={classes.container}>
@@ -167,10 +170,12 @@ const NewFunctionalLocations = ({
 					fullWidth
 					name="workCenter"
 					label="Work Center"
-					onKeyDown={handleEnterPress}
+					onChange={handleChange}
+					value={input.workCenter}
 				/>
 			</div>
-		</div>
+			<input type="submit" style={{ display: "none" }} />
+		</form>
 	);
 };
 
