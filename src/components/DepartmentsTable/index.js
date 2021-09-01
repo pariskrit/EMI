@@ -63,6 +63,8 @@ const DepartmentsTable = ({
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
+	console.log("let", data);
+
 	const handleSortClick = (field) => {
 		// Flipping current method
 		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
@@ -83,7 +85,6 @@ const DepartmentsTable = ({
 	const [selectedID, setSelectedID] = useState(null);
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [editData, setEditData] = useState(null);
-
 
 	const classes = useStyles();
 

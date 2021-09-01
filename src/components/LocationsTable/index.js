@@ -14,7 +14,7 @@ import TableStyle from "../../styles/application/TableStyle";
 import "../DepartmentsTable/arrowStyle.scss";
 import { useParams } from "react-router-dom";
 
-import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
+import EditDialog from "routes/Clients/Sites/SiteLocations/EditModal";
 
 const AT = TableStyle();
 
@@ -45,7 +45,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const LocationsTable = (
+const LocationsTable = ({
 	data,
 	setData,
 	handleSort,
@@ -54,10 +54,12 @@ const LocationsTable = (
 	setSearchedData,
 	setCurrentTableSort,
 	currentTableSort,
-	setDataChanged
-) => {
+	setDataChanged,
+}) => {
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
+
+	console.log(data);
 
 	const handleSortClick = (field) => {
 		// Flipping current method
@@ -136,10 +138,18 @@ const LocationsTable = (
 				entityName="Location"
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
-				// deleteEndpoint="/api/Applications"
+				deleteEndpoint="/api/SiteLocations"
 				deleteID={selectedID}
 				handleRemoveData={handleRemoveData}
 			/>
+
+			<EditDialog
+				open={openEditDialog}
+				closeHandler={handleEditDialogClose}
+				data={editData}
+				handleEditData={handleEditData}
+			/>
+
 			<AT.TableContainer
 				component={Paper}
 				elevation={0}

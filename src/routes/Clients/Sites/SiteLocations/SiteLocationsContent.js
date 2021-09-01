@@ -53,8 +53,6 @@ const SiteLocationsContent = ({ setIs404 }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 
-	console.log("sagar", searchQuery);
-
 	const handleGetData = useCallback(async () => {
 		// Attempting to get data
 		try {
@@ -168,12 +166,14 @@ const SiteLocationsContent = ({ setIs404 }) => {
 		// eslint-disable-next-line
 	}, [searchQuery]);
 
+
 	return (
 		<div className="container">
 			<AddSiteLocationsDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
 				createHandler={handleCreateData}
+				siteID={id}
 			/>
 
 			<div
