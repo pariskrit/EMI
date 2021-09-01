@@ -3,12 +3,19 @@ import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import IOSSwitch from "components/IOSSwitch";
 
-const Row = ({ row, classes, onDeleteApp, onChangeApp }) => (
+const Row = ({
+	row,
+	classes,
+	onDeleteApp,
+	onChangeApp,
+	showDeleteIcon,
+	showQuantity,
+}) => (
 	<TableRow>
 		<TableCell>
 			<span className={classes.appName}>{row.name}</span>
 		</TableCell>
-		<TableCell>{row.totalSites}</TableCell>
+		{showDeleteIcon && <TableCell>{row.totalSites}</TableCell>}
 		<TableCell
 			style={{
 				paddingLeft: 90,
@@ -17,7 +24,7 @@ const Row = ({ row, classes, onDeleteApp, onChangeApp }) => (
 		>
 			<div className="flex">
 				<IOSSwitch onChange={onChangeApp} currentStatus={row.isActive} /> &nbsp;
-				{!row.isActive ? (
+				{!row.isActive && showDeleteIcon ? (
 					<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 				) : (
 					<div style={{ width: "32px" }}></div>

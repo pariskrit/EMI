@@ -56,7 +56,6 @@ const SiteDepartmentsContent = ({ setIs404 }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 
-
 	const handleGetData = useCallback(async () => {
 		// Attempting to get data
 		try {
@@ -207,7 +206,7 @@ const SiteDepartmentsContent = ({ setIs404 }) => {
 				navigation={[
 					{ name: "Details", url: "" },
 					{ name: "Assets", url: "/assets" },
-					{ name: "Departments", url: "/department" },
+					{ name: "Departments", url: "/departments" },
 					{ name: "Locations", url: "/locations" },
 				]}
 				current={current}

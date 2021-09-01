@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import ColourConstants from "../helpers/colourConstants";
-import SaveHistory from "./SaveHistory";
+import SaveHistory from "../SaveHistory";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {
