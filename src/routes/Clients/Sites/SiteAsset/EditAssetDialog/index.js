@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
 	Dialog,
-	DialogContentText,
 	DialogTitle,
 	LinearProgress,
 	makeStyles,
@@ -142,7 +141,6 @@ const EditAssetDialog = ({
 					name: input.name,
 					description: input.description,
 				});
-				console.log(updatedData);
 				if (updatedData.success) {
 					setLoading(false);
 					closeOverride();
@@ -251,7 +249,7 @@ const EditAssetDialog = ({
 						<NewFunctionalLocations
 							editData={editData}
 							setLoading={setLoading}
-							// handleAddSubcat={handleAddSubcat}
+							handleAddFunctional={handleAddFunctional}
 							// setIsAddNew={setIsAddNew}
 						/>
 					) : null}
