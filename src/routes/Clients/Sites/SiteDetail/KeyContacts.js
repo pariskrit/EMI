@@ -5,7 +5,7 @@ import { BASE_API_PATH } from "helpers/constants";
 import API from "helpers/api";
 
 const KeyContacts = ({ siteId }) => {
-	const [applicationList, setApplicationList] = useState([]);
+	const [contactsList, setContactsList] = useState([]);
 
 	const fetchKeyContactsList = async () => {
 		try {
@@ -13,7 +13,15 @@ const KeyContacts = ({ siteId }) => {
 				`${BASE_API_PATH}siteappkeycontacts/Site/${siteId}`
 			);
 
-			console.log(result);
+			setContactsList(
+				result.data.map((data) => ({
+					id: data.userID,
+					name: data.displayName,
+					product: data.name,
+					email: data.email,
+					phone: data.phone,
+				}))
+			);
 		} catch (error) {
 			console.log(error);
 		}
@@ -26,16 +34,14 @@ const KeyContacts = ({ siteId }) => {
 	return (
 		<AccordionBox title="Key Contacts">
 			<SimpleDataTable
-				data={[
-					{
-						name: "pariskrit",
-						product: "abc",
-						email: "ggg@gmail.com",
-						phone: 123123,
-					},
-				]}
+				data={contactsList}
 				tableHeaders={["Name", "Product", "Email", "Phone"]}
 			/>
+			{/* {contactsList.length === 0 && (
+				<p style={{ margin: "12px 8px", fontWeight: "500" }}>
+					No Records Found
+				</p>
+			)} */}
 		</AccordionBox>
 	);
 };

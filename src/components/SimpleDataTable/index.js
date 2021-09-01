@@ -51,7 +51,7 @@ function KeyContacts({ data, tableHeaders }) {
 			</TableHead>
 			<TableBody>
 				{data.map((row) => (
-					<ClientKeyRow key={Rowing.name} row={row} />
+					<ClientKeyRow key={row.id} row={row} />
 				))}
 			</TableBody>
 		</Table>
