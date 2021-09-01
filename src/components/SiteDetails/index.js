@@ -6,7 +6,7 @@ import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
 import { siteOptions } from "helpers/constants";
 
@@ -21,17 +21,18 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const SiteDetails = ({ siteId, setError, clientDetail }) => {
+const SiteDetails = ({ siteId, setError }) => {
 	const classes = useStyles();
-	const location = useLocation();
+	const { clientId } = useParams();
 	const [siteDetails, setSiteDetails] = useState({ oldData: {}, newData: {} });
 	const [listOfRegions, setListOfRegions] = useState([]);
 	const [selectedRegion, setSelectedRegion] = useState({});
+	const [clientLicenseType, setClientLicenseType] = useState(0);
+	const [selectedLicenseType, setSelectedLicenseType] = useState({});
 	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 	const [newInput, setNewInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	// console.log(clientDetail);
 	const openConfirmChangeDialog = (e) => {
 		if (newInput.value === siteDetails.oldData[newInput.label]) {
 			return;
@@ -54,7 +55,6 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 	};
 
 	const setSelectedInputValue = (e) => {
-		console.log(e.target.name, e.target.value);
 		setNewInput({ label: e.target.name, value: e.target.value || null });
 	};
 
@@ -65,22 +65,31 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 		}
 	};
 
-	const onDropDownInputChange = (value) => {
-		if (value.label === location.state.regionName) {
+	const onDropDownInputChange = (value, inputName) => {
+		if (inputName === "region") {
+			const { regionName } = siteDetails.oldData;
+			if (value.label === regionName) {
+				setSelectedRegion(value);
+				return;
+			}
+
 			setSelectedRegion(value);
-			return;
+			const region = listOfRegions.find(
+				(region) => region.name === value.label
+			);
+
+			setNewInput({ label: "regionID", value: region.id });
+		} else {
+			setSelectedLicenseType(value);
+			setNewInput({ label: "licenseType", value: value.value });
 		}
 
-		setSelectedRegion(value);
-		const region = listOfRegions.find((region) => region.name === value.label);
-
-		setNewInput({ label: "regionID", value: region.id });
 		setOpenConfirmDialog(true);
 	};
 
 	const onConfirmChange = async () => {
 		setIsUpdating(true);
-		console.log(newInput);
+
 		try {
 			const response = await API.patch(`${BASE_API_PATH}sites/${siteId}`, [
 				{ op: "replace", path: newInput.label, value: newInput.value },
@@ -108,19 +117,17 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 	const fetchSiteDetails = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}sites/${siteId}`);
-			console.log(result);
+
 			setSiteDetails({ oldData: result.data, newData: result.data });
 			setNewInput(result.data);
+			fetchListOfRegions(result.data.regionName);
+			fetchClient(result.data.licenseType);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const fetchListOfRegions = async () => {
-		const {
-			state: { clientId, regionName },
-		} = location;
-
+	const fetchListOfRegions = async (regionName) => {
 		try {
 			const result = await API.get(
 				`${BASE_API_PATH}Regions/?clientId=${clientId}`
@@ -136,9 +143,28 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 		}
 	};
 
+	const fetchClient = async (licenseType) => {
+		try {
+			const response = await API.get(`${BASE_API_PATH}clients/${clientId}`);
+
+			setClientLicenseType(response.data.licenseType);
+
+			if (response.data.licenseType === 3) {
+				const licenseName = siteOptions.find(
+					(option) => option.value === licenseType
+				);
+				setSelectedLicenseType({
+					label: licenseName.label,
+					value: licenseName.value,
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
 		fetchSiteDetails();
-		fetchListOfRegions();
 	}, []);
 
 	const { newData } = siteDetails;
@@ -182,7 +208,7 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 							selectedValue={selectedRegion}
 							label=""
 							required={true}
-							onChange={onDropDownInputChange}
+							onChange={(value) => onDropDownInputChange(value, "region")}
 							width="auto"
 						/>
 					</div>
@@ -246,10 +272,12 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 						</Typography>
 						<Dropdown
 							options={siteOptions}
-							selectedValue={{ label: "Total Users", value: 0 }}
+							selectedValue={selectedLicenseType}
 							label=""
 							required={true}
 							width="auto"
+							onChange={(value) => onDropDownInputChange(value, "license")}
+							disabled={clientLicenseType !== 3}
 						/>
 					</div>
 				</Grid>
@@ -268,6 +296,7 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
 							onKeyDown={onEnterKeyPress}
+							disabled={clientLicenseType === 3}
 						/>
 					</div>
 				</Grid>
@@ -276,12 +305,8 @@ const SiteDetails = ({ siteId, setError, clientDetail }) => {
 	);
 };
 
-const mapStateToProps = ({
-	commonData: { error },
-	clientDetailData: { clientDetail },
-}) => ({
+const mapStateToProps = ({ commonData: { error } }) => ({
 	error,
-	clientDetail,
 });
 
 const mapDispatchToProps = (dispatch) => ({

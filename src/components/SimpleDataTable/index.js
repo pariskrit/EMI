@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import ClientKeyRow from "./TableRow";
 import PropTypes from "prop-types";
+import { Rowing } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -50,7 +51,7 @@ function KeyContacts({ data, tableHeaders }) {
 			</TableHead>
 			<TableBody>
 				{data.map((row) => (
-					<ClientKeyRow key={row.id} row={row} />
+					<ClientKeyRow key={Rowing.name} row={row} />
 				))}
 			</TableBody>
 		</Table>

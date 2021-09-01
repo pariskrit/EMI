@@ -14,6 +14,7 @@ function Dropdown(props) {
 		placeholder,
 		label,
 		required,
+		disabled = false,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -47,7 +48,10 @@ function Dropdown(props) {
 		setFilteredList(filteredSearchList);
 	};
 	return (
-		<div className="dropdown">
+		<div
+			className="dropdown"
+			style={disabled ? { pointerEvents: "none", opacity: "0.4" } : {}}
+		>
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
 				onClick={() => {

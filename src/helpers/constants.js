@@ -12,5 +12,4 @@ export const siteOptions = [
 	{ label: "Concurrent Users", value: 1 },
 	{ label: "Per Job Per Role", value: 2 },
 	{ label: "Application-Based Licencing", value: 3 },
-	{ label: "Site-Based Licencing", value: 4 },
 ];

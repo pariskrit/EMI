@@ -55,7 +55,7 @@ const SiteWrapper = ({
 	Component,
 }) => {
 	const classes = useStyles();
-	const { id } = useParams();
+	const { id, clientId } = useParams();
 	return (
 		<ThemeProvider theme={theme}>
 			<Navbar
@@ -94,7 +94,9 @@ const SiteWrapper = ({
 								{ name: "Locations", url: "/locations" },
 							]}
 							current={current}
-							onClick={(nam) => onNavClick(`/site/${id}${nam}`)}
+							onClick={(nam) =>
+								onNavClick(`/client/${clientId}/site/${id}${nam}`)
+							}
 						/>
 						<Component />
 					</div>

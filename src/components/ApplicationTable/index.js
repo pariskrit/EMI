@@ -53,7 +53,7 @@ const ApplicationTable = ({
 			<TableBody>
 				{data.map((row) => (
 					<Row
-						key={row.id}
+						key={row.name}
 						row={row}
 						classes={classes}
 						showDeleteIcon={showDeleteIcon}

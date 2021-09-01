@@ -168,10 +168,7 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 						<Typography>
 							<Link
 								className={classes.siteLink}
-								to={{
-									pathname: `/site/${site.id}`,
-									state: { clientId, regionName: name, siteName: site.name },
-								}}
+								to={`/client/${clientId}/site/${site.id}`}
 							>
 								{site.name}
 							</Link>
