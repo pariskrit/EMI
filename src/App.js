@@ -143,16 +143,16 @@ function App() {
 						<ClientDetailScreen />
 					</Route>
 
-					<Route path="/site/:id" exact>
+					<Route path="/client/:clientId/site/:id" exact>
 						<SiteDetail />
 					</Route>
-					<Route path="/site/:id/assets" exact>
+					<Route path="/client/:clientId/site/:id/assets" exact>
 						<SiteAsset />
 					</Route>
-					<Route path="/site/:id/departments" exact>
+					<Route path="/client/:clientId/site/:id/departments" exact>
 						<SiteDepartmentsScreen />
 					</Route>
-					<Route path="/site/:id/locations" exact>
+					<Route path="/client/:clientId/site/:id/locations" exact>
 						<SiteLocationsScreen />
 					</Route>
 				</Switch>

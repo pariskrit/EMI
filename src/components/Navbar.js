@@ -380,7 +380,7 @@ function Navbar({ Content }) {
 						// when implemented
 						if (index === 1) {
 							return (
-								<Link to={item[2]} className={classes.navLink}>
+								<Link to={item[2]} className={classes.navLink} key={index}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
 									>
@@ -401,7 +401,7 @@ function Navbar({ Content }) {
 							);
 						} else {
 							return (
-								<Link to={item[2]} className={classes.navLink}>
+								<Link to={item[2]} className={classes.navLink} key={index}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
 									>
