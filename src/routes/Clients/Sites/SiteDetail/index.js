@@ -5,6 +5,7 @@ import Details from "./Details";
 
 const SiteDetail = () => {
 	const history = useHistory();
+
 	return (
 		<SiteWrapper
 			current="Details"

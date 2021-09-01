@@ -6,6 +6,9 @@ const ActionButtonStyle = () => {
 	return {
 		ButtonContainer: styled("div")({
 			marginLeft: "auto",
+			["@media (max-width: 414px)"]: {
+				marginTop: "10px",
+			},
 		}),
 		GeneralButton: styled(Button)({
 			color: "#FFFFFF",

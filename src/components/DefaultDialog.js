@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 		// width: "100%",
 		["@media (max-width: 414px)"]: {
 			fontSize: 18,
-			width: "80%",
+			width: "100%",
 		},
 	},
 	buttonContainer: {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "components/Navbar";
 import SiteLocationsContent from "./SiteLocationsContent";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
@@ -19,9 +19,15 @@ const theme = createMuiTheme({
 });
 
 const SiteLocationsScreen = () => {
+	const [is404, setIs404] = useState(false);
+
 	return (
 		<ThemeProvider theme={theme}>
-			<Navbar Content={() => <SiteLocationsContent />} />
+			<Navbar
+				Content={() => {
+					return <SiteLocationsContent setIs404={setIs404} />;
+				}}
+			/>
 		</ThemeProvider>
 	);
 };

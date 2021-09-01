@@ -87,7 +87,6 @@ const AddPositionDialog = ({
 	applicationID,
 	handleAddData,
 }) => {
-
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -489,7 +488,9 @@ const AddPositionDialog = ({
 										/>
 									}
 									label={
-										<Typography>Allow change skipped task status</Typography>
+										<Typography style={{ fontSize: "14px" }}>
+											Allow change skipped task status
+										</Typography>
 									}
 								/>
 							</ADD.LeftInputContainer>

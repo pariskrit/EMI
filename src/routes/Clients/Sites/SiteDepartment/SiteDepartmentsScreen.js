@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from "react";
 import Navbar from "components/Navbar";
-import SiteDepartmentsContent from './SiteDepartmentsContent'
-import { createMuiTheme,ThemeProvider } from "@material-ui/core/styles";
+import SiteDepartmentsContent from "./SiteDepartmentsContent";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
 	overrides: {
@@ -19,11 +19,17 @@ const theme = createMuiTheme({
 });
 
 const SiteDepartmentsScreen = () => {
-    return(
-        <ThemeProvider theme={theme}>
-            <Navbar Content={() => <SiteDepartmentsContent />} />
-        </ThemeProvider>
-    )
-}
+	const [is404, setIs404] = useState(false);
 
-export default SiteDepartmentsScreen
+	return (
+		<ThemeProvider theme={theme}>
+			<Navbar
+				Content={() => {
+					return <SiteDepartmentsContent setIs404={setIs404} />;
+				}}
+			/>
+		</ThemeProvider>
+	);
+};
+
+export default SiteDepartmentsScreen;

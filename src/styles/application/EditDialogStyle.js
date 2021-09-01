@@ -90,6 +90,7 @@ const EditDialogStyle = () => {
 			["@media (max-width: 414px)"]: {
 				paddingRight: 0,
 				width: "100%",
+				marginBottom: "20px",
 			},
 		}),
 		NameLabel: styled(Typography)({

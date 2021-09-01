@@ -6,14 +6,9 @@ import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { showError } from "redux/common/actions";
-
-const options = [
-	{ label: "Total Users", value: 0 },
-	{ label: "Concurrent Users", value: 1 },
-	{ label: "Per Job per Role", value: 2 },
-	{ label: "Site-Based Licencing", value: 3 },
-];
+import { siteOptions } from "helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -28,13 +23,19 @@ const useStyles = makeStyles((theme) => ({
 
 const SiteDetails = ({ siteId, setError }) => {
 	const classes = useStyles();
+	const location = useLocation();
 	const [siteDetails, setSiteDetails] = useState({ oldData: {}, newData: {} });
+	const [listOfRegions, setListOfRegions] = useState([]);
+	const [selectedRegion, setSelectedRegion] = useState({});
 	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 	const [newInput, setNewInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 
+	console.log(
+		localStorage.getItem("regionName"),
+		localStorage.getItem("siteName")
+	);
 	const openConfirmChangeDialog = (e) => {
-		console.log(newInput.value, siteDetails.oldData[newInput.label]);
 		if (newInput.value === siteDetails.oldData[newInput.label]) {
 			return;
 		}
@@ -56,11 +57,33 @@ const SiteDetails = ({ siteId, setError }) => {
 	};
 
 	const setSelectedInputValue = (e) => {
-		setNewInput({ label: e.target.name, value: e.target.value });
+		console.log(e.target.name, e.target.value);
+		setNewInput({ label: e.target.name, value: e.target.value || null });
 	};
 
-	const onConfirmChange = async () => {
+	const onEnterKeyPress = (e) => {
+		if (e.key === "Enter") {
+			e.target.blur();
+			openConfirmChangeDialog();
+		}
+	};
+
+	const onDropDownInputChange = (value) => {
+		if (value.label === location.state.regionName) {
+			setSelectedRegion(value);
+			return;
+		}
+
+		setSelectedRegion(value);
+		const region = listOfRegions.find((region) => region.name === value.label);
+
+		setNewInput({ label: "regionID", value: region.id });
+		setOpenConfirmDialog(true);
+	};
+
+	const onConfirmChange = async (path, value) => {
 		setIsUpdating(true);
+
 		try {
 			const response = await API.patch(`${BASE_API_PATH}sites/${siteId}`, [
 				{ op: "replace", path: newInput.label, value: newInput.value },
@@ -72,29 +95,23 @@ const SiteDetails = ({ siteId, setError }) => {
 				throw new Error(response);
 			}
 		} catch (error) {
-			// if (
-			// 	error.response.data.errors !== undefined &&
-			// 	error.response.data.detail === undefined
-			// ) {
-			// 	console.log(error.response.data.errors.name);
-			// } else if (
-			// 	error.response.data.errors !== undefined &&
-			// 	error.response.data.detail !== undefined
-			// ) {
-			// 	console.log(error.response.data.detail.name);
-			// } else {
-			// 	console.log("Something went wrong!");
-			// }
+			if (Object.keys(error.response.data.errors).length !== 0) {
+				setError(error.response.data.errors.name);
+			} else if (error.response.data.detail !== undefined) {
+				setError(error.response.data.detail);
+			} else {
+				setError("Something went wrong!");
+			}
+
 			setIsUpdating(false);
 			setOpenConfirmDialog(false);
-			setError("Something went wrong!");
 		}
 	};
 
 	const fetchSiteDetails = async () => {
 		try {
 			const result = await API.get(`${BASE_API_PATH}sites/${siteId}`);
-			console.log(result);
+
 			setSiteDetails({ oldData: result.data, newData: result.data });
 			setNewInput(result.data);
 		} catch (error) {
@@ -102,8 +119,29 @@ const SiteDetails = ({ siteId, setError }) => {
 		}
 	};
 
+	const fetchListOfRegions = async () => {
+		const {
+			state: { clientId, regionName },
+		} = location;
+
+		try {
+			const result = await API.get(
+				`${BASE_API_PATH}Regions/?clientId=${clientId}`
+			);
+			console.log(result);
+			const indexOfSelectedRegion = result.data.findIndex(
+				(region) => region.name === regionName
+			);
+			setListOfRegions(result.data);
+			setSelectedRegion({ label: regionName, value: indexOfSelectedRegion });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
 		fetchSiteDetails();
+		fetchListOfRegions();
 	}, []);
 
 	const { newData } = siteDetails;
@@ -114,7 +152,9 @@ const SiteDetails = ({ siteId, setError }) => {
 				open={openConfirmDialog}
 				isUpdating={isUpdating}
 				closeHandler={closeConfirmChangeDialog}
-				handleChangeConfirm={onConfirmChange}
+				handleChangeConfirm={() =>
+					onConfirmChange(newInput.label, newInput.value)
+				}
 			/>
 			<Grid container spacing={2}>
 				<Grid item sm={6}>
@@ -130,6 +170,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
@@ -139,13 +180,14 @@ const SiteDetails = ({ siteId, setError }) => {
 							Region<span className={classes.required}>*</span>
 						</Typography>
 						<Dropdown
-							options={[
-								{ label: "Nepal", value: 0 },
-								{ label: "India", value: 2 },
-							]}
-							selectedValue={{ label: "Nepal", value: 0 }}
+							options={listOfRegions.map((region, index) => ({
+								label: region.name,
+								value: index,
+							}))}
+							selectedValue={selectedRegion}
 							label=""
 							required={true}
+							onChange={onDropDownInputChange}
 							width="auto"
 						/>
 					</div>
@@ -156,11 +198,14 @@ const SiteDetails = ({ siteId, setError }) => {
 							Company Name<span className={classes.required}>*</span>
 						</Typography>
 						<TextField
-							name="companyName"
+							name="company"
 							fullWidth
 							variant="outlined"
 							value={newData?.company || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
@@ -174,7 +219,11 @@ const SiteDetails = ({ siteId, setError }) => {
 							fullWidth
 							variant="outlined"
 							value={newData?.address || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
+							multiline
 						/>
 					</div>
 				</Grid>
@@ -184,11 +233,14 @@ const SiteDetails = ({ siteId, setError }) => {
 							Business Number<span className={classes.required}>*</span>
 						</Typography>
 						<TextField
-							name="address"
+							name="businessNumber"
 							fullWidth
 							variant="outlined"
 							value={newData?.businessNumber || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
@@ -198,7 +250,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							Licence Type<span className={classes.required}>*</span>
 						</Typography>
 						<Dropdown
-							options={options}
+							options={siteOptions}
 							selectedValue={{ label: "Total Users", value: 0 }}
 							label=""
 							required={true}
@@ -212,12 +264,15 @@ const SiteDetails = ({ siteId, setError }) => {
 							Total Licence Count<span className={classes.required}>*</span>
 						</Typography>
 						<TextField
-							name="address"
+							name="licenses"
 							fullWidth
 							type="number"
 							variant="outlined"
 							value={newData?.licenses || ""}
+							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
+							onFocus={setSelectedInputValue}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
