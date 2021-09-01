@@ -4,9 +4,9 @@ import SubcatStyle from "styles/application/SubcatStyle";
 
 const AS = SubcatStyle();
 
-const FunctionlLocations = () => {
+const FunctionalLocations = () => {
 	const [isUpdating, setUpdating] = useState(false);
 	return <div></div>;
 };
 
-export default FunctionlLocations;
+export default FunctionalLocations;
