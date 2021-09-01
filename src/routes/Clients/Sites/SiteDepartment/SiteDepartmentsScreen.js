@@ -1,34 +1,69 @@
-import React, { useState } from "react";
-import Navbar from "components/Navbar";
+import API from "helpers/api";
+import SiteWrapper from "components/SiteWrapper";
+import { BASE_API_PATH } from "helpers/constants";
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import SiteDepartmentsContent from "./SiteDepartmentsContent";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-
-const theme = createMuiTheme({
-	overrides: {
-		// Accordion override is making the accordion title static vs. default dynamic
-		MuiAccordionSummary: {
-			root: {
-				height: 48,
-				"&$expanded": {
-					height: 48,
-					minHeight: 48,
-				},
-			},
-		},
-	},
-});
+import AddSiteDepartmentDialog from "components/SiteDepartment/AddSiteDepartmentDialog";
 
 const SiteDepartmentsScreen = () => {
-	const [is404, setIs404] = useState(false);
+	const { id } = useParams();
+	const history = useHistory();
+	const [data, setData] = useState([]);
+	const [modal, setModal] = useState({ add: false });
+
+	const fetchSiteDepartments = async () => {
+		try {
+			const response = await API.get(
+				`${BASE_API_PATH}SiteDepartments?siteId=${id}`
+			);
+			if (response.status === 200) {
+				setData(response.data);
+				return response;
+			} else {
+				throw new Error(response);
+			}
+		} catch (err) {
+			console.log(err);
+			return err;
+		}
+	};
+
+	useEffect(() => {
+		fetchSiteDepartments();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const handleCreateData = (item) => {
+		const newData = [...data];
+
+		newData.push(item);
+
+		setData(newData);
+
+		// setDataChanged(true);
+	};
 
 	return (
-		<ThemeProvider theme={theme}>
-			<Navbar
-				Content={() => {
-					return <SiteDepartmentsContent setIs404={setIs404} />;
-				}}
+		<>
+			<AddSiteDepartmentDialog
+				open={modal.add}
+				closeHandler={() => setModal(() => ({ add: false }))}
+				createHandler={handleCreateData}
+				siteID={id}
 			/>
-		</ThemeProvider>
+			<SiteWrapper
+				current="Departments"
+				onNavClick={(path) => history.push(path)}
+				status=""
+				lastSaved=""
+				showAdd
+				onClickAdd={() => setModal((th) => ({ add: true }))}
+				Component={() => (
+					<SiteDepartmentsContent data={data} setData={setData} />
+				)}
+			/>
+		</>
 	);
 };
 

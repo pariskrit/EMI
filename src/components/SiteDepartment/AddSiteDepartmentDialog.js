@@ -155,7 +155,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							variant="contained"
 							className={classes.createButton}
 						>
-							Create Department
+							Add Department
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>

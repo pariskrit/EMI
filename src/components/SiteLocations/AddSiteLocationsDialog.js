@@ -151,7 +151,7 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							variant="contained"
 							className={classes.createButton}
 						>
-							Create Location
+							Add Location
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>

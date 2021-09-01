@@ -106,65 +106,77 @@ const ClientSiteTable = ({
 					</TableRow>
 				</AT.TableHead>
 				<TableBody>
-					{data.map((row, index) => (
-						<TableRow key={row.id}>
-							{columns.map((col, i, arr) => (
-								<TableCell
-									key={col}
-									component="th"
-									scope="row"
-									className={clsx(classes.dataCell, classes.nameRow, {
-										[classes.lastCell]: index === data.length - 1,
-									})}
-								>
-									<AT.CellContainer key={col}>
-										<AT.TableBodyText>{row[col]}</AT.TableBodyText>
-										{arr.length === i + 1 ? (
-											<AT.DotMenu
-												onClick={(e) => {
-													setAnchorEl(
-														anchorEl === e.currentTarget
-															? null
-															: e.currentTarget
-													);
-													setSelectedData(
-														anchorEl === e.currentTarget ? null : index
-													);
-												}}
-											>
-												<AT.TableMenuButton>
-													<MenuIcon />
-												</AT.TableMenuButton>
-
-												<PopupMenu
-													index={index}
-													selectedData={selectedData}
-													anchorEl={anchorEl}
-													id={row.id}
-													clickAwayHandler={() => {
-														setAnchorEl(null);
-														setSelectedData(null);
+					{data.length !== 0 ? (
+						data.map((row, index) => (
+							<TableRow key={row.id}>
+								{columns.map((col, i, arr) => (
+									<TableCell
+										key={col}
+										component="th"
+										scope="row"
+										className={clsx(classes.dataCell, classes.nameRow, {
+											[classes.lastCell]: index === data.length - 1,
+										})}
+									>
+										<AT.CellContainer key={col}>
+											<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+											{arr.length === i + 1 ? (
+												<AT.DotMenu
+													onClick={(e) => {
+														setAnchorEl(
+															anchorEl === e.currentTarget
+																? null
+																: e.currentTarget
+														);
+														setSelectedData(
+															anchorEl === e.currentTarget ? null : index
+														);
 													}}
-													menuData={[
-														{
-															name: "Edit",
-															handler: () => onEdit(row.id),
-															isDelete: false,
-														},
-														{
-															name: "Delete",
-															handler: () => onDelete(row.id),
-															isDelete: true,
-														},
-													]}
-												/>
-											</AT.DotMenu>
-										) : null}
-									</AT.CellContainer>
-								</TableCell>
-							))}
+												>
+													<AT.TableMenuButton>
+														<MenuIcon />
+													</AT.TableMenuButton>
+
+													<PopupMenu
+														index={index}
+														selectedData={selectedData}
+														anchorEl={anchorEl}
+														id={row.id}
+														clickAwayHandler={() => {
+															setAnchorEl(null);
+															setSelectedData(null);
+														}}
+														menuData={[
+															{
+																name: "Edit",
+																handler: () => onEdit(row.id),
+																isDelete: false,
+															},
+															{
+																name: "Delete",
+																handler: () => onDelete(row.id),
+																isDelete: true,
+															},
+														]}
+													/>
+												</AT.DotMenu>
+											) : null}
+										</AT.CellContainer>
+									</TableCell>
+								))}
+							</TableRow>
+						))
+					) : (
+						<TableRow>
+							{headers.map((_, i) => {
+								if (i === 0) {
+									return <TableCell>No Record Found</TableCell>;
+								} else {
+									return <TableCell></TableCell>;
+								}
+							})}
 						</TableRow>
-					))}
+					)}
 				</TableBody>
 			</Table>
 			{pagination && <TablePagination />}

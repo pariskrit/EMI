@@ -1,22 +1,18 @@
+import "./arrowStyle.scss";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
+import { useParams } from "react-router-dom";
+import PopupMenu from "components/PopupMenu";
+import { useHistory } from "react-router-dom";
+import TableRow from "@material-ui/core/TableRow";
+import React, { useState, useEffect } from "react";
+import DeleteDialog from "components/DeleteDialog";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import DeleteDialog from "components/DeleteDialog";
-import PopupMenu from "components/PopupMenu";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "../../helpers/colourConstants";
 import TableStyle from "../../styles/application/TableStyle";
-import "./arrowStyle.scss";
-import { useParams } from "react-router-dom";
-
-import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
-
-// import API from "helpers/api";
+import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 
 const AT = TableStyle();
 
@@ -49,42 +45,17 @@ const useStyles = makeStyles({
 
 const DepartmentsTable = ({
 	data,
-	setData,
-	handleSort,
 	searchQuery,
 	searchedData,
-	setSearchedData,
-	setCurrentTableSort,
-	currentTableSort,
-	setDataChanged,
+	setSelectedID,
+	setOpenEditDialog,
+	setOpenDeleteDialog,
+	setEditData,
 }) => {
 	const { id } = useParams();
 
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
-
-	console.log("let", data);
-
-	const handleSortClick = (field) => {
-		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
-
-		// Sorting table
-		handleSort(data, setData, field, newMethod);
-
-		// Sorting searched table if present
-		if (searchQuery !== "") {
-			handleSort(searchedData, setSearchedData, field, newMethod);
-		}
-
-		// Updating header state
-		setCurrentTableSort([field, newMethod]);
-	};
-
-	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const [selectedID, setSelectedID] = useState(null);
-	const [openEditDialog, setOpenEditDialog] = useState(false);
-	const [editData, setEditData] = useState(null);
 
 	const classes = useStyles();
 
@@ -92,37 +63,6 @@ const DepartmentsTable = ({
 	const handleDeleteDialogOpen = (id) => {
 		setSelectedID(id);
 		setOpenDeleteDialog(true);
-	};
-
-	const handleDeleteDialogClose = () => {
-		setSelectedID(null);
-		setOpenDeleteDialog(false);
-	};
-
-	const handleRemoveData = (id) => {
-		const newData = [...data].filter(function (item) {
-			return item.id !== id;
-		});
-
-		// Updating state
-		setData(newData);
-	};
-
-	// Edit Modal
-	const handleEditData = (d) => {
-		const newData = [...data];
-
-		let index = newData.findIndex((el) => el.id === d.id);
-		newData[index] = d;
-
-		// Updating state
-		setData(newData);
-
-		setDataChanged(true);
-	};
-
-	const handleEditDialogClose = () => {
-		setOpenEditDialog(false);
 	};
 
 	const handleEditDialogOpen = (id) => {
@@ -136,27 +76,7 @@ const DepartmentsTable = ({
 
 	return (
 		<>
-			<DeleteDialog
-				entityName="Department"
-				open={openDeleteDialog}
-				closeHandler={handleDeleteDialogClose}
-				deleteEndpoint="/api/SiteDepartments"
-				deleteID={selectedID}
-				handleRemoveData={handleRemoveData}
-			/>
-
-			<EditDialog
-				open={openEditDialog}
-				closeHandler={handleEditDialogClose}
-				data={editData}
-				handleEditData={handleEditData}
-			/>
-
-			<AT.TableContainer
-				component={Paper}
-				elevation={0}
-				// className="applicationTableContainer"
-			>
+			<AT.TableContainer component={Paper} elevation={0}>
 				<Table aria-label="Table">
 					<AT.TableHead>
 						<TableRow>
