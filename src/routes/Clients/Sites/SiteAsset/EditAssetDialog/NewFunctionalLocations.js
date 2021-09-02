@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles, TextField } from "@material-ui/core";
+import { Card, makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
@@ -136,54 +136,63 @@ const NewFunctionalLocations = ({
 		setInput((th) => ({ ...th, [name]: value }));
 	};
 
+	const handleClose = (e) => {
+		closeOverride();
+		setIsAddNew(false);
+	};
+
 	return (
-		<form onSubmit={saveFuncLoc}>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="name"
-					label="Name"
-					onChange={handleChange}
-					value={input.name}
-					error={errors.name === null ? false : true}
-					helperText={errors.name === null ? null : errors.name}
-				/>
-			</div>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="description"
-					label="Description"
-					onChange={handleChange}
-					value={input.description}
-					error={errors.description === null ? false : true}
-					helperText={errors.description === null ? null : errors.description}
-				/>
-			</div>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="plannerGroup"
-					label="Planner Group"
-					onChange={handleChange}
-					value={input.plannerGroup}
-					error={errors.plannerGroup === null ? false : true}
-					helperText={errors.plannerGroup === null ? null : errors.plannerGroup}
-				/>
-			</div>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="workCenter"
-					label="Work Center"
-					onChange={handleChange}
-					value={input.workCenter}
-					error={errors.workCenter === null ? false : true}
-					helperText={errors.workCenter === null ? null : errors.workCenter}
-				/>
-			</div>
-			<input type="submit" style={{ display: "none" }} />
-		</form>
+		<div tabIndex={0} onBlur={handleClose}>
+			<form onSubmit={saveFuncLoc}>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						name="name"
+						label="Name"
+						onChange={handleChange}
+						value={input.name}
+						error={errors.name === null ? false : true}
+						helperText={errors.name === null ? null : errors.name}
+					/>
+				</div>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						name="description"
+						label="Description"
+						onChange={handleChange}
+						value={input.description}
+						error={errors.description === null ? false : true}
+						helperText={errors.description === null ? null : errors.description}
+					/>
+				</div>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						name="plannerGroup"
+						label="Planner Group"
+						onChange={handleChange}
+						value={input.plannerGroup}
+						error={errors.plannerGroup === null ? false : true}
+						helperText={
+							errors.plannerGroup === null ? null : errors.plannerGroup
+						}
+					/>
+				</div>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						name="workCenter"
+						label="Work Center"
+						onChange={handleChange}
+						value={input.workCenter}
+						error={errors.workCenter === null ? false : true}
+						helperText={errors.workCenter === null ? null : errors.workCenter}
+					/>
+				</div>
+				<input type="submit" style={{ display: "none" }} />
+			</form>
+		</div>
 	);
 };
 
