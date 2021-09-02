@@ -7,12 +7,14 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Dropdown from "components/Dropdown";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import {
+	addSiteApplications,
+	getAvailableSiteApplications,
+} from "services/clients/sites/siteDetails";
 
 const ADD = AddDialogStyle();
 
@@ -65,45 +67,29 @@ const AddAppDialog = ({
 		}
 		setIsLoading(true);
 
-		try {
-			const response = await API.post(`${BASE_API_PATH}siteapps/`, {
-				siteID: siteId,
-				applicationID: selectedApplication.id,
-			});
-			console.log(response);
+		const response = await addSiteApplications(siteId, selectedApplication.id);
 
-			if (response.status === 404 || response.status === 400) {
-				throw new Error(response);
-			}
+		if (response.status) {
 			fetchKeyContactsList().then(() => {
 				setApplicationList((prev) => [...prev, selectedApplication]);
 				setIsLoading(false);
 				handleClose();
 			});
-		} catch (error) {
-			if (Object.keys(error.response.data.errors).length !== 0) {
-				setError(error.response.data.errors.name);
-			} else if (error.response.data.detail !== undefined) {
-				setError(error.response.data.detail);
-			} else {
-				setError("Something went wrong!");
-			}
+		} else {
 			setIsLoading(false);
 			handleClose();
+
+			setError(response.data.detail);
 		}
 	};
 
 	const fetchAvailableApplications = async () => {
-		try {
-			const result = await API.get(
-				`${BASE_API_PATH}siteapps/${siteId}/available`
-			);
-			setIsLoading(false);
+		const result = await getAvailableSiteApplications(siteId);
 
+		if (result.status) {
 			setAvailableApplications(result.data);
-		} catch (error) {
-			console.log(error);
 		}
+		setIsLoading(false);
 	};
 
 	useEffect(() => {

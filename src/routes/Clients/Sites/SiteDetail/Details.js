@@ -5,8 +5,7 @@ import SiteDetails from "components/SiteDetails";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";
 import { useParams } from "react-router-dom";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
+import { getSiteAppKeyContacts } from "services/clients/sites/siteDetails";
 
 const Details = () => {
 	const { id } = useParams();
@@ -14,11 +13,9 @@ const Details = () => {
 	const [contactsList, setContactsList] = useState([]);
 
 	const fetchKeyContactsList = async () => {
-		try {
-			const result = await API.get(
-				`${BASE_API_PATH}siteappkeycontacts/Site/${id}`
-			);
+		const result = await getSiteAppKeyContacts(id);
 
+		if (result.status) {
 			setContactsList(
 				result.data.map((data) => ({
 					id: data.siteAppID,
@@ -33,8 +30,8 @@ const Details = () => {
 			);
 
 			return true;
-		} catch (error) {
-			console.log(error);
+		} else {
+			return false;
 		}
 	};
 
