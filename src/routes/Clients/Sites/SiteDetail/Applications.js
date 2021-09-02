@@ -58,7 +58,9 @@ const Applications = ({
 		const response = await updateSiteApplicationStatus(applicationToChange);
 
 		if (response.status) {
-			fetchApplicationList();
+			await fetchApplicationList();
+			setIsUpdating(false);
+			setOpenChangeConfirmDialog(false);
 		} else {
 			setIsUpdating(false);
 			setOpenChangeConfirmDialog(false);
@@ -78,15 +80,12 @@ const Applications = ({
 				}))
 			);
 		}
-
-		if (isUpdating) {
-			setIsUpdating(false);
-			setOpenChangeConfirmDialog(false);
-		}
 	};
 
 	useEffect(() => {
-		fetchApplicationList();
+		if (listOfSiteAppId.length > 0) {
+			fetchApplicationList();
+		}
 	}, [listOfSiteAppId]);
 
 	return (

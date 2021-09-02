@@ -153,7 +153,7 @@ const ClientDetail = ({ clientId, clientData, getError }) => {
 						}}
 						onChange={(e) => handleInputChange("name", e.target.value)}
 						onBlur={(e) => handleApiCall("name", e.target.value)}
-						value={clientDetail.name}
+						value={clientDetail.name || ""}
 					/>
 				</Grid>
 				<Grid item sm={6}>
