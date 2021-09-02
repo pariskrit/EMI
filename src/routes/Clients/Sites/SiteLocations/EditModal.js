@@ -1,17 +1,15 @@
-import * as yup from "yup";
+import React, { useState, useEffect } from "react";
 import API from "helpers/api";
-import React, { useState } from "react";
+import EditDialogStyle from "styles/application/EditDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
-import { makeStyles } from "@material-ui/core/styles";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import AddDialogStyle from "styles/application/AddDialogStyle";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
-const ADD = AddDialogStyle();
+const AED = EditDialogStyle();
 
 // Yup validation schema
 const schema = yup.object({
@@ -24,22 +22,7 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const useStyles = makeStyles({
-	dialogContent: {
-		width: 500,
-		["@media (max-width: 414px)"]: {
-			width: "100%",
-		},
-	},
-	createButton: {
-		width: "auto",
-	},
-});
-
-const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
-	// Init hooks
-	const classes = useStyles();
-
+const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -47,27 +30,24 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 
 	// Handlers
 	const closeOverride = () => {
-		// Clearing input state and errors
-		setInput(defaultStateSchema);
+		// Updating local state and clearing errors
 		setErrors(defaultErrorSchema);
 
 		closeHandler();
 	};
-	const handleCreateProcess = async () => {
+	const handleSave = async () => {
 		// Adding progress indicator
 		setIsUpdating(true);
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 
-			console.log(localChecker);
-
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
-				// Creating new data
-				const newData = await handleCreateData();
+				// Updating data
+				const updatedData = await handleUpdateData();
 
-				if (newData.success) {
+				if (updatedData.success) {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
@@ -87,33 +67,29 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 			closeOverride();
 		}
 	};
-	const handleEnterPress = (e) => {
-		// 13 is the enter keycode
-		if (e.keyCode === 13) {
-			handleCreateProcess();
-		}
-	};
-
-	const handleCreateData = async () => {
-		// Attempting to create
+	const handleUpdateData = async () => {
+		// Attempting to update data
 		try {
-			// Submitting to backend
-			const result = await API.post("/api/SiteLocations", {
-				siteId: siteID,
-				name: input.name,
-			});
+			// Making patch to backend
+			const result = await API.patch(`/api/SiteLocations/${data.id}`, [
+				{
+					op: "replace",
+					path: "name",
+					value: input.name,
+				},
+			]);
 
 			// Handling success
-			if (result.status === 201) {
-				// Adding new type to state
-				createHandler({
-					id: result.data,
-					siteID: siteID,
+			if (result.status === 200) {
+				// Updating state to match DB
+				handleEditData({
+					id: data.id,
 					name: input.name,
 				});
 
 				return { success: true };
 			} else {
+				// If not success, throwing error
 				throw new Error(result);
 			}
 		} catch (err) {
@@ -128,60 +104,71 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 		}
 	};
 
+	const handleEnterPress = (e) => {
+		// 13 is the enter keycode
+		if (e.keyCode === 13) {
+			handleSave();
+		}
+	};
+
+	// Updating name after SC set
+	useEffect(() => {
+		if (data !== null && open) {
+			setInput({ name: data.name });
+		}
+	}, [data, open]);
+
 	return (
 		<div>
 			<Dialog
+				fullWidth={true}
+				maxWidth="md"
 				open={open}
-				onClose={closeOverride}
+				onClose={closeHandler}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
-				<ADD.ActionContainer>
+				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add Location</ADD.HeaderText>}
+						{<AED.HeaderText>Edit Department</AED.HeaderText>}
 					</DialogTitle>
-					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeOverride} variant="contained">
+					<AED.ButtonContainer>
+						<AED.CancelButton onClick={closeHandler} variant="contained">
 							Cancel
-						</ADD.CancelButton>
-						<ADD.ConfirmButton
-							onClick={handleCreateProcess}
-							variant="contained"
-							className={classes.createButton}
-						>
-							Add Location
-						</ADD.ConfirmButton>
-					</ADD.ButtonContainer>
-				</ADD.ActionContainer>
+						</AED.CancelButton>
+						<AED.ConfirmButton variant="contained" onClick={handleSave}>
+							Save
+						</AED.ConfirmButton>
+					</AED.ButtonContainer>
+				</AED.ActionContainer>
 
-				<DialogContent className={classes.dialogContent}>
+				<AED.DialogContent>
 					<DialogContentText id="alert-dialog-description">
-						<ADD.InputContainer>
-							<ADD.NameInputContainer>
-								<ADD.NameLabel>
-									Name<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
-								<ADD.NameInput
+						<AED.InputContainer>
+							<AED.NameInputContainer>
+								<AED.NameLabel>
+									Name<AED.RequiredStar>*</AED.RequiredStar>
+								</AED.NameLabel>
+								<AED.NameInput
 									error={errors.name === null ? false : true}
 									helperText={errors.name === null ? null : errors.name}
-									required
 									variant="outlined"
-									label="Location"
 									value={input.name}
+									autoFocus
 									onKeyDown={handleEnterPress}
 									onChange={(e) => {
 										setInput({ ...input, name: e.target.value });
 									}}
 								/>
-							</ADD.NameInputContainer>
-						</ADD.InputContainer>
+							</AED.NameInputContainer>
+						</AED.InputContainer>
 					</DialogContentText>
-				</DialogContent>
+				</AED.DialogContent>
 			</Dialog>
 		</div>
 	);
 };
 
-export default AddLocationsDialog;
+export default EditDialog;
