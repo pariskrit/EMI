@@ -83,7 +83,6 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 					`${BASE_API_PATH}SiteAssetReferences?siteAssetId=${editData.id}`
 				);
 				if (response.status === 200) {
-					console.log(response);
 					setFunctionalLocations(response.data);
 					setLoading(false);
 				} else {
@@ -193,8 +192,19 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 		setInput((th) => ({ ...th, [name]: value }));
 	};
 
-	const handleAddFunctional = (parentId, id, inp) => {};
-	const handleUpdateFuncLoc = (val) => {};
+	// Append added data
+	const handleAddFunctional = (dd) => {
+		const newData = [dd, ...functionalLocations];
+		setFunctionalLocations(newData);
+	};
+
+	// Update the state with updated data
+	const handleUpdateFuncLoc = (val) => {
+		const mainData = [...functionalLocations];
+		const index = mainData.findIndex((x) => x.id === val.id);
+		mainData[index] = val;
+		setFunctionalLocations(mainData);
+	};
 
 	// Filtering the deleted item
 	const handleRemoveFuncLoc = (id) => {

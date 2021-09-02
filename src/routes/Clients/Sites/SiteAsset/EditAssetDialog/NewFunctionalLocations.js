@@ -83,7 +83,11 @@ const NewFunctionalLocations = ({
 				workCenter: input.workCenter,
 			});
 			if (addedFunc.status === 201) {
-				handleAddFunctional(editData.id, addedFunc.data, input);
+				handleAddFunctional({
+					siteAssetID: editData.id,
+					id: addedFunc.data,
+					...input,
+				});
 				return { success: true };
 			} else {
 				throw new Error(addedFunc);
@@ -149,7 +153,7 @@ const NewFunctionalLocations = ({
 	};
 
 	return (
-		<div tabIndex={0} onBlur={saveFuncLoc}>
+		<>
 			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			<form onSubmit={saveFuncLoc}>
 				<div className={classes.container}>
@@ -204,7 +208,7 @@ const NewFunctionalLocations = ({
 				</div>
 				<input type="submit" style={{ display: "none" }} />
 			</form>
-		</div>
+		</>
 	);
 };
 

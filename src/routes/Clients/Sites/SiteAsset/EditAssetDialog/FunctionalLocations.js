@@ -91,23 +91,17 @@ const FunctionalLocations = ({
 	// Click outside the component and set to false
 	useOutsideClick(ref, () => setIsEdit(false));
 
-	useEffect(() => {
-		const main = { ...sub };
-		delete main.id;
-		delete main.siteAssetID;
-		setInput(main);
-	}, [sub]);
-
 	// Perform delete functional location
 	const onDeleteApp = async () => {
 		setAttemptDelete(true);
 		// Adding progress indicator
 		setLoading(true);
+
 		try {
-			const result = API.delete(
+			const result = await API.delete(
 				`${BASE_API_PATH}SiteAssetReferences/${sub.id}`
 			);
-			if (result.status === 200) {
+			if (result.status === 200 || result.status === 201) {
 				handleRemoveFuncLoc(sub.id);
 				setLoading(false);
 				return true;
@@ -125,6 +119,7 @@ const FunctionalLocations = ({
 	// Update Functional Location
 	const handleEditFuncLoc = async () => {
 		setLoading(true);
+
 		try {
 			let editedFunc = await API.patch(
 				`${BASE_API_PATH}SiteAssetReferences/${sub.id}`,
@@ -189,9 +184,9 @@ const FunctionalLocations = ({
 
 		// Check if the input is same with previous one or not
 		if (
-			sub.name === input.name ||
-			sub.description === input.description ||
-			sub.workCenter === input.workCenter ||
+			sub.name === input.name &&
+			sub.description === input.description &&
+			sub.workCenter === input.workCenter &&
 			sub.plannerGroup === input.plannerGroup
 		) {
 			setIsEdit(false);
@@ -219,13 +214,17 @@ const FunctionalLocations = ({
 				setLoading(false);
 			}
 		} catch (err) {
+			console.log(err);
 			setIsEdit(false);
 			setLoading(false);
 		}
 	};
 
 	const handleShowEdit = () => {
-		setInput(sub);
+		const main = { ...sub };
+		delete main.id;
+		delete main.siteAssetID;
+		setInput(main);
 		setIsEdit(true);
 	};
 
@@ -235,70 +234,68 @@ const FunctionalLocations = ({
 	};
 
 	return (
-		<>
+		<div ref={ref}>
+			{!isEdit && (
+				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
+			)}
 			{isEdit && !attemptDelete ? (
-				<div ref={ref}>
-					<form onSubmit={handleSubmit}>
-						<div className={classes.inputContainer}>
-							<TextField
-								fullWidth
-								variant="outlined"
-								name="name"
-								label="Name"
-								onChange={handleChange}
-								value={input.name}
-								error={errors.name === null ? false : true}
-								helperText={errors.name === null ? null : errors.name}
-							/>
-						</div>
-						<div className={classes.inputContainer}>
-							<TextField
-								fullWidth
-								variant="outlined"
-								name="description"
-								label="Description"
-								onChange={handleChange}
-								value={input.description}
-								error={errors.description === null ? false : true}
-								helperText={
-									errors.description === null ? null : errors.description
-								}
-							/>
-						</div>
-						<div className={classes.inputContainer}>
-							<TextField
-								fullWidth
-								variant="outlined"
-								name="plannerGroup"
-								label="Planner Group"
-								onChange={handleChange}
-								value={input.plannerGroup}
-								error={errors.plannerGroup === null ? false : true}
-								helperText={
-									errors.plannerGroup === null ? null : errors.plannerGroup
-								}
-							/>
-						</div>
-						<div className={classes.inputContainer}>
-							<TextField
-								fullWidth
-								variant="outlined"
-								name="workCenter"
-								label="Work Center"
-								onChange={handleChange}
-								value={input.workCenter}
-								error={errors.workCenter === null ? false : true}
-								helperText={
-									errors.workCenter === null ? null : errors.workCenter
-								}
-							/>
-						</div>
-						<input type="submit" style={{ display: "none" }} />
-					</form>
-				</div>
+				<form onSubmit={handleSubmit}>
+					<div className={classes.inputContainer}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="name"
+							label="Name"
+							onChange={handleChange}
+							value={input.name}
+							error={errors.name === null ? false : true}
+							helperText={errors.name === null ? null : errors.name}
+						/>
+					</div>
+					<div className={classes.inputContainer}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="description"
+							label="Description"
+							onChange={handleChange}
+							value={input.description}
+							error={errors.description === null ? false : true}
+							helperText={
+								errors.description === null ? null : errors.description
+							}
+						/>
+					</div>
+					<div className={classes.inputContainer}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="plannerGroup"
+							label="Planner Group"
+							onChange={handleChange}
+							value={input.plannerGroup}
+							error={errors.plannerGroup === null ? false : true}
+							helperText={
+								errors.plannerGroup === null ? null : errors.plannerGroup
+							}
+						/>
+					</div>
+					<div className={classes.inputContainer}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="workCenter"
+							label="Work Center"
+							onChange={handleChange}
+							value={input.workCenter}
+							error={errors.workCenter === null ? false : true}
+							helperText={errors.workCenter === null ? null : errors.workCenter}
+						/>
+					</div>
+					<input type="submit" style={{ display: "none" }} />
+				</form>
 			) : (
 				<div onClick={handleShowEdit}>
-					<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 					<div className={classes.inputContainer}>
 						<Typography className={classes.nameText}>{sub.name}</Typography>
 					</div>
@@ -319,7 +316,7 @@ const FunctionalLocations = ({
 					</div>
 				</div>
 			)}
-		</>
+		</div>
 	);
 };
 
