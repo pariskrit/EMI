@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
-import ColourConstants from "../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import SaveHistory from "../SaveHistory";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,7 @@ const Navcrumbs = ({ crumbs, status }) => {
 				))}
 			</Breadcrumbs>
 			<div className="left-section flex" style={{ gap: "12px" }}>
-				{status && status.length > 0 && (
+				{status && (
 					<div style={{ display: "flex" }}>
 						<b>Status:</b>{" "}
 						<div

@@ -11,7 +11,10 @@ import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
 import ErrorAlert from "../ErrorAlert";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../../helpers/utils";
+import {
+	handleValidateObj,
+	generateErrorState,
+} from "../../../../helpers/utils";
 
 // Init styled components
 const AED = EditDialogStyle();

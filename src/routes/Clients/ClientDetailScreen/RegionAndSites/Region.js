@@ -137,7 +137,7 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 
 			<Accordion
 				className={classes.accordionParent}
-				expanded={sites.length > 0}
+				defaultExpanded={sites.length > 0}
 			>
 				<AccordionSummary
 					className={classes.summary}
@@ -168,10 +168,7 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 						<Typography>
 							<Link
 								className={classes.siteLink}
-								to={{
-									pathname: `/site/${site.id}`,
-									state: { clientId, regionName: name, siteName: site.name },
-								}}
+								to={`/client/${clientId}/site/${site.id}`}
 							>
 								{site.name}
 							</Link>
