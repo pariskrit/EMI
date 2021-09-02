@@ -40,7 +40,7 @@ const useStyles = makeStyles({
 const AddAppDialog = ({
 	open,
 	handleClose,
-	createHandler,
+	fetchKeyContactsList,
 	siteId,
 	setApplicationList,
 	setError,
@@ -72,13 +72,14 @@ const AddAppDialog = ({
 			});
 			console.log(response);
 
-			setIsLoading(false);
-			handleClose();
 			if (response.status === 404 || response.status === 400) {
 				throw new Error(response);
 			}
-
-			setApplicationList((prev) => [...prev, selectedApplication]);
+			fetchKeyContactsList().then(() => {
+				setApplicationList((prev) => [...prev, selectedApplication]);
+				setIsLoading(false);
+				handleClose();
+			});
 		} catch (error) {
 			if (Object.keys(error.response.data.errors).length !== 0) {
 				setError(error.response.data.errors.name);

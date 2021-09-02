@@ -31,6 +31,8 @@ const Details = () => {
 			setListOfSiteAppId(
 				result.data.map((data) => ({ siteAppId: data.siteAppID }))
 			);
+
+			return true;
 		} catch (error) {
 			console.log(error);
 		}

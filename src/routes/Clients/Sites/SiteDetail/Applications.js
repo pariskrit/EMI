@@ -68,7 +68,6 @@ const Applications = ({
 				throw new Error(response);
 			}
 			fetchApplicationList();
-			fetchKeyContactsList();
 		} catch (error) {
 			if (Object.keys(error.response.data.errors).length !== 0) {
 				setError(error.response.data.errors.name);
@@ -125,6 +124,7 @@ const Applications = ({
 				handleClose={onCloseAddSiteApplicationModal}
 				siteId={siteId}
 				setApplicationList={setApplicationList}
+				fetchKeyContactsList={fetchKeyContactsList}
 			/>
 			<AccordionBox
 				title="Applications"
