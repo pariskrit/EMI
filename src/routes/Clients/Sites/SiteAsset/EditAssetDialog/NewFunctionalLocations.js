@@ -145,6 +145,8 @@ const NewFunctionalLocations = ({
 					label="Name"
 					onChange={handleChange}
 					value={input.name}
+					error={errors.name === null ? false : true}
+					helperText={errors.name === null ? null : errors.name}
 				/>
 			</div>
 			<div className={classes.container}>
@@ -154,6 +156,8 @@ const NewFunctionalLocations = ({
 					label="Description"
 					onChange={handleChange}
 					value={input.description}
+					error={errors.description === null ? false : true}
+					helperText={errors.description === null ? null : errors.description}
 				/>
 			</div>
 			<div className={classes.container}>
@@ -163,6 +167,8 @@ const NewFunctionalLocations = ({
 					label="Planner Group"
 					onChange={handleChange}
 					value={input.plannerGroup}
+					error={errors.plannerGroup === null ? false : true}
+					helperText={errors.plannerGroup === null ? null : errors.plannerGroup}
 				/>
 			</div>
 			<div className={classes.container}>
@@ -172,6 +178,8 @@ const NewFunctionalLocations = ({
 					label="Work Center"
 					onChange={handleChange}
 					value={input.workCenter}
+					error={errors.workCenter === null ? false : true}
+					helperText={errors.workCenter === null ? null : errors.workCenter}
 				/>
 			</div>
 			<input type="submit" style={{ display: "none" }} />
