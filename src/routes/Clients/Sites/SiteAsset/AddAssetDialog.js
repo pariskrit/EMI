@@ -34,7 +34,6 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
-
 	expandIcon: {
 		transform: "scale(0.8)",
 	},
