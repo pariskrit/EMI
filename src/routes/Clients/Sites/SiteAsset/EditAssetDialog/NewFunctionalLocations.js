@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
-import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
+import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
+import { postSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 
 const schema = yup.object({
 	name: yup
@@ -47,6 +47,14 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: 12,
 		paddingBottom: 12,
 	},
+	deleteIcon: {
+		transform: "scale(0.7)",
+		color: ColourConstants.deleteButton,
+		"&:hover": {
+			cursor: "pointer",
+		},
+		float: "right",
+	},
 }));
 const NewFunctionalLocations = ({
 	editData,
@@ -66,15 +74,19 @@ const NewFunctionalLocations = ({
 
 	const handleCreateFuncLocations = async () => {
 		try {
-			let addedFunc = await API.post(`${BASE_API_PATH}SiteAssetReferences`, {
+			let addedFunc = await postSiteAssetReferences({
 				siteAssetID: editData.id,
 				name: input.name,
 				description: input.description,
 				plannerGroup: input.plannerGroup,
 				workCenter: input.workCenter,
 			});
-			if (addedFunc.status === 201) {
-				handleAddFunctional(editData.id, addedFunc.data, input);
+			if (addedFunc.status) {
+				handleAddFunctional({
+					siteAssetID: editData.id,
+					id: addedFunc.data,
+					...input,
+				});
 				return { success: true };
 			} else {
 				throw new Error(addedFunc);
@@ -86,13 +98,10 @@ const NewFunctionalLocations = ({
 				err.response.data.detail !== null
 			) {
 				setErrors({
-					...errors,
-					...{
-						name: err.response.data.detail,
-						description: err.response.data.detail,
-						plannerGroup: err.response.data.detail,
-						workCenter: err.response.data.detail,
-					},
+					name: err.response.data.detail,
+					description: err.response.data.detail,
+					plannerGroup: err.response.data.detail,
+					workCenter: err.response.data.detail,
 				});
 				return { success: false };
 			}
@@ -118,6 +127,7 @@ const NewFunctionalLocations = ({
 				const updateData = await handleCreateFuncLocations();
 				if (updateData.success) {
 					closeOverride();
+					setIsAddNew(false);
 				} else {
 					setLoading(false);
 				}
@@ -136,46 +146,68 @@ const NewFunctionalLocations = ({
 		setInput((th) => ({ ...th, [name]: value }));
 	};
 
+	const onDeleteApp = () => {
+		setIsAddNew(false);
+		closeOverride();
+	};
+
 	return (
-		<form onSubmit={saveFuncLoc}>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="name"
-					label="Name"
-					onChange={handleChange}
-					value={input.name}
-				/>
-			</div>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="description"
-					label="Description"
-					onChange={handleChange}
-					value={input.description}
-				/>
-			</div>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="plannerGroup"
-					label="Planner Group"
-					onChange={handleChange}
-					value={input.plannerGroup}
-				/>
-			</div>
-			<div className={classes.container}>
-				<TextField
-					fullWidth
-					name="workCenter"
-					label="Work Center"
-					onChange={handleChange}
-					value={input.workCenter}
-				/>
-			</div>
-			<input type="submit" style={{ display: "none" }} />
-		</form>
+		<>
+			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
+			<form onSubmit={saveFuncLoc}>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						variant="outlined"
+						name="name"
+						label="Name"
+						onChange={handleChange}
+						value={input.name}
+						error={errors.name === null ? false : true}
+						helperText={errors.name === null ? null : errors.name}
+					/>
+				</div>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						variant="outlined"
+						name="description"
+						label="Description"
+						onChange={handleChange}
+						value={input.description}
+						error={errors.description === null ? false : true}
+						helperText={errors.description === null ? null : errors.description}
+					/>
+				</div>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						variant="outlined"
+						name="plannerGroup"
+						label="Planner Group"
+						onChange={handleChange}
+						value={input.plannerGroup}
+						error={errors.plannerGroup === null ? false : true}
+						helperText={
+							errors.plannerGroup === null ? null : errors.plannerGroup
+						}
+					/>
+				</div>
+				<div className={classes.container}>
+					<TextField
+						fullWidth
+						variant="outlined"
+						name="workCenter"
+						label="Work Center"
+						onChange={handleChange}
+						value={input.workCenter}
+						error={errors.workCenter === null ? false : true}
+						helperText={errors.workCenter === null ? null : errors.workCenter}
+					/>
+				</div>
+				<input type="submit" style={{ display: "none" }} />
+			</form>
+		</>
 	);
 };
 

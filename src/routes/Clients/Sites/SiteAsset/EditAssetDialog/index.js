@@ -8,13 +8,14 @@ import {
 	Typography,
 } from "@material-ui/core";
 import * as yup from "yup";
-import API from "helpers/api";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import NewFunctionalLocations from "./NewFunctionalLocations";
 import CurveButton from "components/CurveButton";
 import ColourConstants from "helpers/colourConstants";
+import FunctionalLocations from "./FunctionalLocations";
+import { editSiteAsset } from "services/clients/sites/siteAssets";
+import { getSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 
 const schema = yup.object({
 	name: yup
@@ -60,20 +61,13 @@ const useStyles = makeStyles({
 	},
 });
 
-const EditAssetDialog = ({
-	open,
-	closeHandler,
-	editData,
-	handleEditData,
-	handleRemoveFunctional,
-	handleAddFunctional,
-	handleUpdateFunctional,
-}) => {
+const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 	const classes = useStyles();
 	const [loading, setLoading] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [isAddNew, setIsAddNew] = useState(false);
+	const [functionalLocations, setFunctionalLocations] = useState([]);
 
 	useEffect(() => {
 		if (open && editData !== null) {
@@ -81,23 +75,42 @@ const EditAssetDialog = ({
 		}
 	}, [editData, open]);
 
+	useEffect(() => {
+		const fetchFunctionalLocations = async () => {
+			setLoading(true);
+			try {
+				const response = await getSiteAssetReferences(editData.id);
+				if (response.status) {
+					setFunctionalLocations(response.data);
+					setLoading(false);
+				} else {
+					throw new Error(response);
+				}
+			} catch (err) {
+				console.log(err);
+				setLoading(false);
+			}
+		};
+		if (editData.id !== undefined) fetchFunctionalLocations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [editData]);
+
 	const closeOverride = () => {
 		// Closing dialog
 		closeHandler();
+		setFunctionalLocations([]);
+		setInput(defaultStateSchema);
 		// Removing new subcat input
 		setIsAddNew(false);
 	};
 
 	const handleUpdateData = async (d) => {
 		try {
-			let result = await API.patch(
-				`${BASE_API_PATH}SiteAssets/${editData.id}`,
-				[
-					{ op: "replace", path: "name", value: d.name },
-					{ op: "replace", path: "description", value: d.description },
-				]
-			);
-			if (result.status === 200) {
+			let result = await editSiteAsset(editData.id, [
+				{ op: "replace", path: "name", value: d.name },
+				{ op: "replace", path: "description", value: d.description },
+			]);
+			if (result) {
 				handleEditData({
 					id: editData.id,
 					name: input.name,
@@ -172,6 +185,26 @@ const EditAssetDialog = ({
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setInput((th) => ({ ...th, [name]: value }));
+	};
+
+	// Append added data
+	const handleAddFunctional = (dd) => {
+		const newData = [dd, ...functionalLocations];
+		setFunctionalLocations(newData);
+	};
+
+	// Update the state with updated data
+	const handleUpdateFuncLoc = (val) => {
+		const mainData = [...functionalLocations];
+		const index = mainData.findIndex((x) => x.id === val.id);
+		mainData[index] = val;
+		setFunctionalLocations(mainData);
+	};
+
+	// Filtering the deleted item
+	const handleRemoveFuncLoc = (id) => {
+		const dat = [...functionalLocations].filter((x) => x.id !== id);
+		setFunctionalLocations(dat);
 	};
 
 	return (
@@ -253,6 +286,16 @@ const EditAssetDialog = ({
 							setIsAddNew={setIsAddNew}
 						/>
 					) : null}
+
+					{functionalLocations.map((x, index) => (
+						<FunctionalLocations
+							setLoading={setLoading}
+							sub={x}
+							key={`${x.name}${index}`}
+							handleRemoveFuncLoc={handleRemoveFuncLoc}
+							handleUpdateFuncLoc={handleUpdateFuncLoc}
+						/>
+					))}
 
 					<CurveButton variant="contained" onClick={handleAddNewClick}>
 						Add new

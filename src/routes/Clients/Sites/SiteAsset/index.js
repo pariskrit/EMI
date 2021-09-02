@@ -33,16 +33,6 @@ const SiteAsset = () => {
 
 	const addAsset = async (input) => {
 		try {
-			// const response = await API.post(`${BASE_API_PATH}SiteAssets`, {
-			// 	siteId: +id,
-			// 	...input,
-			// });
-			// if (response.status === 200 || response.status === 201) {
-			// 	await fetchSiteAssets();
-			// 	return { success: true };
-			// } else {
-			// 	throw new Error(response);
-			// }
 			const response = await addSiteAsset({
 				siteId: +id,
 				...input,
@@ -64,17 +54,6 @@ const SiteAsset = () => {
 				}
 			}
 		} catch (error) {
-			// if (error.response.data.detail) {
-			// 	return {
-			// 		success: false,
-			// 		errors: {
-			// 			name: error.response.data.detail,
-			// 			description: error.response.data.detail,
-			// 		},
-			// 	};
-			// } else {
-			// 	return { success: false, errors: { ...error.response.data.errors } };
-			// }
 			throw new Error(error.response);
 		}
 	};

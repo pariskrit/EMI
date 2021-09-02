@@ -24,6 +24,15 @@ const addSiteAsset = async (requestData) => {
 	}
 };
 
+const editSiteAsset = async (id, data) => {
+	try {
+		let response = await API.patch(`${Apis.SiteAssets}/${id}`, data);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //#endregion
 
-export { getSiteAssets, addSiteAsset };
+export { getSiteAssets, addSiteAsset, editSiteAsset };
