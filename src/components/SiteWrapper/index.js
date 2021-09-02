@@ -40,6 +40,16 @@ const useStyles = makeStyles({
 	buttons: {
 		display: "flex",
 		marginLeft: "auto",
+		["@media (max-width: 414px)"]: {
+			marginLeft: "0px",
+		},
+	},
+	wrapper: {
+		display: "flex",
+		["@media (max-width: 414px)"]: {
+			marginTop: "10px",
+			justifyContent: "space-between",
+		},
 	},
 });
 const SiteWrapper = ({
@@ -60,32 +70,35 @@ const SiteWrapper = ({
 		<ThemeProvider theme={theme}>
 			<Navbar
 				Content={() => (
-					<div>
-						<div className="flex justify-between">
+					<div className="container">
+						<div className="topContainerCustomCaptions">
 							<Navcrumbs
 								crumbs={crumbs}
 								status={status}
 								lastSaved={lastSaved}
 							/>
-							<div className={classes.buttons}>
-								{showImport && (
-									<AT.GeneralButton
-										onClick={onClickImport}
-										className={classes.importButton}
-									>
-										Import from list
-									</AT.GeneralButton>
-								)}
-								{showAdd && (
-									<AT.GeneralButton onClick={onClickAdd}>
-										Add New
-									</AT.GeneralButton>
-								)}
-							</div>
-							<div className="restore">
-								<RestoreIcon className={classes.restore} />
+							<div className={classes.wrapper}>
+								<div className={classes.buttons}>
+									{showImport && (
+										<AT.GeneralButton
+											onClick={onClickImport}
+											className={classes.importButton}
+										>
+											Import from list
+										</AT.GeneralButton>
+									)}
+									{showAdd && (
+										<AT.GeneralButton onClick={onClickAdd}>
+											Add New
+										</AT.GeneralButton>
+									)}
+								</div>
+								<div className="restore">
+									<RestoreIcon className={classes.restore} />
+								</div>
 							</div>
 						</div>
+
 						<NavButtons
 							navigation={[
 								{ name: "Details", url: "" },

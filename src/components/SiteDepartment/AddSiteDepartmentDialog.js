@@ -29,6 +29,9 @@ const defaultStateSchema = { name: "", description: "" };
 const useStyles = makeStyles({
 	dialogContent: {
 		width: 500,
+		["@media (max-width: 414px)"]: {
+			width: "100%",
+		},
 	},
 	createButton: {
 		width: "auto",
@@ -152,7 +155,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							variant="contained"
 							className={classes.createButton}
 						>
-							Create Department
+							Add Department
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>
@@ -163,6 +166,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
 							required
+							variant="outlined"
 							label="Department Name"
 							value={input.name}
 							onKeyDown={handleEnterPress}
@@ -178,6 +182,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 								errors.description === null ? null : errors.description
 							}
 							required
+							variant="outlined"
 							label="Department Description"
 							value={input.description}
 							onKeyDown={handleEnterPress}

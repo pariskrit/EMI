@@ -1,129 +1,38 @@
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/core/styles";
-// import DeleteDialog from "components/DeleteDialog";
-import RestoreIcon from "@material-ui/icons/Restore";
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import LocationsTable from "components/LocationsTable";
-import Navcrumbs from "components/Navcrumbs";
-import AddSiteLocationsDialog from "components/SiteLocations/AddSiteLocationsDialog";
-import ColourConstants from "helpers/colourConstants";
-import React, { useState, useCallback, useEffect } from "react";
-import ContentStyle from "styles/application/ContentStyle";
-import "../SiteDepartment/site.scss";
-
-import { useHistory, useParams } from "react-router-dom";
-import DetailsPanel from "components/DetailsPanel";
-
-import NavButtons from "components/NavButtons";
 import API from "helpers/api";
+import "../SiteDepartment/site.scss";
+import Grid from "@material-ui/core/Grid";
 import { handleSort } from "helpers/utils";
+import Navcrumbs from "components/Navcrumbs";
+import Button from "@material-ui/core/Button";
+import NavButtons from "components/NavButtons";
+import DetailsPanel from "components/DetailsPanel";
+import DeleteDialog from "components/DeleteDialog";
+import RestoreIcon from "@material-ui/icons/Restore";
+import ColourConstants from "helpers/colourConstants";
+import { makeStyles } from "@material-ui/core/styles";
+import LocationsTable from "components/LocationsTable";
+import { useHistory, useParams } from "react-router-dom";
+import ClientSiteTable from "components/ClientSiteTable";
+import ContentStyle from "styles/application/ContentStyle";
+import React, { useState, useCallback, useEffect } from "react";
+import EditDialog from "routes/Clients/Sites/SiteLocations/EditModal";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import AddSiteLocationsDialog from "components/SiteLocations/AddSiteLocationsDialog";
 
 const AC = ContentStyle();
 
-const useStyles = makeStyles({
-	buttonContainer: {
-		display: "flex",
-		marginLeft: "auto",
-		marginRight: "20px",
-	},
-	productButton: {
-		backgroundColor: ColourConstants.confirmButton,
-		color: "#FFFFFF",
-		fontSize: 15,
-		fontFamily: "Roboto Condensed",
-		width: 150,
-	},
-});
-
-const SiteLocationsContent = ({ setIs404 }) => {
-	const classes = useStyles();
-
-	let current = "Locations";
-
-	const history = useHistory();
-	const { id } = useParams();
-
-	const [data, setData] = useState([]);
-	const [dataChanged, setDataChanged] = useState(false);
-	const [haveData, setHaveData] = useState(false);
+const SiteLocationsContent = ({ data, setData }) => {
 	const [searchedData, setSearchedData] = useState([]);
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
-
+	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [openAddDialog, setOpenAddDialog] = useState(false);
-
-	console.log("sagar", searchQuery);
-
-	const handleGetData = useCallback(async () => {
-		// Attempting to get data
-		try {
-			// Getting data from API
-			let result = await API.get(`/api/SiteLocations?siteId=${id}`);
-
-			// if success, adding data to state
-			if (result.status === 200) {
-				// Updating state
-				result.data.forEach((d, index) => {
-					d.isDefault = false;
-
-					result.data[index] = d;
-				});
-
-				handleSort(result.data, setData, "name", "asc");
-
-				return true;
-			} // Handling 404
-			else if (result.status === 404) {
-				setIs404(true);
-				return;
-			} else {
-				// If error, throwing to catch
-				throw new Error(result);
-			}
-		} catch (err) {
-			// TODO: real error handling
-			console.log(err);
-			return false;
-		}
-	}, [id, setIs404]);
+	const [selectedID, setSelectedID] = useState(null);
+	const [openEditDialog, setOpenEditDialog] = useState(false);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [locations, setLocations] = useState([]);
 
 	useEffect(() => {
-		// Getting data and updating state
-		handleGetData()
-			.then((data) => {
-				if (data) {
-					// Defaulting to asc name for sort
-					setHaveData(true);
-				} else {
-					throw new Error("Unable to get data");
-				}
-			})
-			.catch((err) => console.log(err));
-	}, [handleGetData]);
-
-	//Add Button Modal
-	const handleAddDialogOpen = () => {
-		setOpenAddDialog(true);
-	};
-
-	const handleAddDialogClose = () => {
-		setOpenAddDialog(false);
-	};
-
-	const handleCreateData = (item) => {
-		const newData = [...data];
-
-		newData.push(item);
-
-		setData(newData);
-
-		setDataChanged(true);
-	};
-
-	const onNavClick = (path) => {
-		history.push(path);
-	};
+		setLocations(data);
+	}, [data]);
 
 	const handleSearch = () => {
 		// Clearning state and returning if empty
@@ -148,18 +57,7 @@ const SiteLocationsContent = ({ setIs404 }) => {
 		return;
 	};
 
-	useEffect(() => {
-		if (dataChanged) {
-			handleSort(data, setData, currentTableSort[0], currentTableSort[1]);
-
-			if (searchQuery !== "") {
-				handleSearch();
-			}
-
-			setDataChanged(false);
-		}
-		// eslint-disable-next-line
-	}, [dataChanged]);
+	console.log("sagar", searchedData);
 
 	// Search sorting side effect
 	useEffect(() => {
@@ -168,50 +66,57 @@ const SiteLocationsContent = ({ setIs404 }) => {
 		// eslint-disable-next-line
 	}, [searchQuery]);
 
+	const handleDeleteDialogClose = () => {
+		setSelectedID(null);
+		setOpenDeleteDialog(false);
+	};
+
+	const handleRemoveData = (id) => {
+		const newData = [...data].filter(function (item) {
+			return item.id !== id;
+		});
+
+		// Updating state
+		setData(newData);
+	};
+
+	// Edit Modal
+	const handleEditData = (d) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === d.id);
+		newData[index] = d;
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleEditDialogClose = () => {
+		setOpenEditDialog(false);
+	};
+
+	const handleEdit = (id) => {
+		const detail = [...locations].find((x) => x.id === id);
+		setEditData(detail);
+		setOpenEditDialog(true);
+	};
+
 	return (
-		<div className="container">
-			<AddSiteLocationsDialog
-				open={openAddDialog}
-				closeHandler={handleAddDialogClose}
-				createHandler={handleCreateData}
+		<div>
+			<DeleteDialog
+				entityName="Location"
+				open={openDeleteDialog}
+				closeHandler={handleDeleteDialogClose}
+				deleteEndpoint="/api/SiteLocations"
+				deleteID={selectedID}
+				handleRemoveData={handleRemoveData}
 			/>
 
-			<div
-				className="flex justify-between"
-				style={{ display: "flex", alignItems: "center" }}
-			>
-				<Navcrumbs
-					crumbs={["Site", ""]} // ----------------------- put dynamic value
-					status=""
-					lastSaved=""
-				/>
-
-				<div className={classes.buttonContainer}>
-					<Button
-						variant="contained"
-						className={`${classes.productButton} addNewBtn`}
-						onClick={handleAddDialogOpen}
-					>
-						Add New
-					</Button>
-				</div>
-
-				<div className="right-section">
-					<div className="restore">
-						<RestoreIcon />
-					</div>
-				</div>
-			</div>
-
-			<NavButtons
-				navigation={[
-					{ name: "Details", url: "" },
-					{ name: "Assets", url: "/assets" },
-					{ name: "Departments", url: "/departments" },
-					{ name: "Locations", url: "/locations" },
-				]}
-				current={current}
-				onClick={(nam) => onNavClick(`/site/${id}${nam}`)}
+			<EditDialog
+				open={openEditDialog}
+				closeHandler={handleEditDialogClose}
+				data={editData}
+				handleEditData={handleEditData}
 			/>
 
 			<div className="detailsContainer">
@@ -239,18 +144,18 @@ const SiteLocationsContent = ({ setIs404 }) => {
 					</AC.SearchInner>
 				</AC.SearchContainer>
 			</div>
-			{/* <DepartmentsTable {...{datas,handleDeleteDialogOpen}}/> */}
-			<LocationsTable
-				handleSort={handleSort}
-				data={data}
-				setData={setData}
-				searchQuery={searchQuery}
-				searchedData={searchedData}
-				currentTableSort={currentTableSort}
-				setSearchedData={setSearchedData}
-				setCurrentTableSort={setCurrentTableSort}
-				currentTableSort={currentTableSort}
-				setDataChanged={setDataChanged}
+
+			<ClientSiteTable
+				data={locations}
+				columns={["name"]}
+				headers={["Name"]}
+				onEdit={handleEdit}
+				onDelete={(id) => {
+					setOpenDeleteDialog(true);
+					setSelectedID(id);
+				}}
+				setData={setLocations}
+				pagination={false}
 			/>
 		</div>
 	);

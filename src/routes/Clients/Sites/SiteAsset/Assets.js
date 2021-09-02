@@ -14,14 +14,40 @@ const Assets = ({ fetchSiteAssets, data }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
+	const [editData, setEditData] = useState({});
 
 	useEffect(() => {
 		setAsset(data);
 	}, [data]);
 
+	const handleAddFunctional = (parentId, id, inputs) => {
+		const newData = [...assets];
+		let index = newData.findIndex((x) => x.id === parentId);
+
+		newData[index].references.push({
+			siteAssetID: parentId,
+			id,
+			...inputs,
+		});
+		setAsset(newData);
+	};
+
+	const handleEdit = (id) => {
+		const edit = [...assets].find((x) => x.id === id);
+		setEditData(edit);
+		setModal((th) => ({ ...th, edit: true }));
+	};
+
 	const deleteSuccess = (id) => {
 		const da = [...assets].filter((x) => x.id !== id);
 		setAsset(da);
+	};
+
+	const handleEditData = (d) => {
+		const newData = [...assets];
+		let index = newData.findIndex((x) => x.id === d.id);
+		newData[index] = d;
+		setAsset(newData);
 	};
 
 	return (
@@ -37,6 +63,11 @@ const Assets = ({ fetchSiteAssets, data }) => {
 			<EditAssetDialog
 				open={modal.edit}
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+				editData={editData}
+				handleEditData={handleEditData}
+				handleRemoveFunctional={() => console.log("Remove Functional")}
+				handleAddFunctional={handleAddFunctional}
+				handleUpdateFunctional={() => console.log("Update Functional")}
 			/>
 			<div>
 				<AC.DetailsContainer>
@@ -64,12 +95,9 @@ const Assets = ({ fetchSiteAssets, data }) => {
 				</AC.DetailsContainer>
 				<ClientSiteTable
 					data={assets}
-					columns={["name", "references", "description"]}
-					headers={["Asset", "Reference", "Description"]}
-					onEdit={(id) => {
-						setModal((th) => ({ ...th, edit: true }));
-						setId(id);
-					}}
+					columns={["name", "description"]}
+					headers={["Asset", "Description"]}
+					onEdit={(id) => handleEdit(id)}
 					onDelete={(id) => {
 						setModal((th) => ({ ...th, delete: true }));
 						setId(id);
