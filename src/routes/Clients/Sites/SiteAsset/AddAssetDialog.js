@@ -37,12 +37,19 @@ const useStyles = makeStyles({
 		fontFamily: "Roboto Condensed",
 		fontWeight: "bold",
 		fontSize: "14px",
+		marginBottom: "10px",
 	},
 	expandIcon: {
 		transform: "scale(0.8)",
 	},
 	inputText: {
 		fontSize: 14,
+	},
+	inputContainer: {
+		width: "100%",
+		display: "flex",
+		flexDirection: "column",
+		marginBottom: 20,
 	},
 });
 
@@ -123,23 +130,31 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 				<Typography className={classes.labelText}>
 					Select Application
 				</Typography>
-				<TextField
-					label="Name"
-					error={errors.name === null ? false : true}
-					helperText={errors.name === null ? null : errors.name}
-					fullWidth
-					onChange={(e) => setInput({ ...input, name: e.target.value })}
-					onKeyDown={handleEnterPress}
-				/>
-				<TextField
-					label="Description"
-					error={errors.description === null ? false : true}
-					helperText={errors.description === null ? null : errors.description}
-					fullWidth
-					multiline
-					onChange={(e) => setInput({ ...input, description: e.target.value })}
-					onKeyDown={handleEnterPress}
-				/>
+				<div className={classes.inputContainer}>
+					<TextField
+						label="Name"
+						error={errors.name === null ? false : true}
+						helperText={errors.name === null ? null : errors.name}
+						fullWidth
+						onChange={(e) => setInput({ ...input, name: e.target.value })}
+						onKeyDown={handleEnterPress}
+						variant="outlined"
+					/>
+				</div>
+				<div className={classes.inputContainer}>
+					<TextField
+						label="Description"
+						error={errors.description === null ? false : true}
+						helperText={errors.description === null ? null : errors.description}
+						fullWidth
+						multiline
+						onChange={(e) =>
+							setInput({ ...input, description: e.target.value })
+						}
+						onKeyDown={handleEnterPress}
+						variant="outlined"
+					/>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);

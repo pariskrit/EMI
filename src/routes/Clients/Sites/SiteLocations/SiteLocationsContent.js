@@ -1,12 +1,13 @@
 import "../SiteDepartment/site.scss";
 import Grid from "@material-ui/core/Grid";
+import React, { useState, useEffect } from "react";
 import DetailsPanel from "components/DetailsPanel";
-import DeleteDialog from "components/DeleteDialog";
 import ClientSiteTable from "components/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
-import React, { useState, useCallback, useEffect } from "react";
 import EditDialog from "routes/Clients/Sites/SiteLocations/EditModal";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+
+import DeleteModal from "./DeleteModal";
 
 const AC = ContentStyle();
 
@@ -69,7 +70,8 @@ const SiteLocationsContent = ({ data, setData }) => {
 
 	return (
 		<div>
-			<DeleteDialog
+			
+			<DeleteModal
 				entityName="Location"
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}

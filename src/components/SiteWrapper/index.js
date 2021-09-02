@@ -7,6 +7,7 @@ import Navbar from "components/Navbar";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import NavButtons from "components/NavButtons";
 import { useParams } from "react-router-dom";
+import "routes/Applications/CustomCaptions/customCaptions.css";
 
 const AT = ActionButtonStyle();
 const theme = createMuiTheme({
@@ -71,13 +72,13 @@ const SiteWrapper = ({
 			<Navbar
 				Content={() => (
 					<div className="container">
-						<div className="topContainerCustomCaptions">
+						<div className={showAdd || showImport ? "topContainerCustomCaptions" : 'topContainerCustomCaptionsWithourActions'}>
 							<Navcrumbs
 								crumbs={crumbs}
 								status={status}
 								lastSaved={lastSaved}
 							/>
-							<div className={classes.wrapper}>
+							<div className={showAdd || showImport ? classes.wrapper : ""}>
 								<div className={classes.buttons}>
 									{showImport && (
 										<AT.GeneralButton

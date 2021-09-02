@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import API from "helpers/api";
 import React, { useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,8 +6,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { addSiteLocations } from "services/clients/sites/siteLocations";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -105,13 +104,13 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/SiteLocations", {
+			const result = await addSiteLocations({
 				siteId: siteID,
 				name: input.name,
 			});
 
 			// Handling success
-			if (result.status === 201) {
+			if (result.status) {
 				// Adding new type to state
 				createHandler({
 					id: result.data,

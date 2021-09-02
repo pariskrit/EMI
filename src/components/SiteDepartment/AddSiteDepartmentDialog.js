@@ -7,7 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import API from "helpers/api";
+import { addSiteDepartments } from "services/clients/sites/siteDepartments";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -107,14 +107,14 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/SiteDepartments", {
+			const result = await addSiteDepartments({
 				siteId: siteID,
 				name: input.name,
 				description: input.description,
 			});
 
 			// Handling success
-			if (result.status === 201) {
+			if (result.status) {
 				// Adding new type to state
 				createHandler({
 					id: result.data,

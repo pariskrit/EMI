@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
 import { siteOptions } from "helpers/constants";
+import "./siteDetails.scss";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -177,130 +178,262 @@ const SiteDetails = ({ siteId, setError }) => {
 				closeHandler={closeConfirmChangeDialog}
 				handleChangeConfirm={onConfirmChange}
 			/>
-			<Grid container spacing={2}>
-				<Grid item sm={6}>
-					<div className={classes.siteContainer}>
-						<Typography variant="subtitle2">
-							Site name<span className={classes.required}>*</span>
-						</Typography>
-						<TextField
-							name="name"
-							fullWidth
-							variant="outlined"
-							value={newData?.name || ""}
-							onChange={onInputChange}
-							onBlur={openConfirmChangeDialog}
-							onFocus={setSelectedInputValue}
-							onKeyDown={onEnterKeyPress}
-						/>
-					</div>
+
+			{/* Desktop View */}
+			<div className="siteDetailsContainerDesktop">
+				<Grid container spacing={2}>
+					<Grid item sm={6}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Site name<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="name"
+								fullWidth
+								variant="outlined"
+								value={newData?.name || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+							/>
+						</div>
+					</Grid>
+					<Grid item sm={6}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Region<span className={classes.required}>*</span>
+							</Typography>
+							<Dropdown
+								options={listOfRegions.map((region, index) => ({
+									label: region.name,
+									value: index,
+								}))}
+								selectedValue={selectedRegion}
+								label=""
+								required={true}
+								onChange={(value) => onDropDownInputChange(value, "region")}
+								width="auto"
+							/>
+						</div>
+					</Grid>
+					<Grid item sm={6}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Company Name<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="company"
+								fullWidth
+								variant="outlined"
+								value={newData?.company || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+							/>
+						</div>
+					</Grid>
+					<Grid item sm={6}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Address<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="address"
+								fullWidth
+								variant="outlined"
+								value={newData?.address || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+								multiline
+							/>
+						</div>
+					</Grid>
+					<Grid item sm={6}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Business Number<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="businessNumber"
+								fullWidth
+								variant="outlined"
+								value={newData?.businessNumber || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+							/>
+						</div>
+					</Grid>
+					<Grid item sm={6}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Licence Type<span className={classes.required}>*</span>
+							</Typography>
+							<Dropdown
+								options={siteOptions}
+								selectedValue={selectedLicenseType}
+								label=""
+								required={true}
+								width="auto"
+								onChange={(value) => onDropDownInputChange(value, "license")}
+								disabled={clientLicenseType !== 3}
+							/>
+						</div>
+					</Grid>
+					<Grid item sm={6}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Total Licence Count<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="licenses"
+								fullWidth
+								type="number"
+								variant="outlined"
+								value={newData?.licenses || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+								disabled={clientLicenseType === 3}
+							/>
+						</div>
+					</Grid>
 				</Grid>
-				<Grid item sm={6}>
-					<div className={classes.siteContainer}>
-						<Typography variant="subtitle2">
-							Region<span className={classes.required}>*</span>
-						</Typography>
-						<Dropdown
-							options={listOfRegions.map((region, index) => ({
-								label: region.name,
-								value: index,
-							}))}
-							selectedValue={selectedRegion}
-							label=""
-							required={true}
-							onChange={(value) => onDropDownInputChange(value, "region")}
-							width="auto"
-						/>
-					</div>
+			</div>
+
+			{/* Mobile View */}
+			<div className="siteDetailsContainerMobile">
+				<Grid container spacing={2}>
+					<Grid item xs={12}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Site name<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="name"
+								fullWidth
+								variant="outlined"
+								value={newData?.name || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+							/>
+						</div>
+					</Grid>
+					<Grid item xs={12}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Region<span className={classes.required}>*</span>
+							</Typography>
+							<Dropdown
+								options={listOfRegions.map((region, index) => ({
+									label: region.name,
+									value: index,
+								}))}
+								selectedValue={selectedRegion}
+								label=""
+								required={true}
+								onChange={(value) => onDropDownInputChange(value, "region")}
+								width="auto"
+							/>
+						</div>
+					</Grid>
+					<Grid item xs={12}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Company Name<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="company"
+								fullWidth
+								variant="outlined"
+								value={newData?.company || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+							/>
+						</div>
+					</Grid>
+					<Grid item xs={12}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Address<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="address"
+								fullWidth
+								variant="outlined"
+								value={newData?.address || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+								multiline
+							/>
+						</div>
+					</Grid>
+					<Grid item xs={12}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Business Number<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="businessNumber"
+								fullWidth
+								variant="outlined"
+								value={newData?.businessNumber || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+							/>
+						</div>
+					</Grid>
+					<Grid item xs={12}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Licence Type<span className={classes.required}>*</span>
+							</Typography>
+							<Dropdown
+								options={siteOptions}
+								selectedValue={selectedLicenseType}
+								label=""
+								required={true}
+								width="auto"
+								onChange={(value) => onDropDownInputChange(value, "license")}
+								disabled={clientLicenseType !== 3}
+							/>
+						</div>
+					</Grid>
+					<Grid item xs={12}>
+						<div className={classes.siteContainer}>
+							<Typography variant="subtitle2">
+								Total Licence Count<span className={classes.required}>*</span>
+							</Typography>
+							<TextField
+								name="licenses"
+								fullWidth
+								type="number"
+								variant="outlined"
+								value={newData?.licenses || ""}
+								onChange={onInputChange}
+								onBlur={openConfirmChangeDialog}
+								onFocus={setSelectedInputValue}
+								onKeyDown={onEnterKeyPress}
+								disabled={clientLicenseType === 3}
+							/>
+						</div>
+					</Grid>
 				</Grid>
-				<Grid item sm={6}>
-					<div className={classes.siteContainer}>
-						<Typography variant="subtitle2">
-							Company Name<span className={classes.required}>*</span>
-						</Typography>
-						<TextField
-							name="company"
-							fullWidth
-							variant="outlined"
-							value={newData?.company || ""}
-							onChange={onInputChange}
-							onBlur={openConfirmChangeDialog}
-							onFocus={setSelectedInputValue}
-							onKeyDown={onEnterKeyPress}
-						/>
-					</div>
-				</Grid>
-				<Grid item sm={6}>
-					<div className={classes.siteContainer}>
-						<Typography variant="subtitle2">
-							Address<span className={classes.required}>*</span>
-						</Typography>
-						<TextField
-							name="address"
-							fullWidth
-							variant="outlined"
-							value={newData?.address || ""}
-							onChange={onInputChange}
-							onBlur={openConfirmChangeDialog}
-							onFocus={setSelectedInputValue}
-							onKeyDown={onEnterKeyPress}
-							multiline
-						/>
-					</div>
-				</Grid>
-				<Grid item sm={6}>
-					<div className={classes.siteContainer}>
-						<Typography variant="subtitle2">
-							Business Number<span className={classes.required}>*</span>
-						</Typography>
-						<TextField
-							name="businessNumber"
-							fullWidth
-							variant="outlined"
-							value={newData?.businessNumber || ""}
-							onChange={onInputChange}
-							onBlur={openConfirmChangeDialog}
-							onFocus={setSelectedInputValue}
-							onKeyDown={onEnterKeyPress}
-						/>
-					</div>
-				</Grid>
-				<Grid item sm={6}>
-					<div className={classes.siteContainer}>
-						<Typography variant="subtitle2">
-							Licence Type<span className={classes.required}>*</span>
-						</Typography>
-						<Dropdown
-							options={siteOptions}
-							selectedValue={selectedLicenseType}
-							label=""
-							required={true}
-							width="auto"
-							onChange={(value) => onDropDownInputChange(value, "license")}
-							disabled={clientLicenseType !== 3}
-						/>
-					</div>
-				</Grid>
-				<Grid item sm={6}>
-					<div className={classes.siteContainer}>
-						<Typography variant="subtitle2">
-							Total Licence Count<span className={classes.required}>*</span>
-						</Typography>
-						<TextField
-							name="licenses"
-							fullWidth
-							type="number"
-							variant="outlined"
-							value={newData?.licenses || ""}
-							onChange={onInputChange}
-							onBlur={openConfirmChangeDialog}
-							onFocus={setSelectedInputValue}
-							onKeyDown={onEnterKeyPress}
-							disabled={clientLicenseType === 3}
-						/>
-					</div>
-				</Grid>
-			</Grid>
+			</div>
 		</>
 	);
 };

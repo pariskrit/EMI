@@ -1,4 +1,5 @@
 import "./site.scss";
+import DeleteModal from "./DeleteModal";
 import Grid from "@material-ui/core/Grid";
 import DeleteDialog from "components/DeleteDialog";
 import DetailsPanel from "components/DetailsPanel";
@@ -69,7 +70,16 @@ const SiteDepartmentsContent = ({ data, setData }) => {
 
 	return (
 		<div>
-			<DeleteDialog
+			{/* <DeleteDialog
+				entityName="Department"
+				open={openDeleteDialog}
+				closeHandler={handleDeleteDialogClose}
+				deleteEndpoint="/api/SiteDepartments"
+				deleteID={selectedID}
+				handleRemoveData={handleRemoveData}
+			/> */}
+
+			<DeleteModal
 				entityName="Department"
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
