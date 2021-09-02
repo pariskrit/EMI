@@ -15,6 +15,7 @@ import { generateErrorState, handleValidateObj } from "helpers/utils";
 import NewFunctionalLocations from "./NewFunctionalLocations";
 import CurveButton from "components/CurveButton";
 import ColourConstants from "helpers/colourConstants";
+import FunctionalLocations from "./FunctionalLocations";
 
 const schema = yup.object({
 	name: yup
@@ -60,20 +61,13 @@ const useStyles = makeStyles({
 	},
 });
 
-const EditAssetDialog = ({
-	open,
-	closeHandler,
-	editData,
-	handleEditData,
-	handleRemoveFunctional,
-	handleAddFunctional,
-	handleUpdateFunctional,
-}) => {
+const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 	const classes = useStyles();
 	const [loading, setLoading] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [isAddNew, setIsAddNew] = useState(false);
+	const [functionalLocations, setFunctionalLocations] = useState([]);
 
 	useEffect(() => {
 		if (open && editData !== null) {
@@ -81,9 +75,34 @@ const EditAssetDialog = ({
 		}
 	}, [editData, open]);
 
+	useEffect(() => {
+		const fetchFunctionalLocations = async () => {
+			setLoading(true);
+			try {
+				const response = await API.get(
+					`${BASE_API_PATH}SiteAssetReferences?siteAssetId=${editData.id}`
+				);
+				if (response.status === 200) {
+					console.log(response);
+					setFunctionalLocations(response.data);
+					setLoading(false);
+				} else {
+					throw new Error(response);
+				}
+			} catch (err) {
+				console.log(err);
+				setLoading(false);
+			}
+		};
+		if (editData.id !== undefined) fetchFunctionalLocations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [editData]);
+
 	const closeOverride = () => {
 		// Closing dialog
 		closeHandler();
+		setFunctionalLocations([]);
+		setInput(defaultStateSchema);
 		// Removing new subcat input
 		setIsAddNew(false);
 	};
@@ -174,6 +193,15 @@ const EditAssetDialog = ({
 		setInput((th) => ({ ...th, [name]: value }));
 	};
 
+	const handleAddFunctional = (parentId, id, inp) => {};
+	const handleUpdateFuncLoc = (val) => {};
+
+	// Filtering the deleted item
+	const handleRemoveFuncLoc = (id) => {
+		const dat = [...functionalLocations].filter((x) => x.id !== id);
+		setFunctionalLocations(dat);
+	};
+
 	return (
 		<div>
 			<Dialog
@@ -253,6 +281,16 @@ const EditAssetDialog = ({
 							setIsAddNew={setIsAddNew}
 						/>
 					) : null}
+
+					{functionalLocations.map((x, index) => (
+						<FunctionalLocations
+							setLoading={setLoading}
+							sub={x}
+							key={`${x.name}${index}`}
+							handleRemoveFuncLoc={handleRemoveFuncLoc}
+							handleUpdateFuncLoc={handleUpdateFuncLoc}
+						/>
+					))}
 
 					<CurveButton variant="contained" onClick={handleAddNewClick}>
 						Add new

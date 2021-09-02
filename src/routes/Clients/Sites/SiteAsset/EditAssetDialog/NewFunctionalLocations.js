@@ -95,13 +95,10 @@ const NewFunctionalLocations = ({
 				err.response.data.detail !== null
 			) {
 				setErrors({
-					...errors,
-					...{
-						name: err.response.data.detail,
-						description: err.response.data.detail,
-						plannerGroup: err.response.data.detail,
-						workCenter: err.response.data.detail,
-					},
+					name: err.response.data.detail,
+					description: err.response.data.detail,
+					plannerGroup: err.response.data.detail,
+					workCenter: err.response.data.detail,
 				});
 				return { success: false };
 			}
@@ -158,6 +155,7 @@ const NewFunctionalLocations = ({
 				<div className={classes.container}>
 					<TextField
 						fullWidth
+						variant="outlined"
 						name="name"
 						label="Name"
 						onChange={handleChange}
@@ -169,6 +167,7 @@ const NewFunctionalLocations = ({
 				<div className={classes.container}>
 					<TextField
 						fullWidth
+						variant="outlined"
 						name="description"
 						label="Description"
 						onChange={handleChange}
@@ -180,6 +179,7 @@ const NewFunctionalLocations = ({
 				<div className={classes.container}>
 					<TextField
 						fullWidth
+						variant="outlined"
 						name="plannerGroup"
 						label="Planner Group"
 						onChange={handleChange}
@@ -193,6 +193,7 @@ const NewFunctionalLocations = ({
 				<div className={classes.container}>
 					<TextField
 						fullWidth
+						variant="outlined"
 						name="workCenter"
 						label="Work Center"
 						onChange={handleChange}
