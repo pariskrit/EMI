@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Card, makeStyles, TextField } from "@material-ui/core";
+import { makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
+import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 
 const schema = yup.object({
 	name: yup
@@ -46,6 +47,14 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: 10,
 		paddingTop: 12,
 		paddingBottom: 12,
+	},
+	deleteIcon: {
+		transform: "scale(0.7)",
+		color: ColourConstants.deleteButton,
+		"&:hover": {
+			cursor: "pointer",
+		},
+		float: "right",
 	},
 }));
 const NewFunctionalLocations = ({
@@ -118,6 +127,7 @@ const NewFunctionalLocations = ({
 				const updateData = await handleCreateFuncLocations();
 				if (updateData.success) {
 					closeOverride();
+					setIsAddNew(false);
 				} else {
 					setLoading(false);
 				}
@@ -136,13 +146,14 @@ const NewFunctionalLocations = ({
 		setInput((th) => ({ ...th, [name]: value }));
 	};
 
-	const handleClose = (e) => {
-		closeOverride();
+	const onDeleteApp = () => {
 		setIsAddNew(false);
+		closeOverride();
 	};
 
 	return (
-		<div tabIndex={0} onBlur={handleClose}>
+		<div tabIndex={0} onBlur={saveFuncLoc}>
+			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			<form onSubmit={saveFuncLoc}>
 				<div className={classes.container}>
 					<TextField
