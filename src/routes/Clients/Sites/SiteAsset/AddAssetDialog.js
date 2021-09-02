@@ -29,15 +29,12 @@ const useStyles = makeStyles({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
+		gap: "12px",
 	},
 	createButton: {
 		width: "auto",
 	},
-	labelText: {
-		fontFamily: "Roboto Condensed",
-		fontWeight: "bold",
-		fontSize: "14px",
-	},
+
 	expandIcon: {
 		transform: "scale(0.8)",
 	},
@@ -120,10 +117,8 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
-				<Typography className={classes.labelText}>
-					Select Application
-				</Typography>
 				<TextField
+					variant="outlined"
 					label="Name"
 					error={errors.name === null ? false : true}
 					helperText={errors.name === null ? null : errors.name}
@@ -132,6 +127,7 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 					onKeyDown={handleEnterPress}
 				/>
 				<TextField
+					variant="outlined"
 					label="Description"
 					error={errors.description === null ? false : true}
 					helperText={errors.description === null ? null : errors.description}
