@@ -2,59 +2,25 @@ import "./site.scss";
 import Grid from "@material-ui/core/Grid";
 import DeleteDialog from "components/DeleteDialog";
 import DetailsPanel from "components/DetailsPanel";
+import React, { useState, useEffect } from "react";
+import ClientSiteTable from "components/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
-import DepartmentsTable from "components/DepartmentsTable";
-import React, { useState, useCallback, useEffect } from "react";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
-
-import ClientSiteTable from "components/ClientSiteTable";
 
 const AC = ContentStyle();
 
 const SiteDepartmentsContent = ({ data, setData }) => {
-	const [searchedData, setSearchedData] = useState([]);
 	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [departments, setDepartments] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	const [departments, setDepartments] = useState([]);
-
 	useEffect(() => {
 		setDepartments(data);
 	}, [data]);
-
-	const handleSearch = () => {
-		// Clearning state and returning if empty
-		if (searchQuery === "") {
-			setSearchedData([]);
-			return;
-		}
-
-		let results = [];
-
-		// Checking data
-		for (let i = 0; i < data.length; i++) {
-			// Pushing current data to results arr if containes search
-			if (data[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
-				results.push(data[i]);
-			}
-		}
-
-		// Updating state
-		setSearchedData(results);
-
-		return;
-	};
-
-	// Search sorting side effect
-	useEffect(() => {
-		// Performing search
-		handleSearch();
-		// eslint-disable-next-line
-	}, [searchQuery]);
 
 	const handleDeleteDialogClose = () => {
 		setSelectedID(null);
@@ -91,6 +57,16 @@ const SiteDepartmentsContent = ({ data, setData }) => {
 		setOpenEditDialog(true);
 	};
 
+	//search
+	const handleSearch = (e) => {
+		setSearchQuery(e.target.value);
+		let result = data.filter((d) =>
+			d.name.toLowerCase().includes(e.target.value.toLowerCase())
+		);
+
+		setDepartments(result);
+	};
+
 	return (
 		<div>
 			<DeleteDialog
@@ -124,9 +100,7 @@ const SiteDepartmentsContent = ({ data, setData }) => {
 							<Grid item>
 								<AC.SearchInput
 									value={searchQuery}
-									onChange={(e) => {
-										setSearchQuery(e.target.value);
-									}}
+									onChange={handleSearch}
 									label="Search Departments"
 								/>
 							</Grid>

@@ -36,6 +36,13 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
+
+	inputContainer: {
+		width: "100%",
+		display: "flex",
+		flexDirection: "column",
+		marginBottom: 20,
+	},
 });
 
 const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
@@ -161,7 +168,10 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 				</ADD.ActionContainer>
 
 				<DialogContent className={classes.dialogContent}>
-					<ADD.InputContainer>
+					<div className={classes.inputContainer}>
+						<ADD.NameLabel>
+							Name<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
@@ -174,8 +184,11 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 								setInput({ ...input, name: e.target.value });
 							}}
 						/>
-					</ADD.InputContainer>
-					<ADD.InputContainer>
+					</div>
+					<div className={classes.inputContainer}>
+						<ADD.NameLabel>
+							Description<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.description === null ? false : true}
 							helperText={
@@ -190,7 +203,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 								setInput({ ...input, description: e.target.value });
 							}}
 						/>
-					</ADD.InputContainer>
+					</div>
 				</DialogContent>
 			</Dialog>
 		</div>

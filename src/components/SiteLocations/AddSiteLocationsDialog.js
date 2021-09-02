@@ -34,6 +34,13 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
+
+	inputContainer: {
+		width: "100%",
+		display: "flex",
+		flexDirection: "column",
+		marginBottom: 20,
+	},
 });
 
 const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
@@ -157,27 +164,27 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 				</ADD.ActionContainer>
 
 				<DialogContent className={classes.dialogContent}>
-					<DialogContentText id="alert-dialog-description">
-						<ADD.InputContainer>
-							<ADD.NameInputContainer>
-								<ADD.NameLabel>
-									Name<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
-								<ADD.NameInput
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
-									required
-									variant="outlined"
-									label="Location"
-									value={input.name}
-									onKeyDown={handleEnterPress}
-									onChange={(e) => {
-										setInput({ ...input, name: e.target.value });
-									}}
-								/>
-							</ADD.NameInputContainer>
-						</ADD.InputContainer>
-					</DialogContentText>
+					{/* <DialogContentText id="alert-dialog-description"> */}
+					<div className={classes.inputContainer}>
+						{/* <ADD.NameInputContainer> */}
+						<ADD.NameLabel>
+							Name<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
+						<ADD.NameInput
+							error={errors.name === null ? false : true}
+							helperText={errors.name === null ? null : errors.name}
+							required
+							variant="outlined"
+							label="Location"
+							value={input.name}
+							onKeyDown={handleEnterPress}
+							onChange={(e) => {
+								setInput({ ...input, name: e.target.value });
+							}}
+						/>
+						{/* </ADD.NameInputContainer> */}
+					</div>
+					{/* </DialogContentText> */}
 				</DialogContent>
 			</Dialog>
 		</div>

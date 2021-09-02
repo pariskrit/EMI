@@ -18,6 +18,9 @@ const ActionButtonStyle = () => {
 			fontSize: "13.5px",
 			marginRight: 10,
 			width: 150,
+			["@media (max-width: 414px)"]: {
+				width: 130,
+			},
 		}),
 	};
 };
