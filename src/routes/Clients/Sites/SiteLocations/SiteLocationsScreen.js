@@ -1,9 +1,8 @@
-import API from "helpers/api";
 import SiteWrapper from "components/SiteWrapper";
-import { BASE_API_PATH } from "helpers/constants";
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import SiteLocationsContent from "./SiteLocationsContent";
+import { getSiteLocations } from "services/clients/sites/siteLocations";
 import AddSiteLocationsDialog from "components/SiteLocations/AddSiteLocationsDialog";
 
 const SiteLocationsScreen = () => {
@@ -14,11 +13,10 @@ const SiteLocationsScreen = () => {
 
 	const fetchSiteDepartments = async () => {
 		try {
-			const response = await API.get(
-				`${BASE_API_PATH}SiteLocations?siteId=${id}`
-			);
-			if (response.status === 200) {
+			const response = await getSiteLocations(id);
+			if (response.status) {
 				setData(response.data);
+				console.log("sagar", response.data);
 				return response;
 			} else {
 				throw new Error(response);

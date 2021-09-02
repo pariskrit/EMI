@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import API from "helpers/api";
-import EditDialogStyle from "styles/application/EditDialogStyle";
+import * as yup from "yup";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
+import React, { useState, useEffect } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import * as yup from "yup";
+import EditDialogStyle from "styles/application/EditDialogStyle";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { editSiteDepartments } from "services/clients/sites/siteDepartments";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -72,7 +72,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 		// Attempting to update data
 		try {
 			// Making patch to backend
-			const result = await API.patch(`/api/SiteDepartments/${data.id}`, [
+			const result = await editSiteDepartments(data.id, [
 				{
 					op: "replace",
 					path: "name",
@@ -86,7 +86,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 			]);
 
 			// Handling success
-			if (result.status === 200) {
+			if (result.status) {
 				// Updating state to match DB
 				handleEditData({
 					id: data.id,

@@ -7,6 +7,8 @@ const BASE_API_PATH_SITEDETAILS = `${BASE_API_PATH}sites`;
 const BASE_API_PATH_LIST_OF_REGIONS = `${BASE_API_PATH}Regions`;
 const BASE_API_PATH_SITE_APPKEYCONTACTS = `${BASE_API_PATH}siteappkeycontacts/Site`;
 const BASE_API_PATH_SITE_APPLICATIONS = `${BASE_API_PATH}siteapps`;
+const BASE_API_PATH_SITES_LOCATIONS = `${BASE_API_PATH}SiteLocations`;
+const BASE_API_PATH_SITES_DEPARTMENTS = `${BASE_API_PATH}SiteDepartments`;
 
 export const Apis = {
 	//client detail screen
@@ -28,4 +30,6 @@ export const Apis = {
 
 	//site applications
 	Applications: `${BASE_API_PATH_SITE_APPLICATIONS}`,
+	SiteLocations: `${BASE_API_PATH_SITES_LOCATIONS}`,
+	SiteDepartments: `${BASE_API_PATH_SITES_DEPARTMENTS}`,
 };

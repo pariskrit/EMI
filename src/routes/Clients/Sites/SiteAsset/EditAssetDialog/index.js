@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import {
 	Dialog,
 	DialogTitle,
@@ -7,15 +6,16 @@ import {
 	TextField,
 	Typography,
 } from "@material-ui/core";
-import * as yup from "yup";
-import EditDialogStyle from "styles/application/EditDialogStyle";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
-import NewFunctionalLocations from "./NewFunctionalLocations";
 import CurveButton from "components/CurveButton";
 import ColourConstants from "helpers/colourConstants";
-import FunctionalLocations from "./FunctionalLocations";
+import { generateErrorState, handleValidateObj } from "helpers/utils";
+import React, { useEffect, useState } from "react";
 import { editSiteAsset } from "services/clients/sites/siteAssets";
 import { getSiteAssetReferences } from "services/clients/sites/siteAssets/references";
+import EditDialogStyle from "styles/application/EditDialogStyle";
+import * as yup from "yup";
+import FunctionalLocations from "./FunctionalLocations";
+import NewFunctionalLocations from "./NewFunctionalLocations";
 
 const schema = yup.object({
 	name: yup

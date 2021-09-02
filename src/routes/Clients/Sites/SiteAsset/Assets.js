@@ -55,7 +55,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 				handleEditData={handleEditData}
 			/>
 			<div>
-				<AC.DetailsContainer>
+				<div className="detailsContainer">
 					<DetailsPanel
 						header={"Assets"}
 						dataCount={123}
@@ -63,7 +63,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 					/>
 
 					<AC.SearchContainer>
-						<AC.SearchInner>
+						<AC.SearchInner className="applicationSearchBtn">
 							<Grid container spacing={1} alignItems="flex-end">
 								<Grid item>
 									<SearchIcon />
@@ -77,7 +77,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 							</Grid>
 						</AC.SearchInner>
 					</AC.SearchContainer>
-				</AC.DetailsContainer>
+				</div>
 				<ClientSiteTable
 					data={assets}
 					columns={["name", "description"]}
