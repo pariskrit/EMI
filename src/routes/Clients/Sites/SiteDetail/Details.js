@@ -18,7 +18,7 @@ const Details = () => {
 			const result = await API.get(
 				`${BASE_API_PATH}siteappkeycontacts/Site/${id}`
 			);
-			console.log(result);
+
 			setContactsList(
 				result.data.map((data) => ({
 					id: data.siteAppID,

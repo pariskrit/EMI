@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
 import { siteOptions } from "helpers/constants";
+import { fetchSiteDetail } from "redux/siteDetail/actions";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -21,10 +22,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const SiteDetails = ({ siteId, setError }) => {
+const SiteDetails = ({
+	siteId,
+	setError,
+	siteDetails,
+	handlefetchSiteDetail,
+}) => {
 	const classes = useStyles();
 	const { clientId } = useParams();
-	const [siteDetails, setSiteDetails] = useState({ oldData: {}, newData: {} });
+	const [newSiteDetails, setNewSiteDetails] = useState({});
 	const [listOfRegions, setListOfRegions] = useState([]);
 	const [selectedRegion, setSelectedRegion] = useState({});
 	const [clientLicenseType, setClientLicenseType] = useState(0);
@@ -34,7 +40,7 @@ const SiteDetails = ({ siteId, setError }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const openConfirmChangeDialog = (e) => {
-		if (newInput.value === siteDetails.oldData[newInput.label]) {
+		if (newInput.value === siteDetails[newInput.label]) {
 			return;
 		}
 
@@ -48,9 +54,9 @@ const SiteDetails = ({ siteId, setError }) => {
 
 	const onInputChange = (e) => {
 		setNewInput({ label: e.target.name, value: e.target.value });
-		setSiteDetails({
-			...siteDetails,
-			newData: { ...siteDetails.newData, [e.target.name]: e.target.value },
+		setNewSiteDetails({
+			...newSiteDetails,
+			[e.target.name]: e.target.value,
 		});
 	};
 
@@ -67,7 +73,7 @@ const SiteDetails = ({ siteId, setError }) => {
 
 	const onDropDownInputChange = (value, inputName) => {
 		if (inputName === "region") {
-			const { regionName } = siteDetails.oldData;
+			const { regionName } = siteDetails;
 			if (value.label === regionName) {
 				setSelectedRegion(value);
 				return;
@@ -116,9 +122,9 @@ const SiteDetails = ({ siteId, setError }) => {
 
 	const fetchSiteDetails = async () => {
 		try {
-			const result = await API.get(`${BASE_API_PATH}sites/${siteId}`);
+			const result = await handlefetchSiteDetail(siteId);
 
-			setSiteDetails({ oldData: result.data, newData: result.data });
+			setNewSiteDetails(result.data);
 			setNewInput(result.data);
 			fetchListOfRegions(result.data.regionName);
 			fetchClient(result.data.licenseType);
@@ -164,10 +170,9 @@ const SiteDetails = ({ siteId, setError }) => {
 	};
 
 	useEffect(() => {
+		console.log("site details use effect");
 		fetchSiteDetails();
 	}, []);
-
-	const { newData } = siteDetails;
 
 	return (
 		<>
@@ -187,7 +192,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="name"
 							fullWidth
 							variant="outlined"
-							value={newData?.name || ""}
+							value={newSiteDetails?.name || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -222,7 +227,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="company"
 							fullWidth
 							variant="outlined"
-							value={newData?.company || ""}
+							value={newSiteDetails?.company || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -239,7 +244,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="address"
 							fullWidth
 							variant="outlined"
-							value={newData?.address || ""}
+							value={newSiteDetails?.address || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -257,7 +262,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="businessNumber"
 							fullWidth
 							variant="outlined"
-							value={newData?.businessNumber || ""}
+							value={newSiteDetails?.businessNumber || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -291,7 +296,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							fullWidth
 							type="number"
 							variant="outlined"
-							value={newData?.licenses || ""}
+							value={newSiteDetails?.licenses || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -305,12 +310,17 @@ const SiteDetails = ({ siteId, setError }) => {
 	);
 };
 
-const mapStateToProps = ({ commonData: { error } }) => ({
+const mapStateToProps = ({
+	commonData: { error },
+	siteDetailData: { siteDetails },
+}) => ({
 	error,
+	siteDetails,
 });
 
 const mapDispatchToProps = (dispatch) => ({
 	setError: (message) => dispatch(showError(message)),
+	handlefetchSiteDetail: (siteId) => dispatch(fetchSiteDetail(siteId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SiteDetails);

@@ -86,7 +86,6 @@ const Applications = ({
 		try {
 			const result = await API.get(`${BASE_API_PATH}siteapps?siteid=${siteId}`);
 
-			console.log(result);
 			setApplicationList(
 				result.data.map((data, index) => ({
 					id: listOfSiteAppId[index]?.siteAppId,

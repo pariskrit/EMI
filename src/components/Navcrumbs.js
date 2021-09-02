@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import ColourConstants from "../helpers/colourConstants";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {
@@ -48,4 +49,8 @@ const Navcrumbs = ({ crumbs, status }) => {
 	);
 };
 
-export default Navcrumbs;
+const mapStateToProps = ({ siteDetailData: { crumbs } }) => ({
+	crumbs,
+});
+
+export default connect(mapStateToProps)(Navcrumbs);
