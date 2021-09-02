@@ -53,7 +53,6 @@ const useStyles = makeStyles({
 	},
 });
 const SiteWrapper = ({
-	crumbs,
 	status,
 	lastSaved,
 	onClickAdd,
@@ -72,11 +71,7 @@ const SiteWrapper = ({
 				Content={() => (
 					<div className="container">
 						<div className="topContainerCustomCaptions">
-							<Navcrumbs
-								crumbs={crumbs}
-								status={status}
-								lastSaved={lastSaved}
-							/>
+							<Navcrumbs status={status} lastSaved={lastSaved} />
 							<div className={classes.wrapper}>
 								<div className={classes.buttons}>
 									{showImport && (

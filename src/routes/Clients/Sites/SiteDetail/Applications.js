@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import AccordionBox from "components/AccordionBox";
 import ApplicationTable from "components/ApplicationTable";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
 import DeleteDialog from "components/DeleteDialog/DeleteDialog";
 import AddSiteApplicationModal from "components/AddSiteApplicationModal";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import {
+	getSiteApplications,
+	updateSiteApplicationStatus,
+} from "services/clients/sites/siteDetails";
 
 const Applications = ({
 	siteId,
@@ -52,41 +54,24 @@ const Applications = ({
 
 	const onConfirmChange = async () => {
 		setIsUpdating(true);
-		try {
-			const response = await API.patch(
-				`${BASE_API_PATH}SiteApps/${applicationToChange.id}`,
-				[
-					{
-						op: "replace",
-						path: "isActive",
-						value: !applicationToChange.isActive,
-					},
-				]
-			);
 
-			if (response.status === 404 || response.status === 400) {
-				throw new Error(response);
-			}
-			fetchApplicationList();
-			fetchKeyContactsList();
-		} catch (error) {
-			if (Object.keys(error.response.data.errors).length !== 0) {
-				setError(error.response.data.errors.name);
-			} else if (error.response.data.detail !== undefined) {
-				setError(error.response.data.detail);
-			} else {
-				setError("Something went wrong!");
-			}
+		const response = await updateSiteApplicationStatus(applicationToChange);
+
+		if (response.status) {
+			await fetchApplicationList();
 			setIsUpdating(false);
 			setOpenChangeConfirmDialog(false);
+		} else {
+			setIsUpdating(false);
+			setOpenChangeConfirmDialog(false);
+			setError(response.data.detail);
 		}
 	};
 
 	const fetchApplicationList = async () => {
-		try {
-			const result = await API.get(`${BASE_API_PATH}siteapps?siteid=${siteId}`);
+		const result = await getSiteApplications(siteId);
 
-			console.log(result);
+		if (result.status) {
 			setApplicationList(
 				result.data.map((data, index) => ({
 					id: listOfSiteAppId[index]?.siteAppId,
@@ -94,18 +79,13 @@ const Applications = ({
 					isActive: data.isActive,
 				}))
 			);
-
-			if (!isUpdating) {
-				setIsUpdating(false);
-				setOpenChangeConfirmDialog(false);
-			}
-		} catch (error) {
-			console.log(error);
 		}
 	};
 
 	useEffect(() => {
-		fetchApplicationList();
+		if (listOfSiteAppId.length > 0) {
+			fetchApplicationList();
+		}
 	}, [listOfSiteAppId]);
 
 	return (
@@ -126,6 +106,7 @@ const Applications = ({
 				handleClose={onCloseAddSiteApplicationModal}
 				siteId={siteId}
 				setApplicationList={setApplicationList}
+				fetchKeyContactsList={fetchKeyContactsList}
 			/>
 			<AccordionBox
 				title="Applications"

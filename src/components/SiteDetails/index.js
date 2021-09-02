@@ -2,13 +2,17 @@ import { Grid, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
 import Dropdown from "components/Dropdown";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
 import { siteOptions } from "helpers/constants";
+import { fetchSiteDetail } from "redux/siteDetail/actions";
+import {
+	getListOfRegions,
+	updateSiteDetails,
+} from "services/clients/sites/siteDetails";
+import { getClientDetails } from "services/clients/clientDetailScreen";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -21,10 +25,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const SiteDetails = ({ siteId, setError }) => {
+const SiteDetails = ({
+	siteId,
+	setError,
+	siteDetails,
+	handlefetchSiteDetail,
+}) => {
 	const classes = useStyles();
 	const { clientId } = useParams();
-	const [siteDetails, setSiteDetails] = useState({ oldData: {}, newData: {} });
+	const [newSiteDetails, setNewSiteDetails] = useState({});
 	const [listOfRegions, setListOfRegions] = useState([]);
 	const [selectedRegion, setSelectedRegion] = useState({});
 	const [clientLicenseType, setClientLicenseType] = useState(0);
@@ -34,7 +43,7 @@ const SiteDetails = ({ siteId, setError }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const openConfirmChangeDialog = (e) => {
-		if (newInput.value === siteDetails.oldData[newInput.label]) {
+		if (newInput.value === siteDetails[newInput.label]) {
 			return;
 		}
 
@@ -48,9 +57,9 @@ const SiteDetails = ({ siteId, setError }) => {
 
 	const onInputChange = (e) => {
 		setNewInput({ label: e.target.name, value: e.target.value });
-		setSiteDetails({
-			...siteDetails,
-			newData: { ...siteDetails.newData, [e.target.name]: e.target.value },
+		setNewSiteDetails({
+			...newSiteDetails,
+			[e.target.name]: e.target.value,
 		});
 	};
 
@@ -67,7 +76,7 @@ const SiteDetails = ({ siteId, setError }) => {
 
 	const onDropDownInputChange = (value, inputName) => {
 		if (inputName === "region") {
-			const { regionName } = siteDetails.oldData;
+			const { regionName } = siteDetails;
 			if (value.label === regionName) {
 				setSelectedRegion(value);
 				return;
@@ -90,66 +99,47 @@ const SiteDetails = ({ siteId, setError }) => {
 	const onConfirmChange = async () => {
 		setIsUpdating(true);
 
-		try {
-			const response = await API.patch(`${BASE_API_PATH}sites/${siteId}`, [
-				{ op: "replace", path: newInput.label, value: newInput.value },
-			]);
-			setIsUpdating(false);
-			setOpenConfirmDialog(false);
+		const response = await updateSiteDetails(siteId, newInput);
 
-			if (response.status === 404 || response.status === 400) {
-				throw new Error(response);
-			}
-		} catch (error) {
-			if (Object.keys(error.response.data.errors).length !== 0) {
-				setError(error.response.data.errors.name);
-			} else if (error.response.data.detail !== undefined) {
-				setError(error.response.data.detail);
-			} else {
-				setError("Something went wrong!");
-			}
-
-			setIsUpdating(false);
-			setOpenConfirmDialog(false);
+		if (!response.status) {
+			setError(response.data.detail);
 		}
+		setIsUpdating(false);
+		setOpenConfirmDialog(false);
 	};
 
 	const fetchSiteDetails = async () => {
-		try {
-			const result = await API.get(`${BASE_API_PATH}sites/${siteId}`);
+		const result = await handlefetchSiteDetail(siteId);
 
-			setSiteDetails({ oldData: result.data, newData: result.data });
+		if (result.status) {
+			setNewSiteDetails(result.data);
 			setNewInput(result.data);
 			fetchListOfRegions(result.data.regionName);
 			fetchClient(result.data.licenseType);
-		} catch (error) {
-			console.log(error);
+		} else {
+			setError(result.data.detail);
 		}
 	};
 
 	const fetchListOfRegions = async (regionName) => {
-		try {
-			const result = await API.get(
-				`${BASE_API_PATH}Regions/?clientId=${clientId}`
-			);
+		const result = await getListOfRegions(clientId);
 
+		if (result.status) {
 			const indexOfSelectedRegion = result.data.findIndex(
 				(region) => region.name === regionName
 			);
 			setListOfRegions(result.data);
 			setSelectedRegion({ label: regionName, value: indexOfSelectedRegion });
-		} catch (error) {
-			console.log(error);
 		}
 	};
 
 	const fetchClient = async (licenseType) => {
-		try {
-			const response = await API.get(`${BASE_API_PATH}clients/${clientId}`);
+		const result = await getClientDetails(clientId);
 
-			setClientLicenseType(response.data.licenseType);
+		if (result.status) {
+			setClientLicenseType(result.data.licenseType);
 
-			if (response.data.licenseType === 3) {
+			if (result.data.licenseType === 3) {
 				const licenseName = siteOptions.find(
 					(option) => option.value === licenseType
 				);
@@ -158,16 +148,12 @@ const SiteDetails = ({ siteId, setError }) => {
 					value: licenseName.value,
 				});
 			}
-		} catch (error) {
-			console.log(error);
 		}
 	};
 
 	useEffect(() => {
 		fetchSiteDetails();
 	}, []);
-
-	const { newData } = siteDetails;
 
 	return (
 		<>
@@ -187,7 +173,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="name"
 							fullWidth
 							variant="outlined"
-							value={newData?.name || ""}
+							value={newSiteDetails?.name || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -222,7 +208,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="company"
 							fullWidth
 							variant="outlined"
-							value={newData?.company || ""}
+							value={newSiteDetails?.company || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -239,7 +225,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="address"
 							fullWidth
 							variant="outlined"
-							value={newData?.address || ""}
+							value={newSiteDetails?.address || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -257,7 +243,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							name="businessNumber"
 							fullWidth
 							variant="outlined"
-							value={newData?.businessNumber || ""}
+							value={newSiteDetails?.businessNumber || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -291,7 +277,7 @@ const SiteDetails = ({ siteId, setError }) => {
 							fullWidth
 							type="number"
 							variant="outlined"
-							value={newData?.licenses || ""}
+							value={newSiteDetails?.licenses || ""}
 							onChange={onInputChange}
 							onBlur={openConfirmChangeDialog}
 							onFocus={setSelectedInputValue}
@@ -305,12 +291,17 @@ const SiteDetails = ({ siteId, setError }) => {
 	);
 };
 
-const mapStateToProps = ({ commonData: { error } }) => ({
+const mapStateToProps = ({
+	commonData: { error },
+	siteDetailData: { siteDetails },
+}) => ({
 	error,
+	siteDetails,
 });
 
 const mapDispatchToProps = (dispatch) => ({
 	setError: (message) => dispatch(showError(message)),
+	handlefetchSiteDetail: (siteId) => dispatch(fetchSiteDetail(siteId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SiteDetails);
