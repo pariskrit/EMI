@@ -50,10 +50,7 @@ const Details = () => {
 							</AccordionBox>
 						</Grid>
 						<Grid item xs={12}>
-							<KeyContacts
-								setIds={setListOfSiteAppId}
-								contactsList={contactsList}
-							/>
+							<KeyContacts contactsList={contactsList} />
 						</Grid>
 						<Grid item xs={12}>
 							<Applications
