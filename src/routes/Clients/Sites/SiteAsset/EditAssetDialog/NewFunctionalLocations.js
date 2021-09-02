@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
-import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
+import { postSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 
 const schema = yup.object({
 	name: yup
@@ -75,14 +74,14 @@ const NewFunctionalLocations = ({
 
 	const handleCreateFuncLocations = async () => {
 		try {
-			let addedFunc = await API.post(`${BASE_API_PATH}SiteAssetReferences`, {
+			let addedFunc = await postSiteAssetReferences({
 				siteAssetID: editData.id,
 				name: input.name,
 				description: input.description,
 				plannerGroup: input.plannerGroup,
 				workCenter: input.workCenter,
 			});
-			if (addedFunc.status === 201) {
+			if (addedFunc.status) {
 				handleAddFunctional({
 					siteAssetID: editData.id,
 					id: addedFunc.data,

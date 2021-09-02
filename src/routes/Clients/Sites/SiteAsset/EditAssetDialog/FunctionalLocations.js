@@ -1,12 +1,14 @@
 import React, { useState, useRef } from "react";
 import { makeStyles, TextField, Typography } from "@material-ui/core";
 import * as yup from "yup";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import useOutsideClick from "hooks/useOutsideClick";
+import {
+	deleteSiteAssetReferences,
+	updateSiteAssetReferences,
+} from "services/clients/sites/siteAssets/references";
 
 const schema = yup.object({
 	name: yup
@@ -98,10 +100,8 @@ const FunctionalLocations = ({
 		setLoading(true);
 
 		try {
-			const result = await API.delete(
-				`${BASE_API_PATH}SiteAssetReferences/${sub.id}`
-			);
-			if (result.status === 200 || result.status === 201) {
+			const result = await deleteSiteAssetReferences(sub.id);
+			if (result.status) {
 				handleRemoveFuncLoc(sub.id);
 				setLoading(false);
 				return true;
@@ -121,32 +121,29 @@ const FunctionalLocations = ({
 		setLoading(true);
 
 		try {
-			let editedFunc = await API.patch(
-				`${BASE_API_PATH}SiteAssetReferences/${sub.id}`,
-				[
-					{
-						op: "replace",
-						path: "name",
-						value: input.name,
-					},
-					{
-						op: "replace",
-						path: "description",
-						value: input.description,
-					},
-					{
-						op: "replace",
-						path: "plannerGroup",
-						value: input.plannerGroup,
-					},
-					{
-						op: "replace",
-						path: "workCenter",
-						value: input.workCenter,
-					},
-				]
-			);
-			if (editedFunc.status === 200 || editedFunc.status === 201) {
+			let editedFunc = await updateSiteAssetReferences(sub.id, [
+				{
+					op: "replace",
+					path: "name",
+					value: input.name,
+				},
+				{
+					op: "replace",
+					path: "description",
+					value: input.description,
+				},
+				{
+					op: "replace",
+					path: "plannerGroup",
+					value: input.plannerGroup,
+				},
+				{
+					op: "replace",
+					path: "workCenter",
+					value: input.workCenter,
+				},
+			]);
+			if (editedFunc.status) {
 				setLoading(false);
 				setIsEdit(false);
 				return { success: true };

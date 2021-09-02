@@ -8,14 +8,14 @@ import {
 	Typography,
 } from "@material-ui/core";
 import * as yup from "yup";
-import API from "helpers/api";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import NewFunctionalLocations from "./NewFunctionalLocations";
 import CurveButton from "components/CurveButton";
 import ColourConstants from "helpers/colourConstants";
 import FunctionalLocations from "./FunctionalLocations";
+import { editSiteAsset } from "services/clients/sites/siteAssets";
+import { getSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 
 const schema = yup.object({
 	name: yup
@@ -79,10 +79,8 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 		const fetchFunctionalLocations = async () => {
 			setLoading(true);
 			try {
-				const response = await API.get(
-					`${BASE_API_PATH}SiteAssetReferences?siteAssetId=${editData.id}`
-				);
-				if (response.status === 200) {
+				const response = await getSiteAssetReferences(editData.id);
+				if (response.status) {
 					setFunctionalLocations(response.data);
 					setLoading(false);
 				} else {
@@ -108,14 +106,11 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 
 	const handleUpdateData = async (d) => {
 		try {
-			let result = await API.patch(
-				`${BASE_API_PATH}SiteAssets/${editData.id}`,
-				[
-					{ op: "replace", path: "name", value: d.name },
-					{ op: "replace", path: "description", value: d.description },
-				]
-			);
-			if (result.status === 200) {
+			let result = await editSiteAsset(editData.id, [
+				{ op: "replace", path: "name", value: d.name },
+				{ op: "replace", path: "description", value: d.description },
+			]);
+			if (result) {
 				handleEditData({
 					id: editData.id,
 					name: input.name,
