@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { makeStyles, TextField, Typography } from "@material-ui/core";
 import * as yup from "yup";
 import API from "helpers/api";
@@ -147,6 +147,8 @@ const FunctionalLocations = ({
 				]
 			);
 			if (editedFunc.status === 200 || editedFunc.status === 201) {
+				setLoading(false);
+				setIsEdit(false);
 				return { success: true };
 			} else {
 				throw new Error(editedFunc);
@@ -203,8 +205,6 @@ const FunctionalLocations = ({
 						siteAssetID: sub.siteAssetID,
 						...input,
 					});
-					setLoading(false);
-					setIsEdit(false);
 				} else {
 					setLoading(false);
 				}
