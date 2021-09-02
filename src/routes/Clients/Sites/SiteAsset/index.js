@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
 import SiteWrapper from "components/SiteWrapper";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import Assets from "./Assets";
-import API from "helpers/api";
+import { addSiteAsset, getSiteAssets } from "services/clients/sites/siteAssets";
 import AddAssetDialog from "./AddAssetDialog";
-import { BASE_API_PATH } from "helpers/constants";
+import Assets from "./Assets";
 
 const SiteAsset = () => {
 	const history = useHistory();
@@ -14,8 +13,8 @@ const SiteAsset = () => {
 
 	const fetchSiteAssets = async () => {
 		try {
-			const response = await API.get(`${BASE_API_PATH}SiteAssets?siteId=${id}`);
-			if (response.status === 200) {
+			const response = await getSiteAssets(id);
+			if (response.status) {
 				setData(response.data);
 				return response;
 			} else {
@@ -34,28 +33,49 @@ const SiteAsset = () => {
 
 	const addAsset = async (input) => {
 		try {
-			const response = await API.post(`${BASE_API_PATH}SiteAssets`, {
+			// const response = await API.post(`${BASE_API_PATH}SiteAssets`, {
+			// 	siteId: +id,
+			// 	...input,
+			// });
+			// if (response.status === 200 || response.status === 201) {
+			// 	await fetchSiteAssets();
+			// 	return { success: true };
+			// } else {
+			// 	throw new Error(response);
+			// }
+			const response = await addSiteAsset({
 				siteId: +id,
 				...input,
 			});
-			if (response.status === 200 || response.status === 201) {
+			if (response.status) {
 				await fetchSiteAssets();
 				return { success: true };
 			} else {
-				throw new Error(response);
+				if (response.data.detail) {
+					return {
+						success: false,
+						errors: {
+							name: response.data.detail,
+							description: response.data.detail,
+						},
+					};
+				} else {
+					return { success: false, errors: { ...response.data.errors } };
+				}
 			}
 		} catch (error) {
-			if (error.response.data.detail) {
-				return {
-					success: false,
-					errors: {
-						name: error.response.data.detail,
-						description: error.response.data.detail,
-					},
-				};
-			} else {
-				return { success: false, errors: { ...error.response.data.errors } };
-			}
+			// if (error.response.data.detail) {
+			// 	return {
+			// 		success: false,
+			// 		errors: {
+			// 			name: error.response.data.detail,
+			// 			description: error.response.data.detail,
+			// 		},
+			// 	};
+			// } else {
+			// 	return { success: false, errors: { ...error.response.data.errors } };
+			// }
+			throw new Error(error.response);
 		}
 	};
 
