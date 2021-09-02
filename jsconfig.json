@@ -8,7 +8,8 @@
 			"scss/*": ["styles/scss/*"],
 			"routes/*": ["routes/*"],
 			"assets/*": ["assets/*"],
-			"helpers/*": ["helpers/*"]
+			"helpers/*": ["helpers/*"],
+			"services/*": ["services/*"]
 		},
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"skipLibCheck": true,
