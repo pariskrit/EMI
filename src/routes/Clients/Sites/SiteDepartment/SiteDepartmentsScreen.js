@@ -1,6 +1,4 @@
-import API from "helpers/api";
 import SiteWrapper from "components/SiteWrapper";
-import { BASE_API_PATH } from "helpers/constants";
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import SiteDepartmentsContent from "./SiteDepartmentsContent";
@@ -39,8 +37,6 @@ const SiteDepartmentsScreen = () => {
 		newData.push(item);
 
 		setData(newData);
-
-		// setDataChanged(true);
 	};
 
 	return (

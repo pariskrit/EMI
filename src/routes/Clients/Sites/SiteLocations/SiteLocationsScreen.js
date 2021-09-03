@@ -16,7 +16,6 @@ const SiteLocationsScreen = () => {
 			const response = await getSiteLocations(id);
 			if (response.status) {
 				setData(response.data);
-				console.log("sagar", response.data);
 				return response;
 			} else {
 				throw new Error(response);

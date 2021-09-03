@@ -1,7 +1,6 @@
 import "./site.scss";
 import DeleteModal from "./DeleteModal";
 import Grid from "@material-ui/core/Grid";
-import DeleteDialog from "components/DeleteDialog";
 import DetailsPanel from "components/DetailsPanel";
 import React, { useState, useEffect } from "react";
 import ClientSiteTable from "components/ClientSiteTable";
@@ -70,7 +69,6 @@ const SiteDepartmentsContent = ({ data, setData }) => {
 
 	return (
 		<div>
-
 			<DeleteModal
 				entityName="Department"
 				open={openDeleteDialog}

@@ -54,8 +54,6 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
-	console.log("sagar", errors);
-
 	// Handlers
 	const closeOverride = () => {
 		// Clearing input state and errors
