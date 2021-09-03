@@ -1,6 +1,7 @@
 import {
 	Dialog,
 	DialogTitle,
+	Grid,
 	LinearProgress,
 	makeStyles,
 	TextField,
@@ -33,7 +34,6 @@ const defaultErrorSchema = { name: null, description: null };
 const useStyles = makeStyles({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
-	divider: { marginTop: 30, marginBottom: 30 },
 	inputContainer: {
 		display: "flex",
 		flexDirection: "column",
@@ -231,43 +231,49 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 					</ET.ButtonContainer>
 				</ET.ActionContainer>
 				<ET.DialogContent>
-					<div className={classes.inputContainer}>
-						<Typography>
-							Name<ET.RequiredStar>*</ET.RequiredStar>
-						</Typography>
-						<TextField
-							name="name"
-							error={errors.name === null ? false : true}
-							helperText={errors.name === null ? null : errors.name}
-							variant="outlined"
-							size="small"
-							value={input.name}
-							autoFocus
-							onKeyDown={handleEnterPress}
-							fullWidth
-							onChange={handleChange}
-						/>
-					</div>
-					<div className={classes.inputContainer}>
-						<Typography>
-							Description<ET.RequiredStar>*</ET.RequiredStar>
-						</Typography>
-						<TextField
-							name="description"
-							error={errors.description === null ? false : true}
-							helperText={
-								errors.description === null ? null : errors.description
-							}
-							variant="outlined"
-							size="small"
-							value={input.description}
-							autoFocus
-							onKeyDown={handleEnterPress}
-							fullWidth
-							onChange={handleChange}
-						/>
-					</div>
-					<div className={classes.divider}></div>
+					<Grid container spacing={2}>
+						<Grid item sm={6}>
+							<div className={classes.inputContainer}>
+								<Typography>
+									Name<ET.RequiredStar>*</ET.RequiredStar>
+								</Typography>
+								<TextField
+									name="name"
+									error={errors.name === null ? false : true}
+									helperText={errors.name === null ? null : errors.name}
+									variant="outlined"
+									size="small"
+									value={input.name}
+									autoFocus
+									onKeyDown={handleEnterPress}
+									fullWidth
+									onChange={handleChange}
+								/>
+							</div>
+						</Grid>
+						<Grid item sm={6}>
+							<div className={classes.inputContainer}>
+								<Typography>
+									Description<ET.RequiredStar>*</ET.RequiredStar>
+								</Typography>
+								<TextField
+									name="description"
+									error={errors.description === null ? false : true}
+									helperText={
+										errors.description === null ? null : errors.description
+									}
+									variant="outlined"
+									size="small"
+									value={input.description}
+									autoFocus
+									onKeyDown={handleEnterPress}
+									fullWidth
+									onChange={handleChange}
+								/>
+							</div>
+						</Grid>
+					</Grid>
+
 					<div className={classes.headContainer}>
 						<div className={classes.header}>
 							Functional Locations (
