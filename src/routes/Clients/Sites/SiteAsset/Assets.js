@@ -50,7 +50,10 @@ const Assets = ({ fetchSiteAssets, data }) => {
 			/>
 			<EditAssetDialog
 				open={modal.edit}
-				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+				closeHandler={() => {
+					setModal((th) => ({ ...th, edit: false }));
+					setEditData({});
+				}}
 				editData={editData}
 				handleEditData={handleEditData}
 			/>

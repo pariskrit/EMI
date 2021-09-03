@@ -91,14 +91,14 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 				setLoading(false);
 			}
 		};
-		if (editData.id !== undefined) fetchFunctionalLocations();
+		if (editData.id) fetchFunctionalLocations();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editData]);
 
 	const closeOverride = () => {
 		// Closing dialog
-		closeHandler();
 		setFunctionalLocations([]);
+		closeHandler();
 		setInput(defaultStateSchema);
 		// Removing new subcat input
 		setIsAddNew(false);
