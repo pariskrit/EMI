@@ -1,12 +1,14 @@
 import SiteWrapper from "components/SiteWrapper";
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { fetchSiteDetail } from "redux/siteDetail/actions";
 import { addSiteAsset, getSiteAssets } from "services/clients/sites/siteAssets";
 import { getSiteAssetsCount } from "services/clients/sites/siteAssets";
 import AddAssetDialog from "./AddAssetDialog";
 import Assets from "./Assets";
 
-const SiteAsset = () => {
+const SiteAsset = ({ fetchCrumbs }) => {
 	const history = useHistory();
 	const { id } = useParams();
 	const [modal, setModal] = useState({ import: false, add: false });
@@ -45,6 +47,7 @@ const SiteAsset = () => {
 	};
 
 	useEffect(() => {
+		fetchCrumbs(id);
 		fetchAset(1);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -97,4 +100,8 @@ const SiteAsset = () => {
 	);
 };
 
-export default SiteAsset;
+const mapDispatchToProps = (dispatch) => ({
+	fetchCrumbs: (id) => dispatch(fetchSiteDetail(id)),
+});
+
+export default connect(null, mapDispatchToProps)(SiteAsset);
