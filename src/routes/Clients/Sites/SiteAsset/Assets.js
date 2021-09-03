@@ -97,7 +97,7 @@ const Assets = ({ data, count, siteId }) => {
 				<div className="detailsContainer">
 					<DetailsPanel
 						header={"Assets"}
-						dataCount={assets.length}
+						dataCount={total}
 						description="Create and manage assets that can be assigned in zone maintenance"
 					/>
 
