@@ -70,14 +70,6 @@ const SiteDepartmentsContent = ({ data, setData }) => {
 
 	return (
 		<div>
-			{/* <DeleteDialog
-				entityName="Department"
-				open={openDeleteDialog}
-				closeHandler={handleDeleteDialogClose}
-				deleteEndpoint="/api/SiteDepartments"
-				deleteID={selectedID}
-				handleRemoveData={handleRemoveData}
-			/> */}
 
 			<DeleteModal
 				entityName="Department"

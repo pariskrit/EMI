@@ -4,7 +4,10 @@ import SimpleDataTable from "components/SimpleDataTable";
 
 const KeyContacts = ({ contactsList }) => {
 	return (
-		<AccordionBox title="Key Contacts">
+		<AccordionBox
+			title="Key Contacts"
+			accordianDetailsCss="siteDetailTableContainer"
+		>
 			<SimpleDataTable
 				data={contactsList}
 				tableHeaders={["Name", "Product", "Email", "Phone"]}

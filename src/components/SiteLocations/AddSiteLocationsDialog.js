@@ -8,6 +8,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addSiteLocations } from "services/clients/sites/siteLocations";
+import { TextField } from "@material-ui/core";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -77,18 +78,17 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
+					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
-
 				setErrors({ ...errors, ...newErrors });
 				setIsUpdating(false);
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
 			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
 		}
@@ -120,7 +120,17 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 
 				return { success: true };
 			} else {
-				throw new Error(result);
+				if (result.data.detail) {
+					setErrors({ name: result.data.detail });
+					return {
+						success: false,
+						errors: {
+							name: result.data.detail,
+						},
+					};
+				} else {
+					return { success: false, errors: result.data.errors };
+				}
 			}
 		} catch (err) {
 			if (err.response.data.errors !== undefined) {
@@ -180,6 +190,8 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							onChange={(e) => {
 								setInput({ ...input, name: e.target.value });
 							}}
+							fullWidth
+							multiline
 						/>
 						{/* </ADD.NameInputContainer> */}
 					</div>

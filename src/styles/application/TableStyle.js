@@ -19,7 +19,7 @@ const TableStyle = () => {
 			borderColor: ColourConstants.tableBorder,
 			borderWidth: 1,
 			borderRadius: 0,
-			["@media (max-width: 376px)"]: {
+			["@media (max-width: 414px)"]: {
 				maxWidth: "87vw",
 				overflowX: "auto",
 			},

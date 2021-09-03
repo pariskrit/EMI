@@ -1,0 +1,15 @@
+.siteDetailTableContainer {
+}
+
+@media only screen and (max-width: 414px) {
+	.siteDetailTableContainer {
+		width: 88vw;
+		overflow-x: auto;
+	}
+}
+@media only screen and (max-width: 376px) {
+	.siteDetailTableContainer {
+		width: 86.5vw;
+		overflow-x: auto;
+	}
+}

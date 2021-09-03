@@ -54,6 +54,8 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
+	console.log("sagar", errors);
+
 	// Handlers
 	const closeOverride = () => {
 		// Clearing input state and errors
@@ -68,9 +70,6 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
-
-			console.log(localChecker);
-
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				// Creating new data
@@ -80,6 +79,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
+					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
 				}
 			} else {
@@ -91,7 +91,6 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 		} catch (err) {
 			// TODO: handle non validation errors here
 			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
 		}
@@ -122,10 +121,23 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 					name: input.name,
 					description: input.description,
 				});
-
 				return { success: true };
 			} else {
-				throw new Error(result);
+				if (result.data.detail) {
+					setErrors({
+						name: result.data.detail,
+						description: result.data.detail,
+					});
+					return {
+						success: false,
+						errors: {
+							name: result.data.detail,
+							description: result.data.detail,
+						},
+					};
+				} else {
+					return { success: false, errors: { ...result.data.errors } };
+				}
 			}
 		} catch (err) {
 			if (err.response.data.errors !== undefined) {
@@ -202,6 +214,8 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							onChange={(e) => {
 								setInput({ ...input, description: e.target.value });
 							}}
+							fullWidth
+							multiline
 						/>
 					</div>
 				</DialogContent>
