@@ -168,11 +168,11 @@ const ClientSiteTable = ({
 						))
 					) : (
 						<TableRow>
-							{headers.map((_, i) => {
+							{headers.map((head, i) => {
 								if (i === 0) {
-									return <TableCell>No Record Found</TableCell>;
+									return <TableCell key={head}>No Record Found</TableCell>;
 								} else {
-									return <TableCell></TableCell>;
+									return <TableCell key={head}></TableCell>;
 								}
 							})}
 						</TableRow>

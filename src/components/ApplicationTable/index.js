@@ -43,7 +43,7 @@ const ApplicationTable = ({
 	showQuantity,
 }) => {
 	const classes = useStyles();
-
+	console.log(data);
 	return (
 		<Table className={classes.tableContainer}>
 			<TableHead className={classes.tableHead}>

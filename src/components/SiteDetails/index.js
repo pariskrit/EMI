@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
 import Dropdown from "components/Dropdown";
 import { siteOptions } from "helpers/constants";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
@@ -42,6 +42,7 @@ const SiteDetails = ({
 	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 	const [newInput, setNewInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
+	const cancelFetch = useRef(false);
 
 	const openConfirmChangeDialog = (e) => {
 		if (newInput.value === siteDetails[newInput.label]) {
@@ -112,6 +113,10 @@ const SiteDetails = ({
 	const fetchSiteDetails = async () => {
 		const result = await handlefetchSiteDetail(siteId);
 
+		if (cancelFetch.current) {
+			return;
+		}
+
 		if (result.status) {
 			setNewSiteDetails(result.data);
 			setNewInput(result.data);
@@ -154,6 +159,10 @@ const SiteDetails = ({
 
 	useEffect(() => {
 		fetchSiteDetails();
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, []);
 
 	return (

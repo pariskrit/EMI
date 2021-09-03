@@ -1,5 +1,5 @@
 import SiteWrapper from "components/SiteWrapper";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { addSiteAsset, getSiteAssets } from "services/clients/sites/siteAssets";
 import AddAssetDialog from "./AddAssetDialog";
@@ -10,10 +10,15 @@ const SiteAsset = () => {
 	const { id } = useParams();
 	const [modal, setModal] = useState({ import: false, add: false });
 	const [data, setData] = useState([]);
+	const cancelFetch = useRef(false);
 
 	const fetchSiteAssets = async () => {
 		try {
 			const response = await getSiteAssets(id);
+
+			if (cancelFetch.current) {
+				return;
+			}
 			if (response.status) {
 				setData(response.data);
 				return response;
@@ -29,6 +34,10 @@ const SiteAsset = () => {
 	useEffect(() => {
 		fetchSiteAssets();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, []);
 
 	const addAsset = async (input) => {

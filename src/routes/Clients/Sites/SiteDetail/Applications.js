@@ -105,7 +105,6 @@ const Applications = ({
 				open={openModal}
 				handleClose={onCloseAddSiteApplicationModal}
 				siteId={siteId}
-				setApplicationList={setApplicationList}
 				fetchKeyContactsList={fetchKeyContactsList}
 			/>
 			<AccordionBox
