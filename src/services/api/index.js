@@ -9,6 +9,7 @@ const BASE_API_PATH_SITE_APPKEYCONTACTS = `${BASE_API_PATH}siteappkeycontacts/Si
 const BASE_API_PATH_SITE_APPLICATIONS = `${BASE_API_PATH}siteapps`;
 const BASE_API_PATH_SITES_LOCATIONS = `${BASE_API_PATH}SiteLocations`;
 const BASE_API_PATH_SITES_DEPARTMENTS = `${BASE_API_PATH}SiteDepartments`;
+const BASE_API_PATH_SITE_ASSET_COUNT = `${BASE_API_PATH}SiteAssets/Count`;
 
 export const Apis = {
 	//client detail screen
@@ -16,6 +17,8 @@ export const Apis = {
 
 	//sites
 	SiteAssets: `${BASE_API_PATH_SITES}`,
+	// Total Site Assets
+	SiteAssetsCount: `${BASE_API_PATH_SITE_ASSET_COUNT}`,
 
 	//sitereferences
 	SiteReferences: `${BASE_API_PATH_SITE_ASSET_REFERENCES}`,

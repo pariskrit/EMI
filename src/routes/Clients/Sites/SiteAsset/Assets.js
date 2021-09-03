@@ -7,18 +7,25 @@ import ClientSiteTable from "components/ClientSiteTable";
 import DeleteDialog from "components/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
+import { getSiteAssets } from "services/clients/sites/siteAssets";
 
 const AC = ContentStyle();
 
-const Assets = ({ fetchSiteAssets, data }) => {
+const Assets = ({ data, count, siteId }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
 	const [editData, setEditData] = useState({});
+	const [total, setTotal] = useState(null);
+	const [page, setPage] = useState({ pageNo: 1, perPage: 12 });
 
 	useEffect(() => {
 		setAsset(data);
 	}, [data]);
+
+	useEffect(() => {
+		setTotal(+count);
+	}, [count]);
 
 	const handleEdit = (id) => {
 		const edit = [...assets].find((x) => x.id === id);
@@ -29,6 +36,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 	const deleteSuccess = (id) => {
 		const da = [...assets].filter((x) => x.id !== id);
 		setAsset(da);
+		setTotal(total - 1);
 	};
 
 	const handleEditData = (d) => {
@@ -36,6 +44,22 @@ const Assets = ({ fetchSiteAssets, data }) => {
 		let index = newData.findIndex((x) => x.id === d.id);
 		newData[index] = d;
 		setAsset(newData);
+	};
+
+	const handlePage = async (p) => {
+		setPage({ pageNo: p, rowsPerPage: 12 });
+		try {
+			const response = await getSiteAssets(siteId, p);
+			if (response.status) {
+				setAsset(response.data);
+				return response;
+			} else {
+				throw new Error(response);
+			}
+		} catch (err) {
+			console.log(err);
+			return err;
+		}
 	};
 
 	return (
@@ -85,12 +109,16 @@ const Assets = ({ fetchSiteAssets, data }) => {
 					data={assets}
 					columns={["name", "description"]}
 					headers={["Asset", "Description"]}
-					onEdit={(id) => handleEdit(id)}
+					onEdit={handleEdit}
 					onDelete={(id) => {
 						setModal((th) => ({ ...th, delete: true }));
 						setId(id);
 					}}
 					setData={setAsset}
+					page={page.pageNo}
+					rowsPerPage={page.rowsPerPage}
+					onPageChange={handlePage}
+					count={total}
 				/>
 			</div>
 		</>

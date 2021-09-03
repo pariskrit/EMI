@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		float: "right",
 	},
+	formFields: { display: "flex", flexDirection: "column", gap: 15 },
 }));
 
 const FunctionalLocations = ({
@@ -237,7 +238,7 @@ const FunctionalLocations = ({
 			)}
 			{isEdit && !attemptDelete ? (
 				<form onSubmit={handleSubmit}>
-					<div className={classes.inputContainer}>
+					<div className={classes.formFields}>
 						<TextField
 							fullWidth
 							variant="outlined"
@@ -248,8 +249,6 @@ const FunctionalLocations = ({
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
 						/>
-					</div>
-					<div className={classes.inputContainer}>
 						<TextField
 							fullWidth
 							variant="outlined"
@@ -262,8 +261,6 @@ const FunctionalLocations = ({
 								errors.description === null ? null : errors.description
 							}
 						/>
-					</div>
-					<div className={classes.inputContainer}>
 						<TextField
 							fullWidth
 							variant="outlined"
@@ -276,8 +273,6 @@ const FunctionalLocations = ({
 								errors.plannerGroup === null ? null : errors.plannerGroup
 							}
 						/>
-					</div>
-					<div className={classes.inputContainer}>
 						<TextField
 							fullWidth
 							variant="outlined"

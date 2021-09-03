@@ -52,6 +52,10 @@ const ClientSiteTable = ({
 	onEdit,
 	onDelete,
 	pagination,
+	page,
+	rowsPerPage,
+	onPageChange,
+	count,
 }) => {
 	const classes = useStyles();
 
@@ -179,7 +183,14 @@ const ClientSiteTable = ({
 					)}
 				</TableBody>
 			</Table>
-			{pagination && <TablePagination />}
+			{pagination && (
+				<TablePagination
+					page={page}
+					rowsPerPage={rowsPerPage}
+					onPageChange={onPageChange}
+					count={count}
+				/>
+			)}
 		</AT.TableContainer>
 	);
 };
