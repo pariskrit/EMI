@@ -23,7 +23,6 @@ const TablePagination = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
 	const { page, rowsPerPage, onPageChange, count } = props;
-	console.log(props);
 	const handleFirstPageButtonClick = () => {
 		onPageChange(1);
 	};
