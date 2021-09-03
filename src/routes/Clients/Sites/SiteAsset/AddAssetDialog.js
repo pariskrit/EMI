@@ -29,6 +29,7 @@ const useStyles = makeStyles({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
+		gap: "12px",
 	},
 	createButton: {
 		width: "auto",

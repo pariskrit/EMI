@@ -54,7 +54,6 @@ const useStyles = makeStyles({
 	},
 });
 const SiteWrapper = ({
-	crumbs,
 	status,
 	lastSaved,
 	onClickAdd,
@@ -64,6 +63,7 @@ const SiteWrapper = ({
 	current,
 	onNavClick,
 	Component,
+	crumbs,
 }) => {
 	const classes = useStyles();
 	const { id, clientId } = useParams();
@@ -72,7 +72,13 @@ const SiteWrapper = ({
 			<Navbar
 				Content={() => (
 					<div className="container">
-						<div className={showAdd || showImport ? "topContainerCustomCaptions" : 'topContainerCustomCaptionsWithourActions'}>
+						<div
+							className={
+								showAdd || showImport
+									? "topContainerCustomCaptions"
+									: "topContainerCustomCaptionsWithourActions"
+							}
+						>
 							<Navcrumbs
 								crumbs={crumbs}
 								status={status}
