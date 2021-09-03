@@ -4,6 +4,7 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import ColourConstants from "helpers/colourConstants";
 import SaveHistory from "../SaveHistory";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Navcrumbs = ({ crumbs, status }) => {
+const NavDetails = ({ staticCrumbs, crumbs, status }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -35,15 +36,25 @@ const Navcrumbs = ({ crumbs, status }) => {
 	return (
 		<div>
 			<Breadcrumbs aria-label="breadcrumb" separator={<DefaultSeparator />}>
-				{crumbs.map((crumb) => (
-					<Typography
-						key={crumb}
-						className={classes.crumbText}
-						color="textPrimary"
-					>
-						{crumb}
-					</Typography>
-				))}
+				{staticCrumbs?.length > 0
+					? staticCrumbs?.map((crumb) => (
+							<Typography
+								key={crumb}
+								className={classes.crumbText}
+								color="textPrimary"
+							>
+								{crumb}
+							</Typography>
+					  ))
+					: crumbs.map((crumb) => (
+							<Typography
+								key={crumb}
+								className={classes.crumbText}
+								color="textPrimary"
+							>
+								{crumb}
+							</Typography>
+					  ))}
 			</Breadcrumbs>
 			<div className="left-section flex" style={{ gap: "12px" }}>
 				{status && (
@@ -59,12 +70,13 @@ const Navcrumbs = ({ crumbs, status }) => {
 					</div>
 				)}
 				<SaveHistory />
-				{/* <div>
-					<b>Last saved:</b> 21.10.20/1137 AEST
-				</div> */}
 			</div>
 		</div>
 	);
 };
 
-export default Navcrumbs;
+const mapStateToProps = ({ siteDetailData: { crumbs } }) => ({
+	crumbs,
+});
+
+export default connect(mapStateToProps)(NavDetails);

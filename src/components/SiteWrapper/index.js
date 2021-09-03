@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import RestoreIcon from "@material-ui/icons/Restore";
 import { makeStyles, createMuiTheme, ThemeProvider } from "@material-ui/core";
-import Navcrumbs from "components/Navcrumbs";
+import NavDetails from "components/NavDetails";
 import Navbar from "components/Navbar";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import NavButtons from "components/NavButtons";
@@ -79,11 +79,7 @@ const SiteWrapper = ({
 									: "topContainerCustomCaptionsWithourActions"
 							}
 						>
-							<Navcrumbs
-								crumbs={crumbs}
-								status={status}
-								lastSaved={lastSaved}
-							/>
+							<NavDetails status={true} lastSaved={lastSaved} />
 							<div className={showAdd || showImport ? classes.wrapper : ""}>
 								<div className={classes.buttons}>
 									{showImport && (

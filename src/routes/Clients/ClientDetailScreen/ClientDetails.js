@@ -45,7 +45,7 @@ const ClientDetails = ({
 		<div className="client-details">
 			<div className="flex justify-between">
 				<NavDetails
-					crumbs={["Client", clientDetail.name]}
+					staticCrumbs={["Client", clientDetail.name]}
 					status={true}
 					lastSaved=""
 				/>
