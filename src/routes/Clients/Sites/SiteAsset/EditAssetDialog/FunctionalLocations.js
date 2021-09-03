@@ -75,6 +75,12 @@ const useStyles = makeStyles((theme) => ({
 		},
 		float: "right",
 	},
+	mainWrap: {
+		background: "#e8e8e8",
+		padding: 10,
+		borderRadius: 10,
+		marginBottom: 15,
+	},
 	formFields: { display: "flex", flexDirection: "column" },
 }));
 
@@ -232,15 +238,7 @@ const FunctionalLocations = ({
 	};
 
 	return (
-		<div
-			ref={ref}
-			style={{
-				background: "#e8e8e8",
-				padding: 10,
-				borderRadius: 10,
-				marginBottom: 15,
-			}}
-		>
+		<div ref={ref} className={classes.mainWrap}>
 			{!isEdit && (
 				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			)}
