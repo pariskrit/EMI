@@ -18,6 +18,8 @@ const Assets = ({ data, count, siteId }) => {
 	const [editData, setEditData] = useState({});
 	const [total, setTotal] = useState(null);
 	const [page, setPage] = useState({ pageNo: 1, perPage: 12 });
+	const [searchText, setSearchText] = useState("");
+	const [searchedAsset, setSearchAsset] = useState([]);
 
 	useEffect(() => {
 		setAsset(data);
@@ -62,6 +64,16 @@ const Assets = ({ data, count, siteId }) => {
 		}
 	};
 
+	const handleSearch = (e) => {
+		const { value } = e.target;
+		setSearchText(value);
+		const filteredData = assets.filter((x) => {
+			const regex = new RegExp(value, "gi");
+			return x.name.match(regex) || x.description.match(regex);
+		});
+		setSearchAsset(filteredData);
+	};
+
 	return (
 		<>
 			<DeleteDialog
@@ -96,17 +108,14 @@ const Assets = ({ data, count, siteId }) => {
 									<SearchIcon />
 								</Grid>
 								<Grid item>
-									<AC.SearchInput
-										onChange={(e) => console.log(e.target.value)}
-										label="Search"
-									/>
+									<AC.SearchInput onChange={handleSearch} label="Search" />
 								</Grid>
 							</Grid>
 						</AC.SearchInner>
 					</AC.SearchContainer>
 				</div>
 				<ClientSiteTable
-					data={assets}
+					data={searchText.length === 0 ? assets : searchedAsset}
 					columns={["name", "description"]}
 					headers={["Asset", "Description"]}
 					onEdit={handleEdit}
