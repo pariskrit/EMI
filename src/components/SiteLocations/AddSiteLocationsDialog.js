@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import API from "helpers/api";
 import React, { useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,8 +6,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { addSiteLocations } from "services/clients/sites/siteLocations";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -33,6 +32,13 @@ const useStyles = makeStyles({
 	},
 	createButton: {
 		width: "auto",
+	},
+
+	inputContainer: {
+		width: "100%",
+		display: "flex",
+		flexDirection: "column",
+		marginBottom: 20,
 	},
 });
 
@@ -98,13 +104,13 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/SiteLocations", {
+			const result = await addSiteLocations({
 				siteId: siteID,
 				name: input.name,
 			});
 
 			// Handling success
-			if (result.status === 201) {
+			if (result.status) {
 				// Adding new type to state
 				createHandler({
 					id: result.data,
@@ -157,27 +163,27 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 				</ADD.ActionContainer>
 
 				<DialogContent className={classes.dialogContent}>
-					<DialogContentText id="alert-dialog-description">
-						<ADD.InputContainer>
-							<ADD.NameInputContainer>
-								<ADD.NameLabel>
-									Name<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
-								<ADD.NameInput
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
-									required
-									variant="outlined"
-									label="Location"
-									value={input.name}
-									onKeyDown={handleEnterPress}
-									onChange={(e) => {
-										setInput({ ...input, name: e.target.value });
-									}}
-								/>
-							</ADD.NameInputContainer>
-						</ADD.InputContainer>
-					</DialogContentText>
+					{/* <DialogContentText id="alert-dialog-description"> */}
+					<div className={classes.inputContainer}>
+						{/* <ADD.NameInputContainer> */}
+						<ADD.NameLabel>
+							Name<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
+						<ADD.NameInput
+							error={errors.name === null ? false : true}
+							helperText={errors.name === null ? null : errors.name}
+							required
+							variant="outlined"
+							label="Location"
+							value={input.name}
+							onKeyDown={handleEnterPress}
+							onChange={(e) => {
+								setInput({ ...input, name: e.target.value });
+							}}
+						/>
+						{/* </ADD.NameInputContainer> */}
+					</div>
+					{/* </DialogContentText> */}
 				</DialogContent>
 			</Dialog>
 		</div>

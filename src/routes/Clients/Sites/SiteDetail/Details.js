@@ -5,8 +5,7 @@ import SiteDetails from "components/SiteDetails";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";
 import { useParams } from "react-router-dom";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
+import { getSiteAppKeyContacts } from "services/clients/sites/siteDetails";
 
 const Details = () => {
 	const { id } = useParams();
@@ -14,11 +13,9 @@ const Details = () => {
 	const [contactsList, setContactsList] = useState([]);
 
 	const fetchKeyContactsList = async () => {
-		try {
-			const result = await API.get(
-				`${BASE_API_PATH}siteappkeycontacts/Site/${id}`
-			);
-			console.log(result);
+		const result = await getSiteAppKeyContacts(id);
+
+		if (result.status) {
 			setContactsList(
 				result.data.map((data) => ({
 					id: data.siteAppID,
@@ -31,8 +28,10 @@ const Details = () => {
 			setListOfSiteAppId(
 				result.data.map((data) => ({ siteAppId: data.siteAppID }))
 			);
-		} catch (error) {
-			console.log(error);
+
+			return true;
+		} else {
+			return false;
 		}
 	};
 
@@ -50,10 +49,7 @@ const Details = () => {
 							</AccordionBox>
 						</Grid>
 						<Grid item xs={12}>
-							<KeyContacts
-								setIds={setListOfSiteAppId}
-								contactsList={contactsList}
-							/>
+							<KeyContacts contactsList={contactsList} />
 						</Grid>
 						<Grid item xs={12}>
 							<Applications

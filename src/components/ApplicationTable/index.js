@@ -45,7 +45,7 @@ const ApplicationTable = ({
 	const classes = useStyles();
 
 	return (
-		<Table>
+		<Table className={classes.tableContainer}>
 			<TableHead className={classes.tableHead}>
 				<TableRow>
 					<TableCell>Name</TableCell>

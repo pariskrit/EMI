@@ -84,7 +84,7 @@ function ProvidedAssetNoImage({
 	const classes = useStyles();
 	const { id, name, url } = document;
 	const [openDialog, setOpenDialog] = useState(false);
-	const [imgURL, setImgURL] = useState(false);
+	const [imgURL, setImgURL] = useState("");
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};

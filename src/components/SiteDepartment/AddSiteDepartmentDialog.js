@@ -7,7 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import API from "helpers/api";
+import { addSiteDepartments } from "services/clients/sites/siteDepartments";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -35,6 +35,13 @@ const useStyles = makeStyles({
 	},
 	createButton: {
 		width: "auto",
+	},
+
+	inputContainer: {
+		width: "100%",
+		display: "flex",
+		flexDirection: "column",
+		marginBottom: 20,
 	},
 });
 
@@ -100,14 +107,14 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/SiteDepartments", {
+			const result = await addSiteDepartments({
 				siteId: siteID,
 				name: input.name,
 				description: input.description,
 			});
 
 			// Handling success
-			if (result.status === 201) {
+			if (result.status) {
 				// Adding new type to state
 				createHandler({
 					id: result.data,
@@ -161,7 +168,10 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 				</ADD.ActionContainer>
 
 				<DialogContent className={classes.dialogContent}>
-					<ADD.InputContainer>
+					<div className={classes.inputContainer}>
+						<ADD.NameLabel>
+							Name<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
@@ -174,8 +184,11 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 								setInput({ ...input, name: e.target.value });
 							}}
 						/>
-					</ADD.InputContainer>
-					<ADD.InputContainer>
+					</div>
+					<div className={classes.inputContainer}>
+						<ADD.NameLabel>
+							Description<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.description === null ? false : true}
 							helperText={
@@ -190,7 +203,7 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 								setInput({ ...input, description: e.target.value });
 							}}
 						/>
-					</ADD.InputContainer>
+					</div>
 				</DialogContent>
 			</Dialog>
 		</div>

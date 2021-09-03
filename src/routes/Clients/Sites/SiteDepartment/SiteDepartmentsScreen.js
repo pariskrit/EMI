@@ -4,6 +4,7 @@ import { BASE_API_PATH } from "helpers/constants";
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import SiteDepartmentsContent from "./SiteDepartmentsContent";
+import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import AddSiteDepartmentDialog from "components/SiteDepartment/AddSiteDepartmentDialog";
 
 const SiteDepartmentsScreen = () => {
@@ -14,10 +15,8 @@ const SiteDepartmentsScreen = () => {
 
 	const fetchSiteDepartments = async () => {
 		try {
-			const response = await API.get(
-				`${BASE_API_PATH}SiteDepartments?siteId=${id}`
-			);
-			if (response.status === 200) {
+			const response = await getSiteDepartments(id);
+			if (response.status) {
 				setData(response.data);
 				return response;
 			} else {

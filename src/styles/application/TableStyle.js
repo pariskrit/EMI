@@ -19,6 +19,10 @@ const TableStyle = () => {
 			borderColor: ColourConstants.tableBorder,
 			borderWidth: 1,
 			borderRadius: 0,
+			["@media (max-width: 376px)"]: {
+				maxWidth: "87vw",
+				overflowX: "auto",
+			},
 		}),
 		TableHead: styled(TableHead)({
 			userSelect: "none",

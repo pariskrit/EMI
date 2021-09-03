@@ -7,6 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { editSiteLocations } from "services/clients/sites/siteLocations";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -71,7 +72,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 		// Attempting to update data
 		try {
 			// Making patch to backend
-			const result = await API.patch(`/api/SiteLocations/${data.id}`, [
+			const result = await editSiteLocations(data.id, [
 				{
 					op: "replace",
 					path: "name",
@@ -80,7 +81,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 			]);
 
 			// Handling success
-			if (result.status === 200) {
+			if (result.status) {
 				// Updating state to match DB
 				handleEditData({
 					id: data.id,
