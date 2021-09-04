@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import Navbar from "../../../components/Navbar";
 import ClientContent from "./ClientContent";
 
 // Overriding Material UI components for this parent component
-const theme = createMuiTheme({
+const theme = createTheme({
 	overrides: {
 		// Accordion override is making the accordion title static vs. default dynamic
 		MuiAccordionSummary: {

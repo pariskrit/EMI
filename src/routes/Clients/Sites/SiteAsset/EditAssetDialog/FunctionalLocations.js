@@ -76,10 +76,11 @@ const useStyles = makeStyles((theme) => ({
 		float: "right",
 	},
 	mainWrap: {
-		background: "#e8e8e8",
 		padding: 10,
-		borderRadius: 10,
+		background: "#f2f2f23d",
+		borderRadius: 5,
 		marginBottom: 15,
+		border: "1px solid #f2f2f2",
 	},
 	formFields: { display: "flex", flexDirection: "column" },
 }));
