@@ -13,6 +13,11 @@ import Row from "./Row";
 import "./style.scss";
 
 const useStyles = makeStyles((theme) => ({
+	tableContainer: {
+		["@media (max-width: 414px)"]: {
+			whiteSpace: "nowrap",
+		},
+	},
 	tableHead: {
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",

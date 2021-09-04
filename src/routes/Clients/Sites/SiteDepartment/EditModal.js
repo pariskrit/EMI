@@ -183,6 +183,8 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 									onChange={(e) => {
 										setInput({ ...input, description: e.target.value });
 									}}
+									fullWidth
+									multiline
 								/>
 							</AED.RightInputContainer>
 						</AED.InputContainer>

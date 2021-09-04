@@ -24,7 +24,6 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 			}
 			if (response.status) {
 				setData(response.data);
-				console.log("sagar", response.data);
 				return response;
 			} else {
 				throw new Error(response);

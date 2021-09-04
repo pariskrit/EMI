@@ -13,6 +13,12 @@ import PropTypes from "prop-types";
 import { BorderBottom, Rowing } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
+	tableContainer: {
+		["@media (max-width: 414px)"]: {
+			whiteSpace: "nowrap",
+		},
+	},
+
 	keyContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -44,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 function KeyContacts({ data, tableHeaders }) {
 	const classes = useStyles();
 	return (
-		<Table>
+		<Table className={classes.tableContainer}>
 			<TableHead className={classes.tableHead}>
 				<TableRow>
 					{tableHeaders.map((header) => (

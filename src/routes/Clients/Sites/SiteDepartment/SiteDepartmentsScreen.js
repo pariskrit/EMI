@@ -1,13 +1,11 @@
-import API from "helpers/api";
-import SiteWrapper from "components/SiteWrapper";
-import { BASE_API_PATH } from "helpers/constants";
-import React, { useState, useEffect, useRef } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import SiteDepartmentsContent from "./SiteDepartmentsContent";
-import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import AddSiteDepartmentDialog from "components/SiteDepartment/AddSiteDepartmentDialog";
+import SiteWrapper from "components/SiteWrapper";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
 import { fetchSiteDetail } from "redux/siteDetail/actions";
+import { getSiteDepartments } from "services/clients/sites/siteDepartments";
+import SiteDepartmentsContent from "./SiteDepartmentsContent";
 
 const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 	const { id } = useParams();
@@ -49,8 +47,6 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 		newData.push(item);
 
 		setData(newData);
-
-		// setDataChanged(true);
 	};
 
 	return (

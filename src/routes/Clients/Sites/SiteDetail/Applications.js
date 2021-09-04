@@ -6,6 +6,7 @@ import DeleteDialog from "components/DeleteDialog/DeleteDialog";
 import AddSiteApplicationModal from "components/AddSiteApplicationModal";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import "./siteDetail.css";
 import {
 	getSiteApplications,
 	updateSiteApplicationStatus,
@@ -112,7 +113,8 @@ const Applications = ({
 				isActionsPresent={true}
 				buttonName="Add Application"
 				buttonAction={onOpenAddSiteApplicationModal}
-				accordianDetailsCss="table-container"
+				// accordianDetailsCss="table-container"
+				accordianDetailsCss="siteDetailTableContainer"
 			>
 				<ApplicationTable
 					data={applicationList}
