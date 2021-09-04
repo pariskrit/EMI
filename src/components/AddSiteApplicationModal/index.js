@@ -44,7 +44,7 @@ const AddAppDialog = ({
 	handleClose,
 	fetchKeyContactsList,
 	siteId,
-	setApplicationList,
+
 	setError,
 }) => {
 	const classes = useStyles();
@@ -71,12 +71,9 @@ const AddAppDialog = ({
 
 		if (response.status) {
 			fetchKeyContactsList().then(() => {
-				setApplicationList((prev) => [...prev, selectedApplication]);
-				setIsLoading(false);
 				handleClose();
 			});
 		} else {
-			setIsLoading(false);
 			handleClose();
 
 			setError(response.data.detail);

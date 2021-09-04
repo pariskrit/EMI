@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Grid } from "@material-ui/core";
 import AccordionBox from "components/AccordionBox";
 import SiteDetails from "components/SiteDetails";
@@ -11,9 +11,14 @@ const Details = () => {
 	const { id } = useParams();
 	const [listOfSiteAppId, setListOfSiteAppId] = useState([]);
 	const [contactsList, setContactsList] = useState([]);
+	const cancelFetch = useRef(false);
 
 	const fetchKeyContactsList = async () => {
 		const result = await getSiteAppKeyContacts(id);
+
+		if (cancelFetch.current) {
+			return;
+		}
 
 		if (result.status) {
 			setContactsList(
@@ -37,6 +42,10 @@ const Details = () => {
 
 	useEffect(() => {
 		fetchKeyContactsList();
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, []);
 	return (
 		<div style={{ marginTop: 22 }}>

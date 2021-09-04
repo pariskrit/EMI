@@ -57,10 +57,9 @@ const PopupMenu = ({
 				<PopperPaper>
 					<List component="nav" aria-label="menu list">
 						{menuData.map((item, i) => (
-							<>
+							<React.Fragment key={i}>
 								<ListItem
 									button
-									key={`menu-link-${i}`}
 									onClick={() => {
 										item.handler(id);
 									}}
@@ -79,7 +78,7 @@ const PopupMenu = ({
 								{menuData.length === i + 1 ? null : (
 									<Divider variant="middle" />
 								)}
-							</>
+							</React.Fragment>
 						))}
 					</List>
 				</PopperPaper>
