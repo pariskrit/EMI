@@ -1,19 +1,23 @@
 import SiteWrapper from "components/SiteWrapper";
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { fetchSiteDetail } from "redux/siteDetail/actions";
 import { addSiteAsset, getSiteAssets } from "services/clients/sites/siteAssets";
+import { getSiteAssetsCount } from "services/clients/sites/siteAssets";
 import AddAssetDialog from "./AddAssetDialog";
 import Assets from "./Assets";
 
-const SiteAsset = () => {
+const SiteAsset = ({ fetchCrumbs }) => {
 	const history = useHistory();
 	const { id } = useParams();
 	const [modal, setModal] = useState({ import: false, add: false });
 	const [data, setData] = useState([]);
+	const [count, setCount] = useState(null);
 
-	const fetchSiteAssets = async () => {
+	const fetchSiteAssets = async (pNo) => {
 		try {
-			const response = await getSiteAssets(id);
+			const response = await getSiteAssets(id, pNo);
 			if (response.status) {
 				setData(response.data);
 				return response;
@@ -26,8 +30,25 @@ const SiteAsset = () => {
 		}
 	};
 
+	const getTotalPage = async () => {
+		try {
+			const response = await getSiteAssetsCount(id);
+			if (response.status) {
+				setCount(response.data);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const fetchAset = async (pageNo) => {
+		await getTotalPage();
+		await fetchSiteAssets(pageNo);
+	};
+
 	useEffect(() => {
-		fetchSiteAssets();
+		fetchCrumbs(id);
+		fetchAset(1);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -38,7 +59,7 @@ const SiteAsset = () => {
 				...input,
 			});
 			if (response.status) {
-				await fetchSiteAssets();
+				await fetchAset(1);
 				return { success: true };
 			} else {
 				if (response.data.detail) {
@@ -73,12 +94,14 @@ const SiteAsset = () => {
 				showAdd
 				showImport
 				onClickAdd={() => setModal((th) => ({ ...th, add: true }))}
-				Component={() => (
-					<Assets fetchSiteAssets={fetchSiteAssets} data={data} />
-				)}
+				Component={() => <Assets data={data} count={count} siteId={id} />}
 			/>
 		</>
 	);
 };
 
-export default SiteAsset;
+const mapDispatchToProps = (dispatch) => ({
+	fetchCrumbs: (id) => dispatch(fetchSiteDetail(id)),
+});
+
+export default connect(null, mapDispatchToProps)(SiteAsset);

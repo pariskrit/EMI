@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { makeStyles, TextField, Typography } from "@material-ui/core";
+import { Grid, makeStyles, TextField, Typography } from "@material-ui/core";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
@@ -75,6 +75,13 @@ const useStyles = makeStyles((theme) => ({
 		},
 		float: "right",
 	},
+	mainWrap: {
+		background: "#e8e8e8",
+		padding: 10,
+		borderRadius: 10,
+		marginBottom: 15,
+	},
+	formFields: { display: "flex", flexDirection: "column" },
 }));
 
 const FunctionalLocations = ({
@@ -231,86 +238,102 @@ const FunctionalLocations = ({
 	};
 
 	return (
-		<div ref={ref}>
+		<div ref={ref} className={classes.mainWrap}>
 			{!isEdit && (
 				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			)}
 			{isEdit && !attemptDelete ? (
 				<form onSubmit={handleSubmit}>
-					<div className={classes.inputContainer}>
-						<TextField
-							fullWidth
-							variant="outlined"
-							name="name"
-							label="Name"
-							onChange={handleChange}
-							value={input.name}
-							error={errors.name === null ? false : true}
-							helperText={errors.name === null ? null : errors.name}
-						/>
-					</div>
-					<div className={classes.inputContainer}>
-						<TextField
-							fullWidth
-							variant="outlined"
-							name="description"
-							label="Description"
-							onChange={handleChange}
-							value={input.description}
-							error={errors.description === null ? false : true}
-							helperText={
-								errors.description === null ? null : errors.description
-							}
-						/>
-					</div>
-					<div className={classes.inputContainer}>
-						<TextField
-							fullWidth
-							variant="outlined"
-							name="plannerGroup"
-							label="Planner Group"
-							onChange={handleChange}
-							value={input.plannerGroup}
-							error={errors.plannerGroup === null ? false : true}
-							helperText={
-								errors.plannerGroup === null ? null : errors.plannerGroup
-							}
-						/>
-					</div>
-					<div className={classes.inputContainer}>
-						<TextField
-							fullWidth
-							variant="outlined"
-							name="workCenter"
-							label="Work Center"
-							onChange={handleChange}
-							value={input.workCenter}
-							error={errors.workCenter === null ? false : true}
-							helperText={errors.workCenter === null ? null : errors.workCenter}
-						/>
+					<div className={classes.formFields} style={{ gap: 15 }}>
+						<Grid container spacing={2}>
+							<Grid item sm={6}>
+								<TextField
+									fullWidth
+									variant="outlined"
+									name="name"
+									label="Name"
+									onChange={handleChange}
+									value={input.name}
+									error={errors.name === null ? false : true}
+									helperText={errors.name === null ? null : errors.name}
+								/>
+							</Grid>
+							<Grid item sm={6}>
+								<TextField
+									fullWidth
+									variant="outlined"
+									name="description"
+									label="Description"
+									onChange={handleChange}
+									value={input.description}
+									error={errors.description === null ? false : true}
+									helperText={
+										errors.description === null ? null : errors.description
+									}
+								/>
+							</Grid>
+							<Grid item sm={6}>
+								<TextField
+									fullWidth
+									variant="outlined"
+									name="plannerGroup"
+									label="Planner Group"
+									onChange={handleChange}
+									value={input.plannerGroup}
+									error={errors.plannerGroup === null ? false : true}
+									helperText={
+										errors.plannerGroup === null ? null : errors.plannerGroup
+									}
+								/>
+							</Grid>
+							<Grid item sm={6}>
+								<TextField
+									fullWidth
+									variant="outlined"
+									name="workCenter"
+									label="Work Center"
+									onChange={handleChange}
+									value={input.workCenter}
+									error={errors.workCenter === null ? false : true}
+									helperText={
+										errors.workCenter === null ? null : errors.workCenter
+									}
+								/>
+							</Grid>
+						</Grid>
 					</div>
 					<input type="submit" style={{ display: "none" }} />
 				</form>
 			) : (
 				<div onClick={handleShowEdit}>
-					<div className={classes.inputContainer}>
-						<Typography className={classes.nameText}>{sub.name}</Typography>
-					</div>
-					<div className={classes.inputContainer}>
-						<Typography className={classes.nameText}>
-							{sub.description}
-						</Typography>
-					</div>
-					<div className={classes.inputContainer}>
-						<Typography className={classes.nameText}>
-							{sub.plannerGroup}
-						</Typography>
-					</div>
-					<div className={classes.inputContainer}>
-						<Typography className={classes.nameText}>
-							{sub.workCenter}
-						</Typography>
-					</div>
+					<Grid container spacing={2}>
+						<Grid item sm={6}>
+							<div className={classes.inputContainer}>
+								<Typography className={classes.nameText}>{sub.name}</Typography>
+							</div>
+						</Grid>
+						<Grid item sm={6}>
+							<div className={classes.inputContainer}>
+								<Typography className={classes.nameText}>
+									{sub.description}
+								</Typography>
+							</div>
+						</Grid>
+						<Grid item sm={6}>
+							<div className={classes.inputContainer}>
+								<Typography className={classes.nameText}>
+									{sub.plannerGroup}
+								</Typography>
+							</div>
+						</Grid>
+						<Grid item sm={6}>
+							<div className={classes.inputContainer}>
+								<Typography className={classes.nameText}>
+									{sub.workCenter}
+								</Typography>
+							</div>
+						</Grid>
+					</Grid>
 				</div>
 			)}
 		</div>

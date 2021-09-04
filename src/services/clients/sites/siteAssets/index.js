@@ -3,9 +3,20 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 //#region get assets
-const getSiteAssets = async (siteId) => {
+const getSiteAssets = async (siteId, pNo) => {
 	try {
-		let response = await API.get(`${Apis.SiteAssets}?siteId=${siteId}`);
+		let response = await API.get(
+			`${Apis.SiteAssets}?siteId=${siteId}&&pageNumber=${pNo}&&pageSize=12`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getSiteAssetsCount = async (siteId) => {
+	try {
+		let response = await API.get(`${Apis.SiteAssetsCount}?siteId=${siteId}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -35,4 +46,4 @@ const editSiteAsset = async (id, data) => {
 
 //#endregion
 
-export { getSiteAssets, addSiteAsset, editSiteAsset };
+export { getSiteAssets, getSiteAssetsCount, addSiteAsset, editSiteAsset };

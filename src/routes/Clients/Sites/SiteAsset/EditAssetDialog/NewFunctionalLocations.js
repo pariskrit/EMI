@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles, TextField } from "@material-ui/core";
+import { Grid, makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
@@ -34,19 +34,6 @@ const defaultErrorSchema = {
 };
 
 const useStyles = makeStyles((theme) => ({
-	container: {
-		display: "flex",
-		alignItems: "center",
-		width: "100%",
-		marginBottom: 10,
-		borderWidth: 1,
-		borderStyle: "solid",
-		borderColor: ColourConstants.commonBorder,
-		borderRadius: 5,
-		paddingLeft: 10,
-		paddingTop: 12,
-		paddingBottom: 12,
-	},
 	deleteIcon: {
 		transform: "scale(0.7)",
 		color: ColourConstants.deleteButton,
@@ -54,6 +41,12 @@ const useStyles = makeStyles((theme) => ({
 			cursor: "pointer",
 		},
 		float: "right",
+	},
+	mainWrap: {
+		background: "#e8e8e8",
+		padding: 10,
+		borderRadius: 10,
+		marginBottom: 15,
 	},
 }));
 const NewFunctionalLocations = ({
@@ -152,62 +145,67 @@ const NewFunctionalLocations = ({
 	};
 
 	return (
-		<>
+		<div className={classes.mainWrap}>
 			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			<form onSubmit={saveFuncLoc}>
-				<div className={classes.container}>
-					<TextField
-						fullWidth
-						variant="outlined"
-						name="name"
-						label="Name"
-						onChange={handleChange}
-						value={input.name}
-						error={errors.name === null ? false : true}
-						helperText={errors.name === null ? null : errors.name}
-					/>
-				</div>
-				<div className={classes.container}>
-					<TextField
-						fullWidth
-						variant="outlined"
-						name="description"
-						label="Description"
-						onChange={handleChange}
-						value={input.description}
-						error={errors.description === null ? false : true}
-						helperText={errors.description === null ? null : errors.description}
-					/>
-				</div>
-				<div className={classes.container}>
-					<TextField
-						fullWidth
-						variant="outlined"
-						name="plannerGroup"
-						label="Planner Group"
-						onChange={handleChange}
-						value={input.plannerGroup}
-						error={errors.plannerGroup === null ? false : true}
-						helperText={
-							errors.plannerGroup === null ? null : errors.plannerGroup
-						}
-					/>
-				</div>
-				<div className={classes.container}>
-					<TextField
-						fullWidth
-						variant="outlined"
-						name="workCenter"
-						label="Work Center"
-						onChange={handleChange}
-						value={input.workCenter}
-						error={errors.workCenter === null ? false : true}
-						helperText={errors.workCenter === null ? null : errors.workCenter}
-					/>
-				</div>
+				<Grid container spacing={2}>
+					<Grid item sm={6}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="name"
+							label="Name"
+							onChange={handleChange}
+							value={input.name}
+							error={errors.name === null ? false : true}
+							helperText={errors.name === null ? null : errors.name}
+						/>
+					</Grid>
+					<Grid item sm={6}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="description"
+							label="Description"
+							onChange={handleChange}
+							value={input.description}
+							error={errors.description === null ? false : true}
+							helperText={
+								errors.description === null ? null : errors.description
+							}
+						/>
+					</Grid>
+					<Grid item sm={6}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="plannerGroup"
+							label="Planner Group"
+							onChange={handleChange}
+							value={input.plannerGroup}
+							error={errors.plannerGroup === null ? false : true}
+							helperText={
+								errors.plannerGroup === null ? null : errors.plannerGroup
+							}
+						/>
+					</Grid>
+					<Grid item sm={6}>
+						<TextField
+							fullWidth
+							variant="outlined"
+							name="workCenter"
+							label="Work Center"
+							onChange={handleChange}
+							value={input.workCenter}
+							error={errors.workCenter === null ? false : true}
+							helperText={errors.workCenter === null ? null : errors.workCenter}
+						/>
+					</Grid>
+				</Grid>
+
 				<input type="submit" style={{ display: "none" }} />
 			</form>
-		</>
+		</div>
 	);
 };
 

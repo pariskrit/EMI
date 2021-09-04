@@ -19,10 +19,10 @@ const useStyles = makeStyles({
 		fontSize: "14px",
 	},
 });
-const TablePagination = ({ page, rowsPerPage, onPageChange, count }) => {
+const TablePagination = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
-
+	const { page, rowsPerPage, onPageChange, count } = props;
 	const handleFirstPageButtonClick = () => {
 		onPageChange(1);
 	};
@@ -36,7 +36,7 @@ const TablePagination = ({ page, rowsPerPage, onPageChange, count }) => {
 	};
 
 	const handleLastPageButtonClick = () => {
-		onPageChange(Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+		onPageChange(Math.max(0, Math.ceil(count / rowsPerPage) - 1) + 1);
 	};
 
 	return (
@@ -70,7 +70,7 @@ const TablePagination = ({ page, rowsPerPage, onPageChange, count }) => {
 				<IconButton
 					aria-label="next page"
 					onClick={handleNextButtonClick}
-					disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+					disabled={page >= Math.ceil(count / rowsPerPage)}
 				>
 					{theme.direction === "rtl" ? (
 						<KeyboardArrowLeft />
@@ -81,7 +81,7 @@ const TablePagination = ({ page, rowsPerPage, onPageChange, count }) => {
 				<IconButton
 					aria-label="last page"
 					onClick={handleLastPageButtonClick}
-					disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+					disabled={page >= Math.ceil(count / rowsPerPage)}
 				>
 					{theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
 				</IconButton>

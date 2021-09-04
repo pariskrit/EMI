@@ -111,7 +111,7 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					{<ADD.HeaderText>Add Application</ADD.HeaderText>}
+					{<ADD.HeaderText>Add Site Assets</ADD.HeaderText>}
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -128,9 +128,6 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
-				<Typography className={classes.labelText}>
-					Select Application
-				</Typography>
 				<div className={classes.inputContainer}>
 					<TextField
 						label="Name"

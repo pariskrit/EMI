@@ -7,18 +7,27 @@ import ClientSiteTable from "components/ClientSiteTable";
 import DeleteDialog from "components/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
+import { getSiteAssets } from "services/clients/sites/siteAssets";
 
 const AC = ContentStyle();
 
-const Assets = ({ fetchSiteAssets, data }) => {
+const Assets = ({ data, count, siteId }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
 	const [editData, setEditData] = useState({});
+	const [total, setTotal] = useState(null);
+	const [page, setPage] = useState({ pageNo: 1, perPage: 12 });
+	const [searchText, setSearchText] = useState("");
+	const [searchedAsset, setSearchAsset] = useState([]);
 
 	useEffect(() => {
 		setAsset(data);
 	}, [data]);
+
+	useEffect(() => {
+		setTotal(+count);
+	}, [count]);
 
 	const handleEdit = (id) => {
 		const edit = [...assets].find((x) => x.id === id);
@@ -29,6 +38,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 	const deleteSuccess = (id) => {
 		const da = [...assets].filter((x) => x.id !== id);
 		setAsset(da);
+		setTotal(total - 1);
 	};
 
 	const handleEditData = (d) => {
@@ -36,6 +46,32 @@ const Assets = ({ fetchSiteAssets, data }) => {
 		let index = newData.findIndex((x) => x.id === d.id);
 		newData[index] = d;
 		setAsset(newData);
+	};
+
+	const handlePage = async (p) => {
+		setPage({ pageNo: p, rowsPerPage: 12 });
+		try {
+			const response = await getSiteAssets(siteId, p);
+			if (response.status) {
+				setAsset(response.data);
+				return response;
+			} else {
+				throw new Error(response);
+			}
+		} catch (err) {
+			console.log(err);
+			return err;
+		}
+	};
+
+	const handleSearch = (e) => {
+		const { value } = e.target;
+		setSearchText(value);
+		const filteredData = assets.filter((x) => {
+			const regex = new RegExp(value, "gi");
+			return x.name.match(regex) || x.description.match(regex);
+		});
+		setSearchAsset(filteredData);
 	};
 
 	return (
@@ -50,7 +86,10 @@ const Assets = ({ fetchSiteAssets, data }) => {
 			/>
 			<EditAssetDialog
 				open={modal.edit}
-				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+				closeHandler={() => {
+					setModal((th) => ({ ...th, edit: false }));
+					setEditData({});
+				}}
 				editData={editData}
 				handleEditData={handleEditData}
 			/>
@@ -58,7 +97,7 @@ const Assets = ({ fetchSiteAssets, data }) => {
 				<div className="detailsContainer">
 					<DetailsPanel
 						header={"Assets"}
-						dataCount={123}
+						dataCount={total}
 						description="Create and manage assets that can be assigned in zone maintenance"
 					/>
 
@@ -69,25 +108,26 @@ const Assets = ({ fetchSiteAssets, data }) => {
 									<SearchIcon />
 								</Grid>
 								<Grid item>
-									<AC.SearchInput
-										onChange={(e) => console.log(e.target.value)}
-										label="Search"
-									/>
+									<AC.SearchInput onChange={handleSearch} label="Search" />
 								</Grid>
 							</Grid>
 						</AC.SearchInner>
 					</AC.SearchContainer>
 				</div>
 				<ClientSiteTable
-					data={assets}
+					data={searchText.length === 0 ? assets : searchedAsset}
 					columns={["name", "description"]}
 					headers={["Asset", "Description"]}
-					onEdit={(id) => handleEdit(id)}
+					onEdit={handleEdit}
 					onDelete={(id) => {
 						setModal((th) => ({ ...th, delete: true }));
 						setId(id);
 					}}
 					setData={setAsset}
+					page={page.pageNo}
+					rowsPerPage={page.rowsPerPage}
+					onPageChange={handlePage}
+					count={total}
 				/>
 			</div>
 		</>
