@@ -1,17 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import RestoreIcon from "@material-ui/icons/Restore";
 import {
-	makeStyles,
 	createMuiTheme,
+	makeStyles,
 	ThemeProvider,
 } from "@material-ui/core/styles";
-import NavDetails from "components/NavDetails";
+import RestoreIcon from "@material-ui/icons/Restore";
 import Navbar from "components/Navbar";
-import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import NavButtons from "components/NavButtons";
+import NavDetails from "components/NavDetails";
+import PropTypes from "prop-types";
+import React from "react";
 import { useParams } from "react-router-dom";
 import "routes/Applications/CustomCaptions/customCaptions.css";
+import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
 const AT = ActionButtonStyle();
 

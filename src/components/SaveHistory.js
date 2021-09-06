@@ -6,8 +6,8 @@ import dayjs from "dayjs";
 
 const useStyles = makeStyles((theme) => ({
 	historyContainer: {
-		marginTop: 10,
-		marginBottom: 10,
+		// marginTop: 10,
+		// marginBottom: 10,
 		paddingLeft: 2,
 	},
 	historyText: {
@@ -42,7 +42,7 @@ const SaveHistory = () => {
 	}, []);
 
 	return (
-		<div className={classes.historyContainer}>
+		<div className={`${classes.historyContainer} mt-sm`}>
 			<div className={classes.historyText}>
 				<Typography className={classes.lastSaved}>Last saved:</Typography>
 				<Typography className={classes.timestampSize}>{lastSave}</Typography>

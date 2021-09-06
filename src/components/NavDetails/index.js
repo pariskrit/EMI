@@ -20,7 +20,9 @@ const useStyles = makeStyles((theme) => ({
 		width: 10,
 		height: 10,
 		borderRadius: "50%",
-		margin: "5px 5px 0px 5px",
+		margin: "0 5px 0px 5px",
+		display: "flex",
+		alignItems: "center",
 	},
 }));
 
@@ -56,12 +58,12 @@ const NavDetails = ({ staticCrumbs, crumbs, status }) => {
 							</Typography>
 					  ))}
 			</Breadcrumbs>
-			<div className="left-section flex" style={{ gap: "12px" }}>
+			<div className="left-section flex-wrap  mb-sm">
 				{status && (
-					<div style={{ display: "flex" }}>
+					<div className="flex mr-sm mt-sm">
 						<b>Status:</b>{" "}
 						<div
-							className={classes.icon}
+							className={`${classes.icon} flex`}
 							style={{
 								backgroundColor: "#24BA78",
 							}}
