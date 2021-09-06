@@ -26,10 +26,12 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, description: null };
 const defaultStateSchema = { name: "", description: "" };
 
+const media = "@media (max-width: 414px)"
+
 const useStyles = makeStyles({
 	dialogContent: {
 		width: 500,
-		["@media (max-width: 414px)"]: {
+		[media]: {
 			width: "100%",
 		},
 	},

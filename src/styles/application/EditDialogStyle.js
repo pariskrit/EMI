@@ -8,10 +8,11 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 
 const EditDialogStyle = () => {
+	const media = "@media (max-width: 414px)";
 	return {
 		ActionContainer: styled("div")({
 			display: "inline-flex",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				flexWrap: "wrap",
 			},
 		}),
@@ -21,13 +22,13 @@ const EditDialogStyle = () => {
 			fontWeight: "bold",
 			fontSize: 21,
 			color: ColourConstants.commonText,
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				fontSize: 18,
 			},
 		}),
 		ButtonContainer: styled(DialogActions)({
 			marginLeft: "auto",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				marginLeft: "18px",
 			},
 		}),
@@ -38,7 +39,7 @@ const EditDialogStyle = () => {
 			backgroundColor: ColourConstants.confirmButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				width: "100px",
 			},
 		}),
@@ -49,7 +50,7 @@ const EditDialogStyle = () => {
 			backgroundColor: ColourConstants.cancelButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				width: "100px",
 			},
 		}),
@@ -60,14 +61,14 @@ const EditDialogStyle = () => {
 			width: "100%",
 			display: "flex",
 			marginBottom: 20,
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				flexDirection: "column",
 			},
 		}),
 
 		NameInputContainer: styled("div")({
 			width: "50%",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				width: "100%",
 			},
 		}),
@@ -87,7 +88,7 @@ const EditDialogStyle = () => {
 		LeftInputContainer: styled("div")({
 			paddingRight: 15,
 			width: "50%",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				paddingRight: 0,
 				width: "100%",
 				marginBottom: "20px",
@@ -107,7 +108,7 @@ const EditDialogStyle = () => {
 		RightInputContainer: styled("div")({
 			paddingLeft: 15,
 			width: "50%",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				paddingLeft: 0,
 				width: "100%",
 			},
@@ -126,7 +127,7 @@ const EditDialogStyle = () => {
 			width: "50%",
 			paddingLeft: "7%",
 			paddingTop: 17,
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				width: "100%",
 				paddingLeft: "0px",
 			},

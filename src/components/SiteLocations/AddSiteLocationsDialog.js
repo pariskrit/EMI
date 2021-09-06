@@ -8,7 +8,6 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addSiteLocations } from "services/clients/sites/siteLocations";
-import { TextField } from "@material-ui/core";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -24,10 +23,12 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
+const media = "@media (max-width: 414px)";
+
 const useStyles = makeStyles({
 	dialogContent: {
 		width: 500,
-		["@media (max-width: 414px)"]: {
+		[media]: {
 			width: "100%",
 		},
 	},

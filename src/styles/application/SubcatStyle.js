@@ -5,6 +5,8 @@ import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg"
 import Typography from "@material-ui/core/Typography";
 
 const SubcatStyle = () => {
+	const media = "@media (max-width: 414px)";
+
 	return {
 		SubcatContainer: styled("div")({
 			display: "flex",
@@ -28,7 +30,7 @@ const SubcatStyle = () => {
 			fontSize: 14,
 			border: "none",
 			boxShadow: "none",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				width: "75%",
 				overflow: "hidden",
 			},

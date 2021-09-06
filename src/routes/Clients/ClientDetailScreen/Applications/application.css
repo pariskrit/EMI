@@ -1,12 +1,11 @@
+@media only screen and (max-width: 414px) {
+	.table-container {
+		max-width: 83.5vw;
+		overflow: hidden;
+		margin-bottom: 15px;
+	}
 
-@media only screen and (max-width: 414px){
-    .table-container{
-        max-width: 83.5vw;
-        overflow: hidden;
-        margin-bottom: 15px;
-    }
-
-    .makeStyles-appContainer-83{
-        justify-content: flex-start !important;
-    }
+	.makeStyles-appContainer-83 {
+		justify-content: flex-start !important;
+	}
 }

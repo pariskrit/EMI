@@ -24,6 +24,9 @@ const theme = createTheme({
 		},
 	},
 });
+
+const media = "@media (max-width: 414px)";
+
 const useStyles = makeStyles({
 	restore: {
 		border: "2px solid",
@@ -41,13 +44,13 @@ const useStyles = makeStyles({
 	buttons: {
 		display: "flex",
 		marginLeft: "auto",
-		["@media (max-width: 414px)"]: {
+		[media]: {
 			marginLeft: "0px",
 		},
 	},
 	wrapper: {
 		display: "flex",
-		["@media (max-width: 414px)"]: {
+		[media]: {
 			marginTop: "10px",
 			justifyContent: "space-between",
 		},
