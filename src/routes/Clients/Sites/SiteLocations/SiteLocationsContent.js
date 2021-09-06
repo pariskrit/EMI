@@ -89,7 +89,7 @@ const SiteLocationsContent = ({ data, setData, isLoading }) => {
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Locations"}
-					dataCount={123}
+					dataCount={locations.length}
 					description="Create and manage locations"
 				/>
 				<AC.SearchContainer>
