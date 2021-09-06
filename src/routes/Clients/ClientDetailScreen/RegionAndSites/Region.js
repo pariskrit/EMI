@@ -6,11 +6,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import CurveButton from "components/CurveButton";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { addClientSite } from "services/clients/clientDetailScreen";
 import CommonAddDialog from "../CommonAddDialog";
 
 // Constants
@@ -78,12 +77,12 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 		e.preventDefault();
 
 		try {
-			let result = await API.post(BASE_API_PATH + "Sites", {
+			let result = await addClientSite({
 				regionID: id,
 				name: siteInput,
 			});
 
-			if (result.status === 201 || result.status === 200) {
+			if (result.status) {
 				// Getting response
 				result = result.data;
 

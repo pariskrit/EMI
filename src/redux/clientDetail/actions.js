@@ -1,6 +1,5 @@
 import { clientDetailSlice } from "./reducers";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
+import { getClientDetails } from "services/clients/clientDetailScreen";
 
 const {
 	clientDetailInitialize,
@@ -12,8 +11,8 @@ const {
 export const fetchClientDetail = (id) => async (dispatch) => {
 	dispatch(clientDetailInitialize());
 	try {
-		const response = await API.get(`${BASE_API_PATH}Clients/${id}`);
-		if (response.status === 200) {
+		const response = await getClientDetails(id);
+		if (response) {
 			dispatch(clientDetailFetchSuccess({ data: response.data }));
 		} else {
 			throw new Error(response);

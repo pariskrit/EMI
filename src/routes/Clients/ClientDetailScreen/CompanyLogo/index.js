@@ -1,11 +1,11 @@
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import DropUploadBox from "components/DropUploadBox";
 import ProviderAsset from "components/ProvidedAsset/ProvidedAsset";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
-import React, { useEffect, useState } from "react";
+import { updateClientLogo } from "services/clients/clientDetailScreen";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -59,11 +59,11 @@ const ClientLogo = ({
 
 	const onLogoUpload = async (key) => {
 		try {
-			const response = await API.patch(`${BASE_API_PATH}Clients/${clientId}`, [
+			const response = await updateClientLogo(clientId, [
 				{ op: "replace", path: "logoKey", value: key },
 			]);
 
-			if (response.status === 200 || response.status === 201) {
+			if (response.status) {
 				fetchClientDetail(clientId);
 			} else {
 				throw new Error(response);

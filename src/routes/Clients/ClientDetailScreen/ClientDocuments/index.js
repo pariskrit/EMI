@@ -2,10 +2,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import DropUploadBox from "components/DropUploadBox";
 import ProvidedAssetNoImage from "components/ProvidedAsset/ProvidedAssetNoImage";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import React, { useEffect, useState } from "react";
+import {
+	addClientDocument,
+	getClientDocument,
+} from "services/clients/clientDetailScreen";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -55,16 +58,16 @@ function ClientDocuments({ clientId, getError }) {
 
 	const onDocumentUpload = async (key, url) => {
 		try {
-			const response = await API.post(BASE_API_PATH + "ClientDocuments", {
+			const response = await addClientDocument({
 				clientId,
 				documentKey: key,
 			});
 
-			if (response.status !== 201) {
+			if (response.status) {
+				fetchClientDocuments();
+			} else {
 				throw new Error(response);
 			}
-
-			fetchClientDocuments();
 		} catch (error) {
 			setFilesUploading(false);
 
@@ -89,10 +92,7 @@ function ClientDocuments({ clientId, getError }) {
 
 	const fetchClientDocuments = async () => {
 		try {
-			const result = await API.get(
-				`${BASE_API_PATH}ClientDocuments?clientId=${clientId}`
-			);
-			console.log(result);
+			const result = await getClientDocument(clientId);
 			setListOfDocuments([
 				...result.data.map((doc) => ({
 					id: doc?.id,

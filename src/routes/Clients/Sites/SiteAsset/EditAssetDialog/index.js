@@ -276,8 +276,7 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 
 					<div className={classes.headContainer}>
 						<div className={classes.header}>
-							Functional Locations (
-							{editData === null ? null : editData.references?.length})
+							Functional Locations ({functionalLocations.length})
 						</div>
 
 						<Typography className={classes.infoText}>

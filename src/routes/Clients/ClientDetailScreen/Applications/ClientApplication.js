@@ -2,13 +2,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import ApplicationTable from "components/ApplicationTable";
 import DeleteDialog from "components/DeleteDialog";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
+import {
+	addClientApplications,
+	getClientApplications,
+} from "services/clients/clientDetailScreen";
 import AddAppDialog from "./AddAppDialog";
-import './application.css';
+import "./application.css";
 import ChangeDialog from "./ChangeDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
 	appAccordion: {
 		borderColor: ColourConstants.commonBorder,
 		borderStyle: "solid",
-		borderWidth: 1,		
-		width: '100%'
+		borderWidth: 1,
+		width: "100%",
 	},
 	tableHead: {
 		backgroundColor: "#D2D2D9",
@@ -65,10 +68,8 @@ const ClientApplication = ({ clientId, getError }) => {
 
 	const fetchApplications = async () => {
 		try {
-			let result = await API.get(
-				`${BASE_API_PATH}clientApplications?clientid=${clientId}`
-			);
-			if (result.status === 200) {
+			let result = await getClientApplications(clientId);
+			if (result.status) {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
@@ -82,12 +83,12 @@ const ClientApplication = ({ clientId, getError }) => {
 
 	const handleCreateData = async (applicationId) => {
 		try {
-			let result = await API.post(`${BASE_API_PATH}ClientApplications`, {
+			let result = await addClientApplications({
 				applicationId,
 				clientID: clientId,
 				isActive: true,
 			});
-			if (result.status === 201 || result.status === 200) {
+			if (result.status) {
 				result = result.data;
 				setData([]);
 				await fetchApplications();
@@ -161,7 +162,7 @@ const ClientApplication = ({ clientId, getError }) => {
 				isActionsPresent={true}
 				buttonName="Add Application"
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
-				accordianDetailsCss = 'table-container'
+				accordianDetailsCss="table-container"
 			>
 				<ApplicationTable
 					data={data}

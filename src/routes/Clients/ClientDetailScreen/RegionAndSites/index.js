@@ -1,14 +1,15 @@
+import React, { useEffect, useState } from "react";
 import AccordionActions from "@material-ui/core/AccordionActions";
 import { makeStyles } from "@material-ui/core/styles";
-
 import CurveButton from "components/CurveButton";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
-import React, { useEffect, useState } from "react";
 import CommonAddDialog from "../CommonAddDialog";
 import Region from "./Region";
 import AccordionBox from "components/AccordionBox";
+import {
+	addClientRegion,
+	getClientRegion,
+} from "services/clients/clientDetailScreen";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -66,13 +67,13 @@ function ClientRegionAndSites({ clientId, getError }) {
 		let intId = clientId;
 
 		try {
-			let result = await API.post(BASE_API_PATH + "Regions", {
+			let result = await addClientRegion({
 				clientID: intId,
 				name: regionInput,
 				sites: [],
 			});
 
-			if (result.status === 201 || result.status === 200) {
+			if (result.status) {
 				// Getting response
 				result = result.data;
 
@@ -110,10 +111,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 	// fetch RegionsAndSites of client
 	const fetchRegionsAndSites = async () => {
 		try {
-			const result = await API.get(
-				`${BASE_API_PATH}Regions?clientId=${clientId}`
-			);
-			console.log(result);
+			const result = await getClientRegion(clientId);
 			handleSort(result.data, setListOfRegions, "name", "asc");
 		} catch (error) {
 			console.log(error);
