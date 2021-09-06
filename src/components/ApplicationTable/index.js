@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
+	CircularProgress,
 	Table,
 	TableBody,
 	TableCell,
@@ -42,13 +43,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 const ApplicationTable = ({
 	data,
+	isLoading,
 	onDeleteApp,
 	onChangeApp,
 	showDeleteIcon,
 	showQuantity,
 }) => {
 	const classes = useStyles();
-	console.log(data);
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 	return (
 		<Table className={classes.tableContainer}>
 			<TableHead className={classes.tableHead}>
@@ -93,6 +98,7 @@ ApplicationTable.defaultProps = {
 			totalSites: 0,
 		},
 	],
+	isLoading: false,
 	showDeleteIcon: true,
 	showQuantity: true,
 };

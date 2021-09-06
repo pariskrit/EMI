@@ -1,4 +1,9 @@
-import { Grid, TextField, Typography } from "@material-ui/core";
+import {
+	Grid,
+	TextField,
+	Typography,
+	CircularProgress,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
 import Dropdown from "components/Dropdown";
@@ -43,6 +48,7 @@ const SiteDetails = ({
 	const [newInput, setNewInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const openConfirmChangeDialog = (e) => {
 		if (newInput.value === siteDetails[newInput.label]) {
@@ -155,6 +161,7 @@ const SiteDetails = ({
 				});
 			}
 		}
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
@@ -164,6 +171,10 @@ const SiteDetails = ({
 			cancelFetch.current = true;
 		};
 	}, []);
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 
 	return (
 		<>

@@ -7,6 +7,7 @@ import {
 	TableCell,
 	makeStyles,
 	Paper,
+	CircularProgress,
 } from "@material-ui/core";
 import clsx from "clsx";
 import TableStyle from "styles/application/TableStyle";
@@ -56,6 +57,7 @@ const ClientSiteTable = ({
 	rowsPerPage,
 	onPageChange,
 	count,
+	isLoading,
 }) => {
 	const classes = useStyles();
 
@@ -73,6 +75,10 @@ const ClientSiteTable = ({
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>

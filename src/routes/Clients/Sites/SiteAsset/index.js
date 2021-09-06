@@ -17,6 +17,7 @@ const SiteAsset = ({ fetchCrumbs }) => {
 	const [data, setData] = useState([]);
 	const [count, setCount] = useState(null);
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchSiteAssets = async (pNo) => {
 		try {
@@ -51,6 +52,7 @@ const SiteAsset = ({ fetchCrumbs }) => {
 	const fetchAset = async (pageNo) => {
 		await getTotalPage();
 		await fetchSiteAssets(pageNo);
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
@@ -105,7 +107,9 @@ const SiteAsset = ({ fetchCrumbs }) => {
 				showAdd
 				showImport
 				onClickAdd={() => setModal((th) => ({ ...th, add: true }))}
-				Component={() => <Assets data={data} count={count} siteId={id} />}
+				Component={() => (
+					<Assets data={data} count={count} siteId={id} isLoading={isLoading} />
+				)}
 			/>
 		</>
 	);

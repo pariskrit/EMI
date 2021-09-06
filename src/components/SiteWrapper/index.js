@@ -15,6 +15,20 @@ import "routes/Applications/CustomCaptions/customCaptions.css";
 
 const AT = ActionButtonStyle();
 
+const theme = createMuiTheme({
+	overrides: {
+		// Accordion override is making the accordion title static vs. default dynamic
+		MuiAccordionSummary: {
+			root: {
+				height: 48,
+				"&$expanded": {
+					height: 48,
+					minHeight: 48,
+				},
+			},
+		},
+	},
+});
 const useStyles = makeStyles({
 	restore: {
 		border: "2px solid",
@@ -44,20 +58,7 @@ const useStyles = makeStyles({
 		},
 	},
 });
-const theme = createMuiTheme({
-	overrides: {
-		// Accordion override is making the accordion title static vs. default dynamic
-		MuiAccordionSummary: {
-			root: {
-				height: 48,
-				"&$expanded": {
-					height: 48,
-					minHeight: 48,
-				},
-			},
-		},
-	},
-});
+
 const SiteWrapper = ({
 	status,
 	lastSaved,

@@ -17,6 +17,8 @@ const Applications = ({
 	listOfSiteAppId,
 	setError,
 	fetchKeyContactsList,
+	isLoading,
+	setIsLoading,
 }) => {
 	const [applicationList, setApplicationList] = useState([]);
 	const [openChangeConfirmDialog, setOpenChangeConfirmDialog] = useState(false);
@@ -81,6 +83,8 @@ const Applications = ({
 				}))
 			);
 		}
+
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
@@ -118,6 +122,7 @@ const Applications = ({
 			>
 				<ApplicationTable
 					data={applicationList}
+					isLoading={isLoading}
 					showDeleteIcon={false}
 					showQuantity={false}
 					onDeleteApp={onOpenDeleteConfirmDialog}

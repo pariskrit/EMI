@@ -2,13 +2,14 @@ import React from "react";
 import AccordionBox from "components/AccordionBox";
 import SimpleDataTable from "components/SimpleDataTable";
 
-const KeyContacts = ({ contactsList }) => {
+const KeyContacts = ({ contactsList, isLoading }) => {
 	return (
 		<AccordionBox
 			title="Key Contacts"
 			accordianDetailsCss="siteDetailTableContainer"
 		>
 			<SimpleDataTable
+				isLoading={isLoading}
 				data={contactsList}
 				tableHeaders={["Name", "Product", "Email", "Phone"]}
 			/>

@@ -11,7 +11,9 @@ const Details = () => {
 	const { id } = useParams();
 	const [listOfSiteAppId, setListOfSiteAppId] = useState([]);
 	const [contactsList, setContactsList] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const cancelFetch = useRef(false);
+	const [isApplicationsLoading, setApplicationsLoading] = useState(true);
 
 	const fetchKeyContactsList = async () => {
 		const result = await getSiteAppKeyContacts(id);
@@ -34,8 +36,13 @@ const Details = () => {
 				result.data.map((data) => ({ siteAppId: data.siteAppID }))
 			);
 
+			if (result.data.length === 0) {
+				setApplicationsLoading(false);
+			}
+			setIsLoading(false);
 			return true;
 		} else {
+			setIsLoading(false);
 			return false;
 		}
 	};
@@ -58,13 +65,15 @@ const Details = () => {
 							</AccordionBox>
 						</Grid>
 						<Grid item xs={12}>
-							<KeyContacts contactsList={contactsList} />
+							<KeyContacts contactsList={contactsList} isLoading={isLoading} />
 						</Grid>
 						<Grid item xs={12}>
 							<Applications
 								siteId={id}
 								listOfSiteAppId={listOfSiteAppId}
 								fetchKeyContactsList={fetchKeyContactsList}
+								isLoading={isApplicationsLoading}
+								setIsLoading={setApplicationsLoading}
 							/>
 						</Grid>
 					</Grid>

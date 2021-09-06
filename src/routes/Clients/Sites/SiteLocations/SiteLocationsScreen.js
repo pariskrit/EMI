@@ -14,6 +14,7 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 	const [data, setData] = useState([]);
 	const [modal, setModal] = useState({ add: false });
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsloading] = useState(true);
 
 	const fetchSiteDepartments = async () => {
 		try {
@@ -24,8 +25,10 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 			}
 			if (response.status) {
 				setData(response.data);
+				setIsloading(false);
 				return response;
 			} else {
+				setIsloading(false);
 				throw new Error(response);
 			}
 		} catch (err) {
@@ -67,7 +70,13 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 				lastSaved=""
 				showAdd
 				onClickAdd={() => setModal((th) => ({ add: true }))}
-				Component={() => <SiteLocationsContent data={data} setData={setData} />}
+				Component={() => (
+					<SiteLocationsContent
+						data={data}
+						setData={setData}
+						isLoading={isLoading}
+					/>
+				)}
 			/>
 		</>
 	);

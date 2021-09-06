@@ -13,6 +13,7 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 	const [data, setData] = useState([]);
 	const [modal, setModal] = useState({ add: false });
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchSiteDepartments = async () => {
 		try {
@@ -22,12 +23,14 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 			}
 			if (response.status) {
 				setData(response.data);
+				setIsLoading(false);
 				return response;
 			} else {
 				throw new Error(response);
 			}
 		} catch (err) {
 			console.log(err);
+			setIsLoading(false);
 			return err;
 		}
 	};
@@ -65,7 +68,11 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 				showAdd
 				onClickAdd={() => setModal((th) => ({ add: true }))}
 				Component={() => (
-					<SiteDepartmentsContent data={data} setData={setData} />
+					<SiteDepartmentsContent
+						data={data}
+						setData={setData}
+						isLoading={isLoading}
+					/>
 				)}
 			/>
 		</>

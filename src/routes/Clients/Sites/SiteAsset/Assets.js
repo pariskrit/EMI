@@ -11,7 +11,7 @@ import { getSiteAssets } from "services/clients/sites/siteAssets";
 
 const AC = ContentStyle();
 
-const Assets = ({ data, count, siteId }) => {
+const Assets = ({ data, count, siteId, isLoading }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
@@ -128,6 +128,7 @@ const Assets = ({ data, count, siteId }) => {
 					rowsPerPage={page.rowsPerPage}
 					onPageChange={handlePage}
 					count={total}
+					isLoading={isLoading}
 				/>
 			</div>
 		</>

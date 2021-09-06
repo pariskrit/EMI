@@ -1,5 +1,6 @@
 import React from "react";
 import {
+	CircularProgress,
 	Table,
 	TableBody,
 	TableCell,
@@ -47,8 +48,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function KeyContacts({ data, tableHeaders }) {
+function KeyContacts({ data, tableHeaders, isLoading }) {
 	const classes = useStyles();
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 	return (
 		<Table className={classes.tableContainer}>
 			<TableHead className={classes.tableHead}>
