@@ -9,6 +9,7 @@ import {
 	deleteSiteAssetReferences,
 	updateSiteAssetReferences,
 } from "services/clients/sites/siteAssets/references";
+import "./edit.css";
 
 const schema = yup.object({
 	name: yup
@@ -246,95 +247,191 @@ const FunctionalLocations = ({
 			{isEdit && !attemptDelete ? (
 				<form onSubmit={handleSubmit}>
 					<div className={classes.formFields} style={{ gap: 15 }}>
-						<Grid container spacing={2}>
-							<Grid item sm={6}>
-								<TextField
-									fullWidth
-									variant="outlined"
-									name="name"
-									label="Name"
-									onChange={handleChange}
-									value={input.name}
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
-								/>
+						<div className="desktopTableViewEdit">
+							<Grid container spacing={2}>
+								<Grid item sm={6}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="name"
+										label="Name"
+										onChange={handleChange}
+										value={input.name}
+										error={errors.name === null ? false : true}
+										helperText={errors.name === null ? null : errors.name}
+									/>
+								</Grid>
+								<Grid item sm={6}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="description"
+										label="Description"
+										onChange={handleChange}
+										value={input.description}
+										error={errors.description === null ? false : true}
+										helperText={
+											errors.description === null ? null : errors.description
+										}
+									/>
+								</Grid>
+								<Grid item sm={6}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="plannerGroup"
+										label="Planner Group"
+										onChange={handleChange}
+										value={input.plannerGroup}
+										error={errors.plannerGroup === null ? false : true}
+										helperText={
+											errors.plannerGroup === null ? null : errors.plannerGroup
+										}
+									/>
+								</Grid>
+								<Grid item sm={6}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="workCenter"
+										label="Work Center"
+										onChange={handleChange}
+										value={input.workCenter}
+										error={errors.workCenter === null ? false : true}
+										helperText={
+											errors.workCenter === null ? null : errors.workCenter
+										}
+									/>
+								</Grid>
 							</Grid>
-							<Grid item sm={6}>
-								<TextField
-									fullWidth
-									variant="outlined"
-									name="description"
-									label="Description"
-									onChange={handleChange}
-									value={input.description}
-									error={errors.description === null ? false : true}
-									helperText={
-										errors.description === null ? null : errors.description
-									}
-								/>
+						</div>
+						<div className="mobileTableViewEdit">
+							<Grid container spacing={2}>
+								<Grid item xs={12}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="name"
+										label="Name"
+										onChange={handleChange}
+										value={input.name}
+										error={errors.name === null ? false : true}
+										helperText={errors.name === null ? null : errors.name}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="description"
+										label="Description"
+										onChange={handleChange}
+										value={input.description}
+										error={errors.description === null ? false : true}
+										helperText={
+											errors.description === null ? null : errors.description
+										}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="plannerGroup"
+										label="Planner Group"
+										onChange={handleChange}
+										value={input.plannerGroup}
+										error={errors.plannerGroup === null ? false : true}
+										helperText={
+											errors.plannerGroup === null ? null : errors.plannerGroup
+										}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										name="workCenter"
+										label="Work Center"
+										onChange={handleChange}
+										value={input.workCenter}
+										error={errors.workCenter === null ? false : true}
+										helperText={
+											errors.workCenter === null ? null : errors.workCenter
+										}
+									/>
+								</Grid>
 							</Grid>
-							<Grid item sm={6}>
-								<TextField
-									fullWidth
-									variant="outlined"
-									name="plannerGroup"
-									label="Planner Group"
-									onChange={handleChange}
-									value={input.plannerGroup}
-									error={errors.plannerGroup === null ? false : true}
-									helperText={
-										errors.plannerGroup === null ? null : errors.plannerGroup
-									}
-								/>
-							</Grid>
-							<Grid item sm={6}>
-								<TextField
-									fullWidth
-									variant="outlined"
-									name="workCenter"
-									label="Work Center"
-									onChange={handleChange}
-									value={input.workCenter}
-									error={errors.workCenter === null ? false : true}
-									helperText={
-										errors.workCenter === null ? null : errors.workCenter
-									}
-								/>
-							</Grid>
-						</Grid>
+						</div>
 					</div>
 					<input type="submit" style={{ display: "none" }} />
 				</form>
 			) : (
 				<div onClick={handleShowEdit}>
-					<Grid container spacing={2}>
-						<Grid item sm={6}>
-							<div className={classes.inputContainer}>
-								<Typography className={classes.nameText}>{sub.name}</Typography>
-							</div>
+					<div className="desktopTableViewEdit">
+						<Grid container spacing={2}>
+							<Grid item sm={6}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.name}
+									</Typography>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.description}
+									</Typography>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.plannerGroup}
+									</Typography>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.workCenter}
+									</Typography>
+								</div>
+							</Grid>
 						</Grid>
-						<Grid item sm={6}>
-							<div className={classes.inputContainer}>
-								<Typography className={classes.nameText}>
-									{sub.description}
-								</Typography>
-							</div>
+					</div>
+					<div className="mobileTableViewEdit">
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.name}
+									</Typography>
+								</div>
+							</Grid>
+							<Grid item xs={12}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.description}
+									</Typography>
+								</div>
+							</Grid>
+							<Grid item xs={12}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.plannerGroup}
+									</Typography>
+								</div>
+							</Grid>
+							<Grid item xs={12}>
+								<div className={classes.inputContainer}>
+									<Typography className={classes.nameText}>
+										{sub.workCenter}
+									</Typography>
+								</div>
+							</Grid>
 						</Grid>
-						<Grid item sm={6}>
-							<div className={classes.inputContainer}>
-								<Typography className={classes.nameText}>
-									{sub.plannerGroup}
-								</Typography>
-							</div>
-						</Grid>
-						<Grid item sm={6}>
-							<div className={classes.inputContainer}>
-								<Typography className={classes.nameText}>
-									{sub.workCenter}
-								</Typography>
-							</div>
-						</Grid>
-					</Grid>
+					</div>
 				</div>
 			)}
 		</div>

@@ -7,17 +7,19 @@ import Button from "@material-ui/core/Button";
 import DialogContentText from "@material-ui/core/DialogContentText";
 
 const DeleteDialogStyle = () => {
+	const media = "@media (max-width: 414px)";
+
 	return {
 		ActionContainer: styled("div")({
 			display: "inline-flex",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				display: "inline-flex",
 				flexWrap: "wrap",
 			},
 		}),
 		DialogContent: styled(DialogContent)({
 			width: 500,
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				width: "100%",
 			},
 		}),
@@ -26,13 +28,13 @@ const DeleteDialogStyle = () => {
 			fontFamily: "Roboto Condensed",
 			fontWeight: "bold",
 			fontSize: 21,
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				fontSize: 18,
 			},
 		}),
 		ButtonContainer: styled(DialogActions)({
 			marginLeft: "auto",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				marginLeft: 0,
 				paddingLeft: "20px",
 			},

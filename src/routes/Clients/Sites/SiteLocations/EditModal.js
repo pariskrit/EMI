@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import API from "helpers/api";
-import EditDialogStyle from "styles/application/EditDialogStyle";
+import * as yup from "yup";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
+import React, { useState, useEffect } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import * as yup from "yup";
+import EditDialogStyle from "styles/application/EditDialogStyle";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { editSiteLocations } from "services/clients/sites/siteLocations";
 

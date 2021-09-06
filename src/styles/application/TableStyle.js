@@ -11,6 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 const MAX_ROW_HEIGHT = 51;
 
 const TableStyle = () => {
+	const media = "@media (max-width: 414px)";
+
 	return {
 		TableContainer: styled(TableContainer)({
 			borderStyle: "solid",
@@ -19,14 +21,14 @@ const TableStyle = () => {
 			borderColor: ColourConstants.tableBorder,
 			borderWidth: 1,
 			borderRadius: 0,
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				maxWidth: "87vw",
 				overflowX: "auto",
 			},
 		}),
 		TableHead: styled(TableHead)({
 			userSelect: "none",
-			["@media (max-width: 414px)"]: {
+			[media]: {
 				whiteSpace: "nowrap",
 			},
 		}),

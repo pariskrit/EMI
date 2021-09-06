@@ -11,11 +11,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import ClientKeyRow from "./TableRow";
 import PropTypes from "prop-types";
-import { BorderBottom, Rowing } from "@material-ui/icons";
+
+const media = "@media (max-width: 414px)";
 
 const useStyles = makeStyles((theme) => ({
 	tableContainer: {
-		["@media (max-width: 414px)"]: {
+		[media]: {
 			whiteSpace: "nowrap",
 		},
 	},

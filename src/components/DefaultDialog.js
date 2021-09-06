@@ -10,10 +10,12 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ColourConstants from "../helpers/colourConstants";
 
+const media = "@media (max-width: 414px)";
+
 const useStyles = makeStyles({
 	dialogContent: {
 		width: 500,
-		["@media (max-width:414px)"]: {
+		[media]: {
 			width: "100%",
 			overflow: "hidden",
 		},
@@ -26,7 +28,7 @@ const useStyles = makeStyles({
 	},
 	actionContainer: {
 		display: "inline-flex",
-		["@media (max-width:414px)"]: {
+		[media]: {
 			flexWrap: "wrap",
 			overflow: "hidden",
 		},
@@ -37,14 +39,14 @@ const useStyles = makeStyles({
 		fontWeight: "bold",
 		fontSize: 21,
 		// width: "100%",
-		["@media (max-width: 414px)"]: {
+		[media]: {
 			fontSize: 18,
 			width: "100%",
 		},
 	},
 	buttonContainer: {
 		marginLeft: "auto",
-		["@media (max-width:414px)"]: {
+		[media]: {
 			marginLeft: "18px",
 		},
 	},

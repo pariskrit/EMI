@@ -13,9 +13,11 @@ import ColourConstants from "helpers/colourConstants";
 import Row from "./Row";
 import "./style.scss";
 
+const media = "@media (max-width: 414px)";
+
 const useStyles = makeStyles((theme) => ({
 	tableContainer: {
-		["@media (max-width: 414px)"]: {
+		[media]: {
 			whiteSpace: "nowrap",
 		},
 	},
