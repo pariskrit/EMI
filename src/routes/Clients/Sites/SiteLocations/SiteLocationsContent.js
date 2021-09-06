@@ -11,7 +11,7 @@ import DeleteModal from "./DeleteModal";
 
 const AC = ContentStyle();
 
-const SiteLocationsContent = ({ data, setData }) => {
+const SiteLocationsContent = ({ data, setData, isLoading }) => {
 	const [locations, setLocations] = useState([]);
 	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -70,7 +70,6 @@ const SiteLocationsContent = ({ data, setData }) => {
 
 	return (
 		<div>
-			
 			<DeleteModal
 				entityName="Location"
 				open={openDeleteDialog}
@@ -122,6 +121,7 @@ const SiteLocationsContent = ({ data, setData }) => {
 				}}
 				setData={setLocations}
 				pagination={false}
+				isLoading={isLoading}
 			/>
 		</div>
 	);

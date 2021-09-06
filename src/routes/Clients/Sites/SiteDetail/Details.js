@@ -11,6 +11,7 @@ const Details = () => {
 	const { id } = useParams();
 	const [listOfSiteAppId, setListOfSiteAppId] = useState([]);
 	const [contactsList, setContactsList] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const cancelFetch = useRef(false);
 
 	const fetchKeyContactsList = async () => {
@@ -33,9 +34,10 @@ const Details = () => {
 			setListOfSiteAppId(
 				result.data.map((data) => ({ siteAppId: data.siteAppID }))
 			);
-
+			setIsLoading(false);
 			return true;
 		} else {
+			setIsLoading(false);
 			return false;
 		}
 	};
@@ -58,7 +60,7 @@ const Details = () => {
 							</AccordionBox>
 						</Grid>
 						<Grid item xs={12}>
-							<KeyContacts contactsList={contactsList} />
+							<KeyContacts contactsList={contactsList} isLoading={isLoading} />
 						</Grid>
 						<Grid item xs={12}>
 							<Applications

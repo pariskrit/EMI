@@ -10,7 +10,7 @@ import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
 
 const AC = ContentStyle();
 
-const SiteDepartmentsContent = ({ data, setData }) => {
+const SiteDepartmentsContent = ({ data, setData, isLoading }) => {
 	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [departments, setDepartments] = useState([]);
@@ -120,6 +120,7 @@ const SiteDepartmentsContent = ({ data, setData }) => {
 				}}
 				setData={setDepartments}
 				pagination={false}
+				isLoading={isLoading}
 			/>
 		</div>
 	);

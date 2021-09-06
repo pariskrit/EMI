@@ -24,6 +24,7 @@ const Applications = ({
 	const [applicationToChange, setApplicationToChanged] = useState("");
 	const [openModal, setOpenModal] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	// open and close confirm change dialog
 	const onOpenChangeConfirmDialog = (id) => {
@@ -81,6 +82,7 @@ const Applications = ({
 				}))
 			);
 		}
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
@@ -118,6 +120,7 @@ const Applications = ({
 			>
 				<ApplicationTable
 					data={applicationList}
+					isLoading={isLoading}
 					showDeleteIcon={false}
 					showQuantity={false}
 					onDeleteApp={onOpenDeleteConfirmDialog}
