@@ -1,7 +1,6 @@
 import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
-import { BASE_API_PATH } from "helpers/constants";
 
 const getClientDetails = async (clientId) => {
 	try {
@@ -32,7 +31,7 @@ const updateClientLogo = async (clientId, data) => {
 
 const addClientRegion = async (data) => {
 	try {
-		const response = await API.post(`${BASE_API_PATH}Regions`, data);
+		const response = await API.post(`${Apis.ClientRegion}`, data);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
@@ -41,9 +40,7 @@ const addClientRegion = async (data) => {
 
 const getClientRegion = async (clientId) => {
 	try {
-		const response = await await API.get(
-			`${BASE_API_PATH}Regions?clientId=${clientId}`
-		);
+		const response = await API.get(`${Apis.ClientRegion}?clientId=${clientId}`);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
@@ -52,7 +49,7 @@ const getClientRegion = async (clientId) => {
 
 const addClientSite = async (data) => {
 	try {
-		const response = await API.post(BASE_API_PATH + "Sites", data);
+		const response = await API.post(`${Apis.ClientSite}`, data);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
@@ -61,7 +58,7 @@ const addClientSite = async (data) => {
 
 const addClientDocument = async (data) => {
 	try {
-		const response = await API.post(BASE_API_PATH + "ClientDocuments", data);
+		const response = await API.post(`${Apis.ClientDocument}`, data);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
@@ -70,9 +67,7 @@ const addClientDocument = async (data) => {
 
 const getClientDocument = async (id) => {
 	try {
-		const response = await API.get(
-			BASE_API_PATH + `ClientDocuments?clientId=${id}`
-		);
+		const response = await API.get(`${Apis.ClientDocument}?clientId=${id}`);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
@@ -91,7 +86,7 @@ const getClientKeyContacts = async (clientId) => {
 const getClientApplications = async (clientId) => {
 	try {
 		const response = await API.get(
-			`${BASE_API_PATH}clientApplications?clientid=${clientId}`
+			`${Apis.ClientApplication}?clientid=${clientId}`
 		);
 		return getAPIResponse(response);
 	} catch (error) {
@@ -101,7 +96,7 @@ const getClientApplications = async (clientId) => {
 
 const addClientApplications = async (data) => {
 	try {
-		const response = await API.post(`${BASE_API_PATH}ClientApplications`, data);
+		const response = await API.post(`${Apis.ClientApplication}`, data);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
@@ -111,7 +106,7 @@ const addClientApplications = async (data) => {
 const updateClientApplications = async (changeId, data) => {
 	try {
 		const response = await API.patch(
-			`${BASE_API_PATH}ClientApplications/${changeId}`,
+			`${Apis.ClientApplication}/${changeId}`,
 			data
 		);
 		return getAPIResponse(response);
@@ -122,9 +117,7 @@ const updateClientApplications = async (changeId, data) => {
 
 const getClientNotes = async (clientId) => {
 	try {
-		const response = await API.get(
-			`${BASE_API_PATH}clientnotes?clientid=${clientId}`
-		);
+		const response = await API.get(`${Apis.ClientNote}?clientid=${clientId}`);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
@@ -133,7 +126,7 @@ const getClientNotes = async (clientId) => {
 
 const addClientNote = async (data) => {
 	try {
-		const response = await API.post(`${BASE_API_PATH}ClientNotes`, data);
+		const response = await API.post(`${Apis.ClientNote}`, data);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error.response);
