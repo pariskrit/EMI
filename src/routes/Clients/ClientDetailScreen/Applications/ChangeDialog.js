@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
 	Dialog,
 	DialogActions,
@@ -5,9 +6,7 @@ import {
 	DialogContentText,
 	LinearProgress,
 } from "@material-ui/core";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
-import React, { useState } from "react";
+import { updateClientApplications } from "services/clients/clientDetailScreen";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 
 // Init styled components
@@ -29,13 +28,12 @@ const ChangeDialog = ({
 		// Attempting to change data
 		try {
 			// Making Change to backend
-			const result = await API.patch(
-				`${BASE_API_PATH}ClientApplications/${changeId}`,
-				[{ op: "replace", path: "isActive", value: status }]
-			);
+			const result = await updateClientApplications(changeId, [
+				{ op: "replace", path: "isActive", value: status },
+			]);
 
 			// Handling success
-			if (result.status === 200) {
+			if (result.status) {
 				getChangedValue(changeId, result.data.isActive);
 				return true;
 			} else {

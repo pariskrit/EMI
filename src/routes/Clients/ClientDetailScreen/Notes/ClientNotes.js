@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableBody,
@@ -8,11 +9,13 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import DeleteDialog from "components/DeleteDialog";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
-import React, { useEffect, useState } from "react";
+import {
+	addClientNote,
+	getClientNotes,
+} from "services/clients/clientDetailScreen";
 import AddNoteDialog from "./AddNoteDialog";
 import ClientNoteRow from "./ClientNoteRow";
 
@@ -63,10 +66,8 @@ const ClientNotes = ({ clientId, getError }) => {
 
 	const fetchNotes = async () => {
 		try {
-			let result = await API.get(
-				`${BASE_API_PATH}clientnotes?clientid=${clientId}`
-			);
-			if (result.status === 200) {
+			let result = await getClientNotes(clientId);
+			if (result.status) {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
@@ -83,11 +84,11 @@ const ClientNotes = ({ clientId, getError }) => {
 
 	const handleCreateData = async (note) => {
 		try {
-			let result = await API.post(`${BASE_API_PATH}ClientNotes`, {
+			let result = await addClientNote({
 				note,
 				clientID: clientId,
 			});
-			if (result.status === 201 || result.status === 200) {
+			if (result.status) {
 				result = result.data;
 				setData([]);
 				await fetchNotes();
@@ -96,7 +97,6 @@ const ClientNotes = ({ clientId, getError }) => {
 				throw new Error(result);
 			}
 		} catch (err) {
-			console.log(err.response);
 			getError("Error Creating Note");
 		}
 	};

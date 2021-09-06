@@ -5,11 +5,10 @@ import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined"
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import Dropdown from "components/Dropdown";
 import ColourConstants from "helpers/colourConstants";
-import { BASE_API_PATH } from "helpers/constants";
-import API from "helpers/api";
 import { changeDate } from "helpers/date";
 import AccordionBox from "components/AccordionBox";
 import { clientOptions } from "helpers/constants";
+import { updateClientDetails } from "services/clients/clientDetailScreen";
 
 // const debounce = (func, delay) => {
 // 	let timer;
@@ -76,10 +75,10 @@ const ClientDetail = ({ clientId, clientData, getError }) => {
 
 	const changeClientDetails = async (path, value) => {
 		try {
-			const result = await API.patch(`${BASE_API_PATH}Clients/${clientId}`, [
+			const result = await updateClientDetails(clientId, [
 				{ op: "replace", path, value },
 			]);
-			if (result?.status === 200) {
+			if (result.status) {
 				setChange(result.data);
 				return true;
 			} else {

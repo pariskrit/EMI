@@ -1,11 +1,10 @@
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
-import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
-import React, { useEffect, useState } from "react";
 import DataTable from "components/SimpleDataTable";
+import { getClientKeyContacts } from "services/clients/clientDetailScreen";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -40,10 +39,8 @@ const ClientKeyContacts = ({ clientId }) => {
 	useEffect(() => {
 		const fetchKeyContacts = async () => {
 			try {
-				let result = await API.get(
-					`${BASE_API_PATH}Clients/${clientId}/keycontacts`
-				);
-				if (result.status === 200) {
+				let result = await getClientKeyContacts(clientId);
+				if (result.status) {
 					result = result.data;
 					handleSort(result, setData, "name", "asc");
 				} else {
