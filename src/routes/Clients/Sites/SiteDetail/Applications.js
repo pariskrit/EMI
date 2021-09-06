@@ -17,6 +17,8 @@ const Applications = ({
 	listOfSiteAppId,
 	setError,
 	fetchKeyContactsList,
+	isLoading,
+	setIsLoading,
 }) => {
 	const [applicationList, setApplicationList] = useState([]);
 	const [openChangeConfirmDialog, setOpenChangeConfirmDialog] = useState(false);
@@ -24,7 +26,6 @@ const Applications = ({
 	const [applicationToChange, setApplicationToChanged] = useState("");
 	const [openModal, setOpenModal] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
-	const [isLoading, setIsLoading] = useState(true);
 
 	// open and close confirm change dialog
 	const onOpenChangeConfirmDialog = (id) => {
@@ -82,6 +83,7 @@ const Applications = ({
 				}))
 			);
 		}
+
 		setIsLoading(false);
 	};
 
