@@ -56,11 +56,11 @@ const SiteAsset = ({ fetchCrumbs }) => {
 	useEffect(() => {
 		fetchCrumbs(id);
 		fetchAset(1);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 
 		return () => {
 			cancelFetch.current = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const addAsset = async (input) => {

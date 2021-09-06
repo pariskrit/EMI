@@ -1,7 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import RestoreIcon from "@material-ui/icons/Restore";
-import { makeStyles, createTheme, ThemeProvider } from "@material-ui/core";
+import {
+	makeStyles,
+	createMuiTheme,
+	ThemeProvider,
+} from "@material-ui/core/styles";
 import NavDetails from "components/NavDetails";
 import Navbar from "components/Navbar";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
@@ -10,20 +14,7 @@ import { useParams } from "react-router-dom";
 import "routes/Applications/CustomCaptions/customCaptions.css";
 
 const AT = ActionButtonStyle();
-const theme = createTheme({
-	overrides: {
-		// Accordion override is making the accordion title static vs. default dynamic
-		MuiAccordionSummary: {
-			root: {
-				height: 48,
-				"&$expanded": {
-					height: 48,
-					minHeight: 48,
-				},
-			},
-		},
-	},
-});
+
 const useStyles = makeStyles({
 	restore: {
 		border: "2px solid",
@@ -50,6 +41,20 @@ const useStyles = makeStyles({
 		["@media (max-width: 414px)"]: {
 			marginTop: "10px",
 			justifyContent: "space-between",
+		},
+	},
+});
+const theme = createMuiTheme({
+	overrides: {
+		// Accordion override is making the accordion title static vs. default dynamic
+		MuiAccordionSummary: {
+			root: {
+				height: 48,
+				"&$expanded": {
+					height: 48,
+					minHeight: 48,
+				},
+			},
 		},
 	},
 });
