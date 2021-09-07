@@ -38,7 +38,7 @@ import {
 	siteDepartmentPath,
 	siteDetailPath,
 	siteLocationPath,
-} from "helpers/path";
+} from "helpers/routePaths";
 
 function App() {
 	return (

@@ -11,7 +11,7 @@ import {
 	siteAssetPath,
 	siteDepartmentPath,
 	siteLocationPath,
-} from "helpers/path";
+} from "helpers/routePaths";
 import PropTypes from "prop-types";
 import React from "react";
 import { useParams } from "react-router-dom";
