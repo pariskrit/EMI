@@ -149,7 +149,7 @@ const AddStatusDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<ADD.NameInputContainer>
 								<ADD.NameLabel>
@@ -183,7 +183,7 @@ const AddStatusDialog = ({
 								</ADD.CheckboxLabel>
 							</ADD.CheckboxContainer>
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>

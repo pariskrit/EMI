@@ -153,7 +153,7 @@ const EditRoleDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.NameInputContainer>
 								<AED.NameLabel>
@@ -187,7 +187,7 @@ const EditRoleDialog = ({ open, closeHandler, data, handleEditData }) => {
 								</AED.CheckboxLabel>
 							</AED.CheckboxContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

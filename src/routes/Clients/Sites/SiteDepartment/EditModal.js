@@ -16,7 +16,9 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	description: yup.string("This field must be a string"),
+	description: yup
+		.string("This field must be a string")
+		.required("This field is required"),
 });
 
 // Default state schemas
@@ -97,7 +99,21 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				return { success: true };
 			} else {
 				// If not success, throwing error
-				throw new Error(result);
+				if (result.data.detail) {
+					setErrors({
+						name: result.data.detail,
+						description: result.data.detail,
+					});
+					return {
+						success: false,
+						errors: {
+							name: result.data.detail,
+							description: result.data.detail,
+						},
+					};
+				} else {
+					return { success: false, errors: { ...result.data.errors } };
+				}
 			}
 		} catch (err) {
 			if (err.response.data.errors !== undefined) {
@@ -152,7 +168,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.LeftInputContainer>
 								<AED.NameLabel>
@@ -171,7 +187,9 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 								/>
 							</AED.LeftInputContainer>
 							<AED.RightInputContainer>
-								<AED.NameLabel>Description</AED.NameLabel>
+								<AED.NameLabel>
+									Description<AED.RequiredStar>*</AED.RequiredStar>
+								</AED.NameLabel>
 								<AED.NameInput
 									error={errors.description === null ? false : true}
 									helperText={
@@ -184,11 +202,10 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 										setInput({ ...input, description: e.target.value });
 									}}
 									fullWidth
-									multiline
 								/>
 							</AED.RightInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

@@ -186,7 +186,7 @@ const EditPauseDialog = ({
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<APD.NameInputContainer>
 								<AED.NameLabel>
@@ -253,7 +253,7 @@ const EditPauseDialog = ({
 								Add new
 							</APD.NewButton>
 						</APD.NewButtonContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

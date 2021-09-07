@@ -38,16 +38,13 @@ const EditActionDialog = ({ open, closeHandler, data, handleEditData }) => {
 	const handleUpdateData = async () => {
 		// Attempting to update SC name
 		try {
-			let updateName = await API.patch(
-				`/api/ApplicationActions/${data.id}`,
-				[
-					{
-						op: "replace",
-						path: "name",
-						value: input.name,
-					},
-				]
-			);
+			let updateName = await API.patch(`/api/ApplicationActions/${data.id}`, [
+				{
+					op: "replace",
+					path: "name",
+					value: input.name,
+				},
+			]);
 
 			// if success, adding data to reducer
 			if (updateName.status === 200) {
@@ -147,7 +144,7 @@ const EditActionDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.NameInputContainer>
 								<AED.NameLabel>
@@ -166,7 +163,7 @@ const EditActionDialog = ({ open, closeHandler, data, handleEditData }) => {
 								/>
 							</AED.NameInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

@@ -145,7 +145,7 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<ADD.LeftInputContainer>
 								<ADD.NameLabel>
@@ -187,7 +187,7 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 								</TextField>
 							</ADD.RightInputContainer>
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>

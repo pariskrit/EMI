@@ -140,7 +140,7 @@ const AddActionDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<ADD.NameInputContainer>
 								<ADD.NameLabel>
@@ -159,7 +159,7 @@ const AddActionDialog = ({
 								/>
 							</ADD.NameInputContainer>
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>

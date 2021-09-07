@@ -216,7 +216,7 @@ const AddPauseDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<APD.NameInputContainer>
 								<ADD.NameLabel>
@@ -280,7 +280,7 @@ const AddPauseDialog = ({
 								Add new
 							</APD.NewButton>
 						</APD.NewButtonContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>

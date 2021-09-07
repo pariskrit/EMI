@@ -6,6 +6,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addSiteDepartments } from "services/clients/sites/siteDepartments";
 
@@ -26,7 +27,7 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, description: null };
 const defaultStateSchema = { name: "", description: "" };
 
-const media = "@media (max-width: 414px)"
+const media = "@media (max-width: 414px)";
 
 const useStyles = makeStyles({
 	dialogContent: {
@@ -154,6 +155,8 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	return (
 		<div>
 			<Dialog
+				fullWidth={true}
+				maxWidth="md"
 				open={open}
 				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
@@ -179,46 +182,49 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>
 
-				<DialogContent className={classes.dialogContent}>
-					<div className={classes.inputContainer}>
-						<ADD.NameLabel>
-							Name<ADD.RequiredStar>*</ADD.RequiredStar>
-						</ADD.NameLabel>
-						<ADD.NameInput
-							error={errors.name === null ? false : true}
-							helperText={errors.name === null ? null : errors.name}
-							required
-							variant="outlined"
-							label="Department Name"
-							value={input.name}
-							onKeyDown={handleEnterPress}
-							onChange={(e) => {
-								setInput({ ...input, name: e.target.value });
-							}}
-						/>
+				<ADD.DialogContent>
+					<div>
+						<ADD.InputContainer>
+							<ADD.LeftInputContainer>
+								<ADD.NameLabel>
+									Name<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.NameLabel>
+								<ADD.NameInput
+									error={errors.name === null ? false : true}
+									helperText={errors.name === null ? null : errors.name}
+									required
+									variant="outlined"
+									label="Department Name"
+									value={input.name}
+									onKeyDown={handleEnterPress}
+									onChange={(e) => {
+										setInput({ ...input, name: e.target.value });
+									}}
+								/>
+							</ADD.LeftInputContainer>
+							<ADD.RightInputContainer>
+								<ADD.NameLabel>
+									Description<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.NameLabel>
+								<ADD.NameInput
+									error={errors.description === null ? false : true}
+									helperText={
+										errors.description === null ? null : errors.description
+									}
+									required
+									variant="outlined"
+									label="Department Description"
+									value={input.description}
+									onKeyDown={handleEnterPress}
+									onChange={(e) => {
+										setInput({ ...input, description: e.target.value });
+									}}
+									fullWidth
+								/>
+							</ADD.RightInputContainer>
+						</ADD.InputContainer>
 					</div>
-					<div className={classes.inputContainer}>
-						<ADD.NameLabel>
-							Description<ADD.RequiredStar>*</ADD.RequiredStar>
-						</ADD.NameLabel>
-						<ADD.NameInput
-							error={errors.description === null ? false : true}
-							helperText={
-								errors.description === null ? null : errors.description
-							}
-							required
-							variant="outlined"
-							label="Department Description"
-							value={input.description}
-							onKeyDown={handleEnterPress}
-							onChange={(e) => {
-								setInput({ ...input, description: e.target.value });
-							}}
-							fullWidth
-							multiline
-						/>
-					</div>
-				</DialogContent>
+				</ADD.DialogContent>
 			</Dialog>
 		</div>
 	);

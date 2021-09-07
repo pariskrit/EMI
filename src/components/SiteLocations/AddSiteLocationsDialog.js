@@ -148,6 +148,8 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 	return (
 		<div>
 			<Dialog
+				fullWidth={true}
+				maxWidth="md"
 				open={open}
 				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
@@ -192,7 +194,6 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 								setInput({ ...input, name: e.target.value });
 							}}
 							fullWidth
-							multiline
 						/>
 						{/* </ADD.NameInputContainer> */}
 					</div>

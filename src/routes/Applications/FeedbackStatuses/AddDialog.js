@@ -21,20 +21,14 @@ const schema = yup.object({
 		.required("This field is required"),
 	type: yup
 		.string("This field must be a string")
-		.required("This field is required")	
+		.required("This field is required"),
 });
 
 // Default state schemas
 const defaultErrorSchema = { name: null, type: null };
 const defaultStateSchema = { name: "", type: "O" };
 
-const AddDialog = ({
-	open,
-	closeHandler,
-	applicationID,
-	handleAddData,
-}) => {
-
+const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -152,7 +146,7 @@ const AddDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<ADD.LeftInputContainer>
 								<ADD.NameLabel>
@@ -177,9 +171,7 @@ const AddDialog = ({
 								</ADD.InputLabel>
 								<TextField
 									error={errors.type === null ? false : true}
-									helperText={
-										errors.type === null ? null : errors.type
-									}
+									helperText={errors.type === null ? null : errors.type}
 									fullWidth={true}
 									select
 									value={input.type}
@@ -195,9 +187,8 @@ const AddDialog = ({
 									))}
 								</TextField>
 							</ADD.RightInputContainer>
-
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>

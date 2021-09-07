@@ -74,7 +74,7 @@ const ModelStatusesTable = ({
 	currentTableSort,
 	setCurrentTableSort,
 	searchedData,
-	setSearchedData
+	setSearchedData,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -150,7 +150,7 @@ const ModelStatusesTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{(searchQuery === "" ? data : searchedData).map((d, index) => (
-							<TableRow>
+							<TableRow key={d.name}>
 								<AT.DataCell>
 									<AT.TableBodyText
 										className={clsx({

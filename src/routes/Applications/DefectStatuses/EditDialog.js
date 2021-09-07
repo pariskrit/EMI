@@ -21,7 +21,7 @@ const schema = yup.object({
 		.required("This field is required"),
 	type: yup
 		.string("This field must be a string")
-		.required("This field is required")
+		.required("This field is required"),
 });
 
 // Default state schemas
@@ -29,7 +29,6 @@ const defaultErrorSchema = { name: null, type: null };
 const defaultStateSchema = { name: "", type: "" };
 
 const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
-
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -161,7 +160,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.LeftInputContainer>
 								<AED.NameLabel>
@@ -185,9 +184,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 								</AED.InputLabel>
 								<TextField
 									error={errors.type === null ? false : true}
-									helperText={
-										errors.type === null ? null : errors.type
-									}
+									helperText={errors.type === null ? null : errors.type}
 									fullWidth={true}
 									select
 									value={input.type}
@@ -204,7 +201,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 								</TextField>
 							</AED.RightInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

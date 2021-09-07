@@ -141,7 +141,7 @@ const AddStopDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<ADD.NameInputContainer>
 								<ADD.NameLabel>
@@ -160,7 +160,7 @@ const AddStopDialog = ({
 								/>
 							</ADD.NameInputContainer>
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>
