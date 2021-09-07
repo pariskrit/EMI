@@ -141,20 +141,19 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 					</div>
 				) : null}
 			</div>
+			<SaveHistory />
+
+			<NavButtons
+				navigation={navigation}
+				applicationName={
+					state !== undefined ? state.applicationName : applicationName
+				}
+				current="Details"
+			/>
 
 			{/* Spinner should start here */}
 			{haveData ? (
 				<>
-					<SaveHistory />
-
-					<NavButtons
-						navigation={navigation}
-						applicationName={
-							state !== undefined ? state.applicationName : applicationName
-						}
-						current="Details"
-					/>
-
 					<div className="detailsContainer">
 						<DetailsPanel
 							header={"Custom Captions"}

@@ -50,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
 	tickboxSpacing: {
 		marginLeft: "15%",
 	},
-	tickboxSpacingMobile:{
-		marginLeft: '0%'
-	}
+	tickboxSpacingMobile: {
+		marginLeft: "0%",
+	},
 }));
 
 const ApplicationDetails = ({ inputData, setInputData, errors }) => {
@@ -62,9 +62,8 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 	return (
 		<div className={classes.detailsContainer}>
 			<AccordionBox title="Details">
-
 				{/* --- Desktop View --- */}
-				<Grid container  className='desktopViewGrid' >
+				<Grid container className="desktopViewGrid">
 					<Grid item xs={6}>
 						<div className={classes.textInputContainer}>
 							<Typography gutterBottom className={classes.labelText}>
@@ -129,8 +128,7 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 													setInputData({
 														...inputData,
 														...{
-															equipmentModelStructure:
-																!inputData.equipmentModelStructure,
+															equipmentModelStructure: !inputData.equipmentModelStructure,
 														},
 													});
 												}}
@@ -155,8 +153,7 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 													setInputData({
 														...inputData,
 														...{
-															assetModelStructure:
-																!inputData.assetModelStructure,
+															assetModelStructure: !inputData.assetModelStructure,
 														},
 													});
 												}}
@@ -323,10 +320,9 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 						</div>
 					</Grid>
 				</Grid>
-
 
 				{/* --- Mobile View --- */}
-				<Grid container  className='mobileViewGrid' >
+				<Grid container className="mobileViewGrid">
 					<Grid item xs={12}>
 						<div className={classes.textInputContainer}>
 							<Typography gutterBottom className={classes.labelText}>
@@ -391,8 +387,7 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 													setInputData({
 														...inputData,
 														...{
-															equipmentModelStructure:
-																!inputData.equipmentModelStructure,
+															equipmentModelStructure: !inputData.equipmentModelStructure,
 														},
 													});
 												}}
@@ -417,8 +412,7 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 													setInputData({
 														...inputData,
 														...{
-															assetModelStructure:
-																!inputData.assetModelStructure,
+															assetModelStructure: !inputData.assetModelStructure,
 														},
 													});
 												}}
@@ -585,12 +579,9 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 						</div>
 					</Grid>
 				</Grid>
-
 			</AccordionBox>
 		</div>
 	);
 };
 
 export default ApplicationDetails;
-
-

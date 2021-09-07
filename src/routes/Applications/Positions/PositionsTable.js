@@ -323,7 +323,7 @@ const PositionsTable = ({
 
 				<TableBody>
 					{(searchQuery === "" ? data : searchedData).map((d, index) => (
-						<TableRow>
+						<TableRow key={d.id}>
 							<AT.DataCell>
 								<AT.CellContainer>
 									<AT.TableBodyText>{d.name}</AT.TableBodyText>
