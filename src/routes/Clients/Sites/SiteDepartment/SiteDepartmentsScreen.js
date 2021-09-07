@@ -6,9 +6,10 @@ import { useHistory, useParams } from "react-router-dom";
 import { fetchSiteDetail } from "redux/siteDetail/actions";
 import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import SiteDepartmentsContent from "./SiteDepartmentsContent";
+import { siteScreenNavigation } from "helpers/constants";
 
 const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
-	const { id } = useParams();
+	const { id, clientId } = useParams();
 	const history = useHistory();
 	const [data, setData] = useState([]);
 	const [modal, setModal] = useState({ add: false });
@@ -62,7 +63,10 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 			/>
 			<SiteWrapper
 				current="Departments"
-				onNavClick={(path) => history.push(path)}
+				navigation={siteScreenNavigation}
+				onNavClick={(urlToGo) =>
+					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				}
 				status=""
 				lastSaved=""
 				showAdd

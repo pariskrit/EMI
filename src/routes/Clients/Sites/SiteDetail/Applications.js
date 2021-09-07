@@ -101,11 +101,11 @@ const Applications = ({
 				closeHandler={onCloseChangeConfirmDialog}
 				handleChangeConfirm={onConfirmChange}
 			/>
-			<DeleteDialog
+			{/* <DeleteDialog
 				entityName="Application"
 				open={openDeleteConfirm}
 				closeHandler={onCloseDeleteConfirmDialog}
-			/>
+			/> */}
 			<AddSiteApplicationModal
 				open={openModal}
 				handleClose={onCloseAddSiteApplicationModal}

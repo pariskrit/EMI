@@ -1,3 +1,9 @@
+import {
+	siteAssetPath,
+	siteDepartmentPath,
+	siteLocationPath,
+} from "helpers/routePaths";
+
 export const BASE_API_PATH = "/api/";
 
 export const clientOptions = [
@@ -12,4 +18,11 @@ export const siteOptions = [
 	{ label: "Concurrent Users", value: 1 },
 	{ label: "Per Job Per Role", value: 2 },
 	{ label: "Application-Based Licencing", value: 3 },
+];
+
+export const siteScreenNavigation = [
+	{ name: "Details", url: "" },
+	{ name: "Assets", url: siteAssetPath },
+	{ name: "Departments", url: siteDepartmentPath },
+	{ name: "Locations", url: siteLocationPath },
 ];

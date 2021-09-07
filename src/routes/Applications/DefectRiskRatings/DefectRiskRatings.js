@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import Navbar from "../../../components/Navbar";
 import DefectRiskRatingsContent from "./DefectRiskRatingsContent";
@@ -13,13 +13,7 @@ const DefectRiskRatings = () => {
 
 	// Init state
 	const [is404, setIs404] = useState(false);
-	const [navigation, setNavigation] = useState([]);
-
-	// Getting navigation details on initial load
-	useEffect(() => {
-		setNavigation(ApplicationNavigation(id));
-		// eslint-disable-next-line
-	}, []);
+	const navigation = ApplicationNavigation(id);
 
 	// Rendering data content with Navbar. Otherwise, 404 error
 	if (is404 === false) {

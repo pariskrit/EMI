@@ -10,9 +10,11 @@ import {
 } from "services/clients/sites/siteAssets";
 import AddAssetDialog from "./AddAssetDialog";
 import Assets from "./Assets";
+import { siteScreenNavigation } from "helpers/constants";
+
 const SiteAsset = ({ fetchCrumbs }) => {
 	const history = useHistory();
-	const { id } = useParams();
+	const { id, clientId } = useParams();
 	const [modal, setModal] = useState({ import: false, add: false });
 	const [data, setData] = useState([]);
 	const [count, setCount] = useState(null);
@@ -101,7 +103,10 @@ const SiteAsset = ({ fetchCrumbs }) => {
 			/>
 			<SiteWrapper
 				current="Assets"
-				onNavClick={(path) => history.push(path)}
+				navigation={siteScreenNavigation}
+				onNavClick={(urlToGo) =>
+					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				}
 				status=""
 				lastSaved=""
 				showAdd

@@ -104,8 +104,8 @@ const CustomCaptionRow = ({
 		<TableRow>
 			<AT.DataCell>
 				<AT.CellContainer>
-					{indentArr.map((Indenter) => {
-						return <Indenter />;
+					{indentArr.map((Indenter, index) => {
+						return <Indenter key={index} />;
 					})}
 					<div className={classes.captionIconContainer}>
 						<CaptionIcon />

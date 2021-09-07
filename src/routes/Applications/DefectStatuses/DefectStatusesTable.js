@@ -151,7 +151,7 @@ const DefectStatusesTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{(searchQuery === "" ? data : searchedData).map((d, index) => (
-							<TableRow>
+							<TableRow key={d.id}>
 								<AT.DataCell>
 									<AT.TableBodyText
 										className={clsx({

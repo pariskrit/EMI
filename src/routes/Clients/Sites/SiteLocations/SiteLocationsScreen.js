@@ -7,9 +7,10 @@ import AddSiteLocationsDialog from "components/SiteLocations/AddSiteLocationsDia
 import { useRef } from "react";
 import { connect } from "react-redux";
 import { fetchSiteDetail } from "redux/siteDetail/actions";
+import { siteScreenNavigation } from "helpers/constants";
 
 const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
-	const { id } = useParams();
+	const { id, clientId } = useParams();
 	const history = useHistory();
 	const [data, setData] = useState([]);
 	const [modal, setModal] = useState({ add: false });
@@ -65,7 +66,10 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 
 			<SiteWrapper
 				current="Locations"
-				onNavClick={(path) => history.push(path)}
+				navigation={siteScreenNavigation}
+				onNavClick={(urlToGo) =>
+					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				}
 				status=""
 				lastSaved=""
 				showAdd

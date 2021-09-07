@@ -54,7 +54,7 @@ const FeedbackClassificationsTable = ({
 	currentTableSort,
 	setCurrentTableSort,
 	searchedData,
-	setSearchedData
+	setSearchedData,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -110,21 +110,21 @@ const FeedbackClassificationsTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{(searchQuery === "" ? data : searchedData).map((d, index) => (
-							<TableRow>
+							<TableRow key={d.id}>
 								<AT.DataCell>
 									<AT.CellContainer>
-									<AT.TableBodyText
-										className={clsx({
-											[classes.defaultNameText]: d.id === defaultID,
-										})}
-									>
-										{d.name}
-									</AT.TableBodyText>
-									{d.id === defaultID ? (
-										<Typography className={classes.defaultText}>
-											(Default)
-										</Typography>
-									) : null}
+										<AT.TableBodyText
+											className={clsx({
+												[classes.defaultNameText]: d.id === defaultID,
+											})}
+										>
+											{d.name}
+										</AT.TableBodyText>
+										{d.id === defaultID ? (
+											<Typography className={classes.defaultText}>
+												(Default)
+											</Typography>
+										) : null}
 
 										<AT.DotMenu
 											onClick={(e) => {
@@ -175,7 +175,7 @@ const FeedbackClassificationsTable = ({
 												]}
 											/>
 										</AT.DotMenu>
-										</AT.CellContainer>
+									</AT.CellContainer>
 								</AT.DataCell>
 							</TableRow>
 						))}

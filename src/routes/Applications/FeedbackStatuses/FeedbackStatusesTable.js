@@ -75,7 +75,7 @@ const FeedbackStatusesTable = ({
 	currentTableSort,
 	setCurrentTableSort,
 	searchedData,
-	setSearchedData
+	setSearchedData,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -151,7 +151,7 @@ const FeedbackStatusesTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{(searchQuery === "" ? data : searchedData).map((d, index) => (
-							<TableRow>
+							<TableRow key={d.id}>
 								<AT.DataCell>
 									<AT.TableBodyText
 										className={clsx({
@@ -168,7 +168,9 @@ const FeedbackStatusesTable = ({
 								</AT.DataCell>
 								<AT.DataCell>
 									<AT.CellContainer>
-										<AT.TableBodyText>{FeedbackStatusTypes[d.type]}</AT.TableBodyText>
+										<AT.TableBodyText>
+											{FeedbackStatusTypes[d.type]}
+										</AT.TableBodyText>
 
 										<AT.DotMenu
 											onClick={(e) => {
