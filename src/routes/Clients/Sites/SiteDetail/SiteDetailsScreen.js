@@ -1,7 +1,7 @@
 import React from "react";
 import SiteWrapper from "components/SiteWrapper";
 import { useHistory } from "react-router-dom";
-import Details from "./Details";
+import SiteDetailsContent from "./SiteDetailsContent";
 
 const SiteDetail = () => {
 	const history = useHistory();
@@ -10,7 +10,7 @@ const SiteDetail = () => {
 		<SiteWrapper
 			current="Details"
 			onNavClick={(data) => history.push(data)}
-			Component={() => <Details />}
+			Component={() => <SiteDetailsContent />}
 		/>
 	);
 };

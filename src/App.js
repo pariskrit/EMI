@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
 import SiteAsset from "routes/Clients/Sites/SiteAsset";
-import SiteDetail from "routes/Clients/Sites/SiteDetail";
+import SiteDetail from "routes/Clients/Sites/SiteDetail/SiteDetailsScreen";
 import SiteDepartmentsScreen from "routes/Clients/Sites/SiteDepartment/SiteDepartmentsScreen";
 import SiteLocationsScreen from "routes/Clients/Sites/SiteLocations/SiteLocationsScreen";
 import "./App.scss";
