@@ -16,8 +16,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	action: yup
-		.string("This field must be a string")
+	action: yup.string("This field must be a string"),
 });
 
 // Default state schemas
@@ -25,7 +24,6 @@ const defaultErrorSchema = { name: null, action: null };
 const defaultStateSchema = { name: "", action: "" };
 
 const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
-
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -157,7 +155,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.LeftInputContainer>
 								<AED.NameLabel>
@@ -176,9 +174,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 								/>
 							</AED.LeftInputContainer>
 							<AED.RightInputContainer>
-								<AED.NameLabel>
-									Action
-								</AED.NameLabel>
+								<AED.NameLabel>Action</AED.NameLabel>
 								<AED.NameInput
 									error={errors.action === null ? false : true}
 									helperText={errors.action === null ? null : errors.action}
@@ -191,7 +187,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 								/>
 							</AED.RightInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

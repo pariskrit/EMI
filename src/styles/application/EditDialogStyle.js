@@ -57,7 +57,7 @@ const EditDialogStyle = () => {
 		DialogContent: styled(DialogContent)({
 			marginBottom: 15,
 		}),
-		InputContainer: styled(DialogContentText)({
+		InputContainer: styled("div")({
 			width: "100%",
 			display: "flex",
 			marginBottom: 20,

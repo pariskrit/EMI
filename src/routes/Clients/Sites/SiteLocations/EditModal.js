@@ -51,6 +51,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
+					setErrors({ ...errors, ...updatedData.errors });
 					setIsUpdating(false);
 				}
 			} else {
@@ -90,7 +91,17 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				return { success: true };
 			} else {
 				// If not success, throwing error
-				throw new Error(result);
+				if (result.data.detail) {
+					setErrors({ name: result.data.detail });
+					return {
+						success: false,
+						errors: {
+							name: result.data.detail,
+						},
+					};
+				} else {
+					return { success: false, errors: result.data.errors };
+				}
 			}
 		} catch (err) {
 			if (err.response.data.errors !== undefined) {
@@ -145,7 +156,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.NameInputContainer>
 								<AED.NameLabel>
@@ -164,7 +175,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 								/>
 							</AED.NameInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

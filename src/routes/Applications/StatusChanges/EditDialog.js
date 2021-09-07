@@ -151,7 +151,7 @@ const EditStatusChangeDialog = ({
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.NameInputContainer>
 								<AED.NameLabel>
@@ -170,7 +170,7 @@ const EditStatusChangeDialog = ({
 								/>
 							</AED.NameInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

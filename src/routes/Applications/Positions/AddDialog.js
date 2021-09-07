@@ -210,7 +210,7 @@ const AddPositionDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							{/* NAME INPUT */}
 							<ADD.LeftInputContainer>
@@ -495,7 +495,7 @@ const AddPositionDialog = ({
 								/>
 							</ADD.LeftInputContainer>
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>

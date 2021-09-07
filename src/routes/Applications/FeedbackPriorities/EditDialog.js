@@ -15,7 +15,7 @@ const AED = EditDialogStyle();
 const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
-		.required("This field is required")
+		.required("This field is required"),
 });
 
 // Default state schemas
@@ -87,7 +87,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				// Updating state to match DB
 				handleEditData({
 					id: data.id,
-					name: input.name
+					name: input.name,
 				});
 
 				return { success: true };
@@ -117,7 +117,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 	// Updating name after SC set
 	useEffect(() => {
 		if (data !== null && open) {
-			setInput({ name: data.name});
+			setInput({ name: data.name });
 		}
 	}, [data, open]);
 
@@ -148,7 +148,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							<AED.NameInputContainer>
 								<AED.NameLabel>
@@ -167,7 +167,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 								/>
 							</AED.NameInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

@@ -29,6 +29,9 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
+	inputContainer: {
+		marginBottom: 20,
+	},
 });
 
 const AddApplicationDialog = ({ open, closeHandler, createHandler }) => {
@@ -94,7 +97,7 @@ const AddApplicationDialog = ({ open, closeHandler, createHandler }) => {
 	};
 
 	return (
-		<div>
+		<>
 			<Dialog
 				open={open}
 				onClose={closeOverride}
@@ -122,7 +125,7 @@ const AddApplicationDialog = ({ open, closeHandler, createHandler }) => {
 				</ADD.ActionContainer>
 
 				<DialogContent className={classes.dialogContent}>
-					<ADD.InputContainer>
+					<div className={classes.inputContainer}>
 						<ADD.NameInput
 							error={errors.name === null ? false : true}
 							helperText={errors.name === null ? null : errors.name}
@@ -134,10 +137,10 @@ const AddApplicationDialog = ({ open, closeHandler, createHandler }) => {
 								setInput({ ...input, name: e.target.value });
 							}}
 						/>
-					</ADD.InputContainer>
+					</div>
 				</DialogContent>
 			</Dialog>
-		</div>
+		</>
 	);
 };
 

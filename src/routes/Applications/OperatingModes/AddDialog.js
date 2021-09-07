@@ -25,12 +25,7 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, publish: null };
 const defaultStateSchema = { name: "", publish: false };
 
-const AddDialog = ({
-	open,
-	closeHandler,
-	applicationID,
-	handleAddData,
-}) => {
+const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -148,7 +143,7 @@ const AddDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<ADD.NameInputContainer>
 								<ADD.NameLabel>
@@ -167,7 +162,7 @@ const AddDialog = ({
 								/>
 							</ADD.NameInputContainer>
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>

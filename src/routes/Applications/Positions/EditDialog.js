@@ -278,7 +278,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 				</AED.ActionContainer>
 
 				<AED.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<AED.InputContainer>
 							{/* NAME INPUT */}
 							<AED.LeftInputContainer>
@@ -563,7 +563,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 								/>
 							</AED.LeftInputContainer>
 						</AED.InputContainer>
-					</DialogContentText>
+					</div>
 				</AED.DialogContent>
 			</Dialog>
 		</div>

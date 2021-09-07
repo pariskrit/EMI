@@ -236,7 +236,7 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 					</ET.ButtonContainer>
 				</ET.ActionContainer>
 				<ET.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ET.InputContainer>
 							<ET.LeftInputContainer>
 								<div className={classes.inputContainer}>
@@ -280,7 +280,7 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 								</div>
 							</ET.RightInputContainer>
 						</ET.InputContainer>
-					</DialogContentText>
+					</div>
 
 					<div className={classes.headContainer}>
 						<div className={classes.header}>

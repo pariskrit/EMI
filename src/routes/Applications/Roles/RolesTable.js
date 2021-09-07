@@ -131,7 +131,9 @@ const RolesTable = ({
 								</AT.DataCell>
 								<AT.DataCell>
 									<AT.CellContainer>
-										<AT.TableBodyText>{d.canRegisterDefects}</AT.TableBodyText>
+										<AT.TableBodyText>
+											{d.canRegisterDefects.toString()}
+										</AT.TableBodyText>
 
 										<AT.DotMenu
 											onClick={(e) => {

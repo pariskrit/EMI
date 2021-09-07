@@ -15,19 +15,14 @@ const ADD = AddDialogStyle();
 const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
-		.required("This field is required")
+		.required("This field is required"),
 });
 
 // Default state schemas
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const AddDialog = ({
-	open,
-	closeHandler,
-	applicationID,
-	handleAddData,
-}) => {
+const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -81,7 +76,7 @@ const AddDialog = ({
 			// Submitting to backend
 			const result = await API.post("/api/ApplicationFeedbackClassifications", {
 				applicationId: applicationID,
-				name: input.name
+				name: input.name,
 			});
 
 			// Handling success
@@ -90,7 +85,7 @@ const AddDialog = ({
 				handleAddData({
 					id: result.data,
 					applicationID: applicationID,
-					name: input.name
+					name: input.name,
 				});
 
 				return { success: true };
@@ -143,7 +138,7 @@ const AddDialog = ({
 				</ADD.ActionContainer>
 
 				<ADD.DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<div>
 						<ADD.InputContainer>
 							<ADD.NameInputContainer>
 								<ADD.NameLabel>
@@ -162,7 +157,7 @@ const AddDialog = ({
 								/>
 							</ADD.NameInputContainer>
 						</ADD.InputContainer>
-					</DialogContentText>
+					</div>
 				</ADD.DialogContent>
 			</Dialog>
 		</div>
