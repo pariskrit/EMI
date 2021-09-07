@@ -32,6 +32,13 @@ import ClientList from "./routes/Clients/ClientList/ClientList";
 import Home from "./routes/Home/Home";
 import Launch from "./routes/Launch/Launch";
 import Login from "./routes/Login/Login";
+import {
+	clientDetailPath,
+	siteAssetPath,
+	siteDepartmentPath,
+	siteDetailPath,
+	siteLocationPath,
+} from "helpers/path";
 
 function App() {
 	return (
@@ -139,20 +146,20 @@ function App() {
 						<ClientList />
 					</Route>
 
-					<Route path="/client/:id" exact>
+					<Route path={clientDetailPath} exact>
 						<ClientDetailScreen />
 					</Route>
 
-					<Route path="/client/:clientId/site/:id" exact>
+					<Route path={siteDetailPath} exact>
 						<SiteDetail />
 					</Route>
-					<Route path="/client/:clientId/site/:id/assets" exact>
+					<Route path={siteDetailPath + siteAssetPath} exact>
 						<SiteAsset />
 					</Route>
-					<Route path="/client/:clientId/site/:id/departments" exact>
+					<Route path={siteDetailPath + siteDepartmentPath} exact>
 						<SiteDepartmentsScreen />
 					</Route>
-					<Route path="/client/:clientId/site/:id/locations" exact>
+					<Route path={siteDetailPath + siteLocationPath} exact>
 						<SiteLocationsScreen />
 					</Route>
 				</Switch>
