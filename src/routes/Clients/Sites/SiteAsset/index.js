@@ -12,7 +12,7 @@ import AddAssetDialog from "./AddAssetDialog";
 import Assets from "./Assets";
 const SiteAsset = ({ fetchCrumbs }) => {
 	const history = useHistory();
-	const { id } = useParams();
+	const { id, clientId } = useParams();
 	const [modal, setModal] = useState({ import: false, add: false });
 	const [data, setData] = useState([]);
 	const [count, setCount] = useState(null);
@@ -101,7 +101,15 @@ const SiteAsset = ({ fetchCrumbs }) => {
 			/>
 			<SiteWrapper
 				current="Assets"
-				onNavClick={(path) => history.push(path)}
+				navigation={[
+					{ name: "Details", url: "" },
+					{ name: "Assets", url: "/assets" },
+					{ name: "Departments", url: "/departments" },
+					{ name: "Locations", url: "/locations" },
+				]}
+				onNavClick={(urlToGo) =>
+					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				}
 				status=""
 				lastSaved=""
 				showAdd

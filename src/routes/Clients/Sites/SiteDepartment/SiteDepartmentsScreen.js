@@ -8,7 +8,7 @@ import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import SiteDepartmentsContent from "./SiteDepartmentsContent";
 
 const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
-	const { id } = useParams();
+	const { id, clientId } = useParams();
 	const history = useHistory();
 	const [data, setData] = useState([]);
 	const [modal, setModal] = useState({ add: false });
@@ -62,7 +62,15 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 			/>
 			<SiteWrapper
 				current="Departments"
-				onNavClick={(path) => history.push(path)}
+				navigation={[
+					{ name: "Details", url: "" },
+					{ name: "Assets", url: "/assets" },
+					{ name: "Departments", url: "/departments" },
+					{ name: "Locations", url: "/locations" },
+				]}
+				onNavClick={(urlToGo) =>
+					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				}
 				status=""
 				lastSaved=""
 				showAdd

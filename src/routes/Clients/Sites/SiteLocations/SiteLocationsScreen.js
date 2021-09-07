@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { fetchSiteDetail } from "redux/siteDetail/actions";
 
 const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
-	const { id } = useParams();
+	const { id, clientId } = useParams();
 	const history = useHistory();
 	const [data, setData] = useState([]);
 	const [modal, setModal] = useState({ add: false });
@@ -65,7 +65,15 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 
 			<SiteWrapper
 				current="Locations"
-				onNavClick={(path) => history.push(path)}
+				navigation={[
+					{ name: "Details", url: "" },
+					{ name: "Assets", url: "/assets" },
+					{ name: "Departments", url: "/departments" },
+					{ name: "Locations", url: "/locations" },
+				]}
+				onNavClick={(urlToGo) =>
+					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				}
 				status=""
 				lastSaved=""
 				showAdd

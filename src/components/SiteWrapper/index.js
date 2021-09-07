@@ -9,7 +9,7 @@ import NavButtons from "components/NavButtons";
 import NavDetails from "components/NavDetails";
 import PropTypes from "prop-types";
 import React from "react";
-import { useParams } from "react-router-dom";
+
 import "routes/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
@@ -63,7 +63,6 @@ const useStyles = makeStyles({
 });
 
 const SiteWrapper = ({
-	status,
 	lastSaved,
 	onClickAdd,
 	onClickImport,
@@ -72,10 +71,10 @@ const SiteWrapper = ({
 	current,
 	onNavClick,
 	Component,
-	crumbs,
+	navigation,
 }) => {
 	const classes = useStyles();
-	const { id, clientId } = useParams();
+
 	return (
 		<ThemeProvider theme={theme}>
 			<Navbar
@@ -112,16 +111,9 @@ const SiteWrapper = ({
 						</div>
 
 						<NavButtons
-							navigation={[
-								{ name: "Details", url: "" },
-								{ name: "Assets", url: "/assets" },
-								{ name: "Departments", url: "/departments" },
-								{ name: "Locations", url: "/locations" },
-							]}
+							navigation={navigation}
 							current={current}
-							onClick={(nam) =>
-								onNavClick(`/client/${clientId}/site/${id}${nam}`)
-							}
+							onClick={onNavClick}
 						/>
 						<Component />
 					</div>
