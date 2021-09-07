@@ -7,6 +7,11 @@ import RestoreIcon from "@material-ui/icons/Restore";
 import Navbar from "components/Navbar";
 import NavButtons from "components/NavButtons";
 import NavDetails from "components/NavDetails";
+import {
+	siteAssetPath,
+	siteDepartmentPath,
+	siteLocationPath,
+} from "helpers/path";
 import PropTypes from "prop-types";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -114,9 +119,9 @@ const SiteWrapper = ({
 						<NavButtons
 							navigation={[
 								{ name: "Details", url: "" },
-								{ name: "Assets", url: "/assets" },
-								{ name: "Departments", url: "/departments" },
-								{ name: "Locations", url: "/locations" },
+								{ name: "Assets", url: siteAssetPath },
+								{ name: "Departments", url: siteDepartmentPath },
+								{ name: "Locations", url: siteLocationPath },
 							]}
 							current={current}
 							onClick={(nam) =>
