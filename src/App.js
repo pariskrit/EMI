@@ -1,11 +1,33 @@
 import ErrorDialog from "components/ErrorDialog";
+import {
+	actionsPath,
+	applicationDetailsPath,
+	applicationListPath,
+	clientDetailPath,
+	clientListPath,
+	customCaptionsPath,
+	defectRiskRatingsPath,
+	defectStatusesPath,
+	defectTypesPath,
+	feedbackClassificationsPath,
+	feedbackPrioritiesPath,
+	feedbackStatusesPath,
+	missingItemsPath,
+	modelStatusesPath,
+	modelTypesPath,
+	operatingModesPath,
+	pausesPath,
+	positionsPath,
+	rolesPath,
+	skippedTasksPath,
+	StatusChangesPath,
+	stopsPath,
+	systemsPath,
+} from "helpers/routePaths";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
-import SiteAsset from "routes/Clients/Sites/SiteAsset";
-import SiteDetail from "routes/Clients/Sites/SiteDetail/SiteDetailsScreen";
-import SiteDepartmentsScreen from "routes/Clients/Sites/SiteDepartment/SiteDepartmentsScreen";
-import SiteLocationsScreen from "routes/Clients/Sites/SiteLocations/SiteLocationsScreen";
+import SitePage from "routes/Clients/Sites/Links/SitePage";
 import "./App.scss";
 import Actions from "./routes/Applications/Actions/Action";
 import Application from "./routes/Applications/Application/Application";
@@ -32,36 +54,6 @@ import ClientList from "./routes/Clients/ClientList/ClientList";
 import Home from "./routes/Home/Home";
 import Launch from "./routes/Launch/Launch";
 import Login from "./routes/Login/Login";
-import {
-	actionsPath,
-	applicationDetailsPath,
-	applicationListPath,
-	clientDetailPath,
-	clientListPath,
-	customCaptionsPath,
-	defectRiskRatingsPath,
-	defectStatusesPath,
-	defectTypesPath,
-	feedbackClassificationsPath,
-	feedbackPrioritiesPath,
-	feedbackStatusesPath,
-	missingItemsPath,
-	modelStatusesPath,
-	modelTypesPath,
-	operatingModesPath,
-	pausesPath,
-	positionsPath,
-	rolesPath,
-	siteAssetPath,
-	siteDepartmentPath,
-	siteDetailPath,
-	siteLocationPath,
-	skippedTasksPath,
-	StatusChangesPath,
-	stopsPath,
-	systemsPath,
-} from "helpers/routePaths";
-import SitePage from "routes/Clients/Sites/Links/SitePage";
 
 function App() {
 	return (

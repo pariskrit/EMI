@@ -1,15 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import { CircularProgress } from "@material-ui/core";
 import AccordionActions from "@material-ui/core/AccordionActions";
 import { makeStyles } from "@material-ui/core/styles";
+import AccordionBox from "components/AccordionBox";
 import CurveButton from "components/CurveButton";
 import { handleSort } from "helpers/utils";
-import CommonAddDialog from "../CommonAddDialog";
-import Region from "./Region";
-import AccordionBox from "components/AccordionBox";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	addClientRegion,
 	getClientRegion,
 } from "services/clients/clientDetailScreen";
+import CommonAddDialog from "../CommonAddDialog";
+import Region from "./Region";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -61,6 +62,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
 	const cancelFetch = useRef(false);
+	const [isLoading, setLoading] = useState(true);
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -118,7 +120,9 @@ function ClientRegionAndSites({ clientId, getError }) {
 				return;
 			}
 			handleSort(result.data, setListOfRegions, "name", "asc");
+			setLoading(false);
 		} catch (error) {
+			setLoading(false);
 			console.log(error);
 		}
 	};
@@ -152,15 +156,19 @@ function ClientRegionAndSites({ clientId, getError }) {
 						Add Region
 					</CurveButton>
 				</AccordionActions>
-				{listOfRegions.map((region) => (
-					<Region
-						key={region.id}
-						region={region}
-						fetchRegionsAndSites={fetchRegionsAndSites}
-						clientId={clientId}
-						getError={getError}
-					/>
-				))}
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					listOfRegions.map((region) => (
+						<Region
+							key={region.id}
+							region={region}
+							fetchRegionsAndSites={fetchRegionsAndSites}
+							clientId={clientId}
+							getError={getError}
+						/>
+					))
+				)}
 			</AccordionBox>
 		</div>
 	);

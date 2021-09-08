@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
+import DataTable from "components/SimpleDataTable";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
-import DataTable from "components/SimpleDataTable";
+import React, { useEffect, useRef, useState } from "react";
 import { getClientKeyContacts } from "services/clients/clientDetailScreen";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +37,7 @@ const ClientKeyContacts = ({ clientId }) => {
 	const classes = useStyles();
 	const [data, setData] = useState([]);
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchKeyContacts = async () => {
@@ -52,8 +54,10 @@ const ClientKeyContacts = ({ clientId }) => {
 					//Throw error if failed to fetch
 					throw new Error(`Error: Status ${result.status}`);
 				}
+				setIsLoading(false);
 			} catch (error) {
 				console.log(error);
+				setIsLoading(false);
 				return error;
 			}
 		};
@@ -67,10 +71,14 @@ const ClientKeyContacts = ({ clientId }) => {
 	return (
 		<div className={classes.keyContainer}>
 			<AccordionBox title="Key Contacts" accordianDetailsCss="table-container">
-				<DataTable
-					data={data}
-					tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
-				/>
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					<DataTable
+						data={data}
+						tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
+					/>
+				)}
 			</AccordionBox>
 		</div>
 	);

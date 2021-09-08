@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
 import {
+	CircularProgress,
 	Table,
 	TableBody,
 	TableCell,
@@ -12,6 +12,7 @@ import DeleteDialog from "components/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	addClientNote,
 	getClientNotes,
@@ -64,6 +65,7 @@ const ClientNotes = ({ clientId, getError }) => {
 	const [noteId, setNoteId] = useState(null);
 	const [data, setData] = useState([]);
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchNotes = async () => {
 		try {
@@ -76,8 +78,10 @@ const ClientNotes = ({ clientId, getError }) => {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
+			setIsLoading(false);
 		} catch (err) {
 			console.log(err);
+			setIsLoading(false);
 			return err;
 		}
 	};
@@ -144,26 +148,30 @@ const ClientNotes = ({ clientId, getError }) => {
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
 				accordianDetailsCss="table-container"
 			>
-				<Table>
-					<TableHead className={classes.tableHead}>
-						<TableRow>
-							<TableCell style={{ width: "170px" }}>Name</TableCell>
-							<TableCell>Date</TableCell>
-							<TableCell>Note</TableCell>
-							<TableCell></TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{data.map((row) => (
-							<ClientNoteRow
-								key={row.id}
-								row={row}
-								classes={classes}
-								onDeleteNote={() => handleDeleteNote(row.id)}
-							/>
-						))}
-					</TableBody>
-				</Table>
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					<Table>
+						<TableHead className={classes.tableHead}>
+							<TableRow>
+								<TableCell style={{ width: "170px" }}>Name</TableCell>
+								<TableCell>Date</TableCell>
+								<TableCell>Note</TableCell>
+								<TableCell></TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{data.map((row) => (
+								<ClientNoteRow
+									key={row.id}
+									row={row}
+									classes={classes}
+									onDeleteNote={() => handleDeleteNote(row.id)}
+								/>
+							))}
+						</TableBody>
+					</Table>
+				)}
 			</AccordionBox>
 		</div>
 	);

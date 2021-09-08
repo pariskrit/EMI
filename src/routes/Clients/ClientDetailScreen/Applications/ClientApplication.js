@@ -1,3 +1,4 @@
+import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import ApplicationTable from "components/ApplicationTable";
@@ -5,7 +6,7 @@ import DeleteDialog from "components/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	addClientApplications,
 	getClientApplications,
@@ -66,6 +67,7 @@ const ClientApplication = ({ clientId, getError }) => {
 	const [appId, setAppId] = useState(null);
 	const [data, setData] = useState([]);
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchApplications = async () => {
 		try {
@@ -78,7 +80,10 @@ const ClientApplication = ({ clientId, getError }) => {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
-		} catch (err) {}
+			setIsLoading(false);
+		} catch (err) {
+			setIsLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -173,11 +178,15 @@ const ClientApplication = ({ clientId, getError }) => {
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
 				accordianDetailsCss="table-container"
 			>
-				<ApplicationTable
-					data={data}
-					onDeleteApp={handleDeleteApp}
-					onChangeApp={handleChangeApp}
-				/>
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					<ApplicationTable
+						data={data}
+						onDeleteApp={handleDeleteApp}
+						onChangeApp={handleChangeApp}
+					/>
+				)}
 			</AccordionBox>
 		</div>
 	);

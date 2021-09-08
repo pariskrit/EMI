@@ -1,15 +1,15 @@
+import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import DropUploadBox from "components/DropUploadBox";
 import ProvidedAssetNoImage from "components/ProvidedAsset/ProvidedAssetNoImage";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	addClientDocument,
 	getClientDocument,
 } from "services/clients/clientDetailScreen";
-
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
 		marginTop: 25,
@@ -56,6 +56,7 @@ function ClientDocuments({ clientId, getError }) {
 	const [listOfDocuments, setListOfDocuments] = useState([]);
 	const [filesUploading, setFilesUploading] = useState(false);
 	const cancelFetch = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const onDocumentUpload = async (key, url) => {
 		try {
@@ -105,9 +106,10 @@ function ClientDocuments({ clientId, getError }) {
 					url: doc?.documentURL,
 				})),
 			]);
-
+			setIsLoading(false);
 			setFilesUploading(false);
 		} catch (error) {
+			setIsLoading(false);
 			console.log(error);
 		}
 	};
@@ -125,29 +127,33 @@ function ClientDocuments({ clientId, getError }) {
 		<div className={classes.logoContainer}>
 			<AccordionBox title={`Client Documents (${listOfDocuments.length})`}>
 				<div className={classes.logoContentParent}>
-					{listOfDocuments.map((document, index) => {
-						// Preventing duplication of dividers
-						if (index === listOfDocuments.length - 1) {
-							return (
-								<ProvidedAssetNoImage
-									key={document.id}
-									document={document}
-									showBottomDivider={true}
-									getError={getError}
-									fetchClientDocuments={fetchClientDocuments}
-								/>
-							);
-						} else {
-							return (
-								<ProvidedAssetNoImage
-									key={document.id}
-									document={document}
-									getError={getError}
-									fetchClientDocuments={fetchClientDocuments}
-								/>
-							);
-						}
-					})}
+					{isLoading ? (
+						<CircularProgress />
+					) : (
+						listOfDocuments.map((document, index) => {
+							// Preventing duplication of dividers
+							if (index === listOfDocuments.length - 1) {
+								return (
+									<ProvidedAssetNoImage
+										key={document.id}
+										document={document}
+										showBottomDivider={true}
+										getError={getError}
+										fetchClientDocuments={fetchClientDocuments}
+									/>
+								);
+							} else {
+								return (
+									<ProvidedAssetNoImage
+										key={document.id}
+										document={document}
+										getError={getError}
+										fetchClientDocuments={fetchClientDocuments}
+									/>
+								);
+							}
+						})
+					)}
 
 					<div className={classes.uploaderContainer}>
 						<DropUploadBox
