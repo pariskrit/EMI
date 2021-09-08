@@ -1,4 +1,5 @@
 import {
+	siteDetailPath,
 	siteAssetPath,
 	siteDepartmentPath,
 	siteLocationPath,
@@ -21,7 +22,7 @@ export const siteOptions = [
 ];
 
 export const siteScreenNavigation = [
-	{ name: "Details", url: "" },
+	{ name: "Details", url: siteDetailPath },
 	{ name: "Assets", url: siteAssetPath },
 	{ name: "Departments", url: siteDepartmentPath },
 	{ name: "Locations", url: siteLocationPath },

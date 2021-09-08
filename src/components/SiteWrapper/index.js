@@ -79,13 +79,7 @@ const SiteWrapper = ({
 			<Navbar
 				Content={() => (
 					<div className="container">
-						<div
-							className={
-								showAdd || showImport
-									? "topContainerCustomCaptions"
-									: "topContainerCustomCaptionsWithourActions"
-							}
-						>
+						<div className={"topContainerCustomCaptions"}>
 							<NavDetails status={true} lastSaved={lastSaved} />
 							<div className={showAdd || showImport ? classes.wrapper : ""}>
 								<div className={classes.buttons}>

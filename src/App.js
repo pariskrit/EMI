@@ -39,6 +39,7 @@ import {
 	siteDetailPath,
 	siteLocationPath,
 } from "helpers/routePaths";
+import SitePage from "routes/Clients/Sites/Links/SitePage";
 
 function App() {
 	return (
@@ -150,18 +151,7 @@ function App() {
 						<ClientDetailScreen />
 					</Route>
 
-					<Route path={siteDetailPath} exact>
-						<SiteDetail />
-					</Route>
-					<Route path={siteDetailPath + siteAssetPath} exact>
-						<SiteAsset />
-					</Route>
-					<Route path={siteDetailPath + siteDepartmentPath} exact>
-						<SiteDepartmentsScreen />
-					</Route>
-					<Route path={siteDetailPath + siteLocationPath} exact>
-						<SiteLocationsScreen />
-					</Route>
+					<SitePage />
 				</Switch>
 			</Router>
 		</div>
