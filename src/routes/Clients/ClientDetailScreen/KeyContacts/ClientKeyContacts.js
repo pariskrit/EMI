@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
 import ColourConstants from "helpers/colourConstants";
@@ -35,11 +35,16 @@ const useStyles = makeStyles((theme) => ({
 const ClientKeyContacts = ({ clientId }) => {
 	const classes = useStyles();
 	const [data, setData] = useState([]);
+	const cancelFetch = useRef(false);
 
 	useEffect(() => {
 		const fetchKeyContacts = async () => {
 			try {
 				let result = await getClientKeyContacts(clientId);
+
+				if (cancelFetch.current) {
+					return;
+				}
 				if (result.status) {
 					result = result.data;
 					handleSort(result, setData, "name", "asc");
@@ -53,6 +58,10 @@ const ClientKeyContacts = ({ clientId }) => {
 			}
 		};
 		fetchKeyContacts();
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, [clientId]);
 
 	return (

@@ -4,7 +4,7 @@ import DropUploadBox from "components/DropUploadBox";
 import ProvidedAssetNoImage from "components/ProvidedAsset/ProvidedAssetNoImage";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
 	addClientDocument,
 	getClientDocument,
@@ -55,6 +55,7 @@ function ClientDocuments({ clientId, getError }) {
 	const classes = useStyles();
 	const [listOfDocuments, setListOfDocuments] = useState([]);
 	const [filesUploading, setFilesUploading] = useState(false);
+	const cancelFetch = useRef(false);
 
 	const onDocumentUpload = async (key, url) => {
 		try {
@@ -93,6 +94,10 @@ function ClientDocuments({ clientId, getError }) {
 	const fetchClientDocuments = async () => {
 		try {
 			const result = await getClientDocument(clientId);
+
+			if (cancelFetch.current) {
+				return;
+			}
 			setListOfDocuments([
 				...result.data.map((doc) => ({
 					id: doc?.id,
@@ -110,6 +115,10 @@ function ClientDocuments({ clientId, getError }) {
 	useEffect(() => {
 		fetchClientDocuments();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, []);
 
 	return (
