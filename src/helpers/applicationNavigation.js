@@ -1,3 +1,26 @@
+import {
+	actionsPath,
+	applicationPath,
+	customCaptionsPath,
+	defectRiskRatingsPath,
+	defectStatusesPath,
+	defectTypesPath,
+	feedbackClassificationsPath,
+	feedbackPrioritiesPath,
+	feedbackStatusesPath,
+	missingItemsPath,
+	modelStatusesPath,
+	modelTypesPath,
+	operatingModesPath,
+	pausesPath,
+	positionsPath,
+	rolesPath,
+	skippedTasksPath,
+	StatusChangesPath,
+	stopsPath,
+	systemsPath,
+} from "./routePaths";
+
 /**
  * NOTE: This is currently a helper. In production, this data may come from either the API
  * or can be hard coded. Probably not approproate as a helper function
@@ -8,59 +31,92 @@ const ApplicationNavigation = (id) => {
 		{
 			name: "Details",
 			dropdown: [
-				{ title: "Application", link: `/application/${id}` },
-				{ title: "Custom Captions", link: `/application/${id}/customcaptions` },
+				{ title: "Application", link: `${applicationPath}/${id}` },
+				{
+					title: "Custom Captions",
+					link: `${applicationPath}/${id}${customCaptionsPath}`,
+				},
 			],
 		},
 		{
 			name: "Reason Definitions",
 			dropdown: [
-				{ title: "Pauses", link: `/application/${id}/pauses` },
-				{ title: "Stops", link: `/application/${id}/stops` },
-				{ title: "Skipped Tasks", link: `/application/${id}/skippedtasks` },
+				{ title: "Pauses", link: `${applicationPath}/${id}${pausesPath}` },
+				{ title: "Stops", link: `${applicationPath}/${id}${stopsPath}` },
+				{
+					title: "Skipped Tasks",
+					link: `${applicationPath}/${id}${skippedTasksPath}`,
+				},
 				{
 					title: "Missing Part or Tools",
-					link: `/application/${id}/missingitems`,
+					link: `${applicationPath}/${id}${missingItemsPath}`,
 				},
-				{ title: "Status Changes", link: `/application/${id}/statuschanges` },
+				{
+					title: "Status Changes",
+					link: `${applicationPath}/${id}${StatusChangesPath}`,
+				},
 			],
 		},
 		{
 			name: "Model Definitions",
 			dropdown: [
-				{ title: "Statuses", link: `/application/${id}/modelstatuses` },
-				{ title: "Types", link: `/application/${id}/modeltypes` },
+				{
+					title: "Statuses",
+					link: `${applicationPath}/${id}${modelStatusesPath}`,
+				},
+				{ title: "Types", link: `${applicationPath}/${id}${modelTypesPath}` },
 			],
 		},
 		{
 			name: "Task Definitions",
 			dropdown: [
-				{ title: "Actions", link: `/application/${id}/actions` },
-				{ title: "Systems", link: `/application/${id}/systems` },
-				{ title: "Operating Modes", link: `/application/${id}/operatingmodes` },
+				{ title: "Actions", link: `${applicationPath}/${id}${actionsPath}` },
+				{ title: "Systems", link: `${applicationPath}/${id}${systemsPath}` },
+				{
+					title: "Operating Modes",
+					link: `${applicationPath}/${id}${operatingModesPath}`,
+				},
 			],
 		},
 		{
 			name: "User Definitions",
 			dropdown: [
-				{ title: "Positions", link: `/application/${id}/positions` },
-				{ title: "Roles", link: `/application/${id}/roles` },
+				{
+					title: "Positions",
+					link: `${applicationPath}/${id}${positionsPath}`,
+				},
+				{ title: "Roles", link: `${applicationPath}/${id}${rolesPath}` },
 			],
 		},
 		{
 			name: "Defect Definitions",
 			dropdown: [
-				{ title: "Risk Ratings", link: `/application/${id}/defectriskratings` },
-				{ title: "Statuses", link: `/application/${id}/defectstatuses` },
-				{ title: "Types", link: `/application/${id}/defecttypes` },
+				{
+					title: "Risk Ratings",
+					link: `${applicationPath}/${id}${defectRiskRatingsPath}`,
+				},
+				{
+					title: "Statuses",
+					link: `${applicationPath}/${id}${defectStatusesPath}`,
+				},
+				{ title: "Types", link: `${applicationPath}/${id}${defectTypesPath}` },
 			],
 		},
 		{
 			name: "Feedback Definitions",
 			dropdown: [
-				{ title: "Classifications", link: `/application/${id}/feedbackclassifications` },
-				{ title: "Priorities", link: `/application/${id}/feedbackpriorities` },
-				{ title: "Statuses", link: `/application/${id}/feedbackstatuses` },
+				{
+					title: "Classifications",
+					link: `${applicationPath}/${id}${feedbackClassificationsPath}`,
+				},
+				{
+					title: "Priorities",
+					link: `${applicationPath}/${id}${feedbackPrioritiesPath}`,
+				},
+				{
+					title: "Statuses",
+					link: `${applicationPath}/${id}${feedbackStatusesPath}`,
+				},
 			],
 		},
 	];
