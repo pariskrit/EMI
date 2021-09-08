@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { addClientSite } from "services/clients/clientDetailScreen";
 import CommonAddDialog from "../CommonAddDialog";
+import { siteDetailPath } from "helpers/routePaths";
 
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
@@ -167,7 +168,7 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 						<Typography>
 							<Link
 								className={classes.siteLink}
-								to={`/client/${clientId}/site/${site.id}`}
+								to={`/client/${clientId}/site/${site.id}${siteDetailPath}`}
 							>
 								{site.name}
 							</Link>
