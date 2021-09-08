@@ -20,24 +20,28 @@ function Dropdown(props) {
 	const [filteredList, setFilteredList] = useState([]);
 
 	useEffect(() => {
-		document.addEventListener("click", function (event) {
-			let specifiedElement = document.getElementsByClassName(
-				"dropdown-expand active"
-			)[0];
-			let dropbox = document.getElementsByClassName("dropbox active")[0];
-			let isClickInside =
-				specifiedElement?.contains(event.target) ||
-				dropbox?.contains(event.target);
-			if (!isClickInside) {
-				setDropActive(false);
-			}
-		});
 		setFilteredList(options);
-		return () => {
-			document.removeEventListener("click", () => {});
-		};
 	}, [options]);
 
+	useEffect(() => {
+		window.addEventListener("click", handleOutsideClick);
+		return () => {
+			window.removeEventListener("click", handleOutsideClick);
+		};
+	}, []);
+
+	const handleOutsideClick = (event) => {
+		let specifiedElement = document.getElementsByClassName(
+			"dropdown-expand active"
+		)[0];
+		let dropbox = document.getElementsByClassName("dropbox active")[0];
+		let isClickInside =
+			specifiedElement?.contains(event.target) ||
+			dropbox?.contains(event.target);
+		if (!isClickInside) {
+			setDropActive(false);
+		}
+	};
 	const onFilter = (val) => {
 		let filteredSearchList = [];
 		options.map((x) => {
