@@ -33,11 +33,33 @@ import Home from "./routes/Home/Home";
 import Launch from "./routes/Launch/Launch";
 import Login from "./routes/Login/Login";
 import {
+	actionsPath,
+	applicationDetailsPath,
+	applicationListPath,
 	clientDetailPath,
+	clientListPath,
+	customCaptionsPath,
+	defectRiskRatingsPath,
+	defectStatusesPath,
+	defectTypesPath,
+	feedbackClassificationsPath,
+	feedbackPrioritiesPath,
+	feedbackStatusesPath,
+	missingItemsPath,
+	modelStatusesPath,
+	modelTypesPath,
+	operatingModesPath,
+	pausesPath,
+	positionsPath,
+	rolesPath,
 	siteAssetPath,
 	siteDepartmentPath,
 	siteDetailPath,
 	siteLocationPath,
+	skippedTasksPath,
+	StatusChangesPath,
+	stopsPath,
+	systemsPath,
 } from "helpers/routePaths";
 
 function App() {
@@ -58,91 +80,94 @@ function App() {
 						<Launch />
 					</Route>
 
-					<Route path="/applicationlist" exact>
+					<Route path={applicationListPath} exact>
 						<ApplicationList />
 					</Route>
 
-					<Route path="/application/:id" exact>
+					<Route path={applicationDetailsPath} exact>
 						<Application />
 					</Route>
 
-					<Route path="/application/:id/customcaptions" exact>
+					<Route path={applicationDetailsPath + customCaptionsPath} exact>
 						<CustomCaptions />
 					</Route>
 
-					<Route path="/application/:id/modelstatuses" exact>
+					<Route path={applicationDetailsPath + modelStatusesPath} exact>
 						<ModelStatuses />
 					</Route>
 
-					<Route path="/application/:id/positions" exact>
+					<Route path={applicationDetailsPath + positionsPath} exact>
 						<Positions />
 					</Route>
 
-					<Route path="/application/:id/roles" exact>
+					<Route path={applicationDetailsPath + rolesPath} exact>
 						<Roles />
 					</Route>
 
-					<Route path="/application/:id/modeltypes" exact>
+					<Route path={applicationDetailsPath + modelTypesPath} exact>
 						<ModelTypes />
 					</Route>
 
-					<Route path="/application/:id/operatingmodes" exact>
+					<Route path={applicationDetailsPath + operatingModesPath} exact>
 						<OperatingModes />
 					</Route>
 
-					<Route path="/application/:id/pauses" exact>
+					<Route path={applicationDetailsPath + pausesPath} exact>
 						<Pauses />
 					</Route>
 
-					<Route path="/application/:id/stops" exact>
+					<Route path={applicationDetailsPath + stopsPath} exact>
 						<Stops />
 					</Route>
 
-					<Route path="/application/:id/skippedtasks" exact>
+					<Route path={applicationDetailsPath + skippedTasksPath} exact>
 						<SkippedTasks />
 					</Route>
 
-					<Route path="/application/:id/missingitems" exact>
+					<Route path={applicationDetailsPath + missingItemsPath} exact>
 						<MissingItems />
 					</Route>
 
-					<Route path="/application/:id/StatusChanges" exact>
+					<Route path={applicationDetailsPath + StatusChangesPath} exact>
 						<StatusChanges />
 					</Route>
 
-					<Route path="/application/:id/actions" exact>
+					<Route path={applicationDetailsPath + actionsPath} exact>
 						<Actions />
 					</Route>
 
-					<Route path="/application/:id/systems" exact>
+					<Route path={applicationDetailsPath + systemsPath} exact>
 						<Systems />
 					</Route>
 
-					<Route path="/application/:id/defectriskratings" exact>
+					<Route path={applicationDetailsPath + defectRiskRatingsPath} exact>
 						<DefectRiskRatings />
 					</Route>
 
-					<Route path="/application/:id/defectstatuses" exact>
+					<Route path={applicationDetailsPath + defectStatusesPath} exact>
 						<DefectStatuses />
 					</Route>
 
-					<Route path="/application/:id/defecttypes" exact>
+					<Route path={applicationDetailsPath + defectTypesPath} exact>
 						<DefectTypes />
 					</Route>
 
-					<Route path="/application/:id/feedbackclassifications" exact>
+					<Route
+						path={applicationDetailsPath + feedbackClassificationsPath}
+						exact
+					>
 						<FeedbackClassifications />
 					</Route>
 
-					<Route path="/application/:id/feedbackpriorities" exact>
+					<Route path={applicationDetailsPath + feedbackPrioritiesPath} exact>
 						<FeedbackPriorities />
 					</Route>
 
-					<Route path="/application/:id/feedbackstatuses" exact>
+					<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
 						<FeedbackStatuses />
 					</Route>
 
-					<Route path="/clientlist" exact>
+					<Route path={clientListPath} exact>
 						<ClientList />
 					</Route>
 
