@@ -9,7 +9,7 @@ import {
 	addClientDocument,
 	getClientDocument,
 } from "services/clients/clientDetailScreen";
-
+import { CircularProgress } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
 		marginTop: 25,
@@ -55,6 +55,7 @@ function ClientDocuments({ clientId, getError }) {
 	const classes = useStyles();
 	const [listOfDocuments, setListOfDocuments] = useState([]);
 	const [filesUploading, setFilesUploading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const onDocumentUpload = async (key, url) => {
 		try {
@@ -100,9 +101,10 @@ function ClientDocuments({ clientId, getError }) {
 					url: doc?.documentURL,
 				})),
 			]);
-
+			setIsLoading(false);
 			setFilesUploading(false);
 		} catch (error) {
+			setIsLoading(false);
 			console.log(error);
 		}
 	};
@@ -116,29 +118,33 @@ function ClientDocuments({ clientId, getError }) {
 		<div className={classes.logoContainer}>
 			<AccordionBox title={`Client Documents (${listOfDocuments.length})`}>
 				<div className={classes.logoContentParent}>
-					{listOfDocuments.map((document, index) => {
-						// Preventing duplication of dividers
-						if (index === listOfDocuments.length - 1) {
-							return (
-								<ProvidedAssetNoImage
-									key={document.id}
-									document={document}
-									showBottomDivider={true}
-									getError={getError}
-									fetchClientDocuments={fetchClientDocuments}
-								/>
-							);
-						} else {
-							return (
-								<ProvidedAssetNoImage
-									key={document.id}
-									document={document}
-									getError={getError}
-									fetchClientDocuments={fetchClientDocuments}
-								/>
-							);
-						}
-					})}
+					{isLoading ? (
+						<CircularProgress />
+					) : (
+						listOfDocuments.map((document, index) => {
+							// Preventing duplication of dividers
+							if (index === listOfDocuments.length - 1) {
+								return (
+									<ProvidedAssetNoImage
+										key={document.id}
+										document={document}
+										showBottomDivider={true}
+										getError={getError}
+										fetchClientDocuments={fetchClientDocuments}
+									/>
+								);
+							} else {
+								return (
+									<ProvidedAssetNoImage
+										key={document.id}
+										document={document}
+										getError={getError}
+										fetchClientDocuments={fetchClientDocuments}
+									/>
+								);
+							}
+						})
+					)}
 
 					<div className={classes.uploaderContainer}>
 						<DropUploadBox

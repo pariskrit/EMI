@@ -10,6 +10,7 @@ import {
 	addClientRegion,
 	getClientRegion,
 } from "services/clients/clientDetailScreen";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
@@ -60,6 +61,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
+	const [isLoading, setLoading] = useState(true);
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -113,7 +115,9 @@ function ClientRegionAndSites({ clientId, getError }) {
 		try {
 			const result = await getClientRegion(clientId);
 			handleSort(result.data, setListOfRegions, "name", "asc");
+			setLoading(false);
 		} catch (error) {
+			setLoading(false);
 			console.log(error);
 		}
 	};
@@ -143,15 +147,19 @@ function ClientRegionAndSites({ clientId, getError }) {
 						Add Region
 					</CurveButton>
 				</AccordionActions>
-				{listOfRegions.map((region) => (
-					<Region
-						key={region.id}
-						region={region}
-						fetchRegionsAndSites={fetchRegionsAndSites}
-						clientId={clientId}
-						getError={getError}
-					/>
-				))}
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					listOfRegions.map((region) => (
+						<Region
+							key={region.id}
+							region={region}
+							fetchRegionsAndSites={fetchRegionsAndSites}
+							clientId={clientId}
+							getError={getError}
+						/>
+					))
+				)}
 			</AccordionBox>
 		</div>
 	);

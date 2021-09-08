@@ -5,6 +5,7 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
+	CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/AccordionBox";
@@ -63,6 +64,7 @@ const ClientNotes = ({ clientId, getError }) => {
 	});
 	const [noteId, setNoteId] = useState(null);
 	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchNotes = async () => {
 		try {
@@ -71,8 +73,10 @@ const ClientNotes = ({ clientId, getError }) => {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
+			setIsLoading(false);
 		} catch (err) {
 			console.log(err);
+			setIsLoading(false);
 			return err;
 		}
 	};
@@ -135,26 +139,30 @@ const ClientNotes = ({ clientId, getError }) => {
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
 				accordianDetailsCss="table-container"
 			>
-				<Table>
-					<TableHead className={classes.tableHead}>
-						<TableRow>
-							<TableCell style={{ width: "170px" }}>Name</TableCell>
-							<TableCell>Date</TableCell>
-							<TableCell>Note</TableCell>
-							<TableCell></TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{data.map((row) => (
-							<ClientNoteRow
-								key={row.id}
-								row={row}
-								classes={classes}
-								onDeleteNote={() => handleDeleteNote(row.id)}
-							/>
-						))}
-					</TableBody>
-				</Table>
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					<Table>
+						<TableHead className={classes.tableHead}>
+							<TableRow>
+								<TableCell style={{ width: "170px" }}>Name</TableCell>
+								<TableCell>Date</TableCell>
+								<TableCell>Note</TableCell>
+								<TableCell></TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{data.map((row) => (
+								<ClientNoteRow
+									key={row.id}
+									row={row}
+									classes={classes}
+									onDeleteNote={() => handleDeleteNote(row.id)}
+								/>
+							))}
+						</TableBody>
+					</Table>
+				)}
 			</AccordionBox>
 		</div>
 	);

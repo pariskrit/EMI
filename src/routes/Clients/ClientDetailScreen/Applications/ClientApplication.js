@@ -13,6 +13,7 @@ import {
 import AddAppDialog from "./AddAppDialog";
 import "./application.css";
 import ChangeDialog from "./ChangeDialog";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	appContainer: {
@@ -65,6 +66,7 @@ const ClientApplication = ({ clientId, getError }) => {
 	const [appStatus, setStatus] = useState(false);
 	const [appId, setAppId] = useState(null);
 	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchApplications = async () => {
 		try {
@@ -73,7 +75,10 @@ const ClientApplication = ({ clientId, getError }) => {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
 			}
-		} catch (err) {}
+			setIsLoading(false);
+		} catch (err) {
+			setIsLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -164,11 +169,15 @@ const ClientApplication = ({ clientId, getError }) => {
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
 				accordianDetailsCss="table-container"
 			>
-				<ApplicationTable
-					data={data}
-					onDeleteApp={handleDeleteApp}
-					onChangeApp={handleChangeApp}
-				/>
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					<ApplicationTable
+						data={data}
+						onDeleteApp={handleDeleteApp}
+						onChangeApp={handleChangeApp}
+					/>
+				)}
 			</AccordionBox>
 		</div>
 	);

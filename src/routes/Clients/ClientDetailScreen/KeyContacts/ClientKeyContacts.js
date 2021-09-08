@@ -5,6 +5,7 @@ import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
 import DataTable from "components/SimpleDataTable";
 import { getClientKeyContacts } from "services/clients/clientDetailScreen";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	keyContainer: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 const ClientKeyContacts = ({ clientId }) => {
 	const classes = useStyles();
 	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchKeyContacts = async () => {
@@ -47,8 +49,10 @@ const ClientKeyContacts = ({ clientId }) => {
 					//Throw error if failed to fetch
 					throw new Error(`Error: Status ${result.status}`);
 				}
+				setIsLoading(false);
 			} catch (error) {
 				console.log(error);
+				setIsLoading(false);
 				return error;
 			}
 		};
@@ -58,10 +62,14 @@ const ClientKeyContacts = ({ clientId }) => {
 	return (
 		<div className={classes.keyContainer}>
 			<AccordionBox title="Key Contacts" accordianDetailsCss="table-container">
-				<DataTable
-					data={data}
-					tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
-				/>
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					<DataTable
+						data={data}
+						tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
+					/>
+				)}
 			</AccordionBox>
 		</div>
 	);
