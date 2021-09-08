@@ -16,6 +16,7 @@ import { handleSort } from "../../../helpers/utils";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import { applicationPath } from "helpers/routePaths";
 // Init styled components
 const AC = ContentStyle();
 
@@ -126,7 +127,7 @@ const ApplicationListContent = () => {
 	};
 
 	const handleRedirect = (id) => {
-		history.push(`/application/${id}`);
+		history.push(`${applicationPath}/${id}`);
 	};
 
 	const handleCreateData = async (name) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AccordionActions from "@material-ui/core/AccordionActions";
 import { makeStyles } from "@material-ui/core/styles";
 import CurveButton from "components/CurveButton";
@@ -60,6 +60,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
+	const cancelFetch = useRef(false);
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -112,6 +113,10 @@ function ClientRegionAndSites({ clientId, getError }) {
 	const fetchRegionsAndSites = async () => {
 		try {
 			const result = await getClientRegion(clientId);
+
+			if (cancelFetch.current) {
+				return;
+			}
 			handleSort(result.data, setListOfRegions, "name", "asc");
 		} catch (error) {
 			console.log(error);
@@ -121,6 +126,10 @@ function ClientRegionAndSites({ clientId, getError }) {
 	useEffect(() => {
 		fetchRegionsAndSites();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, []);
 
 	return (

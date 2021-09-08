@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
 	Table,
 	TableBody,
@@ -63,10 +63,15 @@ const ClientNotes = ({ clientId, getError }) => {
 	});
 	const [noteId, setNoteId] = useState(null);
 	const [data, setData] = useState([]);
+	const cancelFetch = useRef(false);
 
 	const fetchNotes = async () => {
 		try {
 			let result = await getClientNotes(clientId);
+
+			if (cancelFetch.current) {
+				return;
+			}
 			if (result.status) {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
@@ -80,6 +85,10 @@ const ClientNotes = ({ clientId, getError }) => {
 	useEffect(() => {
 		fetchNotes();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, []);
 
 	const handleCreateData = async (note) => {

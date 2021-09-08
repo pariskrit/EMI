@@ -5,7 +5,7 @@ import DeleteDialog from "components/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
 	addClientApplications,
 	getClientApplications,
@@ -65,10 +65,15 @@ const ClientApplication = ({ clientId, getError }) => {
 	const [appStatus, setStatus] = useState(false);
 	const [appId, setAppId] = useState(null);
 	const [data, setData] = useState([]);
+	const cancelFetch = useRef(false);
 
 	const fetchApplications = async () => {
 		try {
 			let result = await getClientApplications(clientId);
+
+			if (cancelFetch.current) {
+				return;
+			}
 			if (result.status) {
 				result = result.data;
 				handleSort(result, setData, "name", "asc");
@@ -79,6 +84,10 @@ const ClientApplication = ({ clientId, getError }) => {
 	useEffect(() => {
 		fetchApplications();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, []);
 
 	const handleCreateData = async (applicationId) => {

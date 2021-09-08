@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AccordionBox from "components/AccordionBox";
 import ApplicationTable from "components/ApplicationTable";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
-import DeleteDialog from "components/DeleteDialog/DeleteDialog";
 import AddSiteApplicationModal from "components/AddSiteApplicationModal";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
@@ -26,6 +25,7 @@ const Applications = ({
 	const [applicationToChange, setApplicationToChanged] = useState("");
 	const [openModal, setOpenModal] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
+	const cancelFetch = useRef(false);
 
 	// open and close confirm change dialog
 	const onOpenChangeConfirmDialog = (id) => {
@@ -42,9 +42,9 @@ const Applications = ({
 		setOpenDeleteConfirm(true);
 	};
 
-	const onCloseDeleteConfirmDialog = () => {
-		setOpenDeleteConfirm(false);
-	};
+	// const onCloseDeleteConfirmDialog = () => {
+	// 	setOpenDeleteConfirm(false);
+	// };
 
 	// open and close add site application modal
 	const onOpenAddSiteApplicationModal = () => {
@@ -74,6 +74,11 @@ const Applications = ({
 	const fetchApplicationList = async () => {
 		const result = await getSiteApplications(siteId);
 
+		if (cancelFetch.current) {
+			return;
+		}
+
+		console.log("fetched2");
 		if (result.status) {
 			setApplicationList(
 				result.data.map((data, index) => ({
@@ -88,9 +93,16 @@ const Applications = ({
 	};
 
 	useEffect(() => {
+		if (cancelFetch.current) {
+			cancelFetch.current = false;
+		}
 		if (listOfSiteAppId.length > 0) {
 			fetchApplicationList();
 		}
+
+		return () => {
+			cancelFetch.current = true;
+		};
 	}, [listOfSiteAppId]);
 
 	return (
