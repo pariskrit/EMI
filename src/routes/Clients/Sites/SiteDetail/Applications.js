@@ -78,6 +78,7 @@ const Applications = ({
 			return;
 		}
 
+		console.log("fetched2");
 		if (result.status) {
 			setApplicationList(
 				result.data.map((data, index) => ({
@@ -92,6 +93,9 @@ const Applications = ({
 	};
 
 	useEffect(() => {
+		if (cancelFetch.current) {
+			cancelFetch.current = false;
+		}
 		if (listOfSiteAppId.length > 0) {
 			fetchApplicationList();
 		}
