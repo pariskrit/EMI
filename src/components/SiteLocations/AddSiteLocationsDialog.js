@@ -187,7 +187,6 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 							helperText={errors.name === null ? null : errors.name}
 							required
 							variant="outlined"
-							label="Location"
 							value={input.name}
 							onKeyDown={handleEnterPress}
 							onChange={(e) => {
