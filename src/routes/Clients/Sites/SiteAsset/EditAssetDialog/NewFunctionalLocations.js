@@ -9,16 +9,20 @@ import { postSiteAssetReferences } from "services/clients/sites/siteAssets/refer
 const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
-		.required("This field is required"),
+		.required("This field is required")
+		.max(50, "Maximum 50 characters"),
 	description: yup
 		.string("This field must be a string")
-		.required("This field is required"),
+		.required("This field is required")
+		.max(255, "Maximum 255 characters "),
 	plannerGroup: yup
 		.string("This field must be a string")
-		.required("This field is required"),
+		.required("This field is required")
+		.max(50, "Maximum 50 characters"),
 	workCenter: yup
 		.string("This field must be a string")
-		.required("This field is required"),
+		.required("This field is required")
+		.max(50, "Maximum 50 characters"),
 });
 const defaultInputSchema = {
 	name: "",
