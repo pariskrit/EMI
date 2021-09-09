@@ -13,7 +13,6 @@ import {
 
 const Applications = ({
 	siteId,
-	listOfSiteAppId,
 	setError,
 	fetchKeyContactsList,
 	isLoading,
@@ -21,7 +20,6 @@ const Applications = ({
 }) => {
 	const [applicationList, setApplicationList] = useState([]);
 	const [openChangeConfirmDialog, setOpenChangeConfirmDialog] = useState(false);
-	const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
 	const [applicationToChange, setApplicationToChanged] = useState("");
 	const [openModal, setOpenModal] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -36,15 +34,6 @@ const Applications = ({
 	const onCloseChangeConfirmDialog = () => {
 		setOpenChangeConfirmDialog(false);
 	};
-
-	// open and close delete confirm dialog
-	const onOpenDeleteConfirmDialog = (id) => {
-		setOpenDeleteConfirm(true);
-	};
-
-	// const onCloseDeleteConfirmDialog = () => {
-	// 	setOpenDeleteConfirm(false);
-	// };
 
 	// open and close add site application modal
 	const onOpenAddSiteApplicationModal = () => {
@@ -78,11 +67,10 @@ const Applications = ({
 			return;
 		}
 
-		console.log("fetched2");
 		if (result.status) {
 			setApplicationList(
-				result.data.map((data, index) => ({
-					id: listOfSiteAppId[index]?.siteAppId,
+				result.data.map((data) => ({
+					id: data.id,
 					name: data.name,
 					isActive: data.isActive,
 				}))
@@ -93,17 +81,12 @@ const Applications = ({
 	};
 
 	useEffect(() => {
-		if (cancelFetch.current) {
-			cancelFetch.current = false;
-		}
-		if (listOfSiteAppId.length > 0) {
-			fetchApplicationList();
-		}
+		fetchApplicationList();
 
 		return () => {
 			cancelFetch.current = true;
 		};
-	}, [listOfSiteAppId]);
+	}, []);
 
 	return (
 		<>
@@ -113,16 +96,13 @@ const Applications = ({
 				closeHandler={onCloseChangeConfirmDialog}
 				handleChangeConfirm={onConfirmChange}
 			/>
-			{/* <DeleteDialog
-				entityName="Application"
-				open={openDeleteConfirm}
-				closeHandler={onCloseDeleteConfirmDialog}
-			/> */}
+
 			<AddSiteApplicationModal
 				open={openModal}
 				handleClose={onCloseAddSiteApplicationModal}
 				siteId={siteId}
 				fetchKeyContactsList={fetchKeyContactsList}
+				fetchApplicationList={fetchApplicationList}
 			/>
 			<AccordionBox
 				title="Applications"
@@ -137,7 +117,6 @@ const Applications = ({
 					isLoading={isLoading}
 					showDeleteIcon={false}
 					showQuantity={false}
-					onDeleteApp={onOpenDeleteConfirmDialog}
 					onChangeApp={onOpenChangeConfirmDialog}
 				/>
 			</AccordionBox>

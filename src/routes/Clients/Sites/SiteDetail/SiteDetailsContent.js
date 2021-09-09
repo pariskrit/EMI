@@ -9,7 +9,6 @@ import { getSiteAppKeyContacts } from "services/clients/sites/siteDetails";
 
 const Details = () => {
 	const { id } = useParams();
-	const [listOfSiteAppId, setListOfSiteAppId] = useState([]);
 	const [contactsList, setContactsList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const cancelFetch = useRef(false);
@@ -31,9 +30,6 @@ const Details = () => {
 					email: data.email,
 					phone: data.phone,
 				}))
-			);
-			setListOfSiteAppId(
-				result.data.map((data) => ({ siteAppId: data.siteAppID }))
 			);
 
 			if (result.data.length === 0) {
@@ -70,7 +66,6 @@ const Details = () => {
 						<Grid item xs={12}>
 							<Applications
 								siteId={id}
-								listOfSiteAppId={listOfSiteAppId}
 								fetchKeyContactsList={fetchKeyContactsList}
 								isLoading={isApplicationsLoading}
 								setIsLoading={setApplicationsLoading}

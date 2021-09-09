@@ -5,7 +5,6 @@ import {
 	CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ConfirmChangeDialog from "components/ConfirmChangeDialog";
 import Dropdown from "components/Dropdown";
 import { siteOptions } from "helpers/constants";
 import React, { useEffect, useRef, useState } from "react";
@@ -19,6 +18,7 @@ import {
 	updateSiteDetails,
 } from "services/clients/sites/siteDetails";
 import "./siteDetails.scss";
+import { Facebook } from "react-spinners-css";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -44,24 +44,10 @@ const SiteDetails = ({
 	const [selectedRegion, setSelectedRegion] = useState({});
 	const [clientLicenseType, setClientLicenseType] = useState(0);
 	const [selectedLicenseType, setSelectedLicenseType] = useState({});
-	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 	const [newInput, setNewInput] = useState({});
-	const [isUpdating, setIsUpdating] = useState(false);
+
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
-
-	const openConfirmChangeDialog = (e) => {
-		if (newInput.value === siteDetails[newInput.label]) {
-			return;
-		}
-
-		setOpenConfirmDialog(true);
-	};
-
-	const closeConfirmChangeDialog = () => {
-		setNewInput({});
-		setOpenConfirmDialog(false);
-	};
 
 	const onInputChange = (e) => {
 		setNewInput({ label: e.target.name, value: e.target.value });
@@ -77,43 +63,56 @@ const SiteDetails = ({
 
 	const onEnterKeyPress = (e) => {
 		if (e.key === "Enter") {
-			e.target.blur();
-			openConfirmChangeDialog();
+			onUpdateInput();
 		}
 	};
 
-	const onDropDownInputChange = (value, inputName) => {
-		if (inputName === "region") {
-			const { regionName } = siteDetails;
-			if (value.label === regionName) {
-				setSelectedRegion(value);
-				return;
-			}
+	const onDropDownInputChange = async (value, inputName) => {
+		const { regionName } = siteDetails;
+		let newInput = null;
 
+		if (value.label === regionName) {
+			setSelectedRegion(value);
+			return;
+		}
+
+		if (value.label === selectedLicenseType.label) {
+			setSelectedLicenseType(value);
+			return;
+		}
+
+		if (inputName === "region") {
 			setSelectedRegion(value);
 			const region = listOfRegions.find(
 				(region) => region.name === value.label
 			);
 
-			setNewInput({ label: "regionID", value: region.id });
+			newInput = { label: "regionID", value: region.id };
 		} else {
 			setSelectedLicenseType(value);
-			setNewInput({ label: "licenseType", value: value.value });
+			newInput = { label: "licenseType", value: value.value };
 		}
-
-		setOpenConfirmDialog(true);
-	};
-
-	const onConfirmChange = async () => {
-		setIsUpdating(true);
 
 		const response = await updateSiteDetails(siteId, newInput);
 
 		if (!response.status) {
 			setError(response.data.detail);
 		}
-		setIsUpdating(false);
-		setOpenConfirmDialog(false);
+	};
+
+	const onUpdateInput = async () => {
+		if (newInput.value === siteDetails[newInput.label]) {
+			return;
+		}
+
+		setNewInput({ ...newInput, isUpdating: true, isDisabled: true });
+
+		const response = await updateSiteDetails(siteId, newInput);
+		await fetchSiteDetails();
+		if (!response.status) {
+			setError(response.data.detail);
+		}
+		setNewInput({ ...newInput, isUpdating: false, isDisabled: false });
 	};
 
 	const fetchSiteDetails = async () => {
@@ -178,13 +177,6 @@ const SiteDetails = ({
 
 	return (
 		<>
-			<ConfirmChangeDialog
-				open={openConfirmDialog}
-				isUpdating={isUpdating}
-				closeHandler={closeConfirmChangeDialog}
-				handleChangeConfirm={onConfirmChange}
-			/>
-
 			{/* Desktop View */}
 			<div className="siteDetailsContainerDesktop">
 				<Grid container spacing={2}>
@@ -195,11 +187,18 @@ const SiteDetails = ({
 							</Typography>
 							<TextField
 								name="name"
+								InputProps={{
+									endAdornment:
+										newInput.label === "name" && newInput.isUpdating ? (
+											<Facebook size={20} color="#A79EB4" />
+										) : null,
+								}}
+								disabled={newInput.label === "name" && newInput.isUpdating}
 								fullWidth
 								variant="outlined"
 								value={newSiteDetails?.name || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 							/>
@@ -230,11 +229,18 @@ const SiteDetails = ({
 							</Typography>
 							<TextField
 								name="company"
+								InputProps={{
+									endAdornment:
+										newInput.label === "company" && newInput.isUpdating ? (
+											<Facebook size={20} color="#A79EB4" />
+										) : null,
+								}}
+								disabled={newInput.label === "company" && newInput.isUpdating}
 								fullWidth
 								variant="outlined"
 								value={newSiteDetails?.company || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 							/>
@@ -247,11 +253,18 @@ const SiteDetails = ({
 							</Typography>
 							<TextField
 								name="address"
+								InputProps={{
+									endAdornment:
+										newInput.label === "address" && newInput.isUpdating ? (
+											<Facebook size={20} color="#A79EB4" />
+										) : null,
+								}}
+								disabled={newInput.label === "address" && newInput.isUpdating}
 								fullWidth
 								variant="outlined"
 								value={newSiteDetails?.address || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 								multiline
@@ -265,11 +278,21 @@ const SiteDetails = ({
 							</Typography>
 							<TextField
 								name="businessNumber"
+								InputProps={{
+									endAdornment:
+										newInput.label === "businessNumber" &&
+										newInput.isUpdating ? (
+											<Facebook size={20} color="#A79EB4" />
+										) : null,
+								}}
+								disabled={
+									newInput.label === "businessNumber" && newInput.isUpdating
+								}
 								fullWidth
 								variant="outlined"
 								value={newSiteDetails?.businessNumber || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 							/>
@@ -298,15 +321,25 @@ const SiteDetails = ({
 							</Typography>
 							<TextField
 								name="licenses"
+								InputProps={{
+									endAdornment:
+										newInput.label === "licenses" && newInput.isUpdating ? (
+											<Facebook size={20} color="#A79EB4" />
+										) : null,
+								}}
+								disabled={
+									(![0, 1].includes(selectedLicenseType.value) &&
+										clientLicenseType === 3) ||
+									(newInput.label === "licenses" && newInput.isUpdating)
+								}
 								fullWidth
 								type="number"
 								variant="outlined"
 								value={newSiteDetails?.licenses || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
-								disabled={clientLicenseType === 3}
 							/>
 						</div>
 					</Grid>
@@ -327,7 +360,7 @@ const SiteDetails = ({
 								variant="outlined"
 								value={newSiteDetails?.name || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 							/>
@@ -362,7 +395,7 @@ const SiteDetails = ({
 								variant="outlined"
 								value={newSiteDetails?.company || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 							/>
@@ -379,7 +412,7 @@ const SiteDetails = ({
 								variant="outlined"
 								value={newSiteDetails?.address || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 								multiline
@@ -397,7 +430,7 @@ const SiteDetails = ({
 								variant="outlined"
 								value={newSiteDetails?.businessNumber || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
 							/>
@@ -431,10 +464,13 @@ const SiteDetails = ({
 								variant="outlined"
 								value={newSiteDetails?.licenses || ""}
 								onChange={onInputChange}
-								onBlur={openConfirmChangeDialog}
+								onBlur={onUpdateInput}
 								onFocus={setSelectedInputValue}
 								onKeyDown={onEnterKeyPress}
-								disabled={clientLicenseType === 3}
+								disabled={
+									![0, 1].includes(selectedLicenseType.value) &&
+									clientLicenseType === 3
+								}
 							/>
 						</div>
 					</Grid>
