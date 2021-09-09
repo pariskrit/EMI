@@ -43,6 +43,7 @@ const AddAppDialog = ({
 	open,
 	handleClose,
 	fetchKeyContactsList,
+	fetchApplicationList,
 	siteId,
 
 	setError,
@@ -70,9 +71,9 @@ const AddAppDialog = ({
 		const response = await addSiteApplications(siteId, selectedApplication.id);
 
 		if (response.status) {
-			fetchKeyContactsList().then(() => {
-				handleClose();
-			});
+			await fetchKeyContactsList();
+			await fetchApplicationList();
+			handleClose();
 		} else {
 			handleClose();
 
