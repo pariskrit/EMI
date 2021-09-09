@@ -2,6 +2,16 @@ import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
+// Import from list
+const importSiteAssets = async (siteId, data) => {
+	try {
+		let response = await API.post(`${Apis.SiteAssets}/${siteId}/import`, data);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //#region get assets
 const getSiteAssets = async (siteId, pNo) => {
 	try {
@@ -46,4 +56,10 @@ const editSiteAsset = async (id, data) => {
 
 //#endregion
 
-export { getSiteAssets, getSiteAssetsCount, addSiteAsset, editSiteAsset };
+export {
+	importSiteAssets,
+	getSiteAssets,
+	getSiteAssetsCount,
+	addSiteAsset,
+	editSiteAsset,
+};

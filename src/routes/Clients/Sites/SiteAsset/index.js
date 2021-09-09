@@ -11,8 +11,10 @@ import {
 import AddAssetDialog from "./AddAssetDialog";
 import Assets from "./Assets";
 import { siteScreenNavigation } from "helpers/constants";
+import ImportListDialog from "./ImportListDialog";
+import { showError } from "redux/common/actions";
 
-const SiteAsset = ({ fetchCrumbs }) => {
+const SiteAsset = ({ fetchCrumbs, getError }) => {
 	const history = useHistory();
 	const { id, clientId } = useParams();
 	const [modal, setModal] = useState({ import: false, add: false });
@@ -94,12 +96,24 @@ const SiteAsset = ({ fetchCrumbs }) => {
 		}
 	};
 
+	const importSuccess = (newData) => {
+		fetchSiteAssets(1);
+	};
+
 	return (
 		<>
 			<AddAssetDialog
 				open={modal.add}
 				handleClose={() => setModal((th) => ({ ...th, add: false }))}
 				createHandler={addAsset}
+			/>
+			<ImportListDialog
+				open={modal.import}
+				handleClose={() => setModal((th) => ({ ...th, import: false }))}
+				siteId={+id}
+				importSuccess={importSuccess}
+				getError={getError}
+				fetchSiteAssets={fetchSiteAssets}
 			/>
 			<SiteWrapper
 				current="Assets"
@@ -111,6 +125,7 @@ const SiteAsset = ({ fetchCrumbs }) => {
 				lastSaved=""
 				showAdd
 				showImport
+				onClickImport={() => setModal((th) => ({ ...th, import: true }))}
 				onClickAdd={() => setModal((th) => ({ ...th, add: true }))}
 				Component={() => (
 					<Assets data={data} count={count} siteId={id} isLoading={isLoading} />
@@ -122,6 +137,7 @@ const SiteAsset = ({ fetchCrumbs }) => {
 
 const mapDispatchToProps = (dispatch) => ({
 	fetchCrumbs: (id) => dispatch(fetchSiteDetail(id)),
+	getError: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(null, mapDispatchToProps)(SiteAsset);
