@@ -48,12 +48,13 @@ const Assets = ({ data, count, siteId, isLoading }) => {
 		setAsset(newData);
 	};
 
-	const handlePage = async (p) => {
+	const handlePage = async (p, prevData) => {
 		setPage({ pageNo: p, rowsPerPage: 12 });
 		try {
 			const response = await getSiteAssets(siteId, p);
 			if (response.status) {
-				setAsset(response.data);
+				debugger;
+				setAsset([...prevData, ...response.data]);
 				return response;
 			} else {
 				throw new Error(response);
