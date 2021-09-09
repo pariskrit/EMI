@@ -194,7 +194,6 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 									helperText={errors.name === null ? null : errors.name}
 									required
 									variant="outlined"
-									label="Department Name"
 									value={input.name}
 									onKeyDown={handleEnterPress}
 									onChange={(e) => {
@@ -213,7 +212,6 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 									}
 									required
 									variant="outlined"
-									label="Department Description"
 									value={input.description}
 									onKeyDown={handleEnterPress}
 									onChange={(e) => {

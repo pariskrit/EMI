@@ -3,10 +3,10 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 //#region get assets
-const getSiteAssets = async (siteId, pNo) => {
+const getSiteAssets = async (siteId, pNo, search = "") => {
 	try {
 		let response = await API.get(
-			`${Apis.SiteAssets}?siteId=${siteId}&&pageNumber=${pNo}&&pageSize=12`
+			`${Apis.SiteAssets}?siteId=${siteId}&&pageNumber=${pNo}&&pageSize=12&&search=${search}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -46,4 +46,9 @@ const editSiteAsset = async (id, data) => {
 
 //#endregion
 
-export { getSiteAssets, getSiteAssetsCount, addSiteAsset, editSiteAsset };
+export {
+	getSiteAssets,
+	getSiteAssetsCount,
+	addSiteAsset,
+	editSiteAsset,
+};
