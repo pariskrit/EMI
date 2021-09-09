@@ -16,7 +16,6 @@ import EditDialogStyle from "styles/application/EditDialogStyle";
 import * as yup from "yup";
 import FunctionalLocations from "./FunctionalLocations";
 import NewFunctionalLocations from "./NewFunctionalLocations";
-import DialogContentText from "@material-ui/core/DialogContentText";
 
 const schema = yup.object({
 	name: yup
