@@ -97,6 +97,8 @@ const SiteDetails = ({
 
 		if (!response.status) {
 			setError(response.data.detail);
+		} else {
+			await fetchSiteDetails();
 		}
 	};
 
