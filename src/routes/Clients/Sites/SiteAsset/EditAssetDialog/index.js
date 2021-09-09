@@ -240,9 +240,9 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 						<ET.InputContainer>
 							<ET.LeftInputContainer>
 								<div className={classes.inputContainer}>
-									<Typography>
+									<ET.NameLabel>
 										Name<ET.RequiredStar>*</ET.RequiredStar>
-									</Typography>
+									</ET.NameLabel>
 									<TextField
 										name="name"
 										error={errors.name === null ? false : true}
@@ -260,9 +260,9 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 
 							<ET.RightInputContainer>
 								<div className={classes.inputContainer}>
-									<Typography>
+									<ET.NameLabel>
 										Description<ET.RequiredStar>*</ET.RequiredStar>
-									</Typography>
+									</ET.NameLabel>
 									<TextField
 										name="description"
 										error={errors.description === null ? false : true}

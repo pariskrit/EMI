@@ -25,6 +25,8 @@ const ADD = AddDialogStyle();
 const defaultData = { name: "", description: "" };
 const defaultError = { name: null, description: null };
 
+const media = "@media (max-width: 414px)";
+
 const useStyles = makeStyles({
 	dialogContent: {
 		display: "flex",
@@ -32,7 +34,9 @@ const useStyles = makeStyles({
 		gap: "12px",
 	},
 	createButton: {
-		width: "auto",
+		[media]: {
+			width: "auto",
+		},
 	},
 	labelText: {
 		fontFamily: "Roboto Condensed",
@@ -102,6 +106,8 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 
 	return (
 		<Dialog
+			fullWidth={true}
+			maxWidth="md"
 			open={open}
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
@@ -128,30 +134,39 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
-				<div className={classes.inputContainer}>
-					<TextField
-						label="Name"
-						error={errors.name === null ? false : true}
-						helperText={errors.name === null ? null : errors.name}
-						fullWidth
-						onChange={(e) => setInput({ ...input, name: e.target.value })}
-						onKeyDown={handleEnterPress}
-						variant="outlined"
-					/>
-				</div>
-				<div className={classes.inputContainer}>
-					<TextField
-						label="Description"
-						error={errors.description === null ? false : true}
-						helperText={errors.description === null ? null : errors.description}
-						fullWidth
-						multiline
-						onChange={(e) =>
-							setInput({ ...input, description: e.target.value })
-						}
-						onKeyDown={handleEnterPress}
-						variant="outlined"
-					/>
+				<div>
+					<ADD.InputContainer>
+						<ADD.LeftInputContainer>
+							<ADD.NameLabel>
+								Name<ADD.RequiredStar>*</ADD.RequiredStar>
+							</ADD.NameLabel>
+							<ADD.NameInput
+								error={errors.name === null ? false : true}
+								helperText={errors.name === null ? null : errors.name}
+								fullWidth
+								onChange={(e) => setInput({ ...input, name: e.target.value })}
+								onKeyDown={handleEnterPress}
+								variant="outlined"
+							/>
+						</ADD.LeftInputContainer>
+						<ADD.RightInputContainer>
+							<ADD.NameLabel>
+								Description<ADD.RequiredStar>*</ADD.RequiredStar>
+							</ADD.NameLabel>
+							<ADD.NameInput
+								error={errors.description === null ? false : true}
+								helperText={
+									errors.description === null ? null : errors.description
+								}
+								fullWidth
+								onChange={(e) =>
+									setInput({ ...input, description: e.target.value })
+								}
+								onKeyDown={handleEnterPress}
+								variant="outlined"
+							/>
+						</ADD.RightInputContainer>
+					</ADD.InputContainer>
 				</div>
 			</DialogContent>
 		</Dialog>

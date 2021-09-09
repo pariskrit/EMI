@@ -8,10 +8,11 @@ import DeleteDialog from "components/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
 import { getSiteAssets } from "services/clients/sites/siteAssets";
+import useDidMountEffect from "hooks/useDidMountEffect";
 
 const AC = ContentStyle();
 
-const Assets = ({ data, count, siteId, isLoading }) => {
+const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
@@ -19,7 +20,26 @@ const Assets = ({ data, count, siteId, isLoading }) => {
 	const [total, setTotal] = useState(null);
 	const [page, setPage] = useState({ pageNo: 1, perPage: 12 });
 	const [searchText, setSearchText] = useState("");
-	const [searchedAsset, setSearchAsset] = useState([]);
+
+	useDidMountEffect(() => {
+		const fetchSiteAssets = async () => {
+			try {
+				const response = await getSiteAssets(siteId, page.pageNo, searchText);
+
+				if (response.status) {
+					setAsset(response.data);
+					return response;
+				} else {
+					throw new Error(response);
+				}
+			} catch (err) {
+				console.log(err);
+				return err;
+			}
+		};
+
+		fetchSiteAssets();
+	}, [page, searchText]);
 
 	useEffect(() => {
 		setAsset(data);
@@ -68,11 +88,6 @@ const Assets = ({ data, count, siteId, isLoading }) => {
 	const handleSearch = (e) => {
 		const { value } = e.target;
 		setSearchText(value);
-		const filteredData = assets.filter((x) => {
-			const regex = new RegExp(value, "gi");
-			return x.name.match(regex) || x.description.match(regex);
-		});
-		setSearchAsset(filteredData);
 	};
 
 	return (
@@ -116,7 +131,7 @@ const Assets = ({ data, count, siteId, isLoading }) => {
 					</AC.SearchContainer>
 				</div>
 				<ClientSiteTable
-					data={searchText.length === 0 ? assets : searchedAsset}
+					data={assets}
 					columns={["name", "description"]}
 					headers={["Asset", "Description"]}
 					onEdit={handleEdit}
@@ -126,7 +141,7 @@ const Assets = ({ data, count, siteId, isLoading }) => {
 					}}
 					setData={setAsset}
 					page={page.pageNo}
-					rowsPerPage={page.rowsPerPage}
+					rowsPerPage={assets.length}
 					onPageChange={handlePage}
 					count={total}
 					isLoading={isLoading}
