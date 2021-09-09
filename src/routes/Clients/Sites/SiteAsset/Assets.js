@@ -8,7 +8,7 @@ import DeleteDialog from "components/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
 import { getSiteAssets } from "services/clients/sites/siteAssets";
-import useDidMountEffect from "hooks/useDidMountEffect";
+//import useDidMountEffect from "hooks/useDidMountEffect";
 
 const AC = ContentStyle();
 
@@ -19,27 +19,43 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 	const [editData, setEditData] = useState({});
 	const [total, setTotal] = useState(null);
 	const [page, setPage] = useState({ pageNo: 1, perPage: 12 });
-	const [searchText, setSearchText] = useState("");
+	//const [searchText, setSearchText] = useState("");
 
-	useDidMountEffect(() => {
-		const fetchSiteAssets = async () => {
-			try {
-				const response = await getSiteAssets(siteId, page.pageNo, searchText);
+	// useDidMountEffect(() => {
+	// 	const fetchSiteAssets = async () => {
+	// 		try {
+	// 			const response = await getSiteAssets(siteId, page.pageNo, searchText);
 
-				if (response.status) {
-					setAsset(response.data);
-					return response;
-				} else {
-					throw new Error(response);
-				}
-			} catch (err) {
-				console.log(err);
-				return err;
+	// 			if (response.status) {
+	// 				setAsset(response.data);
+	// 				return response;
+	// 			} else {
+	// 				throw new Error(response);
+	// 			}
+	// 		} catch (err) {
+	// 			console.log(err);
+	// 			return err;
+	// 		}
+	// 	};
+
+	// 	fetchSiteAssets();
+	// }, [page, searchText]);
+
+	const fetchSiteAssets = async (searchText) => {
+		try {
+			const response = await getSiteAssets(siteId, null, searchText);
+
+			if (response.status) {
+				setAsset(response.data);
+				return response;
+			} else {
+				throw new Error(response);
 			}
-		};
-
-		fetchSiteAssets();
-	}, [page, searchText]);
+		} catch (err) {
+			console.log(err);
+			return err;
+		}
+	};
 
 	useEffect(() => {
 		setAsset(data);
@@ -73,7 +89,6 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 		try {
 			const response = await getSiteAssets(siteId, p);
 			if (response.status) {
-				debugger;
 				setAsset([...prevData, ...response.data]);
 				return response;
 			} else {
@@ -87,7 +102,8 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 
 	const handleSearch = (e) => {
 		const { value } = e.target;
-		setSearchText(value);
+		//setSearchText(value);
+		fetchSiteAssets(value);
 	};
 
 	return (

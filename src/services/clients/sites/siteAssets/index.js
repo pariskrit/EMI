@@ -5,8 +5,10 @@ import { getAPIResponse } from "helpers/getApiResponse";
 //#region get assets
 const getSiteAssets = async (siteId, pNo, search = "") => {
 	try {
+		let pageSearchField =
+			pNo !== null ? `&&pageNumber=${pNo}&&pageSize=12` : "";
 		let response = await API.get(
-			`${Apis.SiteAssets}?siteId=${siteId}&&pageNumber=${pNo}&&pageSize=12&&search=${search}`
+			`${Apis.SiteAssets}?siteId=${siteId}${pageSearchField}&&search=${search}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -46,9 +48,4 @@ const editSiteAsset = async (id, data) => {
 
 //#endregion
 
-export {
-	getSiteAssets,
-	getSiteAssetsCount,
-	addSiteAsset,
-	editSiteAsset,
-};
+export { getSiteAssets, getSiteAssetsCount, addSiteAsset, editSiteAsset };
