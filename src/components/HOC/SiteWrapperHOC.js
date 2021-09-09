@@ -3,7 +3,7 @@ import { siteScreenNavigation } from "helpers/constants";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-const SiteWrapperHOC = () => (WrappedComponent) => {
+const SiteWrapperHOC = (current) => (WrappedComponent) => {
 	const App = (props) => {
 		const { id, clientId } = useParams();
 		const history = useHistory();
