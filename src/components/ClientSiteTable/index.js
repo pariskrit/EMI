@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import {
 	Table,
@@ -17,6 +17,7 @@ import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { handleSort } from "helpers/utils";
 import "./arrowStyle.scss";
 import TablePagination from "components/TablePagination";
+import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 const AT = TableStyle();
 
@@ -64,6 +65,12 @@ const ClientSiteTable = ({
 	const [currentTableSort, setCurrentTableSort] = useState(["asset", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
+	const { hasMore, loading, gotoTop } = useInfiniteScroll(
+		data,
+		count,
+		(prevData) => onPageChange(page + 1, prevData)
+	);
+
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
@@ -189,13 +196,35 @@ const ClientSiteTable = ({
 					)}
 				</TableBody>
 			</Table>
-			{pagination && (
+			{/* {pagination && (
 				<TablePagination
 					page={page}
 					rowsPerPage={rowsPerPage}
 					onPageChange={onPageChange}
 					count={count}
 				/>
+			)} */}
+
+			{/* scroll to load */}
+			{loading && (
+				<div style={{ padding: "16px 10px" }}>
+					<b>Loading...</b>
+				</div>
+			)}
+
+			{!hasMore && (
+				<div
+					style={{ textAlign: "center", padding: "16px 10px" }}
+					className="flex justify-center"
+				>
+					<b>Yay! You have seen it all</b>
+					<span
+						className="link-color ml-md cursor-pointer"
+						onClick={() => gotoTop()}
+					>
+						Go to top
+					</span>
+				</div>
 			)}
 		</AT.TableContainer>
 	);
