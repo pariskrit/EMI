@@ -9,21 +9,25 @@ import {
 	TableCell,
 	TableRow,
 	Button,
+	TableHead,
 } from "@material-ui/core";
 import DropUpload from "components/DropUploadBox";
 import { BASE_API_PATH } from "helpers/constants";
 import { importSiteAssets } from "services/clients/sites/siteAssets";
-import TableStyle from "styles/application/TableStyle";
+
 const datas = {
 	newReferences: [],
 	newAssets: [],
 	modifiedReferences: [],
 	modifiedAssets: [],
 };
-const AT = TableStyle();
 const useStyles = makeStyles({
-	paper: { width: "90%", margin: "auto" },
-	content: { display: "flex", flexDirection: "column", gap: 5 },
+	content: {
+		display: "flex",
+		flexDirection: "column",
+		gap: 5,
+		marginBottom: 15,
+	},
 });
 
 const ImportListDialog = ({
@@ -37,11 +41,13 @@ const ImportListDialog = ({
 	const [loading, setLoading] = useState(false);
 	const [file, setFile] = useState({});
 	const [data, setData] = useState(datas);
+	const [show, setShow] = useState(false);
 
 	const closeOverride = () => {
 		setFile({});
 		handleClose();
 		setData(datas);
+		setShow(false);
 	};
 
 	const importDocument = async (key, imp) => {
@@ -67,6 +73,8 @@ const ImportListDialog = ({
 		setFile({ key, url });
 
 		importDocument(key, false).then((res) => {
+			console.log(res.data);
+			setShow(true);
 			setData(res.data);
 			setLoading(false);
 		});
@@ -82,9 +90,9 @@ const ImportListDialog = ({
 	const { newReferences } = data;
 
 	return (
-		<Dialog open={open} onClose={closeOverride} className={classes.paper}>
+		<Dialog open={open} onClose={closeOverride}>
 			<DialogTitle>Upload Document</DialogTitle>
-			<DialogContent>
+			<DialogContent style={{ width: 500 }}>
 				<div className={classes.content}>
 					<DropUpload
 						filesUploading={loading}
@@ -93,28 +101,34 @@ const ImportListDialog = ({
 						uploadReturn={onDocumentUpload}
 						apiPath={`${BASE_API_PATH}SiteAssets/${siteId}/uploadList`}
 					/>
-					<Button
-						variant="outlined"
-						color="primary"
-						onClick={onExport}
-						style={{ marginTop: 12, width: "35%" }}
-					>
-						Export
-					</Button>
-					<Table>
-						<AT.TableHead>
-							<TableCell>Name</TableCell>
-							<TableCell>Description</TableCell>
-						</AT.TableHead>
-						<TableBody>
-							{newReferences.map((x) => (
-								<TableRow>
-									<TableCell>{x.assetName}</TableCell>
-									<TableCell>{x.description}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
+					{show ? (
+						<>
+							<Button
+								variant="outlined"
+								color="primary"
+								onClick={onExport}
+								style={{ marginTop: 12, width: "35%" }}
+							>
+								Import Assets
+							</Button>
+							<Table>
+								<TableHead>
+									<TableRow>
+										<TableCell>Name</TableCell>
+										<TableCell>Description</TableCell>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{newReferences.map((x, i) => (
+										<TableRow key={i}>
+											<TableCell>{x.assetName}</TableCell>
+											<TableCell>{x.description}</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</>
+					) : null}
 				</div>
 			</DialogContent>
 		</Dialog>
