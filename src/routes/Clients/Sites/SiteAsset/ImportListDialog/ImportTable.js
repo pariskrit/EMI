@@ -8,6 +8,7 @@ import {
 	Typography,
 } from "@material-ui/core";
 const ImportTable = ({ data, title }) => {
+	const test = title.includes("References");
 	if (data.length === 0) {
 		return null;
 	} else {
@@ -19,18 +20,22 @@ const ImportTable = ({ data, title }) => {
 						<TableRow>
 							<TableCell>Name</TableCell>
 							<TableCell>Description</TableCell>
-							<TableCell style={{ whiteSpace: "nowrap" }}>
-								Reference Name
-							</TableCell>
-							<TableCell style={{ whiteSpace: "nowrap" }}>
-								Reference Description
-							</TableCell>
-							<TableCell style={{ whiteSpace: "nowrap" }}>
-								Reference Planner Group
-							</TableCell>
-							<TableCell style={{ whiteSpace: "nowrap" }}>
-								Reference Work Center
-							</TableCell>
+							{test && (
+								<>
+									<TableCell style={{ whiteSpace: "nowrap" }}>
+										Reference Name
+									</TableCell>
+									<TableCell style={{ whiteSpace: "nowrap" }}>
+										Reference Description
+									</TableCell>
+									<TableCell style={{ whiteSpace: "nowrap" }}>
+										Reference Planner Group
+									</TableCell>
+									<TableCell style={{ whiteSpace: "nowrap" }}>
+										Reference Work Center
+									</TableCell>
+								</>
+							)}
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -38,10 +43,14 @@ const ImportTable = ({ data, title }) => {
 							<TableRow key={i}>
 								<TableCell>{x.assetName}</TableCell>
 								<TableCell>{x.description}</TableCell>
-								<TableCell>{x.referenceName}</TableCell>
-								<TableCell>{x.referenceDescription}</TableCell>
-								<TableCell>{x.referencePlannerGroup}</TableCell>
-								<TableCell>{x.referenceWorkCenter}</TableCell>
+								{test && (
+									<>
+										<TableCell>{x.referenceName}</TableCell>
+										<TableCell>{x.referenceDescription}</TableCell>
+										<TableCell>{x.referencePlannerGroup}</TableCell>
+										<TableCell>{x.referenceWorkCenter}</TableCell>
+									</>
+								)}
 							</TableRow>
 						))}
 					</TableBody>
