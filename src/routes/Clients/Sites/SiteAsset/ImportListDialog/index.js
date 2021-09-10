@@ -4,16 +4,14 @@ import {
 	DialogContent,
 	DialogTitle,
 	makeStyles,
-	Table,
-	TableBody,
-	TableCell,
-	TableRow,
 	Button,
-	TableHead,
 } from "@material-ui/core";
 import DropUpload from "components/DropUploadBox";
 import { BASE_API_PATH } from "helpers/constants";
 import { importSiteAssets } from "services/clients/sites/siteAssets";
+import ImportTable from "./ImportTable";
+
+const media = "@media (max-width:414px)";
 
 const datas = {
 	newReferences: [],
@@ -27,6 +25,13 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		gap: 5,
 		marginBottom: 15,
+	},
+	button: {
+		marginTop: 15,
+		width: "30%",
+		[media]: {
+			width: "auto",
+		},
 	},
 });
 
@@ -87,12 +92,17 @@ const ImportListDialog = ({
 		});
 	};
 
-	const { newReferences } = data;
+	const { newAssets, newReferences, modifiedReferences, modifiedAssets } = data;
+	const allZero =
+		newAssets.length === 0 &&
+		newReferences.length === 0 &&
+		modifiedReferences.length === 0 &&
+		modifiedAssets.length === 0;
 
 	return (
-		<Dialog open={open} onClose={closeOverride}>
+		<Dialog open={open} onClose={closeOverride} fullWidth maxWidth="md">
 			<DialogTitle>Upload Document</DialogTitle>
-			<DialogContent style={{ width: 500 }}>
+			<DialogContent>
 				<div className={classes.content}>
 					<DropUpload
 						filesUploading={loading}
@@ -103,30 +113,27 @@ const ImportListDialog = ({
 					/>
 					{show ? (
 						<>
-							<Button
-								variant="outlined"
-								color="primary"
-								onClick={onExport}
-								style={{ marginTop: 12, width: "35%" }}
-							>
-								Import Assets
-							</Button>
-							<Table>
-								<TableHead>
-									<TableRow>
-										<TableCell>Name</TableCell>
-										<TableCell>Description</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{newReferences.map((x, i) => (
-										<TableRow key={i}>
-											<TableCell>{x.assetName}</TableCell>
-											<TableCell>{x.description}</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							</Table>
+							{allZero ? (
+								<h1>No Changes are going to be made</h1>
+							) : (
+								<>
+									<Button
+										variant="outlined"
+										color="primary"
+										onClick={onExport}
+										className={classes.button}
+									>
+										Import Assets
+									</Button>
+									<ImportTable title="New Assets" data={newAssets} />
+									<ImportTable title="Modified Assets" data={modifiedAssets} />
+									<ImportTable title="New References" data={newReferences} />
+									<ImportTable
+										title="Modified References"
+										data={modifiedReferences}
+									/>
+								</>
+							)}
 						</>
 					) : null}
 				</div>

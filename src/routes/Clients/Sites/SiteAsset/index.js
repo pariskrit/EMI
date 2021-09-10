@@ -17,7 +17,7 @@ import { showError } from "redux/common/actions";
 const SiteAsset = ({ fetchCrumbs, getError }) => {
 	const history = useHistory();
 	const { id, clientId } = useParams();
-	const [modal, setModal] = useState({ import: false, add: false });
+	const [modal, setModal] = useState({ import: true, add: false });
 	const [data, setData] = useState([]);
 	const [count, setCount] = useState(null);
 	const cancelFetch = useRef(false);
