@@ -172,7 +172,6 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 				});
 				if (updatedData.success) {
 					setLoading(false);
-					closeOverride();
 				} else {
 					setErrors({ ...errors, ...updatedData.errors });
 					setLoading(false);

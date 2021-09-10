@@ -53,6 +53,7 @@ const ImportListDialog = ({
 		handleClose();
 		setData(datas);
 		setShow(false);
+		setLoading(false);
 	};
 
 	const importDocument = async (key, imp) => {

@@ -12,7 +12,14 @@ import { getSiteAssets } from "services/clients/sites/siteAssets";
 
 const AC = ContentStyle();
 
-const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
+const Assets = ({
+	data,
+	count,
+	siteId,
+	isLoading,
+	searchedData,
+	fetchAsset,
+}) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
@@ -71,17 +78,16 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 		setModal((th) => ({ ...th, edit: true }));
 	};
 
-	const deleteSuccess = (id) => {
-		const da = [...assets].filter((x) => x.id !== id);
-		setAsset(da);
-		setTotal(total - 1);
+	const deleteSuccess = async () => {
+		await fetchAsset(1);
+		setModal((th) => ({ ...th, edit: false }));
+		setEditData({});
 	};
 
-	const handleEditData = (d) => {
-		const newData = [...assets];
-		let index = newData.findIndex((x) => x.id === d.id);
-		newData[index] = d;
-		setAsset(newData);
+	const handleEditData = async () => {
+		await fetchAsset(1);
+		setModal((th) => ({ ...th, edit: false }));
+		setEditData({});
 	};
 
 	const handlePage = async (p, prevData) => {
