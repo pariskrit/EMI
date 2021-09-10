@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
 // BIG TODO: Need to have handling for single vs. multi uploads
 const DropUpload = ({
 	uploadReturn,
-
 	apiPath,
 	isImageUploaded = false,
 	filesUploading,
