@@ -27,3 +27,5 @@ export const siteScreenNavigation = [
 	{ name: "Departments", url: siteDepartmentPath },
 	{ name: "Locations", url: siteLocationPath },
 ];
+
+export const DefaultPageSize = 12;

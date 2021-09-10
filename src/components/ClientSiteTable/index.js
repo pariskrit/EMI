@@ -59,16 +59,18 @@ const ClientSiteTable = ({
 	onPageChange,
 	count,
 	isLoading,
+	searchText,
 }) => {
 	const classes = useStyles();
-
 	const [currentTableSort, setCurrentTableSort] = useState(["asset", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const { hasMore, loading, gotoTop } = useInfiniteScroll(
 		data,
 		count,
-		(prevData) => onPageChange(page + 1, prevData)
+		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
+		page,
+		searchText
 	);
 
 	// Handlers

@@ -13,6 +13,7 @@ import Assets from "./Assets";
 import { siteScreenNavigation } from "helpers/constants";
 import ImportListDialog from "./ImportListDialog";
 import { showError } from "redux/common/actions";
+import { DefaultPageSize } from "helpers/constants";
 
 const SiteAsset = ({ fetchCrumbs, getError }) => {
 	const history = useHistory();
@@ -25,7 +26,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 
 	const fetchSiteAssets = async (pNo) => {
 		try {
-			const response = await getSiteAssets(id, pNo);
+			const response = await getSiteAssets(id, pNo, DefaultPageSize, "");
 
 			if (cancelFetch.current) {
 				return;
