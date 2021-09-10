@@ -98,7 +98,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 	};
 
 	const importSuccess = () => {
-		fetchSiteAssets(1);
+		fetchAset(1);
 	};
 
 	console.log(data);
