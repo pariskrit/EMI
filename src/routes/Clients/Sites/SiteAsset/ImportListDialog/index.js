@@ -5,6 +5,7 @@ import {
 	DialogTitle,
 	makeStyles,
 	Button,
+	DialogActions,
 } from "@material-ui/core";
 import DropUpload from "components/DropUploadBox";
 import { BASE_API_PATH } from "helpers/constants";
@@ -102,7 +103,14 @@ const ImportListDialog = ({
 
 	return (
 		<Dialog open={open} onClose={closeOverride} fullWidth maxWidth="md">
-			<DialogTitle>Upload Document</DialogTitle>
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<DialogTitle>Upload Document</DialogTitle>
+				<DialogActions>
+					<Button variant="contained" onClick={closeOverride} color="secondary">
+						Cancel
+					</Button>
+				</DialogActions>
+			</div>
 			<DialogContent>
 				<div className={classes.content}>
 					<DropUpload
