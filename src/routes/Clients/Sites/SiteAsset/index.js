@@ -97,10 +97,11 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 		}
 	};
 
-	const importSuccess = (newData) => {
+	const importSuccess = () => {
 		fetchSiteAssets(1);
 	};
 
+	console.log(data);
 	return (
 		<>
 			<AddAssetDialog
@@ -129,7 +130,13 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 				onClickImport={() => setModal((th) => ({ ...th, import: true }))}
 				onClickAdd={() => setModal((th) => ({ ...th, add: true }))}
 				Component={() => (
-					<Assets data={data} count={count} siteId={id} isLoading={isLoading} />
+					<Assets
+						data={data}
+						count={count}
+						siteId={id}
+						isLoading={isLoading}
+						fetchAsset={fetchAset}
+					/>
 				)}
 			/>
 		</>

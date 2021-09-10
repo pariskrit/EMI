@@ -114,7 +114,8 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 				{ op: "replace", path: "name", value: d.name },
 				{ op: "replace", path: "description", value: d.description },
 			]);
-			if (result) {
+			console.log(result);
+			if (result.status) {
 				handleEditData({
 					id: editData.id,
 					name: input.name,
@@ -124,23 +125,34 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 
 				return { success: true };
 			} else {
-				throw new Error(result);
+				if (result.data.detail) {
+					return {
+						success: false,
+						errors: {
+							name: result.data.detail,
+							description: result.data.detail,
+						},
+					};
+				} else {
+					return { success: false, errors: { ...result.data.errors } };
+				}
 			}
 		} catch (err) {
-			if (
-				err.response.data.detail !== null ||
-				err.response.data.detail !== undefined
-			) {
-				setErrors({
-					name: err.response.data.detail,
-					description: err.response.data.detail,
-				});
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
+			throw new Error(err.response);
+			// if (
+			// 	err.response.data.detail !== null ||
+			// 	err.response.data.detail !== undefined
+			// ) {
+			// 	setErrors({
+			// 		name: err.response.data.detail,
+			// 		description: err.response.data.detail,
+			// 	});
+			// } else {
+			// 	// If no explicit errors provided, throws to caller
+			// 	throw new Error(err);
+			// }
 
-			return { success: false };
+			// return { success: false };
 		}
 	};
 
@@ -160,8 +172,8 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 				});
 				if (updatedData.success) {
 					setLoading(false);
-					closeOverride();
 				} else {
+					setErrors({ ...errors, ...updatedData.errors });
 					setLoading(false);
 				}
 			} else {
@@ -170,7 +182,6 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 				setLoading(false);
 			}
 		} catch (err) {
-			console.log(err.response);
 			setLoading(false);
 			closeOverride();
 		}
