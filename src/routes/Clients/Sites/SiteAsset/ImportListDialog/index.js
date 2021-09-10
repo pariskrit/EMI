@@ -78,14 +78,13 @@ const ImportListDialog = ({
 		setFile({ key, url });
 
 		importDocument(key, false).then((res) => {
-			console.log(res.data);
 			setShow(true);
 			setData(res.data);
 			setLoading(false);
 		});
 	};
 
-	const onExport = () => {
+	const onImportAsset = () => {
 		importDocument(file.key, true).then(async (res) => {
 			await importSuccess();
 			closeOverride();
@@ -120,10 +119,10 @@ const ImportListDialog = ({
 									<Button
 										variant="outlined"
 										color="primary"
-										onClick={onExport}
+										onClick={onImportAsset}
 										className={classes.button}
 									>
-										Import Assets
+										{loading ? "Importing ..." : "Import Assets"}
 									</Button>
 									<ImportTable title="New Assets" data={newAssets} />
 									<ImportTable title="Modified Assets" data={modifiedAssets} />
