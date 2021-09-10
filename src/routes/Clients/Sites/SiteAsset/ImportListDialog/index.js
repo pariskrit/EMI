@@ -85,6 +85,7 @@ const ImportListDialog = ({
 	};
 
 	const onImportAsset = () => {
+		setLoading(true);
 		importDocument(file.key, true).then(async (res) => {
 			await importSuccess();
 			closeOverride();
