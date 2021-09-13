@@ -301,15 +301,17 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 					</Typography>
 				</div>
 
-				{functionalLocations.map((x, index) => (
-					<FunctionalLocations
-						setLoading={setLoading}
-						sub={x}
-						key={`${x.name}${index}`}
-						handleRemoveFuncLoc={handleRemoveFuncLoc}
-						handleUpdateFuncLoc={handleUpdateFuncLoc}
-					/>
-				))}
+				{functionalLocations
+					.sort((a, b) => a.id - b.id)
+					.map((x, index) => (
+						<FunctionalLocations
+							setLoading={setLoading}
+							sub={x}
+							key={`${x.name}${index}`}
+							handleRemoveFuncLoc={handleRemoveFuncLoc}
+							handleUpdateFuncLoc={handleUpdateFuncLoc}
+						/>
+					))}
 				{isAddNew ? (
 					<NewFunctionalLocations
 						editData={editData}

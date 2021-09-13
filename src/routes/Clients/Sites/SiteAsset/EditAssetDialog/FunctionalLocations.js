@@ -4,7 +4,7 @@ import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
-// import useOutsideClick from "hooks/useOutsideClick";
+import useOutsideClick from "hooks/useOutsideClick";
 import {
 	deleteSiteAssetReferences,
 	updateSiteAssetReferences,
@@ -100,7 +100,6 @@ const FunctionalLocations = ({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
 	// Click outside the component and set to false
-	// useOutsideClick(ref, () => setIsEdit(false));
 
 	// Perform delete functional location
 	const onDeleteApp = async () => {
@@ -187,45 +186,49 @@ const FunctionalLocations = ({
 
 	const handleSubmit = async () => {
 		// e.preventDefault();
-		setLoading(true);
-		setErrors(defaultErrorSchema);
+		if (isEdit) {
+			setLoading(true);
+			setErrors(defaultErrorSchema);
 
-		// Check if the input is same with previous one or not
-		if (
-			sub.name === input.name &&
-			sub.description === input.description &&
-			sub.workCenter === input.workCenter &&
-			sub.plannerGroup === input.plannerGroup
-		) {
-			setIsEdit(false);
-			setLoading(false);
-			return true;
-		}
-		try {
-			const localChecker = await handleValidateObj(schema, input);
-			if (!localChecker.some((el) => el.valid === false)) {
-				const updateData = await handleEditFuncLoc();
-				if (updateData.success) {
-					handleUpdateFuncLoc({
-						id: sub.id,
-						siteAssetID: sub.siteAssetID,
-						...input,
-					});
+			// Check if the input is same with previous one or not
+			console.log("handle submitted");
+			if (
+				sub.name === input.name &&
+				sub.description === input.description &&
+				sub.workCenter === input.workCenter &&
+				sub.plannerGroup === input.plannerGroup
+			) {
+				setIsEdit(false);
+				setLoading(false);
+				return true;
+			}
+			try {
+				const localChecker = await handleValidateObj(schema, input);
+				if (!localChecker.some((el) => el.valid === false)) {
+					const updateData = await handleEditFuncLoc();
+					if (updateData.success) {
+						handleUpdateFuncLoc({
+							id: sub.id,
+							siteAssetID: sub.siteAssetID,
+							...input,
+						});
+					} else {
+						setLoading(false);
+					}
 				} else {
+					const newError = generateErrorState(localChecker);
+					setErrors({ ...errors, ...newError });
 					setLoading(false);
 				}
-			} else {
-				const newError = generateErrorState(localChecker);
-				setErrors({ ...errors, ...newError });
+			} catch (err) {
+				console.log(err);
+				setIsEdit(false);
 				setLoading(false);
 			}
-		} catch (err) {
-			console.log(err);
-			setIsEdit(false);
-			setLoading(false);
 		}
-		setIsEdit(false);
 	};
+
+	useOutsideClick(ref, () => handleSubmit());
 
 	const handleShowEdit = () => {
 		const main = { ...sub };
@@ -252,6 +255,7 @@ const FunctionalLocations = ({
 							<Grid container spacing={2}>
 								<Grid item sm={6}>
 									<TextField
+										autoFocus
 										fullWidth
 										variant="outlined"
 										name="name"
@@ -260,7 +264,7 @@ const FunctionalLocations = ({
 										value={input.name}
 										error={errors.name === null ? false : true}
 										helperText={errors.name === null ? null : errors.name}
-										onBlur={handleSubmit}
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item sm={6}>
@@ -275,7 +279,8 @@ const FunctionalLocations = ({
 										helperText={
 											errors.description === null ? null : errors.description
 										}
-										onBlur={handleSubmit}
+
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item sm={6}>
@@ -290,7 +295,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.plannerGroup === null ? null : errors.plannerGroup
 										}
-										onBlur={handleSubmit}
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item sm={6}>
@@ -305,7 +310,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.workCenter === null ? null : errors.workCenter
 										}
-										onBlur={handleSubmit}
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 							</Grid>
@@ -322,7 +327,7 @@ const FunctionalLocations = ({
 										value={input.name}
 										error={errors.name === null ? false : true}
 										helperText={errors.name === null ? null : errors.name}
-										onBlur={handleSubmit}
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -337,7 +342,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.description === null ? null : errors.description
 										}
-										onBlur={handleSubmit}
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -352,7 +357,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.plannerGroup === null ? null : errors.plannerGroup
 										}
-										onBlur={handleSubmit}
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -367,7 +372,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.workCenter === null ? null : errors.workCenter
 										}
-										onBlur={handleSubmit}
+										// onBlur={handleSubmit}
 									/>
 								</Grid>
 							</Grid>
