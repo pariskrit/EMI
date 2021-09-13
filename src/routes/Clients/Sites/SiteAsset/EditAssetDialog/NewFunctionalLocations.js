@@ -166,6 +166,7 @@ const NewFunctionalLocations = ({
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
 								onBlur={saveFuncLoc}
+								autoFocus
 							/>
 						</Grid>
 						<Grid item sm={6}>

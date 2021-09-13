@@ -4,7 +4,7 @@ import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
-import useOutsideClick from "hooks/useOutsideClick";
+// import useOutsideClick from "hooks/useOutsideClick";
 import {
 	deleteSiteAssetReferences,
 	updateSiteAssetReferences,
