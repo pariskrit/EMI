@@ -13,6 +13,7 @@ import Assets from "./Assets";
 import { siteScreenNavigation } from "helpers/constants";
 import ImportListDialog from "./ImportListDialog";
 import { showError } from "redux/common/actions";
+import { DefaultPageSize } from "helpers/constants";
 
 const SiteAsset = ({ fetchCrumbs, getError }) => {
 	const history = useHistory();
@@ -25,7 +26,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 
 	const fetchSiteAssets = async (pNo) => {
 		try {
-			const response = await getSiteAssets(id, pNo);
+			const response = await getSiteAssets(id, pNo, DefaultPageSize, "");
 
 			if (cancelFetch.current) {
 				return;
@@ -96,10 +97,11 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 		}
 	};
 
-	const importSuccess = (newData) => {
-		fetchSiteAssets(1);
+	const importSuccess = () => {
+		fetchAset(1);
 	};
 
+	console.log(data);
 	return (
 		<>
 			<AddAssetDialog
@@ -128,7 +130,13 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 				onClickImport={() => setModal((th) => ({ ...th, import: true }))}
 				onClickAdd={() => setModal((th) => ({ ...th, add: true }))}
 				Component={() => (
-					<Assets data={data} count={count} siteId={id} isLoading={isLoading} />
+					<Assets
+						data={data}
+						count={count}
+						siteId={id}
+						isLoading={isLoading}
+						fetchAsset={fetchAset}
+					/>
 				)}
 			/>
 		</>

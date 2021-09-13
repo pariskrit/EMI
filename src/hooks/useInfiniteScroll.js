@@ -1,23 +1,35 @@
 import { useEffect, useState, useRef, useMemo } from "react";
+import { DefaultPageSize } from "helpers/constants";
 
-function useInfiniteScroll(data, count, fetchData) {
+function useInfiniteScroll(data, count, fetchData, page, searchText) {
 	const [hasMore, setHasMore] = useState(true);
 	const [loading, setLoading] = useState(false);
 	const dataRef = useRef(data);
 	const countRef = useRef(count);
+	const pageRef = useRef(page);
+	const prevPageRef = useRef(0);
+
 	useMemo(() => {
 		dataRef.current = data;
 		countRef.current = count;
-	}, [data, count]);
+		pageRef.current = page;
+	}, [data, count, page]);
+	useEffect(() => {
+		setHasMore(true);
+		pageRef.current = 1;
+	}, [searchText]);
 
 	const fetchMoreData = async () => {
-		if (dataRef.current.length >= countRef.current) {
+		if (countRef.current / pageRef.current < DefaultPageSize) {
 			setHasMore(false);
 			return;
 		}
-		setLoading(true);
-		await fetchData(dataRef.current);
-		setLoading(false);
+		if (prevPageRef.current !== pageRef.current) {
+			prevPageRef.current = pageRef.current;
+			setLoading(true);
+			await fetchData(pageRef.current, dataRef.current);
+			setLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -26,7 +38,7 @@ function useInfiniteScroll(data, count, fetchData) {
 	}, []);
 
 	const handleScroll = () => {
-		if (loading || !hasMore) return;
+		if (loading) return;
 
 		if (
 			window.innerHeight + document.documentElement.scrollTop ===

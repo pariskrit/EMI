@@ -1,6 +1,6 @@
 import API from "helpers/api";
-import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
+import { Apis } from "services/api";
 
 // Import from list
 const importSiteAssets = async (siteId, data) => {
@@ -13,10 +13,10 @@ const importSiteAssets = async (siteId, data) => {
 };
 
 //#region get assets
-const getSiteAssets = async (siteId, pNo, search = "") => {
+const getSiteAssets = async (siteId, pNo, pSize, search = "") => {
 	try {
 		let pageSearchField =
-			pNo !== null ? `&&pageNumber=${pNo}&&pageSize=12` : "";
+			pNo !== null ? `&&pageNumber=${pNo}&&pageSize=${pSize}` : "";
 		let response = await API.get(
 			`${Apis.SiteAssets}?siteId=${siteId}${pageSearchField}&&search=${search}`
 		);
@@ -59,9 +59,9 @@ const editSiteAsset = async (id, data) => {
 //#endregion
 
 export {
-	importSiteAssets,
 	getSiteAssets,
 	getSiteAssetsCount,
 	addSiteAsset,
 	editSiteAsset,
+	importSiteAssets,
 };

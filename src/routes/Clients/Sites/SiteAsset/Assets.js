@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import DetailsPanel from "components/DetailsPanel";
 import { Grid } from "@material-ui/core";
@@ -8,18 +8,27 @@ import DeleteDialog from "components/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
 import { getSiteAssets } from "services/clients/sites/siteAssets";
+import { DefaultPageSize } from "helpers/constants";
 //import useDidMountEffect from "hooks/useDidMountEffect";
 
 const AC = ContentStyle();
 
-const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
+const Assets = ({
+	data,
+	count,
+	siteId,
+	isLoading,
+	searchedData,
+	fetchAsset,
+}) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
 	const [editData, setEditData] = useState({});
 	const [total, setTotal] = useState(null);
-	const [page, setPage] = useState({ pageNo: 1, perPage: 12 });
+	const [page, setPage] = useState({ pageNo: 1, perPage: DefaultPageSize });
 	//const [searchText, setSearchText] = useState("");
+	const searchRef = useRef("");
 
 	// useDidMountEffect(() => {
 	// 	const fetchSiteAssets = async () => {
@@ -43,7 +52,12 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 
 	const fetchSiteAssets = async (searchText) => {
 		try {
-			const response = await getSiteAssets(siteId, null, searchText);
+			const response = await getSiteAssets(
+				siteId,
+				1,
+				DefaultPageSize,
+				searchText
+			);
 
 			if (response.status) {
 				setAsset(response.data);
@@ -71,25 +85,30 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 		setModal((th) => ({ ...th, edit: true }));
 	};
 
-	const deleteSuccess = (id) => {
-		const da = [...assets].filter((x) => x.id !== id);
-		setAsset(da);
-		setTotal(total - 1);
+	const deleteSuccess = async () => {
+		await fetchAsset(1);
+		setModal((th) => ({ ...th, edit: false }));
+		setEditData({});
 	};
 
-	const handleEditData = (d) => {
-		const newData = [...assets];
-		let index = newData.findIndex((x) => x.id === d.id);
-		newData[index] = d;
-		setAsset(newData);
+	const handleEditData = async () => {
+		await fetchAsset(1);
+		setModal((th) => ({ ...th, edit: false }));
+		setEditData({});
 	};
 
 	const handlePage = async (p, prevData) => {
-		setPage({ pageNo: p, rowsPerPage: 12 });
 		try {
-			const response = await getSiteAssets(siteId, p);
+			const response = await getSiteAssets(
+				siteId,
+				p,
+				DefaultPageSize,
+				searchRef.current
+			);
 			if (response.status) {
+				setPage({ pageNo: p, rowsPerPage: DefaultPageSize });
 				setAsset([...prevData, ...response.data]);
+				response.data = [...prevData, ...response.data];
 				return response;
 			} else {
 				throw new Error(response);
@@ -103,6 +122,7 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 	const handleSearch = (e) => {
 		const { value } = e.target;
 		//setSearchText(value);
+		searchRef.current = value;
 		fetchSiteAssets(value);
 	};
 
@@ -161,6 +181,7 @@ const Assets = ({ data, count, siteId, isLoading, searchedData }) => {
 					onPageChange={handlePage}
 					count={total}
 					isLoading={isLoading}
+					searchText={searchRef.current}
 				/>
 			</div>
 		</>
