@@ -185,8 +185,8 @@ const FunctionalLocations = ({
 		}
 	};
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+	const handleSubmit = async () => {
+		// e.preventDefault();
 		setLoading(true);
 		setErrors(defaultErrorSchema);
 
@@ -245,7 +245,7 @@ const FunctionalLocations = ({
 				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			)}
 			{isEdit && !attemptDelete ? (
-				<form onSubmit={handleSubmit}>
+				<form>
 					<div className={classes.formFields} style={{ gap: 15 }}>
 						<div className="desktopTableViewEdit">
 							<Grid container spacing={2}>
@@ -259,6 +259,7 @@ const FunctionalLocations = ({
 										value={input.name}
 										error={errors.name === null ? false : true}
 										helperText={errors.name === null ? null : errors.name}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item sm={6}>
@@ -273,6 +274,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.description === null ? null : errors.description
 										}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item sm={6}>
@@ -287,6 +289,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.plannerGroup === null ? null : errors.plannerGroup
 										}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item sm={6}>
@@ -301,6 +304,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.workCenter === null ? null : errors.workCenter
 										}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 							</Grid>
@@ -317,6 +321,7 @@ const FunctionalLocations = ({
 										value={input.name}
 										error={errors.name === null ? false : true}
 										helperText={errors.name === null ? null : errors.name}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -331,6 +336,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.description === null ? null : errors.description
 										}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -345,6 +351,7 @@ const FunctionalLocations = ({
 										helperText={
 											errors.plannerGroup === null ? null : errors.plannerGroup
 										}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -359,12 +366,13 @@ const FunctionalLocations = ({
 										helperText={
 											errors.workCenter === null ? null : errors.workCenter
 										}
+										onBlur={handleSubmit}
 									/>
 								</Grid>
 							</Grid>
 						</div>
 					</div>
-					<input type="submit" style={{ display: "none" }} />
+					{/* <input type="submit" style={{ display: "none" }} /> */}
 				</form>
 			) : (
 				<div onClick={handleShowEdit}>
