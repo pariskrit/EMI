@@ -100,7 +100,7 @@ const FunctionalLocations = ({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
 	// Click outside the component and set to false
-	useOutsideClick(ref, () => setIsEdit(false));
+	// useOutsideClick(ref, () => setIsEdit(false));
 
 	// Perform delete functional location
 	const onDeleteApp = async () => {
@@ -224,6 +224,7 @@ const FunctionalLocations = ({
 			setIsEdit(false);
 			setLoading(false);
 		}
+		setIsEdit(false);
 	};
 
 	const handleShowEdit = () => {
