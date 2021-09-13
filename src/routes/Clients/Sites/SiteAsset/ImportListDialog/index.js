@@ -5,7 +5,6 @@ import {
 	DialogTitle,
 	makeStyles,
 	Button,
-	DialogActions,
 } from "@material-ui/core";
 import DropUpload from "components/DropUploadBox";
 import { BASE_API_PATH } from "helpers/constants";
