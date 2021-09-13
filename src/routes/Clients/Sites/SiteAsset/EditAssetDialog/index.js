@@ -222,8 +222,6 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 		setFunctionalLocations(dat);
 	};
 
-	console.log(functionalLocations);
-
 	return (
 		<Dialog
 			classes={{ paper: classes.paper }}
