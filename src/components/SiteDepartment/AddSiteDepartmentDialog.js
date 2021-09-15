@@ -3,10 +3,8 @@ import React, { useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import { makeStyles } from "@material-ui/core/styles";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addSiteDepartments } from "services/clients/sites/siteDepartments";
 
@@ -48,7 +46,13 @@ const useStyles = makeStyles({
 	},
 });
 
-const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
+const AddDepartmentDialog = ({
+	open,
+	closeHandler,
+	createHandler,
+	siteID,
+	getError,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -124,16 +128,14 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 				});
 				return { success: true };
 			} else {
+				console.log(result);
 				if (result.data.detail) {
-					setErrors({
-						name: result.data.detail,
-						description: result.data.detail,
-					});
+					getError(result.data.detail);
 					return {
 						success: false,
 						errors: {
-							name: result.data.detail,
-							description: result.data.detail,
+							name: null,
+							description: null,
 						},
 					};
 				} else {
