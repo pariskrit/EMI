@@ -81,13 +81,8 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 				return { success: true };
 			} else {
 				if (response.data.detail) {
-					return {
-						success: false,
-						errors: {
-							name: response.data.detail,
-							description: response.data.detail,
-						},
-					};
+					getError(response.data.detail);
+					return { success: false };
 				} else {
 					return { success: false, errors: { ...response.data.errors } };
 				}
@@ -101,7 +96,6 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 		fetchAset(1);
 	};
 
-	console.log(data);
 	return (
 		<>
 			<AddAssetDialog
@@ -136,6 +130,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 						siteId={id}
 						isLoading={isLoading}
 						fetchAsset={fetchAset}
+						getError={getError}
 					/>
 				)}
 			/>

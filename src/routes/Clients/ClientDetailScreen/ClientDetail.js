@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientDetail = ({ clientId, clientData, getError }) => {
+const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 	const classes = useStyles();
 	const [clientDetail, setClientDetail] = useState({});
 	const [changedState, setChange] = useState({});
@@ -142,7 +142,7 @@ const ClientDetail = ({ clientId, clientData, getError }) => {
 			noExpand={true}
 			accordionClass="companyDetail"
 		>
-			{clientDetail.name === "" ? (
+			{loading ? (
 				<CircularProgress />
 			) : (
 				<Grid container spacing={5} className="companyDetailGrid">

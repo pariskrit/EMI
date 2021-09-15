@@ -65,7 +65,13 @@ const useStyles = makeStyles({
 	},
 });
 
-const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
+const EditAssetDialog = ({
+	open,
+	closeHandler,
+	editData,
+	handleEditData,
+	getError,
+}) => {
 	const classes = useStyles();
 	const [loading, setLoading] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -126,12 +132,10 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 				return { success: true };
 			} else {
 				if (result.data.detail) {
+					getError(result.data.error);
+					setInput({ name: editData.name, description: editData.description });
 					return {
 						success: false,
-						errors: {
-							name: result.data.detail,
-							description: result.data.detail,
-						},
 					};
 				} else {
 					return { success: false, errors: { ...result.data.errors } };
@@ -310,6 +314,7 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 							key={`${x.name}${index}`}
 							handleRemoveFuncLoc={handleRemoveFuncLoc}
 							handleUpdateFuncLoc={handleUpdateFuncLoc}
+							getError={getError}
 						/>
 					))}
 				{isAddNew ? (
@@ -318,6 +323,7 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 						setLoading={setLoading}
 						handleAddFunctional={handleAddFunctional}
 						setIsAddNew={setIsAddNew}
+						getError={getError}
 					/>
 				) : null}
 

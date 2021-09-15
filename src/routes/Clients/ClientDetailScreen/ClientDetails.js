@@ -28,6 +28,7 @@ const ClientDetails = ({
 	fetchClientData,
 	getError,
 	resetPage,
+	clientDetailLoading,
 }) => {
 	const classes = useStyles();
 	const { id } = useParams();
@@ -60,6 +61,7 @@ const ClientDetails = ({
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<ClientDetail
+							loading={clientDetailLoading}
 							clientId={+id}
 							clientData={clientDetail}
 							getError={getError}
