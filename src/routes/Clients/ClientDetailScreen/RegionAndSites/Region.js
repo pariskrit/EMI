@@ -77,38 +77,29 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 	const onAddSite = async (e) => {
 		e.preventDefault();
 
-		try {
-			let result = await addClientSite({
-				regionID: id,
-				name: siteInput,
-			});
+		let result = await addClientSite({
+			regionID: id,
+			name: siteInput,
+		});
 
-			if (result.status) {
-				// Getting response
-				result = result.data;
+		if (result.status) {
+			await fetchRegionsAndSites();
 
-				await fetchRegionsAndSites();
-
-				return { success: true };
-			} else {
-				// Throwing response if error
-				throw new Error(result);
-			}
-		} catch (err) {
-			console.log(err);
-
+			return { success: true };
+		} else {
+			// Throwing response if error
 			if (
-				err.response.data.errors !== undefined &&
-				err.response.data.detail === undefined
+				result.data.errors !== undefined &&
+				result.data.detail === undefined
 			) {
-				return { success: false, errors: err.response.data.errors };
+				return { success: false, errors: result.data.errors };
 			} else if (
-				err.response.data.errors !== undefined &&
-				err.response.data.detail !== undefined
+				result.data.errors !== undefined &&
+				result.data.detail !== undefined
 			) {
 				return {
 					success: false,
-					errors: { name: err.response.data.detail },
+					errors: { name: result.data.detail },
 				};
 			} else {
 				setOpenAddDialog(false);
@@ -125,15 +116,17 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 
 	return (
 		<div className={classes.singleRegion}>
-			<CommonAddDialog
-				open={openAddDialog}
-				closeHandler={() => setOpenAddDialog(false)}
-				label="Site"
-				input={siteInput}
-				setInput={setSiteInput}
-				createHandler={onAddSite}
-				reference={name}
-			/>
+			{openAddDialog && (
+				<CommonAddDialog
+					open={openAddDialog}
+					closeHandler={() => setOpenAddDialog(false)}
+					label="Site"
+					input={siteInput}
+					setInput={setSiteInput}
+					createHandler={onAddSite}
+					reference={name}
+				/>
+			)}
 
 			<Accordion
 				className={classes.accordionParent}
