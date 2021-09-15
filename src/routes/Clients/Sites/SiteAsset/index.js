@@ -96,7 +96,6 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 		fetchAset(1);
 	};
 
-	console.log(data);
 	return (
 		<>
 			<AddAssetDialog
