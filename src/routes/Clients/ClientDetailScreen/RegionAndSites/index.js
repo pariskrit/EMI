@@ -69,37 +69,34 @@ function ClientRegionAndSites({ clientId, getError }) {
 		e.preventDefault();
 		let intId = clientId;
 
-		try {
-			let result = await addClientRegion({
-				clientID: intId,
-				name: regionInput,
-				sites: [],
-			});
+		let result = await addClientRegion({
+			clientID: intId,
+			name: regionInput,
+			sites: [],
+		});
 
-			if (result.status) {
-				// Getting response
-				result = result.data;
+		if (result.status) {
+			// Getting response
+			result = result.data;
 
-				await fetchRegionsAndSites();
+			await fetchRegionsAndSites();
 
-				return { success: true };
-			} else {
-				// Throwing response if error
-				throw new Error(result);
-			}
-		} catch (err) {
+			return { success: true };
+		} else {
+			// Throwing response if error
+
 			if (
-				err.response.data.errors !== undefined &&
-				err.response.data.detail === undefined
+				result.data.errors !== undefined &&
+				result.data.detail === undefined
 			) {
-				return { success: false, errors: err.response.data.errors };
+				return { success: false, errors: result.data.errors };
 			} else if (
-				err.response.data.errors !== undefined &&
-				err.response.data.detail !== undefined
+				result.data.errors !== undefined &&
+				result.data.detail !== undefined
 			) {
 				return {
 					success: false,
-					errors: { name: err.response.data.detail },
+					errors: { name: result.data.detail },
 				};
 			} else {
 				setOpenAddDialog(false);
@@ -138,14 +135,16 @@ function ClientRegionAndSites({ clientId, getError }) {
 
 	return (
 		<div className={classes.logoContainer}>
-			<CommonAddDialog
-				open={openAddDialog}
-				closeHandler={() => setOpenAddDialog(false)}
-				label="Region"
-				input={regionInput}
-				setInput={setRegionInput}
-				createHandler={onAddRegion}
-			/>
+			{openAddDialog && (
+				<CommonAddDialog
+					open={openAddDialog}
+					closeHandler={() => setOpenAddDialog(false)}
+					label="Region"
+					input={regionInput}
+					setInput={setRegionInput}
+					createHandler={onAddRegion}
+				/>
+			)}
 
 			<AccordionBox
 				title={`Regions And Sites ${listOfRegions.length}/5`}
