@@ -115,8 +115,8 @@ const NewFunctionalLocations = ({
 		}
 	};
 
-	const saveFuncLoc = async (e) => {
-		e.preventDefault();
+	const saveFuncLoc = async () => {
+		// e.preventDefault();
 		setLoading(true);
 		setErrors(defaultErrorSchema);
 		try {
@@ -152,7 +152,7 @@ const NewFunctionalLocations = ({
 	return (
 		<div className={classes.mainWrap}>
 			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
-			<form onSubmit={saveFuncLoc}>
+			<form>
 				<div className="desktopTableViewEdit">
 					<Grid container spacing={2}>
 						<Grid item sm={6}>
@@ -165,6 +165,8 @@ const NewFunctionalLocations = ({
 								value={input.name}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
+								onBlur={saveFuncLoc}
+								autoFocus
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -179,6 +181,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.description === null ? null : errors.description
 								}
+								onBlur={saveFuncLoc}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -193,6 +196,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
+								onBlur={saveFuncLoc}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -207,6 +211,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.workCenter === null ? null : errors.workCenter
 								}
+								onBlur={saveFuncLoc}
 							/>
 						</Grid>
 					</Grid>
@@ -223,6 +228,7 @@ const NewFunctionalLocations = ({
 								value={input.name}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
+								onBlur={saveFuncLoc}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -237,6 +243,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.description === null ? null : errors.description
 								}
+								onBlur={saveFuncLoc}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -251,6 +258,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
+								onBlur={saveFuncLoc}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -265,12 +273,13 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.workCenter === null ? null : errors.workCenter
 								}
+								onBlur={saveFuncLoc}
 							/>
 						</Grid>
 					</Grid>
 				</div>
 
-				<input type="submit" style={{ display: "none" }} />
+				{/* <input type="submit" style={{ display: "none" }} /> */}
 			</form>
 		</div>
 	);

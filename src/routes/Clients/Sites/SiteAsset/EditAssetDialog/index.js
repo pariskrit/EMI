@@ -204,7 +204,7 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 
 	// Append added data
 	const handleAddFunctional = (dd) => {
-		const newData = [dd, ...functionalLocations];
+		const newData = [...functionalLocations, dd];
 		setFunctionalLocations(newData);
 	};
 
@@ -223,94 +223,87 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 	};
 
 	return (
-		<div>
-			<Dialog
-				classes={{ paper: classes.paper }}
-				open={open}
-				onClose={closeOverride}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				{loading ? <LinearProgress /> : null}
-				<ET.ActionContainer>
-					<DialogTitle id="alert-dialog-title">
-						<ET.HeaderText>Edit Asset</ET.HeaderText>
-					</DialogTitle>
-					<ET.ButtonContainer>
-						<ET.CancelButton onClick={closeOverride} variant="contained">
-							Cancel
-						</ET.CancelButton>
-						<ET.ConfirmButton variant="contained" onClick={handleSave}>
-							Save
-						</ET.ConfirmButton>
-					</ET.ButtonContainer>
-				</ET.ActionContainer>
-				<ET.DialogContent>
-					<div>
-						<ET.InputContainer>
-							<ET.LeftInputContainer>
-								<div className={classes.inputContainer}>
-									<ET.NameLabel>
-										Name<ET.RequiredStar>*</ET.RequiredStar>
-									</ET.NameLabel>
-									<TextField
-										name="name"
-										error={errors.name === null ? false : true}
-										helperText={errors.name === null ? null : errors.name}
-										variant="outlined"
-										size="small"
-										value={input.name}
-										autoFocus
-										onKeyDown={handleEnterPress}
-										fullWidth
-										onChange={handleChange}
-									/>
-								</div>
-							</ET.LeftInputContainer>
+		<Dialog
+			classes={{ paper: classes.paper }}
+			open={open}
+			onClose={closeOverride}
+			aria-labelledby="alert-dialog-title"
+			aria-describedby="alert-dialog-description"
+		>
+			{loading ? <LinearProgress /> : null}
+			<ET.ActionContainer>
+				<DialogTitle id="alert-dialog-title">
+					<ET.HeaderText>Edit Asset</ET.HeaderText>
+				</DialogTitle>
+				<ET.ButtonContainer>
+					<ET.CancelButton onClick={closeOverride} variant="contained">
+						Cancel
+					</ET.CancelButton>
+					<ET.ConfirmButton variant="contained" onClick={handleSave}>
+						Save
+					</ET.ConfirmButton>
+				</ET.ButtonContainer>
+			</ET.ActionContainer>
+			<ET.DialogContent>
+				<div>
+					<ET.InputContainer>
+						<ET.LeftInputContainer>
+							<div className={classes.inputContainer}>
+								<ET.NameLabel>
+									Name<ET.RequiredStar>*</ET.RequiredStar>
+								</ET.NameLabel>
+								<TextField
+									name="name"
+									error={errors.name === null ? false : true}
+									helperText={errors.name === null ? null : errors.name}
+									variant="outlined"
+									size="small"
+									value={input.name}
+									autoFocus
+									onKeyDown={handleEnterPress}
+									fullWidth
+									onChange={handleChange}
+								/>
+							</div>
+						</ET.LeftInputContainer>
 
-							<ET.RightInputContainer>
-								<div className={classes.inputContainer}>
-									<ET.NameLabel>
-										Description<ET.RequiredStar>*</ET.RequiredStar>
-									</ET.NameLabel>
-									<TextField
-										name="description"
-										error={errors.description === null ? false : true}
-										helperText={
-											errors.description === null ? null : errors.description
-										}
-										variant="outlined"
-										size="small"
-										value={input.description}
-										autoFocus
-										onKeyDown={handleEnterPress}
-										fullWidth
-										onChange={handleChange}
-									/>
-								</div>
-							</ET.RightInputContainer>
-						</ET.InputContainer>
+						<ET.RightInputContainer>
+							<div className={classes.inputContainer}>
+								<ET.NameLabel>
+									Description<ET.RequiredStar>*</ET.RequiredStar>
+								</ET.NameLabel>
+								<TextField
+									name="description"
+									error={errors.description === null ? false : true}
+									helperText={
+										errors.description === null ? null : errors.description
+									}
+									variant="outlined"
+									size="small"
+									value={input.description}
+									autoFocus
+									onKeyDown={handleEnterPress}
+									fullWidth
+									onChange={handleChange}
+								/>
+							</div>
+						</ET.RightInputContainer>
+					</ET.InputContainer>
+				</div>
+
+				<div className={classes.headContainer}>
+					<div className={classes.header}>
+						Functional Locations ({functionalLocations.length})
 					</div>
 
-					<div className={classes.headContainer}>
-						<div className={classes.header}>
-							Functional Locations ({functionalLocations.length})
-						</div>
+					<Typography className={classes.infoText}>
+						Add additional References
+					</Typography>
+				</div>
 
-						<Typography className={classes.infoText}>
-							Add additional References
-						</Typography>
-					</div>
-					{isAddNew ? (
-						<NewFunctionalLocations
-							editData={editData}
-							setLoading={setLoading}
-							handleAddFunctional={handleAddFunctional}
-							setIsAddNew={setIsAddNew}
-						/>
-					) : null}
-
-					{functionalLocations.map((x, index) => (
+				{functionalLocations
+					.sort((a, b) => a.id - b.id)
+					.map((x, index) => (
 						<FunctionalLocations
 							setLoading={setLoading}
 							sub={x}
@@ -319,13 +312,20 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 							handleUpdateFuncLoc={handleUpdateFuncLoc}
 						/>
 					))}
+				{isAddNew ? (
+					<NewFunctionalLocations
+						editData={editData}
+						setLoading={setLoading}
+						handleAddFunctional={handleAddFunctional}
+						setIsAddNew={setIsAddNew}
+					/>
+				) : null}
 
-					<CurveButton variant="contained" onClick={handleAddNewClick}>
-						Add new
-					</CurveButton>
-				</ET.DialogContent>
-			</Dialog>
-		</div>
+				<CurveButton variant="contained" onClick={handleAddNewClick}>
+					Add new
+				</CurveButton>
+			</ET.DialogContent>
+		</Dialog>
 	);
 };
 
