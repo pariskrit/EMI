@@ -20,6 +20,7 @@ const Assets = ({
 	isLoading,
 	searchedData,
 	fetchAsset,
+	getError,
 }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
@@ -144,6 +145,7 @@ const Assets = ({
 				}}
 				editData={editData}
 				handleEditData={handleEditData}
+				getError={getError}
 			/>
 			<div>
 				<div className="detailsContainer">

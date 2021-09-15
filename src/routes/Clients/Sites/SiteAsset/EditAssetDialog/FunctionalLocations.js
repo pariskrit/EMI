@@ -91,6 +91,7 @@ const FunctionalLocations = ({
 	setLoading,
 	handleRemoveFuncLoc,
 	handleUpdateFuncLoc,
+	getError,
 }) => {
 	const ref = useRef();
 	const classes = useStyles();
@@ -157,9 +158,7 @@ const FunctionalLocations = ({
 				return { success: true };
 			} else {
 				if (editedFunc.data.detail) {
-					setErrors({
-						name: editedFunc.data.detail,
-					});
+					getError(editedFunc.data.detail);
 					return { success: false };
 				} else {
 					setErrors({ ...errors, ...editedFunc.data.errors });

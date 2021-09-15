@@ -59,6 +59,7 @@ const NewFunctionalLocations = ({
 	setLoading,
 	setIsAddNew,
 	handleAddFunctional,
+	getError,
 }) => {
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultInputSchema);
@@ -88,9 +89,7 @@ const NewFunctionalLocations = ({
 				return { success: true };
 			} else {
 				if (addedFunc.data.detail) {
-					setErrors({
-						name: addedFunc.data.detail,
-					});
+					getError(addedFunc.data.detail);
 					return { success: false };
 				} else {
 					setErrors({ ...errors, ...addedFunc.data.errors });
