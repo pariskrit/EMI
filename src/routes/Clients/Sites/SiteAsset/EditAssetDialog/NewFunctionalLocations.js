@@ -87,31 +87,19 @@ const NewFunctionalLocations = ({
 				});
 				return { success: true };
 			} else {
-				throw new Error(addedFunc);
+				if (addedFunc.data.detail) {
+					setErrors({
+						name: addedFunc.data.detail,
+					});
+					return { success: false };
+				} else {
+					setErrors({ ...errors, ...addedFunc.data.errors });
+					return { success: false };
+				}
 			}
 		} catch (err) {
 			// Handling duplicate subcat error
-			if (
-				err.response.data.detail !== undefined ||
-				err.response.data.detail !== null
-			) {
-				setErrors({
-					name: err.response.data.detail,
-					description: err.response.data.detail,
-					plannerGroup: err.response.data.detail,
-					workCenter: err.response.data.detail,
-				});
-				return { success: false };
-			}
-
-			// Handling other errors
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-				return { success: false };
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
+			throw new Error(err.response);
 		}
 	};
 
@@ -135,7 +123,7 @@ const NewFunctionalLocations = ({
 				setLoading(false);
 			}
 		} catch (err) {
-			closeOverride();
+			console.log(err);
 		}
 	};
 

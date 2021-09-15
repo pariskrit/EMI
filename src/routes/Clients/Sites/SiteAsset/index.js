@@ -85,7 +85,6 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 						success: false,
 						errors: {
 							name: response.data.detail,
-							description: response.data.detail,
 						},
 					};
 				} else {

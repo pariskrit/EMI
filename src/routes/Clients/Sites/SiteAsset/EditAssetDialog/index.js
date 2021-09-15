@@ -130,7 +130,6 @@ const EditAssetDialog = ({ open, closeHandler, editData, handleEditData }) => {
 						success: false,
 						errors: {
 							name: result.data.detail,
-							description: result.data.detail,
 						},
 					};
 				} else {
