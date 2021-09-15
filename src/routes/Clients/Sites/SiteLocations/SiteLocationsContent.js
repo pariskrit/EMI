@@ -11,7 +11,7 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 const AC = ContentStyle();
 
-const SiteLocationsContent = ({ data, setData, isLoading }) => {
+const SiteLocationsContent = ({ data, setData, isLoading, getError }) => {
 	const [locations, setLocations] = useState([]);
 	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -84,6 +84,7 @@ const SiteLocationsContent = ({ data, setData, isLoading }) => {
 				closeHandler={handleEditDialogClose}
 				data={editData}
 				handleEditData={handleEditData}
+				getError={getError}
 			/>
 
 			<div className="detailsContainer">

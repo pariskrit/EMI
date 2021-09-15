@@ -11,7 +11,7 @@ import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
 
 const AC = ContentStyle();
 
-const SiteDepartmentsContent = ({ data, setData, isLoading }) => {
+const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
 	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [departments, setDepartments] = useState([]);
@@ -84,6 +84,7 @@ const SiteDepartmentsContent = ({ data, setData, isLoading }) => {
 				closeHandler={handleEditDialogClose}
 				data={editData}
 				handleEditData={handleEditData}
+				getError={getError}
 			/>
 
 			<div className="detailsContainer">

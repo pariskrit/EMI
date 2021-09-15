@@ -8,8 +8,9 @@ import { useRef } from "react";
 import { connect } from "react-redux";
 import { fetchSiteDetail } from "redux/siteDetail/actions";
 import { siteScreenNavigation } from "helpers/constants";
+import { showError } from "redux/common/actions";
 
-const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
+const SiteLocationsScreen = ({ handlefetchSiteDetail, getError }) => {
 	const { id, clientId } = useParams();
 	const history = useHistory();
 	const [data, setData] = useState([]);
@@ -62,6 +63,7 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 				closeHandler={() => setModal(() => ({ add: false }))}
 				createHandler={handleCreateData}
 				siteID={id}
+				getError={getError}
 			/>
 
 			<SiteWrapper
@@ -79,6 +81,7 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail }) => {
 						data={data}
 						setData={setData}
 						isLoading={isLoading}
+						getError={getError}
 					/>
 				)}
 			/>
@@ -92,6 +95,7 @@ const mapStateToProps = ({ siteDetailData: { siteDetails } }) => ({
 
 const mapDispatchToProps = (dispatch) => ({
 	handlefetchSiteDetail: (siteId) => dispatch(fetchSiteDetail(siteId)),
+	getError: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(
