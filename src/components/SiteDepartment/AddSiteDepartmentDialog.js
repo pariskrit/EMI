@@ -124,16 +124,17 @@ const AddDepartmentDialog = ({ open, closeHandler, createHandler, siteID }) => {
 				});
 				return { success: true };
 			} else {
+				console.log(result);
 				if (result.data.detail) {
 					setErrors({
 						name: result.data.detail,
-						description: result.data.detail,
+						description: null,
 					});
 					return {
 						success: false,
 						errors: {
 							name: result.data.detail,
-							description: result.data.detail,
+							description: null,
 						},
 					};
 				} else {
