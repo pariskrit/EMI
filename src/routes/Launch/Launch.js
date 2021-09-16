@@ -1,7 +1,6 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import LaunchItem from "./LaunchItem";
-import Navbar from "../../components/Navbar";
 import Grid from "@material-ui/core/Grid";
 
 // MOCK DATA IMPORTS
@@ -45,7 +44,6 @@ const MOCK_DATA = [
 ];
 
 const Launch = () => {
-
 	const LaunchContent = () => {
 		return (
 			<div>
@@ -64,7 +62,7 @@ const Launch = () => {
 
 	return (
 		<div>
-			<Navbar Content={LaunchContent} />
+			<LaunchContent />
 		</div>
 	);
 };
