@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import DeleteDialogStyle from "../styles/application/DeleteDialogStyle";
+import DeleteDialogStyle from "styles/application/DeleteDialogStyle";
 import API from "helpers/api";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";

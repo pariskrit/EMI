@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
-import API from "../../../helpers/api";
-import ContentStyle from "../../../styles/application/ContentStyle";
+import API from "helpers/api";
+import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Navcrumbs from "../../../components/Navcrumbs";
+import Navcrumbs from "components/Elements/Navcrumbs";
 import ActionButtons from "./ActionButtons";
-import SaveHistory from "../../../components/SaveHistory";
-import NavButtons from "../../../components/NavButtons";
-import DetailsPanel from "../../../components/DetailsPanel";
+import SaveHistory from "components/Elements/SaveHistory";
+import NavButtons from "components/NavButtons";
+import DetailsPanel from "components/Elements/DetailsPanel";
 import Grid from "@material-ui/core/Grid";
 import CustomCaptionsTable from "./CustomCaptionsTable";
 import "./customCaptions.css";
 
 // Icon Import
-import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 // Init styled components
 const AC = ContentStyle();

@@ -1,5 +1,5 @@
 import React from "react";
-import DetailsStyle from "../styles/application/DetailsStyle";
+import DetailsStyle from "styles/application/DetailsStyle";
 
 // Init styled components
 const AD = DetailsStyle();

@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
-import ColourConstants from "../helpers/colourConstants";
+import ColourConstants from "../../helpers/colourConstants";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {

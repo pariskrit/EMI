@@ -1,9 +1,9 @@
+import React, { useEffect, useState } from "react";
 import Divider from "@material-ui/core/Divider";
 import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import DeleteDialog from "components/DeleteDialog";
-import React, { useEffect, useState } from "react";
+import DeleteDialog from "components/Modules/DeleteDialog";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";

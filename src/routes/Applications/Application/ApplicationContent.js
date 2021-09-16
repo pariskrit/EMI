@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import ContentStyle from "../../../styles/application/ContentStyle";
+import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Navcrumbs from "../../../components/Navcrumbs";
+import Navcrumbs from "components/Elements/Navcrumbs";
 import Grid from "@material-ui/core/Grid";
 import ApplicationActionButtons from "./ApplicationActionButtons";
-import SaveHistory from "../../../components/SaveHistory";
-import NavButtons from "../../../components/NavButtons";
+import SaveHistory from "components/Elements/SaveHistory";
+import NavButtons from "components/NavButtons";
 import ApplicationDetails from "./ApplicationDetails";
 import ColourDetails from "./ColourDetails";
 import ApplicationLogo from "./ApplicationLogo";
 import SmallNavLogo from "./SmallNavLogo";
 import OtherAssets from "./OtherAssets/OtherAssets";
-import API from "../../../helpers/api";
+import API from "helpers/api";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 import "./application2.css";
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import ContentStyle from "styles/application/ContentStyle";
-import DetailsPanel from "components/DetailsPanel";
+import DetailsPanel from "components/Elements/DetailsPanel";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import ClientSiteTable from "components/ClientSiteTable";
-import DeleteDialog from "components/DeleteDialog";
+import DeleteDialog from "components/Modules/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
 import { getSiteAssets } from "services/clients/sites/siteAssets";

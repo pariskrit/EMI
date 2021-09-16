@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
-import { useParams } from "react-router-dom";
 import "../DepartmentsTable/arrowStyle.scss";
 import PopupMenu from "components/PopupMenu";
-import { useHistory } from "react-router-dom";
 import TableRow from "@material-ui/core/TableRow";
-import DeleteDialog from "components/DeleteDialog";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import { makeStyles } from "@material-ui/core/styles";
@@ -55,8 +52,6 @@ const LocationsTable = ({
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
-
-
 	const classes = useStyles();
 
 	//Delete Modal
@@ -76,10 +71,7 @@ const LocationsTable = ({
 
 	return (
 		<>
-			<AT.TableContainer
-				component={Paper}
-				elevation={0}
-			>
+			<AT.TableContainer component={Paper} elevation={0}>
 				<Table aria-label="Table">
 					<AT.TableHead>
 						<TableRow>
