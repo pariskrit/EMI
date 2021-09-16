@@ -55,6 +55,7 @@ const CommonAddDialog = ({
 			setIsDisabled(true);
 			setIsUpdating(true);
 			const result = await createHandler(e);
+
 			if (result.success) {
 				closeHandler();
 			} else {
@@ -85,57 +86,55 @@ const CommonAddDialog = ({
 	}, []);
 
 	return (
-		<div>
-			<Dialog
-				open={open}
-				onClose={closeHandler}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				{isUpdating ? <LinearProgress /> : null}
+		<Dialog
+			open={open}
+			onClose={closeHandler}
+			aria-labelledby="alert-dialog-title"
+			aria-describedby="alert-dialog-description"
+		>
+			{isUpdating ? <LinearProgress /> : null}
 
-				<ADD.ActionContainer>
-					<DialogTitle id="alert-dialog-title">
-						{
-							<ADD.HeaderText>
-								Add {label} {reference && `(${reference})`}
-							</ADD.HeaderText>
-						}
-					</DialogTitle>
-					<ADD.ButtonContainer>
-						<ADD.CancelButton
-							onClick={closeHandler}
-							variant="contained"
-							className={classes.cancelButton}
-						>
-							Cancel
-						</ADD.CancelButton>
-						<ADD.ConfirmButton
-							onClick={onAddRegion}
-							variant="contained"
-							className={classes.createButton}
-							disabled={isDisabled}
-						>
-							Create {label}
-						</ADD.ConfirmButton>
-					</ADD.ButtonContainer>
-				</ADD.ActionContainer>
+			<ADD.ActionContainer>
+				<DialogTitle id="alert-dialog-title">
+					{
+						<ADD.HeaderText>
+							Add {label} {reference && `(${reference})`}
+						</ADD.HeaderText>
+					}
+				</DialogTitle>
+				<ADD.ButtonContainer>
+					<ADD.CancelButton
+						onClick={closeHandler}
+						variant="contained"
+						className={classes.cancelButton}
+					>
+						Cancel
+					</ADD.CancelButton>
+					<ADD.ConfirmButton
+						onClick={onAddRegion}
+						variant="contained"
+						className={classes.createButton}
+						disabled={isDisabled}
+					>
+						Create {label}
+					</ADD.ConfirmButton>
+				</ADD.ButtonContainer>
+			</ADD.ActionContainer>
 
-				<DialogContent className={classes.dialogContent}>
-					<ADD.InputContainer>
-						<ADD.NameInput
-							error={error.isError}
-							helperText={error.isError ? error.name : null}
-							required
-							label={`${label} name`}
-							value={input}
-							onKeyDown={handleEnterPress}
-							onChange={handleNameInputChange}
-						/>
-					</ADD.InputContainer>
-				</DialogContent>
-			</Dialog>
-		</div>
+			<DialogContent className={classes.dialogContent}>
+				<ADD.InputContainer>
+					<ADD.NameInput
+						error={error.isError}
+						helperText={error.isError ? error.name : null}
+						required
+						label={`${label} name`}
+						value={input}
+						onKeyDown={handleEnterPress}
+						onChange={handleNameInputChange}
+					/>
+				</ADD.InputContainer>
+			</DialogContent>
+		</Dialog>
 	);
 };
 

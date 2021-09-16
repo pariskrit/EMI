@@ -6,6 +6,11 @@ import {
 	actionsPath,
 	applicationDetailsPath,
 	applicationListPath,
+<<<<<<< HEAD
+=======
+	clientDetailPath,
+	clientsPath,
+>>>>>>> 21126306c8442a09ab2097d44cff18f13eb1b0a7
 	customCaptionsPath,
 	defectRiskRatingsPath,
 	defectStatusesPath,
@@ -160,9 +165,14 @@ function App() {
 					<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
 						<FeedbackStatuses />
 					</Route>
+<<<<<<< HEAD
 					{/* <ApplicationPage /> */}
 					<ClientPage />
 					{/* <Route path={clientListPath} exact>
+=======
+
+					<Route path={clientsPath} exact>
+>>>>>>> 21126306c8442a09ab2097d44cff18f13eb1b0a7
 						<ClientList />
 					</Route>
 					<Route path={clientDetailPath} exact>

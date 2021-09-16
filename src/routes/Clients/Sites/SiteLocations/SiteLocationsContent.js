@@ -1,5 +1,7 @@
 import "../SiteDepartment/site.scss";
 import Grid from "@material-ui/core/Grid";
+import { BASE_API_PATH } from "helpers/constants";
+import DeleteDialog from "components/DeleteDialog";
 import React, { useState, useEffect } from "react";
 import DetailsPanel from "components/DetailsPanel";
 import ClientSiteTable from "components/ClientSiteTable";
@@ -7,11 +9,9 @@ import ContentStyle from "styles/application/ContentStyle";
 import EditDialog from "routes/Clients/Sites/SiteLocations/EditModal";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
-import DeleteModal from "./DeleteModal";
-
 const AC = ContentStyle();
 
-const SiteLocationsContent = ({ data, setData, isLoading }) => {
+const SiteLocationsContent = ({ data, setData, isLoading, getError }) => {
 	const [locations, setLocations] = useState([]);
 	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -70,13 +70,13 @@ const SiteLocationsContent = ({ data, setData, isLoading }) => {
 
 	return (
 		<div>
-			<DeleteModal
+			<DeleteDialog
 				entityName="Location"
 				open={openDeleteDialog}
-				closeHandler={handleDeleteDialogClose}
-				deleteEndpoint="/api/SiteLocations"
 				deleteID={selectedID}
+				deleteEndpoint={`${BASE_API_PATH}SiteLocations`}
 				handleRemoveData={handleRemoveData}
+				closeHandler={handleDeleteDialogClose}
 			/>
 
 			<EditDialog
@@ -84,6 +84,7 @@ const SiteLocationsContent = ({ data, setData, isLoading }) => {
 				closeHandler={handleEditDialogClose}
 				data={editData}
 				handleEditData={handleEditData}
+				getError={getError}
 			/>
 
 			<div className="detailsContainer">

@@ -7,8 +7,9 @@ import { fetchSiteDetail } from "redux/siteDetail/actions";
 import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import SiteDepartmentsContent from "./SiteDepartmentsContent";
 import { siteScreenNavigation } from "helpers/constants";
+import { showError } from "redux/common/actions";
 
-const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
+const SiteDepartmentsScreen = ({ handlefetchSiteDetail, getError }) => {
 	const { id, clientId } = useParams();
 	const history = useHistory();
 	const [data, setData] = useState([]);
@@ -60,6 +61,7 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 				closeHandler={() => setModal(() => ({ add: false }))}
 				createHandler={handleCreateData}
 				siteID={id}
+				getError={getError}
 			/>
 			<SiteWrapper
 				current="Departments"
@@ -76,6 +78,7 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail }) => {
 						data={data}
 						setData={setData}
 						isLoading={isLoading}
+						getError={getError}
 					/>
 				)}
 			/>
@@ -89,6 +92,7 @@ const mapStateToProps = ({ siteDetailData: { siteDetails } }) => ({
 
 const mapDispatchToProps = (dispatch) => ({
 	handlefetchSiteDetail: (siteId) => dispatch(fetchSiteDetail(siteId)),
+	getError: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(

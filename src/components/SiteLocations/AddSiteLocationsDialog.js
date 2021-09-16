@@ -44,7 +44,13 @@ const useStyles = makeStyles({
 	},
 });
 
-const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
+const AddLocationsDialog = ({
+	open,
+	closeHandler,
+	createHandler,
+	siteID,
+	getError,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -122,11 +128,11 @@ const AddLocationsDialog = ({ open, closeHandler, createHandler, siteID }) => {
 				return { success: true };
 			} else {
 				if (result.data.detail) {
-					setErrors({ name: result.data.detail });
+					getError(result.data.detail);
 					return {
 						success: false,
 						errors: {
-							name: result.data.detail,
+							name: null,
 						},
 					};
 				} else {
