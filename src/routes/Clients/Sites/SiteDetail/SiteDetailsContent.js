@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Grid } from "@material-ui/core";
-import AccordionBox from "components/AccordionBox";
-import SiteDetails from "components/SiteDetails";
+
+import SiteDetails from "./SiteDetails";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";
 import { useParams } from "react-router-dom";
@@ -56,9 +56,7 @@ const Details = () => {
 				<Grid item xs={12}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
-							<AccordionBox title="Site Details">
-								<SiteDetails siteId={id} />
-							</AccordionBox>
+							<SiteDetails siteId={id} />
 						</Grid>
 						<Grid item xs={12}>
 							<KeyContacts contactsList={contactsList} isLoading={isLoading} />

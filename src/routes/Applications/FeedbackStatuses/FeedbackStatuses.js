@@ -14,7 +14,6 @@ const FeedbackStatuses = () => {
 	const [is404, setIs404] = useState(false);
 	const navigation = ApplicationNavigation(id);
 
-	// Rendering data content with Navbar. Otherwise, 404 error
 	if (is404 === false) {
 		return (
 			<FeedbackStatusesContent
