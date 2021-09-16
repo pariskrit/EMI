@@ -5,8 +5,8 @@ import {
 } from "@material-ui/core/styles";
 import RestoreIcon from "@material-ui/icons/Restore";
 import Navbar from "components/Navbar";
-import NavButtons from "components/NavButtons";
-import NavDetails from "components/NavDetails";
+import NavButtons from "components/Modules/NavButtons";
+import NavDetails from "components/Elements/NavDetails";
 import PropTypes from "prop-types";
 import React from "react";
 import "routes/Applications/CustomCaptions/customCaptions.css";

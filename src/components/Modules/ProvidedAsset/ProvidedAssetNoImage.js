@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
-import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
+import Link from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import DeleteDialog from "components/Modules/DeleteDialog";
+import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
-import { useParams } from "react-router-dom";
+import { checkIsFileImageType } from "helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
@@ -52,15 +51,15 @@ const useStyles = makeStyles((theme) => ({
 	linkContainer: {
 		display: "flex",
 		alignItems: "center",
-		paddingLeft: 10,
+		padding: "16px 10px",
 	},
 	imgLink: {
 		textDecoration: "underline",
+		color: "#307AD6",
 		"&:hover": {
 			cursor: "pointer",
 		},
 		fontSize: "14px",
-		color: "#307AD6",
 	},
 	deleteContainer: {
 		display: "flex",
@@ -76,70 +75,57 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ProvidedAsset = ({
-	src,
-	alt,
-	name,
-	deleteLogo,
-	noBottomDivider,
-	isRec,
-}) => {
-	// Init hooks
+function ProvidedAssetNoImage({
+	document,
+	showBottomDivider,
+	fetchClientDocuments,
+	getError,
+}) {
 	const classes = useStyles();
-
-	const { id } = useParams();
-
-	// Init state
+	const { id, name, url } = document;
 	const [openDialog, setOpenDialog] = useState(false);
-
-	// Handlers
+	const [imgURL, setImgURL] = useState("");
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};
 
-	// Handling non-provided alt text
-	if (alt === undefined) {
-		alt = "User uploaded image asset";
-	}
-	// Handling non-provided noBottomDivider
-	if (noBottomDivider === undefined) {
-		noBottomDivider = false;
-	}
-	// Handling non-provided isSquare
-	if (isRec === undefined) {
-		isRec = false;
-	}
-
+	const fetchDocument = (id) => {
+		fetchClientDocuments();
+	};
+	const isImageFile = name && checkIsFileImageType(name);
 	useEffect(() => {
-		return () => setOpenDialog(false);
-	}, []);
+		async function fetchImage() {
+			try {
+				//console.log(url);
+				let res = await fetch(url);
+				let blob = await res?.blob();
+				setImgURL(URL.createObjectURL(blob));
+			} catch (e) {
+				console.log("error occured in fetching");
+				getError("Error occured while fetching image!");
+			}
+		}
+		isImageFile && fetchImage();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [url]);
 
 	return (
 		<>
 			<DeleteDialog
 				open={openDialog}
 				closeHandler={closeDialogHandler}
-				entityName="logo"
-				deleteEndpoint={`${BASE_API_PATH}Clients`}
+				entityName="document"
+				deleteEndpoint={`${BASE_API_PATH}ClientDocuments`}
 				deleteID={id}
-				handleRemoveData={deleteLogo}
-				isLogo={true}
+				handleRemoveData={fetchDocument}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />
-
-				<div
-					className={clsx(classes.always, {
-						[classes.imageAssetContainer]: !isRec,
-						[classes.imageAssetContainerRec]: isRec,
-					})}
-				>
-					<img src={src} alt={alt} className={classes.assetImage} />
-				</div>
-
 				<div className={classes.linkContainer}>
 					<Typography>
-						<Link className={classes.imgLink}>{name}</Link>
+						<Link href={isImageFile ? imgURL : url} download={name}>
+							{name}
+						</Link>
 					</Typography>
 				</div>
 
@@ -153,10 +139,10 @@ const ProvidedAsset = ({
 					/>
 				</div>
 
-				{noBottomDivider ? null : <Divider className={classes.dividerStyle} />}
+				{showBottomDivider && <Divider className={classes.dividerStyle} />}
 			</div>
 		</>
 	);
-};
+}
 
-export default ProvidedAsset;
+export default ProvidedAssetNoImage;

@@ -5,12 +5,12 @@ import Typography from "@material-ui/core/Typography";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "components/Elements/EMICheckbox";
-import ProviderAsset from "components/ProvidedAsset/ProvidedAsset";
-import DropUploadBox from "components/DropUploadBox";
+import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
+import DropUploadBox from "components/Modules/DropUploadBox";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
-import AccordionBox from "components/AccordionBox";
+import AccordionBox from "components/Elements/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {

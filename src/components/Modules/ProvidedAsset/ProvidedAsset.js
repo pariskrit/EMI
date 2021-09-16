@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Divider from "@material-ui/core/Divider";
-import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
 import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
+import Divider from "@material-ui/core/Divider";
+import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import DeleteDialog from "components/Modules/DeleteDialog";
-import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
-import { checkIsFileImageType } from "helpers/utils";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {
@@ -51,15 +52,15 @@ const useStyles = makeStyles((theme) => ({
 	linkContainer: {
 		display: "flex",
 		alignItems: "center",
-		padding: "16px 10px",
+		paddingLeft: 10,
 	},
 	imgLink: {
 		textDecoration: "underline",
-		color: "#307AD6",
 		"&:hover": {
 			cursor: "pointer",
 		},
 		fontSize: "14px",
+		color: "#307AD6",
 	},
 	deleteContainer: {
 		display: "flex",
@@ -75,57 +76,70 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ProvidedAssetNoImage({
-	document,
-	showBottomDivider,
-	fetchClientDocuments,
-	getError,
-}) {
+const ProvidedAsset = ({
+	src,
+	alt,
+	name,
+	deleteLogo,
+	noBottomDivider,
+	isRec,
+}) => {
+	// Init hooks
 	const classes = useStyles();
-	const { id, name, url } = document;
+
+	const { id } = useParams();
+
+	// Init state
 	const [openDialog, setOpenDialog] = useState(false);
-	const [imgURL, setImgURL] = useState("");
+
+	// Handlers
 	const closeDialogHandler = () => {
 		setOpenDialog(false);
 	};
 
-	const fetchDocument = (id) => {
-		fetchClientDocuments();
-	};
-	const isImageFile = name && checkIsFileImageType(name);
+	// Handling non-provided alt text
+	if (alt === undefined) {
+		alt = "User uploaded image asset";
+	}
+	// Handling non-provided noBottomDivider
+	if (noBottomDivider === undefined) {
+		noBottomDivider = false;
+	}
+	// Handling non-provided isSquare
+	if (isRec === undefined) {
+		isRec = false;
+	}
+
 	useEffect(() => {
-		async function fetchImage() {
-			try {
-				//console.log(url);
-				let res = await fetch(url);
-				let blob = await res?.blob();
-				setImgURL(URL.createObjectURL(blob));
-			} catch (e) {
-				console.log("error occured in fetching");
-				getError("Error occured while fetching image!");
-			}
-		}
-		isImageFile && fetchImage();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [url]);
+		return () => setOpenDialog(false);
+	}, []);
 
 	return (
 		<>
 			<DeleteDialog
 				open={openDialog}
 				closeHandler={closeDialogHandler}
-				entityName="document"
-				deleteEndpoint={`${BASE_API_PATH}ClientDocuments`}
+				entityName="logo"
+				deleteEndpoint={`${BASE_API_PATH}Clients`}
 				deleteID={id}
-				handleRemoveData={fetchDocument}
+				handleRemoveData={deleteLogo}
+				isLogo={true}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />
+
+				<div
+					className={clsx(classes.always, {
+						[classes.imageAssetContainer]: !isRec,
+						[classes.imageAssetContainerRec]: isRec,
+					})}
+				>
+					<img src={src} alt={alt} className={classes.assetImage} />
+				</div>
+
 				<div className={classes.linkContainer}>
 					<Typography>
-						<Link href={isImageFile ? imgURL : url} download={name}>
-							{name}
-						</Link>
+						<Link className={classes.imgLink}>{name}</Link>
 					</Typography>
 				</div>
 
@@ -139,10 +153,10 @@ function ProvidedAssetNoImage({
 					/>
 				</div>
 
-				{showBottomDivider && <Divider className={classes.dividerStyle} />}
+				{noBottomDivider ? null : <Divider className={classes.dividerStyle} />}
 			</div>
 		</>
 	);
-}
+};
 
-export default ProvidedAssetNoImage;
+export default ProvidedAsset;

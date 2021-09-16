@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import AccordionBox from "components/AccordionBox";
-import ApplicationTable from "components/ApplicationTable";
+import AccordionBox from "components/Elements/AccordionBox";
+import ApplicationTable from "components/Modules/ApplicationTable";
 import DeleteDialog from "components/Modules/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";

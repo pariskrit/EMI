@@ -4,9 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { ReactComponent as UploadIcon } from "../assets/icons/uploadIcon.svg";
-import API from "../helpers/api";
-import ColourConstants from "../helpers/colourConstants";
+import { ReactComponent as UploadIcon } from "assets/icons/uploadIcon.svg";
+import API from "helpers/api";
+import ColourConstants from "helpers/colourConstants";
 
 const useStyles = makeStyles((theme) => ({
 	dragContainer: {

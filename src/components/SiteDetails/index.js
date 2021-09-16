@@ -171,6 +171,7 @@ const SiteDetails = ({
 		return () => {
 			cancelFetch.current = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	if (isLoading) {

@@ -1,5 +1,5 @@
 import React from "react";
-import ClientSiteTable from "components/ClientSiteTable";
+import ClientSiteTable from "components/Modules/ClientSiteTable";
 
 export default {
 	title: "Components/ClientSiteTable",

@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import ErrorDialog from "components/ErrorDialog";
+import ErrorDialog from "components/Elements/ErrorDialog";
 import Home from "./routes/Home/Home";
 import Launch from "./routes/Launch/Launch";
 import Login from "./routes/Login/Login";

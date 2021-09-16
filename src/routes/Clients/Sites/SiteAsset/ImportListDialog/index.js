@@ -6,7 +6,7 @@ import {
 	makeStyles,
 	Button,
 } from "@material-ui/core";
-import DropUpload from "components/DropUploadBox";
+import DropUpload from "components/Modules/DropUploadBox";
 import { BASE_API_PATH } from "helpers/constants";
 import { importSiteAssets } from "services/clients/sites/siteAssets";
 import ImportTable from "./ImportTable";

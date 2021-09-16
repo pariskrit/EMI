@@ -1,6 +1,6 @@
 import React from "react";
 
-import SimpleDataTable from "components/SimpleDataTable";
+import SimpleDataTable from "components/Modules/SimpleDataTable";
 
 export default {
 	title: "Components/SimpleDataTable",

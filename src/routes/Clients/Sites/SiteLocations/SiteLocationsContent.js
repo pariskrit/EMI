@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import { BASE_API_PATH } from "helpers/constants";
 import DeleteDialog from "components/Modules/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import ClientSiteTable from "components/ClientSiteTable";
+import ClientSiteTable from "components/Modules/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
 import EditDialog from "routes/Clients/Sites/SiteLocations/EditModal";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";

@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AAAA,MAAM,CAAC;EACN,OAAO,EAAE,IAAI;EACb,cAAc,EAAE,MAAM;EACtB,KAAK,EAAE,IAAI;CACX;;AAED,AAAA,QAAQ,CAAC;EACR,SAAS,EAAE,cAAc;EACzB,MAAM,EAAE,OAAO;CACf;;AAED,AAAA,UAAU,CAAC;EACV,MAAM,EAAE,OAAO;CACf",
-    "sources": [
-        "arrowStyle.scss"
-    ],
-    "names": [],
-    "file": "arrowStyle.css"
-}

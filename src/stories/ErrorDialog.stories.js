@@ -1,4 +1,4 @@
-import ErrorDialog from "components/ErrorDialog";
+import ErrorDialog from "components/Elements/ErrorDialog";
 import React from "react";
 
 export default {

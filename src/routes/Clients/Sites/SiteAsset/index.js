@@ -1,4 +1,4 @@
-import SiteWrapper from "components/SiteWrapper";
+import SiteWrapper from "components/Layouts/SiteWrapper";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";

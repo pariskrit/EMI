@@ -5,7 +5,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Navcrumbs from "components/Elements/Navcrumbs";
 import ActionButtons from "./ActionButtons";
 import SaveHistory from "components/Elements/SaveHistory";
-import NavButtons from "components/NavButtons";
+import NavButtons from "components/Modules/NavButtons";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DeleteDialog from "components/Modules/DeleteDialog";
 import Grid from "@material-ui/core/Grid";
@@ -15,7 +15,7 @@ import { handleSort } from "helpers/utils";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import SingleHeadTable from "components/SingleHeadTable";
+import SingleHeadTable from "components/Modules/SingleHeadTable";
 
 // Init styled components
 const AC = ContentStyle();

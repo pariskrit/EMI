@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../helpers/colourConstants";
+import ColourConstants from "../../helpers/colourConstants";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
