@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
+import React from "react";
+import { Route } from "react-router-dom";
 import Actions from "routes/Applications/Actions/Action";
 import Application from "routes/Applications/Application/Application";
 import ApplicationList from "routes/Applications/ApplicationList/ApplicationList";
@@ -46,7 +46,7 @@ import {
 } from "helpers/routePaths";
 import Applications from "..";
 
-export function ApplicationPage() {
+export default function ApplicationPage() {
 	return (
 		<Applications>
 			<Route path={applicationListPath} exact>

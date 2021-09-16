@@ -5,7 +5,7 @@ import ClientList from "routes/Clients/ClientList/ClientList";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
 import Client from "..";
 
-export function ClientPage() {
+export default function ClientPage() {
 	return (
 		<Client>
 			<Route path={clientsPath} exact>

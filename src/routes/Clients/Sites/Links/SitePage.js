@@ -1,3 +1,5 @@
+import React from "react";
+import { Route } from "react-router-dom";
 import {
 	siteAssetPath,
 	siteDepartmentPath,
@@ -5,8 +7,6 @@ import {
 	siteLocationPath,
 	sitePath,
 } from "helpers/routePaths";
-import React, { Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
 import SiteAsset from "routes/Clients/Sites/SiteAsset";
 import SiteDepartmentsScreen from "routes/Clients/Sites/SiteDepartment/SiteDepartmentsScreen";
 import SiteDetail from "routes/Clients/Sites/SiteDetail/SiteDetailsScreen";
