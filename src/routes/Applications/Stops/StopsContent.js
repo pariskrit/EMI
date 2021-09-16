@@ -16,6 +16,7 @@ import { handleSort } from "../../../helpers/utils";
 // Icon Import
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
 import SingleHeadTable from "components/SingleHeadTable";
+import CommonApplicationTable from "components/CommonApplicationTable";
 
 // Init styled components
 const AC = ContentStyle();
@@ -325,7 +326,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 						</div>
 					</div>
 
-					<SingleHeadTable
+					{/* <SingleHeadTable
 						data={data}
 						setData={setData}
 						searchQuery={searchQuery}
@@ -336,6 +337,15 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 						setCurrentTableSort={setCurrentTableSort}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
+					/> */}
+					<CommonApplicationTable
+						data={data}
+						columns={["name"]}
+						headers={["Name"]}
+						setData={setData}
+						pagination={false}
+						onEdit={handleEditDialogOpen}
+						onDelete={(id) => handleDeleteDialogOpen(id)}
 					/>
 				</>
 			) : (
