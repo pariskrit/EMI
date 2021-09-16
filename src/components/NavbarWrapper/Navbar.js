@@ -196,12 +196,17 @@ function Navbar() {
 
 	// Setting state
 	const [open, setOpen] = useState(false);
+	const [activeLink, setActiveLink] = useState("Applications");
 
 	// Handlers
 	const handleDrawerChange = () => {
 		setOpen(!open);
 	};
-	console.log("rerender navbar");
+
+	const onListItemClick = (clickedItem) => {
+		setActiveLink(clickedItem);
+	};
+
 	return (
 		<>
 			<div className="drawerDesktop">
@@ -239,57 +244,44 @@ function Navbar() {
 							// Storing SVG
 							let NavIcon = item[1];
 
-							// Note: Currently hardcoding current selection -- pull from global state
-							// when implemented
-							if (index === 1) {
-								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
+							return (
+								<Link to={item[2]} className={classes.navLink} key={item[0]}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+										key={item[0]}
+										onClick={() => onListItemClick(item[0])}
+									>
+										<ListItem
+											button
+											className={
+												item[0] === activeLink
+													? classes.currentItemBackground
+													: null
+											}
 										>
-											<ListItem
-												button
-												key={item[0]}
-												className={classes.currentItemBackground}
-											>
-												<ListItemIcon className={classes.navIconContainer}>
-													<NavIcon
-														className={classes.navIconCurrent}
-														alt={`${item[0]} icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{
-														primary: classes.listItemTextPrimaryCurrent,
-													}}
-													primary={item[0]}
+											<ListItemIcon className={classes.navIconContainer}>
+												<NavIcon
+													className={
+														item[0] === activeLink
+															? classes.navIconCurrent
+															: classes.navIcon
+													}
+													alt={`${item[0]} icon`}
 												/>
-											</ListItem>
-										</div>
-									</Link>
-								);
-							} else {
-								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<ListItem button key={item[0]}>
-												<ListItemIcon className={classes.navIconContainer}>
-													<NavIcon
-														className={classes.navIcon}
-														alt={`${item[0]} icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{ primary: classes.listItemTextPrimary }}
-													primary={item[0]}
-												/>
-											</ListItem>
-										</div>
-									</Link>
-								);
-							}
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary:
+														item[0] === activeLink
+															? classes.listItemTextPrimaryCurrent
+															: classes.listItemTextPrimary,
+												}}
+												primary={item[0]}
+											/>
+										</ListItem>
+									</div>
+								</Link>
+							);
 						})}
 					</List>
 
