@@ -46,100 +46,91 @@ import {
 } from "helpers/routePaths";
 import Applications from "..";
 
-export default function ApplicationPage() {
-	return (
-		<Suspense>
-			<Switch>
-				<Applications>
-					<Route path={applicationListPath} exact>
-						<ApplicationList />
-					</Route>
-					<Route path={applicationDetailsPath}>
-						<Route path={applicationDetailsPath} exact>
-							<Application />
-						</Route>
+export default (
+	<Applications>
+		<Route path={applicationListPath} exact>
+			<ApplicationList />
+		</Route>
+		<Route path={applicationDetailsPath}>
+			<Route path={applicationDetailsPath} exact>
+				<Application />
+			</Route>
 
-						<Route path={applicationDetailsPath + customCaptionsPath} exact>
-							<CustomCaptions />
-						</Route>
+			<Route path={applicationDetailsPath + customCaptionsPath} exact>
+				<CustomCaptions />
+			</Route>
 
-						<Route path={applicationDetailsPath + modelStatusesPath} exact>
-							<ModelStatuses />
-						</Route>
+			<Route path={applicationDetailsPath + modelStatusesPath} exact>
+				<ModelStatuses />
+			</Route>
 
-						<Route path={applicationDetailsPath + positionsPath} exact>
-							<Positions />
-						</Route>
+			<Route path={applicationDetailsPath + positionsPath} exact>
+				<Positions />
+			</Route>
 
-						<Route path={applicationDetailsPath + rolesPath} exact>
-							<Roles />
-						</Route>
+			<Route path={applicationDetailsPath + rolesPath} exact>
+				<Roles />
+			</Route>
 
-						<Route path={applicationDetailsPath + modelTypesPath} exact>
-							<ModelTypes />
-						</Route>
+			<Route path={applicationDetailsPath + modelTypesPath} exact>
+				<ModelTypes />
+			</Route>
 
-						<Route path={applicationDetailsPath + operatingModesPath} exact>
-							<OperatingModes />
-						</Route>
+			<Route path={applicationDetailsPath + operatingModesPath} exact>
+				<OperatingModes />
+			</Route>
 
-						<Route path={applicationDetailsPath + pausesPath} exact>
-							<Pauses />
-						</Route>
+			<Route path={applicationDetailsPath + pausesPath} exact>
+				<Pauses />
+			</Route>
 
-						<Route path={applicationDetailsPath + stopsPath} exact>
-							<Stops />
-						</Route>
+			<Route path={applicationDetailsPath + stopsPath} exact>
+				<Stops />
+			</Route>
 
-						<Route path={applicationDetailsPath + skippedTasksPath} exact>
-							<SkippedTasks />
-						</Route>
+			<Route path={applicationDetailsPath + skippedTasksPath} exact>
+				<SkippedTasks />
+			</Route>
 
-						<Route path={applicationDetailsPath + missingItemsPath} exact>
-							<MissingItems />
-						</Route>
+			<Route path={applicationDetailsPath + missingItemsPath} exact>
+				<MissingItems />
+			</Route>
 
-						<Route path={applicationDetailsPath + StatusChangesPath} exact>
-							<StatusChanges />
-						</Route>
+			<Route path={applicationDetailsPath + StatusChangesPath} exact>
+				<StatusChanges />
+			</Route>
 
-						<Route path={applicationDetailsPath + actionsPath} exact>
-							<Actions />
-						</Route>
+			<Route path={applicationDetailsPath + actionsPath} exact>
+				<Actions />
+			</Route>
 
-						<Route path={applicationDetailsPath + systemsPath} exact>
-							<Systems />
-						</Route>
+			<Route path={applicationDetailsPath + systemsPath} exact>
+				<Systems />
+			</Route>
 
-						<Route path={applicationDetailsPath + defectRiskRatingsPath} exact>
-							<DefectRiskRatings />
-						</Route>
+			<Route path={applicationDetailsPath + defectRiskRatingsPath} exact>
+				<DefectRiskRatings />
+			</Route>
 
-						<Route path={applicationDetailsPath + defectStatusesPath} exact>
-							<DefectStatuses />
-						</Route>
+			<Route path={applicationDetailsPath + defectStatusesPath} exact>
+				<DefectStatuses />
+			</Route>
 
-						<Route path={applicationDetailsPath + defectTypesPath} exact>
-							<DefectTypes />
-						</Route>
+			<Route path={applicationDetailsPath + defectTypesPath} exact>
+				<DefectTypes />
+			</Route>
 
-						<Route
-							path={applicationDetailsPath + feedbackClassificationsPath}
-							exact
-						>
-							<FeedbackClassifications />
-						</Route>
+			<Route path={applicationDetailsPath + feedbackClassificationsPath} exact>
+				<FeedbackClassifications />
+			</Route>
 
-						<Route path={applicationDetailsPath + feedbackPrioritiesPath} exact>
-							<FeedbackPriorities />
-						</Route>
+			<Route path={applicationDetailsPath + feedbackPrioritiesPath} exact>
+				<FeedbackPriorities />
+			</Route>
 
-						<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
-							<FeedbackStatuses />
-						</Route>
-					</Route>
-				</Applications>
-			</Switch>
-		</Suspense>
-	);
-}
+			<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
+				<FeedbackStatuses />
+			</Route>
+		</Route>
+	</Applications>
+);

@@ -1,16 +1,10 @@
-import React from "react";
 import ErrorDialog from "components/ErrorDialog";
 import {
-	clientDetailPath,
-	clientListPath,
 	actionsPath,
 	applicationDetailsPath,
 	applicationListPath,
-<<<<<<< HEAD
-=======
 	clientDetailPath,
 	clientsPath,
->>>>>>> 21126306c8442a09ab2097d44cff18f13eb1b0a7
 	customCaptionsPath,
 	defectRiskRatingsPath,
 	defectStatusesPath,
@@ -30,11 +24,10 @@ import {
 	stopsPath,
 	systemsPath,
 } from "helpers/routePaths";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
-import ClientPage from "routes/Clients/Links/ClientPage";
 import SitePage from "routes/Clients/Sites/Links/SitePage";
-import ApplicationPage from "routes/Applications/Links/ApplicationPage";
 import "./App.scss";
 import Actions from "./routes/Applications/Actions/Action";
 import Application from "./routes/Applications/Application/Application";
@@ -79,6 +72,7 @@ function App() {
 					<Route path="/launch" exact>
 						<Launch />
 					</Route>
+
 					<Route path={applicationListPath} exact>
 						<ApplicationList />
 					</Route>
@@ -165,19 +159,15 @@ function App() {
 					<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
 						<FeedbackStatuses />
 					</Route>
-<<<<<<< HEAD
-					{/* <ApplicationPage /> */}
-					<ClientPage />
-					{/* <Route path={clientListPath} exact>
-=======
 
 					<Route path={clientsPath} exact>
->>>>>>> 21126306c8442a09ab2097d44cff18f13eb1b0a7
 						<ClientList />
 					</Route>
+
 					<Route path={clientDetailPath} exact>
 						<ClientDetailScreen />
-					</Route> */}
+					</Route>
+
 					<SitePage />
 				</Switch>
 			</Router>

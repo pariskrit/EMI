@@ -14,6 +14,7 @@ import ColourConstants from "../../../helpers/colourConstants";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "../../../assets/icons/3dot-icon.svg";
+import { clientsPath } from "helpers/routePaths";
 
 // Init styled components
 const AT = TableStyle();
@@ -134,7 +135,10 @@ const ClientTable = ({
 							>
 								<AT.CellContainer>
 									<AT.TableBodyText>
-										<Link className={classes.nameLink} to={`/client/${row.id}`}>
+										<Link
+											className={classes.nameLink}
+											to={`${clientsPath}/${row.id}`}
+										>
 											{row.name}
 										</Link>
 									</AT.TableBodyText>

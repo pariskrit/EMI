@@ -15,25 +15,21 @@ import Site from "routes/Clients/Sites";
 
 export default function SitePage() {
 	return (
-		<Suspense>
-			<Switch>
-				<Route path={sitePath}>
-					<Site>
-						<Route path={sitePath + siteDetailPath}>
-							<SiteDetail />
-						</Route>
-						<Route path={sitePath + siteAssetPath}>
-							<SiteAsset />
-						</Route>
-						<Route path={sitePath + siteDepartmentPath}>
-							<SiteDepartmentsScreen />
-						</Route>
-						<Route path={sitePath + siteLocationPath}>
-							<SiteLocationsScreen />
-						</Route>
-					</Site>
+		<Route path={sitePath}>
+			<Site>
+				<Route path={sitePath + siteDetailPath}>
+					<SiteDetail />
 				</Route>
-			</Switch>
-		</Suspense>
+				<Route path={sitePath + siteAssetPath}>
+					<SiteAsset />
+				</Route>
+				<Route path={sitePath + siteDepartmentPath}>
+					<SiteDepartmentsScreen />
+				</Route>
+				<Route path={sitePath + siteLocationPath}>
+					<SiteLocationsScreen />
+				</Route>
+			</Site>
+		</Route>
 	);
 }
