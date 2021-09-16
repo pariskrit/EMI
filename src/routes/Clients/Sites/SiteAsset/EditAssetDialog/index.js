@@ -132,7 +132,7 @@ const EditAssetDialog = ({
 				return { success: true };
 			} else {
 				if (result.data.detail) {
-					getError(result.data.error);
+					getError(result.data.detail);
 					setInput({ name: editData.name, description: editData.description });
 					return {
 						success: false,

@@ -1,10 +1,11 @@
+import React from "react";
 import ErrorDialog from "components/ErrorDialog";
 import {
+	clientDetailPath,
+	clientListPath,
 	actionsPath,
 	applicationDetailsPath,
 	applicationListPath,
-	clientDetailPath,
-	clientListPath,
 	customCaptionsPath,
 	defectRiskRatingsPath,
 	defectStatusesPath,
@@ -24,10 +25,11 @@ import {
 	stopsPath,
 	systemsPath,
 } from "helpers/routePaths";
-import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
+import ClientPage from "routes/Clients/Links/ClientPage";
 import SitePage from "routes/Clients/Sites/Links/SitePage";
+import ApplicationPage from "routes/Applications/Links/ApplicationPage";
 import "./App.scss";
 import Actions from "./routes/Applications/Actions/Action";
 import Application from "./routes/Applications/Application/Application";
@@ -72,7 +74,6 @@ function App() {
 					<Route path="/launch" exact>
 						<Launch />
 					</Route>
-
 					<Route path={applicationListPath} exact>
 						<ApplicationList />
 					</Route>
@@ -159,15 +160,14 @@ function App() {
 					<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
 						<FeedbackStatuses />
 					</Route>
-
-					<Route path={clientListPath} exact>
+					{/* <ApplicationPage /> */}
+					<ClientPage />
+					{/* <Route path={clientListPath} exact>
 						<ClientList />
 					</Route>
-
 					<Route path={clientDetailPath} exact>
 						<ClientDetailScreen />
-					</Route>
-
+					</Route> */}
 					<SitePage />
 				</Switch>
 			</Router>
