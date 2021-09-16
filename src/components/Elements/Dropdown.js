@@ -1,9 +1,9 @@
 import Typography from "@material-ui/core/Typography";
 import CheckIcon from "@material-ui/icons/Check";
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
-import ArrowIcon from "../assets/icons/arrowIcon.svg";
-import { ReactComponent as SearchIcon } from "../assets/icons/search.svg";
+import React, { useEffect, useState } from "react";
+import ArrowIcon from "assets/icons/arrowIcon.svg";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 function Dropdown(props) {
 	const {

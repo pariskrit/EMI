@@ -5,7 +5,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
-import CurveButton from "components/CurveButton";
+import CurveButton from "components/Elements/CurveButton";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";

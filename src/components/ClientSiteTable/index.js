@@ -16,7 +16,7 @@ import PopupMenu from "components/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { handleSort } from "helpers/utils";
 import "./arrowStyle.scss";
-import TablePagination from "components/TablePagination";
+import TablePagination from "components/Elements/TablePagination";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 const AT = TableStyle();

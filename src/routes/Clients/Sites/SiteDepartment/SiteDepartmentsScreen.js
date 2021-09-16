@@ -67,7 +67,7 @@ const SiteDepartmentsScreen = ({ handlefetchSiteDetail, getError }) => {
 				current="Departments"
 				navigation={siteScreenNavigation}
 				onNavClick={(urlToGo) =>
-					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+					history.push(`/clients/${clientId}/sites/${id}${urlToGo}`)
 				}
 				status=""
 				lastSaved=""

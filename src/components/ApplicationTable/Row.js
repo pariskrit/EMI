@@ -1,7 +1,7 @@
 import React from "react";
 import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import IOSSwitch from "components/IOSSwitch";
+import IOSSwitch from "components/Elements/IOSSwitch";
 
 const Row = ({ row, classes, onDeleteApp, onChangeApp, showDeleteIcon }) => (
 	<TableRow>

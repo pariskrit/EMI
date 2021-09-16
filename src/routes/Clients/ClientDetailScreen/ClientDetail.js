@@ -9,7 +9,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
-import Dropdown from "components/Dropdown";
+import Dropdown from "components/Elements/Dropdown";
 import ColourConstants from "helpers/colourConstants";
 import { changeDate } from "helpers/date";
 import AccordionBox from "components/AccordionBox";

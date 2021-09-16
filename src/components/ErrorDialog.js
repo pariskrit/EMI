@@ -9,7 +9,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { hideError } from "redux/common/actions";
-import CurveButton from "./CurveButton";
+import CurveButton from "./Elements/CurveButton";
 
 const useStyles = makeStyles({
 	dialogTitle: {

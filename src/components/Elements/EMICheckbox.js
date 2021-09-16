@@ -3,8 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
 
 // Import icons
-import CheckboxOff from "../assets/icons/checkbox-off.svg";
-import CheckboxOn from "../assets/icons/checkbox-on-with-tick.svg";
+import CheckboxOff from "assets/icons/checkbox-off.svg";
+import CheckboxOn from "assets/icons/checkbox-on-with-tick.svg";
 
 const useStyles = makeStyles((theme) => ({
 	emiCheckbox: {

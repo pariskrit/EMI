@@ -7,7 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import ColourPicker from "../../../components/ColourPicker";
+import ColourPicker from "components/Elements/ColourPicker";
 
 const useStyles = makeStyles((theme) => ({
 	contentContainer: {

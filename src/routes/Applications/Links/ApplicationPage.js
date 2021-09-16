@@ -46,12 +46,13 @@ import {
 } from "helpers/routePaths";
 import Applications from "..";
 
-export default (
-	<Applications>
-		<Route path={applicationListPath} exact>
-			<ApplicationList />
-		</Route>
-		<Route path={applicationDetailsPath}>
+export function ApplicationPage() {
+	return (
+		<Applications>
+			<Route path={applicationListPath} exact>
+				<ApplicationList />
+			</Route>
+
 			<Route path={applicationDetailsPath} exact>
 				<Application />
 			</Route>
@@ -131,6 +132,6 @@ export default (
 			<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
 				<FeedbackStatuses />
 			</Route>
-		</Route>
-	</Applications>
-);
+		</Applications>
+	);
+}

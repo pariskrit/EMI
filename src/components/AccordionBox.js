@@ -9,7 +9,7 @@ import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
-import CurveButton from "components/CurveButton";
+import CurveButton from "components/Elements/CurveButton";
 
 const useStyles = makeStyles((theme) => ({
 	logoAccordion: {
@@ -37,7 +37,7 @@ function AccordionBox({
 	noExpand,
 	children,
 	defaultExpanded = true,
-	accordionClass = ''
+	accordionClass = "",
 }) {
 	const classes = useStyles();
 

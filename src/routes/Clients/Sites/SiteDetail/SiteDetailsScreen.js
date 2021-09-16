@@ -13,7 +13,7 @@ const SiteDetail = () => {
 		<SiteWrapper
 			navigation={siteScreenNavigation}
 			onNavClick={(urlToGo) =>
-				history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				history.push(`/clients/${clientId}/sites/${id}${urlToGo}`)
 			}
 			current="Details"
 			Component={() => <SiteDetailsContent />}
