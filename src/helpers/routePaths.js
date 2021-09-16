@@ -1,9 +1,9 @@
 // Client Details
-export const clientDetailPath = "/client/:id";
-export const clientListPath = "/clientlist";
+export const clientsPath = "/clients";
+export const clientDetailPath = clientsPath + "/:id";
 
 // Sites
-export const sitePath = "/client/:clientId/site/:id";
+export const sitePath = clientsPath + "/:clientId/sites/:id";
 export const siteDetailPath = "/detail";
 export const siteAssetPath = "/assets";
 export const siteDepartmentPath = "/departments";

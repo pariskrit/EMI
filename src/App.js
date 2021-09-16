@@ -4,7 +4,7 @@ import {
 	applicationDetailsPath,
 	applicationListPath,
 	clientDetailPath,
-	clientListPath,
+	clientsPath,
 	customCaptionsPath,
 	defectRiskRatingsPath,
 	defectStatusesPath,
@@ -160,7 +160,7 @@ function App() {
 						<FeedbackStatuses />
 					</Route>
 
-					<Route path={clientListPath} exact>
+					<Route path={clientsPath} exact>
 						<ClientList />
 					</Route>
 

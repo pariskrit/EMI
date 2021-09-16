@@ -10,7 +10,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ColourConstants from "../helpers/colourConstants";
-import { applicationListPath, clientListPath } from "helpers/routePaths";
+import { applicationListPath, clientsPath } from "helpers/routePaths";
 import "./componentStyle.scss";
 
 // Importing icons
@@ -233,7 +233,7 @@ function Navbar({ Content }) {
 
 					<List>
 						{[
-							["Clients", ClientIcon, clientListPath],
+							["Clients", ClientIcon, clientsPath],
 							["Applications", ApplicationIcon, applicationListPath],
 							["Models", ModelIcon, "/"],
 							["Users", UserIcon, "/"],
@@ -368,7 +368,7 @@ function Navbar({ Content }) {
 					className={`${classes.bottomNavigationContainer} mobileNavigation`}
 				>
 					{[
-						["Clients", ClientIcon, clientListPath],
+						["Clients", ClientIcon, clientsPath],
 						["Applications", ApplicationIcon, applicationListPath],
 						["Models", ModelIcon, "/"],
 						["Users", UserIcon, "/"],
