@@ -19,10 +19,29 @@ const SiteAppPauses = () => {
 			name: "ABC",
 			totalSub: 3,
 		},
+		{
+			id: 3,
+			name: "AA",
+			totalSub: 5,
+		},
 	]);
 	const [haveData, setHaveData] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [deleteID, setDeleteID] = useState(null);
+	const [searchedData, setSearchData] = useState([]);
+
+	const handleSearch = (e) => {
+		const { value } = e.target;
+		setSearchQuery(value);
+		const filtered = data.filter((x) => {
+			const regex = new RegExp(value, "gi");
+
+			return x.name.match(regex);
+		});
+		setSearchData(filtered);
+	};
+
+	const mainData = searchQuery.length === 0 ? data : searchedData;
 
 	return (
 		<div>
@@ -45,9 +64,7 @@ const SiteAppPauses = () => {
 									<Grid item>
 										<AC.SearchInput
 											value={searchQuery}
-											onChange={(e) => {
-												setSearchQuery(e.target.value);
-											}}
+											onChange={handleSearch}
 											label="Search Pauses"
 										/>
 									</Grid>
@@ -79,7 +96,9 @@ const SiteAppPauses = () => {
 			</div>
 			<CommonApplicationTable
 				setData={setData}
-				data={data}
+				setSearch={setSearchData}
+				searchQuery={searchQuery}
+				data={mainData}
 				columns={["name", "totalSub"]}
 				headers={["Name", "Number of subcategories"]}
 				onEdit={(id) => alert("Edit" + id)}

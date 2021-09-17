@@ -46,6 +46,8 @@ const useStyles = makeStyles({
 const CommonApplicationTable = ({
 	data,
 	setData,
+	setSearch,
+	searchQuery,
 	columns,
 	headers,
 	onEdit,
@@ -63,7 +65,8 @@ const CommonApplicationTable = ({
 		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
 
 		// Sorting table
-		handleSort(data, setData, field, newMethod);
+		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
+		else handleSort(data, setSearch, field, newMethod);
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
