@@ -1,6 +1,6 @@
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import AccordionBox from "components/Elements/AccordionBox";
+import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
 import DataTable from "components/Modules/SimpleDataTable";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
