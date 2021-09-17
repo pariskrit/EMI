@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
-import API from "helpers/api";
-import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Navcrumbs from "components/Elements/Navcrumbs";
-import ActionButtons from "./ActionButtons";
-import SaveHistory from "components/Elements/SaveHistory";
-import NavButtons from "components/Modules/NavButtons";
-import DetailsPanel from "components/Elements/DetailsPanel";
-import DeleteDialog from "components/Modules/DeleteDialog";
 import Grid from "@material-ui/core/Grid";
-import AddStopDialog from "./AddDialog";
-import EditStopDialog from "./EditDialog";
-import { handleSort } from "helpers/utils";
-
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import SingleHeadTable from "components/Modules/SingleHeadTable";
+import CommonApplicationTable from "components/CommonApplicationTable";
+import DetailsPanel from "components/Elements/DetailsPanel";
+import Navcrumbs from "components/Elements/Navcrumbs";
+import SaveHistory from "components/Elements/SaveHistory";
+import DeleteDialog from "components/Modules/DeleteDialog";
+import NavButtons from "components/Modules/NavButtons";
+import API from "helpers/api";
+import { handleSort } from "helpers/utils";
+import React, { useCallback, useEffect, useState } from "react";
+import ContentStyle from "styles/application/ContentStyle";
+import ActionButtons from "./ActionButtons";
+import AddStopDialog from "./AddDialog";
+import EditStopDialog from "./EditDialog";
 
 // Init styled components
 const AC = ContentStyle();
@@ -325,7 +324,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 						</div>
 					</div>
 
-					<SingleHeadTable
+					{/* <SingleHeadTable
 						data={data}
 						setData={setData}
 						searchQuery={searchQuery}
@@ -336,6 +335,15 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 						setCurrentTableSort={setCurrentTableSort}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
+					/> */}
+					<CommonApplicationTable
+						data={data}
+						columns={["name"]}
+						headers={["Name"]}
+						setData={setData}
+						pagination={false}
+						onEdit={handleEditDialogOpen}
+						onDelete={(id) => handleDeleteDialogOpen(id)}
 					/>
 				</>
 			) : (
