@@ -1,8 +1,8 @@
 import { CircularProgress } from "@material-ui/core";
 import AccordionActions from "@material-ui/core/AccordionActions";
 import { makeStyles } from "@material-ui/core/styles";
-import AccordionBox from "components/AccordionBox";
-import CurveButton from "components/CurveButton";
+import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import CurveButton from "components/Elements/CurveButton";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useRef, useState } from "react";
 import {

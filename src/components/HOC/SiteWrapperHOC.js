@@ -1,4 +1,4 @@
-import SiteWrapper from "components/SiteWrapper";
+import SiteWrapper from "components/Layouts/SiteWrapper";
 import { siteScreenNavigation } from "helpers/constants";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";

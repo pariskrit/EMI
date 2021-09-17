@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Grid } from "@material-ui/core";
-import AccordionBox from "components/AccordionBox";
+import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
 import SiteDetails from "components/SiteDetails";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";

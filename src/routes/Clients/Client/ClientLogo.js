@@ -3,17 +3,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ColourConstants from "../../../helpers/colourConstants";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import ColourConstants from "helpers/colourConstants";
+import ArrowIcon from "assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import EMICheckbox from "../../../components/EMICheckbox";
-import ProviderAsset from "../../../components/ProvidedAsset/ProvidedAsset";
-import DropUploadBox from "../../../components/DropUploadBox";
-import API from "../../../helpers/api";
+import EMICheckbox from "components/Elements/EMICheckbox";
+import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
+import DropUploadBox from ".components/DropUploadBox";
+import API from "helpers/api";
 import { useParams } from "react-router-dom";
-import { BASE_API_PATH } from "../../../helpers/constants";
+import { BASE_API_PATH } from "helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {

@@ -11,7 +11,7 @@ import AddApplicationDialog from "./AddApplicationDialog";
 import DuplicateApplicationDialog from "./DuplicateApplicationDialog";
 import API from "../../../helpers/api";
 import ColourConstants from "../../../helpers/colourConstants";
-import DeleteDialog from "../../../components/DeleteDialog";
+import DeleteDialog from "../../../components/Modules/DeleteDialog";
 import { handleSort } from "../../../helpers/utils";
 
 // Icon Import

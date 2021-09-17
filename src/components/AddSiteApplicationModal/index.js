@@ -6,7 +6,7 @@ import {
 	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Dropdown from "components/Dropdown";
+import Dropdown from "components/Elements/Dropdown";
 import React, { useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { connect } from "react-redux";

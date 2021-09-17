@@ -3,20 +3,20 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import TableStyle from "../../../styles/application/TableStyle";
+import TableStyle from "styles/application/TableStyle";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
-import PopupMenu from "../../../components/PopupMenu";
-import ColourConstants from "../../../helpers/colourConstants";
+import PopupMenu from "components/Elements/PopupMenu";
+import ColourConstants from "helpers/colourConstants";
 
-import './applicationtable.css'
+import "./applicationtable.css";
 
 // Icon imports
-import { ReactComponent as MenuIcon } from "../../../assets/icons/3dot-icon.svg";
+import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 
 // Init styled components
 const AT = TableStyle();
@@ -101,8 +101,12 @@ const ApplicationTable = ({
 	};
 
 	return (
-		<AT.TableContainer component={Paper} elevation={0} className='applicationTableContainer'>
-			<Table aria-label="Table" >
+		<AT.TableContainer
+			component={Paper}
+			elevation={0}
+			className="applicationTableContainer"
+		>
+			<Table aria-label="Table">
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
 						<TableCell

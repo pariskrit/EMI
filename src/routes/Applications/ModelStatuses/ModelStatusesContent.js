@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useCallback } from "react";
-import API from "../../../helpers/api";
-import ContentStyle from "../../../styles/application/ContentStyle";
+import API from "helpers/api";
+import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Navcrumbs from "../../../components/Navcrumbs";
+import Navcrumbs from "components/Elements/Navcrumbs";
 import ActionButtons from "./ActionButtons";
-import SaveHistory from "../../../components/SaveHistory";
-import NavButtons from "../../../components/NavButtons";
-import DetailsPanel from "../../../components/DetailsPanel";
-import DeleteDialog from "../../../components/DeleteDialog";
+import SaveHistory from "components/Elements/SaveHistory";
+import NavButtons from "components/Modules/NavButtons";
+import DetailsPanel from "components/Elements/DetailsPanel";
+import DeleteDialog from "components/Modules/DeleteDialog";
 import ModelTable from "./ModelStatusesTable";
-import DefaultDialog from "../../../components/DefaultDialog";
+import DefaultDialog from "components/Modules/DefaultDialog";
 import AddStatusDialog from "./AddDialog";
 import EditStatusDialog from "./EditDialog";
 import Grid from "@material-ui/core/Grid";
-import { handleSort } from "../../../helpers/utils";
+import { handleSort } from "helpers/utils";
 
 // Icon Import
-import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 // Init styled components
 const AC = ContentStyle();

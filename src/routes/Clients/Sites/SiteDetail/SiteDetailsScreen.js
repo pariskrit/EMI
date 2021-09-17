@@ -1,5 +1,5 @@
 import React from "react";
-import SiteWrapper from "components/SiteWrapper";
+import SiteWrapper from "components/Layouts/SiteWrapper";
 import { useHistory } from "react-router-dom";
 import SiteDetailsContent from "./SiteDetailsContent";
 import { useParams } from "react-router-dom";
@@ -13,7 +13,7 @@ const SiteDetail = () => {
 		<SiteWrapper
 			navigation={siteScreenNavigation}
 			onNavClick={(urlToGo) =>
-				history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+				history.push(`/clients/${clientId}/sites/${id}${urlToGo}`)
 			}
 			current="Details"
 			Component={() => <SiteDetailsContent />}

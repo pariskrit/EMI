@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import ContentStyle from "../../../styles/application/ContentStyle";
+import ContentStyle from "styles/application/ContentStyle";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import ClientTable from "./ClientTable";
 import { CircularProgress } from "@material-ui/core";
 import AddClientDialog from "./AddClientDialog";
-import API from "../../../helpers/api";
-import ColourConstants from "../../../helpers/colourConstants";
-import DeleteDialog from "../../../components/DeleteDialog";
-import { handleSort } from "../../../helpers/utils";
+import API from "helpers/api";
+import ColourConstants from "helpers/colourConstants";
+import DeleteDialog from "components/Modules/DeleteDialog";
+import { handleSort } from "helpers/utils";
 
 // Icon Import
-import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 // Init styled components
 const AC = ContentStyle();
 
@@ -128,7 +128,7 @@ const ClientListContent = () => {
 		try {
 			// Sending create POST to backend
 			let result = await API.post("/api/Clients", {
-				name: name
+				name: name,
 			});
 
 			if (result.status === 201 || result.status === 200) {
@@ -229,7 +229,7 @@ const ClientListContent = () => {
 	}, [searchQuery]);
 
 	return (
-		<div className='clientListContentContainer'>
+		<div className="clientListContentContainer">
 			<AddClientDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
@@ -272,7 +272,7 @@ const ClientListContent = () => {
 
 					{haveData ? (
 						<AC.SearchContainer>
-							<AC.SearchInner className='applicationSearchBtn'>
+							<AC.SearchInner className="applicationSearchBtn">
 								<Grid container spacing={1} alignItems="flex-end">
 									<Grid item>
 										<SearchIcon />

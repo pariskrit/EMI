@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Region from "./Region";
 import CommonAddDialog from "./CommonAddDialog";
 import API from "../../../helpers/api";
-import CurveButton from "../../../components/CurveButton";
+import CurveButton from "../../../components/Elements/CurveButton";
 import { BASE_API_PATH } from "../../../helpers/constants";
 import { useParams } from "react-router-dom";
 import { handleSort } from "../../../helpers/utils";

@@ -1,5 +1,5 @@
 import React from "react";
-import Pagination from "components/TablePagination/index.js";
+import Pagination from "components/Elements/TablePagination/index.js";
 export default {
 	title: "Components/Pagination",
 	component: Pagination,

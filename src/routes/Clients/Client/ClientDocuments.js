@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
-import ColourConstants from "../../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ArrowIcon from "../../../assets/icons/arrowIcon.svg";
+import ArrowIcon from "assets/icons/arrowIcon.svg";
 import Typography from "@material-ui/core/Typography";
-import DropUploadBox from "../../../components/DropUploadBox";
-import ProvidedAssetNoImage from "../../../components/ProvidedAsset/ProvidedAssetNoImage";
-import API from "../../../helpers/api";
+import DropUploadBox from "components/Modules/DropUploadBox";
+import ProvidedAssetNoImage from "components/Modules/ProvidedAsset/ProvidedAssetNoImage";
+import API from "helpers/api";
 import { useParams } from "react-router-dom";
-import { BASE_API_PATH } from "../../../helpers/constants";
+import { BASE_API_PATH } from "helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {

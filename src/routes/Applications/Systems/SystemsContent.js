@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
-import API from "../../../helpers/api";
-import ContentStyle from "../../../styles/application/ContentStyle";
+import API from "helpers/api";
+import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Navcrumbs from "../../../components/Navcrumbs";
+import Navcrumbs from "components/Elements/Navcrumbs";
 import ActionButtons from "./ActionButtons";
-import SaveHistory from "../../../components/SaveHistory";
-import NavButtons from "../../../components/NavButtons";
-import DetailsPanel from "../../../components/DetailsPanel";
-import DeleteDialog from "../../../components/DeleteDialog";
+import SaveHistory from "components/Elements/SaveHistory";
+import NavButtons from "components/Modules/NavButtons";
+import DetailsPanel from "components/Elements/DetailsPanel";
+import DeleteDialog from "components/Modules/DeleteDialog";
 import Grid from "@material-ui/core/Grid";
 import AddSystemDialog from "./AddDialog";
 import EditSystemDialog from "./EditDialog";
-import { handleSort } from "../../../helpers/utils";
+import { handleSort } from "helpers/utils";
 
 // Icon Import
-import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
-import SingleHeadTable from "components/SingleHeadTable";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import SingleHeadTable from "components/Modules/SingleHeadTable";
 
 // Init styled components
 const AC = ContentStyle();

@@ -5,7 +5,7 @@ import {
 	CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Dropdown from "components/Dropdown";
+import Dropdown from "components/Elements/Dropdown";
 import { siteOptions } from "helpers/constants";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
@@ -171,6 +171,7 @@ const SiteDetails = ({
 		return () => {
 			cancelFetch.current = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	if (isLoading) {

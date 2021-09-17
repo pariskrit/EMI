@@ -6,7 +6,7 @@ import {
 	TextField,
 	Typography,
 } from "@material-ui/core";
-import CurveButton from "components/CurveButton";
+import CurveButton from "components/Elements/CurveButton";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import React, { useEffect, useState } from "react";
@@ -132,7 +132,7 @@ const EditAssetDialog = ({
 				return { success: true };
 			} else {
 				if (result.data.detail) {
-					getError(result.data.error);
+					getError(result.data.detail);
 					setInput({ name: editData.name, description: editData.description });
 					return {
 						success: false,

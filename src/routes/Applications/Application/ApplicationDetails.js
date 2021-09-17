@@ -5,9 +5,9 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import EMICheckbox from "../../../components/EMICheckbox";
+import EMICheckbox from "../../../components/Elements/EMICheckbox";
 import ColourConstants from "../../../helpers/colourConstants";
-import AccordionBox from "components/AccordionBox";
+import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	detailsContainer: {

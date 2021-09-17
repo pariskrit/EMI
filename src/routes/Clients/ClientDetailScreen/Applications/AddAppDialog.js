@@ -6,7 +6,7 @@ import {
 	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Dropdown from "components/Dropdown";
+import Dropdown from "components/Elements/Dropdown";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";

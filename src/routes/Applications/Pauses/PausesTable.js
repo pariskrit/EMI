@@ -8,7 +8,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import ColourConstants from "helpers/colourConstants";
-import PopupMenu from "components/PopupMenu";
+import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 
 // Init styled components

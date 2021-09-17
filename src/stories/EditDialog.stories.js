@@ -1,6 +1,6 @@
 import React from "react";
 
-import EditDialog from "components/EditDialog";
+import EditDialog from "components/Modules/EditDialog";
 
 export default {
 	title: "Components/EditDialog",

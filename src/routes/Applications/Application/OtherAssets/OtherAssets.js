@@ -1,14 +1,14 @@
 import React, { useReducer, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import DropUploadBox from "../../../../components/DropUploadBox";
-import ProviderAsset from "../../../../components/ProvidedAsset/ProvidedAsset";
+import DropUploadBox from "components/Modules/DropUploadBox";
+import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
 import { AssetReducer } from "./reducer";
-import ColourConstants from "../../../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 
 // TODO: Below for dev. In prod, they will come from API call
-import PLACEHOLER from "../../../../assets/PLACEHOLD.jpg";
-import AccordionBox from "components/AccordionBox";
+import PLACEHOLER from "assets/PLACEHOLD.jpg";
+import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
 
 const INIT_ASSETS = [
 	{

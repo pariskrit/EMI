@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import API from "../../../helpers/api";
 import AddDialogStyle from "../../../styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import EMICheckbox from "../../../components/EMICheckbox";
+import EMICheckbox from "../../../components/Elements/EMICheckbox";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
 

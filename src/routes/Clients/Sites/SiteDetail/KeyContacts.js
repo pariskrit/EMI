@@ -1,6 +1,6 @@
 import React from "react";
-import AccordionBox from "components/AccordionBox";
-import SimpleDataTable from "components/SimpleDataTable";
+import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import SimpleDataTable from "components/Modules/SimpleDataTable";
 
 const KeyContacts = ({ contactsList, isLoading }) => {
 	return (

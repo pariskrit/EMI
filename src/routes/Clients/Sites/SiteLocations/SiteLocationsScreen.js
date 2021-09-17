@@ -1,4 +1,4 @@
-import SiteWrapper from "components/SiteWrapper";
+import SiteWrapper from "components/Layouts/SiteWrapper";
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import SiteLocationsContent from "./SiteLocationsContent";
@@ -70,7 +70,7 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail, getError }) => {
 				current="Locations"
 				navigation={siteScreenNavigation}
 				onNavClick={(urlToGo) =>
-					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+					history.push(`/clients/${clientId}/sites/${id}${urlToGo}`)
 				}
 				status=""
 				lastSaved=""

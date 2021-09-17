@@ -11,7 +11,7 @@ import CompanyLogo from "./CompanyLogo";
 import ClientDocuments from "./ClientDocuments";
 import RegionAndSites from "./RegionAndSites";
 import { useParams } from "react-router-dom";
-import NavDetails from "components/NavDetails";
+import NavDetails from "components/Elements/NavDetails";
 import { fetchClientDetail, resetClient } from "redux/clientDetail/actions";
 import { showError } from "redux/common/actions";
 

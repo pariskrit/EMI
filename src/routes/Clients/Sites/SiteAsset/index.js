@@ -1,4 +1,4 @@
-import SiteWrapper from "components/SiteWrapper";
+import SiteWrapper from "components/Layouts/SiteWrapper";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -115,7 +115,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 				current="Assets"
 				navigation={siteScreenNavigation}
 				onNavClick={(urlToGo) =>
-					history.push(`/client/${clientId}/site/${id}${urlToGo}`)
+					history.push(`/clients/${clientId}/sites/${id}${urlToGo}`)
 				}
 				status=""
 				lastSaved=""
