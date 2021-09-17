@@ -1,5 +1,5 @@
-import ConfirmChangeDialog from "components/ConfirmChangeDialog";
 import React from "react";
+import ConfirmChangeDialog from "routes/Clients/Sites/SiteDetail/ConfirmChangeDialog";
 
 export default {
 	title: "Components/ConfirmChangeDialog",
