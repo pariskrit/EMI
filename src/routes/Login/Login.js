@@ -85,10 +85,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	footer: {
 		height: 50,
-		justifyContent: 'center',
-		alignItems: 'center',
-		position: 'absolute', 
-		bottom: 0, 
+		justifyContent: "center",
+		alignItems: "center",
+		position: "absolute",
+		bottom: 0,
 	},
 	footerText: {
 		fontSize: "1em",
@@ -118,7 +118,7 @@ const Login = () => {
 			var input = {
 				email: email,
 				password: password,
-			}
+			};
 			const localChecker = await handleValidateObj(schema, input);
 
 			// Attempting API call if no local validaton errors
@@ -140,8 +140,7 @@ const Login = () => {
 				} else {
 					throw new Error(loginConfirm);
 				}
-			}
-			else {
+			} else {
 				const newErrors = generateErrorState(localChecker);
 
 				setErrors({ ...errors, ...newErrors });
@@ -159,7 +158,7 @@ const Login = () => {
 	};
 	const successRedirect = () => {
 		// Update below to change redirect location
-		history.push("/applicationList");
+		history.push("/applications");
 
 		return true;
 	};
@@ -247,11 +246,10 @@ const Login = () => {
 
 					<footer className={classes.footer}>
 						<Typography className={classes.footerText}>
-						 &copy; 2021 Equipment Management International P/L
+							&copy; 2021 Equipment Management International P/L
 						</Typography>
 					</footer>
 				</div>
-
 			</Grid>
 		</Grid>
 	);

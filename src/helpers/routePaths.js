@@ -10,7 +10,7 @@ export const siteDepartmentPath = "/departments";
 export const siteLocationPath = "/locations";
 
 //Site Application
-export const siteApplicationPath = sitePath + "/applications/:id";
+export const siteApplicationPath = sitePath + "/applications/:appId";
 
 //Applications
 export const applicationListPath = "/applications";

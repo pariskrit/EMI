@@ -1,7 +1,7 @@
 import React from "react";
 
-function index(props) {
-	return <div>dsds</div>;
+function SiteApplication(props) {
+	return <div>{props.children}</div>;
 }
 
-export default index;
+export default SiteApplication;
