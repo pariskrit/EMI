@@ -1,41 +1,48 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import ContentStyle from "styles/application/ContentStyle";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
+import API from "helpers/api";
+import { BASE_API_PATH } from "helpers/constants";
+import { handleSort } from "helpers/utils";
 
 const AC = ContentStyle();
 
 const SiteAppPauses = () => {
-	const [data, setData] = useState([
-		{
-			id: 1,
-			name: "XYZ",
-			totalSub: 2,
-		},
-		{
-			id: 2,
-			name: "ABC",
-			totalSub: 3,
-		},
-		{
-			id: 3,
-			name: "AA",
-			totalSub: 5,
-		},
-	]);
-	const [haveData, setHaveData] = useState(false);
+	const { appId } = useParams();
+	const [data, setData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [deleteID, setDeleteID] = useState(null);
+	// const [deleteID, setDeleteID] = useState(null);
 	const [searchedData, setSearchData] = useState([]);
+
+	const handleGetData = useCallback(async () => {
+		try {
+			let result = await API.get(`${BASE_API_PATH}Pauses?siteAppId=${appId}`);
+			if (result.status === 200) {
+				const mainData = result.data.map((x) => ({
+					...x,
+					totalSub: x.pauseSubcategories.length,
+				}));
+
+				handleSort(mainData, setData, "name", "asc");
+				return result;
+			}
+		} catch (err) {}
+	}, [appId]);
+
+	useEffect(() => {
+		handleGetData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const handleSearch = (e) => {
 		const { value } = e.target;
 		setSearchQuery(value);
 		const filtered = data.filter((x) => {
 			const regex = new RegExp(value, "gi");
-
 			return x.name.match(regex);
 		});
 		setSearchData(filtered);
@@ -48,7 +55,7 @@ const SiteAppPauses = () => {
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Pause Reasons"}
-					dataCount={haveData ? data.length : 0}
+					dataCount={data.length}
 					description="Create and manage Pause Reasons"
 				/>
 				<div className="desktopSearchCustomCaptions">
