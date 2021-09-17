@@ -1,5 +1,5 @@
 import React from "react";
-import CommonHeader from "components/CommonHeader";
+import CommonHeader from "components/Modules/CommonHeader";
 
 export default {
 	title: "components/CommonHeader",
@@ -19,6 +19,7 @@ CommonHeaderComponent.args = {
 	showAdd: false,
 	showSave: true,
 	showHistory: false,
+	showImport: false,
 	data: {
 		name: "ZZZ",
 	},

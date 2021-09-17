@@ -4,7 +4,7 @@ import {
 	ThemeProvider,
 } from "@material-ui/core/styles";
 import RestoreIcon from "@material-ui/icons/Restore";
-import NavDetails from "components/NavDetails";
+import NavDetails from "components/Elements/NavDetails";
 import PropTypes from "prop-types";
 import React from "react";
 import "routes/Applications/CustomCaptions/customCaptions.css";
@@ -14,7 +14,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import { withStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
-import NavButtons from "components/NavButtons";
 
 const AT = ActionButtonStyle();
 
@@ -192,15 +191,18 @@ const SiteWrapper = ({
 	onClickAdd,
 	onClickSave,
 	onDuplicate,
+	onImport,
 	showAdd,
 	showDuplicate,
 	showHistory,
 	showSave,
 	showSwitch,
+	showImport,
 	crumbs,
 	isUpdating,
 	currentStatus,
 	handlePatchIsActive,
+
 	navigation,
 	data,
 }) => {
@@ -284,6 +286,14 @@ const SiteWrapper = ({
 									Duplicate
 								</AT.GeneralButton>
 							)}
+							{showImport && (
+								<AT.GeneralButton
+									onClick={onImport}
+									className={classes.importButton}
+								>
+									Import From List
+								</AT.GeneralButton>
+							)}
 							{showAdd && (
 								<AT.GeneralButton onClick={onClickAdd}>
 									Add New
@@ -300,13 +310,6 @@ const SiteWrapper = ({
 						)}
 					</div>
 				</div>
-
-				<NavButtons
-					navigation={navigation}
-					applicationName={data.name}
-					current="Details"
-				/>
-				{/* <Component /> */}
 			</div>
 		</ThemeProvider>
 	);

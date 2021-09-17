@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
 	CircularProgress,
 	makeStyles,
@@ -12,10 +13,10 @@ import clsx from "clsx";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
-import useInfiniteScroll from "hooks/useInfiniteScroll";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
 import TableStyle from "styles/application/TableStyle";
+import DeleteDialog from "components/Modules/DeleteDialog";
+import EditDialog from "./EditModal";
 
 const AT = TableStyle();
 
@@ -44,32 +45,23 @@ const useStyles = makeStyles({
 	},
 });
 
-const ClientSiteTable = ({
+const CommonApplicationTable = ({
 	data,
 	setData,
 	columns,
 	headers,
 	onEdit,
 	onDelete,
-	pagination,
-	page,
-	rowsPerPage,
-	onPageChange,
-	count,
 	isLoading,
-	searchText,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
-	const { hasMore, loading, gotoTop } = useInfiniteScroll(
-		data,
-		count,
-		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
-		page,
-		searchText
-	);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [selectedID, setSelectedID] = useState(null);
+	const [openEditDialog, setOpenEditDialog] = useState(false);
+	const [editData, setEditData] = useState(null);
 
 	// Handlers
 	const handleSortClick = (field) => {
@@ -87,146 +79,156 @@ const ClientSiteTable = ({
 		return <CircularProgress />;
 	}
 
+	//Delete
+	const handleDeleteDialogClose = () => {
+		setSelectedID(null);
+		setOpenDeleteDialog(false);
+	};
+
+	//Edit
+	const handleEditDialogClose = () => {
+		setOpenEditDialog(false);
+	};
+
+	const handleEdit = (id) => {
+		const detail = [...data].find((x) => x.id === id);
+		setEditData(detail);
+		setOpenEditDialog(true);
+		console.log(id);
+	};
+
 	return (
-		<AT.TableContainer component={Paper} elevation={0}>
-			<Table aria-label="Table">
-				<AT.TableHead>
-					<TableRow className={classes.tableHead}>
-						{headers.map((header, index) => (
-							<TableCell
-								key={header}
-								onClick={() => {
-									handleSortClick(columns[index]);
-								}}
-								className={clsx(classes.nameRow, {
-									[classes.selectedTableHeadRow]:
-										currentTableSort[0] === columns[index],
-									[classes.tableHeadRow]:
-										currentTableSort[0] !== columns[index],
-								})}
-							>
-								<AT.CellContainer className="flex justify-between">
-									{header}
-									{currentTableSort[0] === columns[index] &&
-									currentTableSort[1] === "desc" ? (
-										<AT.DefaultArrow fill="#FFFFFF" />
-									) : (
-										<AT.DescArrow fill="#FFFFFF" />
-									)}
-								</AT.CellContainer>
-							</TableCell>
-						))}
-					</TableRow>
-				</AT.TableHead>
-				<TableBody>
-					{data.length !== 0 ? (
-						data.map((row, index) => (
-							<TableRow key={row.id}>
-								{columns.map((col, i, arr) => (
-									<TableCell
-										key={col}
-										component="th"
-										scope="row"
-										className={clsx(classes.dataCell, classes.nameRow, {
-											[classes.lastCell]: index === data.length - 1,
-										})}
-									>
-										<AT.CellContainer key={col}>
-											<AT.TableBodyText>{row[col]}</AT.TableBodyText>
-											{arr.length === i + 1 ? (
-												<AT.DotMenu
-													onClick={(e) => {
-														setAnchorEl(
-															anchorEl === e.currentTarget
-																? null
-																: e.currentTarget
-														);
-														setSelectedData(
-															anchorEl === e.currentTarget ? null : index
-														);
-													}}
-												>
-													<AT.TableMenuButton>
-														<MenuIcon />
-													</AT.TableMenuButton>
+		<div>
+			<DeleteDialog
+				entityName="Name"
+				open={openDeleteDialog}
+				deleteID={selectedID}
+				deleteEndpoint=""
+				closeHandler={handleDeleteDialogClose}
+			/>
 
-													<PopupMenu
-														index={index}
-														selectedData={selectedData}
-														anchorEl={anchorEl}
-														id={row.id}
-														clickAwayHandler={() => {
-															setAnchorEl(null);
-															setSelectedData(null);
-														}}
-														menuData={[
-															{
-																name: "Edit",
-																handler: () => onEdit(row.id),
-																isDelete: false,
-															},
-															{
-																name: "Delete",
-																handler: () => onDelete(row.id),
-																isDelete: true,
-															},
-														]}
-													/>
-												</AT.DotMenu>
-											) : null}
-										</AT.CellContainer>
-									</TableCell>
-								))}
-							</TableRow>
-						))
-					) : (
-						<TableRow>
-							{headers.map((head, i) => {
-								if (i === 0) {
-									return <TableCell key={head}>No Record Found</TableCell>;
-								} else {
-									return <TableCell key={head}></TableCell>;
-								}
-							})}
+			<EditDialog
+				open={openEditDialog}
+				closeHandler={handleEditDialogClose}
+				data={editData}
+				// getError={getError}
+			/>
+
+			<AT.TableContainer component={Paper} elevation={0}>
+				<Table aria-label="Table">
+					<AT.TableHead>
+						<TableRow className={classes.tableHead}>
+							{headers.map((header, index) => (
+								<TableCell
+									key={header}
+									onClick={() => {
+										handleSortClick(columns[index]);
+									}}
+									className={clsx(classes.nameRow, {
+										[classes.selectedTableHeadRow]:
+											currentTableSort[0] === columns[index],
+										[classes.tableHeadRow]:
+											currentTableSort[0] !== columns[index],
+									})}
+								>
+									<AT.CellContainer className="flex justify-between">
+										{header}
+										{currentTableSort[0] === columns[index] &&
+										currentTableSort[1] === "desc" ? (
+											<AT.DefaultArrow fill="#FFFFFF" />
+										) : (
+											<AT.DescArrow fill="#FFFFFF" />
+										)}
+									</AT.CellContainer>
+								</TableCell>
+							))}
 						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-			{/* {pagination && (
-				<TablePagination
-					page={page}
-					rowsPerPage={rowsPerPage}
-					onPageChange={onPageChange}
-					count={count}
-				/>
-			)} */}
+					</AT.TableHead>
+					<TableBody>
+						{data.length !== 0 ? (
+							data.map((row, index) => (
+								<TableRow key={row.id}>
+									{columns.map((col, i, arr) => (
+										<TableCell
+											key={col}
+											component="th"
+											scope="row"
+											className={clsx(classes.dataCell, classes.nameRow, {
+												[classes.lastCell]: index === data.length - 1,
+											})}
+										>
+											<AT.CellContainer key={col}>
+												<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+												{arr.length === i + 1 ? (
+													<AT.DotMenu
+														onClick={(e) => {
+															setAnchorEl(
+																anchorEl === e.currentTarget
+																	? null
+																	: e.currentTarget
+															);
+															setSelectedData(
+																anchorEl === e.currentTarget ? null : index
+															);
+														}}
+													>
+														<AT.TableMenuButton>
+															<MenuIcon />
+														</AT.TableMenuButton>
 
-			{/* scroll to load */}
-			{loading && (
-				<div style={{ padding: "16px 10px" }}>
-					<b>Loading...</b>
-				</div>
-			)}
-
-			{!hasMore && (
-				<div
-					style={{ textAlign: "center", padding: "16px 10px" }}
-					className="flex justify-center"
-				>
-					<b>Yay! You have seen it all</b>
-					<span
-						className="link-color ml-md cursor-pointer"
-						onClick={() => gotoTop()}
-					>
-						Go to top
-					</span>
-				</div>
-			)}
-		</AT.TableContainer>
+														<PopupMenu
+															index={index}
+															selectedData={selectedData}
+															anchorEl={anchorEl}
+															id={row.id}
+															clickAwayHandler={() => {
+																setAnchorEl(null);
+																setSelectedData(null);
+															}}
+															menuData={[
+																{
+																	name: "Edit",
+																	handler: () => {
+																		handleEdit(row.id);
+																	},
+																	isDelete: false,
+																},
+																{
+																	name: "Delete",
+																	handler: () => {
+																		setOpenDeleteDialog(true);
+																		setSelectedID(row.id);
+																	},
+																	isDelete: true,
+																},
+															]}
+														/>
+													</AT.DotMenu>
+												) : null}
+											</AT.CellContainer>
+										</TableCell>
+									))}
+								</TableRow>
+							))
+						) : (
+							<TableRow>
+								{headers.map((head, i) => {
+									if (i === 0) {
+										return <TableCell key={head}>No Record Found</TableCell>;
+									} else {
+										return <TableCell key={head}></TableCell>;
+									}
+								})}
+							</TableRow>
+						)}
+					</TableBody>
+				</Table>
+			</AT.TableContainer>
+		</div>
 	);
 };
 
-ClientSiteTable.defaultProps = {
+CommonApplicationTable.defaultProps = {
 	data: [
 		{
 			id: 1,
@@ -241,16 +243,14 @@ ClientSiteTable.defaultProps = {
 	headers: ["Name"],
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
-	pagination: false,
 };
 
-ClientSiteTable.propTypes = {
+CommonApplicationTable.propTypes = {
 	data: PropTypes.array,
 	columns: PropTypes.array,
 	headers: PropTypes.array,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
-	pagination: PropTypes.bool,
 };
 
-export default ClientSiteTable;
+export default CommonApplicationTable;
