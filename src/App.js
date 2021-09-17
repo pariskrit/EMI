@@ -1,11 +1,11 @@
-import ErrorDialog from "components/Elements/ErrorDialog";
 import React from "react";
+import ErrorDialog from "components/Elements/ErrorDialog";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import "./App.scss";
-import MainApp from "./routes";
-import Home from "./routes/Home/Home";
+import MainApp from "pages";
+import Home from "pages/Home/Home";
 import Launch from "./routes/Launch/Launch";
-import Login from "./routes/Login/Login";
+import Login from "././pagesogin/Login";
+import "./App.scss";
 
 function App() {
 	return (

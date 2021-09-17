@@ -1,5 +1,5 @@
 import React from "react";
-import AddSiteDepartmentDialog from "routes/Clients/Sites/SiteDepartment/SiteDepartment/AddSiteDepartmentDialog";
+import AddSiteDepartmentDialog from "pages/Clients/Sites/SiteDepartment/SiteDepartment/AddSiteDepartmentDialog";
 
 export default {
 	title: "components/AddSiteDepartment",

@@ -1,7 +1,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { clientDetailPath, clientsPath } from "helpers/routePaths";
-import ClientList from "routes/Clients/ClientList/ClientList";
+import ClientList from "pages/Clients/ClientList/ClientList";
 import Client from "..";
 import ClientDetails from "../ClientDetailScreen/ClientDetails";
 

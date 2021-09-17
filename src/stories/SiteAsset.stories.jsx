@@ -1,5 +1,5 @@
 import React from "react";
-import SiteAsset from "routes/Clients/Sites/SiteAsset";
+import SiteAsset from "pages/Clients/Sites/SiteAsset";
 
 export default {
 	title: "Page/SiteAsset",

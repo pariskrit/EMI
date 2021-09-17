@@ -1,26 +1,26 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import Actions from "routes/Applications/Actions/Action";
-import Application from "routes/Applications/Application/Application";
-import ApplicationList from "routes/Applications/ApplicationList/ApplicationList";
-import CustomCaptions from "routes/Applications/CustomCaptions/CustomCaptions";
-import DefectRiskRatings from "routes/Applications/DefectRiskRatings/DefectRiskRatings";
-import DefectStatuses from "routes/Applications/DefectStatuses/DefectStatuses";
-import DefectTypes from "routes/Applications/DefectTypes/DefectTypes";
-import FeedbackClassifications from "routes/Applications/FeedbackClassifications/FeedbackClassifications";
-import FeedbackPriorities from "routes/Applications/FeedbackPriorities/FeedbackPriorities";
-import FeedbackStatuses from "routes/Applications/FeedbackStatuses/FeedbackStatuses";
-import MissingItems from "routes/Applications/MissingItems/MissingItems";
-import ModelStatuses from "routes/Applications/ModelStatuses/ModelStatuses";
-import ModelTypes from "routes/Applications/ModelTypes/ModelType";
-import OperatingModes from "routes/Applications/OperatingModes/OperatingModes";
-import Pauses from "routes/Applications/Pauses/Pauses";
-import Positions from "routes/Applications/Positions/Positions";
-import Roles from "routes/Applications/Roles/Roles";
-import SkippedTasks from "routes/Applications/SkippedTasks/SkippedTasks";
-import StatusChanges from "routes/Applications/StatusChanges/StatusChanges";
-import Stops from "routes/Applications/Stops/Stops";
-import Systems from "routes/Applications/Systems/System";
+import Actions from "pages/Applications/Actions/Action";
+import Application from "pages/Applications/Application/Application";
+import ApplicationList from "pages/Applications/ApplicationList/ApplicationList";
+import CustomCaptions from "pages/Applications/CustomCaptions/CustomCaptions";
+import DefectRiskRatings from "pages/Applications/DefectRiskRatings/DefectRiskRatings";
+import DefectStatuses from "pages/Applications/DefectStatuses/DefectStatuses";
+import DefectTypes from "pages/Applications/DefectTypes/DefectTypes";
+import FeedbackClassifications from "pages/Applications/FeedbackClassifications/FeedbackClassifications";
+import FeedbackPriorities from "pages/Applications/FeedbackPriorities/FeedbackPriorities";
+import FeedbackStatuses from "pages/Applications/FeedbackStatuses/FeedbackStatuses";
+import MissingItems from "pages/Applications/MissingItems/MissingItems";
+import ModelStatuses from "pages/Applications/ModelStatuses/ModelStatuses";
+import ModelTypes from "pages/Applications/ModelTypes/ModelType";
+import OperatingModes from "pages/Applications/OperatingModes/OperatingModes";
+import Pauses from "pages/Applications/Pauses/Pauses";
+import Positions from "pages/Applications/Positions/Positions";
+import Roles from "pages/Applications/Roles/Roles";
+import SkippedTasks from "pages/Applications/SkippedTasks/SkippedTasks";
+import StatusChanges from "pages/Applications/StatusChanges/StatusChanges";
+import Stops from "pages/Applications/Stops/Stops";
+import Systems from "pages/Applications/Systems/System";
 import {
 	actionsPath,
 	applicationDetailsPath,

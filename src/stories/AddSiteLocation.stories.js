@@ -1,5 +1,5 @@
 import React from "react";
-import AddSiteLocationsDialog from "routes/Clients/Sites/SiteLocations/SiteLocations/AddSiteLocationsDialog";
+import AddSiteLocationsDialog from "pages/Clients/Sites/SiteLocations/SiteLocations/AddSiteLocationsDialog";
 
 export default {
 	title: "Components/AddSiteLocation",

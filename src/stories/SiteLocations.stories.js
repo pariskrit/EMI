@@ -1,5 +1,5 @@
 import React from "react";
-import SiteLocationsScreen from "routes/Clients/Sites/SiteLocations/SiteLocationsScreen";
+import SiteLocationsScreen from "pages/Clients/Sites/SiteLocations/SiteLocationsScreen";
 
 export default {
 	title: "Page/SiteLocations",

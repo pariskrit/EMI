@@ -6,7 +6,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import ClientSiteTable from "components/Modules/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import EditDialog from "routes/Clients/Sites/SiteDepartment/EditModal";
+import EditDialog from "./EditModal";
 import "./site.scss";
 
 const AC = ContentStyle();

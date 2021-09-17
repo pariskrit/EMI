@@ -5,7 +5,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import ClientSiteTable from "components/Modules/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
-import EditDialog from "routes/Clients/Sites/SiteLocations/EditModal";
+import EditDialog from "./EditModal";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import "../SiteDepartment/site.scss";
 
