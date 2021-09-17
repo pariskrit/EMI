@@ -13,9 +13,9 @@ export const siteLocationPath = "/locations";
 export const siteApplicationPath = sitePath + "/applications/:id";
 
 //Applications
-export const applicationListPath = "/applicationList";
-export const applicationPath = "/application";
-export const applicationDetailsPath = "/application/:id";
+export const applicationListPath = "/applications";
+export const applicationPath = "/applications";
+export const applicationDetailsPath = "/applications/:id";
 export const customCaptionsPath = "/customcaptions";
 export const modelStatusesPath = "/modelstatuses";
 export const positionsPath = "/positions";

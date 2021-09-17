@@ -190,7 +190,7 @@ const useStyles = makeStyles((theme) => ({
 function Navbar() {
 	// Init hooks
 	const classes = useStyles();
-	const routeList = ["clients", "applicationList"];
+
 	// Setting state
 	const [open, setOpen] = useState(false);
 	const location = useLocation();
@@ -247,7 +247,7 @@ function Navbar() {
 										<ListItem
 											button
 											className={
-												routeList[index] === activeLink
+												item[0].toLowerCase() === activeLink
 													? classes.currentItemBackground
 													: null
 											}
@@ -255,7 +255,7 @@ function Navbar() {
 											<ListItemIcon className={classes.navIconContainer}>
 												<NavIcon
 													className={
-														routeList[index] === activeLink
+														item[0].toLowerCase() === activeLink
 															? classes.navIconCurrent
 															: classes.navIcon
 													}
@@ -265,7 +265,7 @@ function Navbar() {
 											<ListItemText
 												classes={{
 													primary:
-														routeList[index] === activeLink
+														item[0].toLowerCase() === activeLink
 															? classes.listItemTextPrimaryCurrent
 															: classes.listItemTextPrimary,
 												}}
