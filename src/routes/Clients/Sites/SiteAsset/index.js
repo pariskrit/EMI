@@ -111,6 +111,15 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 				getError={getError}
 				fetchSiteAssets={fetchSiteAssets}
 			/>
+			{/* <Assets
+				data={data}
+				count={count}
+				siteId={id}
+				isLoading={isLoading}
+				fetchAsset={fetchAset}
+				getError={getError}
+				setData={setData}
+			/> */}
 			<SiteWrapper
 				current="Assets"
 				navigation={siteScreenNavigation}

@@ -10,7 +10,7 @@ import { CircularProgress } from "@material-ui/core";
 import AddClientDialog from "./AddClientDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
-import DeleteDialog from "components/Modules/DeleteDialog";
+import DeleteDialog from "components/Elements/DeleteDialog";
 import { handleSort } from "helpers/utils";
 
 // Icon Import

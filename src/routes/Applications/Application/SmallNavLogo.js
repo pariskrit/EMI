@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
-import DropUploadBox from "components/Modules/DropUploadBox";
+import DropUploadBox from "components/Elements/DropUploadBox";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";

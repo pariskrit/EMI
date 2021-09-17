@@ -2,8 +2,8 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { clientDetailPath, clientsPath } from "helpers/routePaths";
 import ClientList from "routes/Clients/ClientList/ClientList";
-import ClientDetailScreen from "routes/Clients/ClientDetailScreen";
 import Client from "..";
+import ClientDetails from "../ClientDetailScreen/ClientDetails";
 
 export default function ClientPage() {
 	return (
@@ -12,7 +12,7 @@ export default function ClientPage() {
 				<ClientList />
 			</Route>
 			<Route path={clientDetailPath} exact>
-				<ClientDetailScreen />
+				<ClientDetails />
 			</Route>
 		</Client>
 	);

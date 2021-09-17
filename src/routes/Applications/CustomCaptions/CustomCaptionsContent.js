@@ -5,7 +5,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Navcrumbs from "components/Elements/Navcrumbs";
 import ActionButtons from "./ActionButtons";
 import SaveHistory from "components/Elements/SaveHistory";
-import NavButtons from "components/Modules/NavButtons";
+import NavButtons from "components/Elements/NavButtons";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import Grid from "@material-ui/core/Grid";
 import CustomCaptionsTable from "./CustomCaptionsTable";

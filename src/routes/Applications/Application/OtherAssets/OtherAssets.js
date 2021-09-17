@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import DropUploadBox from "components/Modules/DropUploadBox";
+import DropUploadBox from "components/Elements/DropUploadBox";
 import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
 import { AssetReducer } from "./reducer";
 import ColourConstants from "helpers/colourConstants";

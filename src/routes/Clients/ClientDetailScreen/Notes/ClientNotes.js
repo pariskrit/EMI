@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/Layouts/AccordionBox";
-import DeleteDialog from "components/Modules/DeleteDialog";
+import DeleteDialog from "components/Elements/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
@@ -88,11 +88,11 @@ const ClientNotes = ({ clientId, getError }) => {
 
 	useEffect(() => {
 		fetchNotes();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 
 		return () => {
 			cancelFetch.current = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleCreateData = async (note) => {

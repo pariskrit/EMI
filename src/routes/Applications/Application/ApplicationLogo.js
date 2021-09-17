@@ -6,7 +6,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
-import DropUploadBox from "components/Modules/DropUploadBox";
+import DropUploadBox from "components/Elements/DropUploadBox";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";

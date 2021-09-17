@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import NavDetails from "components/Elements/NavDetails";
 import { fetchClientDetail, resetClient } from "redux/clientDetail/actions";
 import { showError } from "redux/common/actions";
+import "./style.scss";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {

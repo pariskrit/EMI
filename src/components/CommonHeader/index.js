@@ -4,7 +4,7 @@ import {
 	ThemeProvider,
 } from "@material-ui/core/styles";
 import RestoreIcon from "@material-ui/icons/Restore";
-import NavDetails from "components/NavDetails";
+import NavDetails from "components/Elements/NavDetails";
 import PropTypes from "prop-types";
 import React from "react";
 import "routes/Applications/CustomCaptions/customCaptions.css";
@@ -14,7 +14,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import { withStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
-import NavButtons from "components/NavButtons";
+import NavButtons from "components/Elements/NavButtons";
 
 const AT = ActionButtonStyle();
 
@@ -186,7 +186,7 @@ const IOSSwitchUpdated = withStyles((theme) => ({
 	);
 });
 
-const SiteWrapper = ({
+const CommonHeader = ({
 	status,
 	lastSaved,
 	onClickAdd,
@@ -312,7 +312,7 @@ const SiteWrapper = ({
 	);
 };
 
-SiteWrapper.defaultProps = {
+CommonHeader.defaultProps = {
 	crumbs: ["Parent", "Child", "so on.."],
 	status: false,
 	showAdd: false,
@@ -320,4 +320,4 @@ SiteWrapper.defaultProps = {
 	showSwitch: true,
 };
 
-export default SiteWrapper;
+export default CommonHeader;

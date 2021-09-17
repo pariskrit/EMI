@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import ContentStyle from "../../../styles/application/ContentStyle";
+import ContentStyle from "styles/application/ContentStyle";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -9,13 +9,13 @@ import ApplicationTable from "./ApplicationTable";
 import { CircularProgress } from "@material-ui/core";
 import AddApplicationDialog from "./AddApplicationDialog";
 import DuplicateApplicationDialog from "./DuplicateApplicationDialog";
-import API from "../../../helpers/api";
-import ColourConstants from "../../../helpers/colourConstants";
-import DeleteDialog from "../../../components/Modules/DeleteDialog";
-import { handleSort } from "../../../helpers/utils";
+import API from "helpers/api";
+import ColourConstants from "helpers/colourConstants";
+import DeleteDialog from "components/Elements/DeleteDialog";
+import { handleSort } from "helpers/utils";
 
 // Icon Import
-import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import { applicationPath } from "helpers/routePaths";
 // Init styled components
 const AC = ContentStyle();

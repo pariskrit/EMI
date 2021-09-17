@@ -6,7 +6,7 @@ import Navcrumbs from "components/Elements/Navcrumbs";
 import Grid from "@material-ui/core/Grid";
 import ApplicationActionButtons from "./ApplicationActionButtons";
 import SaveHistory from "components/Elements/SaveHistory";
-import NavButtons from "components/Modules/NavButtons";
+import NavButtons from "components/Elements/NavButtons";
 import ApplicationDetails from "./ApplicationDetails";
 import ColourDetails from "./ColourDetails";
 import ApplicationLogo from "./ApplicationLogo";

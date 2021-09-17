@@ -4,7 +4,7 @@ import DetailsPanel from "components/Elements/DetailsPanel";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import ClientSiteTable from "components/Modules/ClientSiteTable";
-import DeleteDialog from "components/Modules/DeleteDialog";
+import DeleteDialog from "components/Elements/DeleteDialog";
 import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
 import { getSiteAssets } from "services/clients/sites/siteAssets";

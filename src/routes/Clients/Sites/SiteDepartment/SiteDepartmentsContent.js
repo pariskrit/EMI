@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import { BASE_API_PATH } from "helpers/constants";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import DeleteDialog from "components/Modules/DeleteDialog";
+import DeleteDialog from "components/Elements/DeleteDialog";
 import ClientSiteTable from "components/Modules/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";

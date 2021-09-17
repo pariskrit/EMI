@@ -1,5 +1,5 @@
 import React from "react";
-import NavButtons from "components/Modules/NavButtons";
+import NavButtons from "components/Elements/NavButtons";
 
 export default {
 	title: "Components/NavButtons",

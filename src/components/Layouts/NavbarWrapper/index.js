@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import "./style.scss";
-import Navbar from "components/NavbarWrapper/Navbar";
+import Navbar from "components/Layouts/NavbarWrapper/Navbar";
 import { CssBaseline } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
