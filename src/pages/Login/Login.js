@@ -1,20 +1,21 @@
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import { applicationListPath } from "helpers/routePaths";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
+import * as yup from "yup";
+import ColourLogo from "../../assets/colourLogo.png";
 import LoginImage from "../../assets/spash_no_background.png";
 import Watermark from "../../assets/watermark.png";
 import API from "../../helpers/api";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import ColourLogo from "../../assets/colourLogo.png";
-import Typography from "@material-ui/core/Typography";
-import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../helpers/utils";
+import ColourConstants from "../../helpers/colourConstants";
+import { generateErrorState, handleValidateObj } from "../../helpers/utils";
 
 // Yup validation schema
 const schema = yup.object({
@@ -85,10 +86,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	footer: {
 		height: 50,
-		justifyContent: 'center',
-		alignItems: 'center',
-		position: 'absolute', 
-		bottom: 0, 
+		justifyContent: "center",
+		alignItems: "center",
+		position: "absolute",
+		bottom: 0,
 	},
 	footerText: {
 		fontSize: "1em",
@@ -118,7 +119,7 @@ const Login = () => {
 			var input = {
 				email: email,
 				password: password,
-			}
+			};
 			const localChecker = await handleValidateObj(schema, input);
 
 			// Attempting API call if no local validaton errors
@@ -140,8 +141,7 @@ const Login = () => {
 				} else {
 					throw new Error(loginConfirm);
 				}
-			}
-			else {
+			} else {
 				const newErrors = generateErrorState(localChecker);
 
 				setErrors({ ...errors, ...newErrors });
@@ -159,7 +159,7 @@ const Login = () => {
 	};
 	const successRedirect = () => {
 		// Update below to change redirect location
-		history.push("/applicationList");
+		history.push(applicationListPath);
 
 		return true;
 	};
@@ -247,11 +247,10 @@ const Login = () => {
 
 					<footer className={classes.footer}>
 						<Typography className={classes.footerText}>
-						 &copy; 2021 Equipment Management International P/L
+							&copy; 2021 Equipment Management International P/L
 						</Typography>
 					</footer>
 				</div>
-
 			</Grid>
 		</Grid>
 	);
