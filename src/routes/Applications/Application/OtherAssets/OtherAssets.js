@@ -8,7 +8,7 @@ import { BASE_API_PATH } from "helpers/constants";
 
 // TODO: Below for dev. In prod, they will come from API call
 import PLACEHOLER from "assets/PLACEHOLD.jpg";
-import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import AccordionBox from "components/Layouts/AccordionBox";
 
 const INIT_ASSETS = [
 	{

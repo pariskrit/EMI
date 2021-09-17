@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import AccordionBox from "components/Layouts/AccordionBox";
 import DropUploadBox from "components/Modules/DropUploadBox";
 import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
 import ColourConstants from "helpers/colourConstants";

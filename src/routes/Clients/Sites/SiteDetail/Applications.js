@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import AccordionBox from "components/Layouts/AccordionBox";
 import ApplicationTable from "components/Modules/ApplicationTable";
 import ConfirmChangeDialog from "components/ConfirmChangeDialog";
 import AddSiteApplicationModal from "components/AddSiteApplicationModal";

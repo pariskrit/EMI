@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import AccordionBox from "components/Layouts/AccordionBox";
 import DropUploadBox from "components/Modules/DropUploadBox";
 import ProvidedAssetNoImage from "components/Modules/ProvidedAsset/ProvidedAssetNoImage";
 import ColourConstants from "helpers/colourConstants";

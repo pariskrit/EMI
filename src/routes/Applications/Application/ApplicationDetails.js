@@ -7,7 +7,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "../../../components/Elements/EMICheckbox";
 import ColourConstants from "../../../helpers/colourConstants";
-import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import AccordionBox from "components/Layouts/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	detailsContainer: {

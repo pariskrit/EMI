@@ -6,7 +6,7 @@ import DropUploadBox from "components/Modules/DropUploadBox";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
-import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
+import AccordionBox from "components/Layouts/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	logoContainer: {
