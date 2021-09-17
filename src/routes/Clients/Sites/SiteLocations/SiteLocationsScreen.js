@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import SiteLocationsContent from "./SiteLocationsContent";
 import { getSiteLocations } from "services/clients/sites/siteLocations";
-import AddSiteLocationsDialog from "components/SiteLocations/AddSiteLocationsDialog";
+import AddSiteLocationsDialog from "./SiteLocations/AddSiteLocationsDialog";
 import { useRef } from "react";
 import { connect } from "react-redux";
 import { fetchSiteDetail } from "redux/siteDetail/actions";

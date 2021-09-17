@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import DefectRiskRatingsContent from "./DefectRiskRatingsContent";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 
-const DefectRiskRatings = () => {
+function DefectRiskRatings() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const DefectRiskRatings = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default DefectRiskRatings;

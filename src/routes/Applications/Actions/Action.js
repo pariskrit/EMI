@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 import ActionsContent from "./ActionsContent";
 
-const Actions = () => {
+function Actions() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const Actions = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default Actions;

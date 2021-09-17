@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import applicationNavigation from "../../../helpers/applicationNavigation";
 import CustomCaptionsContent from "./CustomCaptionsContent";
 
-const CustomCaptions = () => {
+function CustomCaptions() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const CustomCaptions = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default CustomCaptions;

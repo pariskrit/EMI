@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
 	CircularProgress,
 	makeStyles,
@@ -14,7 +15,6 @@ import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
 import TableStyle from "styles/application/TableStyle";
 
 const AT = TableStyle();

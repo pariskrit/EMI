@@ -1,6 +1,6 @@
-import AddSiteDepartmentDialog from "components/SiteDepartment/AddSiteDepartmentDialog";
-import SiteWrapper from "components/Layouts/SiteWrapper";
 import React, { useEffect, useRef, useState } from "react";
+import AddSiteDepartmentDialog from "./SiteDepartment/AddSiteDepartmentDialog";
+import SiteWrapper from "components/Layouts/SiteWrapper";
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { fetchSiteDetail } from "redux/siteDetail/actions";

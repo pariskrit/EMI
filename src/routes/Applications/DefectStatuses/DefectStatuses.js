@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import DefectStatusesContent from "./DefectStatusesContent";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 
-const DefectStatuses = () => {
+function DefectStatuses() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const DefectStatuses = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default DefectStatuses;

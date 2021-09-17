@@ -2,7 +2,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import CommonApplicationTable from "components/CommonApplicationTable";
+import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import Navcrumbs from "components/Elements/Navcrumbs";
 import SaveHistory from "components/Elements/SaveHistory";

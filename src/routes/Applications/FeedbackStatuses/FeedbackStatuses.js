@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import FeedbackStatusesContent from "./FeedbackStatusesContent";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 
-const FeedbackStatuses = () => {
+function FeedbackStatuses() {
 	// Init params
 	const { id } = useParams();
 
@@ -26,6 +26,6 @@ const FeedbackStatuses = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default FeedbackStatuses;

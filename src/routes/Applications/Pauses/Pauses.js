@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 import PausesContent from "./PausesContent";
 
-const Pauses = () => {
+function Pauses() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const Pauses = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default Pauses;

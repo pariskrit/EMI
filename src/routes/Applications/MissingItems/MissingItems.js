@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 import MissingItemsContent from "./MissingItemsContent";
 
-const MissingItems = () => {
+function MissingItems() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const MissingItems = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default MissingItems;

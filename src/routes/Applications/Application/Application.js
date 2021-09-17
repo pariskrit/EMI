@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import ApplicationContent from "./ApplicationContent";
 import applicationNavigation from "../../../helpers/applicationNavigation";
 
-const Application = () => {
+function Application() {
 	// Init params
 	const { id } = useParams();
 
@@ -19,6 +19,6 @@ const Application = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default Application;

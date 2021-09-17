@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 import ModelTypesContent from "./ModelTypesContent";
 
-const ModelTypes = () => {
+function ModelTypes() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const ModelTypes = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default ModelTypes;

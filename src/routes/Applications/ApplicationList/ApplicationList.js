@@ -1,12 +1,8 @@
 import React from "react";
 import ApplicationListContent from "./ApplicationListContent";
 
-const ApplicationList = () => {
-	return (
-		<div>
-			<ApplicationListContent />
-		</div>
-	);
-};
+function ApplicationList() {
+	return <ApplicationListContent />;
+}
 
 export default ApplicationList;

@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import OperatingModesContent from "./OperatingModesContent";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 
-const OperatingModes = () => {
+function OperatingModes() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const OperatingModes = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default OperatingModes;

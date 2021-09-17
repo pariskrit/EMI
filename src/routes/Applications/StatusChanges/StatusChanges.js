@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 import StatusChangesContent from "./StatusChangesContent";
 
-const StatusChanges = () => {
+function StatusChanges() {
 	// Init params
 	const { id } = useParams();
 
@@ -27,6 +27,6 @@ const StatusChanges = () => {
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;
 	}
-};
+}
 
 export default StatusChanges;
