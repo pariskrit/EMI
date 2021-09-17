@@ -1,6 +1,6 @@
 import React from "react";
 import CommonHeader from "../CommonHeader";
-import NavButtons from "components/Modules/NavButtons";
+import NavButtons from "components/Elements/NavButtons";
 import applicationNavigation from "helpers/applicationNavigation";
 
 const CommonHeaderWrapper = ({

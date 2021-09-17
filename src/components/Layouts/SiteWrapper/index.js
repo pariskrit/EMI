@@ -1,12 +1,11 @@
 import { makeStyles } from "@material-ui/core/styles";
 import RestoreIcon from "@material-ui/icons/Restore";
 import NavDetails from "components/Elements/NavDetails";
-import NavButtons from "components/Modules/NavButtons";
+import NavButtons from "components/Elements/NavButtons";
 import PropTypes from "prop-types";
 import React from "react";
-import "routes/Applications/CustomCaptions/customCaptions.css";
+import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-
 const AT = ActionButtonStyle();
 
 const media = "@media (max-width: 414px)";

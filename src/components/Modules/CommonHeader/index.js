@@ -7,7 +7,7 @@ import RestoreIcon from "@material-ui/icons/Restore";
 import NavDetails from "components/Elements/NavDetails";
 import PropTypes from "prop-types";
 import React from "react";
-import "routes/Applications/CustomCaptions/customCaptions.css";
+import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import Typography from "@material-ui/core/Typography";
 import FormControlLabel from "@material-ui/core/FormControlLabel";

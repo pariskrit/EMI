@@ -1,5 +1,5 @@
 import React from "react";
-import CommonApplicationTable from "components/CommonApplicationTable";
+import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 
 export default {
 	title: "components/CommonApplicationTable",

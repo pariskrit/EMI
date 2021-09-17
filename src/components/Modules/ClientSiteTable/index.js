@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
 	Table,
@@ -52,9 +52,7 @@ const ClientSiteTable = ({
 	headers,
 	onEdit,
 	onDelete,
-	pagination,
 	page,
-	rowsPerPage,
 	onPageChange,
 	count,
 	isLoading,
@@ -197,14 +195,6 @@ const ClientSiteTable = ({
 					)}
 				</TableBody>
 			</Table>
-			{/* {pagination && (
-				<TablePagination
-					page={page}
-					rowsPerPage={rowsPerPage}
-					onPageChange={onPageChange}
-					count={count}
-				/>
-			)} */}
 
 			{/* scroll to load */}
 			{loading && (

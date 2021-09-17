@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import DeleteDialog from "components/Modules/DeleteDialog";
+import DeleteDialog from "components/Elements/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { useParams } from "react-router-dom";

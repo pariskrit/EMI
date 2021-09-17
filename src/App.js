@@ -1,12 +1,11 @@
-import ErrorDialog from "components/Elements/ErrorDialog";
 import React from "react";
+import ErrorDialog from "components/Elements/ErrorDialog";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import MainApp from "pages";
+import Home from "pages/Home/Home";
+import Launch from "pages/Launch/Launch";
+import Login from "pages/Login/Login";
 import "./App.scss";
-import MainApp from "./routes";
-import Home from "./routes/Home/Home";
-import Launch from "./routes/Launch/Launch";
-import Login from "./routes/Login/Login";
-import Sagar from "routes/Clients/Sites/SiteApplication/CustomCaptions";
 
 function App() {
 	return (

@@ -1,15 +1,15 @@
-import React from 'react'
-import AddSiteDepartmentDialog from 'components/SiteDepartment/AddSiteDepartmentDialog'
+import React from "react";
+import AddSiteDepartmentDialog from "pages/Clients/Sites/SiteDepartment/SiteDepartment/AddSiteDepartmentDialog";
 
 export default {
-    title: "components/AddSiteDepartment",
-    component: AddSiteDepartmentDialog
-}
+	title: "components/AddSiteDepartment",
+	component: AddSiteDepartmentDialog,
+};
 
-const Template = (args) => <AddSiteDepartmentDialog {...args} />
+const Template = (args) => <AddSiteDepartmentDialog {...args} />;
 
-export const AddModal = Template.bind({})
+export const AddModal = Template.bind({});
 
-AddModal.args={
-    open: true,
-}
+AddModal.args = {
+	open: true,
+};
