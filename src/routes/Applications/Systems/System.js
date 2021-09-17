@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import Navbar from "../../../components/Navbar";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 import SystemsContent from "./SystemsContent";
 
@@ -18,17 +17,11 @@ const Systems = () => {
 	// Rendering pauses content with Navbar. Otherwise, 404 error
 	if (is404 === false) {
 		return (
-			<Navbar
-				Content={() => {
-					return (
-						<SystemsContent
-							navigation={navigation}
-							id={id}
-							setIs404={setIs404}
-							state={location.state}
-						/>
-					);
-				}}
+			<SystemsContent
+				navigation={navigation}
+				id={id}
+				setIs404={setIs404}
+				state={location.state}
 			/>
 		);
 	} else {
