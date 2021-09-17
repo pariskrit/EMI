@@ -6,6 +6,7 @@ import MainApp from "./routes";
 import Home from "./routes/Home/Home";
 import Launch from "./routes/Launch/Launch";
 import Login from "./routes/Login/Login";
+import Sagar from "routes/Clients/Sites/SiteApplication/CustomCaptions";
 
 function App() {
 	return (
@@ -24,7 +25,6 @@ function App() {
 					<Route path="/launch" exact>
 						<Launch />
 					</Route>
-
 					<MainApp />
 				</Switch>
 			</Router>

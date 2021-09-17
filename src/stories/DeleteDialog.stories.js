@@ -1,4 +1,4 @@
-import DeleteDialog from "components/DeleteDialog/DeleteDialog";
+import DeleteDialog from "components/Modules/DeleteDialog";
 import React from "react";
 
 export default {
