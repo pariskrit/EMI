@@ -19,7 +19,7 @@ import {
 } from "services/clients/sites/siteDetails";
 import "./siteDetails.scss";
 import { Facebook } from "react-spinners-css";
-import AccordionBox from "components/AccordionBox";
+import AccordionBox from "components/Layouts/SiteWrapper/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	required: {

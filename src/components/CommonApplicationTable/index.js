@@ -1,22 +1,21 @@
-import React, { useEffect, useMemo, useState } from "react";
-import PropTypes from "prop-types";
 import {
-	Table,
-	TableBody,
-	TableRow,
-	TableCell,
+	CircularProgress,
 	makeStyles,
 	Paper,
-	CircularProgress,
+	Table,
+	TableBody,
+	TableCell,
+	TableRow,
 } from "@material-ui/core";
-import clsx from "clsx";
-import TableStyle from "styles/application/TableStyle";
-import ColourConstants from "helpers/colourConstants";
-import PopupMenu from "components/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import clsx from "clsx";
+import PopupMenu from "components/Elements/PopupMenu";
+import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
-import TablePagination from "components/TablePagination";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import TableStyle from "styles/application/TableStyle";
 
 const AT = TableStyle();
 
