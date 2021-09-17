@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import Navbar from "../../../components/Navbar";
 import DefectRiskRatingsContent from "./DefectRiskRatingsContent";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 
@@ -18,17 +17,11 @@ const DefectRiskRatings = () => {
 	// Rendering data content with Navbar. Otherwise, 404 error
 	if (is404 === false) {
 		return (
-			<Navbar
-				Content={() => {
-					return (
-						<DefectRiskRatingsContent
-							navigation={navigation}
-							id={id}
-							setIs404={setIs404}
-							state={location.state}
-						/>
-					);
-				}}
+			<DefectRiskRatingsContent
+				navigation={navigation}
+				id={id}
+				setIs404={setIs404}
+				state={location.state}
 			/>
 		);
 	} else {

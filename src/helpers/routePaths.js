@@ -9,6 +9,9 @@ export const siteAssetPath = "/assets";
 export const siteDepartmentPath = "/departments";
 export const siteLocationPath = "/locations";
 
+//Site Application
+export const siteApplicationPath = sitePath + "/applications/:id";
+
 //Applications
 export const applicationListPath = "/applicationList";
 export const applicationPath = "/application";

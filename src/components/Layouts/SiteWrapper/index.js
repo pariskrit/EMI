@@ -1,33 +1,13 @@
-import {
-	createMuiTheme,
-	makeStyles,
-	ThemeProvider,
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import RestoreIcon from "@material-ui/icons/Restore";
-import Navbar from "components/Navbar";
-import NavButtons from "components/Modules/NavButtons";
 import NavDetails from "components/Elements/NavDetails";
+import NavButtons from "components/Modules/NavButtons";
 import PropTypes from "prop-types";
 import React from "react";
 import "routes/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
 const AT = ActionButtonStyle();
-
-const theme = createMuiTheme({
-	overrides: {
-		// Accordion override is making the accordion title static vs. default dynamic
-		MuiAccordionSummary: {
-			root: {
-				height: 48,
-				"&$expanded": {
-					height: 48,
-					minHeight: 48,
-				},
-			},
-		},
-	},
-});
 
 const media = "@media (max-width: 414px)";
 
@@ -75,44 +55,36 @@ const SiteWrapper = ({
 	const classes = useStyles();
 
 	return (
-		<ThemeProvider theme={theme}>
-			<Navbar
-				Content={() => (
-					<div className="container">
-						<div className={"topContainerCustomCaptions"}>
-							<NavDetails status={true} lastSaved={lastSaved} />
-							<div className={showAdd || showImport ? classes.wrapper : ""}>
-								<div className={classes.buttons}>
-									{showImport && (
-										<AT.GeneralButton
-											onClick={onClickImport}
-											className={classes.importButton}
-										>
-											Import from list
-										</AT.GeneralButton>
-									)}
-									{showAdd && (
-										<AT.GeneralButton onClick={onClickAdd}>
-											Add New
-										</AT.GeneralButton>
-									)}
-								</div>
-								<div className="restore">
-									<RestoreIcon className={classes.restore} />
-								</div>
-							</div>
-						</div>
-
-						<NavButtons
-							navigation={navigation}
-							current={current}
-							onClick={onNavClick}
-						/>
-						<Component />
+		<div className="container">
+			<div className={"topContainerCustomCaptions"}>
+				<NavDetails status={true} lastSaved={lastSaved} />
+				<div className={showAdd || showImport ? classes.wrapper : ""}>
+					<div className={classes.buttons}>
+						{showImport && (
+							<AT.GeneralButton
+								onClick={onClickImport}
+								className={classes.importButton}
+							>
+								Import from list
+							</AT.GeneralButton>
+						)}
+						{showAdd && (
+							<AT.GeneralButton onClick={onClickAdd}>Add New</AT.GeneralButton>
+						)}
 					</div>
-				)}
+					<div className="restore">
+						<RestoreIcon className={classes.restore} />
+					</div>
+				</div>
+			</div>
+
+			<NavButtons
+				navigation={navigation}
+				current={current}
+				onClick={onNavClick}
 			/>
-		</ThemeProvider>
+			<Component />
+		</div>
 	);
 };
 

@@ -1,34 +1,31 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
-import clsx from "clsx";
-import CssBaseline from "@material-ui/core/CssBaseline";
+// Bottom Navigation
+import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import ColourConstants from "../helpers/colourConstants";
-import { applicationListPath, clientsPath } from "helpers/routePaths";
-import "./componentStyle.scss";
-
+import { makeStyles } from "@material-ui/core/styles";
+import MiniLogo from "assets/EMI-symbol.png";
+import { ReactComponent as AnalyticsIcon } from "assets/icons/analyticsIcon.svg";
+import { ReactComponent as ApplicationIcon } from "assets/icons/applicationsIcon.svg";
 // Importing icons
-import { ReactComponent as ClientIcon } from "../assets/icons/clientsIcon.svg";
-import { ReactComponent as ApplicationIcon } from "../assets/icons/applicationsIcon.svg";
-import { ReactComponent as ModelIcon } from "../assets/icons/modelsIcon.svg";
-import { ReactComponent as UserIcon } from "../assets/icons/usersIcon.svg";
-import { ReactComponent as AnalyticsIcon } from "../assets/icons/analyticsIcon.svg";
-import { ReactComponent as OpenIcon } from "../assets/icons/open-panel.svg";
-import { ReactComponent as CloseIcon } from "../assets/icons/close-panel.svg";
-import { ReactComponent as UserProfileIcon } from "../assets/icons/user-profile.svg";
-
+import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
+import { ReactComponent as CloseIcon } from "assets/icons/close-panel.svg";
+import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
+import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
+import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
+import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 // Logo imports
-import LargeLogo from "../assets/LargeLogoWhite.png";
-import MiniLogo from "../assets/EMI-symbol.png";
-
-// Bottom Navigation
-import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
+import LargeLogo from "assets/LargeLogoWhite.png";
+import clsx from "clsx";
+import ColourConstants from "helpers/colourConstants";
+import { applicationListPath, clientsPath } from "helpers/routePaths";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./componentStyle.scss";
+import "./style.scss";
 
 // Size constants
 const drawerWidth = 240;
@@ -191,22 +188,25 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Navbar({ Content }) {
+function Navbar() {
 	// Init hooks
 	const classes = useStyles();
 
 	// Setting state
 	const [open, setOpen] = useState(false);
+	const [activeLink, setActiveLink] = useState("Applications");
 
 	// Handlers
 	const handleDrawerChange = () => {
 		setOpen(!open);
 	};
 
-	return (
-		<div className={classes.root}>
-			<CssBaseline />
+	const onListItemClick = (clickedItem) => {
+		setActiveLink(clickedItem);
+	};
 
+	return (
+		<>
 			<div className="drawerDesktop">
 				<Drawer
 					variant="permanent"
@@ -242,57 +242,44 @@ function Navbar({ Content }) {
 							// Storing SVG
 							let NavIcon = item[1];
 
-							// Note: Currently hardcoding current selection -- pull from global state
-							// when implemented
-							if (index === 1) {
-								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
+							return (
+								<Link to={item[2]} className={classes.navLink} key={item[0]}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+										key={item[0]}
+										onClick={() => onListItemClick(item[0])}
+									>
+										<ListItem
+											button
+											className={
+												item[0] === activeLink
+													? classes.currentItemBackground
+													: null
+											}
 										>
-											<ListItem
-												button
-												key={item[0]}
-												className={classes.currentItemBackground}
-											>
-												<ListItemIcon className={classes.navIconContainer}>
-													<NavIcon
-														className={classes.navIconCurrent}
-														alt={`${item[0]} icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{
-														primary: classes.listItemTextPrimaryCurrent,
-													}}
-													primary={item[0]}
+											<ListItemIcon className={classes.navIconContainer}>
+												<NavIcon
+													className={
+														item[0] === activeLink
+															? classes.navIconCurrent
+															: classes.navIcon
+													}
+													alt={`${item[0]} icon`}
 												/>
-											</ListItem>
-										</div>
-									</Link>
-								);
-							} else {
-								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<ListItem button key={item[0]}>
-												<ListItemIcon className={classes.navIconContainer}>
-													<NavIcon
-														className={classes.navIcon}
-														alt={`${item[0]} icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{ primary: classes.listItemTextPrimary }}
-													primary={item[0]}
-												/>
-											</ListItem>
-										</div>
-									</Link>
-								);
-							}
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary:
+														item[0] === activeLink
+															? classes.listItemTextPrimaryCurrent
+															: classes.listItemTextPrimary,
+												}}
+												primary={item[0]}
+											/>
+										</ListItem>
+									</div>
+								</Link>
+							);
 						})}
 					</List>
 
@@ -436,12 +423,8 @@ function Navbar({ Content }) {
 					</div>
 				</BottomNavigation>
 			</div>
-
-			<main className={classes.content}>
-				<Content />
-			</main>
-		</div>
+		</>
 	);
 }
 
-export default Navbar;
+export default React.memo(Navbar);

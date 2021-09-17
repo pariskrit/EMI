@@ -19,6 +19,7 @@ import {
 } from "services/clients/sites/siteDetails";
 import "./siteDetails.scss";
 import { Facebook } from "react-spinners-css";
+import AccordionBox from "components/Layouts/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -174,181 +175,189 @@ const SiteDetails = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	if (isLoading) {
-		return <CircularProgress />;
-	}
-
 	return (
 		<>
-			{/* Desktop View */}
-			<div className="siteDetailsContainerDesktop">
-				<Grid container spacing={2}>
-					<Grid item sm={6}>
-						<div className={classes.siteContainer}>
-							<Typography variant="subtitle2">
-								Site name<span className={classes.required}>*</span>
-							</Typography>
-							<TextField
-								name="name"
-								InputProps={{
-									endAdornment:
-										newInput.label === "name" && newInput.isUpdating ? (
-											<Facebook size={20} color="#A79EB4" />
-										) : null,
-								}}
-								disabled={newInput.label === "name" && newInput.isUpdating}
-								fullWidth
-								variant="outlined"
-								value={newSiteDetails?.name || ""}
-								onChange={onInputChange}
-								onBlur={onUpdateInput}
-								onFocus={setSelectedInputValue}
-								onKeyDown={onEnterKeyPress}
-							/>
-						</div>
-					</Grid>
-					<Grid item sm={6}>
-						<div className={classes.siteContainer}>
-							<Typography variant="subtitle2">
-								Region<span className={classes.required}>*</span>
-							</Typography>
-							<Dropdown
-								options={listOfRegions.map((region, index) => ({
-									label: region.name,
-									value: index,
-								}))}
-								selectedValue={selectedRegion}
-								label=""
-								required={true}
-								onChange={(value) => onDropDownInputChange(value, "region")}
-								width="auto"
-							/>
-						</div>
-					</Grid>
-					<Grid item sm={6}>
-						<div className={classes.siteContainer}>
-							<Typography variant="subtitle2">
-								Company Name<span className={classes.required}>*</span>
-							</Typography>
-							<TextField
-								name="company"
-								InputProps={{
-									endAdornment:
-										newInput.label === "company" && newInput.isUpdating ? (
-											<Facebook size={20} color="#A79EB4" />
-										) : null,
-								}}
-								disabled={newInput.label === "company" && newInput.isUpdating}
-								fullWidth
-								variant="outlined"
-								value={newSiteDetails?.company || ""}
-								onChange={onInputChange}
-								onBlur={onUpdateInput}
-								onFocus={setSelectedInputValue}
-								onKeyDown={onEnterKeyPress}
-							/>
-						</div>
-					</Grid>
-					<Grid item sm={6}>
-						<div className={classes.siteContainer}>
-							<Typography variant="subtitle2">
-								Address<span className={classes.required}>*</span>
-							</Typography>
-							<TextField
-								name="address"
-								InputProps={{
-									endAdornment:
-										newInput.label === "address" && newInput.isUpdating ? (
-											<Facebook size={20} color="#A79EB4" />
-										) : null,
-								}}
-								disabled={newInput.label === "address" && newInput.isUpdating}
-								fullWidth
-								variant="outlined"
-								value={newSiteDetails?.address || ""}
-								onChange={onInputChange}
-								onBlur={onUpdateInput}
-								onFocus={setSelectedInputValue}
-								onKeyDown={onEnterKeyPress}
-								multiline
-							/>
-						</div>
-					</Grid>
-					<Grid item sm={6}>
-						<div className={classes.siteContainer}>
-							<Typography variant="subtitle2">
-								Business Number<span className={classes.required}>*</span>
-							</Typography>
-							<TextField
-								name="businessNumber"
-								InputProps={{
-									endAdornment:
-										newInput.label === "businessNumber" &&
-										newInput.isUpdating ? (
-											<Facebook size={20} color="#A79EB4" />
-										) : null,
-								}}
-								disabled={
-									newInput.label === "businessNumber" && newInput.isUpdating
-								}
-								fullWidth
-								variant="outlined"
-								value={newSiteDetails?.businessNumber || ""}
-								onChange={onInputChange}
-								onBlur={onUpdateInput}
-								onFocus={setSelectedInputValue}
-								onKeyDown={onEnterKeyPress}
-							/>
-						</div>
-					</Grid>
-					<Grid item sm={6}>
-						<div className={classes.siteContainer}>
-							<Typography variant="subtitle2">
-								Licence Type<span className={classes.required}>*</span>
-							</Typography>
-							<Dropdown
-								options={siteOptions}
-								selectedValue={selectedLicenseType}
-								label=""
-								required={true}
-								width="auto"
-								onChange={(value) => onDropDownInputChange(value, "license")}
-								disabled={clientLicenseType !== 3}
-							/>
-						</div>
-					</Grid>
-					<Grid item sm={6}>
-						<div className={classes.siteContainer}>
-							<Typography variant="subtitle2">
-								Total Licence Count<span className={classes.required}>*</span>
-							</Typography>
-							<TextField
-								name="licenses"
-								InputProps={{
-									endAdornment:
-										newInput.label === "licenses" && newInput.isUpdating ? (
-											<Facebook size={20} color="#A79EB4" />
-										) : null,
-								}}
-								disabled={
-									(![0, 1].includes(selectedLicenseType.value) &&
-										clientLicenseType === 3) ||
-									(newInput.label === "licenses" && newInput.isUpdating)
-								}
-								fullWidth
-								type="number"
-								variant="outlined"
-								value={newSiteDetails?.licenses || ""}
-								onChange={onInputChange}
-								onBlur={onUpdateInput}
-								onFocus={setSelectedInputValue}
-								onKeyDown={onEnterKeyPress}
-							/>
-						</div>
-					</Grid>
-				</Grid>
-			</div>
-
+			<AccordionBox title="Site Details">
+				{/* Desktop View */}
+				{isLoading ? (
+					<CircularProgress />
+				) : (
+					<div className="siteDetailsContainerDesktop">
+						<Grid container spacing={2}>
+							<Grid item sm={6}>
+								<div className={classes.siteContainer}>
+									<Typography variant="subtitle2">
+										Site name<span className={classes.required}>*</span>
+									</Typography>
+									<TextField
+										name="name"
+										InputProps={{
+											endAdornment:
+												newInput.label === "name" && newInput.isUpdating ? (
+													<Facebook size={20} color="#A79EB4" />
+												) : null,
+										}}
+										disabled={newInput.label === "name" && newInput.isUpdating}
+										fullWidth
+										variant="outlined"
+										value={newSiteDetails?.name || ""}
+										onChange={onInputChange}
+										onBlur={onUpdateInput}
+										onFocus={setSelectedInputValue}
+										onKeyDown={onEnterKeyPress}
+									/>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.siteContainer}>
+									<Typography variant="subtitle2">
+										Region<span className={classes.required}>*</span>
+									</Typography>
+									<Dropdown
+										options={listOfRegions.map((region, index) => ({
+											label: region.name,
+											value: index,
+										}))}
+										selectedValue={selectedRegion}
+										label=""
+										required={true}
+										onChange={(value) => onDropDownInputChange(value, "region")}
+										width="auto"
+									/>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.siteContainer}>
+									<Typography variant="subtitle2">
+										Company Name<span className={classes.required}>*</span>
+									</Typography>
+									<TextField
+										name="company"
+										InputProps={{
+											endAdornment:
+												newInput.label === "company" && newInput.isUpdating ? (
+													<Facebook size={20} color="#A79EB4" />
+												) : null,
+										}}
+										disabled={
+											newInput.label === "company" && newInput.isUpdating
+										}
+										fullWidth
+										variant="outlined"
+										value={newSiteDetails?.company || ""}
+										onChange={onInputChange}
+										onBlur={onUpdateInput}
+										onFocus={setSelectedInputValue}
+										onKeyDown={onEnterKeyPress}
+									/>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.siteContainer}>
+									<Typography variant="subtitle2">
+										Address<span className={classes.required}>*</span>
+									</Typography>
+									<TextField
+										name="address"
+										InputProps={{
+											endAdornment:
+												newInput.label === "address" && newInput.isUpdating ? (
+													<Facebook size={20} color="#A79EB4" />
+												) : null,
+										}}
+										disabled={
+											newInput.label === "address" && newInput.isUpdating
+										}
+										fullWidth
+										variant="outlined"
+										value={newSiteDetails?.address || ""}
+										onChange={onInputChange}
+										onBlur={onUpdateInput}
+										onFocus={setSelectedInputValue}
+										onKeyDown={onEnterKeyPress}
+										multiline
+									/>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.siteContainer}>
+									<Typography variant="subtitle2">
+										Business Number<span className={classes.required}>*</span>
+									</Typography>
+									<TextField
+										name="businessNumber"
+										InputProps={{
+											endAdornment:
+												newInput.label === "businessNumber" &&
+												newInput.isUpdating ? (
+													<Facebook size={20} color="#A79EB4" />
+												) : null,
+										}}
+										disabled={
+											newInput.label === "businessNumber" && newInput.isUpdating
+										}
+										fullWidth
+										variant="outlined"
+										value={newSiteDetails?.businessNumber || ""}
+										onChange={onInputChange}
+										onBlur={onUpdateInput}
+										onFocus={setSelectedInputValue}
+										onKeyDown={onEnterKeyPress}
+									/>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.siteContainer}>
+									<Typography variant="subtitle2">
+										Licence Type<span className={classes.required}>*</span>
+									</Typography>
+									<Dropdown
+										options={siteOptions}
+										selectedValue={selectedLicenseType}
+										label=""
+										required={true}
+										width="auto"
+										onChange={(value) =>
+											onDropDownInputChange(value, "license")
+										}
+										disabled={clientLicenseType !== 3}
+									/>
+								</div>
+							</Grid>
+							<Grid item sm={6}>
+								<div className={classes.siteContainer}>
+									<Typography variant="subtitle2">
+										Total Licence Count
+										<span className={classes.required}>*</span>
+									</Typography>
+									<TextField
+										name="licenses"
+										InputProps={{
+											endAdornment:
+												newInput.label === "licenses" && newInput.isUpdating ? (
+													<Facebook size={20} color="#A79EB4" />
+												) : null,
+										}}
+										disabled={
+											(![0, 1].includes(selectedLicenseType.value) &&
+												clientLicenseType === 3) ||
+											(newInput.label === "licenses" && newInput.isUpdating)
+										}
+										fullWidth
+										type="number"
+										variant="outlined"
+										value={newSiteDetails?.licenses || ""}
+										onChange={onInputChange}
+										onBlur={onUpdateInput}
+										onFocus={setSelectedInputValue}
+										onKeyDown={onEnterKeyPress}
+									/>
+								</div>
+							</Grid>
+						</Grid>
+					</div>
+				)}
+			</AccordionBox>
 			{/* Mobile View */}
 			<div className="siteDetailsContainerMobile">
 				<Grid container spacing={2}>

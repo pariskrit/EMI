@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import Navbar from "../../../components/Navbar";
 import ApplicationNavigation from "../../../helpers/applicationNavigation";
 import RolesContent from "./RolesContent";
 
@@ -18,19 +17,11 @@ const Roles = () => {
 	// Rendering positions content with Navbar. Otherwise, 404 error
 	if (is404 === false) {
 		return (
-			<Navbar
-				Content={() => {
-					return (
-						<div>
-							<RolesContent
-								navigation={navigation}
-								id={id}
-								setIs404={setIs404}
-								state={location.state}
-							/>
-						</div>
-					);
-				}}
+			<RolesContent
+				navigation={navigation}
+				id={id}
+				setIs404={setIs404}
+				state={location.state}
 			/>
 		);
 	} else {
