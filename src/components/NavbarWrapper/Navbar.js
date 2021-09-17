@@ -22,9 +22,8 @@ import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
 import { applicationListPath, clientsPath } from "helpers/routePaths";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "./componentStyle.scss";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./style.scss";
 
 // Size constants
@@ -194,15 +193,12 @@ function Navbar() {
 
 	// Setting state
 	const [open, setOpen] = useState(false);
-	const [activeLink, setActiveLink] = useState("Applications");
+	const location = useLocation();
+	let activeLink = location.pathname.split("/")[1];
 
 	// Handlers
 	const handleDrawerChange = () => {
 		setOpen(!open);
-	};
-
-	const onListItemClick = (clickedItem) => {
-		setActiveLink(clickedItem);
 	};
 
 	return (
@@ -247,12 +243,11 @@ function Navbar() {
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
 										key={item[0]}
-										onClick={() => onListItemClick(item[0])}
 									>
 										<ListItem
 											button
 											className={
-												item[0] === activeLink
+												item[0].toLowerCase() === activeLink
 													? classes.currentItemBackground
 													: null
 											}
@@ -260,7 +255,7 @@ function Navbar() {
 											<ListItemIcon className={classes.navIconContainer}>
 												<NavIcon
 													className={
-														item[0] === activeLink
+														item[0].toLowerCase() === activeLink
 															? classes.navIconCurrent
 															: classes.navIcon
 													}
@@ -270,7 +265,7 @@ function Navbar() {
 											<ListItemText
 												classes={{
 													primary:
-														item[0] === activeLink
+														item[0].toLowerCase() === activeLink
 															? classes.listItemTextPrimaryCurrent
 															: classes.listItemTextPrimary,
 												}}
