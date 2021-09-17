@@ -13,7 +13,6 @@ import clsx from "clsx";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
-import useInfiniteScroll from "hooks/useInfiniteScroll";
 import PropTypes from "prop-types";
 import TableStyle from "styles/application/TableStyle";
 
@@ -44,32 +43,19 @@ const useStyles = makeStyles({
 	},
 });
 
-const ClientSiteTable = ({
+const CommonApplicationTable = ({
 	data,
 	setData,
 	columns,
 	headers,
 	onEdit,
 	onDelete,
-	pagination,
-	page,
-	rowsPerPage,
-	onPageChange,
-	count,
 	isLoading,
-	searchText,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
-	const { hasMore, loading, gotoTop } = useInfiniteScroll(
-		data,
-		count,
-		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
-		page,
-		searchText
-	);
 
 	// Handlers
 	const handleSortClick = (field) => {
@@ -192,41 +178,11 @@ const ClientSiteTable = ({
 					)}
 				</TableBody>
 			</Table>
-			{/* {pagination && (
-				<TablePagination
-					page={page}
-					rowsPerPage={rowsPerPage}
-					onPageChange={onPageChange}
-					count={count}
-				/>
-			)} */}
-
-			{/* scroll to load */}
-			{loading && (
-				<div style={{ padding: "16px 10px" }}>
-					<b>Loading...</b>
-				</div>
-			)}
-
-			{!hasMore && (
-				<div
-					style={{ textAlign: "center", padding: "16px 10px" }}
-					className="flex justify-center"
-				>
-					<b>Yay! You have seen it all</b>
-					<span
-						className="link-color ml-md cursor-pointer"
-						onClick={() => gotoTop()}
-					>
-						Go to top
-					</span>
-				</div>
-			)}
 		</AT.TableContainer>
 	);
 };
 
-ClientSiteTable.defaultProps = {
+CommonApplicationTable.defaultProps = {
 	data: [
 		{
 			id: 1,
@@ -241,16 +197,14 @@ ClientSiteTable.defaultProps = {
 	headers: ["Name"],
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
-	pagination: false,
 };
 
-ClientSiteTable.propTypes = {
+CommonApplicationTable.propTypes = {
 	data: PropTypes.array,
 	columns: PropTypes.array,
 	headers: PropTypes.array,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
-	pagination: PropTypes.bool,
 };
 
-export default ClientSiteTable;
+export default CommonApplicationTable;
