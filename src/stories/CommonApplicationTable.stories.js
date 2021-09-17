@@ -13,9 +13,11 @@ export const CommonApplicationTableComponent = Template.bind({});
 CommonApplicationTableComponent.args = {
 	data: [
 		{
-			name: "XYZ",
+			id: 1,
+			name: "XXYZ",
 		},
 		{
+			id: 2,
 			name: "ABC",
 		},
 	],

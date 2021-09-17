@@ -24,7 +24,6 @@ function App() {
 					<Route path="/launch" exact>
 						<Launch />
 					</Route>
-
 					<MainApp />
 				</Switch>
 			</Router>

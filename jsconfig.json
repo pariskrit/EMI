@@ -6,7 +6,7 @@
 			"components/*": ["components/*"],
 			"styles/*": ["styles/*"],
 			"scss/*": ["styles/scss/*"],
-			"routes/*": ["routes/*"],
+			"pages/*": ["pages/*"],
 			"assets/*": ["assets/*"],
 			"helpers/*": ["helpers/*"],
 			"services/*": ["services/*"]

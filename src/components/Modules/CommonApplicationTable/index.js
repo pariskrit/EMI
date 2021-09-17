@@ -15,6 +15,8 @@ import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
 import PropTypes from "prop-types";
 import TableStyle from "styles/application/TableStyle";
+import DeleteDialog from "components/Elements/DeleteDialog";
+import EditDialog from "./EditModal";
 
 const AT = TableStyle();
 
@@ -58,6 +60,10 @@ const CommonApplicationTable = ({
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [selectedID, setSelectedID] = useState(null);
+	const [openEditDialog, setOpenEditDialog] = useState(false);
+	const [editData, setEditData] = useState(null);
 
 	// Handlers
 	const handleSortClick = (field) => {
@@ -76,112 +82,152 @@ const CommonApplicationTable = ({
 		return <CircularProgress />;
 	}
 
-	return (
-		<AT.TableContainer component={Paper} elevation={0}>
-			<Table aria-label="Table">
-				<AT.TableHead>
-					<TableRow className={classes.tableHead}>
-						{headers.map((header, index) => (
-							<TableCell
-								key={header}
-								onClick={() => {
-									handleSortClick(columns[index]);
-								}}
-								className={clsx(classes.nameRow, {
-									[classes.selectedTableHeadRow]:
-										currentTableSort[0] === columns[index],
-									[classes.tableHeadRow]:
-										currentTableSort[0] !== columns[index],
-								})}
-							>
-								<AT.CellContainer className="flex justify-between">
-									{header}
-									{currentTableSort[0] === columns[index] &&
-									currentTableSort[1] === "desc" ? (
-										<AT.DefaultArrow fill="#FFFFFF" />
-									) : (
-										<AT.DescArrow fill="#FFFFFF" />
-									)}
-								</AT.CellContainer>
-							</TableCell>
-						))}
-					</TableRow>
-				</AT.TableHead>
-				<TableBody>
-					{data.length !== 0 ? (
-						data.map((row, index) => (
-							<TableRow key={row.id}>
-								{columns.map((col, i, arr) => (
-									<TableCell
-										key={col}
-										component="th"
-										scope="row"
-										className={clsx(classes.dataCell, classes.nameRow, {
-											[classes.lastCell]: index === data.length - 1,
-										})}
-									>
-										<AT.CellContainer key={col}>
-											<AT.TableBodyText>{row[col]}</AT.TableBodyText>
-											{arr.length === i + 1 ? (
-												<AT.DotMenu
-													onClick={(e) => {
-														setAnchorEl(
-															anchorEl === e.currentTarget
-																? null
-																: e.currentTarget
-														);
-														setSelectedData(
-															anchorEl === e.currentTarget ? null : index
-														);
-													}}
-												>
-													<AT.TableMenuButton>
-														<MenuIcon />
-													</AT.TableMenuButton>
+	//Delete
+	const handleDeleteDialogClose = () => {
+		setSelectedID(null);
+		setOpenDeleteDialog(false);
+	};
 
-													<PopupMenu
-														index={index}
-														selectedData={selectedData}
-														anchorEl={anchorEl}
-														id={row.id}
-														clickAwayHandler={() => {
-															setAnchorEl(null);
-															setSelectedData(null);
-														}}
-														menuData={[
-															{
-																name: "Edit",
-																handler: () => onEdit(row.id),
-																isDelete: false,
-															},
-															{
-																name: "Delete",
-																handler: () => onDelete(row.id),
-																isDelete: true,
-															},
-														]}
-													/>
-												</AT.DotMenu>
-											) : null}
-										</AT.CellContainer>
-									</TableCell>
-								))}
-							</TableRow>
-						))
-					) : (
-						<TableRow>
-							{headers.map((head, i) => {
-								if (i === 0) {
-									return <TableCell key={head}>No Record Found</TableCell>;
-								} else {
-									return <TableCell key={head}></TableCell>;
-								}
-							})}
+	//Edit
+	const handleEditDialogClose = () => {
+		setOpenEditDialog(false);
+	};
+
+	const handleEdit = (id) => {
+		const detail = [...data].find((x) => x.id === id);
+		setEditData(detail);
+		setOpenEditDialog(true);
+		console.log(id);
+	};
+
+	return (
+		<div>
+			<DeleteDialog
+				entityName="Name"
+				open={openDeleteDialog}
+				deleteID={selectedID}
+				deleteEndpoint=""
+				closeHandler={handleDeleteDialogClose}
+			/>
+
+			<EditDialog
+				open={openEditDialog}
+				closeHandler={handleEditDialogClose}
+				data={editData}
+				// getError={getError}
+			/>
+
+			<AT.TableContainer component={Paper} elevation={0}>
+				<Table aria-label="Table">
+					<AT.TableHead>
+						<TableRow className={classes.tableHead}>
+							{headers.map((header, index) => (
+								<TableCell
+									key={header}
+									onClick={() => {
+										handleSortClick(columns[index]);
+									}}
+									className={clsx(classes.nameRow, {
+										[classes.selectedTableHeadRow]:
+											currentTableSort[0] === columns[index],
+										[classes.tableHeadRow]:
+											currentTableSort[0] !== columns[index],
+									})}
+								>
+									<AT.CellContainer className="flex justify-between">
+										{header}
+										{currentTableSort[0] === columns[index] &&
+										currentTableSort[1] === "desc" ? (
+											<AT.DefaultArrow fill="#FFFFFF" />
+										) : (
+											<AT.DescArrow fill="#FFFFFF" />
+										)}
+									</AT.CellContainer>
+								</TableCell>
+							))}
 						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-		</AT.TableContainer>
+					</AT.TableHead>
+					<TableBody>
+						{data.length !== 0 ? (
+							data.map((row, index) => (
+								<TableRow key={row.id}>
+									{columns.map((col, i, arr) => (
+										<TableCell
+											key={col}
+											component="th"
+											scope="row"
+											className={clsx(classes.dataCell, classes.nameRow, {
+												[classes.lastCell]: index === data.length - 1,
+											})}
+										>
+											<AT.CellContainer key={col}>
+												<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+												{arr.length === i + 1 ? (
+													<AT.DotMenu
+														onClick={(e) => {
+															setAnchorEl(
+																anchorEl === e.currentTarget
+																	? null
+																	: e.currentTarget
+															);
+															setSelectedData(
+																anchorEl === e.currentTarget ? null : index
+															);
+														}}
+													>
+														<AT.TableMenuButton>
+															<MenuIcon />
+														</AT.TableMenuButton>
+
+														<PopupMenu
+															index={index}
+															selectedData={selectedData}
+															anchorEl={anchorEl}
+															id={row.id}
+															clickAwayHandler={() => {
+																setAnchorEl(null);
+																setSelectedData(null);
+															}}
+															menuData={[
+																{
+																	name: "Edit",
+																	handler: () => {
+																		handleEdit(row.id);
+																	},
+																	isDelete: false,
+																},
+																{
+																	name: "Delete",
+																	handler: () => {
+																		setOpenDeleteDialog(true);
+																		setSelectedID(row.id);
+																	},
+																	isDelete: true,
+																},
+															]}
+														/>
+													</AT.DotMenu>
+												) : null}
+											</AT.CellContainer>
+										</TableCell>
+									))}
+								</TableRow>
+							))
+						) : (
+							<TableRow>
+								{headers.map((head, i) => {
+									if (i === 0) {
+										return <TableCell key={head}>No Record Found</TableCell>;
+									} else {
+										return <TableCell key={head}></TableCell>;
+									}
+								})}
+							</TableRow>
+						)}
+					</TableBody>
+				</Table>
+			</AT.TableContainer>
+		</div>
 	);
 };
 
