@@ -33,7 +33,7 @@ const SingleComponent = (route) => {
 				showSwitch={route.showSwitch}
 				handlePatchIsActive={openConfirmationModal}
 				showHistory={route.showHistory}
-				currentStatus={state.details.isActive ?? ""}
+				currentStatus={state.details.isActive ?? false}
 			/>
 			{<route.component state={state} dispatch={dispatch} appId={appId} />}
 		</>

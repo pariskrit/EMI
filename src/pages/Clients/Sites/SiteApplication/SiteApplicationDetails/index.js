@@ -1,6 +1,5 @@
 import { Grid } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
 import Application from "./Application";
 import License from "./License";
 import ServiceOptions from "./ServiceOptions";
