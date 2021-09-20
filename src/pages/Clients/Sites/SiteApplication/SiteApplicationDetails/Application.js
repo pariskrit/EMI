@@ -51,8 +51,8 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: ColourConstants.divider,
 	},
 	imageAssetContainer: {
-		width: 85,
-		height: 85,
+		width: 141,
+		height: 61,
 		marginTop: 10,
 		marginBottom: 10,
 		display: "flex",
@@ -62,10 +62,23 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		alignItems: "center",
 		paddingLeft: 10,
+		gap: "30px",
+	},
+	assetImage: {
+		minWidth: "100%",
+		maxWidth: "100%",
+		minHeight: "100%",
+		maxHeight: "100%",
+		objectFit: "contain",
+		display: "flex",
+		marginRight: 20,
+		borderColor: ColourConstants.commonBorder,
+		borderWidth: 1,
+		borderStyle: "solid",
 	},
 }));
 
-const Application = ({ inputData, setInputData, errors }) => {
+const Application = ({ details }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -83,10 +96,7 @@ const Application = ({ inputData, setInputData, errors }) => {
 							<TextField
 								variant="outlined"
 								fullWidth
-								value={inputData?.name}
-								onChange={(e) => {
-									setInputData({ ...inputData, ...{ name: e.target.value } });
-								}}
+								value={details?.name ?? ""}
 								InputProps={{
 									classes: {
 										input: classes.inputText,
@@ -104,15 +114,9 @@ const Application = ({ inputData, setInputData, errors }) => {
 								variant="outlined"
 								fullWidth
 								multiline
-								rows={2}
-								rowsMax={4}
-								value={inputData?.purpose}
-								onChange={(e) => {
-									setInputData({
-										...inputData,
-										...{ purpose: e.target.value },
-									});
-								}}
+								minRows={2}
+								maxRows={4}
+								value={details?.purpose ?? ""}
 								InputProps={{
 									classes: {
 										input: classes.inputText,
@@ -126,14 +130,16 @@ const Application = ({ inputData, setInputData, errors }) => {
 							</Typography>
 							<Divider className={classes.dividerStyle} />
 
-							<div className={classes.imageAssetContainerRec}>
-								{/* <img src={src} alt={alt} className={classes.assetImage} /> */}
-							</div>
-
 							<div className={classes.linkContainer}>
-								<Typography>
-									<p>Try</p>
-								</Typography>
+								<div className={classes.imageAssetContainer}>
+									<img
+										src={details?.logo?.url}
+										alt="name"
+										className={classes.assetImage}
+									/>
+								</div>
+
+								<Typography>{details?.name}</Typography>
 							</div>
 
 							<Divider className={classes.dividerStyle} />
@@ -154,10 +160,7 @@ const Application = ({ inputData, setInputData, errors }) => {
 							<TextField
 								variant="outlined"
 								fullWidth
-								value={inputData?.name}
-								onChange={(e) => {
-									setInputData({ ...inputData, ...{ name: e.target.value } });
-								}}
+								value={details?.name ?? ""}
 								InputProps={{
 									classes: {
 										input: classes.inputText,
@@ -175,15 +178,9 @@ const Application = ({ inputData, setInputData, errors }) => {
 								variant="outlined"
 								fullWidth
 								multiline
-								rows={2}
-								rowsMax={4}
-								value={inputData?.purpose}
-								onChange={(e) => {
-									setInputData({
-										...inputData,
-										...{ purpose: e.target.value },
-									});
-								}}
+								minRows={2}
+								maxRows={4}
+								value={details?.purpose ?? ""}
 								InputProps={{
 									classes: {
 										input: classes.inputText,
@@ -192,8 +189,6 @@ const Application = ({ inputData, setInputData, errors }) => {
 							/>
 						</div>
 					</Grid>
-
-					<Grid item xs={12}></Grid>
 				</Grid>
 			</AccordionBox>
 		</div>

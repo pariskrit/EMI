@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: "bold",
 		fontSize: "14px",
 	},
+	cardContent: {
+		maxWidth: "fit-content",
+	},
 }));
 function ServiceOptions() {
 	const classes = useStyles();
@@ -33,12 +36,20 @@ function ServiceOptions() {
 					<Typography gutterBottom className={classes.labelText}>
 						User Confirmation Message<span style={{ color: "#E31212" }}>*</span>
 					</Typography>
-					<Card variant="outlined" raised={false}>
-						<CardContent sx={{ padding: "10px" }}>
-							Please confirm that you are the person logged into this device. if
-							not, please cancel the service and log back in under your own
-							profile. Please do not use or share another person's log in
-							details as this document may be uses in a court law.
+					<Card
+						variant="outlined"
+						raised={false}
+						className={classes.cardContent}
+					>
+						<CardContent>
+							<p>
+								Please confirm that you are the person logged into this device.
+								<br /> if not, please cancel the service and log back in under
+								your own profile.
+								<br />
+								<br /> Please do not use or share another person's log in
+								details as this document may be uses in a court law.
+							</p>
 						</CardContent>
 					</Card>
 				</Grid>
@@ -46,19 +57,7 @@ function ServiceOptions() {
 					<div className={classes.tickInputContainer}>
 						<FormGroup className={classes.tickboxSpacing}>
 							<FormControlLabel
-								control={
-									<EMICheckbox
-									// state={inputData.equipmentModelStructure}
-									// changeHandler={() => {
-									// 	setInputData({
-									// 		...inputData,
-									// 		...{
-									// 			equipmentModelStructure: !inputData.equipmentModelStructure,
-									// 		},
-									// 	});
-									// }}
-									/>
-								}
+								control={<EMICheckbox state={true} changeHandler={() => {}} />}
 								label={
 									<Typography className={classes.inputText}>
 										Enable confirm user screen
@@ -70,19 +69,7 @@ function ServiceOptions() {
 					<div className={classes.tickInputContainer}>
 						<FormGroup className={classes.tickboxSpacing}>
 							<FormControlLabel
-								control={
-									<EMICheckbox
-									// state={inputData.equipmentModelStructure}
-									// changeHandler={() => {
-									// 	setInputData({
-									// 		...inputData,
-									// 		...{
-									// 			equipmentModelStructure: !inputData.equipmentModelStructure,
-									// 		},
-									// 	});
-									// }}
-									/>
-								}
+								control={<EMICheckbox state={false} changeHandler={() => {}} />}
 								label={
 									<Typography className={classes.inputText}>
 										Raising a defect copies the task name into the defect

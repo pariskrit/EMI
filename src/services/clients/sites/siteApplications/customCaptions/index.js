@@ -26,4 +26,27 @@ const patchCustomCaptions = async (id, requestData) => {
 
 //#endregion
 
-export { getCustomCaptions, patchCustomCaptions };
+const getSiteApplicationDetail = async (id) => {
+	try {
+		let response = await API.get(`${Apis.Applications}/${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const patchApplicationDetail = async (id, payload) => {
+	try {
+		let response = await API.get(`${Apis.Applications}/${id}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export {
+	getCustomCaptions,
+	patchCustomCaptions,
+	getSiteApplicationDetail,
+	patchApplicationDetail,
+};

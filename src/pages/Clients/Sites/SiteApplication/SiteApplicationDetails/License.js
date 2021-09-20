@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Typography, TextField } from "@material-ui/core";
 import AccordionBox from "components/Layouts/AccordionBox";
 import { makeStyles } from "@material-ui/core/styles";
 import Dropdown from "components/Elements/Dropdown";
-import { siteApplicationOptions } from "helpers/constants";
+import { BASE_API_PATH, siteApplicationOptions } from "helpers/constants";
+import API from "helpers/api";
+import { useParams } from "react-router";
+import { Facebook } from "react-spinners-css";
+import { patchApplicationDetail } from "services/clients/sites/siteApplications/customCaptions";
 
 const useStyles = makeStyles((theme) => ({
 	siteContainer: {
@@ -13,38 +17,96 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function License() {
+function License({ licenseDetails }) {
 	const classes = useStyles();
+	const [input, setInput] = useState({});
+	const [isUpdating, setIsUpdating] = useState(false);
+	const { appId } = useParams();
+
+	const onInputChange = (e) =>
+		setInput({ ...input, [e.target.name]: e.target.value });
+
+	const onDropDownInputChange = async (value) => {
+		setInput({ ...input, licenseType: value.value });
+		try {
+			const result = await patchApplicationDetail(appId, [
+				{
+					op: "replace",
+					path: "licenseType",
+					value: value.value,
+				},
+			]);
+			console.log(result);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const updateInput = async () => {
+		if (licenseDetails.licenses === input.licenses) {
+			return;
+		}
+		setIsUpdating(true);
+		try {
+			const result = await patchApplicationDetail(appId, [
+				{
+					op: "replace",
+					path: "licenses",
+					value: input.licenses,
+				},
+			]);
+			console.log(result);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsUpdating(false);
+		}
+	};
+
+	const onEnterKeyPress = (e) => {
+		if (e.key === "Enter") {
+			updateInput();
+		}
+	};
+
+	useEffect(() => {
+		if (Object.keys(licenseDetails).length > 0) {
+			setInput(licenseDetails);
+		}
+	}, [licenseDetails]);
+
 	return (
 		<AccordionBox title="License">
 			<Grid container spacing={2}>
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<div className={classes.siteContainer}>
 						<Typography variant="subtitle2">Licence Type</Typography>
-						<Dropdown options={siteApplicationOptions} label="" width="auto" />
+						<Dropdown
+							options={siteApplicationOptions}
+							label=""
+							width="auto"
+							selectedValue={siteApplicationOptions[input?.licenseType]}
+							onChange={onDropDownInputChange}
+						/>
 					</div>
 				</Grid>
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<div className={classes.siteContainer}>
 						<Typography variant="subtitle2">Total Licence Count</Typography>
 						<TextField
 							name="licenses"
-							// InputProps={{
-							// 	endAdornment:
-							// 		newInput.label === "licenses" && newInput.isUpdating ? (
-							// 			<Facebook size={20} color="#A79EB4" />
-							// 		) : null,
-							// }}
-
+							value={input?.licenses ?? 0}
+							InputProps={{
+								endAdornment: isUpdating ? (
+									<Facebook size={20} color="#A79EB4" />
+								) : null,
+							}}
 							fullWidth
 							type="number"
 							variant="outlined"
-							value={2}
-
-							// onChange={onInputChange}
-							// onBlur={onUpdateInput}
-							// onFocus={setSelectedInputValue}
-							// onKeyDown={onEnterKeyPress}
+							onChange={onInputChange}
+							onBlur={updateInput}
+							onKeyDown={onEnterKeyPress}
 						/>
 					</div>
 				</Grid>
