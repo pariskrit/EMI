@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import API from "../../../../helpers/api";
-import EditDialogStyle from "../../../../styles/application/EditDialogStyle";
-import PauseDialogStyle from "../../../../styles/application/PauseDialogStyle";
+import API from "helpers/api";
+import EditDialogStyle from "styles/application/EditDialogStyle";
+import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
-import ErrorAlert from "../ErrorAlert";
 import * as yup from "yup";
-import {
-	handleValidateObj,
-	generateErrorState,
-} from "../../../../helpers/utils";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -64,7 +59,7 @@ const EditPauseDialog = ({
 	const handleUpdateData = async (d) => {
 		try {
 			// Attempting to update pause
-			let result = await API.patch(`/api/ApplicationPauses/${editData.id}`, [
+			let result = await API.patch(`/api/Pauses/${editData.id}`, [
 				{
 					op: "replace",
 					path: "name",
@@ -137,6 +132,7 @@ const EditPauseDialog = ({
 			closeOverride();
 		}
 	};
+
 	const handleAddNewClick = () => {
 		setIsAddNew(true);
 	};
@@ -167,9 +163,6 @@ const EditPauseDialog = ({
 				{isUpdating ? <LinearProgress /> : null}
 
 				{/* Alert Render*/}
-				{errors.alert === null ? null : (
-					<ErrorAlert errorMessage={errors.alert} />
-				)}
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">

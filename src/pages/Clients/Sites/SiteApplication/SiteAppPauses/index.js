@@ -8,15 +8,113 @@ import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
 import AddDialog from "./AddDialog/AddDialog";
+import EditDialog from "./EditDialog/EditDialog";
+import DeleteDialog from "components/Elements/DeleteDialog";
 
 const AC = ContentStyle();
 
-const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
-	const { clientId, id, appId } = siteAppIds;
+const SiteAppPauses = ({ state, dispatch, appId }) => {
 	const [data, setData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
-	// const [deleteID, setDeleteID] = useState(null);
 	const [searchedData, setSearchData] = useState([]);
+	const [modal, setModal] = useState({ edit: false, delete: false });
+	const [deleteId, setDeleteId] = useState(null);
+	const [editData, setEditData] = useState(null);
+
+	const handleAddSubcat = (parentId, id, name) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === parentId);
+
+		newData[index].pauseSubcategories.push({
+			applicationPauseID: parentId,
+			id: id,
+			name: name,
+		});
+
+		newData[index].pauseSubcategories.sort((a, b) =>
+			a["name"].toString().localeCompare(b["name"].toString())
+		);
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleUpdateSubcat = (parentId, subcatID, newName) => {
+		const newData = [...data];
+
+		let pauseIndex = newData.findIndex((el) => el.id === parentId);
+		let subcatIndex = newData[pauseIndex].pauseSubcategories.findIndex(
+			(el) => el.id === subcatID
+		);
+
+		newData[pauseIndex].pauseSubcategories[subcatIndex] = {
+			applicationPauseID: parentId,
+			id: subcatID,
+			name: newName,
+		};
+
+		newData[pauseIndex].pauseSubcategories.sort((a, b) =>
+			a["name"].toString().localeCompare(b["name"].toString())
+		);
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleRemoveSubcat = (sub) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === sub.applicationPauseID);
+
+		newData[index].pauseSubcategories = newData[
+			index
+		].pauseSubcategories.filter((item) => {
+			return item.id !== sub.id;
+		});
+
+		newData[index].pauseSubcategories.sort((a, b) =>
+			a["name"].toString().localeCompare(b["name"].toString())
+		);
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleEditDialogOpen = (id) => {
+		setModal((th) => ({ ...th, edit: true }));
+
+		data.forEach((d) => {
+			if (d.id === id) {
+				const dataWithSortedSubcats = d;
+
+				// Sorting subcats before setting
+				dataWithSortedSubcats.pauseSubcategories.sort((a, b) => {
+					// Setting names to upper
+					const nameA = a.name.toUpperCase();
+					const nameB = b.name.toUpperCase();
+
+					if (nameA < nameB) {
+						return -1;
+					}
+					if (nameA > nameB) {
+						return 1;
+					}
+
+					// If equal, 0
+					return 0;
+				});
+
+				// Setting edit data
+				setEditData(dataWithSortedSubcats);
+			}
+		});
+	};
+
+	const handleDeleteDialogOpen = (id) => {
+		setDeleteId(id);
+		setModal((th) => ({ ...modal, delete: true }));
+	};
 
 	const handleGetData = useCallback(async () => {
 		try {
@@ -32,6 +130,36 @@ const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
 			}
 		} catch (err) {}
 	}, [appId]);
+
+	const handleDeleteDialogClose = () => {
+		setDeleteId(null);
+		setModal((th) => ({ ...th, delete: false }));
+	};
+
+	const handleAddData = (item) => {
+		const newData = [...data];
+		newData.push(item);
+		setData(newData);
+	};
+
+	const handleRemoveData = (id) => {
+		const newData = [...data].filter(function (item) {
+			return item.id !== id;
+		});
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleEditData = (d) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === d.id);
+		newData[index] = d;
+
+		// Updating state
+		setData(newData);
+	};
 
 	useEffect(() => {
 		handleGetData();
@@ -52,17 +180,29 @@ const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
 
 	return (
 		<div>
-			{/* <CommonHeaderWrapper
-				showAdd
-				showSwitch={false}
-				onClickAdd={() => {}}
-				current="Pause"
-				navigation={navigation}
-				data={{ name: "sdlkf" }}
-			/> */}
 			<AddDialog
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
+				applicationID={appId}
+				handleAddData={handleAddData}
+			/>
+			<DeleteDialog
+				entityName="Pause"
+				open={modal.delete}
+				closeHandler={handleDeleteDialogClose}
+				deleteID={deleteId}
+				deleteEndpoint="/api/Pauses"
+				handleRemoveData={handleRemoveData}
+			/>
+
+			<EditDialog
+				open={modal.edit}
+				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+				editData={editData}
+				handleRemoveSubcat={handleRemoveSubcat}
+				handleAddSubcat={handleAddSubcat}
+				handleEditData={handleEditData}
+				handleUpdateSubcatStateName={handleUpdateSubcat}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
@@ -120,8 +260,8 @@ const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
 				data={mainData}
 				columns={["name", "totalSub"]}
 				headers={["Name", "Number of subcategories"]}
-				onEdit={(id) => alert("Edit" + id)}
-				onDelete={(id) => alert("Delete" + id)}
+				onEdit={handleEditDialogOpen}
+				onDelete={handleDeleteDialogOpen}
 			/>
 		</div>
 	);
