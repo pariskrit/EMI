@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import clsx from "clsx";
+import PropTypes from "prop-types";
 import {
 	CircularProgress,
 	makeStyles,
@@ -8,15 +10,11 @@ import {
 	TableCell,
 	TableRow,
 } from "@material-ui/core";
-import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import clsx from "clsx";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
-import { handleSort } from "helpers/utils";
-import PropTypes from "prop-types";
 import TableStyle from "styles/application/TableStyle";
-import DeleteDialog from "components/Elements/DeleteDialog";
-import EditDialog from "./EditModal";
+import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { handleSort } from "helpers/utils";
 
 const AT = TableStyle();
 
@@ -60,10 +58,6 @@ const CommonApplicationTable = ({
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
-	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const [selectedID, setSelectedID] = useState(null);
-	const [openEditDialog, setOpenEditDialog] = useState(false);
-	const [editData, setEditData] = useState(null);
 
 	// Handlers
 	const handleSortClick = (field) => {
@@ -82,41 +76,8 @@ const CommonApplicationTable = ({
 		return <CircularProgress />;
 	}
 
-	//Delete
-	const handleDeleteDialogClose = () => {
-		setSelectedID(null);
-		setOpenDeleteDialog(false);
-	};
-
-	//Edit
-	const handleEditDialogClose = () => {
-		setOpenEditDialog(false);
-	};
-
-	const handleEdit = (id) => {
-		const detail = [...data].find((x) => x.id === id);
-		setEditData(detail);
-		setOpenEditDialog(true);
-		console.log(id);
-	};
-
 	return (
 		<div>
-			<DeleteDialog
-				entityName="Name"
-				open={openDeleteDialog}
-				deleteID={selectedID}
-				deleteEndpoint=""
-				closeHandler={handleDeleteDialogClose}
-			/>
-
-			<EditDialog
-				open={openEditDialog}
-				closeHandler={handleEditDialogClose}
-				data={editData}
-				// getError={getError}
-			/>
-
 			<AT.TableContainer component={Paper} elevation={0}>
 				<Table aria-label="Table">
 					<AT.TableHead>
@@ -191,17 +152,12 @@ const CommonApplicationTable = ({
 															menuData={[
 																{
 																	name: "Edit",
-																	handler: () => {
-																		handleEdit(row.id);
-																	},
+																	handler: () => onEdit(row.id),
 																	isDelete: false,
 																},
 																{
 																	name: "Delete",
-																	handler: () => {
-																		setOpenDeleteDialog(true);
-																		setSelectedID(row.id);
-																	},
+																	handler: () => onDelete(row.id),
 																	isDelete: true,
 																},
 															]}
