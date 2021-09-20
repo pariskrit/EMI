@@ -11,7 +11,7 @@ export const siteLocationPath = "/locations";
 
 //Site Application
 export const siteApplicationPath = sitePath + "/applications/:appId";
-export const siteApplicationPausePath = siteApplicationPath + "/pause";
+export const siteApplicationPausePath = siteApplicationPath + "/pauses";
 export const siteApplicationPathCustomCaptions =
 	siteApplicationPath + "/customcaptions";
 

@@ -185,7 +185,7 @@ const IOSSwitchUpdated = withStyles((theme) => ({
 	);
 });
 
-const SiteWrapper = ({
+const CommonHeader = ({
 	status,
 	lastSaved,
 	onClickAdd,
@@ -315,12 +315,15 @@ const SiteWrapper = ({
 	);
 };
 
-SiteWrapper.defaultProps = {
+CommonHeader.defaultProps = {
 	crumbs: ["Parent", "Child", "so on.."],
 	status: false,
 	showAdd: false,
 	showHistory: false,
-	showSwitch: true,
+	showSwitch: false,
+	showDuplicate: false,
+	showSave: false,
+	showImport: false,
 };
 
-export default SiteWrapper;
+export default CommonHeader;
