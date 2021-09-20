@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import ModelStatusesContent from "./ModelStatusesContent";
-import ApplicationNavigation from "../../../helpers/applicationNavigation";
+import ApplicationNavigation from "../../../constants/navigation/applicationNavigation";
 
 function ModelStatuses() {
 	// Init params

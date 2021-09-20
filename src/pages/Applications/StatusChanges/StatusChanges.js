@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import ApplicationNavigation from "../../../helpers/applicationNavigation";
+import ApplicationNavigation from "../../../constants/navigation/applicationNavigation";
 import StatusChangesContent from "./StatusChangesContent";
 
 function StatusChanges() {

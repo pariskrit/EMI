@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import ContentStyle from "styles/application/ContentStyle";
@@ -8,11 +7,12 @@ import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
+import AddDialog from "./AddDialog/AddDialog";
 
 const AC = ContentStyle();
 
-const SiteAppPauses = () => {
-	const { appId } = useParams();
+const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
+	const { clientId, id, appId } = siteAppIds;
 	const [data, setData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	// const [deleteID, setDeleteID] = useState(null);
@@ -52,6 +52,18 @@ const SiteAppPauses = () => {
 
 	return (
 		<div>
+			{/* <CommonHeaderWrapper
+				showAdd
+				showSwitch={false}
+				onClickAdd={() => {}}
+				current="Pause"
+				navigation={navigation}
+				data={{ name: "sdlkf" }}
+			/> */}
+			<AddDialog
+				open={state.showAdd}
+				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
+			/>
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Pause Reasons"}
