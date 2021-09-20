@@ -37,7 +37,7 @@ const getSiteApplicationDetail = async (id) => {
 
 const patchApplicationDetail = async (id, payload) => {
 	try {
-		let response = await API.get(`${Apis.Applications}/${id}`, payload);
+		let response = await API.patch(`${Apis.Applications}/${id}`, payload);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

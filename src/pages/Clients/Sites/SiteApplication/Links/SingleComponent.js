@@ -12,6 +12,11 @@ const SingleComponent = (route) => {
 
 	const navigation = SiteApplicationNavigation(clientId, id, appId);
 
+	const openAddModal = () => dispatch({ type: "ADD_TOGGLE" });
+
+	const openConfirmationModal = () =>
+		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: true });
+
 	return (
 		<>
 			<CommonHeaderWrapper
@@ -24,18 +29,13 @@ const SingleComponent = (route) => {
 						: state.applicationName
 				}
 				showAdd={route.showAdd}
-				onClickAdd={() => dispatch({ type: "ADD_TOGGLE" })}
+				onClickAdd={openAddModal}
 				showSwitch={route.showSwitch}
-				handlePatchIsActive={() => {}}
+				handlePatchIsActive={openConfirmationModal}
 				showHistory={route.showHistory}
+				currentStatus={state.details.isActive ?? ""}
 			/>
-			{
-				<route.component
-					state={state}
-					dispatch={dispatch}
-					siteAppIds={siteAppIds}
-				/>
-			}
+			{<route.component state={state} dispatch={dispatch} appId={appId} />}
 		</>
 	);
 };

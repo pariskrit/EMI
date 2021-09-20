@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import AccordionBox from "components/Layouts/AccordionBox";
 import ApplicationTable from "components/Modules/ApplicationTable";
-import ConfirmChangeDialog from "./ConfirmChangeDialog";
+import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import AddSiteApplicationModal from "./AddSiteApplicationModal";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";

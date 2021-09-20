@@ -1,5 +1,5 @@
 import React from "react";
-import ConfirmChangeDialog from "pages/Clients/Sites/SiteDetail/ConfirmChangeDialog";
+import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 
 export default {
 	title: "Components/ConfirmChangeDialog",
