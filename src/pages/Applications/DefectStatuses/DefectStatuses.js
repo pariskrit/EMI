@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import DefectStatusesContent from "./DefectStatusesContent";
-import ApplicationNavigation from "../../../helpers/applicationNavigation";
+import ApplicationNavigation from "constants/navigation/applicationNavigation";
 
 function DefectStatuses() {
 	// Init params

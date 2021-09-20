@@ -19,7 +19,7 @@ import {
 	StatusChangesPath,
 	stopsPath,
 	systemsPath,
-} from "./routePaths";
+} from "helpers/routePaths";
 
 /**
  * NOTE: This is currently a helper. In production, this data may come from either the API
