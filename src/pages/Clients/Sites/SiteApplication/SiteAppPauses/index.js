@@ -7,6 +7,7 @@ import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
+import AddDialog from "./AddDialog/AddDialog";
 
 const AC = ContentStyle();
 
@@ -59,6 +60,10 @@ const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
 				navigation={navigation}
 				data={{ name: "sdlkf" }}
 			/> */}
+			<AddDialog
+				open={state.showAdd}
+				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
+			/>
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Pause Reasons"}

@@ -8,7 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
-import ErrorAlert from "../ErrorAlert";
+import ErrorAlert from "pages/Applications/Pauses/ErrorAlert";
 //import * as yup from "yup";
 //import { handleValidateObj, generateErrorState, handleSort } from "helpers/utils";
 

@@ -24,7 +24,7 @@ const SingleComponent = (route) => {
 						: state.applicationName
 				}
 				showAdd={route.showAdd}
-				onClickAdd={() => dispatch({ type: "ADD_TOGGLE", payload: true })}
+				onClickAdd={() => dispatch({ type: "ADD_TOGGLE" })}
 				showSwitch={route.showSwitch}
 				handlePatchIsActive={() => {}}
 				showHistory={route.showHistory}

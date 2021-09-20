@@ -11,7 +11,7 @@ function reducer(state, action) {
 		case "ADD_TOGGLE":
 			return {
 				...state,
-				showAdd: action.payload,
+				showAdd: !state.showAdd,
 			};
 		case "SET_APP_NAME":
 			return {
