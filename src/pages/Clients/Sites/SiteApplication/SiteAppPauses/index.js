@@ -33,6 +33,8 @@ const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
 		} catch (err) {}
 	}, [appId]);
 
+	const handleAddData = async (main) => {};
+
 	useEffect(() => {
 		handleGetData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,17 +54,11 @@ const SiteAppPauses = ({ state, dispatch, siteAppIds }) => {
 
 	return (
 		<div>
-			{/* <CommonHeaderWrapper
-				showAdd
-				showSwitch={false}
-				onClickAdd={() => {}}
-				current="Pause"
-				navigation={navigation}
-				data={{ name: "sdlkf" }}
-			/> */}
 			<AddDialog
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
+				applicationID={appId}
+				handleAddData={handleAddData}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel

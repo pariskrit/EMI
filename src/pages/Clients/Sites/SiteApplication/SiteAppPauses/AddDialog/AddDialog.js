@@ -8,20 +8,19 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
-import ErrorAlert from "pages/Applications/Pauses/ErrorAlert";
-//import * as yup from "yup";
-//import { handleValidateObj, generateErrorState, handleSort } from "helpers/utils";
+import * as yup from "yup";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
 const ADD = AddDialogStyle();
 const APD = PauseDialogStyle();
 
 // Yup validation schema
-/*const schema = yup.object({
+const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-});*/
+});
 
 // Default state schemas
 const defaultErrorSchema = { name: null, alert: null };
@@ -120,38 +119,38 @@ const AddPauseDialog = ({
 
 		// Attempting to create
 		try {
-			//const localChecker = await handleValidateObj(schema, input);
+			const localChecker = await handleValidateObj(schema, input);
 
-			//if (!localChecker.some((el) => el.valid === false)) {
-			const result = await API.post("/api/ApplicationPauses", {
-				applicationId: applicationID,
-				name: input.name,
-				pauseSubcategories: subcats.map((name) => ({ name: name })),
-			});
+			if (!localChecker.some((el) => el.valid === false)) {
+				const result = await API.post("/api/Pauses", {
+					applicationId: applicationID,
+					name: input.name,
+					pauseSubcategories: subcats.map((name) => ({ name: name })),
+				});
 
-			// Handling success
-			if (result.status === 201) {
-				// Adding data to state
-				handleAddData(result.data);
+				// Handling success
+				if (result.status === 201) {
+					// Adding data to state
+					handleAddData(result.data);
 
-				// Removing loading indicator
-				setIsUpdating(false);
+					// Removing loading indicator
+					setIsUpdating(false);
 
-				// Closing dialog
-				closeOverride();
+					// Closing dialog
+					closeOverride();
 
-				return true;
+					return true;
+				} else {
+					throw new Error(result);
+				}
 			} else {
-				throw new Error(result);
-			}
-			/*} else {
 				const newErrors = generateErrorState(localChecker);
 
 				setErrors({ ...errors, ...newErrors });
 				setIsUpdating(false);
 
 				return false;
-			}*/
+			}
 		} catch (err) {
 			if (
 				err.response.data.detail !== null ||
@@ -161,7 +160,7 @@ const AddPauseDialog = ({
 				setIsUpdating(false);
 
 				// Setting alert error
-				setErrors({ ...errors, ...{ alert: err.response.data.detail } });
+				setErrors({ ...errors, ...{ name: err.response.data.detail } });
 			} else {
 				// Removing loading indicator
 				setIsUpdating(false);
@@ -193,11 +192,6 @@ const AddPauseDialog = ({
 				aria-describedby="alert-dialog-description"
 			>
 				{isUpdating ? <LinearProgress /> : null}
-
-				{/* Alert Render*/}
-				{errors.alert === null ? null : (
-					<ErrorAlert errorMessage={errors.alert} />
-				)}
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
