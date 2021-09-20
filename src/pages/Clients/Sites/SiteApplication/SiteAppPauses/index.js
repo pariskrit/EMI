@@ -20,6 +20,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 	const [modal, setModal] = useState({ edit: false, delete: false });
 	const [deleteId, setDeleteId] = useState(null);
 	const [editData, setEditData] = useState(null);
+	const [loading, setLoading] = useState(false);
 
 	const handleAddSubcat = (parentId, id, name) => {
 		const newData = [...data];
@@ -117,6 +118,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 	};
 
 	const handleGetData = useCallback(async () => {
+		setLoading(true);
 		try {
 			let result = await API.get(`${BASE_API_PATH}Pauses?siteAppId=${appId}`);
 			if (result.status === 200) {
@@ -126,6 +128,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 				}));
 
 				handleSort(mainData, setData, "name", "asc");
+				setLoading(false);
 				return result;
 			}
 		} catch (err) {}
@@ -262,6 +265,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 				headers={["Name", "Number of subcategories"]}
 				onEdit={handleEditDialogOpen}
 				onDelete={handleDeleteDialogOpen}
+				isLoading={loading}
 			/>
 		</div>
 	);
