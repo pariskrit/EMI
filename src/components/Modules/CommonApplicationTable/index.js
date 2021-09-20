@@ -111,7 +111,7 @@ const CommonApplicationTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{data.length !== 0 ? (
-							(searchQuery === "" ? data : searchedData).map((row, index) => (
+							data.map((row, index) => (
 								<TableRow key={row.id}>
 									{columns.map((col, i, arr) => (
 										<TableCell
