@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import ApplicationContent from "./ApplicationContent";
-import applicationNavigation from "../../../helpers/applicationNavigation";
+import applicationNavigation from "constants/navigation/applicationNavigation";
 
 function Application() {
 	// Init params
