@@ -125,7 +125,7 @@ const AddPauseDialog = ({
 				const result = await API.post("/api/Pauses", {
 					applicationId: applicationID,
 					name: input.name,
-					pauseSubcategories: subcats.map((name) => ({ name: name })),
+					// pauseSubcategories: subcats.map((name) => ({ name: name })),
 				});
 
 				// Handling success
