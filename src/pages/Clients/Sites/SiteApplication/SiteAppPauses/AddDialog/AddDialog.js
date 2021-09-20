@@ -123,9 +123,9 @@ const AddPauseDialog = ({
 
 			if (!localChecker.some((el) => el.valid === false)) {
 				const result = await API.post("/api/Pauses", {
-					applicationId: applicationID,
+					siteAppId: applicationID,
 					name: input.name,
-					// pauseSubcategories: subcats.map((name) => ({ name: name })),
+					pauseSubcategories: subcats.map((name) => ({ name: name })),
 				});
 
 				// Handling success

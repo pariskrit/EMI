@@ -136,7 +136,11 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		setModal((th) => ({ ...th, delete: false }));
 	};
 
-	const handleAddData = async (main) => {};
+	const handleAddData = (item) => {
+		const newData = [...data];
+		newData.push(item);
+		setData(newData);
+	};
 
 	const handleRemoveData = (id) => {
 		const newData = [...data].filter(function (item) {
