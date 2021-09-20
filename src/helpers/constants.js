@@ -21,6 +21,12 @@ export const siteOptions = [
 	{ label: "Application-Based Licencing", value: 3 },
 ];
 
+export const siteApplicationOptions = [
+	{ label: "Total Users", value: 0 },
+	{ label: "Concurrent Users", value: 1 },
+	{ label: "Per Job", value: 2 },
+];
+
 export const siteScreenNavigation = [
 	{ name: "Details", url: siteDetailPath },
 	{ name: "Assets", url: siteAssetPath },
