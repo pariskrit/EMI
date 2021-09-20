@@ -29,13 +29,7 @@ const SingleComponent = (route) => {
 				handlePatchIsActive={() => {}}
 				showHistory={route.showHistory}
 			/>
-			{
-				<route.component
-					state={state}
-					dispatch={dispatch}
-					siteAppIds={siteAppIds}
-				/>
-			}
+			{<route.component state={state} dispatch={dispatch} appId={appId} />}
 		</>
 	);
 };

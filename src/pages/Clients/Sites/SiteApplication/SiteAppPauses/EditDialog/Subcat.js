@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import API from "../../../../helpers/api";
-import SubcatStyle from "../../../../styles/application/SubcatStyle";
+import API from "helpers/api";
+import SubcatStyle from "styles/application/SubcatStyle";
 
 // Init styled components
 const AS = SubcatStyle();
@@ -29,9 +29,7 @@ const Subcat = ({
 		// Attemptint to delete subcat
 		try {
 			// Making patch to backend
-			const result = await API.delete(
-				`/api/ApplicationPauseSubcategories/${sub.id}`
-			);
+			const result = await API.delete(`/api/PauseSubcategories/${sub.id}`);
 
 			// Handling success
 			if (result.status === 200) {
@@ -79,16 +77,13 @@ const Subcat = ({
 
 		// Attempting to update name
 		try {
-			const result = await API.patch(
-				`/api/ApplicationPauseSubcategories/${sub.id}`,
-				[
-					{
-						op: "replace",
-						path: "name",
-						value: subcatName,
-					},
-				]
-			);
+			const result = await API.patch(`/api/PauseSubcategories/${sub.id}`, [
+				{
+					op: "replace",
+					path: "name",
+					value: subcatName,
+				},
+			]);
 
 			// Handling succesful update
 			if (result.status === 200) {
