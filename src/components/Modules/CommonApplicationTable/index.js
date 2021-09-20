@@ -14,6 +14,7 @@ import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
 import TableStyle from "styles/application/TableStyle";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { handleSort } from "helpers/utils";
 
 const AT = TableStyle();
 
@@ -48,7 +49,6 @@ const CommonApplicationTable = ({
 	setSearch,
 	searchQuery,
 	columns,
-	handleSort,
 	headers,
 	onEdit,
 	onDelete,
