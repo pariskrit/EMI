@@ -20,9 +20,14 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	const [data, setData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchedData] = useState([]);
+	const [confirmDefault, setConfirmDefault] = useState([null, null]);
 	const [defaultData, setDefaultData] = useState(null);
 	const [loading, setLoading] = useState(false);
-	const [modal, setModal] = useState({ edit: false, delete: false });
+	const [modal, setModal] = useState({
+		edit: false,
+		delete: false,
+		default: false,
+	});
 	const [editData, setEditData] = useState({});
 	const [deleteId, setDeleteId] = useState(null);
 
@@ -69,6 +74,11 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	const onDeleteClick = (id) => {
 		setModal((th) => ({ ...th, delete: true }));
 		setDeleteId(id);
+	};
+
+	const onDefaultClick = (id, name) => {
+		setConfirmDefault([id, name]);
+		setModal((th) => ({ ...th, default: true }));
 	};
 
 	const handleAddData = (item) => {
@@ -196,7 +206,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				defaultID={defaultData}
 				onEdit={onEditClick}
 				onDelete={onDeleteClick}
-				onDefault={() => {}}
+				onDefault={onDefaultClick}
 				searchQuery={searchQuery}
 				isLoading={loading}
 			/>

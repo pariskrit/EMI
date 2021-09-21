@@ -218,7 +218,7 @@ const ModelStatusesTable = ({
 													},
 													{
 														name: "Make Default Status",
-														handler: () => onDefault(d.id),
+														handler: () => onDefault(d.id, d.name),
 														isDelete: false,
 													},
 												]}
