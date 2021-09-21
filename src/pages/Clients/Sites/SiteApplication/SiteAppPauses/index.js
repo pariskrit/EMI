@@ -28,7 +28,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		let index = newData.findIndex((el) => el.id === parentId);
 
 		newData[index].pauseSubcategories.push({
-			applicationPauseID: parentId,
+			pauseID: parentId,
 			id: id,
 			name: name,
 		});
@@ -50,7 +50,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		);
 
 		newData[pauseIndex].pauseSubcategories[subcatIndex] = {
-			applicationPauseID: parentId,
+			pauseID: parentId,
 			id: subcatID,
 			name: newName,
 		};
@@ -66,7 +66,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 	const handleRemoveSubcat = (sub) => {
 		const newData = [...data];
 
-		let index = newData.findIndex((el) => el.id === sub.applicationPauseID);
+		let index = newData.findIndex((el) => el.id === sub.pauseID);
 
 		newData[index].pauseSubcategories = newData[
 			index
