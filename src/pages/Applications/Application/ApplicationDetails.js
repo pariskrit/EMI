@@ -98,8 +98,8 @@ const ApplicationDetails = ({ inputData, setInputData, errors }) => {
 								variant="outlined"
 								fullWidth
 								multiline
-								rows={2}
-								rowsMax={4}
+								minRows={2}
+								maxRows={4}
 								value={inputData.purpose}
 								onChange={(e) => {
 									setInputData({

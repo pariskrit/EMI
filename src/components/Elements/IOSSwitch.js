@@ -77,6 +77,7 @@ const SwitchButton = withStyles((theme) => ({
 
 const IOSSwitch = ({ name, onChange, currentStatus }) => {
 	const classes = useStyles();
+
 	return (
 		<FormControlLabel
 			className={classes.statusSwitch}

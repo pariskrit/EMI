@@ -2,8 +2,8 @@ import React, { createContext, useReducer } from "react";
 
 const initialState = {
 	showAdd: false,
-	applicationName: "",
-	siteAppDetail: {},
+	openConfirmationModal: false,
+	details: {},
 };
 
 function reducer(state, action) {
@@ -13,15 +13,17 @@ function reducer(state, action) {
 				...state,
 				showAdd: !state.showAdd,
 			};
-		case "SET_APP_NAME":
-			return {
-				...state,
-				applicationName: action.payload,
-			};
+
 		case "SET_SITE_APP_DETAIL": {
 			return {
 				...state,
-				siteAppDetail: action.payload,
+				details: action.payload,
+			};
+		}
+		case "TOGGLE_CONFIRMATION_MODAL": {
+			return {
+				...state,
+				openConfirmationModal: action.payload,
 			};
 		}
 		default:
