@@ -51,8 +51,6 @@ const AddStatusDialog = ({
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 
-			console.log(localChecker);
-
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				// Creating new data
@@ -82,8 +80,8 @@ const AddStatusDialog = ({
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/ApplicationModelStatuses", {
-				applicationId: applicationID,
+			const result = await API.post("/api/modelstatuses", {
+				siteAppID: applicationID,
 				name: input.name,
 				publish: input.publish,
 			});
@@ -93,7 +91,7 @@ const AddStatusDialog = ({
 				// Adding new type to state
 				handleAddData({
 					id: result.data,
-					applicationID: applicationID,
+					siteAppID: applicationID,
 					name: input.name,
 					publish: input.publish,
 				});

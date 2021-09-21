@@ -17,6 +17,8 @@ export const siteApplicationPathCustomCaptions =
 	siteApplicationPath + "/customcaptions";
 export const siteApplicationPathStopsReasons =
 	siteApplicationPath + "/stopsreasons";
+export const sitApplicationPathModelStatuses =
+	siteApplicationPath + "/modelstatuses";
 
 //Applications
 export const applicationListPath = "/applications";
