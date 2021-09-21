@@ -9,6 +9,8 @@ import { Card, CardContent, Grid } from "@material-ui/core";
 import { useParams } from "react-router";
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const useStyles = makeStyles((theme) => ({
 	inputText: {
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 		maxWidth: "fit-content",
 	},
 }));
-function ServiceOptions({ details }) {
+function ServiceOptions({ details, setError }) {
 	const classes = useStyles();
 	const [checkLists, setCheckLists] = useState({});
 	const { appId } = useParams();
@@ -47,6 +49,10 @@ function ServiceOptions({ details }) {
 				value: !showServiceUserConfirmation,
 			},
 		]);
+
+		if (!result.status) {
+			setError(result.data.detail);
+		}
 	};
 
 	const onraisingDefectCopiesTaskNameChange = async (e) => {
@@ -62,6 +68,10 @@ function ServiceOptions({ details }) {
 				value: !raisingDefectCopiesTaskName,
 			},
 		]);
+
+		if (!result.status) {
+			setError(result.data.detail);
+		}
 	};
 
 	const onTextAreaChange = (e) => {
@@ -70,7 +80,7 @@ function ServiceOptions({ details }) {
 
 	const handleConfirmationMessageUpdate = async () => {
 		const { userConfirmationMessage } = checkLists;
-		console.log(details, userConfirmationMessage);
+
 		if (details.userConfirmationMessage === userConfirmationMessage) {
 			return;
 		}
@@ -81,7 +91,10 @@ function ServiceOptions({ details }) {
 				value: userConfirmationMessage,
 			},
 		]);
-		console.log(result);
+
+		if (!result.status) {
+			setError(result.data.detail);
+		}
 	};
 
 	const onKeyPress = (e) => {
@@ -164,4 +177,10 @@ function ServiceOptions({ details }) {
 	);
 }
 
-export default ServiceOptions;
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+	setError: (message) => dispatch(showError(message)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceOptions);
