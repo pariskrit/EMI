@@ -23,6 +23,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	const [defaultData, setDefaultData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [modal, setModal] = useState({ edit: false, delete: false });
+	const [editData, setEditData] = useState({});
 
 	const handleGetData = useCallback(async () => {
 		setLoading(true);
@@ -55,9 +56,28 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		}
 	}, [appId]);
 
+	const onEditClick = (id) => {
+		let index = data.findIndex((el) => el.id === id);
+
+		if (index >= 0) {
+			setEditData(data[index]);
+			setModal((th) => ({ ...th, edit: true }));
+		}
+	};
+
 	const handleAddData = (item) => {
 		const newData = [...data];
 		newData.push(item);
+		setData(newData);
+	};
+
+	const handleEditData = (d) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === d.id);
+		newData[index] = d;
+
+		// Updating state
 		setData(newData);
 	};
 
@@ -87,7 +107,13 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				handleAddData={handleAddData}
 				getError={getError}
 			/>
-			<EditStatusDialog />
+			<EditStatusDialog
+				open={modal.edit}
+				data={editData}
+				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+				handleEditData={handleEditData}
+				getError={getError}
+			/>
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Model Statuses"}
@@ -143,7 +169,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				setData={setData}
 				data={mainData}
 				defaultID={defaultData}
-				onEdit={() => {}}
+				onEdit={onEditClick}
 				onDelete={() => {}}
 				onDefault={() => {}}
 				searchQuery={searchQuery}

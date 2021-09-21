@@ -25,7 +25,13 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, publish: null };
 const defaultStateSchema = { name: "", publish: false };
 
-const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
+const EditStatusDialog = ({
+	open,
+	closeHandler,
+	data,
+	handleEditData,
+	getError,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -102,7 +108,9 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 				throw new Error(result);
 			}
 		} catch (err) {
-			if (err.response.data.errors !== undefined) {
+			if (err.response.data.detail) {
+				getError(err.response.data.detail);
+			} else if (err.response.data.errors !== undefined) {
 				setErrors({ ...errors, ...err.response.data.errors });
 			} else {
 				// If no explicit errors provided, throws to caller
