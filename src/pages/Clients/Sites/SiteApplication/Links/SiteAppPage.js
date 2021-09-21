@@ -4,15 +4,15 @@ import {
 	siteApplicationPath,
 	siteApplicationPathCustomCaptions,
 	siteApplicationPausePath,
-	siteApplicationPathStopsReasons,
+	siteApplicationOperationModesPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppPauses from "../SiteAppPauses";
-import SiteAppStopsReasons from "../StopReasons";
 import SingleComponent from "./SingleComponent";
+import OperatingModes from "../OperatingModes";
 
 const routes = [
 	{
@@ -39,6 +39,15 @@ const routes = [
 		component: CustomCaptions,
 		showAdd: true,
 		showHistory: true,
+		showSwitch: false,
+	},
+	{
+		id: 59,
+		name: "Task Definitions",
+		path: siteApplicationOperationModesPath,
+		component: OperatingModes,
+		showAdd: true,
+		showHistory: false,
 		showSwitch: false,
 	},
 ];
