@@ -130,8 +130,12 @@ const AddPauseDialog = ({
 
 				// Handling success
 				if (result.status === 201) {
+					const data = result.data;
 					// Adding data to state
-					handleAddData(result.data);
+					handleAddData({
+						...data,
+						totalSub: data.pauseSubcategories.length,
+					});
 
 					// Removing loading indicator
 					setIsUpdating(false);

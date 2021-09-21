@@ -27,7 +27,7 @@ const NewSubcat = ({
 		try {
 			// Attempting to create subcat
 			let addedSubcat = await API.post(`/api/PauseSubcategories`, {
-				applicationPauseId: editData.id,
+				pauseID: editData.id,
 				name: subcatName,
 			});
 
