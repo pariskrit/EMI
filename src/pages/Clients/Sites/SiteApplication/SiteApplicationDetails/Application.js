@@ -96,6 +96,7 @@ const Application = ({ details }) => {
 							<TextField
 								variant="outlined"
 								fullWidth
+								disabled
 								value={details?.name ?? ""}
 								InputProps={{
 									classes: {
@@ -114,6 +115,7 @@ const Application = ({ details }) => {
 							<TextField
 								variant="outlined"
 								fullWidth
+								disabled
 								value={details?.purpose ?? ""}
 								InputProps={{
 									classes: {
