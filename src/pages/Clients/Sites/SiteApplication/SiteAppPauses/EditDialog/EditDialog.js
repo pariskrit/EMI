@@ -39,6 +39,7 @@ const EditPauseDialog = ({
 	handleAddSubcat,
 	handleEditData,
 	handleUpdateSubcatStateName,
+	getError,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -86,7 +87,8 @@ const EditPauseDialog = ({
 				err.response.data.detail !== null ||
 				err.response.data.detail !== undefined
 			) {
-				setErrors({ ...errors, ...{ alert: err.response.data.detail } });
+				// setErrors({ ...errors, ...{ alert: err.response.data.detail } });
+				getError(err.response.data.detail);
 			} else {
 				// If no explicit errors provided, throws to caller
 				throw new Error(err);
@@ -223,6 +225,7 @@ const EditPauseDialog = ({
 								setIsUpdating={setIsUpdating}
 								handleAddSubcat={handleAddSubcat}
 								setIsAddNew={setIsAddNew}
+								getError={getError}
 							/>
 						) : null}
 
@@ -237,6 +240,7 @@ const EditPauseDialog = ({
 											sub={sub}
 											handleRemoveSubcat={handleRemoveSubcat}
 											handleUpdateSubcatStateName={handleUpdateSubcatStateName}
+											getError={getError}
 										/>
 									);
 							  })}
