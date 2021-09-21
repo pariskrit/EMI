@@ -16,6 +16,8 @@ export const siteApplicationPausePath = siteApplicationPath + "/pauses";
 export const siteApplicationPathCustomCaptions =
 	siteApplicationPath + "/customcaptions";
 export const siteApplicationPathStopsReasons = siteApplicationPath + "/stops";
+export const siteApplicationPathSkippedTasks =
+	siteApplicationPath + "/skippedtasks";
 
 //Applications
 export const applicationListPath = "/applications";

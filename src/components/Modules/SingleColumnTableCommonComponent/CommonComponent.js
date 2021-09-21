@@ -195,9 +195,10 @@ const StopsContent = ({
 				handleEditData={handleEditData}
 				getError={getError}
 				patchAPI={apis.patchAPI}
+				header={header}
 			/>
 			<DeleteDialog
-				entityName="Stop Reason"
+				entityName={header}
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
 				deleteEndpoint={apis.deleteAPI}
