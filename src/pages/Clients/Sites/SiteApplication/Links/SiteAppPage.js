@@ -5,6 +5,9 @@ import {
 	siteApplicationPathCustomCaptions,
 	siteApplicationPausePath,
 	siteApplicationPathStopsReasons,
+	siteApplicationPathSkippedTasks,
+	siteApplicationPathMissingItems,
+	siteApplicationPathStatusChanges,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import { Route } from "react-router-dom";
@@ -56,6 +59,39 @@ const routes = [
 		showSwitch: false,
 		header: "Stop Reasons",
 		api: differentAPIs.StopReasonsAPIs,
+	},
+	{
+		id: 61,
+		name: "Reason Definitions",
+		path: siteApplicationPathSkippedTasks,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Skipped Tasks",
+		api: differentAPIs.SkippedTasksAPIs,
+	},
+	{
+		id: 58,
+		name: "Reason Definitions",
+		path: siteApplicationPathMissingItems,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Missing Part or Tool Reasons",
+		api: differentAPIs.MissingPartAPIs,
+	},
+	{
+		id: 50,
+		name: "Reason Definitions",
+		path: siteApplicationPathStatusChanges,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Status Changes",
+		api: differentAPIs.StatusChangesAPIs,
 	},
 ];
 

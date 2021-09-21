@@ -5,7 +5,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import { addStopReasons } from "services/clients/sites/siteApplications/stopReasons";
 
 // Init styled components
 const ADD = AddDialogStyle();

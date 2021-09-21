@@ -5,7 +5,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import { patchStopReasons } from "services/clients/sites/siteApplications/stopReasons";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -28,6 +27,7 @@ const EditStopDialog = ({
 	handleEditData,
 	getError,
 	patchAPI,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -146,7 +146,7 @@ const EditStopDialog = ({
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit Stop</AED.HeaderText>}
+						{<AED.HeaderText>Edit {header}</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeOverride} variant="contained">
