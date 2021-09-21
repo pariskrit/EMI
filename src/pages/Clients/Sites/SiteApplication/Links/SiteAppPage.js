@@ -11,8 +11,11 @@ import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppPauses from "../SiteAppPauses";
-import SiteAppStopsReasons from "../StopReasons";
 import SingleComponent from "./SingleComponent";
+import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
+
+//New Added
+import differentAPIs from "helpers/differentAPIs";
 
 const routes = [
 	{
@@ -35,11 +38,24 @@ const routes = [
 	},
 	{
 		id: 3,
+		name: "Details",
 		path: siteApplicationPathCustomCaptions,
 		component: CustomCaptions,
+		showAdd: false,
+		showHistory: true,
+		showSwitch: false,
+	},
+
+	{
+		id: 62,
+		name: "Reason Definitions",
+		path: siteApplicationPathStopsReasons,
+		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
+		header: "Stop Reasons",
+		api: differentAPIs.StopReasonsAPIs,
 	},
 ];
 

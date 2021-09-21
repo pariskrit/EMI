@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import applicationNavigation from "constants/navigation/applicationNavigation";
 import CustomCaptionsContent from "./CustomCaptionsContent";
 
-const CustomCaptions = () => {
+const CustomCaptions = ({ state, dispatch }) => {
 	// Init params
 	const { appId } = useParams();
 
