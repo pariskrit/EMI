@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import API from "../../../../helpers/api";
-import SubcatStyle from "../../../../styles/application/SubcatStyle";
+import API from "helpers/api";
+import SubcatStyle from "styles/application/SubcatStyle";
 
 // Init styled components
 const AS = SubcatStyle();
@@ -26,8 +26,8 @@ const NewSubcat = ({
 	const handleCreateSubcat = async () => {
 		try {
 			// Attempting to create subcat
-			let addedSubcat = await API.post(`/api/ApplicationPauseSubcategories`, {
-				applicationPauseId: editData.id,
+			let addedSubcat = await API.post(`/api/PauseSubcategories`, {
+				pauseID: editData.id,
 				name: subcatName,
 			});
 

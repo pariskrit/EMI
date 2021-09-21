@@ -15,6 +15,7 @@ const BASE_API_PATH_SITE_APPLICATIONS = `${BASE_API_PATH}siteapps`;
 const BASE_API_PATH_SITES_LOCATIONS = `${BASE_API_PATH}SiteLocations`;
 const BASE_API_PATH_SITES_DEPARTMENTS = `${BASE_API_PATH}SiteDepartments`;
 const BASE_API_PATH_SITE_ASSET_COUNT = `${BASE_API_PATH}SiteAssets/Count`;
+const BASE_API_PATH_STOP_REASONS = `${BASE_API_PATH}StopReasons`;
 
 export const Apis = {
 	//client detail screen
@@ -45,4 +46,7 @@ export const Apis = {
 	Applications: `${BASE_API_PATH_SITE_APPLICATIONS}`,
 	SiteLocations: `${BASE_API_PATH_SITES_LOCATIONS}`,
 	SiteDepartments: `${BASE_API_PATH_SITES_DEPARTMENTS}`,
+
+	//stop reasons
+	StopReasons: `${BASE_API_PATH_STOP_REASONS}`,
 };
