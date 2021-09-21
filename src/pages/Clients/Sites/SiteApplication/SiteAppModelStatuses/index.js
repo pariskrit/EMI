@@ -150,6 +150,39 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		}
 	};
 
+	// useEffect(() => {
+	// 	const getApplicationData = async () => {
+	// 		// Attempting to get data
+	// 		try {
+	// 			// Getting data from API
+	// 			let result = await API.get(`/api/siteapps/${appId}/defaults`);
+
+	// 			// if success, adding data to state
+	// 			if (result.status === 200) {
+	// 				// Setting application name
+
+	// 				// Setting default
+	// 				setDefaultData(result.data.defaultModelStatusID);
+	// 			} else {
+	// 				// If error, throwing to catch
+	// 				throw new Error(result);
+	// 			}
+	// 		} catch (err) {
+	// 			// TODO: real error handling
+	// 			console.log(err);
+	// 			return false;
+	// 		}
+	// 	};
+
+	// 	// Getting application and updating state
+	// 	getApplicationData()
+	// 		.then(() => {
+	// 			console.log("application name updated");
+	// 		})
+	// 		.catch((err) => console.log(err));
+	// 	// eslint-disable-next-line
+	// }, []);
+
 	useEffect(() => {
 		handleGetData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -189,7 +222,6 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				data={confirmDefault}
 				entity="Status"
 				handleDefaultUpdate={handleDefaultUpdate}
-				getError={getError}
 			/>
 			<DeleteDialog
 				entityName="Model Status"
