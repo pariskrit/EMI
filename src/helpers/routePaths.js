@@ -15,7 +15,12 @@ export const siteApplicationPath = sitePath + "/applications/:appId";
 export const siteApplicationPausePath = siteApplicationPath + "/pauses";
 export const siteApplicationPathCustomCaptions =
 	siteApplicationPath + "/customcaptions";
-export const siteApplicationPathStopsReasons = siteApplicationPath + "/stops";
+export const siteApplicationPathStopsReasons =
+	siteApplicationPath + "/stopsreasons";
+export const sitApplicationPathModelStatuses =
+	siteApplicationPath + "/modelstatuses";
+export const siteApplicationPathModelTypes =
+	siteApplicationPath + "/modeltypes";
 
 //Applications
 export const applicationListPath = "/applications";

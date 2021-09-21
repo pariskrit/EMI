@@ -5,6 +5,8 @@ import {
 	siteApplicationPathCustomCaptions,
 	siteApplicationPausePath,
 	siteApplicationPathStopsReasons,
+	sitApplicationPathModelStatuses,
+	siteApplicationPathModelTypes,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import { Route } from "react-router-dom";
@@ -12,6 +14,7 @@ import SiteApplication from "..";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
+import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 
 //New Added
@@ -19,7 +22,7 @@ import differentAPIs from "helpers/differentAPIs";
 
 const routes = [
 	{
-		id: 1,
+		id: 46,
 		name: "Details",
 		path: siteApplicationPath,
 		component: SiteApplicationDetails,
@@ -28,7 +31,7 @@ const routes = [
 		showSwitch: true,
 	},
 	{
-		id: 2,
+		id: 108,
 		name: "Reason Definitions",
 		path: siteApplicationPausePath,
 		component: SiteAppPauses,
@@ -37,7 +40,7 @@ const routes = [
 		showSwitch: false,
 	},
 	{
-		id: 3,
+		id: 51,
 		name: "Details",
 		path: siteApplicationPathCustomCaptions,
 		component: CustomCaptions,
@@ -57,6 +60,26 @@ const routes = [
 		header: "Stop Reasons",
 		api: differentAPIs.StopReasonsAPIs,
 	},
+	{
+		id: 48,
+		name: "Model Definitions",
+		path: sitApplicationPathModelStatuses,
+		component: SiteAppModelStatuses,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+	},
+	{
+		id: 49,
+		name: "Model Definitions",
+		path: siteApplicationPathModelTypes,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Model Types",
+		api: differentAPIs.ModelTypesAPIs,
+	},
 ];
 
 const SiteAppPage = () => {
@@ -68,15 +91,6 @@ const SiteAppPage = () => {
 						<SingleComponent {...route} />
 					</Route>
 				))}
-				{/* <Route path={siteApplicationPath} exact>
-					<SiteApplicationDetails />
-				</Route>
-				<Route path={siteApplicationPausePath} exact>
-					<SiteAppPauses />
-				</Route>
-				<Route path={siteApplicationPathCustomCaptions} exact>
-					<CustomCaptions />
-				</Route> */}
 			</SiteApplication>
 		</SiteApplicationContext>
 	);

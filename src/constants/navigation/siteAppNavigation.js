@@ -51,11 +51,11 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Statuses",
-					link: `${links}/statuses`,
+					link: `${links}/modelstatuses`,
 				},
 				{
 					title: "Types",
-					link: `${links}/types`,
+					link: `${links}/modeltypes`,
 				},
 			],
 		},

@@ -12,7 +12,7 @@ function SingleColumnTableCommonComponent({
 	apis,
 }) {
 	// Init params
-	const { id } = useParams();
+	const { appId } = useParams();
 
 	// Init state
 	const [is404, setIs404] = useState(false);
@@ -21,14 +21,14 @@ function SingleColumnTableCommonComponent({
 	if (is404 === false) {
 		return (
 			<CommonComponent
-				id={id}
+				id={appId}
 				setIs404={setIs404}
 				getError={getError}
 				{...{ header, apis, state, dispatch }}
 			/>
 		);
 	} else {
-		return <p>404: Application id {id} does not exist.</p>;
+		return <p>404: Application id {appId} does not exist.</p>;
 	}
 }
 

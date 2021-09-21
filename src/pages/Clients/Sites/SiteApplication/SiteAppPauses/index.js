@@ -10,10 +10,12 @@ import { handleSort } from "helpers/utils";
 import AddDialog from "./AddDialog/AddDialog";
 import EditDialog from "./EditDialog/EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const AC = ContentStyle();
 
-const SiteAppPauses = ({ state, dispatch, appId }) => {
+const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	const [data, setData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchData] = useState([]);
@@ -36,6 +38,8 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		newData[index].pauseSubcategories.sort((a, b) =>
 			a["name"].toString().localeCompare(b["name"].toString())
 		);
+
+		newData[index].totalSub = newData[index].totalSub + 1;
 
 		// Updating state
 		setData(newData);
@@ -77,6 +81,8 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		newData[index].pauseSubcategories.sort((a, b) =>
 			a["name"].toString().localeCompare(b["name"].toString())
 		);
+
+		newData[index].totalSub = newData[index].totalSub - 1;
 
 		// Updating state
 		setData(newData);
@@ -188,6 +194,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
 				applicationID={appId}
 				handleAddData={handleAddData}
+				getError={getError}
 			/>
 			<DeleteDialog
 				entityName="Pause"
@@ -206,6 +213,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 				handleAddSubcat={handleAddSubcat}
 				handleEditData={handleEditData}
 				handleUpdateSubcatStateName={handleUpdateSubcat}
+				getError={getError}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
@@ -271,4 +279,8 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 	);
 };
 
-export default SiteAppPauses;
+const mapDispatchToProps = (dispatch) => ({
+	getError: (message) => dispatch(showError(message)),
+});
+
+export default connect(null, mapDispatchToProps)(SiteAppPauses);
