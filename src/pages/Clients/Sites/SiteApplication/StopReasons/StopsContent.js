@@ -1,27 +1,24 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
+import CircularProgress from "@material-ui/core/CircularProgress";
 // Icon Import
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import CommonApplicationTable from "components/Modules/CommonApplicationTable";
-import DetailsPanel from "components/Elements/DetailsPanel";
-import Navcrumbs from "components/Elements/Navcrumbs";
-import SaveHistory from "components/Elements/SaveHistory";
-import DeleteDialog from "components/Elements/DeleteDialog";
-import NavButtons from "components/Elements/NavButtons";
-import API from "helpers/api";
-import { handleSort } from "helpers/utils";
-import React, { useCallback, useEffect, useState } from "react";
-import ContentStyle from "styles/application/ContentStyle";
-import ActionButtons from "./ActionButtons";
 import AddStopDialog from "./AddDialog";
 import EditStopDialog from "./EditDialog";
+import { handleSort } from "helpers/utils";
+import ContentStyle from "styles/application/ContentStyle";
+import DetailsPanel from "components/Elements/DetailsPanel";
+import DeleteDialog from "components/Elements/DeleteDialog";
+import React, { useCallback, useEffect, useState } from "react";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import CommonApplicationTable from "components/Modules/CommonApplicationTable";
+
+import { BASE_API_PATH } from "helpers/constants";
+import { getStopReasons } from "services/clients/sites/siteApplications/stopReasons";
 
 // Init styled components
 const AC = ContentStyle();
 
-const StopsContent = ({ navigation, id, setIs404, state }) => {
+const StopsContent = ({ id, setIs404, getError }) => {
 	// Init state
-	const [applicationName, setApplicationName] = useState("");
 	const [data, setData] = useState([]);
 	const [haveData, setHaveData] = useState(false);
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -41,12 +38,10 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 		// Attempting to get data
 		try {
 			// Getting data from API
-			let result = await API.get(
-				`/api/ApplicationStopReasons?applicationId=${id}`
-			);
+			let result = await getStopReasons(id);
 
 			// if success, adding data to state
-			if (result.status === 200) {
+			if (result.status) {
 				handleSort(result.data, setData, "name", "asc");
 
 				return true;
@@ -161,42 +156,6 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 			.catch((err) => console.log(err));
 	}, [handleGetData]);
 
-	// Fetch side effect to get application details
-	useEffect(() => {
-		const getApplicationData = async () => {
-			// Attempting to get model status data
-			try {
-				// Getting data from API
-				let applicationData = await API.get(`/api/Applications/${id}/defaults`);
-
-				// if success, adding data to reducer
-				if (applicationData.status === 200) {
-					// Setting application name
-					setApplicationName(applicationData.data.name);
-				} else {
-					// If error, throwing to catch
-					throw new Error(applicationData);
-				}
-			} catch (err) {
-				// TODO: real error handling
-				console.log(err);
-				return false;
-			}
-		};
-
-		// Getting application and updating state
-		if (state === undefined) {
-			getApplicationData()
-				.then(() => {
-					console.log("application name updated");
-				})
-				.catch((err) => console.log(err));
-		} else {
-			setApplicationName(state.applicationName);
-		}
-		// eslint-disable-next-line
-	}, []);
-
 	useEffect(() => {
 		if (dataChanged) {
 			handleSort(data, setData, currentTableSort[0], currentTableSort[1]);
@@ -217,6 +176,8 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 		// eslint-disable-next-line
 	}, [searchQuery]);
 
+	const mainData = searchQuery.length === 0 ? data : searchedData;
+
 	return (
 		<div className="container">
 			{/* Start of dialogs */}
@@ -225,52 +186,27 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 				closeHandler={handleAddDialogClose}
 				applicationID={id}
 				handleAddData={handleAddData}
+				getError={getError}
 			/>
 			<EditStopDialog
 				open={openEditDialog}
 				closeHandler={handleEditDialogClose}
 				data={editData}
 				handleEditData={handleEditData}
+				getError={getError}
 			/>
 			<DeleteDialog
 				entityName="Stop Reason"
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
-				deleteEndpoint="/api/ApplicationStopReasons"
+				deleteEndpoint={`${BASE_API_PATH}StopReasons`}
 				deleteID={deleteID}
 				handleRemoveData={handleRemoveData}
 			/>
-			{/* End dialogs */}
-			<div className="topContainerCustomCaptions">
-				<Navcrumbs
-					crumbs={[
-						// TODO: below application name needs to be updated to reflect applicationName
-						// from fetched data
-						"Application",
-						state !== undefined ? state.applicationName : applicationName,
-					]}
-				/>
-
-				{haveData ? (
-					<div>
-						<ActionButtons handleAddDialogOpen={handleAddDialogOpen} />
-					</div>
-				) : null}
-			</div>
 
 			{/* Spinner should start here */}
 			{haveData ? (
 				<>
-					<SaveHistory />
-
-					<NavButtons
-						navigation={navigation}
-						applicationName={
-							state !== undefined ? state.applicationName : applicationName
-						}
-						current="Reason Definitions"
-					/>
-
 					<div className="detailsContainer">
 						<DetailsPanel
 							header={"Stop Reasons"}
@@ -324,29 +260,15 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 						</div>
 					</div>
 
-					{/* <SingleHeadTable
-						data={data}
-						setData={setData}
-						searchQuery={searchQuery}
-						handleSort={handleSort}
-						handleEditDialogOpen={handleEditDialogOpen}
-						handleDeleteDialogOpen={handleDeleteDialogOpen}
-						currentTableSort={currentTableSort}
-						setCurrentTableSort={setCurrentTableSort}
-						searchedData={searchedData}
-						setSearchedData={setSearchedData}
-					/> */}
 					<CommonApplicationTable
-						data={data}
+						data={mainData}
 						columns={["name"]}
 						headers={["Name"]}
 						setData={setData}
-						pagination={false}
-						handleSort={handleSort}
 						onEdit={handleEditDialogOpen}
 						onDelete={(id) => handleDeleteDialogOpen(id)}
-						searchedData={searchedData}
 						searchQuery={searchQuery}
+						setSearch={setSearchedData}
 					/>
 				</>
 			) : (
