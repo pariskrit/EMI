@@ -7,7 +7,7 @@ import { getSiteDetails } from "services/clients/sites/siteDetails";
 import {
 	getSiteApplicationDetail,
 	patchApplicationDetail,
-} from "services/clients/sites/siteApplications/customCaptions";
+} from "services/clients/sites/siteApplications/siteApplicationDetails";
 import { SiteContext } from "contexts/SiteApplicationContext";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 
@@ -37,6 +37,9 @@ function SiteApplicationDetails({ appId }) {
 					licenses: result.data.licenses,
 					licenseType: result.data.licenseType,
 					isActive: result.data.isActive,
+					showServiceUserConfirmation: result.data.showServiceUserConfirmation,
+					userConfirmationMessage: result.data.userConfirmationMessage,
+					raisingDefectCopiesTaskName: result.data.raisingDefectCopiesTaskName,
 				},
 			});
 
@@ -81,10 +84,10 @@ function SiteApplicationDetails({ appId }) {
 					<Application details={details} />
 				</Grid>
 				<Grid item xs={12}>
-					<ServiceOptions />
+					<ServiceOptions details={details} />
 				</Grid>
 				<Grid item xs={12}>
-					{showLicenseTile ? <License licenseDetails={details} /> : null}
+					{showLicenseTile ? <License details={details} /> : null}
 				</Grid>
 			</Grid>
 		</>

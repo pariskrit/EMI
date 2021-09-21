@@ -86,7 +86,7 @@ const Application = ({ details }) => {
 		<div className={classes.detailsContainer}>
 			<AccordionBox title="Details">
 				{/* --- Desktop View --- */}
-				<Grid container className="desktopViewGrid">
+				<Grid container className="desktopViewGrid" spacing={2}>
 					<Grid item xs={6}>
 						<div className={classes.textInputContainer}>
 							<Typography gutterBottom className={classes.labelText}>
@@ -104,7 +104,8 @@ const Application = ({ details }) => {
 								}}
 							/>
 						</div>
-
+					</Grid>
+					<Grid item xs={6}>
 						<div className={classes.textInputContainer}>
 							<Typography gutterBottom className={classes.labelText}>
 								Purpose
@@ -113,9 +114,6 @@ const Application = ({ details }) => {
 							<TextField
 								variant="outlined"
 								fullWidth
-								multiline
-								minRows={2}
-								maxRows={4}
 								value={details?.purpose ?? ""}
 								InputProps={{
 									classes: {
@@ -124,6 +122,8 @@ const Application = ({ details }) => {
 								}}
 							/>
 						</div>
+					</Grid>
+					<Grid item xs={6}>
 						<div className={classes.assetParentContainer}>
 							<Typography gutterBottom className={classes.labelText}>
 								Logo
@@ -145,8 +145,6 @@ const Application = ({ details }) => {
 							<Divider className={classes.dividerStyle} />
 						</div>
 					</Grid>
-
-					<Grid item xs={6}></Grid>
 				</Grid>
 
 				{/* --- Mobile View --- */}

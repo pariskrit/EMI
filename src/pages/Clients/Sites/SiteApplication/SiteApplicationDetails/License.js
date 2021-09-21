@@ -3,11 +3,10 @@ import { Grid, Typography, TextField } from "@material-ui/core";
 import AccordionBox from "components/Layouts/AccordionBox";
 import { makeStyles } from "@material-ui/core/styles";
 import Dropdown from "components/Elements/Dropdown";
-import { BASE_API_PATH, siteApplicationOptions } from "helpers/constants";
-import API from "helpers/api";
+import { siteApplicationOptions } from "helpers/constants";
 import { useParams } from "react-router";
 import { Facebook } from "react-spinners-css";
-import { patchApplicationDetail } from "services/clients/sites/siteApplications/customCaptions";
+import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 
 const useStyles = makeStyles((theme) => ({
 	siteContainer: {
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function License({ licenseDetails }) {
+function License({ details }) {
 	const classes = useStyles();
 	const [input, setInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -43,7 +42,7 @@ function License({ licenseDetails }) {
 	};
 
 	const updateInput = async () => {
-		if (licenseDetails.licenses === input.licenses) {
+		if (details.licenses === input.licenses) {
 			return;
 		}
 		setIsUpdating(true);
@@ -70,15 +69,15 @@ function License({ licenseDetails }) {
 	};
 
 	useEffect(() => {
-		if (Object.keys(licenseDetails).length > 0) {
-			setInput(licenseDetails);
+		if (Object.keys(details).length > 0) {
+			setInput(details);
 		}
-	}, [licenseDetails]);
+	}, [details]);
 
 	return (
 		<AccordionBox title="License">
 			<Grid container spacing={2}>
-				<Grid item xs={12}>
+				<Grid item xs={6}>
 					<div className={classes.siteContainer}>
 						<Typography variant="subtitle2">Licence Type</Typography>
 						<Dropdown
@@ -90,7 +89,7 @@ function License({ licenseDetails }) {
 						/>
 					</div>
 				</Grid>
-				<Grid item xs={12}>
+				<Grid item xs={6}>
 					<div className={classes.siteContainer}>
 						<Typography variant="subtitle2">Total Licence Count</Typography>
 						<TextField

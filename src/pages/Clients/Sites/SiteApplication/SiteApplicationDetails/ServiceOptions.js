@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AccordionBox from "components/Layouts/AccordionBox";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -6,6 +6,11 @@ import EMICheckbox from "components/Elements/EMICheckbox";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { Card, CardContent, Grid } from "@material-ui/core";
+import { useParams } from "react-router";
+import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import TextAreaInputField from "components/Elements/TextAreaInputField";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const useStyles = makeStyles((theme) => ({
 	inputText: {
@@ -26,8 +31,93 @@ const useStyles = makeStyles((theme) => ({
 		maxWidth: "fit-content",
 	},
 }));
-function ServiceOptions() {
+function ServiceOptions({ details, setError }) {
 	const classes = useStyles();
+	const [checkLists, setCheckLists] = useState({});
+	const { appId } = useParams();
+
+	const onServiceUserConfirmationChange = async (e) => {
+		const { showServiceUserConfirmation } = checkLists;
+		setCheckLists({
+			...checkLists,
+			showServiceUserConfirmation: !showServiceUserConfirmation,
+		});
+		const result = await patchApplicationDetail(appId, [
+			{
+				op: "replace",
+				path: "showServiceUserConfirmation",
+				value: !showServiceUserConfirmation,
+			},
+		]);
+
+		if (!result.status) {
+			setError(result.data.detail);
+		}
+	};
+
+	const onraisingDefectCopiesTaskNameChange = async (e) => {
+		const { raisingDefectCopiesTaskName } = checkLists;
+		setCheckLists({
+			...checkLists,
+			raisingDefectCopiesTaskName: !raisingDefectCopiesTaskName,
+		});
+		const result = await patchApplicationDetail(appId, [
+			{
+				op: "replace",
+				path: "raisingDefectCopiesTaskName",
+				value: !raisingDefectCopiesTaskName,
+			},
+		]);
+
+		if (!result.status) {
+			setError(result.data.detail);
+		}
+	};
+
+	const onTextAreaChange = (e) => {
+		setCheckLists({ ...checkLists, userConfirmationMessage: e.target.value });
+	};
+
+	const handleConfirmationMessageUpdate = async () => {
+		const { userConfirmationMessage } = checkLists;
+
+		if (details.userConfirmationMessage === userConfirmationMessage) {
+			return;
+		}
+		const result = await patchApplicationDetail(appId, [
+			{
+				op: "replace",
+				path: "userConfirmationMessage",
+				value: userConfirmationMessage,
+			},
+		]);
+
+		if (!result.status) {
+			setError(result.data.detail);
+		}
+	};
+
+	const onKeyPress = (e) => {
+		if (e.key === "Enter") {
+			handleConfirmationMessageUpdate();
+		}
+	};
+
+	useEffect(() => {
+		if (Object.keys(details).length > 0) {
+			const {
+				raisingDefectCopiesTaskName,
+				showServiceUserConfirmation,
+				userConfirmationMessage,
+			} = details;
+
+			setCheckLists({
+				raisingDefectCopiesTaskName,
+				showServiceUserConfirmation,
+				userConfirmationMessage,
+			});
+		}
+	}, [details]);
 
 	return (
 		<AccordionBox title="Service Options">
@@ -36,28 +126,25 @@ function ServiceOptions() {
 					<Typography gutterBottom className={classes.labelText}>
 						User Confirmation Message<span style={{ color: "#E31212" }}>*</span>
 					</Typography>
-					<Card
-						variant="outlined"
-						raised={false}
-						className={classes.cardContent}
-					>
-						<CardContent>
-							<p>
-								Please confirm that you are the person logged into this device.
-								<br /> if not, please cancel the service and log back in under
-								your own profile.
-								<br />
-								<br /> Please do not use or share another person's log in
-								details as this document may be uses in a court law.
-							</p>
-						</CardContent>
-					</Card>
+					<TextAreaInputField
+						value={checkLists.userConfirmationMessage ?? ""}
+						minRows={3}
+						onChange={onTextAreaChange}
+						onBlur={handleConfirmationMessageUpdate}
+						onKeyPress={onKeyPress}
+						disabled={!checkLists.showServiceUserConfirmation}
+					/>
 				</Grid>
 				<Grid item xs={12}>
 					<div className={classes.tickInputContainer}>
 						<FormGroup className={classes.tickboxSpacing}>
 							<FormControlLabel
-								control={<EMICheckbox state={true} changeHandler={() => {}} />}
+								control={
+									<EMICheckbox
+										state={checkLists.showServiceUserConfirmation ?? false}
+										changeHandler={onServiceUserConfirmationChange}
+									/>
+								}
 								label={
 									<Typography className={classes.inputText}>
 										Enable confirm user screen
@@ -69,7 +156,12 @@ function ServiceOptions() {
 					<div className={classes.tickInputContainer}>
 						<FormGroup className={classes.tickboxSpacing}>
 							<FormControlLabel
-								control={<EMICheckbox state={false} changeHandler={() => {}} />}
+								control={
+									<EMICheckbox
+										state={checkLists.raisingDefectCopiesTaskName ?? false}
+										changeHandler={onraisingDefectCopiesTaskNameChange}
+									/>
+								}
 								label={
 									<Typography className={classes.inputText}>
 										Raising a defect copies the task name into the defect
@@ -85,4 +177,10 @@ function ServiceOptions() {
 	);
 }
 
-export default ServiceOptions;
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+	setError: (message) => dispatch(showError(message)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceOptions);
