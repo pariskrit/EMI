@@ -17,6 +17,8 @@ const BASE_API_PATH_SITES_DEPARTMENTS = `${BASE_API_PATH}SiteDepartments`;
 const BASE_API_PATH_SITE_ASSET_COUNT = `${BASE_API_PATH}SiteAssets/Count`;
 const BASE_API_PATH_STOP_REASONS = `${BASE_API_PATH}StopReasons`;
 const BASE_API_PATH_SKIPPED_TASKS = `${BASE_API_PATH}SkipTaskReasons`;
+const BASE_API_PATH_MISSING_PART_OR_TOOL_REASONS = `${BASE_API_PATH}MissingPartToolReasons`;
+const BASE_API_PATH_STATUS_CHANGES = `${BASE_API_PATH}changestatusreasons`;
 
 export const Apis = {
 	//client detail screen
@@ -53,4 +55,10 @@ export const Apis = {
 
 	//skippedTasks
 	SkippedTasks: `${BASE_API_PATH_SKIPPED_TASKS}`,
+
+	//missingPartorToolReasons
+	MissingPartorToolReasons: `${BASE_API_PATH_MISSING_PART_OR_TOOL_REASONS}`,
+
+	//statusChanges
+	StatusChanges: `${BASE_API_PATH_STATUS_CHANGES}`,
 };

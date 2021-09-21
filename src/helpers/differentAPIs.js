@@ -14,6 +14,20 @@ import {
 	patchSkippedTasks,
 } from "services/clients/sites/siteApplications/skippedTasks";
 
+//Missing Part or Tool Reasons
+import {
+	getMissingPartorToolReasons,
+	addMissingPartorToolReasons,
+	patchMissingPartorToolReasons,
+} from "services/clients/sites/siteApplications/missingPartorToolReasons";
+
+//Status Changes
+import {
+	getStatusChanges,
+	addStatusChanges,
+	patchStatusChanges,
+} from "services/clients/sites/siteApplications/statusChanges";
+
 const differentAPIs = {
 	StopReasonsAPIs: {
 		getAPI: getStopReasons,
@@ -26,6 +40,18 @@ const differentAPIs = {
 		postAPI: addSkippedTasks,
 		patchAPI: patchSkippedTasks,
 		deleteAPI: `${BASE_API_PATH}SkipTaskReasons`,
+	},
+	MissingPartAPIs: {
+		getAPI: getMissingPartorToolReasons,
+		postAPI: addMissingPartorToolReasons,
+		patchAPI: patchMissingPartorToolReasons,
+		deleteAPI: `${BASE_API_PATH}MissingPartToolReasons`,
+	},
+	StatusChangesAPIs: {
+		getAPI: getStatusChanges,
+		postAPI: addStatusChanges,
+		patchAPI: patchStatusChanges,
+		deleteAPI: `${BASE_API_PATH}changestatusreasons`,
 	},
 };
 

@@ -14,7 +14,7 @@ import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 // Init styled components
 const AC = ContentStyle();
 
-const StopsContent = ({
+const CommonContent = ({
 	id,
 	setIs404,
 	getError,
@@ -283,4 +283,4 @@ const StopsContent = ({
 	);
 };
 
-export default StopsContent;
+export default CommonContent;

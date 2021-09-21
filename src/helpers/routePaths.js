@@ -18,6 +18,10 @@ export const siteApplicationPathCustomCaptions =
 export const siteApplicationPathStopsReasons = siteApplicationPath + "/stops";
 export const siteApplicationPathSkippedTasks =
 	siteApplicationPath + "/skippedtasks";
+export const siteApplicationPathMissingItems =
+	siteApplicationPath + "/missingitems";
+export const siteApplicationPathStatusChanges =
+	siteApplicationPath + "/statuschanges";
 
 //Applications
 export const applicationListPath = "/applications";

@@ -5,7 +5,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import { patchStopReasons } from "services/clients/sites/siteApplications/stopReasons";
 
 // Init styled components
 const AED = EditDialogStyle();
