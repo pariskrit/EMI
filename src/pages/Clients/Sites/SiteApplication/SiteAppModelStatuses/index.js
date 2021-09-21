@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import API from "helpers/api";
 import ContentStyle from "styles/application/ContentStyle";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DefaultDialog from "components/Elements/DefaultDialog";
@@ -23,6 +22,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	const [searchedData, setSearchedData] = useState([]);
 	const [defaultData, setDefaultData] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [modal, setModal] = useState({ edit: false, delete: false });
 
 	const handleGetData = useCallback(async () => {
 		setLoading(true);
@@ -87,7 +87,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				handleAddData={handleAddData}
 				getError={getError}
 			/>
-			{/* <EditStatusDialog /> */}
+			<EditStatusDialog />
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Model Statuses"}
