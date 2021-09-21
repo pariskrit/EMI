@@ -12,7 +12,7 @@ export const siteLocationPath = "/locations";
 //Site Application
 export const siteApplicationPathForNav = sitePath + "/applications";
 export const siteApplicationPath = sitePath + "/applications/:appId";
-export const siteApplicationPausePath = siteApplicationPath + "/pause";
+export const siteApplicationPausePath = siteApplicationPath + "/pauses";
 export const siteApplicationPathCustomCaptions =
 	siteApplicationPath + "/customcaptions";
 export const siteApplicationPathStopsReasons =

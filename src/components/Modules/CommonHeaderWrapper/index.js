@@ -1,7 +1,6 @@
 import React from "react";
 import CommonHeader from "../CommonHeader";
 import NavButtons from "components/Elements/NavButtons";
-import applicationNavigation from "helpers/applicationNavigation";
 
 const CommonHeaderWrapper = ({
 	status,
@@ -21,7 +20,7 @@ const CommonHeaderWrapper = ({
 	currentStatus,
 	handlePatchIsActive,
 	navigation,
-	data,
+	applicationName,
 	current,
 }) => {
 	return (
@@ -49,7 +48,7 @@ const CommonHeaderWrapper = ({
 
 			<NavButtons
 				navigation={navigation}
-				applicationName={data.name}
+				applicationName={applicationName}
 				current={current}
 			/>
 		</>

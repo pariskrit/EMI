@@ -49,10 +49,12 @@ const CommonApplicationTable = ({
 	setSearch,
 	searchQuery,
 	columns,
+	handleSort,
 	headers,
 	onEdit,
 	onDelete,
 	isLoading,
+	searchedData,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -110,7 +112,7 @@ const CommonApplicationTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{data.length !== 0 ? (
-							data.map((row, index) => (
+							(searchQuery === "" ? data : searchedData).map((row, index) => (
 								<TableRow key={row.id}>
 									{columns.map((col, i, arr) => (
 										<TableCell
