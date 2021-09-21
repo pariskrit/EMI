@@ -19,6 +19,8 @@ export const siteApplicationPathStopsReasons =
 	siteApplicationPath + "/stopsreasons";
 export const sitApplicationPathModelStatuses =
 	siteApplicationPath + "/modelstatuses";
+export const siteApplicationPathModelTypes =
+	siteApplicationPath + "/modeltypes";
 
 //Applications
 export const applicationListPath = "/applications";

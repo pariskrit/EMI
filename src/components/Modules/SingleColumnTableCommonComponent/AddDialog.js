@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import API from "helpers/api";
 import React, { useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -22,12 +21,14 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const AddStopDialog = ({
+const AddDialog = ({
 	open,
 	closeHandler,
 	applicationID,
 	handleAddData,
 	getError,
+	header,
+	postAPI,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -59,6 +60,7 @@ const AddStopDialog = ({
 					setIsUpdating(false);
 					closeOverride();
 				} else {
+					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
 				}
 			} else {
@@ -78,7 +80,7 @@ const AddStopDialog = ({
 	const handleCreateData = async () => {
 		// Attempting to create data
 		try {
-			const newData = await addStopReasons({
+			const newData = await postAPI({
 				siteAppID: applicationID,
 				name: input.name,
 			});
@@ -139,7 +141,7 @@ const AddStopDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New Stop</ADD.HeaderText>}
+						{<ADD.HeaderText>Add New {header}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -178,4 +180,4 @@ const AddStopDialog = ({
 	);
 };
 
-export default AddStopDialog;
+export default AddDialog;

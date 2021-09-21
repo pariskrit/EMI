@@ -55,7 +55,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Types",
-					link: `${links}/types`,
+					link: `${links}/modeltypes`,
 				},
 			],
 		},
