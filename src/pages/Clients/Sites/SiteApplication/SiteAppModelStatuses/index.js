@@ -105,6 +105,51 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		setData(newData);
 	};
 
+	const handleSetDefault = (defaultID) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === defaultID);
+
+		if (index >= 0) {
+			newData[index].isDefault = true;
+		}
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleDefaultUpdate = async () => {
+		// Attempting to update default
+		try {
+			// Patching change to API
+			const result = await API.patch(`/api/siteapps/${appId}`, [
+				{
+					op: "replace",
+					path: "defaultModelStatusID",
+					value: confirmDefault[0],
+				},
+			]);
+
+			// If success, updating default in state
+			if (result.status === 200) {
+				// Updating state
+				handleSetDefault(confirmDefault[0]);
+
+				// Updating default state
+				setDefaultData(confirmDefault[0]);
+
+				return true;
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {
+			// TODO: real error handling
+			console.log(err);
+
+			return false;
+		}
+	};
+
 	useEffect(() => {
 		handleGetData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,6 +181,14 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				data={editData}
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
 				handleEditData={handleEditData}
+				getError={getError}
+			/>
+			<DefaultDialog
+				open={modal.default}
+				closeHandler={() => setModal((th) => ({ ...th, default: false }))}
+				data={confirmDefault}
+				entity="Status"
+				handleDefaultUpdate={handleDefaultUpdate}
 				getError={getError}
 			/>
 			<DeleteDialog
