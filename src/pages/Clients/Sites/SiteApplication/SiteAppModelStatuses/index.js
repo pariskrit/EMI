@@ -24,6 +24,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	const [loading, setLoading] = useState(false);
 	const [modal, setModal] = useState({ edit: false, delete: false });
 	const [editData, setEditData] = useState({});
+	const [deleteId, setDeleteId] = useState(null);
 
 	const handleGetData = useCallback(async () => {
 		setLoading(true);
@@ -65,6 +66,11 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		}
 	};
 
+	const onDeleteClick = (id) => {
+		setModal((th) => ({ ...th, delete: true }));
+		setDeleteId(id);
+	};
+
 	const handleAddData = (item) => {
 		const newData = [...data];
 		newData.push(item);
@@ -77,6 +83,14 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		let index = newData.findIndex((el) => el.id === d.id);
 		newData[index] = d;
 
+		// Updating state
+		setData(newData);
+	};
+
+	const handleRemoveData = (id) => {
+		const newData = [...data].filter(function (item) {
+			return item.id !== id;
+		});
 		// Updating state
 		setData(newData);
 	};
@@ -113,6 +127,17 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
 				handleEditData={handleEditData}
 				getError={getError}
+			/>
+			<DeleteDialog
+				entityName="Model Status"
+				open={modal.delete}
+				closeHandler={() => {
+					setDeleteId(null);
+					setModal((th) => ({ ...th, delete: false }));
+				}}
+				deleteEndpoint="/api/modelstatuses"
+				deleteID={deleteId}
+				handleRemoveData={handleRemoveData}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
@@ -170,7 +195,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				data={mainData}
 				defaultID={defaultData}
 				onEdit={onEditClick}
-				onDelete={() => {}}
+				onDelete={onDeleteClick}
 				onDefault={() => {}}
 				searchQuery={searchQuery}
 				isLoading={loading}
