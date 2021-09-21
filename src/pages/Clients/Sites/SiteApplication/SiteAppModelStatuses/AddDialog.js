@@ -30,6 +30,7 @@ const AddStatusDialog = ({
 	closeHandler,
 	applicationID,
 	handleAddData,
+	getError,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -101,7 +102,9 @@ const AddStatusDialog = ({
 				throw new Error(result);
 			}
 		} catch (err) {
-			if (err.response.data.errors !== undefined) {
+			if (err.response.data.detail) {
+				getError(err.response.data.detail);
+			} else if (err.response.data.errors !== undefined) {
 				setErrors({ ...errors, ...err.response.data.errors });
 			} else {
 				// If no explicit errors provided, throws to caller

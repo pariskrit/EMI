@@ -17,7 +17,7 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 // Init styled components
 const AC = ContentStyle();
-const SiteAppModelStatuses = ({ state, dispatch, appId }) => {
+const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	const [data, setData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchedData] = useState([]);
@@ -55,15 +55,39 @@ const SiteAppModelStatuses = ({ state, dispatch, appId }) => {
 		}
 	}, [appId]);
 
+	const handleAddData = (item) => {
+		const newData = [...data];
+		newData.push(item);
+		setData(newData);
+	};
+
 	useEffect(() => {
 		handleGetData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const handleSearch = (e) => {
+		const { value } = e.target;
+		setSearchQuery(value);
+		const filtered = data.filter((x) => {
+			const regex = new RegExp(value, "gi");
+			return x.name.match(regex);
+		});
+		setSearchedData(filtered);
+	};
+
 	const mainData = searchQuery.length === 0 ? data : searchedData;
 
 	return (
 		<div>
+			<AddStatusDialog
+				open={state.showAdd}
+				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
+				applicationID={appId}
+				handleAddData={handleAddData}
+				getError={getError}
+			/>
+			{/* <EditStatusDialog /> */}
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Model Statuses"}
@@ -84,9 +108,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId }) => {
 									<Grid item>
 										<AC.SearchInput
 											value={searchQuery}
-											onChange={(e) => {
-												setSearchQuery(e.target.value);
-											}}
+											onChange={handleSearch}
 											label="Search Statuses"
 										/>
 									</Grid>
@@ -125,6 +147,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId }) => {
 				onDelete={() => {}}
 				onDefault={() => {}}
 				searchQuery={searchQuery}
+				isLoading={loading}
 			/>
 		</div>
 	);
