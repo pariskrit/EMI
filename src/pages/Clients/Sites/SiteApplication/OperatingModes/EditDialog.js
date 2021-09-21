@@ -72,7 +72,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 		// Attempting to update data
 		try {
 			// Making patch to backend
-			const result = await updateOperatingModes(appId, [
+			const result = await updateOperatingModes(data.id, [
 				{
 					op: "replace",
 					path: "name",
@@ -114,7 +114,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 	// Updating name after SC set
 	useEffect(() => {
 		if (data !== null && open) {
-			setInput({ name: data.name, publish: data.publish });
+			setInput({ name: data.name });
 		}
 	}, [data, open]);
 

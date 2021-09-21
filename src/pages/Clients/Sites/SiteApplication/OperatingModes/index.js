@@ -9,31 +9,28 @@ import EditDialog from "./EditDialog";
 import { getOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
 import { SiteContext } from "contexts/SiteApplicationContext";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import { useSearch } from "hooks/useSearch";
+import DefaultDialog from "components/Elements/DefaultDialog";
 
 const AC = ContentStyle();
 
 function OperatingModes({ appId }) {
-	const [searchQuery, setSearchQuery] = useState("");
 	const [data, setData] = useState([]);
-	const [searchedData, setSearchData] = useState([]);
+	const [dataToEdit, setDataToEdit] = useState({});
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [openEditDialog, setOpenEditDialog] = useState(false);
+	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [deleteId, setDeleteId] = useState(null);
 	const [{ showAdd }, dispatch] = useContext(SiteContext);
-
-	const handleSearch = (e) => {
-		const { value } = e.target;
-		setSearchQuery(value);
-		const filtered = data.filter((x) => {
-			const regex = new RegExp(value, "gi");
-			return x.name.match(regex);
-		});
-		setSearchData(filtered);
-	};
+	const [confirmDefault, setConfirmDefault] = useState([]);
+	const { searchQuery, searchedData, handleSearch, setAllData } = useSearch();
 
 	const fetchOperatingModesLists = async () => {
 		const result = await getOperatingModes(appId);
+		console.log(result);
 		setData(result.data);
+		setAllData(result.data);
 	};
 
 	const closeAddModal = () => dispatch({ type: "ADD_TOGGLE" });
@@ -45,17 +42,48 @@ function OperatingModes({ appId }) {
 		setOpenDeleteDialog(true);
 	};
 
+	const onOpenEditDialog = (id) => {
+		let index = data.findIndex((el) => el.id === id);
+
+		setDataToEdit(data[index]);
+		setOpenEditDialog(true);
+	};
+
+	const onOpenDefaultDialog = (id, name) => {
+		setConfirmDefault([id, name]);
+		setOpenDefaultDialog(true);
+	};
+
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
+
+	const closeEditDialog = () => setOpenEditDialog(false);
+
+	const closeDefaultDialog = () => setOpenDefaultDialog(false);
 
 	const handleRemoveData = (id) =>
 		setData([...data.filter((d) => d.id !== id)]);
 
+	const handleEditData = (editedData) => {
+		const newList = [...data];
+		const index = newList.findIndex((data) => data.id === editedData.id);
+		newList.splice(index, 1, editedData);
+		setData(newList);
+	};
+
 	useEffect(() => {
 		fetchOperatingModesLists();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
 		<>
+			<DefaultDialog
+				open={openDefaultDialog}
+				closeHandler={closeDefaultDialog}
+				data={confirmDefault}
+				entity="Operating Mode"
+				// handleDefaultUpdate={handleDefaultUpdate}
+			/>
 			<DeleteDialog
 				entityName="Operating Mode"
 				open={openDeleteDialog}
@@ -70,7 +98,12 @@ function OperatingModes({ appId }) {
 				applicationID={appId}
 				handleAddData={addData}
 			/>
-			<EditDialog />
+			<EditDialog
+				open={openEditDialog}
+				closeHandler={closeEditDialog}
+				data={dataToEdit}
+				handleEditData={handleEditData}
+			/>
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Operating Modes"}
@@ -104,9 +137,12 @@ function OperatingModes({ appId }) {
 			<OperatingModesTable
 				currentTableSort={currentTableSort}
 				data={data}
+				openDefaultDialog={onOpenDefaultDialog}
+				handleEditDialogOpen={onOpenEditDialog}
 				handleDeleteDialogOpen={onOpenDeleteDialog}
-				searchedData={""}
-				searchQuery=""
+				searchedData={searchedData}
+				searchQuery={searchQuery}
+				setCurrentTableSort={setCurrentTableSort}
 			/>
 		</>
 	);
