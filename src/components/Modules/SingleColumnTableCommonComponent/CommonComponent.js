@@ -14,7 +14,7 @@ import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 // Init styled components
 const AC = ContentStyle();
 
-const StopsContent = ({
+const CommonContent = ({
 	id,
 	setIs404,
 	getError,
@@ -195,9 +195,10 @@ const StopsContent = ({
 				handleEditData={handleEditData}
 				getError={getError}
 				patchAPI={apis.patchAPI}
+				header={header}
 			/>
 			<DeleteDialog
-				entityName="Stop Reason"
+				entityName={header}
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
 				deleteEndpoint={apis.deleteAPI}
@@ -282,4 +283,4 @@ const StopsContent = ({
 	);
 };
 
-export default StopsContent;
+export default CommonContent;

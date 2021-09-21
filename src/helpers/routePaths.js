@@ -21,6 +21,12 @@ export const sitApplicationPathModelStatuses =
 	siteApplicationPath + "/modelstatuses";
 export const siteApplicationPathModelTypes =
 	siteApplicationPath + "/modeltypes";
+export const siteApplicationPathSkippedTasks =
+	siteApplicationPath + "/skippedtasks";
+export const siteApplicationPathMissingItems =
+	siteApplicationPath + "/missingitems";
+export const siteApplicationPathStatusChanges =
+	siteApplicationPath + "/statuschanges";
 
 //Applications
 export const applicationListPath = "/applications";

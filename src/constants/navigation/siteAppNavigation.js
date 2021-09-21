@@ -30,7 +30,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Stops",
-					link: `${links}/stops`,
+					link: `${links}/stopsreasons`,
 				},
 				{
 					title: "Skipped Tasks",
