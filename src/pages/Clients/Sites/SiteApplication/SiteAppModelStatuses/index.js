@@ -13,6 +13,7 @@ import { showError } from "redux/common/actions";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import { getModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
 
 // Init styled components
 const AC = ContentStyle();
@@ -36,10 +37,10 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		// Attempting to get data
 		try {
 			// Getting data from API
-			let result = await API.get(`/api/modelstatuses?siteAppId=${appId}`);
+			let result = await getModelStatuses(appId);
 
 			// if success, adding data to state
-			if (result.status === 200) {
+			if (result.status) {
 				setLoading(false);
 				// Updating state
 				result.data.forEach((d, index) => {

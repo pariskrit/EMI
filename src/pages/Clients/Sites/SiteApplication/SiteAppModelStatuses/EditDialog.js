@@ -7,6 +7,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { patchModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -80,7 +81,7 @@ const EditStatusDialog = ({
 		// Attempting to update data
 		try {
 			// Making patch to backend
-			const result = await API.patch(`/api/modelstatuses/${data.id}`, [
+			const result = await patchModelStatuses(data.id, [
 				{
 					op: "replace",
 					path: "name",
@@ -94,7 +95,7 @@ const EditStatusDialog = ({
 			]);
 
 			// Handling success
-			if (result.status === 200) {
+			if (result.status) {
 				// Updating state to match DB
 				handleEditData({
 					id: data.id,
@@ -104,20 +105,20 @@ const EditStatusDialog = ({
 
 				return { success: true };
 			} else {
+				if (result.data.detail) {
+					getError(result.data.detail);
+				} else if (result.data.errors !== undefined) {
+					setErrors({ ...errors, ...result.data.errors });
+				} else {
+					// If no explicit errors provided, throws to caller
+					throw new Error(result);
+				}
+
+				return { success: false };
 				// If not success, throwing error
-				throw new Error(result);
 			}
 		} catch (err) {
-			if (err.response.data.detail) {
-				getError(err.response.data.detail);
-			} else if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
-			return { success: false };
+			console.log(err);
 		}
 	};
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import API from "helpers/api";
+import { addModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -81,14 +81,14 @@ const AddStatusDialog = ({
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/modelstatuses", {
+			const result = await addModelStatuses({
 				siteAppID: applicationID,
 				name: input.name,
 				publish: input.publish,
 			});
 
 			// Handling success
-			if (result.status === 201) {
+			if (result.status) {
 				// Adding new type to state
 				handleAddData({
 					id: result.data,
@@ -99,19 +99,19 @@ const AddStatusDialog = ({
 
 				return { success: true };
 			} else {
-				throw new Error(result);
+				if (result.data.detail) {
+					getError(result.data.detail);
+				} else if (result.data.errors !== undefined) {
+					setErrors({ ...errors, ...result.data.errors });
+				} else {
+					// If no explicit errors provided, throws to caller
+					throw new Error(result);
+				}
+
+				return { success: false };
 			}
 		} catch (err) {
-			if (err.response.data.detail) {
-				getError(err.response.data.detail);
-			} else if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
-			return { success: false };
+			console.log(err);
 		}
 	};
 
