@@ -20,9 +20,7 @@ const EMICheckbox = ({ state, changeHandler }) => {
 		<Checkbox
 			className={classes.emiCheckbox}
 			checked={state}
-			onChange={() => {
-				changeHandler();
-			}}
+			onChange={changeHandler}
 			icon={<img src={CheckboxOff} alt="unticked checkbox" />}
 			checkedIcon={<img src={CheckboxOn} alt="ticked checkbox" />}
 		/>

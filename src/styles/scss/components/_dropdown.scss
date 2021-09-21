@@ -32,7 +32,6 @@ $border-color: #c1c1c1;
 		width: 500px;
 		position: absolute;
 		left: 17px;
-		top: -15px;
 		background: #fff;
 		box-shadow: 1px 1px 5px #7d7d7d;
 		border-radius: 5px;
@@ -106,6 +105,12 @@ $border-color: #c1c1c1;
 					display: block;
 				}
 			}
+		}
+		&.upward {
+			top: -15px;
+		}
+		&.downward {
+			bottom: 15px;
 		}
 	}
 }

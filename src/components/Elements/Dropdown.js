@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import clsx from "clsx";
 
 function Dropdown(props) {
 	const {
@@ -18,6 +19,7 @@ function Dropdown(props) {
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
+	const [dropUpward, setDropUpward] = useState(true);
 
 	useEffect(() => {
 		setFilteredList(options);
@@ -51,6 +53,15 @@ function Dropdown(props) {
 		});
 		setFilteredList(filteredSearchList);
 	};
+	const handleDrpdwnClick = (event) => {
+		setDropActive(true);
+		onFilter("");
+		setDropUpward(
+			window.innerHeight - event.target.getBoundingClientRect().bottom < 120
+				? false
+				: true
+		);
+	};
 	return (
 		<div
 			className="dropdown"
@@ -58,10 +69,7 @@ function Dropdown(props) {
 		>
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
-				onClick={() => {
-					setDropActive(true);
-					onFilter("");
-				}}
+				onClick={(event) => handleDrpdwnClick(event)}
 			>
 				{label.length > 0 && (
 					<Typography className="label">
@@ -80,7 +88,14 @@ function Dropdown(props) {
 				</div>
 			</div>
 			{dropActive && (
-				<div className={`dropdown-expand ${dropActive ? "active" : ""}`}>
+				<div
+					className={clsx({
+						"dropdown-expand": true,
+						active: dropActive,
+						upward: dropUpward,
+						downward: !dropUpward,
+					})}
+				>
 					<div className="search-box flex justify-between">
 						<div className="input-field flex">
 							<SearchIcon style={{ width: "20px" }} />
