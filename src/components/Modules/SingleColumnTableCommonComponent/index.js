@@ -5,12 +5,11 @@ import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
 
 function SingleColumnTableCommonComponent({
+	state,
+	dispatch,
 	getError,
 	header,
-	getAPI,
-	postAPI,
-	patchAPI,
-	deleteAPI,
+	apis,
 }) {
 	// Init params
 	const { id } = useParams();
@@ -25,7 +24,7 @@ function SingleColumnTableCommonComponent({
 				id={id}
 				setIs404={setIs404}
 				getError={getError}
-				{...{ header, getAPI, postAPI, patchAPI, deleteAPI }}
+				{...{ header, apis, state, dispatch }}
 			/>
 		);
 	} else {

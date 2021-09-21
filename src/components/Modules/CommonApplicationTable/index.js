@@ -53,7 +53,6 @@ const CommonApplicationTable = ({
 	onEdit,
 	onDelete,
 	isLoading,
-	searchedData,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);

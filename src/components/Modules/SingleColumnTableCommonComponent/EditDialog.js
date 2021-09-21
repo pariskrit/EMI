@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import API from "helpers/api";
 import Dialog from "@material-ui/core/Dialog";
 import React, { useState, useEffect } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -28,6 +27,7 @@ const EditStopDialog = ({
 	data,
 	handleEditData,
 	getError,
+	patchAPI,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -43,7 +43,7 @@ const EditStopDialog = ({
 	const handleUpdateData = async () => {
 		// Attempting to update data
 		try {
-			let updateName = await patchStopReasons(data.id, [
+			let updateName = await patchAPI(data.id, [
 				{
 					op: "replace",
 					path: "name",
@@ -100,6 +100,7 @@ const EditStopDialog = ({
 					setIsUpdating(false);
 					closeOverride();
 				} else {
+					setErrors({ ...errors, ...updatedData.errors });
 					setIsUpdating(false);
 				}
 			} else {
