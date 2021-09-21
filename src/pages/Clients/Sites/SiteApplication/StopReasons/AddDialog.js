@@ -1,11 +1,12 @@
+import * as yup from "yup";
+import API from "helpers/api";
 import React, { useState } from "react";
-import API from "../../../helpers/api";
-import AddDialogStyle from "../../../styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import AddDialogStyle from "styles/application/AddDialogStyle";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { addStopReasons } from "services/clients/sites/siteApplications/stopReasons";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -26,6 +27,7 @@ const AddStopDialog = ({
 	closeHandler,
 	applicationID,
 	handleAddData,
+	getError,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -76,23 +78,33 @@ const AddStopDialog = ({
 	const handleCreateData = async () => {
 		// Attempting to create data
 		try {
-			const newData = await API.post("/api/ApplicationStopReasons", {
-				applicationId: applicationID,
+			const newData = await addStopReasons({
+				siteAppID: applicationID,
 				name: input.name,
 			});
 
 			// Handling success
-			if (newData.status === 201) {
+			if (newData.status) {
 				// Adding data to state
 				handleAddData({
 					id: newData.data,
-					applicationID: applicationID,
+					siteAppID: applicationID,
 					name: input.name,
 				});
 
 				return { success: true };
 			} else {
-				throw new Error(newData);
+				if (newData.data.detail) {
+					getError(newData.data.detail);
+					return {
+						success: false,
+						errors: {
+							name: null,
+						},
+					};
+				} else {
+					return { success: false, errors: { ...newData.data.errors } };
+				}
 			}
 		} catch (err) {
 			if (err.response.data.errors !== undefined) {

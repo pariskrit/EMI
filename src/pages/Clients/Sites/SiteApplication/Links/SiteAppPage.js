@@ -4,12 +4,14 @@ import {
 	siteApplicationPath,
 	siteApplicationPathCustomCaptions,
 	siteApplicationPausePath,
+	siteApplicationPathStopsReasons,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppPauses from "../SiteAppPauses";
+import SiteAppStopsReasons from "../StopReasons";
 import SingleComponent from "./SingleComponent";
 
 const routes = [
