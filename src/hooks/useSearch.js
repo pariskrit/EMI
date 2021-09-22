@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export const useSearch = () => {
 	const [allData, setAllData] = useState([]);
@@ -15,5 +15,5 @@ export const useSearch = () => {
 		setSearchData(filtered);
 	};
 
-	return { setAllData, handleSearch, searchedData, searchQuery };
+	return { setAllData, handleSearch, searchedData, searchQuery, setSearchData };
 };

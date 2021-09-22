@@ -35,7 +35,15 @@ const SingleComponent = (route) => {
 				showHistory={route.showHistory}
 				currentStatus={state.details.isActive ?? false}
 			/>
-			{<route.component state={state} dispatch={dispatch} appId={appId} />}
+			{
+				<route.component
+					state={state}
+					dispatch={dispatch}
+					appId={appId}
+					header={route.header}
+					apis={route.api}
+				/>
+			}
 		</>
 	);
 };

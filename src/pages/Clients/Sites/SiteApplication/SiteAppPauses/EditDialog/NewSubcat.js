@@ -13,6 +13,7 @@ const NewSubcat = ({
 	handleAddSubcat,
 	setIsAddNew,
 	setIsUpdating,
+	getError,
 }) => {
 	// Init state
 	const [subcatName, setSubcatName] = useState("");
@@ -47,7 +48,8 @@ const NewSubcat = ({
 				err.response.data.detail !== undefined ||
 				err.response.data.detail !== null
 			) {
-				setErrors({ ...errors, ...{ name: err.response.data.detail } });
+				// setErrors({ ...errors, ...{ name: err.response.data.detail } });
+				getError(err.response.data.detail);
 				return { success: false };
 			}
 

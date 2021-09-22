@@ -1,31 +1,34 @@
-import React, { useState, useEffect } from "react";
-import API from "helpers/api";
-import EditDialogStyle from "styles/application/EditDialogStyle";
+import * as yup from "yup";
 import Dialog from "@material-ui/core/Dialog";
+import React, { useState, useEffect } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import EMICheckbox from "components/Elements/EMICheckbox";
-import * as yup from "yup";
+import EditDialogStyle from "styles/application/EditDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
 const AED = EditDialogStyle();
 
 // Yup validation schema
-const schema = yup.object({
+const schema = yup.object().shape({
 	name: yup
 		.string("This field must be a string")
-		.required("This field is required"),
-	publish: yup
-		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null, publish: null };
-const defaultStateSchema = { name: "", publish: false };
+const defaultErrorSchema = { name: null };
+const defaultStateSchema = { name: "" };
 
-const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
+const EditStopDialog = ({
+	open,
+	closeHandler,
+	data,
+	handleEditData,
+	getError,
+	patchAPI,
+	header,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -33,10 +36,53 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 
 	// Handlers
 	const closeOverride = () => {
-		// Updating local state and clearing errors
 		setErrors(defaultErrorSchema);
 
 		closeHandler();
+	};
+	const handleUpdateData = async () => {
+		// Attempting to update data
+		try {
+			let updateName = await patchAPI(data.id, [
+				{
+					op: "replace",
+					path: "name",
+					value: input.name,
+				},
+			]);
+
+			// if success, adding data to reducer
+			if (updateName.status) {
+				// Updating state
+				handleEditData({
+					id: data.id,
+					name: input.name,
+				});
+
+				return { success: true };
+			} else {
+				if (updateName.data.detail) {
+					getError(updateName.data.detail);
+					return {
+						success: false,
+						errors: {
+							name: null,
+						},
+					};
+				} else {
+					return { success: false, errors: { ...updateName.data.errors } };
+				}
+			}
+		} catch (err) {
+			if (err.response.data.errors !== undefined) {
+				setErrors({ ...errors, ...err.response.data.errors });
+			} else {
+				// If no explicit errors provided, throws to caller
+				throw new Error(err);
+			}
+
+			return { success: false };
+		}
 	};
 	const handleSave = async () => {
 		// Adding progress indicator
@@ -54,6 +100,7 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
+					setErrors({ ...errors, ...updatedData.errors });
 					setIsUpdating(false);
 				}
 			} else {
@@ -70,51 +117,6 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 			closeOverride();
 		}
 	};
-	const handleUpdateData = async () => {
-		// Attempting to update data
-		try {
-			// Making patch to backend
-			const result = await API.patch(
-				`/api/ApplicationModelStatuses/${data.id}`,
-				[
-					{
-						op: "replace",
-						path: "name",
-						value: input.name,
-					},
-					{
-						op: "replace",
-						path: "publish",
-						value: input.publish,
-					},
-				]
-			);
-
-			// Handling success
-			if (result.status === 200) {
-				// Updating state to match DB
-				handleEditData({
-					id: data.id,
-					name: input.name,
-					publish: input.publish,
-				});
-
-				return { success: true };
-			} else {
-				// If not success, throwing error
-				throw new Error(result);
-			}
-		} catch (err) {
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
-			return { success: false };
-		}
-	};
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
@@ -123,10 +125,10 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 		}
 	};
 
-	// Updating name after SC set
+	// Updating name after data set
 	useEffect(() => {
 		if (data !== null && open) {
-			setInput({ name: data.name, publish: data.publish });
+			setInput({ name: data.name });
 		}
 	}, [data, open]);
 
@@ -136,18 +138,18 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 				fullWidth={true}
 				maxWidth="md"
 				open={open}
-				onClose={closeHandler}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
+				onClose={closeOverride}
+				aria-labelledby="edit-title"
+				aria-describedby="edit-description"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit Model Status</AED.HeaderText>}
+						{<AED.HeaderText>Edit {header}</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
-						<AED.CancelButton onClick={closeHandler} variant="contained">
+						<AED.CancelButton onClick={closeOverride} variant="contained">
 							Cancel
 						</AED.CancelButton>
 						<AED.ConfirmButton variant="contained" onClick={handleSave}>
@@ -175,21 +177,6 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 									}}
 								/>
 							</AED.NameInputContainer>
-
-							<AED.CheckboxContainer>
-								<AED.CheckboxLabel>
-									<EMICheckbox
-										state={input.publish}
-										changeHandler={() => {
-											setInput({
-												...input,
-												publish: !input.publish,
-											});
-										}}
-									/>
-									Publish Status?
-								</AED.CheckboxLabel>
-							</AED.CheckboxContainer>
 						</AED.InputContainer>
 					</div>
 				</AED.DialogContent>
@@ -198,4 +185,4 @@ const EditStatusDialog = ({ open, closeHandler, data, handleEditData }) => {
 	);
 };
 
-export default EditStatusDialog;
+export default EditStopDialog;

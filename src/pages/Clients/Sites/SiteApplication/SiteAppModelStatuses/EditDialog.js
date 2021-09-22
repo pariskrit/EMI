@@ -1,28 +1,32 @@
-import * as yup from "yup";
-import API from "helpers/api";
-import Dialog from "@material-ui/core/Dialog";
 import React, { useState, useEffect } from "react";
+import API from "helpers/api";
+import EditDialogStyle from "styles/application/EditDialogStyle";
+import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import EditDialogStyle from "styles/application/EditDialogStyle";
+import EMICheckbox from "components/Elements/EMICheckbox";
+import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import { patchStopReasons } from "services/clients/sites/siteApplications/stopReasons";
+import { patchModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
 
 // Init styled components
 const AED = EditDialogStyle();
 
 // Yup validation schema
-const schema = yup.object().shape({
+const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
+		.required("This field is required"),
+	publish: yup
+		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null };
-const defaultStateSchema = { name: "" };
+const defaultErrorSchema = { name: null, publish: null };
+const defaultStateSchema = { name: "", publish: false };
 
-const EditStopDialog = ({
+const EditStatusDialog = ({
 	open,
 	closeHandler,
 	data,
@@ -36,53 +40,10 @@ const EditStopDialog = ({
 
 	// Handlers
 	const closeOverride = () => {
+		// Updating local state and clearing errors
 		setErrors(defaultErrorSchema);
 
 		closeHandler();
-	};
-	const handleUpdateData = async () => {
-		// Attempting to update data
-		try {
-			let updateName = await patchStopReasons(data.id, [
-				{
-					op: "replace",
-					path: "name",
-					value: input.name,
-				},
-			]);
-
-			// if success, adding data to reducer
-			if (updateName.status) {
-				// Updating state
-				handleEditData({
-					id: data.id,
-					name: input.name,
-				});
-
-				return { success: true };
-			} else {
-				if (updateName.data.detail) {
-					getError(updateName.data.detail);
-					return {
-						success: false,
-						errors: {
-							name: null,
-						},
-					};
-				} else {
-					return { success: false, errors: { ...updateName.data.errors } };
-				}
-			}
-		} catch (err) {
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
-			return { success: false };
-		}
 	};
 	const handleSave = async () => {
 		// Adding progress indicator
@@ -116,6 +77,50 @@ const EditStopDialog = ({
 			closeOverride();
 		}
 	};
+	const handleUpdateData = async () => {
+		// Attempting to update data
+		try {
+			// Making patch to backend
+			const result = await patchModelStatuses(data.id, [
+				{
+					op: "replace",
+					path: "name",
+					value: input.name,
+				},
+				{
+					op: "replace",
+					path: "publish",
+					value: input.publish,
+				},
+			]);
+
+			// Handling success
+			if (result.status) {
+				// Updating state to match DB
+				handleEditData({
+					id: data.id,
+					name: input.name,
+					publish: input.publish,
+				});
+
+				return { success: true };
+			} else {
+				if (result.data.detail) {
+					getError(result.data.detail);
+				} else if (result.data.errors !== undefined) {
+					setErrors({ ...errors, ...result.data.errors });
+				} else {
+					// If no explicit errors provided, throws to caller
+					throw new Error(result);
+				}
+
+				return { success: false };
+				// If not success, throwing error
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
@@ -124,10 +129,10 @@ const EditStopDialog = ({
 		}
 	};
 
-	// Updating name after data set
+	// Updating name after SC set
 	useEffect(() => {
 		if (data !== null && open) {
-			setInput({ name: data.name });
+			setInput({ name: data.name, publish: data.publish });
 		}
 	}, [data, open]);
 
@@ -137,18 +142,18 @@ const EditStopDialog = ({
 				fullWidth={true}
 				maxWidth="md"
 				open={open}
-				onClose={closeOverride}
-				aria-labelledby="edit-title"
-				aria-describedby="edit-description"
+				onClose={closeHandler}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit Stop</AED.HeaderText>}
+						{<AED.HeaderText>Edit Model Status</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
-						<AED.CancelButton onClick={closeOverride} variant="contained">
+						<AED.CancelButton onClick={closeHandler} variant="contained">
 							Cancel
 						</AED.CancelButton>
 						<AED.ConfirmButton variant="contained" onClick={handleSave}>
@@ -176,6 +181,21 @@ const EditStopDialog = ({
 									}}
 								/>
 							</AED.NameInputContainer>
+
+							<AED.CheckboxContainer>
+								<AED.CheckboxLabel>
+									<EMICheckbox
+										state={input.publish}
+										changeHandler={() => {
+											setInput({
+												...input,
+												publish: !input.publish,
+											});
+										}}
+									/>
+									Publish Status?
+								</AED.CheckboxLabel>
+							</AED.CheckboxContainer>
 						</AED.InputContainer>
 					</div>
 				</AED.DialogContent>
@@ -184,4 +204,4 @@ const EditStopDialog = ({
 	);
 };
 
-export default EditStopDialog;
+export default EditStatusDialog;

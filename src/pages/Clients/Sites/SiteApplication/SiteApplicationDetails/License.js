@@ -77,7 +77,7 @@ function License({ details }) {
 	return (
 		<AccordionBox title="License">
 			<Grid container spacing={2}>
-				<Grid item xs={12}>
+				<Grid item xs={6}>
 					<div className={classes.siteContainer}>
 						<Typography variant="subtitle2">Licence Type</Typography>
 						<Dropdown
@@ -89,7 +89,7 @@ function License({ details }) {
 						/>
 					</div>
 				</Grid>
-				<Grid item xs={12}>
+				<Grid item xs={6}>
 					<div className={classes.siteContainer}>
 						<Typography variant="subtitle2">Total Licence Count</Typography>
 						<TextField

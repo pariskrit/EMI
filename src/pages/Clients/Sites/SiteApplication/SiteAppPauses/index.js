@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Grid from "@material-ui/core/Grid";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import ContentStyle from "styles/application/ContentStyle";
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
@@ -10,17 +7,25 @@ import { handleSort } from "helpers/utils";
 import AddDialog from "./AddDialog/AddDialog";
 import EditDialog from "./EditDialog/EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
+import SearchField from "components/Elements/SearchField/SearchField";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import { useSearch } from "hooks/useSearch";
 
-const AC = ContentStyle();
-
-const SiteAppPauses = ({ state, dispatch, appId }) => {
+const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	const [data, setData] = useState([]);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [searchedData, setSearchData] = useState([]);
 	const [modal, setModal] = useState({ edit: false, delete: false });
 	const [deleteId, setDeleteId] = useState(null);
 	const [editData, setEditData] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const {
+		setAllData,
+		handleSearch,
+		searchedData,
+		searchQuery,
+		setSearchData,
+	} = useSearch();
 
 	const handleAddSubcat = (parentId, id, name) => {
 		const newData = [...data];
@@ -36,6 +41,8 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		newData[index].pauseSubcategories.sort((a, b) =>
 			a["name"].toString().localeCompare(b["name"].toString())
 		);
+
+		newData[index].totalSub = newData[index].totalSub + 1;
 
 		// Updating state
 		setData(newData);
@@ -77,6 +84,8 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		newData[index].pauseSubcategories.sort((a, b) =>
 			a["name"].toString().localeCompare(b["name"].toString())
 		);
+
+		newData[index].totalSub = newData[index].totalSub - 1;
 
 		// Updating state
 		setData(newData);
@@ -126,7 +135,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 					...x,
 					totalSub: x.pauseSubcategories.length,
 				}));
-
+				setAllData(mainData);
 				handleSort(mainData, setData, "name", "asc");
 				setLoading(false);
 				return result;
@@ -169,16 +178,6 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const handleSearch = (e) => {
-		const { value } = e.target;
-		setSearchQuery(value);
-		const filtered = data.filter((x) => {
-			const regex = new RegExp(value, "gi");
-			return x.name.match(regex);
-		});
-		setSearchData(filtered);
-	};
-
 	const mainData = searchQuery.length === 0 ? data : searchedData;
 
 	return (
@@ -188,6 +187,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
 				applicationID={appId}
 				handleAddData={handleAddData}
+				getError={getError}
 			/>
 			<DeleteDialog
 				entityName="Pause"
@@ -206,6 +206,7 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 				handleAddSubcat={handleAddSubcat}
 				handleEditData={handleEditData}
 				handleUpdateSubcatStateName={handleUpdateSubcat}
+				getError={getError}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
@@ -213,48 +214,11 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 					dataCount={data.length}
 					description="Create and manage Pause Reasons"
 				/>
-				<div className="desktopSearchCustomCaptions">
-					<AC.SearchContainer>
-						<AC.SearchInner>
-							<Grid container spacing={1} alignItems="flex-end">
-								<div className="flex">
-									<Grid item>
-										<SearchIcon
-											style={{ marginTop: "20px", marginRight: "5px" }}
-										/>
-									</Grid>
-									<Grid item>
-										<AC.SearchInput
-											value={searchQuery}
-											onChange={handleSearch}
-											label="Search Pauses"
-										/>
-									</Grid>
-								</div>
-							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainer>
-				</div>
-				<div className="mobileSearchCustomCaptions">
-					<AC.SearchContainerMobile>
-						<AC.SearchInner>
-							<Grid container spacing={1} alignItems="flex-end">
-								<Grid item>
-									<SearchIcon />
-								</Grid>
-								<Grid item>
-									<AC.SearchInput
-										value={searchQuery}
-										onChange={(e) => {
-											setSearchQuery(e.target.value);
-										}}
-										label="Search Pauses"
-									/>
-								</Grid>
-							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainerMobile>
-				</div>
+				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
+				<MobileSearchField
+					searchQuery={searchQuery}
+					setSearchQuery={handleSearch}
+				/>
 			</div>
 			<CommonApplicationTable
 				setData={setData}
@@ -271,4 +235,8 @@ const SiteAppPauses = ({ state, dispatch, appId }) => {
 	);
 };
 
-export default SiteAppPauses;
+const mapDispatchToProps = (dispatch) => ({
+	getError: (message) => dispatch(showError(message)),
+});
+
+export default connect(null, mapDispatchToProps)(SiteAppPauses);

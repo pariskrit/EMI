@@ -13,6 +13,7 @@ const Subcat = ({
 	sub,
 	handleRemoveSubcat,
 	handleUpdateSubcatStateName,
+	getError,
 }) => {
 	// Init state
 	const [attemptDelete, setAttemptDelete] = useState(false);
@@ -106,7 +107,8 @@ const Subcat = ({
 				err.response.data.detail !== undefined ||
 				err.response.data.detail !== null
 			) {
-				setErrors({ ...errors, ...{ name: err.response.data.detail } });
+				//setErrors({ ...errors, ...{ name: err.response.data.detail } });
+				getError(err.response.data.detail);
 
 				setIsUpdating(false);
 				return false;

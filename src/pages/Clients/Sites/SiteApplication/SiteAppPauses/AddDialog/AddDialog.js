@@ -36,6 +36,7 @@ const AddPauseDialog = ({
 	closeHandler,
 	applicationID,
 	handleAddData,
+	getError,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -164,7 +165,7 @@ const AddPauseDialog = ({
 				setIsUpdating(false);
 
 				// Setting alert error
-				setErrors({ ...errors, ...{ name: err.response.data.detail } });
+				getError(err.response.data.detail);
 			} else {
 				// Removing loading indicator
 				setIsUpdating(false);
