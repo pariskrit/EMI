@@ -1,5 +1,4 @@
 import Grid from "@material-ui/core/Grid";
-import CircularProgress from "@material-ui/core/CircularProgress";
 // Icon Import
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
@@ -10,6 +9,8 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import React, { useCallback, useEffect, useState } from "react";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
+
+import CommonBody from "../CommonBody";
 
 // Init styled components
 const AC = ContentStyle();
@@ -207,7 +208,8 @@ const CommonContent = ({
 			/>
 
 			{/* Spinner should start here */}
-			{haveData ? (
+
+			<CommonBody {...{ haveData }}>
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
@@ -274,11 +276,7 @@ const CommonContent = ({
 						isLoading={loading}
 					/>
 				</>
-			) : (
-				<AC.SpinnerContainer>
-					<CircularProgress />
-				</AC.SpinnerContainer>
-			)}
+			</CommonBody>
 		</div>
 	);
 };
