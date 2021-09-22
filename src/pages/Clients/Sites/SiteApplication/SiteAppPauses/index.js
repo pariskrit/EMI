@@ -12,6 +12,8 @@ import EditDialog from "./EditDialog/EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import SearchField from "components/Elements/SearchField/SearchField";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 
 const AC = ContentStyle();
 
@@ -221,48 +223,11 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 					dataCount={data.length}
 					description="Create and manage Pause Reasons"
 				/>
-				<div className="desktopSearchCustomCaptions">
-					<AC.SearchContainer>
-						<AC.SearchInner>
-							<Grid container spacing={1} alignItems="flex-end">
-								<div className="flex">
-									<Grid item>
-										<SearchIcon
-											style={{ marginTop: "20px", marginRight: "5px" }}
-										/>
-									</Grid>
-									<Grid item>
-										<AC.SearchInput
-											value={searchQuery}
-											onChange={handleSearch}
-											label="Search Pauses"
-										/>
-									</Grid>
-								</div>
-							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainer>
-				</div>
-				<div className="mobileSearchCustomCaptions">
-					<AC.SearchContainerMobile>
-						<AC.SearchInner>
-							<Grid container spacing={1} alignItems="flex-end">
-								<Grid item>
-									<SearchIcon />
-								</Grid>
-								<Grid item>
-									<AC.SearchInput
-										value={searchQuery}
-										onChange={(e) => {
-											setSearchQuery(e.target.value);
-										}}
-										label="Search Pauses"
-									/>
-								</Grid>
-							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainerMobile>
-				</div>
+				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
+				<MobileSearchField
+					searchQuery={searchQuery}
+					setSearchQuery={handleSearch}
+				/>
 			</div>
 			<CommonApplicationTable
 				setData={setData}
