@@ -17,10 +17,8 @@ export const siteApplicationPathCustomCaptions =
 	siteApplicationPath + "/customcaptions";
 export const siteApplicationPathStopsReasons =
 	siteApplicationPath + "/stopsreasons";
-<<<<<<< HEAD
 export const siteApplicationOperationModesPath =
 	siteApplicationPath + "/operatingmodes";
-=======
 export const sitApplicationPathModelStatuses =
 	siteApplicationPath + "/modelstatuses";
 export const siteApplicationPathModelTypes =
@@ -31,7 +29,6 @@ export const siteApplicationPathMissingItems =
 	siteApplicationPath + "/missingitems";
 export const siteApplicationPathStatusChanges =
 	siteApplicationPath + "/statuschanges";
->>>>>>> pariskrit
 
 //Applications
 export const applicationListPath = "/applications";
