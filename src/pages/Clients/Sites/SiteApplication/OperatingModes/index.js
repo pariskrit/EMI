@@ -1,8 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import ContentStyle from "styles/application/ContentStyle";
-import Grid from "@material-ui/core/Grid";
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import OperatingModesTable from "./OperatingModesTable";
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
@@ -11,8 +8,10 @@ import { SiteContext } from "contexts/SiteApplicationContext";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { useSearch } from "hooks/useSearch";
 import DefaultDialog from "components/Elements/DefaultDialog";
-
-const AC = ContentStyle();
+import SearchField from "components/Elements/SearchField/SearchField";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import API from "helpers/api";
+import { BASE_API_PATH } from "helpers/constants";
 
 function OperatingModes({ appId }) {
 	const [data, setData] = useState([]);
@@ -24,11 +23,16 @@ function OperatingModes({ appId }) {
 	const [deleteId, setDeleteId] = useState(null);
 	const [{ showAdd }, dispatch] = useContext(SiteContext);
 	const [confirmDefault, setConfirmDefault] = useState([]);
-	const { searchQuery, searchedData, handleSearch, setAllData } = useSearch();
+	const {
+		searchQuery,
+		searchedData,
+		handleSearch,
+		setAllData,
+		setSearchData,
+	} = useSearch();
 
 	const fetchOperatingModesLists = async () => {
 		const result = await getOperatingModes(appId);
-		console.log(result);
 		setData(result.data);
 		setAllData(result.data);
 	};
@@ -70,6 +74,40 @@ function OperatingModes({ appId }) {
 		setData(newList);
 	};
 
+	// const handleDefaultUpdate = async () => {
+	// 	// Attempting to update default
+	// 	try {
+	// 		console.log(confirmDefault[0]);
+	// 		// Patching change to API
+
+	// 		const result = await API.patch(`${BASE_API_PATH}.siteapps/${id}`, [
+	// 			{
+	// 				op: "replace",
+	// 				path: "defaultOperatingModeID",
+	// 				value: confirmDefault[0],
+	// 			},
+	// 		]);
+
+	// 		// If success, updating default in state
+	// 		if (result.status === 200) {
+	// 			// Updating state
+	// 			handleSetDefault(confirmDefault[0]);
+
+	// 			// Updating default state
+	// 			setDefaultData(confirmDefault[0]);
+
+	// 			return true;
+	// 		} else {
+	// 			throw new Error(result);
+	// 		}
+	// 	} catch (err) {
+	// 		// TODO: real error handling
+	// 		console.log(err);
+
+	// 		return false;
+	// 	}
+	// };
+
 	useEffect(() => {
 		fetchOperatingModesLists();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,28 +148,11 @@ function OperatingModes({ appId }) {
 					dataCount={2}
 					description="Create and manage Operating Modes"
 				/>
-				<div className="desktopSearchCustomCaptions">
-					<AC.SearchContainer>
-						<AC.SearchInner>
-							<Grid container spacing={1} alignItems="flex-end">
-								<div className="flex">
-									<Grid item>
-										<SearchIcon
-											style={{ marginTop: "20px", marginRight: "5px" }}
-										/>
-									</Grid>
-									<Grid item>
-										<AC.SearchInput
-											value={searchQuery}
-											onChange={handleSearch}
-											label="Search Operating Modes"
-										/>
-									</Grid>
-								</div>
-							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainer>
-				</div>
+				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
+				<MobileSearchField
+					searchQuery={searchQuery}
+					setSearchQuery={handleSearch}
+				/>
 			</div>
 
 			<OperatingModesTable
@@ -142,6 +163,7 @@ function OperatingModes({ appId }) {
 				handleDeleteDialogOpen={onOpenDeleteDialog}
 				searchedData={searchedData}
 				searchQuery={searchQuery}
+				setSearchedData={setSearchData}
 				setCurrentTableSort={setCurrentTableSort}
 			/>
 		</>
