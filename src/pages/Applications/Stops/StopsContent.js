@@ -343,10 +343,20 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 						setData={setData}
 						pagination={false}
 						handleSort={handleSort}
-						onEdit={handleEditDialogOpen}
-						onDelete={(id) => handleDeleteDialogOpen(id)}
 						searchedData={searchedData}
 						searchQuery={searchQuery}
+						menuData={[
+							{
+								name: "Edit",
+								handler: handleEditDialogOpen,
+								isDelete: false,
+							},
+							{
+								name: "Delete",
+								handler: handleDeleteDialogOpen,
+								isDelete: true,
+							},
+						]}
 					/>
 				</>
 			) : (
