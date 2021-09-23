@@ -1,19 +1,19 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
+import DeleteDialog from "components/Elements/DeleteDialog";
+import DetailsPanel from "components/Elements/DetailsPanel";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import SearchField from "components/Elements/SearchField/SearchField";
+import CommonApplicationTable from "components/Modules/CommonApplicationTable";
+import { handleSort } from "helpers/utils";
+import { useSearch } from "hooks/useSearch";
+import React, { useCallback, useEffect, useState } from "react";
+//import ContentStyle from "styles/application/ContentStyle";
+import CommonBody from "../CommonBody";
 // Icon Import
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
-import { handleSort } from "helpers/utils";
-import ContentStyle from "styles/application/ContentStyle";
-import DetailsPanel from "components/Elements/DetailsPanel";
-import DeleteDialog from "components/Elements/DeleteDialog";
-import React, { useCallback, useEffect, useState } from "react";
-import CommonApplicationTable from "components/Modules/CommonApplicationTable";
-import SearchField from "components/Elements/SearchField/SearchField";
-import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
-import { useSearch } from "hooks/useSearch";
 
 // Init styled components
-const AC = ContentStyle();
+//const AC = ContentStyle();
 
 const CommonContent = ({
 	id,
@@ -182,7 +182,8 @@ const CommonContent = ({
 			/>
 
 			{/* Spinner should start here */}
-			{haveData ? (
+
+			<CommonBody {...{ haveData }}>
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
@@ -213,11 +214,7 @@ const CommonContent = ({
 						isLoading={loading}
 					/>
 				</>
-			) : (
-				<AC.SpinnerContainer>
-					<CircularProgress />
-				</AC.SpinnerContainer>
-			)}
+			</CommonBody>
 		</div>
 	);
 };
