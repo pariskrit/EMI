@@ -15,5 +15,12 @@ export const useSearch = () => {
 		setSearchData(filtered);
 	};
 
-	return { setAllData, handleSearch, searchedData, searchQuery, setSearchData };
+	return {
+		allData,
+		setAllData,
+		handleSearch,
+		searchedData,
+		searchQuery,
+		setSearchData,
+	};
 };
