@@ -11,6 +11,7 @@ import {
 	siteApplicationPathSkippedTasks,
 	siteApplicationPathMissingItems,
 	siteApplicationPathStatusChanges,
+	siteApplicationPathDefectStatus,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import { Route } from "react-router-dom";
@@ -24,6 +25,7 @@ import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTab
 
 //New Added
 import differentAPIs from "helpers/differentAPIs";
+import DefectStatuses from "../DefectStatuses";
 
 const routes = [
 	{
@@ -123,6 +125,15 @@ const routes = [
 		name: "Task Definitions",
 		path: siteApplicationOperationModesPath,
 		component: OperatingModes,
+		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+	},
+	{
+		id: 53,
+		name: "Defect Definitions",
+		path: siteApplicationPathDefectStatus,
+		component: DefectStatuses,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,
