@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import Grid from "@material-ui/core/Grid";
 import CustomCaptionsTable from "./CustomCaptionsTable";
 import "./customCaptions.css";
 import {
@@ -10,8 +9,8 @@ import {
 	patchCustomCaptions,
 } from "services/clients/sites/siteApplications/customCaptions";
 
-// Icon Import
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import SearchField from "components/Elements/SearchField/SearchField";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 
 // Init styled components
 const AC = ContentStyle();
@@ -134,51 +133,15 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 							description="Manage custom captions for this applications"
 						/>
 
-						<div className="desktopSearchCustomCaptions">
-							<AC.SearchContainer>
-								<AC.SearchInner>
-									<Grid container spacing={1} alignItems="flex-end">
-										<div className="flex">
-											<Grid item>
-												<SearchIcon
-													style={{ marginTop: "20px", marginRight: "5px" }}
-												/>
-											</Grid>
-											<Grid item>
-												<AC.SearchInput
-													value={searchQuery}
-													onChange={(e) => {
-														setSearchQuery(e.target.value);
-													}}
-													label="Search custom captions"
-												/>
-											</Grid>
-										</div>
-									</Grid>
-								</AC.SearchInner>
-							</AC.SearchContainer>
-						</div>
+						<SearchField
+							searchQuery={searchQuery}
+							setSearchQuery={(e) => setSearchQuery(e.target.value)}
+						/>
 
-						<div className="mobileSearchCustomCaptions">
-							<AC.SearchContainerMobile>
-								<AC.SearchInner>
-									<Grid container spacing={1} alignItems="flex-end">
-										<Grid item>
-											<SearchIcon />
-										</Grid>
-										<Grid item>
-											<AC.SearchInput
-												value={searchQuery}
-												onChange={(e) => {
-													setSearchQuery(e.target.value);
-												}}
-												label="Search custom captions"
-											/>
-										</Grid>
-									</Grid>
-								</AC.SearchInner>
-							</AC.SearchContainerMobile>
-						</div>
+						<MobileSearchField
+							searchQuery={searchQuery}
+							setSearchQuery={(e) => setSearchQuery(e.target.value)}
+						/>
 					</div>
 
 					<CustomCaptionsTable
