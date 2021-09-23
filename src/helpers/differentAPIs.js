@@ -48,6 +48,12 @@ import {
 	getSystems,
 	patchSystems,
 } from "services/clients/sites/siteApplications/systems";
+//Lubricants
+import {
+	addLubricants,
+	getLubricants,
+	patchLubricants,
+} from "services/clients/sites/siteApplications/lubricants";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -100,6 +106,12 @@ const differentAPIs = {
 		postAPI: addSystems,
 		patchAPI: patchSystems,
 		deleteAPI: `${BASE_API_PATH}systems`,
+	},
+	LubricantsAPIs: {
+		getAPI: getLubricants,
+		postAPI: addLubricants,
+		patchAPI: patchLubricants,
+		deleteAPI: `${BASE_API_PATH}lubricants`,
 	},
 };
 

@@ -24,6 +24,7 @@ const BASE_API_PATH_STATUS_CHANGES = `${BASE_API_PATH}changestatusreasons`;
 const BASE_API_PATH_FEEDBACK_CLASSIFICATIONS = `${BASE_API_PATH}feedbackclassifications`;
 const BASE_API_PATH_ACTIONS = `${BASE_API_PATH}actions`;
 const BASE_API_PATH_SYSTEMS = `${BASE_API_PATH}systems`;
+const BASE_API_PATH_LUBRICANTS = `${BASE_API_PATH}lubricants`;
 
 export const Apis = {
 	//client detail screen
@@ -77,4 +78,7 @@ export const Apis = {
 
 	//systems
 	Systems: `${BASE_API_PATH_SYSTEMS}`,
+
+	//systems
+	Lubricants: `${BASE_API_PATH_LUBRICANTS}`,
 };

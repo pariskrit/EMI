@@ -16,6 +16,7 @@ import {
 	siteAppFeedbackClassificationsPath,
 	siteAppTaskActions,
 	siteAppTaskSystems,
+	siteAppLubricants,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -134,7 +135,7 @@ const routes = [
 		pathToPatch: "defaultFeedbackClassificationID",
 	},
 	{
-		id: 50,
+		id: 47,
 		name: "Task Definitions",
 		path: siteAppTaskActions,
 		component: SingleColumnTableCommonComponent,
@@ -145,7 +146,7 @@ const routes = [
 		api: differentAPIs.ActionsAPIs,
 	},
 	{
-		id: 50,
+		id: 63,
 		name: "Task Definitions",
 		path: siteAppTaskSystems,
 		component: SingleColumnTableCommonComponent,
@@ -155,11 +156,20 @@ const routes = [
 		header: "Action",
 		api: differentAPIs.SystemsAPIs,
 	},
+	{
+		id: 64,
+		name: "Task Definitions",
+		path: siteAppLubricants,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Lubricants",
+		api: differentAPIs.LubricantsAPIs,
+	},
 ];
 
 const SiteAppPage = () => {
-	console.log("sagar", siteAppPath);
-
 	return (
 		<SiteApplicationContext>
 			<SiteApplication>

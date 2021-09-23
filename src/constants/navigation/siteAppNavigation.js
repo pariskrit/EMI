@@ -10,6 +10,7 @@ import {
 	siteAppStopsReasonsPath,
 	siteAppTaskActions,
 	siteAppTaskSystems,
+	siteAppLubricants,
 	siteAppFeedbackClassificationsPath,
 } from "helpers/routePaths";
 
@@ -89,7 +90,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Lubricants",
-					link: links + "lubricants",
+					link: links + siteAppLubricants,
 				},
 			],
 		},
