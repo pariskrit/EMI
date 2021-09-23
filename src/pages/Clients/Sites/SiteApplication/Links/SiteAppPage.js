@@ -15,6 +15,7 @@ import {
 	siteAppStopsReasonsPath,
 	siteAppFeedbackClassificationsPath,
 	siteAppTaskActions,
+	siteAppTaskSystems,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -142,6 +143,17 @@ const routes = [
 		showSwitch: false,
 		header: "Action",
 		api: differentAPIs.ActionsAPIs,
+	},
+	{
+		id: 50,
+		name: "Task Definitions",
+		path: siteAppTaskSystems,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Action",
+		api: differentAPIs.SystemsAPIs,
 	},
 ];
 

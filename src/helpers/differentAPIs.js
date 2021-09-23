@@ -42,6 +42,12 @@ import {
 	getActions,
 	patchActions,
 } from "services/clients/sites/siteApplications/actions";
+//Systems
+import {
+	addSystems,
+	getSystems,
+	patchSystems,
+} from "services/clients/sites/siteApplications/systems";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -88,6 +94,12 @@ const differentAPIs = {
 		postAPI: addActions,
 		patchAPI: patchActions,
 		deleteAPI: `${BASE_API_PATH}actions`,
+	},
+	SystemsAPIs: {
+		getAPI: getSystems,
+		postAPI: addSystems,
+		patchAPI: patchSystems,
+		deleteAPI: `${BASE_API_PATH}systems`,
 	},
 };
 

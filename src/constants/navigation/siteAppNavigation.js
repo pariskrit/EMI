@@ -9,6 +9,7 @@ import {
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
 	siteAppTaskActions,
+	siteAppTaskSystems,
 	siteAppFeedbackClassificationsPath,
 } from "helpers/routePaths";
 
@@ -80,7 +81,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Systems",
-					link: links + "systems",
+					link: links + siteAppTaskSystems,
 				},
 				{
 					title: "Operating Modes",
