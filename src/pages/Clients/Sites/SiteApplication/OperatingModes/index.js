@@ -92,9 +92,8 @@ function OperatingModes({ appId, setError }) {
 
 	const fetchOperatingModesLists = async () => {
 		const result = await getOperatingModes(appId);
-		const allData = await getSiteApplicationDetail(appId);
-		setDefaultId(allData.data.defaultOperatingModeID);
-		setAllData(result.data);
+		const res = await getSiteApplicationDetail(appId);
+		setDefaultId(res.data.defaultOperatingModeID);
 		setAllData(result.data);
 	};
 
