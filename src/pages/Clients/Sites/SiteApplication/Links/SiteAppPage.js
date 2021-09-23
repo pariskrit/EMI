@@ -1,33 +1,33 @@
-import React from "react";
+import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 import SiteApplicationContext from "contexts/SiteApplicationContext";
+//New Added
+import differentAPIs from "helpers/differentAPIs";
 import {
-	siteApplicationPath,
-	siteApplicationPathCustomCaptions,
-	siteApplicationPausePath,
-	siteApplicationPathStopsReasons,
-	sitApplicationPathModelStatuses,
-	siteApplicationPathModelTypes,
-	siteApplicationPathSkippedTasks,
-	siteApplicationPathMissingItems,
-	siteApplicationPathStatusChanges,
+	siteAppCustomCaptionsPath,
+	siteAppDetailPath,
+	siteAppMissingItemsPath,
+	siteAppModelStatusesPath,
+	siteAppModelTypesPath,
+	siteAppPath,
+	siteAppPausePath,
+	siteAppSkippedTasksPath,
+	siteAppStatusChangesPath,
+	siteAppStopsReasonsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
+import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import SiteApplicationDetails from "../SiteApplicationDetails";
+import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
-import SiteAppModelStatuses from "../SiteAppModelStatuses";
-import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
-
-//New Added
-import differentAPIs from "helpers/differentAPIs";
 
 const routes = [
 	{
 		id: 46,
 		name: "Details",
-		path: siteApplicationPath,
+		path: siteAppDetailPath,
 		component: SiteApplicationDetails,
 		showAdd: false,
 		showHistory: true,
@@ -36,7 +36,7 @@ const routes = [
 	{
 		id: 108,
 		name: "Reason Definitions",
-		path: siteApplicationPausePath,
+		path: siteAppPausePath,
 		component: SiteAppPauses,
 		showAdd: true,
 		showHistory: true,
@@ -45,7 +45,7 @@ const routes = [
 	{
 		id: 51,
 		name: "Details",
-		path: siteApplicationPathCustomCaptions,
+		path: siteAppCustomCaptionsPath,
 		component: CustomCaptions,
 		showAdd: false,
 		showHistory: true,
@@ -55,7 +55,7 @@ const routes = [
 	{
 		id: 62,
 		name: "Reason Definitions",
-		path: siteApplicationPathStopsReasons,
+		path: siteAppStopsReasonsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -66,7 +66,7 @@ const routes = [
 	{
 		id: 61,
 		name: "Reason Definitions",
-		path: siteApplicationPathSkippedTasks,
+		path: siteAppSkippedTasksPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -77,7 +77,7 @@ const routes = [
 	{
 		id: 58,
 		name: "Reason Definitions",
-		path: siteApplicationPathMissingItems,
+		path: siteAppMissingItemsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -88,7 +88,7 @@ const routes = [
 	{
 		id: 50,
 		name: "Reason Definitions",
-		path: siteApplicationPathStatusChanges,
+		path: siteAppStatusChangesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -99,7 +99,7 @@ const routes = [
 	{
 		id: 48,
 		name: "Model Definitions",
-		path: sitApplicationPathModelStatuses,
+		path: siteAppModelStatusesPath,
 		component: SiteAppModelStatuses,
 		showAdd: true,
 		showHistory: true,
@@ -108,7 +108,7 @@ const routes = [
 	{
 		id: 49,
 		name: "Model Definitions",
-		path: siteApplicationPathModelTypes,
+		path: siteAppModelTypesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -123,7 +123,7 @@ const SiteAppPage = () => {
 		<SiteApplicationContext>
 			<SiteApplication>
 				{routes.map((route) => (
-					<Route key={route.id} path={route.path} exact>
+					<Route key={route.id} path={siteAppPath + route.path} exact>
 						<SingleComponent {...route} />
 					</Route>
 				))}

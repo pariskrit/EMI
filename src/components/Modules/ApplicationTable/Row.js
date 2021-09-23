@@ -1,9 +1,13 @@
-import React from "react";
 import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import IOSSwitch from "components/Elements/IOSSwitch";
+import {
+	applicationListPath,
+	clientsPath,
+	siteAppDetailPath,
+} from "helpers/routePaths";
+import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { siteApplicationDetailsPath } from "helpers/routePaths";
 
 const Row = ({ row, classes, onDeleteApp, onChangeApp, showDeleteIcon }) => {
 	const { clientId, id } = useParams();
@@ -11,7 +15,11 @@ const Row = ({ row, classes, onDeleteApp, onChangeApp, showDeleteIcon }) => {
 	return (
 		<TableRow>
 			<TableCell>
-				<Link to={`/clients/${clientId}/sites/${id}/applications/${row.id}`}>
+				<Link
+					to={`${clientsPath}/${clientId}/sites/${id}${applicationListPath}/${
+						row.id + siteAppDetailPath
+					}`}
+				>
 					<span className={classes.appName}>{row.name}</span>
 				</Link>
 			</TableCell>
