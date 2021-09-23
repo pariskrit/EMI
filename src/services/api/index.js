@@ -22,6 +22,7 @@ const BASE_API_PATH_SKIPPED_TASKS = `${BASE_API_PATH}SkipTaskReasons`;
 const BASE_API_PATH_MISSING_PART_OR_TOOL_REASONS = `${BASE_API_PATH}MissingPartToolReasons`;
 const BASE_API_PATH_STATUS_CHANGES = `${BASE_API_PATH}changestatusreasons`;
 const BASE_API_PATH_FEEDBACK_CLASSIFICATIONS = `${BASE_API_PATH}feedbackclassifications`;
+const BASE_API_PATH_FEEDBACK_PRIORITIES = `${BASE_API_PATH}feedbackpriorities`;
 const BASE_API_PATH_ACTIONS = `${BASE_API_PATH}actions`;
 const BASE_API_PATH_SYSTEMS = `${BASE_API_PATH}systems`;
 const BASE_API_PATH_LUBRICANTS = `${BASE_API_PATH}lubricants`;
@@ -73,6 +74,9 @@ export const Apis = {
 
 	//feedbackClassifications
 	FeedbackClassifications: `${BASE_API_PATH_FEEDBACK_CLASSIFICATIONS}`,
+
+	//feedbackPriorities
+	FeedbackPriorities: `${BASE_API_PATH_FEEDBACK_PRIORITIES}`,
 
 	//actions
 	Actions: `${BASE_API_PATH_ACTIONS}`,

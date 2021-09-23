@@ -9,6 +9,7 @@ function SingleColumnTableCommonComponent({
 	dispatch,
 	getError,
 	header,
+	subHeader,
 	apis,
 	showDefault,
 	pathToPatch,
@@ -26,7 +27,15 @@ function SingleColumnTableCommonComponent({
 				id={appId}
 				setIs404={setIs404}
 				getError={getError}
-				{...{ header, apis, state, dispatch, showDefault, pathToPatch }}
+				{...{
+					header,
+					subHeader,
+					apis,
+					state,
+					dispatch,
+					showDefault,
+					pathToPatch,
+				}}
 			/>
 		);
 	} else {

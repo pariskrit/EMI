@@ -60,6 +60,14 @@ import {
 	getDefectTypes,
 	patchDefectTypes,
 } from "services/clients/sites/siteApplications/defectTypes";
+//Feedback Priorities
+import {
+	addFeedbackPriorities,
+	getFeedbackPriorities,
+	getDefaultFeedbackPriorities,
+	patchFeedbackPriorities,
+	patchDefaultFeedbackPriorities,
+} from "services/clients/sites/siteApplications/feedbackPriorities";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -124,6 +132,14 @@ const differentAPIs = {
 		postAPI: addDefectTypes,
 		patchAPI: patchDefectTypes,
 		deleteAPI: `${BASE_API_PATH}defecttypes`,
+	},
+	FeedbackPrioritiesAPIs: {
+		getAPI: getFeedbackPriorities,
+		getDefaultAPI: getDefaultFeedbackPriorities,
+		postAPI: addFeedbackPriorities,
+		patchAPI: patchFeedbackPriorities,
+		patchDefaultAPI: patchDefaultFeedbackPriorities,
+		deleteAPI: `${BASE_API_PATH}feedbackpriorities`,
 	},
 };
 
