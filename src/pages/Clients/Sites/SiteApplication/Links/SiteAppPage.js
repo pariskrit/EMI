@@ -14,6 +14,7 @@ import {
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
 	siteAppFeedbackClassificationsPath,
+	siteAppTaskActions,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -130,6 +131,17 @@ const routes = [
 		api: differentAPIs.FeedbackClassificationsAPIs,
 		showDefault: true,
 		pathToPatch: "defaultFeedbackClassificationID",
+	},
+	{
+		id: 50,
+		name: "Task Definitions",
+		path: siteAppTaskActions,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Action",
+		api: differentAPIs.ActionsAPIs,
 	},
 ];
 

@@ -8,6 +8,7 @@ import {
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
+	siteAppTaskActions,
 	siteAppFeedbackClassificationsPath,
 } from "helpers/routePaths";
 
@@ -75,7 +76,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Actions",
-					link: links + "actions",
+					link: links + siteAppTaskActions,
 				},
 				{
 					title: "Systems",

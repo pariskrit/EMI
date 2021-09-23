@@ -36,6 +36,12 @@ import {
 	patchFeedbackClassifications,
 	patchDefaultFeedbackClassifications,
 } from "services/clients/sites/siteApplications/feedbackClassifications";
+//Actions
+import {
+	addActions,
+	getActions,
+	patchActions,
+} from "services/clients/sites/siteApplications/actions";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -76,6 +82,12 @@ const differentAPIs = {
 		patchAPI: patchFeedbackClassifications,
 		patchDefaultAPI: patchDefaultFeedbackClassifications,
 		deleteAPI: `${BASE_API_PATH}feedbackclassifications`,
+	},
+	ActionsAPIs: {
+		getAPI: getActions,
+		postAPI: addActions,
+		patchAPI: patchActions,
+		deleteAPI: `${BASE_API_PATH}actions`,
 	},
 };
 
