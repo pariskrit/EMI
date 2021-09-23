@@ -27,17 +27,6 @@ const patchModelTypes = async (id, requestData) => {
 //#endregion
 
 //#region patch stop reasons
-const deleteModelTypes = async (id) => {
-	try {
-		let response = await API.delete(`${Apis.ModelTypes}/${id}`);
-		return getAPIResponse(response);
-	} catch (err) {
-		return getAPIResponse(err?.response);
-	}
-};
-
-//#endregion
-
 const addModelTypes = async (requestData) => {
 	try {
 		let response = await API.post(Apis.ModelTypes, requestData);
@@ -47,4 +36,6 @@ const addModelTypes = async (requestData) => {
 	}
 };
 
-export { getModelTypes, patchModelTypes, deleteModelTypes, addModelTypes };
+//#endregion
+
+export { getModelTypes, patchModelTypes, addModelTypes };

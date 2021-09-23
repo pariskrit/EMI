@@ -10,6 +10,7 @@ import {
 	siteApplicationPathSkippedTasks,
 	siteApplicationPathMissingItems,
 	siteApplicationPathStatusChanges,
+	siteApplicationPathFeedbackClassifications,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import { Route } from "react-router-dom";
@@ -115,6 +116,19 @@ const routes = [
 		showSwitch: false,
 		header: "Model Types",
 		api: differentAPIs.ModelTypesAPIs,
+	},
+	{
+		id: 55,
+		name: "Feedback Definitions",
+		path: siteApplicationPathFeedbackClassifications,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Feedback Classifications",
+		api: differentAPIs.FeedbackClassificationsAPIs,
+		showDefault: true,
+		pathToPatch: "defaultFeedbackClassificationID",
 	},
 ];
 

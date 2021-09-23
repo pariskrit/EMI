@@ -28,6 +28,14 @@ import {
 	getStopReasons,
 	patchStopReasons,
 } from "services/clients/sites/siteApplications/stopReasons";
+//Feedback Classifications
+import {
+	addFeedbackClassifications,
+	getFeedbackClassifications,
+	getDefaultFeedbackClassifications,
+	patchFeedbackClassifications,
+	patchDefaultFeedbackClassifications,
+} from "services/clients/sites/siteApplications/feedbackClassifications";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -59,6 +67,15 @@ const differentAPIs = {
 		postAPI: addStatusChanges,
 		patchAPI: patchStatusChanges,
 		deleteAPI: `${BASE_API_PATH}changestatusreasons`,
+	},
+
+	FeedbackClassificationsAPIs: {
+		getAPI: getFeedbackClassifications,
+		getDefaultAPI: getDefaultFeedbackClassifications,
+		postAPI: addFeedbackClassifications,
+		patchAPI: patchFeedbackClassifications,
+		patchDefaultAPI: patchDefaultFeedbackClassifications,
+		deleteAPI: `${BASE_API_PATH}feedbackclassifications`,
 	},
 };
 

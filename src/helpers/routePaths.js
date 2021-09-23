@@ -27,6 +27,8 @@ export const siteApplicationPathMissingItems =
 	siteApplicationPath + "/missingitems";
 export const siteApplicationPathStatusChanges =
 	siteApplicationPath + "/statuschanges";
+export const siteApplicationPathFeedbackClassifications =
+	siteApplicationPath + "/feedbackclassifications";
 
 //Applications
 export const applicationListPath = "/applications";
