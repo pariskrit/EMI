@@ -18,7 +18,6 @@ import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 
 function OperatingModes({ appId, setError }) {
-	const [data, setData] = useState([]);
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -28,6 +27,7 @@ function OperatingModes({ appId, setError }) {
 	const [{ showAdd }, dispatch] = useContext(SiteContext);
 	const [confirmDefault, setConfirmDefault] = useState([]);
 	const {
+		allData,
 		searchQuery,
 		searchedData,
 		handleSearch,
@@ -36,7 +36,7 @@ function OperatingModes({ appId, setError }) {
 	} = useSearch();
 	const [defaultId, setDefaultId] = useState(null);
 
-	const addData = (newData) => setData([...data, newData]);
+	const addData = (newData) => setAllData([...allData, newData]);
 
 	const onOpenDeleteDialog = (id) => {
 		setDeleteId(id);
@@ -44,9 +44,9 @@ function OperatingModes({ appId, setError }) {
 	};
 
 	const onOpenEditDialog = (id) => {
-		let index = data.findIndex((el) => el.id === id);
+		let index = allData.findIndex((el) => el.id === id);
 
-		setDataToEdit(data[index]);
+		setDataToEdit(allData[index]);
 		setOpenEditDialog(true);
 	};
 
@@ -64,13 +64,13 @@ function OperatingModes({ appId, setError }) {
 	const closeDefaultDialog = () => setOpenDefaultDialog(false);
 
 	const handleRemoveData = (id) =>
-		setData([...data.filter((d) => d.id !== id)]);
+		setAllData([...allData.filter((d) => d.id !== id)]);
 
 	const handleEditData = (editedData) => {
-		const newList = [...data];
+		const newList = [...allData];
 		const index = newList.findIndex((data) => data.id === editedData.id);
 		newList.splice(index, 1, editedData);
-		setData(newList);
+		setAllData(newList);
 	};
 
 	const handleDefaultUpdate = async () => {
@@ -94,7 +94,7 @@ function OperatingModes({ appId, setError }) {
 		const result = await getOperatingModes(appId);
 		const allData = await getSiteApplicationDetail(appId);
 		setDefaultId(allData.data.defaultOperatingModeID);
-		setData(result.data);
+		setAllData(result.data);
 		setAllData(result.data);
 	};
 
@@ -147,7 +147,7 @@ function OperatingModes({ appId, setError }) {
 
 			<OperatingModesTable
 				currentTableSort={currentTableSort}
-				data={data}
+				data={allData}
 				defaultID={defaultId}
 				openDefaultDialog={onOpenDefaultDialog}
 				handleEditDialogOpen={onOpenEditDialog}
