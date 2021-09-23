@@ -9,6 +9,7 @@ import {
 	TableBody,
 	TableCell,
 	TableRow,
+	Typography,
 } from "@material-ui/core";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
@@ -41,6 +42,17 @@ const useStyles = makeStyles({
 	dataCell: {
 		height: 50,
 	},
+	defaultText: {
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		color: ColourConstants.tableBorder,
+		fontStyle: "italic",
+		paddingLeft: 5,
+		display: "inline-flex",
+	},
+	defaultNameText: {
+		fontWeight: "bold",
+	},
 });
 
 const CommonApplicationTable = ({
@@ -50,9 +62,9 @@ const CommonApplicationTable = ({
 	searchQuery,
 	columns,
 	headers,
-	onEdit,
-	onDelete,
 	isLoading,
+	defaultID,
+	menuData,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -122,7 +134,19 @@ const CommonApplicationTable = ({
 											})}
 										>
 											<AT.CellContainer key={col}>
-												<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+												<AT.TableBodyText
+													className={clsx({
+														[classes.defaultNameText]:
+															row.id === defaultID && i === 0,
+													})}
+												>
+													{row[col]}
+												</AT.TableBodyText>
+												{row.id === defaultID && i === 0 ? (
+													<Typography className={classes.defaultText}>
+														(Default)
+													</Typography>
+												) : null}
 												{arr.length === i + 1 ? (
 													<AT.DotMenu
 														onClick={(e) => {
@@ -149,18 +173,7 @@ const CommonApplicationTable = ({
 																setAnchorEl(null);
 																setSelectedData(null);
 															}}
-															menuData={[
-																{
-																	name: "Edit",
-																	handler: () => onEdit(row.id),
-																	isDelete: false,
-																},
-																{
-																	name: "Delete",
-																	handler: () => onDelete(row.id),
-																	isDelete: true,
-																},
-															]}
+															menuData={menuData}
 														/>
 													</AT.DotMenu>
 												) : null}
@@ -200,12 +213,14 @@ CommonApplicationTable.defaultProps = {
 	],
 	columns: ["name"],
 	headers: ["Name"],
+	defaultID: null,
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
 };
 
 CommonApplicationTable.propTypes = {
 	data: PropTypes.array,
+	defaultID: PropTypes.number,
 	columns: PropTypes.array,
 	headers: PropTypes.array,
 	onEdit: PropTypes.func,

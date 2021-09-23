@@ -207,11 +207,21 @@ const CommonContent = ({
 						columns={["name"]}
 						headers={["Name"]}
 						setData={setData}
-						onEdit={handleEditDialogOpen}
-						onDelete={(id) => handleDeleteDialogOpen(id)}
 						setSearch={setSearchData}
 						searchQuery={searchQuery}
 						isLoading={loading}
+						menuData={[
+							{
+								name: "Edit",
+								handler: handleEditDialogOpen,
+								isDelete: false,
+							},
+							{
+								name: "Delete",
+								handler: handleDeleteDialogOpen,
+								isDelete: true,
+							},
+						]}
 					/>
 				</>
 			</CommonBody>

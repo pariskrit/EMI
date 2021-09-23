@@ -8,6 +8,10 @@ import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import DefectStatusTypes from "helpers/defectStatusTypes";
+import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
+import { addDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -17,11 +21,14 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
+	type: yup
+		.string("This field must be a string")
+		.required("This field is required"),
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null };
-const defaultStateSchema = { name: "" };
+const defaultErrorSchema = { name: null, type: null };
+const defaultStateSchema = { name: "", type: "O" };
 
 const AddDialog = ({
 	open,
@@ -78,9 +85,10 @@ const AddDialog = ({
 		}
 	};
 	const handleCreateData = async () => {
-		const result = await addOperatingModes({
+		const result = await addDefectStatuses({
 			siteAppId: applicationID,
 			name: input.name,
+			type: input.type,
 		});
 
 		// Handling success
@@ -90,11 +98,11 @@ const AddDialog = ({
 				id: result.data,
 				applicationID: applicationID,
 				name: input.name,
+				type: input.type,
 			});
 
 			return { success: true };
 		} else {
-			console.log(result);
 			setError(result.data.detail);
 			return { success: false };
 		}
@@ -121,7 +129,7 @@ const AddDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add Defect Status</ADD.HeaderText>}
+						{<ADD.HeaderText>Add Action</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -136,7 +144,7 @@ const AddDialog = ({
 				<ADD.DialogContent>
 					<div>
 						<ADD.InputContainer>
-							<ADD.NameInputContainer>
+							<ADD.LeftInputContainer>
 								<ADD.NameLabel>
 									Name<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.NameLabel>
@@ -151,7 +159,30 @@ const AddDialog = ({
 										setInput({ ...input, name: e.target.value });
 									}}
 								/>
-							</ADD.NameInputContainer>
+							</ADD.LeftInputContainer>
+
+							<ADD.RightInputContainer>
+								<ADD.InputLabel>
+									Type<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.InputLabel>
+								<TextField
+									error={errors.type === null ? false : true}
+									helperText={errors.type === null ? null : errors.type}
+									fullWidth={true}
+									select
+									value={input.type}
+									onChange={(e) => {
+										setInput({ ...input, type: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(DefectStatusTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{DefectStatusTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
+							</ADD.RightInputContainer>
 						</ADD.InputContainer>
 					</div>
 				</ADD.DialogContent>

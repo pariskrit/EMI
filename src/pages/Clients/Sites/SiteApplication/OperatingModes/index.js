@@ -92,9 +92,8 @@ function OperatingModes({ appId, setError }) {
 
 	const fetchOperatingModesLists = async () => {
 		const result = await getOperatingModes(appId);
-		const allData = await getSiteApplicationDetail(appId);
-		setDefaultId(allData.data.defaultOperatingModeID);
-		setAllData(result.data);
+		const res = await getSiteApplicationDetail(appId);
+		setDefaultId(res.data.defaultOperatingModeID);
 		setAllData(result.data);
 	};
 
@@ -135,7 +134,7 @@ function OperatingModes({ appId, setError }) {
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Operating Modes"}
-					dataCount={2}
+					dataCount={allData.length}
 					description="Create and manage Operating Modes"
 				/>
 				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
