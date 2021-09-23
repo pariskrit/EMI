@@ -22,6 +22,7 @@ export const siteAppModelTypesPath = "/modeltypes";
 export const siteAppSkippedTasksPath = "/skippedtasks";
 export const siteAppMissingItemsPath = "/missingitems";
 export const siteAppStatusChangesPath = "/statuschanges";
+export const siteAppPathFeedbackClassifications = "/feedbackclassifications";
 
 //Applications
 export const applicationListPath = "/applications";

@@ -22,6 +22,7 @@ const BASE_API_PATH_MODEL_TYPES = `${BASE_API_PATH}ModelTypes`;
 const BASE_API_PATH_SKIPPED_TASKS = `${BASE_API_PATH}SkipTaskReasons`;
 const BASE_API_PATH_MISSING_PART_OR_TOOL_REASONS = `${BASE_API_PATH}MissingPartToolReasons`;
 const BASE_API_PATH_STATUS_CHANGES = `${BASE_API_PATH}changestatusreasons`;
+const BASE_API_PATH_FEEDBACK_CLASSIFICATIONS = `${BASE_API_PATH}feedbackclassifications`;
 
 export const Apis = {
 	//client detail screen
@@ -68,4 +69,7 @@ export const Apis = {
 
 	//statusChanges
 	StatusChanges: `${BASE_API_PATH_STATUS_CHANGES}`,
+
+	//feedbackClassifications
+	FeedbackClassifications: `${BASE_API_PATH_FEEDBACK_CLASSIFICATIONS}`,
 };

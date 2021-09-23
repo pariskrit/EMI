@@ -1,6 +1,5 @@
 import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 import SiteApplicationContext from "contexts/SiteApplicationContext";
-//New Added
 import differentAPIs from "helpers/differentAPIs";
 import {
 	siteAppCustomCaptionsPath,
@@ -8,26 +7,23 @@ import {
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
+	siteAppOperationModesPath,
 	siteAppPath,
+	siteAppPathFeedbackClassifications,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
-  siteAppOperationModesPath
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
+import OperatingModes from "../OperatingModes";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
-import OperatingModes from "../OperatingModes";
-import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
-
-//New Added
-import differentAPIs from "helpers/differentAPIs";
 
 const routes = [
 	{
@@ -130,6 +126,19 @@ const routes = [
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,
+	},
+	{
+		id: 55,
+		name: "Feedback Definitions",
+		path: siteAppPathFeedbackClassifications,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Feedback Classifications",
+		api: differentAPIs.FeedbackClassificationsAPIs,
+		showDefault: true,
+		pathToPatch: "defaultFeedbackClassificationID",
 	},
 ];
 

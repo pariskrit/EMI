@@ -12,6 +12,9 @@ import CommonBody from "../CommonBody";
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 
+// Show Default
+import DefaultDialog from "components/Elements/DefaultDialog";
+
 // Init styled components
 //const AC = ContentStyle();
 
@@ -23,6 +26,8 @@ const CommonContent = ({
 	state,
 	dispatch,
 	apis,
+	showDefault,
+	pathToPatch,
 }) => {
 	// Init state
 	const [data, setData] = useState([]);
@@ -41,6 +46,11 @@ const CommonContent = ({
 		searchQuery,
 		setSearchData,
 	} = useSearch();
+
+	// Show Default
+	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
+	const [confirmDefault, setConfirmDefault] = useState([null, null]);
+	const [defaultData, setDefaultData] = useState(null);
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
@@ -151,6 +161,107 @@ const CommonContent = ({
 
 	const mainData = searchQuery.length === 0 ? data : searchedData;
 
+	//ShowDefault
+
+	const handleDefaultDialogOpen = (id, name) => {
+		setConfirmDefault([id, name]);
+		setOpenDefaultDialog(true);
+	};
+
+	const handleDefaultDialogClose = () => {
+		setOpenDefaultDialog(false);
+	};
+
+	const handleSetDefault = (defaultID) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === defaultID);
+
+		if (index >= 0) {
+			newData[index].isDefault = true;
+		}
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleDefaultUpdate = async () => {
+		// Attempting to update default
+		try {
+			console.log(confirmDefault[0]);
+			// Patching change to API
+			const result = await apis.patchDefaultAPI(id, [
+				{
+					op: "replace",
+					path: pathToPatch,
+					value: confirmDefault[0],
+				},
+			]);
+
+			// If success, updating default in state
+			if (result.status) {
+				// Updating state
+				handleSetDefault(confirmDefault[0]);
+
+				// Updating default state
+				setDefaultData(confirmDefault[0]);
+
+				return true;
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {
+			// TODO: real error handling
+			console.log(err);
+
+			return false;
+		}
+	};
+
+	// Fetch side effect to get application details
+	useEffect(() => {
+		const getApplicationData = async () => {
+			// Attempting to get data
+			try {
+				// Getting data from API
+				let result = await apis.getDefaultAPI(id);
+
+				// if success, adding data to state
+				if (result.status) {
+					// Setting default
+					setDefaultData(result.data.defaultFeedbackClassificationID);
+				} else {
+					// If error, throwing to catch
+
+					throw new Error(result);
+				}
+			} catch (err) {
+				// TODO: real error handling
+				console.log(err);
+				return false;
+			}
+		};
+
+		// Getting application and updating state
+		getApplicationData()
+			.then(() => {
+				console.log("application name updated");
+			})
+			.catch((err) => console.log(err));
+		// eslint-disable-next-line
+	}, []);
+
+	// Fetch side effect to update default
+	useEffect(() => {
+		// Updating default item if not null
+		if (defaultData !== null) {
+			handleSetDefault(defaultData);
+		}
+		// eslint-disable-next-line
+	}, [defaultData]);
+
+	// console.log("sagar", defaultData);
+
 	return (
 		<div className="container">
 			{/* Start of dialogs */}
@@ -181,6 +292,16 @@ const CommonContent = ({
 				handleRemoveData={handleRemoveData}
 			/>
 
+			{showDefault && (
+				<DefaultDialog
+					open={openDefaultDialog}
+					closeHandler={handleDefaultDialogClose}
+					data={confirmDefault}
+					entity={header}
+					handleDefaultUpdate={handleDefaultUpdate}
+				/>
+			)}
+
 			{/* Spinner should start here */}
 
 			<CommonBody {...{ haveData }}>
@@ -202,17 +323,34 @@ const CommonContent = ({
 						/>
 					</div>
 
-					<CommonApplicationTable
-						data={mainData}
-						columns={["name"]}
-						headers={["Name"]}
-						setData={setData}
-						onEdit={handleEditDialogOpen}
-						onDelete={(id) => handleDeleteDialogOpen(id)}
-						setSearch={setSearchData}
-						searchQuery={searchQuery}
-						isLoading={loading}
-					/>
+					{!showDefault ? (
+						<CommonApplicationTable
+							data={mainData}
+							columns={["name"]}
+							headers={["Name"]}
+							setData={setData}
+							onEdit={handleEditDialogOpen}
+							onDelete={(id) => handleDeleteDialogOpen(id)}
+							setSearch={setSearchData}
+							searchQuery={searchQuery}
+							isLoading={loading}
+						/>
+					) : (
+						<CommonApplicationTable
+							data={mainData}
+							columns={["name"]}
+							headers={["Name"]}
+							setData={setData}
+							onEdit={handleEditDialogOpen}
+							onDelete={(id) => handleDeleteDialogOpen(id)}
+							setSearch={setSearchData}
+							searchQuery={searchQuery}
+							isLoading={loading}
+							openDefaultDialog={handleDefaultDialogOpen}
+							showDefault={showDefault}
+							defaultID={defaultData}
+						/>
+					)}
 				</>
 			</CommonBody>
 		</div>
