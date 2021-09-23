@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -22,7 +23,13 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
+const AddDialog = ({
+	open,
+	closeHandler,
+	applicationID,
+	handleAddData,
+	setError,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -71,35 +78,24 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 		}
 	};
 	const handleCreateData = async () => {
-		// Attempting to create
-		try {
-			// Submitting to backend
-			const result = await addOperatingModes({
-				siteAppId: applicationID,
+		const result = await addOperatingModes({
+			siteAppId: applicationID,
+			name: input.name,
+		});
+
+		// Handling success
+		if (result.status) {
+			// Adding new type to state
+			handleAddData({
+				id: result.data,
+				applicationID: applicationID,
 				name: input.name,
 			});
 
-			// Handling success
-			if (result.status) {
-				// Adding new type to state
-				handleAddData({
-					id: result.data,
-					applicationID: applicationID,
-					name: input.name,
-				});
-
-				return { success: true };
-			} else {
-				throw new Error(result);
-			}
-		} catch (err) {
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
+			return { success: true };
+		} else {
+			console.log(result);
+			setError(result.data.detail);
 			return { success: false };
 		}
 	};
@@ -164,4 +160,8 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 	);
 };
 
-export default AddDialog;
+const mapDispatchToProps = (dispatch) => ({
+	setError: (message) => dispatch(showError(message)),
+});
+
+export default connect(null, mapDispatchToProps)(AddDialog);

@@ -7,6 +7,8 @@ import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { updateOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
 import { useParams } from "react-router";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -22,7 +24,7 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
+const EditDialog = ({ open, closeHandler, data, handleEditData, setError }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -69,37 +71,24 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 		}
 	};
 	const handleUpdateData = async () => {
-		// Attempting to update data
-		try {
-			// Making patch to backend
-			const result = await updateOperatingModes(data.id, [
-				{
-					op: "replace",
-					path: "name",
-					value: input.name,
-				},
-			]);
-			// Handling success
-			if (result.status) {
-				// Updating state to match DB
-				handleEditData({
-					id: data.id,
-					name: input.name,
-				});
+		const result = await updateOperatingModes(data.id, [
+			{
+				op: "replace",
+				path: "name",
+				value: input.name,
+			},
+		]);
+		// Handling success
+		if (result.status) {
+			// Updating state to match DB
+			handleEditData({
+				id: data.id,
+				name: input.name,
+			});
 
-				return { success: true };
-			} else {
-				// If not success, throwing error
-				throw new Error(result);
-			}
-		} catch (err) {
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
+			return { success: true };
+		} else {
+			setError(result.data.detail);
 			return { success: false };
 		}
 	};
@@ -169,4 +158,8 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 	);
 };
 
-export default EditDialog;
+const mapDispatchToProps = (dispatch) => ({
+	setError: (message) => dispatch(showError(message)),
+});
+
+export default connect(null, mapDispatchToProps)(EditDialog);

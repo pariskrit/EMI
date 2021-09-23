@@ -189,7 +189,7 @@ const OperatingModesTable = ({
 													},
 													{
 														name: "Make Default Status",
-														handler: openDefaultDialog,
+														handler: () => openDefaultDialog(d.id, d.name),
 														isDelete: false,
 													},
 												]}
