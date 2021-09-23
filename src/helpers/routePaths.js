@@ -24,6 +24,7 @@ export const siteAppStatusChangesPath = "/statuschanges";
 export const siteAppTaskActions = "/actions";
 export const siteAppTaskSystems = "/systems";
 export const siteAppLubricants = "/lubricants";
+export const siteAppDefectTypes = "/defecttypes";
 export const siteAppFeedbackClassificationsPath = "/feedbackclassifications";
 
 //Applications
