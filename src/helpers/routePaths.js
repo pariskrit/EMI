@@ -10,25 +10,18 @@ export const siteDepartmentPath = "/departments";
 export const siteLocationPath = "/locations";
 
 //Site Application
-export const siteApplicationPathForNav = sitePath + "/applications";
-export const siteApplicationPath = sitePath + "/applications/:appId";
-export const siteApplicationPausePath = siteApplicationPath + "/pauses";
-export const siteApplicationPathCustomCaptions =
-	siteApplicationPath + "/customcaptions";
-export const siteApplicationPathStopsReasons =
-	siteApplicationPath + "/stopsreasons";
-export const siteApplicationOperationModesPath =
-	siteApplicationPath + "/operatingmodes";
-export const sitApplicationPathModelStatuses =
-	siteApplicationPath + "/modelstatuses";
-export const siteApplicationPathModelTypes =
-	siteApplicationPath + "/modeltypes";
-export const siteApplicationPathSkippedTasks =
-	siteApplicationPath + "/skippedtasks";
-export const siteApplicationPathMissingItems =
-	siteApplicationPath + "/missingitems";
-export const siteApplicationPathStatusChanges =
-	siteApplicationPath + "/statuschanges";
+export const siteAppPathForNav = sitePath + "/applications";
+export const siteAppPath = sitePath + "/applications/:appId";
+export const siteAppDetailPath = "/detail";
+export const siteAppPausePath = "/pauses";
+export const siteAppCustomCaptionsPath = "/customcaptions";
+export const siteAppStopsReasonsPath = "/stopsreasons";
+export const siteAppOperationModesPath = "/operatingmodes";
+export const siteAppModelStatusesPath = "/modelstatuses";
+export const siteAppModelTypesPath = "/modeltypes";
+export const siteAppSkippedTasksPath = "/skippedtasks";
+export const siteAppMissingItemsPath = "/missingitems";
+export const siteAppStatusChangesPath = "/statuschanges";
 
 //Applications
 export const applicationListPath = "/applications";
