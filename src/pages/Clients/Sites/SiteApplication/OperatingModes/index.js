@@ -4,17 +4,20 @@ import OperatingModesTable from "./OperatingModesTable";
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 import { getOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
+import {
+	getSiteApplicationDetail,
+	patchApplicationDetail,
+} from "services/clients/sites/siteApplications/siteApplicationDetails";
 import { SiteContext } from "contexts/SiteApplicationContext";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { useSearch } from "hooks/useSearch";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
-function OperatingModes({ appId }) {
-	const [data, setData] = useState([]);
+function OperatingModes({ appId, setError }) {
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -24,22 +27,16 @@ function OperatingModes({ appId }) {
 	const [{ showAdd }, dispatch] = useContext(SiteContext);
 	const [confirmDefault, setConfirmDefault] = useState([]);
 	const {
+		allData,
 		searchQuery,
 		searchedData,
 		handleSearch,
 		setAllData,
 		setSearchData,
 	} = useSearch();
+	const [defaultId, setDefaultId] = useState(null);
 
-	const fetchOperatingModesLists = async () => {
-		const result = await getOperatingModes(appId);
-		setData(result.data);
-		setAllData(result.data);
-	};
-
-	const closeAddModal = () => dispatch({ type: "ADD_TOGGLE" });
-
-	const addData = (newData) => setData([...data, newData]);
+	const addData = (newData) => setAllData([...allData, newData]);
 
 	const onOpenDeleteDialog = (id) => {
 		setDeleteId(id);
@@ -47,9 +44,9 @@ function OperatingModes({ appId }) {
 	};
 
 	const onOpenEditDialog = (id) => {
-		let index = data.findIndex((el) => el.id === id);
+		let index = allData.findIndex((el) => el.id === id);
 
-		setDataToEdit(data[index]);
+		setDataToEdit(allData[index]);
 		setOpenEditDialog(true);
 	};
 
@@ -58,6 +55,8 @@ function OperatingModes({ appId }) {
 		setOpenDefaultDialog(true);
 	};
 
+	const closeAddModal = () => dispatch({ type: "ADD_TOGGLE" });
+
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
 	const closeEditDialog = () => setOpenEditDialog(false);
@@ -65,48 +64,39 @@ function OperatingModes({ appId }) {
 	const closeDefaultDialog = () => setOpenDefaultDialog(false);
 
 	const handleRemoveData = (id) =>
-		setData([...data.filter((d) => d.id !== id)]);
+		setAllData([...allData.filter((d) => d.id !== id)]);
 
 	const handleEditData = (editedData) => {
-		const newList = [...data];
+		const newList = [...allData];
 		const index = newList.findIndex((data) => data.id === editedData.id);
 		newList.splice(index, 1, editedData);
-		setData(newList);
+		setAllData(newList);
 	};
 
-	// const handleDefaultUpdate = async () => {
-	// 	// Attempting to update default
-	// 	try {
-	// 		console.log(confirmDefault[0]);
-	// 		// Patching change to API
+	const handleDefaultUpdate = async () => {
+		const result = await patchApplicationDetail(appId, [
+			{
+				op: "replace",
+				path: "defaultOperatingModeID",
+				value: confirmDefault[0],
+			},
+		]);
 
-	// 		const result = await API.patch(`${BASE_API_PATH}.siteapps/${id}`, [
-	// 			{
-	// 				op: "replace",
-	// 				path: "defaultOperatingModeID",
-	// 				value: confirmDefault[0],
-	// 			},
-	// 		]);
+		if (result.status) {
+			// Updating default state
+			setDefaultId(confirmDefault[0]);
+		} else {
+			setError(result.data.detail);
+		}
+	};
 
-	// 		// If success, updating default in state
-	// 		if (result.status === 200) {
-	// 			// Updating state
-	// 			handleSetDefault(confirmDefault[0]);
-
-	// 			// Updating default state
-	// 			setDefaultData(confirmDefault[0]);
-
-	// 			return true;
-	// 		} else {
-	// 			throw new Error(result);
-	// 		}
-	// 	} catch (err) {
-	// 		// TODO: real error handling
-	// 		console.log(err);
-
-	// 		return false;
-	// 	}
-	// };
+	const fetchOperatingModesLists = async () => {
+		const result = await getOperatingModes(appId);
+		const allData = await getSiteApplicationDetail(appId);
+		setDefaultId(allData.data.defaultOperatingModeID);
+		setAllData(result.data);
+		setAllData(result.data);
+	};
 
 	useEffect(() => {
 		fetchOperatingModesLists();
@@ -120,7 +110,7 @@ function OperatingModes({ appId }) {
 				closeHandler={closeDefaultDialog}
 				data={confirmDefault}
 				entity="Operating Mode"
-				// handleDefaultUpdate={handleDefaultUpdate}
+				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 			<DeleteDialog
 				entityName="Operating Mode"
@@ -157,7 +147,8 @@ function OperatingModes({ appId }) {
 
 			<OperatingModesTable
 				currentTableSort={currentTableSort}
-				data={data}
+				data={allData}
+				defaultID={defaultId}
 				openDefaultDialog={onOpenDefaultDialog}
 				handleEditDialogOpen={onOpenEditDialog}
 				handleDeleteDialogOpen={onOpenDeleteDialog}
@@ -170,4 +161,8 @@ function OperatingModes({ appId }) {
 	);
 }
 
-export default OperatingModes;
+const mapDispatchToProps = (dispatch) => ({
+	setError: (message) => dispatch(showError(message)),
+});
+
+export default connect(null, mapDispatchToProps)(OperatingModes);
