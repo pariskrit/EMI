@@ -10,11 +10,9 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { handleSort } from "helpers/utils";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { CircularProgress } from "@material-ui/core";
 
 // Init styled components
 const AT = TableStyle();
@@ -64,22 +62,24 @@ const useStyles = makeStyles({
 	},
 });
 
-const ModelStatusesTable = ({
+const OperatingModesTable = ({
 	data,
 	setData,
-	setSearch,
-	searchQuery,
-	onEdit,
-	onDelete,
-	isLoading,
+	handleSort,
 	defaultID,
-	onDefault,
+	searchQuery,
+	openDefaultDialog,
+	handleEditDialogOpen,
+	handleDeleteDialogOpen,
+	currentTableSort,
+	setCurrentTableSort,
+	searchedData,
+	setSearchedData,
 }) => {
 	// Init hooks
 	const classes = useStyles();
 
 	// Init State
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
@@ -89,16 +89,16 @@ const ModelStatusesTable = ({
 		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
 
 		// Sorting table
-		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
-		else handleSort(data, setSearch, field, newMethod);
+		handleSort(data, setData, field, newMethod);
+
+		// Sorting searched table if present
+		if (searchQuery !== "") {
+			handleSort(searchedData, setSearchedData, field, newMethod);
+		}
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};
-
-	if (isLoading) {
-		return <CircularProgress />;
-	}
 
 	return (
 		<div>
@@ -126,55 +126,25 @@ const ModelStatusesTable = ({
 									)}
 								</AT.CellContainer>
 							</TableCell>
-							<TableCell
-								onClick={() => {
-									handleSortClick("publish");
-								}}
-								className={clsx(classes.publishRow, {
-									[classes.selectedTableHeadRow]:
-										currentTableSort[0] === "publish",
-									[classes.tableHeadRow]: currentTableSort[0] !== "publish",
-								})}
-							>
-								<AT.CellContainer>
-									Publish?
-									{currentTableSort[0] === "publish" &&
-									currentTableSort[1] === "desc" ? (
-										<AT.DefaultArrow fill="#FFFFFF" />
-									) : (
-										<AT.DescArrow fill="#FFFFFF" />
-									)}
-								</AT.CellContainer>
-							</TableCell>
 						</TableRow>
 					</AT.TableHead>
 					<TableBody>
-						{data.map((d, index) => (
+						{(searchQuery === "" ? data : searchedData).map((d, index) => (
 							<TableRow key={d.id}>
 								<AT.DataCell>
-									<AT.TableBodyText
-										className={clsx({
-											[classes.defaultNameText]: d.id === defaultID,
-										})}
-									>
-										{d.name}
-									</AT.TableBodyText>
-									{d.id === defaultID ? (
-										<Typography className={classes.defaultText}>
-											(Default)
-										</Typography>
-									) : null}
-								</AT.DataCell>
-								<AT.DataCell>
 									<AT.CellContainer>
-										<Typography
+										<AT.TableBodyText
 											className={clsx({
-												[classes.yesText]: d.publish,
-												[classes.noText]: !d.publish,
+												[classes.defaultNameText]: d.id === defaultID,
 											})}
 										>
-											{d.publish ? "Yes" : "No"}
-										</Typography>
+											{d.name}
+										</AT.TableBodyText>
+										{d.id === defaultID ? (
+											<Typography className={classes.defaultText}>
+												(Default)
+											</Typography>
+										) : null}
 
 										<AT.DotMenu
 											onClick={(e) => {
@@ -194,11 +164,11 @@ const ModelStatusesTable = ({
 												index={index}
 												selectedData={selectedData}
 												anchorEl={anchorEl}
-												// isLast={
-												// 	searchQuery === ""
-												// 		? index === data.length - 1
-												// 		: index === searchedData.length - 1
-												// }
+												isLast={
+													searchQuery === ""
+														? index === data.length - 1
+														: index === searchedData.length - 1
+												}
 												id={d.id}
 												clickAwayHandler={() => {
 													setAnchorEl(null);
@@ -209,17 +179,17 @@ const ModelStatusesTable = ({
 												menuData={[
 													{
 														name: "Edit",
-														handler: () => onEdit(d.id),
+														handler: handleEditDialogOpen,
 														isDelete: false,
 													},
 													{
 														name: "Delete",
-														handler: () => onDelete(d.id),
+														handler: handleDeleteDialogOpen,
 														isDelete: true,
 													},
 													{
 														name: "Make Default Status",
-														handler: () => onDefault(d.id, d.name),
+														handler: () => openDefaultDialog(d.id, d.name),
 														isDelete: false,
 													},
 												]}
@@ -236,4 +206,4 @@ const ModelStatusesTable = ({
 	);
 };
 
-export default ModelStatusesTable;
+export default OperatingModesTable;

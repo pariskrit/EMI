@@ -1,6 +1,5 @@
 import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 import SiteApplicationContext from "contexts/SiteApplicationContext";
-//New Added
 import differentAPIs from "helpers/differentAPIs";
 import {
 	siteAppCustomCaptionsPath,
@@ -9,6 +8,7 @@ import {
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
 	siteAppPath,
+	siteAppOperationModesPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -23,6 +23,7 @@ import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
+import OperatingModes from "../OperatingModes";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
@@ -120,6 +121,15 @@ const routes = [
 		showSwitch: false,
 		header: "Model Types",
 		api: differentAPIs.ModelTypesAPIs,
+	},
+	{
+		id: 59,
+		name: "Task Definitions",
+		path: siteAppOperationModesPath,
+		component: OperatingModes,
+		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
 	},
 	{
 		id: 55,

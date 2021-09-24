@@ -4,6 +4,8 @@ import {
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
+	siteAppOperationModesPath,
+	siteAppPathFeedbackClassifications,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -11,7 +13,6 @@ import {
 	siteAppTaskActions,
 	siteAppTaskSystems,
 	siteAppLubricants,
-	siteAppFeedbackClassificationsPath,
 } from "helpers/routePaths";
 
 /**
@@ -87,10 +88,6 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				{
 					title: "Operating Modes",
 					link: links + "operatingmodes",
-				},
-				{
-					title: "Lubricants",
-					link: links + siteAppLubricants,
 				},
 			],
 		},

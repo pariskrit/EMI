@@ -16,6 +16,7 @@ const BASE_API_PATH_SITES_LOCATIONS = `${BASE_API_PATH}SiteLocations`;
 const BASE_API_PATH_SITES_DEPARTMENTS = `${BASE_API_PATH}SiteDepartments`;
 const BASE_API_PATH_SITE_ASSET_COUNT = `${BASE_API_PATH}SiteAssets/Count`;
 const BASE_API_PATH_STOP_REASONS = `${BASE_API_PATH}StopReasons`;
+const BASE_API_PATH_OPERATING_MODES = `${BASE_API_PATH}operatingModes`;
 const BASE_API_PATH_MODEL_STATUSES = `${BASE_API_PATH}modelstatuses`;
 const BASE_API_PATH_MODEL_TYPES = `${BASE_API_PATH}ModelTypes`;
 const BASE_API_PATH_SKIPPED_TASKS = `${BASE_API_PATH}SkipTaskReasons`;
@@ -58,6 +59,8 @@ export const Apis = {
 
 	//stop reasons
 	StopReasons: `${BASE_API_PATH_STOP_REASONS}`,
+
+	OperatingModes: `${BASE_API_PATH_OPERATING_MODES}`,
 	ModelStatuses: `${BASE_API_PATH_MODEL_STATUSES}`,
 	ModelTypes: `${BASE_API_PATH_MODEL_TYPES}`,
 
