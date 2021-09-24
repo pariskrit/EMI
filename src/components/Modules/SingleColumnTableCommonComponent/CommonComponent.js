@@ -230,7 +230,7 @@ const CommonContent = ({
 				// if success, adding data to state
 				if (result.status) {
 					// Setting default
-					setDefaultData(result.data.defaultFeedbackClassificationID);
+					setDefaultData(result.data[pathToPatch]);
 				} else {
 					// If error, throwing to catch
 
