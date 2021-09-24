@@ -5,7 +5,8 @@ import MobileSearchField from "components/Elements/SearchField/MobileSearchField
 import SearchField from "components/Elements/SearchField/SearchField";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import { SiteContext } from "contexts/SiteApplicationContext";
-import { defectStatusTypes } from "helpers/constants";
+import { defectStatusTypes, positionTypes } from "helpers/constants";
+import PositionAccessTypes from "helpers/positionAccessTypes";
 import { useSearch } from "hooks/useSearch";
 import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -15,8 +16,9 @@ import {
 	getSiteApplicationDetail,
 	patchApplicationDetail,
 } from "services/clients/sites/siteApplications/siteApplicationDetails";
-import AddDialog from "./AddDialog";
-import EditDialog from "./EditDialog";
+import { getPositions } from "services/clients/sites/siteApplications/userPositions";
+// import AddDialog from "./AddDialog";
+// import EditDialog from "./EditDialog";
 
 function DefectStatuses({ appId, setError }) {
 	const {
@@ -91,7 +93,29 @@ function DefectStatuses({ appId, setError }) {
 		}
 	};
 
-	useEffect(() => {}, []);
+	const fetchPositions = async () => {
+		const result = await getPositions(appId);
+		setLoading(false);
+
+		setAllData([
+			...result.data.map((res) => ({
+				...res,
+				analyticsAccess: PositionAccessTypes[res.analyticsAccess],
+				defectAccess: PositionAccessTypes[res.defectAccess],
+				defectExportAccess: PositionAccessTypes[res.defectExportAccess],
+				feedbackAccess: PositionAccessTypes[res.feedbackAccess],
+				modelAccess: PositionAccessTypes[res.modelAccess],
+				noticeboardAccess: PositionAccessTypes[res.noticeboardAccess],
+				serviceAccess: PositionAccessTypes[res.serviceAccess],
+				settingsAccess: PositionAccessTypes[res.settingsAccess],
+				userAccess: PositionAccessTypes[res.userAccess],
+			})),
+		]);
+	};
+
+	useEffect(() => {
+		fetchPositions();
+	}, []);
 
 	return (
 		<>
@@ -138,8 +162,30 @@ function DefectStatuses({ appId, setError }) {
 			</div>
 			<CommonApplicationTable
 				data={allData}
-				columns={["name", "type"]}
-				headers={["Name", "Type"]}
+				columns={[
+					"name",
+					"modelAccess",
+					"serviceAccess",
+					"defectAccess",
+					"defectExportAccess",
+					"noticeboardAccess",
+					"feedbackAccess",
+					"userAccess",
+					"analyticsAccess",
+					"settingsAccess",
+				]}
+				headers={[
+					"Name",
+					"Assets Models",
+					"Services",
+					"Defects",
+					"Defect Exports",
+					"Notice Boards",
+					"Feedback",
+					"Users",
+					"Reporting",
+					"Settings",
+				]}
 				setSearch={setSearchData}
 				searchQuery={searchQuery}
 				isLoading={isLoading}
@@ -154,11 +200,6 @@ function DefectStatuses({ appId, setError }) {
 						name: "Delete",
 						handler: onOpenDeleteDialog,
 						isDelete: true,
-					},
-					{
-						name: "Make Default",
-						handler: onOpenDefaultDialog,
-						isDelete: false,
 					},
 				]}
 			/>

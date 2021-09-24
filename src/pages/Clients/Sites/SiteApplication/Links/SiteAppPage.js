@@ -12,6 +12,7 @@ import {
 	siteApplicationPathMissingItems,
 	siteApplicationPathStatusChanges,
 	siteApplicationPathDefectStatus,
+	siteApplicationPathUserPositions,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import { Route } from "react-router-dom";
@@ -26,6 +27,7 @@ import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTab
 //New Added
 import differentAPIs from "helpers/differentAPIs";
 import DefectStatuses from "../DefectStatuses";
+import UserPositions from "../UserPositions";
 
 const routes = [
 	{
@@ -134,6 +136,15 @@ const routes = [
 		name: "Defect Definitions",
 		path: siteApplicationPathDefectStatus,
 		component: DefectStatuses,
+		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+	},
+	{
+		id: 109,
+		name: "User Definitions",
+		path: siteApplicationPathUserPositions,
+		component: UserPositions,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,

@@ -31,6 +31,8 @@ export const siteApplicationPathStatusChanges =
 	siteApplicationPath + "/statuschanges";
 export const siteApplicationPathDefectStatus =
 	siteApplicationPath + "/defectstatuses";
+export const siteApplicationPathUserPositions =
+	siteApplicationPath + "/positions";
 
 //Applications
 export const applicationListPath = "/applications";

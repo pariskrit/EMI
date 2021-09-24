@@ -23,6 +23,7 @@ const BASE_API_PATH_SKIPPED_TASKS = `${BASE_API_PATH}SkipTaskReasons`;
 const BASE_API_PATH_MISSING_PART_OR_TOOL_REASONS = `${BASE_API_PATH}MissingPartToolReasons`;
 const BASE_API_PATH_STATUS_CHANGES = `${BASE_API_PATH}changestatusreasons`;
 const BASE_API_PATH_DEFECT_STATUSES = `${BASE_API_PATH}defectstatuses`;
+const BASE_API_PATH_POSITIONS = `${BASE_API_PATH}positions`;
 
 export const Apis = {
 	//client detail screen
@@ -61,6 +62,7 @@ export const Apis = {
 	ModelStatuses: `${BASE_API_PATH_MODEL_STATUSES}`,
 	ModelTypes: `${BASE_API_PATH_MODEL_TYPES}`,
 	defectStatuses: `${BASE_API_PATH_DEFECT_STATUSES}`,
+	positions: `${BASE_API_PATH_POSITIONS}`,
 
 	//skippedTasks
 	SkippedTasks: `${BASE_API_PATH_SKIPPED_TASKS}`,
