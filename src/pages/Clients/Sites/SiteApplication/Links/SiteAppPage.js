@@ -7,14 +7,18 @@ import {
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
-	siteAppOperationModesPath,
 	siteAppPath,
-	siteAppPathFeedbackClassifications,
+	siteAppOperationModesPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
+	siteAppFeedbackClassificationsPath,
+	siteAppTaskActions,
+	siteAppTaskSystems,
+	siteAppLubricants,
 } from "helpers/routePaths";
+
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
@@ -130,7 +134,7 @@ const routes = [
 	{
 		id: 55,
 		name: "Feedback Definitions",
-		path: siteAppPathFeedbackClassifications,
+		path: siteAppFeedbackClassificationsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -139,6 +143,39 @@ const routes = [
 		api: differentAPIs.FeedbackClassificationsAPIs,
 		showDefault: true,
 		pathToPatch: "defaultFeedbackClassificationID",
+	},
+	{
+		id: 47,
+		name: "Task Definitions",
+		path: siteAppTaskActions,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Action",
+		api: differentAPIs.ActionsAPIs,
+	},
+	{
+		id: 63,
+		name: "Task Definitions",
+		path: siteAppTaskSystems,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Action",
+		api: differentAPIs.SystemsAPIs,
+	},
+	{
+		id: 64,
+		name: "Task Definitions",
+		path: siteAppLubricants,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Lubricants",
+		api: differentAPIs.LubricantsAPIs,
 	},
 ];
 
