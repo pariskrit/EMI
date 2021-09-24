@@ -5,7 +5,7 @@ import {
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
 	siteAppOperationModesPath,
-	siteAppPathFeedbackClassifications,
+	siteAppFeedbackClassificationsPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -87,7 +87,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Operating Modes",
-					link: links + "operatingmodes",
+					link: links + siteAppOperationModesPath,
 				},
 			],
 		},
