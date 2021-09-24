@@ -27,7 +27,7 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, type: null };
 const defaultStateSchema = { name: "", type: "" };
 
-const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
+const EditDialog = ({ open, closeHandler, data, handleEditData, setError }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -100,7 +100,8 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 			return { success: true };
 		} else {
 			// If not success, throwing error
-			throw new Error(result);
+			setError(result.data.detail);
+			return { success: false };
 		}
 	};
 

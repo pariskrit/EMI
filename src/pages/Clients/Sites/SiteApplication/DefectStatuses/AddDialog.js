@@ -5,8 +5,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import { connect } from "react-redux";
-import { showError } from "redux/common/actions";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import { addDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
@@ -192,8 +190,4 @@ const AddDialog = ({
 	);
 };
 
-const mapDispatchToProps = (dispatch) => ({
-	setError: (message) => dispatch(showError(message)),
-});
-
-export default connect(null, mapDispatchToProps)(AddDialog);
+export default AddDialog;

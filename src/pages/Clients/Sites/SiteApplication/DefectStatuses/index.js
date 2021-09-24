@@ -1,3 +1,4 @@
+import DefaultDialog from "components/Elements/DefaultDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
@@ -7,6 +8,8 @@ import { SiteContext } from "contexts/SiteApplicationContext";
 import { defectStatusTypes } from "helpers/constants";
 import { useSearch } from "hooks/useSearch";
 import React, { useContext, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
 import {
 	getSiteApplicationDetail,
@@ -15,7 +18,7 @@ import {
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 
-function DefectStatuses({ appId }) {
+function DefectStatuses({ appId, setError }) {
 	const {
 		allData,
 		searchQuery,
@@ -25,11 +28,13 @@ function DefectStatuses({ appId }) {
 	} = useSearch();
 	const [{ showAdd }, dispatch] = useContext(SiteContext);
 	const [dataToEdit, setDataToEdit] = useState({});
-	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
-	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [defaultId, setDefaultId] = useState(null);
+	const [openEditDialog, setOpenEditDialog] = useState(false);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
+	const [confirmDefault, setConfirmDefault] = useState([]);
 
 	const addData = (newData) => setAllData([...allData, newData]);
 
@@ -43,6 +48,12 @@ function DefectStatuses({ appId }) {
 
 		setDataToEdit(allData[index]);
 		setOpenEditDialog(true);
+	};
+
+	const onOpenDefaultDialog = (id) => {
+		const { name } = allData.find((data) => data.id === id);
+		setConfirmDefault([id, name]);
+		setOpenDefaultDialog(true);
 	};
 
 	const handleRemoveData = (id) =>
@@ -60,6 +71,25 @@ function DefectStatuses({ appId }) {
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
 	const closeEditDialog = () => setOpenEditDialog(false);
+
+	const closeDefaultDialog = () => setOpenDefaultDialog(false);
+
+	const handleDefaultUpdate = async () => {
+		const result = await patchApplicationDetail(appId, [
+			{
+				op: "replace",
+				path: "defaultDefectStatusID",
+				value: confirmDefault[0],
+			},
+		]);
+
+		if (result.status) {
+			// Updating default state
+			setDefaultId(confirmDefault[0]);
+		} else {
+			// setError(result.data.detail);
+		}
+	};
 
 	const fetchDefectStatuses = async () => {
 		const result = await getDefectStatuses(appId);
@@ -82,16 +112,25 @@ function DefectStatuses({ appId }) {
 
 	return (
 		<>
+			<DefaultDialog
+				open={openDefaultDialog}
+				closeHandler={closeDefaultDialog}
+				data={confirmDefault}
+				entity="Default Status"
+				handleDefaultUpdate={handleDefaultUpdate}
+			/>
 			<AddDialog
 				open={showAdd}
 				closeHandler={closeAddModal}
 				applicationID={appId}
 				handleAddData={addData}
+				setError={setError}
 			/>
 			<EditDialog
 				open={openEditDialog}
 				closeHandler={closeEditDialog}
 				data={dataToEdit}
+				setError={setError}
 				handleEditData={handleEditData}
 			/>
 			<DeleteDialog
@@ -105,8 +144,8 @@ function DefectStatuses({ appId }) {
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Defect Statuses"}
-					dataCount={2}
-					description="Create and manage Operating Modes"
+					dataCount={allData.length}
+					description="Create and manage Defect Statuses"
 				/>
 				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
 				<MobileSearchField
@@ -135,6 +174,7 @@ function DefectStatuses({ appId }) {
 					},
 					{
 						name: "Make Default",
+						handler: onOpenDefaultDialog,
 						isDelete: false,
 					},
 				]}
@@ -143,4 +183,10 @@ function DefectStatuses({ appId }) {
 	);
 }
 
-export default DefectStatuses;
+const mapDispatchToProps = (dispatch) => {
+	return {
+		setError: (message) => dispatch(showError(message)),
+	};
+};
+
+export default connect(null, mapDispatchToProps)(DefectStatuses);
