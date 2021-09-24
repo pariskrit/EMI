@@ -10,6 +10,9 @@ import {
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
+	siteAppTaskActions,
+	siteAppTaskSystems,
+	siteAppLubricants,
 } from "helpers/routePaths";
 
 /**
@@ -76,19 +79,15 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Actions",
-					link: links + "actions",
+					link: links + siteAppTaskActions,
 				},
 				{
 					title: "Systems",
-					link: links + "systems",
+					link: links + siteAppTaskSystems,
 				},
 				{
 					title: "Operating Modes",
-					link: links + siteAppOperationModesPath,
-				},
-				{
-					title: "Lubricants",
-					link: links + "lubricants",
+					link: links + "operatingmodes",
 				},
 			],
 		},
@@ -127,7 +126,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Classifications",
-					link: links + siteAppPathFeedbackClassifications,
+					link: links + siteAppFeedbackClassificationsPath,
 				},
 				{
 					title: "Priorities",
