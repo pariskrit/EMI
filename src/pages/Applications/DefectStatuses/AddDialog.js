@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import API from "../../../helpers/api";
-import AddDialogStyle from "../../../styles/application/AddDialogStyle";
+import API from "helpers/api";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
-import DefectStatusTypes from "../../../helpers/defectStatusTypes";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { defectStatusTypes } from "helpers/constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 
@@ -179,9 +178,9 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 									}}
 									variant="outlined"
 								>
-									{Object.keys(DefectStatusTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{DefectStatusTypes[key]}
+									{defectStatusTypes.map((type) => (
+										<MenuItem key={type.value} value={type.value}>
+											{type.label}
 										</MenuItem>
 									))}
 								</TextField>

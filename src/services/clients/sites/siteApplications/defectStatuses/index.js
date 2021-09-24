@@ -20,4 +20,13 @@ const addDefectStatuses = async (payload) => {
 	}
 };
 
-export { getDefectStatuses, addDefectStatuses };
+const updateDefectStatuses = async (id, payload) => {
+	try {
+		let response = await API.patch(`${Apis.defectStatuses}/${id}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export { getDefectStatuses, addDefectStatuses, updateDefectStatuses };

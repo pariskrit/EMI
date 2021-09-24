@@ -5,13 +5,12 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import { addOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
-import DefectStatusTypes from "helpers/defectStatusTypes";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import { addDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
+import { defectStatusTypes } from "helpers/constants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -98,7 +97,9 @@ const AddDialog = ({
 				id: result.data,
 				applicationID: applicationID,
 				name: input.name,
-				type: input.type,
+				type: defectStatusTypes.find((type) => type.value === input.type)[
+					"label"
+				],
 			});
 
 			return { success: true };
@@ -176,9 +177,9 @@ const AddDialog = ({
 									}}
 									variant="outlined"
 								>
-									{Object.keys(DefectStatusTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{DefectStatusTypes[key]}
+									{defectStatusTypes.map((type) => (
+										<MenuItem key={type.value} value={type.value}>
+											{type.label}
 										</MenuItem>
 									))}
 								</TextField>

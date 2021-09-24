@@ -4,6 +4,7 @@ import MobileSearchField from "components/Elements/SearchField/MobileSearchField
 import SearchField from "components/Elements/SearchField/SearchField";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import { SiteContext } from "contexts/SiteApplicationContext";
+import { defectStatusTypes } from "helpers/constants";
 import { useSearch } from "hooks/useSearch";
 import React, { useContext, useEffect, useState } from "react";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
@@ -12,6 +13,7 @@ import {
 	patchApplicationDetail,
 } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import AddDialog from "./AddDialog";
+import EditDialog from "./EditDialog";
 
 function DefectStatuses({ appId }) {
 	const {
@@ -46,6 +48,13 @@ function DefectStatuses({ appId }) {
 	const handleRemoveData = (id) =>
 		setAllData([...allData.filter((d) => d.id !== id)]);
 
+	const handleEditData = (editedData) => {
+		const newList = [...allData];
+		const index = newList.findIndex((data) => data.id === editedData.id);
+		newList.splice(index, 1, editedData);
+		setAllData(newList);
+	};
+
 	const closeAddModal = () => dispatch({ type: "ADD_TOGGLE" });
 
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
@@ -56,7 +65,14 @@ function DefectStatuses({ appId }) {
 		const result = await getDefectStatuses(appId);
 		const res = await getSiteApplicationDetail(appId);
 		setDefaultId(res.data.defaultDefectStatusID);
-		setAllData(result.data);
+		setAllData([
+			...result.data.map((res) => ({
+				...res,
+				type: defectStatusTypes.find((type) => type.value === res.type)[
+					"label"
+				],
+			})),
+		]);
 		setLoading(false);
 	};
 
@@ -72,12 +88,12 @@ function DefectStatuses({ appId }) {
 				applicationID={appId}
 				handleAddData={addData}
 			/>
-			{/* <EditDialog
+			<EditDialog
 				open={openEditDialog}
 				closeHandler={closeEditDialog}
 				data={dataToEdit}
-				// handleEditData={handleEditData}
-			/> */}
+				handleEditData={handleEditData}
+			/>
 			<DeleteDialog
 				entityName="Defect Status"
 				open={openDeleteDialog}

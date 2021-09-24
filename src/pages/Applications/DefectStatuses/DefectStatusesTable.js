@@ -10,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import DefectStatusTypes from "helpers/defectStatusTypes";
+import { defectStatusTypes } from "helpers/constants";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
@@ -169,7 +169,11 @@ const DefectStatusesTable = ({
 								<AT.DataCell>
 									<AT.CellContainer>
 										<AT.TableBodyText>
-											{DefectStatusTypes[d.type]}
+											{
+												defectStatusTypes.find((type) => type.value === d.type)[
+													"label"
+												]
+											}
 										</AT.TableBodyText>
 
 										<AT.DotMenu
