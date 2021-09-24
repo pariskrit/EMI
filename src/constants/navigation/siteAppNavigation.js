@@ -4,6 +4,8 @@ import {
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
+	siteAppOperationModesPath,
+	siteAppPathFeedbackClassifications,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -88,7 +90,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Operating Modes",
-					link: links + "operatingmodes",
+					link: links + siteAppOperationModesPath,
 				},
 				{
 					title: "Lubricants",

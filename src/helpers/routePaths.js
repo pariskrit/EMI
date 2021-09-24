@@ -16,6 +16,7 @@ export const siteAppDetailPath = "/detail";
 export const siteAppPausePath = "/pauses";
 export const siteAppCustomCaptionsPath = "/customcaptions";
 export const siteAppStopsReasonsPath = "/stopsreasons";
+export const siteAppOperationModesPath = "/operatingmodes";
 export const siteAppModelStatusesPath = "/modelstatuses";
 export const siteAppModelTypesPath = "/modeltypes";
 export const siteAppSkippedTasksPath = "/skippedtasks";
