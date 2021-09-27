@@ -38,15 +38,15 @@ const defaultStateSchema = {
 };
 
 const listOfInputs = [
-	{ label: "Asset Models Access", name: "assetModel" },
-	{ label: "Services Access", name: "services" },
-	{ label: "Defects Access", name: "defects" },
-	{ label: "Defect Exports Access", name: "defectExports" },
-	{ label: "Notice Boards Access", name: "noticeBoards" },
-	{ label: "Feedback Access", name: "feedback" },
-	{ label: "Users Access", name: "users" },
-	{ label: "Reporting & Analytics Access", name: "reportingAnalytics" },
-	{ label: "Settings", name: "settings" },
+	{ label: "Asset Models Access", name: "modelAccess" },
+	{ label: "Services Access", name: "serviceAccess" },
+	{ label: "Defects Access", name: "defectAccess" },
+	{ label: "Defect Exports Access", name: "defectExportAccess" },
+	{ label: "Notice Boards Access", name: "noticeboardAccess" },
+	{ label: "Feedback Access", name: "feedbackAccess" },
+	{ label: "Users Access", name: "userAccess" },
+	{ label: "Reporting & Analytics Access", name: "analyticsAccess" },
+	{ label: "Settings", name: "settingsAccess" },
 ];
 
 const AddDialog = ({
@@ -166,20 +166,23 @@ const AddDialog = ({
 	};
 
 	useEffect(() => {
-		if (Object.keys(dataToEdit).length > 0) {
+		if (Object.keys(dataToEdit).length > 0 && open) {
+			const getType = (value) =>
+				positionTypes.find((type) => type.value === value).label;
+
 			setInput({
 				name: dataToEdit.name,
 				allowChangeSkippedTaskStatus: dataToEdit.allowChangeSkippedTaskStatus,
 			});
 			setDropDownInput([
 				...listOfInputs.map((input) => ({
-					label: input.label,
+					label: getType(dataToEdit[input.name]),
 					value: dataToEdit[input.name],
 				})),
 			]);
 		}
-	}, [dataToEdit]);
-
+	}, [dataToEdit, open]);
+	console.log(dropDownInput);
 	return (
 		<Dialog
 			fullWidth={true}

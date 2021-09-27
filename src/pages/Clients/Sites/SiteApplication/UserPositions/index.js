@@ -20,6 +20,7 @@ function DefectStatuses({ appId, setError }) {
 		handleSearch,
 		setAllData,
 		setSearchData,
+		searchedData,
 	} = useSearch();
 	const [{ showAdd }, dispatch] = useContext(SiteContext);
 	const [dataToEdit, setDataToEdit] = useState({});
