@@ -233,7 +233,7 @@ const AddEditDialog = ({
 				fullWidth={true}
 				maxWidth="md"
 				open={open}
-				onClose={closeHandler}
+				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
@@ -248,7 +248,7 @@ const AddEditDialog = ({
 						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeHandler} variant="contained">
+						<ADD.CancelButton onClick={closeOverride} variant="contained">
 							Cancel
 						</ADD.CancelButton>
 						<ADD.ConfirmButton variant="contained" onClick={handleSubmit}>

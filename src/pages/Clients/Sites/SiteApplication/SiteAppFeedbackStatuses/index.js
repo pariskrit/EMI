@@ -123,6 +123,8 @@ const SiteAppFeedbackStatuses = ({
 		});
 		// Updating state
 		setAllData(newData);
+		setModel((th) => ({ ...th, delete: false }));
+		setDeleteId(null);
 	};
 
 	const mainData = searchQuery.length === 0 ? allData : searchedData;
