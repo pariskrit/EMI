@@ -18,7 +18,8 @@ import {
 	siteAppTaskSystems,
 	siteAppLubricants,
 	siteAppDefectTypes,
-  siteAppDefectStatusPath,
+	siteAppDefectStatusPath,
+	siteAppFeedbackStatuses,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -31,6 +32,7 @@ import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
 import DefectStatuses from "../DefectStatuses";
+import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 
 const routes = [
 	{
@@ -148,6 +150,15 @@ const routes = [
 		pathToPatch: "defaultFeedbackClassificationID",
 	},
 	{
+		id: 57,
+		name: "Feedback Definitions",
+		path: siteAppFeedbackStatuses,
+		component: SiteAppFeedbackStatuses,
+		showAdd: true,
+		showSwitch: false,
+		header: "Feedback Statuses",
+	},
+	{
 		id: 47,
 		name: "Task Definitions",
 		path: siteAppTaskActions,
@@ -192,14 +203,14 @@ const routes = [
 		api: differentAPIs.DefectTypesAPIs,
 	},
 	{
-	  id: 53,
+		id: 53,
 		name: "Defect Definitions",
 		path: siteAppDefectStatusPath,
 		component: DefectStatuses,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,
-  }
+	},
 ];
 
 const SiteAppPage = () => {

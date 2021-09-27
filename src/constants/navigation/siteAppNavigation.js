@@ -135,7 +135,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Statuses",
-					link: links + "feedbackstatuses",
+					link: links + "/feedbackstatuses",
 				},
 			],
 		},
