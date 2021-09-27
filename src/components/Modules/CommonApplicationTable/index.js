@@ -148,7 +148,7 @@ const CommonApplicationTable = ({
 														{row[col]}
 													</AT.TableBodyText>
 												) : (
-													<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+													<AT.TableBodyText>{`${row[col]}`}</AT.TableBodyText>
 												)}
 												{showDefault && row.id === defaultID ? (
 													<Typography className={classes.defaultText}>

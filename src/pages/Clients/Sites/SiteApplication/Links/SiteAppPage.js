@@ -9,7 +9,6 @@ import {
 	siteAppModelTypesPath,
 	siteAppOperationModesPath,
 	siteAppPath,
-	siteAppPathFeedbackClassifications,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -20,6 +19,7 @@ import {
 	siteAppLubricantsPath,
 	siteAppDefectTypesPath,
 	siteAppFeedbackPrioritiesPath,
+	siteAppUserRolesPath,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -31,6 +31,7 @@ import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
+import UserRoles from "../UserRoles";
 
 const routes = [
 	{
@@ -214,6 +215,16 @@ const routes = [
 		api: differentAPIs.FeedbackPrioritiesAPIs,
 		showDefault: true,
 		pathToPatch: "defaultFeedbackPriorityID",
+	},
+
+	{
+		id: 60,
+		name: "User Definitions",
+		path: siteAppUserRolesPath,
+		component: UserRoles,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
 	},
 ];
 

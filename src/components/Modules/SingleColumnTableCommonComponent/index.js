@@ -20,7 +20,7 @@ function SingleColumnTableCommonComponent({
 	// Init state
 	const [is404, setIs404] = useState(false);
 
-	// Rendering pauses content with Navbar. Otherwise, 404 error
+	// Rendering content. Otherwise, 404 error
 	if (is404 === false) {
 		return (
 			<CommonComponent

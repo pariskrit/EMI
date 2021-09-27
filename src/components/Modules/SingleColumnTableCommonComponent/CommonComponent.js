@@ -315,10 +315,12 @@ const CommonContent = ({
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
+							header={header}
 						/>
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
+							header={header}
 						/>
 					</div>
 
