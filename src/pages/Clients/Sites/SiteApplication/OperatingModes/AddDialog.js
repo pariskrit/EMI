@@ -1,10 +1,13 @@
-import * as yup from "yup";
 import React, { useState } from "react";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import AddDialogStyle from "styles/application/AddDialogStyle";
+import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { addOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -25,9 +28,7 @@ const AddDialog = ({
 	closeHandler,
 	applicationID,
 	handleAddData,
-	getError,
-	header,
-	postAPI,
+	setError,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -50,6 +51,7 @@ const AddDialog = ({
 			const localChecker = await handleValidateObj(schema, input);
 
 			console.log(localChecker);
+
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				// Creating new data
@@ -59,7 +61,6 @@ const AddDialog = ({
 					setIsUpdating(false);
 					closeOverride();
 				} else {
-					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
 				}
 			} else {
@@ -77,44 +78,24 @@ const AddDialog = ({
 		}
 	};
 	const handleCreateData = async () => {
-		// Attempting to create data
-		try {
-			const newData = await postAPI({
-				siteAppID: applicationID,
+		const result = await addOperatingModes({
+			siteAppId: applicationID,
+			name: input.name,
+		});
+
+		// Handling success
+		if (result.status) {
+			// Adding new type to state
+			handleAddData({
+				id: result.data,
+				applicationID: applicationID,
 				name: input.name,
 			});
 
-			// Handling success
-			if (newData.status) {
-				// Adding data to state
-				handleAddData({
-					id: newData.data,
-					siteAppID: applicationID,
-					name: input.name,
-				});
-
-				return { success: true };
-			} else {
-				if (newData.data.detail) {
-					getError(newData.data.detail);
-					return {
-						success: false,
-						errors: {
-							name: null,
-						},
-					};
-				} else {
-					return { success: false, errors: { ...newData.data.errors } };
-				}
-			}
-		} catch (err) {
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
+			return { success: true };
+		} else {
+			console.log(result);
+			setError(result.data.detail);
 			return { success: false };
 		}
 	};
@@ -133,14 +114,14 @@ const AddDialog = ({
 				maxWidth="md"
 				open={open}
 				onClose={closeOverride}
-				aria-labelledby="add-title"
-				aria-describedby="add-description"
+				aria-labelledby="title"
+				aria-describedby="description"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New {header}</ADD.HeaderText>}
+						{<ADD.HeaderText>Add Action</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -179,4 +160,8 @@ const AddDialog = ({
 	);
 };
 
-export default AddDialog;
+const mapDispatchToProps = (dispatch) => ({
+	setError: (message) => dispatch(showError(message)),
+});
+
+export default connect(null, mapDispatchToProps)(AddDialog);

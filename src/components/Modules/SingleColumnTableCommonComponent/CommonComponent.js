@@ -1,20 +1,24 @@
-import Grid from "@material-ui/core/Grid";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import DeleteDialog from "components/Elements/DeleteDialog";
+import DetailsPanel from "components/Elements/DetailsPanel";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import SearchField from "components/Elements/SearchField/SearchField";
+import CommonApplicationTable from "components/Modules/CommonApplicationTable";
+import { handleSort } from "helpers/utils";
+import { useSearch } from "hooks/useSearch";
+import React, { useCallback, useEffect, useState } from "react";
+//import ContentStyle from "styles/application/ContentStyle";
+import CommonBody from "../CommonBody";
 // Icon Import
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
-import { handleSort } from "helpers/utils";
-import ContentStyle from "styles/application/ContentStyle";
-import DetailsPanel from "components/Elements/DetailsPanel";
-import DeleteDialog from "components/Elements/DeleteDialog";
-import React, { useCallback, useEffect, useState } from "react";
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import CommonApplicationTable from "components/Modules/CommonApplicationTable";
+
+// Show Default
+import DefaultDialog from "components/Elements/DefaultDialog";
 
 // Init styled components
-const AC = ContentStyle();
+//const AC = ContentStyle();
 
-const StopsContent = ({
+const CommonContent = ({
 	id,
 	setIs404,
 	getError,
@@ -22,19 +26,31 @@ const StopsContent = ({
 	state,
 	dispatch,
 	apis,
+	showDefault,
+	pathToPatch,
 }) => {
 	// Init state
 	const [data, setData] = useState([]);
 	const [haveData, setHaveData] = useState(false);
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dataChanged, setDataChanged] = useState(false);
-	const [searchQuery, setSearchQuery] = useState("");
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [editData, setEditData] = useState({});
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [deleteID, setDeleteID] = useState(null);
-	const [searchedData, setSearchedData] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const {
+		setAllData,
+		handleSearch,
+		searchedData,
+		searchQuery,
+		setSearchData,
+	} = useSearch();
+
+	// Show Default
+	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
+	const [confirmDefault, setConfirmDefault] = useState([null, null]);
+	const [defaultData, setDefaultData] = useState(null);
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
@@ -48,6 +64,7 @@ const StopsContent = ({
 
 			// if success, adding data to state
 			if (result.status) {
+				setAllData(result.data);
 				handleSort(result.data, setData, "name", "asc");
 				setLoading(false);
 				return true;
@@ -122,27 +139,6 @@ const StopsContent = ({
 		setOpenDeleteDialog(false);
 	};
 
-	const handleSearch = () => {
-		// Clearning state and returning if empty
-		if (searchQuery === "") {
-			setSearchedData([]);
-			return;
-		}
-
-		let results = [];
-
-		// Checking data
-		for (let i = 0; i < data.length; i++) {
-			// Pushing current status to results arr if containes search
-			if (data[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
-				results.push(data[i]);
-			}
-		}
-		// Updating state
-		setSearchedData(results);
-		return;
-	};
-
 	// Fetch Side effect to get data
 	useEffect(() => {
 		// Getting data and updating state
@@ -158,23 +154,113 @@ const StopsContent = ({
 		if (dataChanged) {
 			handleSort(data, setData, currentTableSort[0], currentTableSort[1]);
 
-			if (searchQuery !== "") {
-				handleSearch();
-			}
-
 			setDataChanged(false);
 		}
 		// eslint-disable-next-line
 	}, [dataChanged]);
 
-	// Search sorting side effect
-	useEffect(() => {
-		// Performing search
-		handleSearch();
-		// eslint-disable-next-line
-	}, [searchQuery]);
-
 	const mainData = searchQuery.length === 0 ? data : searchedData;
+
+	//ShowDefault
+
+	const handleDefaultDialogOpen = (id, name) => {
+		setConfirmDefault([id, name]);
+		setOpenDefaultDialog(true);
+	};
+
+	const handleDefaultDialogClose = () => {
+		setOpenDefaultDialog(false);
+	};
+
+	const handleSetDefault = (defaultID) => {
+		const newData = [...data];
+
+		let index = newData.findIndex((el) => el.id === defaultID);
+
+		if (index >= 0) {
+			newData[index].isDefault = true;
+		}
+
+		// Updating state
+		setData(newData);
+	};
+
+	const handleDefaultUpdate = async () => {
+		// Attempting to update default
+		try {
+			console.log(confirmDefault[0]);
+			// Patching change to API
+			const result = await apis.patchDefaultAPI(id, [
+				{
+					op: "replace",
+					path: pathToPatch,
+					value: confirmDefault[0],
+				},
+			]);
+
+			// If success, updating default in state
+			if (result.status) {
+				// Updating state
+				handleSetDefault(confirmDefault[0]);
+
+				// Updating default state
+				setDefaultData(confirmDefault[0]);
+
+				return true;
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {
+			// TODO: real error handling
+			console.log(err);
+
+			return false;
+		}
+	};
+
+	// Fetch side effect to get application details
+	useEffect(() => {
+		const getApplicationData = async () => {
+			// Attempting to get data
+			try {
+				// Getting data from API
+				let result = await apis.getDefaultAPI(id);
+
+				// if success, adding data to state
+				if (result.status) {
+					// Setting default
+					setDefaultData(result.data.defaultFeedbackClassificationID);
+				} else {
+					// If error, throwing to catch
+
+					throw new Error(result);
+				}
+			} catch (err) {
+				// TODO: real error handling
+				console.log(err);
+				return false;
+			}
+		};
+
+		// Getting application and updating state
+		getApplicationData()
+			.then(() => {
+				console.log("application name updated");
+			})
+			.catch((err) => console.log(err));
+		// eslint-disable-next-line
+	}, []);
+
+	// Fetch side effect to update default
+	useEffect(() => {
+		// Updating default item if not null
+		if (defaultData !== null) {
+			handleSetDefault(defaultData);
+		}
+		// eslint-disable-next-line
+	}, [defaultData]);
+
+	// console.log("sagar", defaultData);
 
 	return (
 		<div className="container">
@@ -195,9 +281,10 @@ const StopsContent = ({
 				handleEditData={handleEditData}
 				getError={getError}
 				patchAPI={apis.patchAPI}
+				header={header}
 			/>
 			<DeleteDialog
-				entityName="Stop Reason"
+				entityName={header}
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
 				deleteEndpoint={apis.deleteAPI}
@@ -205,8 +292,19 @@ const StopsContent = ({
 				handleRemoveData={handleRemoveData}
 			/>
 
+			{showDefault && (
+				<DefaultDialog
+					open={openDefaultDialog}
+					closeHandler={handleDefaultDialogClose}
+					data={confirmDefault}
+					entity={header}
+					handleDefaultUpdate={handleDefaultUpdate}
+				/>
+			)}
+
 			{/* Spinner should start here */}
-			{haveData ? (
+
+			<CommonBody {...{ haveData }}>
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
@@ -215,71 +313,48 @@ const StopsContent = ({
 							description={`Create and manage ${header}`}
 						/>
 
-						<div className="desktopSearchCustomCaptions">
-							<AC.SearchContainer>
-								<AC.SearchInner>
-									<Grid container spacing={1} alignItems="flex-end">
-										<div className="flex">
-											<Grid item>
-												<SearchIcon
-													style={{ marginTop: "20px", marginRight: "5px" }}
-												/>
-											</Grid>
-											<Grid item>
-												<AC.SearchInput
-													value={searchQuery}
-													onChange={(e) => {
-														setSearchQuery(e.target.value);
-													}}
-													label={header}
-												/>
-											</Grid>
-										</div>
-									</Grid>
-								</AC.SearchInner>
-							</AC.SearchContainer>
-						</div>
-						<div className="mobileSearchCustomCaptions">
-							<AC.SearchContainerMobile>
-								<AC.SearchInner>
-									<Grid container spacing={1} alignItems="flex-end">
-										<Grid item>
-											<SearchIcon />
-										</Grid>
-										<Grid item>
-											<AC.SearchInput
-												value={searchQuery}
-												onChange={(e) => {
-													setSearchQuery(e.target.value);
-												}}
-												label="Search Stops"
-											/>
-										</Grid>
-									</Grid>
-								</AC.SearchInner>
-							</AC.SearchContainerMobile>
-						</div>
+						<SearchField
+							searchQuery={searchQuery}
+							setSearchQuery={handleSearch}
+						/>
+						<MobileSearchField
+							searchQuery={searchQuery}
+							setSearchQuery={handleSearch}
+						/>
 					</div>
 
-					<CommonApplicationTable
-						data={mainData}
-						columns={["name"]}
-						headers={["Name"]}
-						setData={setData}
-						onEdit={handleEditDialogOpen}
-						onDelete={(id) => handleDeleteDialogOpen(id)}
-						setSearch={setSearchedData}
-						searchQuery={searchQuery}
-						isLoading={loading}
-					/>
+					{!showDefault ? (
+						<CommonApplicationTable
+							data={mainData}
+							columns={["name"]}
+							headers={["Name"]}
+							setData={setData}
+							onEdit={handleEditDialogOpen}
+							onDelete={(id) => handleDeleteDialogOpen(id)}
+							setSearch={setSearchData}
+							searchQuery={searchQuery}
+							isLoading={loading}
+						/>
+					) : (
+						<CommonApplicationTable
+							data={mainData}
+							columns={["name"]}
+							headers={["Name"]}
+							setData={setData}
+							onEdit={handleEditDialogOpen}
+							onDelete={(id) => handleDeleteDialogOpen(id)}
+							setSearch={setSearchData}
+							searchQuery={searchQuery}
+							isLoading={loading}
+							openDefaultDialog={handleDefaultDialogOpen}
+							showDefault={showDefault}
+							defaultID={defaultData}
+						/>
+					)}
 				</>
-			) : (
-				<AC.SpinnerContainer>
-					<CircularProgress />
-				</AC.SpinnerContainer>
-			)}
+			</CommonBody>
 		</div>
 	);
 };
 
-export default StopsContent;
+export default CommonContent;

@@ -3,9 +3,9 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 //#region get stop reasons
-const getModelTypes = async (id) => {
+const getSkippedTasks = async (id) => {
 	try {
-		let response = await API.get(`${Apis.ModelTypes}?siteAppId=${id}`);
+		let response = await API.get(`${Apis.SkippedTasks}?siteAppId=${id}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -15,9 +15,9 @@ const getModelTypes = async (id) => {
 //#endregion
 
 //#region patch stop reasons
-const patchModelTypes = async (id, requestData) => {
+const patchSkippedTasks = async (id, requestData) => {
 	try {
-		let response = await API.patch(`${Apis.ModelTypes}/${id}`, requestData);
+		let response = await API.patch(`${Apis.SkippedTasks}/${id}`, requestData);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -27,9 +27,10 @@ const patchModelTypes = async (id, requestData) => {
 //#endregion
 
 //#region patch stop reasons
-const addModelTypes = async (requestData) => {
+
+const addSkippedTasks = async (requestData) => {
 	try {
-		let response = await API.post(Apis.ModelTypes, requestData);
+		let response = await API.post(Apis.SkippedTasks, requestData);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -38,4 +39,4 @@ const addModelTypes = async (requestData) => {
 
 //#endregion
 
-export { getModelTypes, patchModelTypes, addModelTypes };
+export { getSkippedTasks, patchSkippedTasks, addSkippedTasks };

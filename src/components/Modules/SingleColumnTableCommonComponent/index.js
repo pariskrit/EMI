@@ -10,6 +10,8 @@ function SingleColumnTableCommonComponent({
 	getError,
 	header,
 	apis,
+	showDefault,
+	pathToPatch,
 }) {
 	// Init params
 	const { appId } = useParams();
@@ -24,7 +26,7 @@ function SingleColumnTableCommonComponent({
 				id={appId}
 				setIs404={setIs404}
 				getError={getError}
-				{...{ header, apis, state, dispatch }}
+				{...{ header, apis, state, dispatch, showDefault, pathToPatch }}
 			/>
 		);
 	} else {

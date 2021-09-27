@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import Grid from "@material-ui/core/Grid";
 import API from "helpers/api";
-import ContentStyle from "styles/application/ContentStyle";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DefaultDialog from "components/Elements/DefaultDialog";
@@ -11,18 +9,15 @@ import EditStatusDialog from "./EditDialog";
 import ModelStatusesTable from "./ModelStatusesTable";
 import { showError } from "redux/common/actions";
 
-// Icon Import
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import { getModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import SearchField from "components/Elements/SearchField/SearchField";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import { useSearch } from "hooks/useSearch";
 
-// Init styled components
-const AC = ContentStyle();
 const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
-	const [data, setData] = useState([]);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [searchedData, setSearchedData] = useState([]);
 	const [confirmDefault, setConfirmDefault] = useState([null, null]);
-	const [defaultData, setDefaultData] = useState(null);
+	const [defaultId, setDefaultId] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [modal, setModal] = useState({
 		edit: false,
@@ -31,6 +26,14 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	});
 	const [editData, setEditData] = useState({});
 	const [deleteId, setDeleteId] = useState(null);
+	const {
+		allData,
+		setAllData,
+		handleSearch,
+		searchedData,
+		searchQuery,
+		setSearchData,
+	} = useSearch();
 
 	const handleGetData = useCallback(async () => {
 		setLoading(true);
@@ -38,17 +41,13 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		try {
 			// Getting data from API
 			let result = await getModelStatuses(appId);
-
+			let res = await getSiteApplicationDetail(appId);
 			// if success, adding data to state
 			if (result.status) {
 				setLoading(false);
-				// Updating state
-				result.data.forEach((d, index) => {
-					d.isDefault = false;
 
-					result.data[index] = d;
-				});
-				setData(result.data);
+				setDefaultId(res.data.defaultModelStatusID);
+				setAllData(result.data);
 
 				return true;
 			} else {
@@ -64,10 +63,10 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	}, [appId]);
 
 	const onEditClick = (id) => {
-		let index = data.findIndex((el) => el.id === id);
+		let index = allData.findIndex((el) => el.id === id);
 
 		if (index >= 0) {
-			setEditData(data[index]);
+			setEditData(allData[index]);
 			setModal((th) => ({ ...th, edit: true }));
 		}
 	};
@@ -83,40 +82,27 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	};
 
 	const handleAddData = (item) => {
-		const newData = [...data];
+		const newData = [...allData];
 		newData.push(item);
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleEditData = (d) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		let index = newData.findIndex((el) => el.id === d.id);
 		newData[index] = d;
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleRemoveData = (id) => {
-		const newData = [...data].filter(function (item) {
+		const newData = [...allData].filter(function (item) {
 			return item.id !== id;
 		});
 		// Updating state
-		setData(newData);
-	};
-
-	const handleSetDefault = (defaultID) => {
-		const newData = [...data];
-
-		let index = newData.findIndex((el) => el.id === defaultID);
-
-		if (index >= 0) {
-			newData[index].isDefault = true;
-		}
-
-		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleDefaultUpdate = async () => {
@@ -133,11 +119,8 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 
 			// If success, updating default in state
 			if (result.status === 200) {
-				// Updating state
-				handleSetDefault(confirmDefault[0]);
-
 				// Updating default state
-				setDefaultData(confirmDefault[0]);
+				setDefaultId(confirmDefault[0]);
 
 				return true;
 			} else {
@@ -151,55 +134,12 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		}
 	};
 
-	// useEffect(() => {
-	// 	const getApplicationData = async () => {
-	// 		// Attempting to get data
-	// 		try {
-	// 			// Getting data from API
-	// 			let result = await API.get(`/api/siteapps/${appId}/defaults`);
-
-	// 			// if success, adding data to state
-	// 			if (result.status === 200) {
-	// 				// Setting application name
-
-	// 				// Setting default
-	// 				setDefaultData(result.data.defaultModelStatusID);
-	// 			} else {
-	// 				// If error, throwing to catch
-	// 				throw new Error(result);
-	// 			}
-	// 		} catch (err) {
-	// 			// TODO: real error handling
-	// 			console.log(err);
-	// 			return false;
-	// 		}
-	// 	};
-
-	// 	// Getting application and updating state
-	// 	getApplicationData()
-	// 		.then(() => {
-	// 			console.log("application name updated");
-	// 		})
-	// 		.catch((err) => console.log(err));
-	// 	// eslint-disable-next-line
-	// }, []);
-
 	useEffect(() => {
 		handleGetData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const handleSearch = (e) => {
-		const { value } = e.target;
-		setSearchQuery(value);
-		const filtered = data.filter((x) => {
-			const regex = new RegExp(value, "gi");
-			return x.name.match(regex);
-		});
-		setSearchedData(filtered);
-	};
-
-	const mainData = searchQuery.length === 0 ? data : searchedData;
+	const mainData = searchQuery.length === 0 ? allData : searchedData;
 
 	return (
 		<div>
@@ -238,58 +178,22 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Model Statuses"}
-					dataCount={data.length}
+					dataCount={allData.length}
 					description="Create and manage Model Statuses"
 				/>
 
-				<div className="desktopSearchCustomCaptions">
-					<AC.SearchContainer>
-						<AC.SearchInner>
-							<Grid container spacing={1} alignItems="flex-end">
-								<div className="flex">
-									<Grid item>
-										<SearchIcon
-											style={{ marginTop: "20px", marginRight: "5px" }}
-										/>
-									</Grid>
-									<Grid item>
-										<AC.SearchInput
-											value={searchQuery}
-											onChange={handleSearch}
-											label="Search Statuses"
-										/>
-									</Grid>
-								</div>
-							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainer>
-				</div>
+				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
 
-				<div className="mobileSearchCustomCaptions">
-					<AC.SearchContainerMobile>
-						<AC.SearchInner>
-							<Grid container spacing={1} alignItems="flex-end">
-								<Grid item>
-									<SearchIcon />
-								</Grid>
-								<Grid item>
-									<AC.SearchInput
-										value={searchQuery}
-										onChange={(e) => {
-											setSearchQuery(e.target.value);
-										}}
-										label="Search Statuses"
-									/>
-								</Grid>
-							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainerMobile>
-				</div>
+				<MobileSearchField
+					searchQuery={searchQuery}
+					setSearchQuery={handleSearch}
+				/>
 			</div>
 			<ModelStatusesTable
-				setData={setData}
+				setData={setAllData}
 				data={mainData}
-				defaultID={defaultData}
+				defaultID={defaultId}
+				setSearch={setSearchData}
 				onEdit={onEditClick}
 				onDelete={onDeleteClick}
 				onDefault={onDefaultClick}

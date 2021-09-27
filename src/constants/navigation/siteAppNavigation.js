@@ -1,4 +1,19 @@
-import { clientsPath } from "helpers/routePaths";
+import {
+	clientsPath,
+	siteAppCustomCaptionsPath,
+	siteAppMissingItemsPath,
+	siteAppModelStatusesPath,
+	siteAppModelTypesPath,
+	siteAppOperationModesPath,
+	siteAppFeedbackClassificationsPath,
+	siteAppPausePath,
+	siteAppSkippedTasksPath,
+	siteAppStatusChangesPath,
+	siteAppStopsReasonsPath,
+	siteAppTaskActions,
+	siteAppTaskSystems,
+	siteAppLubricants,
+} from "helpers/routePaths";
 
 /**
  * NOTE: This is currently a helper. In production, this data may come from either the API
@@ -13,11 +28,11 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Application",
-					link: `${links}`,
+					link: links,
 				},
 				{
 					title: "Custom Captions",
-					link: `${links}/customcaptions`,
+					link: links + siteAppCustomCaptionsPath,
 				},
 			],
 		},
@@ -26,23 +41,23 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Pauses",
-					link: `${links}/pauses`,
+					link: links + siteAppPausePath,
 				},
 				{
 					title: "Stops",
-					link: `${links}/stops`,
+					link: links + siteAppStopsReasonsPath,
 				},
 				{
 					title: "Skipped Tasks",
-					link: `${links}/skippedtasks`,
+					link: links + siteAppSkippedTasksPath,
 				},
 				{
 					title: "Missing Part or Tools",
-					link: `${links}/missingitems`,
+					link: links + siteAppMissingItemsPath,
 				},
 				{
 					title: "Status Changes",
-					link: `${links}/statuschanges`,
+					link: links + siteAppStatusChangesPath,
 				},
 			],
 		},
@@ -51,11 +66,11 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Statuses",
-					link: `${links}/modelstatuses`,
+					link: links + siteAppModelStatusesPath,
 				},
 				{
 					title: "Types",
-					link: `${links}/modeltypes`,
+					link: links + siteAppModelTypesPath,
 				},
 			],
 		},
@@ -64,19 +79,15 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Actions",
-					link: `${links}/actions`,
+					link: links + siteAppTaskActions,
 				},
 				{
 					title: "Systems",
-					link: `${links}/systems`,
+					link: links + siteAppTaskSystems,
 				},
 				{
 					title: "Operating Modes",
-					link: `${links}/operatingmodes`,
-				},
-				{
-					title: "Lubricants",
-					link: `${links}/lubricants`,
+					link: links + siteAppOperationModesPath,
 				},
 			],
 		},
@@ -85,11 +96,11 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Positions",
-					link: `${links}/positions`,
+					link: links + "positions",
 				},
 				{
 					title: "Roles",
-					link: `${links}/roles`,
+					link: links + "roles",
 				},
 			],
 		},
@@ -98,15 +109,15 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Risk Ratings",
-					link: `${links}/defectriskratings`,
+					link: links + "defectriskratings",
 				},
 				{
 					title: "Statuses",
-					link: `${links}/defectstatuses`,
+					link: links + "defectstatuses",
 				},
 				{
 					title: "Types",
-					link: `${links}/defecttypes`,
+					link: links + "defecttypes",
 				},
 			],
 		},
@@ -115,15 +126,15 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Classifications",
-					link: `${links}/feedbackclassifications`,
+					link: links + siteAppFeedbackClassificationsPath,
 				},
 				{
 					title: "Priorities",
-					link: `${links}/feedbackpriorities`,
+					link: links + "feedbackpriorities",
 				},
 				{
 					title: "Statuses",
-					link: `${links}/feedbackstatuses`,
+					link: links + "feedbackstatuses",
 				},
 			],
 		},
