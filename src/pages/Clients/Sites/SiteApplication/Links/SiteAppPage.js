@@ -17,6 +17,8 @@ import {
 	siteAppTaskActions,
 	siteAppTaskSystems,
 	siteAppLubricants,
+	siteAppDefectTypes,
+  siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -28,6 +30,7 @@ import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
+import DefectStatuses from "../DefectStatuses";
 
 const routes = [
 	{
@@ -177,6 +180,26 @@ const routes = [
 		header: "Lubricants",
 		api: differentAPIs.LubricantsAPIs,
 	},
+	{
+		id: 54,
+		name: "Defect Definitions",
+		path: siteAppDefectTypes,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Defect Types",
+		api: differentAPIs.DefectTypesAPIs,
+	},
+	{
+	  id: 53,
+		name: "Defect Definitions",
+		path: siteAppDefectStatusPath,
+		component: DefectStatuses,
+		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+  }
 ];
 
 const SiteAppPage = () => {
