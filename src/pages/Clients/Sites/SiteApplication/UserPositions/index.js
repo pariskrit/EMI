@@ -17,7 +17,7 @@ import {
 	patchApplicationDetail,
 } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
-// import AddDialog from "./AddDialog";
+import AddDialog from "./AddDialog";
 // import EditDialog from "./EditDialog";
 
 function DefectStatuses({ appId, setError }) {
@@ -126,13 +126,6 @@ function DefectStatuses({ appId, setError }) {
 				entity="Default Status"
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
-			<AddDialog
-				open={showAdd}
-				closeHandler={closeAddModal}
-				applicationID={appId}
-				handleAddData={addData}
-				setError={setError}
-			/>
 			<EditDialog
 				open={openEditDialog}
 				closeHandler={closeEditDialog}
@@ -148,6 +141,13 @@ function DefectStatuses({ appId, setError }) {
 				deleteEndpoint="/api/defectstatuses"
 				handleRemoveData={handleRemoveData}
 			/> */}
+			<AddDialog
+				open={true}
+				closeHandler={closeAddModal}
+				applicationID={appId}
+				handleAddData={addData}
+				setError={setError}
+			/>
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Positions"}
