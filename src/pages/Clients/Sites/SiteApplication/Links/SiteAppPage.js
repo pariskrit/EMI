@@ -7,8 +7,8 @@ import {
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
-	siteAppOperationModesPath,
 	siteAppPath,
+	siteAppOperationModesPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -20,6 +20,7 @@ import {
 	siteAppDefectTypesPath,
 	siteAppFeedbackPrioritiesPath,
 	siteAppUserRolesPath,
+	siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -32,6 +33,7 @@ import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
 import UserRoles from "../UserRoles";
+import DefectStatuses from "../DefectStatuses";
 
 const routes = [
 	{
@@ -224,6 +226,15 @@ const routes = [
 		component: UserRoles,
 		showAdd: true,
 		showHistory: true,
+		showSwitch: false,
+	},
+	{
+		id: 53,
+		name: "Defect Definitions",
+		path: siteAppDefectStatusPath,
+		component: DefectStatuses,
+		showAdd: true,
+		showHistory: false,
 		showSwitch: false,
 	},
 ];

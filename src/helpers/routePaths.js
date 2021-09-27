@@ -29,6 +29,7 @@ export const siteAppDefectTypesPath = "/defecttypes";
 export const siteAppUserRolesPath = "/roles";
 export const siteAppFeedbackClassificationsPath = "/feedbackclassifications";
 export const siteAppFeedbackPrioritiesPath = "/feedbackpriorities";
+export const siteAppDefectStatusPath = "/defectstatuses";
 
 //Applications
 export const applicationListPath = "/applications";

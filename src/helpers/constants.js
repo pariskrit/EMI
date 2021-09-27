@@ -34,4 +34,10 @@ export const siteScreenNavigation = [
 	{ name: "Locations", url: siteLocationPath },
 ];
 
+export const defectStatusTypes = [
+	{ label: "Outstanding", value: "O" },
+	{ label: "Notification Raised", value: "N" },
+	{ label: "Complete", value: "C" },
+];
+
 export const DefaultPageSize = 12;
