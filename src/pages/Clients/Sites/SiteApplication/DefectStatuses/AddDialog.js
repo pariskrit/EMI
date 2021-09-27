@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import API from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import { defectStatusTypes } from "helpers/constants";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
+import { addDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
+import { defectStatusTypes } from "helpers/constants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -27,7 +27,13 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, type: null };
 const defaultStateSchema = { name: "", type: "O" };
 
-const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
+const AddDialog = ({
+	open,
+	closeHandler,
+	applicationID,
+	handleAddData,
+	setError,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -76,40 +82,31 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 		}
 	};
 	const handleCreateData = async () => {
-		// Attempting to create
-		try {
-			// Submitting to backend
-			const result = await API.post("/api/ApplicationDefectStatuses", {
-				applicationId: applicationID,
+		const result = await addDefectStatuses({
+			siteAppId: applicationID,
+			name: input.name,
+			type: input.type,
+		});
+
+		// Handling success
+		if (result.status) {
+			// Adding new type to state
+			handleAddData({
+				id: result.data,
+				applicationID: applicationID,
 				name: input.name,
-				type: input.type,
+				type: defectStatusTypes.find((type) => type.value === input.type)[
+					"label"
+				],
 			});
 
-			// Handling success
-			if (result.status === 201) {
-				// Adding new type to state
-				handleAddData({
-					id: result.data,
-					applicationID: applicationID,
-					name: input.name,
-					type: input.type,
-				});
-
-				return { success: true };
-			} else {
-				throw new Error(result);
-			}
-		} catch (err) {
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
+			return { success: true };
+		} else {
+			setError(result.data.detail);
 			return { success: false };
 		}
 	};
+
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
@@ -123,18 +120,18 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 				fullWidth={true}
 				maxWidth="md"
 				open={open}
-				onClose={closeHandler}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
+				onClose={closeOverride}
+				aria-labelledby="title"
+				aria-describedby="description"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New Defect Status</ADD.HeaderText>}
+						{<ADD.HeaderText>Add Action</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeHandler} variant="contained">
+						<ADD.CancelButton onClick={closeOverride} variant="contained">
 							Cancel
 						</ADD.CancelButton>
 						<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>

@@ -1,6 +1,5 @@
 import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 import SiteApplicationContext from "contexts/SiteApplicationContext";
-//New Added
 import differentAPIs from "helpers/differentAPIs";
 import {
 	siteAppCustomCaptionsPath,
@@ -9,6 +8,7 @@ import {
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
 	siteAppPath,
+	siteAppOperationModesPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -18,16 +18,19 @@ import {
 	siteAppTaskSystems,
 	siteAppLubricants,
 	siteAppDefectTypes,
+  siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
+import OperatingModes from "../OperatingModes";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
+import DefectStatuses from "../DefectStatuses";
 
 const routes = [
 	{
@@ -123,6 +126,15 @@ const routes = [
 		api: differentAPIs.ModelTypesAPIs,
 	},
 	{
+		id: 59,
+		name: "Task Definitions",
+		path: siteAppOperationModesPath,
+		component: OperatingModes,
+		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+	},
+	{
 		id: 55,
 		name: "Feedback Definitions",
 		path: siteAppFeedbackClassificationsPath,
@@ -179,6 +191,15 @@ const routes = [
 		header: "Defect Types",
 		api: differentAPIs.DefectTypesAPIs,
 	},
+	{
+	  id: 53,
+		name: "Defect Definitions",
+		path: siteAppDefectStatusPath,
+		component: DefectStatuses,
+		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+  }
 ];
 
 const SiteAppPage = () => {

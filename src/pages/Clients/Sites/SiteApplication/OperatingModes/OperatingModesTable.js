@@ -10,7 +10,6 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { defectStatusTypes } from "helpers/constants";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
@@ -63,7 +62,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const DefectStatusesTable = ({
+const OperatingModesTable = ({
 	data,
 	setData,
 	handleSort,
@@ -104,7 +103,7 @@ const DefectStatusesTable = ({
 	return (
 		<div>
 			<AT.TableContainer component={Paper} elevation={0}>
-				<Table aria-label="Defect Statuses Table">
+				<Table aria-label="Model Statuses Table">
 					<AT.TableHead>
 						<TableRow>
 							<TableCell
@@ -127,54 +126,25 @@ const DefectStatusesTable = ({
 									)}
 								</AT.CellContainer>
 							</TableCell>
-							<TableCell
-								onClick={() => {
-									handleSortClick("type");
-								}}
-								className={clsx(classes.publishRow, {
-									[classes.selectedTableHeadRow]:
-										currentTableSort[0] === "type",
-									[classes.tableHeadRow]: currentTableSort[0] !== "type",
-								})}
-							>
-								<AT.CellContainer>
-									Type
-									{currentTableSort[0] === "type" &&
-									currentTableSort[1] === "desc" ? (
-										<AT.DefaultArrow fill="#FFFFFF" />
-									) : (
-										<AT.DescArrow fill="#FFFFFF" />
-									)}
-								</AT.CellContainer>
-							</TableCell>
 						</TableRow>
 					</AT.TableHead>
 					<TableBody>
 						{(searchQuery === "" ? data : searchedData).map((d, index) => (
 							<TableRow key={d.id}>
 								<AT.DataCell>
-									<AT.TableBodyText
-										className={clsx({
-											[classes.defaultNameText]: d.id === defaultID,
-										})}
-									>
-										{d.name}
-									</AT.TableBodyText>
-									{d.id === defaultID ? (
-										<Typography className={classes.defaultText}>
-											(Default)
-										</Typography>
-									) : null}
-								</AT.DataCell>
-								<AT.DataCell>
 									<AT.CellContainer>
-										<AT.TableBodyText>
-											{
-												defectStatusTypes.find((type) => type.value === d.type)[
-													"label"
-												]
-											}
+										<AT.TableBodyText
+											className={clsx({
+												[classes.defaultNameText]: d.id === defaultID,
+											})}
+										>
+											{d.name}
 										</AT.TableBodyText>
+										{d.id === defaultID ? (
+											<Typography className={classes.defaultText}>
+												(Default)
+											</Typography>
+										) : null}
 
 										<AT.DotMenu
 											onClick={(e) => {
@@ -218,8 +188,8 @@ const DefectStatusesTable = ({
 														isDelete: true,
 													},
 													{
-														name: "Make Default",
-														handler: openDefaultDialog,
+														name: "Make Default Status",
+														handler: () => openDefaultDialog(d.id, d.name),
 														isDelete: false,
 													},
 												]}
@@ -236,4 +206,4 @@ const DefectStatusesTable = ({
 	);
 };
 
-export default DefectStatusesTable;
+export default OperatingModesTable;

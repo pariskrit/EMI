@@ -16,6 +16,7 @@ export const siteAppDetailPath = "/detail";
 export const siteAppPausePath = "/pauses";
 export const siteAppCustomCaptionsPath = "/customcaptions";
 export const siteAppStopsReasonsPath = "/stopsreasons";
+export const siteAppOperationModesPath = "/operatingmodes";
 export const siteAppModelStatusesPath = "/modelstatuses";
 export const siteAppModelTypesPath = "/modeltypes";
 export const siteAppSkippedTasksPath = "/skippedtasks";
@@ -26,6 +27,9 @@ export const siteAppTaskSystems = "/systems";
 export const siteAppLubricants = "/lubricants";
 export const siteAppDefectTypes = "/defecttypes";
 export const siteAppFeedbackClassificationsPath = "/feedbackclassifications";
+export const siteAppDefectStatusPath =
+	siteApplicationPath + "/defectstatuses";
+
 
 //Applications
 export const applicationListPath = "/applications";
