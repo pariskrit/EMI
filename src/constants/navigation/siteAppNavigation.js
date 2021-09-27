@@ -15,6 +15,7 @@ import {
 	siteAppLubricants,
 	siteAppDefectTypes,
 	siteAppDefectStatusPath,
+	siteAppDetailPath,
 } from "helpers/routePaths";
 
 /**
@@ -30,7 +31,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Application",
-					link: links,
+					link: links + siteAppDetailPath,
 				},
 				{
 					title: "Custom Captions",

@@ -18,7 +18,7 @@ import {
 	siteAppTaskSystems,
 	siteAppLubricants,
 	siteAppDefectTypes,
-  siteAppDefectStatusPath,
+	siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -192,14 +192,14 @@ const routes = [
 		api: differentAPIs.DefectTypesAPIs,
 	},
 	{
-	  id: 53,
+		id: 53,
 		name: "Defect Definitions",
 		path: siteAppDefectStatusPath,
 		component: DefectStatuses,
 		showAdd: true,
-		showHistory: false,
+		showHistory: true,
 		showSwitch: false,
-  }
+	},
 ];
 
 const SiteAppPage = () => {
