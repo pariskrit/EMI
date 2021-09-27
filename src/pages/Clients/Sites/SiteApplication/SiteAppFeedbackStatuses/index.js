@@ -12,6 +12,8 @@ import AddEditDialog from "./AddEditDialog";
 import { getFeedbackStatuses } from "services/clients/sites/siteApplications/feedbackStatuses";
 import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import FeedbackStatusTypes from "helpers/feedbackStatusTypes";
+import DefaultDialog from "components/Elements/DefaultDialog";
+import API from "helpers/api";
 
 const SiteAppFeedbackStatuses = ({
 	state,
@@ -34,6 +36,7 @@ const SiteAppFeedbackStatuses = ({
 		edit: false,
 		delete: false,
 	});
+	const [confirmDefault, setConfirmDefault] = useState([null, null]);
 	const [deleteId, setDeleteId] = useState(false);
 	const [editData, setEditData] = useState({});
 	const [defaultId, setDefaultId] = useState(null);
@@ -49,7 +52,7 @@ const SiteAppFeedbackStatuses = ({
 			if (result.status) {
 				setLoading(false);
 
-				setDefaultId(res.data.defaultModelStatusID);
+				setDefaultId(res.data.defaultFeedbackStatusID);
 				setAllData(
 					result.data.map((x) => ({
 						...x,
@@ -82,7 +85,39 @@ const SiteAppFeedbackStatuses = ({
 		setAllData(newData);
 	};
 
-	const handleDefaultDialogOpen = (id) => {};
+	const handleDefaultDialogOpen = (id, name) => {
+		setConfirmDefault([id, name]);
+		setModel((th) => ({ ...th, default: true }));
+	};
+
+	const handleDefaultUpdate = async () => {
+		// Attempting to update default
+		try {
+			// Patching change to API
+			const result = await API.patch(`/api/siteapps/${appId}`, [
+				{
+					op: "replace",
+					path: "defaultFeedbackStatusID",
+					value: confirmDefault[0],
+				},
+			]);
+
+			// If success, updating default in state
+			if (result.status === 200) {
+				// Updating default state
+				setDefaultId(confirmDefault[0]);
+
+				return true;
+			} else {
+				throw new Error(result);
+			}
+		} catch (err) {
+			// TODO: real error handling
+			console.log(err);
+
+			return false;
+		}
+	};
 
 	// Edit Item Handler
 	const handleEditDialogOpen = (id) => {
@@ -131,6 +166,13 @@ const SiteAppFeedbackStatuses = ({
 
 	return (
 		<div>
+			<DefaultDialog
+				open={model.default}
+				closeHandler={() => setModel((th) => ({ ...th, default: false }))}
+				data={confirmDefault}
+				entity="Feedback Status"
+				handleDefaultUpdate={handleDefaultUpdate}
+			/>
 			<AddEditDialog
 				open={state.showAdd}
 				editMode={model.edit}
