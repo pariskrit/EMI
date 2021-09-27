@@ -42,6 +42,8 @@ const SingleComponent = (route) => {
 					appId={appId}
 					header={route.header}
 					apis={route.api}
+					showDefault={route.showDefault}
+					pathToPatch={route.pathToPatch}
 				/>
 			}
 		</>

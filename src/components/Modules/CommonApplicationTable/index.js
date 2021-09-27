@@ -65,6 +65,9 @@ const CommonApplicationTable = ({
 	isLoading,
 	defaultID,
 	menuData,
+	showDefault,
+	openDefaultDialog,
+	defaultID,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -143,6 +146,18 @@ const CommonApplicationTable = ({
 													{row[col]}
 												</AT.TableBodyText>
 												{row.id === defaultID && i === 0 ? (
+												{showDefault ? (
+													<AT.TableBodyText
+														className={clsx({
+															[classes.defaultNameText]: row.id === defaultID,
+														})}
+													>
+														{row[col]}
+													</AT.TableBodyText>
+												) : (
+													<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+												)}
+												{showDefault && row.id === defaultID ? (
 													<Typography className={classes.defaultText}>
 														(Default)
 													</Typography>
@@ -175,7 +190,7 @@ const CommonApplicationTable = ({
 															}}
 															menuData={menuData}
 														/>
-													</AT.DotMenu>
+														</AT.DotMenu>
 												) : null}
 											</AT.CellContainer>
 										</TableCell>
