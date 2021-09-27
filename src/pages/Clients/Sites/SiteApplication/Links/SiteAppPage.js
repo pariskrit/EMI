@@ -17,6 +17,7 @@ import {
 	siteAppTaskActions,
 	siteAppTaskSystems,
 	siteAppLubricants,
+	siteAppDefectTypes,
   siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
@@ -178,7 +179,19 @@ const routes = [
 		showSwitch: false,
 		header: "Lubricants",
 		api: differentAPIs.LubricantsAPIs,
-	},{
+	},
+	{
+		id: 54,
+		name: "Defect Definitions",
+		path: siteAppDefectTypes,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Defect Types",
+		api: differentAPIs.DefectTypesAPIs,
+	},
+	{
 	  id: 53,
 		name: "Defect Definitions",
 		path: siteAppDefectStatusPath,
