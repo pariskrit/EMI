@@ -140,7 +140,7 @@ const CommonApplicationTable = ({
 															row.id === defaultID && i === 0,
 													})}
 												>
-													{row[col]}
+													{`${row[col]}`}
 												</AT.TableBodyText>
 												{row.id === defaultID && i === 0 ? (
 													<Typography className={classes.defaultText}>

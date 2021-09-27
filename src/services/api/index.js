@@ -30,6 +30,7 @@ const BASE_API_PATH_SYSTEMS = `${BASE_API_PATH}systems`;
 const BASE_API_PATH_LUBRICANTS = `${BASE_API_PATH}lubricants`;
 const BASE_API_PATH_DEFECT_TYPES = `${BASE_API_PATH}defecttypes`;
 const BASE_API_PATH_ROLES = `${BASE_API_PATH}roles`;
+const BASE_API_PATH_DEFECT_RISK_RATINGS = `${BASE_API_PATH}defectriskratings`;
 
 export const Apis = {
 	//client detail screen
@@ -98,4 +99,7 @@ export const Apis = {
 
 	//userroles
 	Roles: `${BASE_API_PATH_ROLES}`,
+
+	//defectRiskRatings
+	DefectRiskRatings: `${BASE_API_PATH_DEFECT_RISK_RATINGS}`,
 };

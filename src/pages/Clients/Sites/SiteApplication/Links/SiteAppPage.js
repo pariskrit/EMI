@@ -21,6 +21,7 @@ import {
 	siteAppFeedbackPrioritiesPath,
 	siteAppUserRolesPath,
 	siteAppDefectStatusPath,
+	siteAppDefectRiskRatingsPath
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -34,6 +35,7 @@ import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
 import UserRoles from "../UserRoles";
 import DefectStatuses from "../DefectStatuses";
+import DefectRiskRatings from "../DefectRiskRatings";
 
 const routes = [
 	{
@@ -233,6 +235,15 @@ const routes = [
 		name: "Defect Definitions",
 		path: siteAppDefectStatusPath,
 		component: DefectStatuses,
+		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+	},
+	{
+		id: 52,
+		name: "Defect Definitions",
+		path: siteAppDefectRiskRatingsPath,
+		component: DefectRiskRatings,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,
