@@ -13,6 +13,7 @@ import {
 	siteAppTaskActions,
 	siteAppTaskSystems,
 	siteAppLubricants,
+	siteAppDefectTypes,
 } from "helpers/routePaths";
 
 /**
@@ -117,7 +118,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Types",
-					link: links + "defecttypes",
+					link: links + siteAppDefectTypes,
 				},
 			],
 		},

@@ -54,6 +54,12 @@ import {
 	getLubricants,
 	patchLubricants,
 } from "services/clients/sites/siteApplications/lubricants";
+//Defect Types
+import {
+	addDefectTypes,
+	getDefectTypes,
+	patchDefectTypes,
+} from "services/clients/sites/siteApplications/defectTypes";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -112,6 +118,12 @@ const differentAPIs = {
 		postAPI: addLubricants,
 		patchAPI: patchLubricants,
 		deleteAPI: `${BASE_API_PATH}lubricants`,
+	},
+	DefectTypesAPIs: {
+		getAPI: getDefectTypes,
+		postAPI: addDefectTypes,
+		patchAPI: patchDefectTypes,
+		deleteAPI: `${BASE_API_PATH}defecttypes`,
 	},
 };
 
