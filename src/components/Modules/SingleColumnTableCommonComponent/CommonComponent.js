@@ -331,19 +331,39 @@ const CommonContent = ({
 						setSearch={setSearchData}
 						searchQuery={searchQuery}
 						isLoading={loading}
-						menuData={[
-							{
-								name: "Edit",
-								handler: handleEditDialogOpen,
-								isDelete: false,
-							},
-							{
-								name: "Delete",
-								handler: handleDeleteDialogOpen,
-								isDelete: true,
-							},
-						]}
-           defaultID={defaultData}
+						menuData={
+							showDefault
+								? [
+										{
+											name: "Edit",
+											handler: handleEditDialogOpen,
+											isDelete: false,
+										},
+										{
+											name: "Delete",
+											handler: handleDeleteDialogOpen,
+											isDelete: true,
+										},
+										{
+											name: "Make Default Status",
+											handler: handleDefaultDialogOpen,
+											isDelete: false,
+										},
+								  ]
+								: [
+										{
+											name: "Edit",
+											handler: handleEditDialogOpen,
+											isDelete: false,
+										},
+										{
+											name: "Delete",
+											handler: handleDeleteDialogOpen,
+											isDelete: true,
+										},
+								  ]
+						}
+						defaultID={defaultData}
 					/>
 				</>
 			</CommonBody>
