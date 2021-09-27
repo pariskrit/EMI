@@ -1,24 +1,17 @@
-import DefaultDialog from "components/Elements/DefaultDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import SearchField from "components/Elements/SearchField/SearchField";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import { SiteContext } from "contexts/SiteApplicationContext";
-import { defectStatusTypes, positionTypes } from "helpers/constants";
-import PositionAccessTypes from "helpers/positionAccessTypes";
+import { positionTypes } from "helpers/constants";
 import { useSearch } from "hooks/useSearch";
 import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
-import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
-import {
-	getSiteApplicationDetail,
-	patchApplicationDetail,
-} from "services/clients/sites/siteApplications/siteApplicationDetails";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
 import AddDialog from "./AddDialog";
-// import EditDialog from "./EditDialog";
+import { Apis } from "services/api";
 
 function DefectStatuses({ appId, setError }) {
 	const {
@@ -35,8 +28,6 @@ function DefectStatuses({ appId, setError }) {
 	const [defaultId, setDefaultId] = useState(null);
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
-	const [confirmDefault, setConfirmDefault] = useState([]);
 
 	const addData = (newData) => setAllData([...allData, newData]);
 
@@ -49,13 +40,7 @@ function DefectStatuses({ appId, setError }) {
 		let index = allData.findIndex((el) => el.id === id);
 
 		setDataToEdit(allData[index]);
-		setOpenEditDialog(true);
-	};
-
-	const onOpenDefaultDialog = (id) => {
-		const { name } = allData.find((data) => data.id === id);
-		setConfirmDefault([id, name]);
-		setOpenDefaultDialog(true);
+		dispatch({ type: "ADD_TOGGLE" });
 	};
 
 	const handleRemoveData = (id) =>
@@ -72,43 +57,25 @@ function DefectStatuses({ appId, setError }) {
 
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
-	const closeEditDialog = () => setOpenEditDialog(false);
-
-	const closeDefaultDialog = () => setOpenDefaultDialog(false);
-
-	const handleDefaultUpdate = async () => {
-		const result = await patchApplicationDetail(appId, [
-			{
-				op: "replace",
-				path: "defaultDefectStatusID",
-				value: confirmDefault[0],
-			},
-		]);
-
-		if (result.status) {
-			// Updating default state
-			setDefaultId(confirmDefault[0]);
-		} else {
-			// setError(result.data.detail);
-		}
-	};
-
 	const fetchPositions = async () => {
 		const result = await getPositions(appId);
 		setLoading(false);
 
+		const getType = (value) =>
+			positionTypes.find((type) => type.value === value).label;
+
 		setAllData([
 			...result.data.map((res) => ({
 				...res,
-				analyticsAccess: PositionAccessTypes[res.analyticsAccess],
-				defectAccess: PositionAccessTypes[res.defectAccess],
-				defectExportAccess: PositionAccessTypes[res.defectExportAccess],
-				feedbackAccess: PositionAccessTypes[res.feedbackAccess],
-				modelAccess: PositionAccessTypes[res.modelAccess],
-				noticeboardAccess: PositionAccessTypes[res.noticeboardAccess],
-				serviceAccess: PositionAccessTypes[res.serviceAccess],
-				settingsAccess: PositionAccessTypes[res.settingsAccess],
-				userAccess: PositionAccessTypes[res.userAccess],
+				analyticsAccess: getType(res.analyticsAccess),
+				defectAccess: getType(res.defectAccess),
+				defectExportAccess: getType(res.defectExportAccess),
+				feedbackAccess: getType(res.feedbackAccess),
+				modelAccess: getType(res.modelAccess),
+				noticeboardAccess: getType(res.noticeboardAccess),
+				serviceAccess: getType(res.serviceAccess),
+				settingsAccess: getType(res.settingsAccess),
+				userAccess: getType(res.userAccess),
 			})),
 		]);
 	};
@@ -119,33 +86,20 @@ function DefectStatuses({ appId, setError }) {
 
 	return (
 		<>
-			{/* <DefaultDialog
-				open={openDefaultDialog}
-				closeHandler={closeDefaultDialog}
-				data={confirmDefault}
-				entity="Default Status"
-				handleDefaultUpdate={handleDefaultUpdate}
-			/>
-			<EditDialog
-				open={openEditDialog}
-				closeHandler={closeEditDialog}
-				data={dataToEdit}
-				setError={setError}
-				handleEditData={handleEditData}
-			/>
 			<DeleteDialog
-				entityName="Defect Status"
+				entityName="Position"
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
-				deleteEndpoint="/api/defectstatuses"
+				deleteEndpoint={Apis.positions}
 				handleRemoveData={handleRemoveData}
-			/> */}
+			/>
 			<AddDialog
-				open={true}
+				open={showAdd}
 				closeHandler={closeAddModal}
 				applicationID={appId}
 				handleAddData={addData}
+				dataToEdit={dataToEdit}
 				setError={setError}
 			/>
 			<div className="detailsContainer">

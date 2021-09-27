@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
-import { addDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
-import { defectStatusTypes } from "helpers/constants";
+import { positionTypes } from "helpers/constants";
 import { Grid } from "@material-ui/core";
-import PositionAccessTypes from "helpers/positionAccessTypes";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Typography from "@material-ui/core/Typography";
+import Dropdown from "components/Elements/Dropdown";
+import { addPosition } from "services/clients/sites/siteApplications/userPositions";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -23,64 +21,19 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	assetModel: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	services: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	defects: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	defectExports: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	noticeBoards: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	feedback: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	users: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	reportingAnalytics: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	settings: yup
-		.string("This field must be a string")
-		.required("This field is required"),
 	changeSkippedTasks: yup
-		.boolean("This field must be a boolean (true or false)")
+		.string("This field must be a string")
 		.required("This field is required"),
 });
 
 // Default state schemas
 const defaultErrorSchema = {
 	name: null,
-	assetModel: null,
-	services: null,
-	defects: null,
-	defectExports: null,
-	noticeBoards: null,
-	feedback: null,
-	users: null,
-	reportingAnalytics: null,
-	settings: null,
-	changeSkippedTasks: null,
+	changeSkippedTasks: false,
 };
 
 const defaultStateSchema = {
 	name: "",
-	assetModel: "N",
-	services: "N",
-	defects: "N",
-	defectExports: "N",
-	noticeBoards: "N",
-	feedback: "N",
-	users: "N",
-	reportingAnalytics: "N",
-	settings: "N",
 	changeSkippedTasks: false,
 };
 
@@ -102,11 +55,18 @@ const AddDialog = ({
 	applicationID,
 	handleAddData,
 	setError,
+	dataToEdit,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [dropDownInput, setDropDownInput] = useState([
+		...listOfInputs.map((input) => ({
+			label: "None",
+			value: "N",
+		})),
+	]);
 
 	// Handlers
 	const closeOverride = () => {
@@ -119,8 +79,6 @@ const AddDialog = ({
 	const handleAddClick = async () => {
 		// Adding progress indicator
 		setIsUpdating(true);
-		console.log(input);
-		return;
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
@@ -153,10 +111,19 @@ const AddDialog = ({
 		}
 	};
 	const handleCreateData = async () => {
-		const result = await addDefectStatuses({
-			siteAppId: applicationID,
+		const result = await addPosition({
+			siteAppID: applicationID,
 			name: input.name,
-			type: input.type,
+			modelAccess: dropDownInput[0].value,
+			serviceAccess: dropDownInput[1].value,
+			defectAccess: dropDownInput[2].value,
+			defectExportAccess: dropDownInput[3].value,
+			noticeboardAccess: dropDownInput[4].value,
+			feedbackAccess: dropDownInput[5].value,
+			userAccess: dropDownInput[6].value,
+			analyticsAccess: dropDownInput[7].value,
+			settingsAccess: dropDownInput[8].value,
+			allowChangeSkippedTaskStatus: input.changeSkippedTasks,
 		});
 
 		// Handling success
@@ -164,11 +131,18 @@ const AddDialog = ({
 			// Adding new type to state
 			handleAddData({
 				id: result.data,
-				applicationID: applicationID,
+				applicationID,
 				name: input.name,
-				type: defectStatusTypes.find((type) => type.value === input.type)[
-					"label"
-				],
+				modelAccess: dropDownInput[0].label,
+				serviceAccess: dropDownInput[1].label,
+				defectAccess: dropDownInput[2].label,
+				defectExportAccess: dropDownInput[3].label,
+				noticeboardAccess: dropDownInput[4].label,
+				feedbackAccess: dropDownInput[5].label,
+				userAccess: dropDownInput[6].label,
+				analyticsAccess: dropDownInput[7].label,
+				settingsAccess: dropDownInput[8].label,
+				allowChangeSkippedTaskStatus: input.changeSkippedTasks,
 			});
 
 			return { success: true };
@@ -184,6 +158,27 @@ const AddDialog = ({
 			handleAddClick();
 		}
 	};
+
+	const onDropDownChange = (value, i) => {
+		setDropDownInput([
+			...dropDownInput.map((inp, index) => (index === i ? value : inp)),
+		]);
+	};
+
+	useEffect(() => {
+		if (Object.keys(dataToEdit).length > 0) {
+			setInput({
+				name: dataToEdit.name,
+				allowChangeSkippedTaskStatus: dataToEdit.allowChangeSkippedTaskStatus,
+			});
+			setDropDownInput([
+				...listOfInputs.map((input) => ({
+					label: input.label,
+					value: dataToEdit[input.name],
+				})),
+			]);
+		}
+	}, [dataToEdit]);
 
 	return (
 		<Dialog
@@ -229,13 +224,21 @@ const AddDialog = ({
 								}}
 							/>
 						</Grid>
-						{listOfInputs.map((field) => (
+						{listOfInputs.map((field, i) => (
 							<Grid item xs={6} key={field.label}>
-								<ADD.InputLabel>
+								<Dropdown
+									options={positionTypes}
+									selectedValue={dropDownInput[i]}
+									label={field.label}
+									width="100%"
+									onChange={(value) => onDropDownChange(value, i)}
+									required
+								/>
+								{/* <ADD.InputLabel>
 									{field.label}
 									<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-								<TextField
+								</ADD.InputLabel> */}
+								{/* <TextField
 									error={errors[field.name] === null ? false : true}
 									helperText={
 										errors[field.name] === null ? null : errors.assetModel
@@ -254,7 +257,7 @@ const AddDialog = ({
 											{PositionAccessTypes[key]}
 										</MenuItem>
 									))}
-								</TextField>
+								</TextField> */}
 							</Grid>
 						))}
 						<Grid item xs={6}>
@@ -264,7 +267,7 @@ const AddDialog = ({
 										changeHandler={() => {
 											setInput({
 												...input,
-												changeSkippedTasks: !input.changeSkippedTasks,
+												allowChangeSkippedTaskStatus: !input.changeSkippedTasks,
 											});
 										}}
 									/>
