@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import API from "../../../helpers/api";
-import EditDialogStyle from "../../../styles/application/EditDialogStyle";
+import API from "helpers/api";
+import EditDialogStyle from "styles/application/EditDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
-import DefectStatusTypes from "../../../helpers/defectStatusTypes";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
+import { defectStatusTypes } from "helpers/constants";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -132,7 +131,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 			setInput({ name: data.name, type: data.type });
 		}
 	}, [data, open]);
-
+	console.log(input);
 	return (
 		<div>
 			<Dialog
@@ -193,9 +192,9 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 									}}
 									variant="outlined"
 								>
-									{Object.keys(DefectStatusTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{DefectStatusTypes[key]}
+									{defectStatusTypes.map((type) => (
+										<MenuItem key={type.value} value={type.value}>
+											{type.label}
 										</MenuItem>
 									))}
 								</TextField>

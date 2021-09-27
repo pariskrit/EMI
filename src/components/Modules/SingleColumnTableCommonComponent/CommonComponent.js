@@ -323,34 +323,28 @@ const CommonContent = ({
 						/>
 					</div>
 
-					{!showDefault ? (
-						<CommonApplicationTable
-							data={mainData}
-							columns={["name"]}
-							headers={["Name"]}
-							setData={setData}
-							onEdit={handleEditDialogOpen}
-							onDelete={(id) => handleDeleteDialogOpen(id)}
-							setSearch={setSearchData}
-							searchQuery={searchQuery}
-							isLoading={loading}
-						/>
-					) : (
-						<CommonApplicationTable
-							data={mainData}
-							columns={["name"]}
-							headers={["Name"]}
-							setData={setData}
-							onEdit={handleEditDialogOpen}
-							onDelete={(id) => handleDeleteDialogOpen(id)}
-							setSearch={setSearchData}
-							searchQuery={searchQuery}
-							isLoading={loading}
-							openDefaultDialog={handleDefaultDialogOpen}
-							showDefault={showDefault}
-							defaultID={defaultData}
-						/>
-					)}
+					<CommonApplicationTable
+						data={mainData}
+						columns={["name"]}
+						headers={["Name"]}
+						setData={setData}
+						setSearch={setSearchData}
+						searchQuery={searchQuery}
+						isLoading={loading}
+						menuData={[
+							{
+								name: "Edit",
+								handler: handleEditDialogOpen,
+								isDelete: false,
+							},
+							{
+								name: "Delete",
+								handler: handleDeleteDialogOpen,
+								isDelete: true,
+							},
+						]}
+           defaultID={defaultData}
+					/>
 				</>
 			</CommonBody>
 		</div>
