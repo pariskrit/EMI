@@ -42,7 +42,6 @@ const useStyles = makeStyles({
 	dataCell: {
 		height: 50,
 	},
-
 	defaultText: {
 		fontFamily: "Roboto Condensed",
 		fontSize: 14,
@@ -51,7 +50,6 @@ const useStyles = makeStyles({
 		paddingLeft: 5,
 		display: "inline-flex",
 	},
-
 	defaultNameText: {
 		fontWeight: "bold",
 	},
@@ -64,12 +62,9 @@ const CommonApplicationTable = ({
 	searchQuery,
 	columns,
 	headers,
-	onEdit,
-	onDelete,
 	isLoading,
-	showDefault,
-	openDefaultDialog,
 	defaultID,
+	menuData,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -139,23 +134,19 @@ const CommonApplicationTable = ({
 											})}
 										>
 											<AT.CellContainer key={col}>
-												{showDefault ? (
-													<AT.TableBodyText
-														className={clsx({
-															[classes.defaultNameText]: row.id === defaultID,
-														})}
-													>
-														{row[col]}
-													</AT.TableBodyText>
-												) : (
-													<AT.TableBodyText>{row[col]}</AT.TableBodyText>
-												)}
-												{showDefault && row.id === defaultID ? (
+												<AT.TableBodyText
+													className={clsx({
+														[classes.defaultNameText]:
+															row.id === defaultID && i === 0,
+													})}
+												>
+													{row[col]}
+												</AT.TableBodyText>
+												{row.id === defaultID && i === 0 ? (
 													<Typography className={classes.defaultText}>
 														(Default)
 													</Typography>
 												) : null}
-
 												{arr.length === i + 1 ? (
 													<AT.DotMenu
 														onClick={(e) => {
@@ -173,58 +164,17 @@ const CommonApplicationTable = ({
 															<MenuIcon />
 														</AT.TableMenuButton>
 
-														{showDefault ? (
-															<PopupMenu
-																index={index}
-																selectedData={selectedData}
-																anchorEl={anchorEl}
-																id={row.id}
-																clickAwayHandler={() => {
-																	setAnchorEl(null);
-																	setSelectedData(null);
-																}}
-																menuData={[
-																	{
-																		name: "Edit",
-																		handler: () => onEdit(row.id),
-																		isDelete: false,
-																	},
-																	{
-																		name: "Delete",
-																		handler: () => onDelete(row.id),
-																		isDelete: true,
-																	},
-																	{
-																		name: "Make Default Status",
-																		handler: openDefaultDialog,
-																		isDelete: false,
-																	},
-																]}
-															/>
-														) : (
-															<PopupMenu
-																index={index}
-																selectedData={selectedData}
-																anchorEl={anchorEl}
-																id={row.id}
-																clickAwayHandler={() => {
-																	setAnchorEl(null);
-																	setSelectedData(null);
-																}}
-																menuData={[
-																	{
-																		name: "Edit",
-																		handler: () => onEdit(row.id),
-																		isDelete: false,
-																	},
-																	{
-																		name: "Delete",
-																		handler: () => onDelete(row.id),
-																		isDelete: true,
-																	},
-																]}
-															/>
-														)}
+														<PopupMenu
+															index={index}
+															selectedData={selectedData}
+															anchorEl={anchorEl}
+															id={row.id}
+															clickAwayHandler={() => {
+																setAnchorEl(null);
+																setSelectedData(null);
+															}}
+															menuData={menuData}
+														/>
 													</AT.DotMenu>
 												) : null}
 											</AT.CellContainer>
@@ -263,12 +213,14 @@ CommonApplicationTable.defaultProps = {
 	],
 	columns: ["name"],
 	headers: ["Name"],
+	defaultID: null,
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
 };
 
 CommonApplicationTable.propTypes = {
 	data: PropTypes.array,
+	defaultID: PropTypes.number,
 	columns: PropTypes.array,
 	headers: PropTypes.array,
 	onEdit: PropTypes.func,
