@@ -1,21 +1,22 @@
-import React, { useContext, useEffect, useState } from "react";
+import DefaultDialog from "components/Elements/DefaultDialog";
+import DeleteDialog from "components/Elements/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import OperatingModesTable from "./OperatingModesTable";
-import AddDialog from "./AddDialog";
-import EditDialog from "./EditDialog";
+import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import SearchField from "components/Elements/SearchField/SearchField";
+import CommonBody from "components/Modules/CommonBody";
+import { SiteContext } from "contexts/SiteApplicationContext";
+import { useSearch } from "hooks/useSearch";
+import React, { useContext, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 import { getOperatingModes } from "services/clients/sites/siteApplications/operatingModes";
 import {
 	getSiteApplicationDetail,
 	patchApplicationDetail,
 } from "services/clients/sites/siteApplications/siteApplicationDetails";
-import { SiteContext } from "contexts/SiteApplicationContext";
-import DeleteDialog from "components/Elements/DeleteDialog";
-import { useSearch } from "hooks/useSearch";
-import DefaultDialog from "components/Elements/DefaultDialog";
-import SearchField from "components/Elements/SearchField/SearchField";
-import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
-import { connect } from "react-redux";
-import { showError } from "redux/common/actions";
+import AddDialog from "./AddDialog";
+import EditDialog from "./EditDialog";
+import OperatingModesTable from "./OperatingModesTable";
 
 function OperatingModes({ appId, setError }) {
 	const [dataToEdit, setDataToEdit] = useState({});
@@ -35,6 +36,7 @@ function OperatingModes({ appId, setError }) {
 		setSearchData,
 	} = useSearch();
 	const [defaultId, setDefaultId] = useState(null);
+	const [haveData, setHaveData] = useState(false);
 
 	const addData = (newData) => setAllData([...allData, newData]);
 
@@ -95,6 +97,7 @@ function OperatingModes({ appId, setError }) {
 		const res = await getSiteApplicationDetail(appId);
 		setDefaultId(res.data.defaultOperatingModeID);
 		setAllData(result.data);
+		setHaveData(true);
 	};
 
 	useEffect(() => {
@@ -103,7 +106,7 @@ function OperatingModes({ appId, setError }) {
 	}, []);
 
 	return (
-		<>
+		<CommonBody {...{ haveData }}>
 			<DefaultDialog
 				open={openDefaultDialog}
 				closeHandler={closeDefaultDialog}
@@ -156,7 +159,7 @@ function OperatingModes({ appId, setError }) {
 				setSearchedData={setSearchData}
 				setCurrentTableSort={setCurrentTableSort}
 			/>
-		</>
+		</CommonBody>
 	);
 }
 

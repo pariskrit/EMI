@@ -95,6 +95,7 @@ const ModelStatusesTable = ({
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}

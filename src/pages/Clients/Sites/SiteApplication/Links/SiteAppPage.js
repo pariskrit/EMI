@@ -1,31 +1,34 @@
-import React from "react";
+import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 import SiteApplicationContext from "contexts/SiteApplicationContext";
+import differentAPIs from "helpers/differentAPIs";
 import {
-	siteApplicationPath,
-	siteApplicationPathCustomCaptions,
-	siteApplicationPausePath,
-	siteApplicationOperationModesPath,
-	siteApplicationPathStopsReasons,
-	sitApplicationPathModelStatuses,
-	siteApplicationPathModelTypes,
-	siteApplicationPathSkippedTasks,
-	siteApplicationPathMissingItems,
-	siteApplicationPathStatusChanges,
-	siteApplicationPathDefectStatus,
-	siteApplicationPathUserPositions,
+	siteAppCustomCaptionsPath,
+	siteAppDetailPath,
+	siteAppMissingItemsPath,
+	siteAppModelStatusesPath,
+	siteAppModelTypesPath,
+	siteAppPath,
+	siteAppOperationModesPath,
+	siteAppPausePath,
+	siteAppSkippedTasksPath,
+	siteAppStatusChangesPath,
+	siteAppStopsReasonsPath,
+	siteAppFeedbackClassificationsPath,
+	siteAppTaskActions,
+	siteAppTaskSystems,
+	siteAppLubricants,
+	siteAppDefectStatusPath,
 } from "helpers/routePaths";
+
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
+import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
+import OperatingModes from "../OperatingModes";
 import SiteApplicationDetails from "../SiteApplicationDetails";
+import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
-import OperatingModes from "../OperatingModes";
-import SiteAppModelStatuses from "../SiteAppModelStatuses";
-import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
-
-//New Added
-import differentAPIs from "helpers/differentAPIs";
 import DefectStatuses from "../DefectStatuses";
 import UserPositions from "../UserPositions";
 
@@ -33,7 +36,7 @@ const routes = [
 	{
 		id: 46,
 		name: "Details",
-		path: siteApplicationPath,
+		path: siteAppDetailPath,
 		component: SiteApplicationDetails,
 		showAdd: false,
 		showHistory: true,
@@ -42,7 +45,7 @@ const routes = [
 	{
 		id: 108,
 		name: "Reason Definitions",
-		path: siteApplicationPausePath,
+		path: siteAppPausePath,
 		component: SiteAppPauses,
 		showAdd: true,
 		showHistory: true,
@@ -51,7 +54,7 @@ const routes = [
 	{
 		id: 51,
 		name: "Details",
-		path: siteApplicationPathCustomCaptions,
+		path: siteAppCustomCaptionsPath,
 		component: CustomCaptions,
 		showAdd: false,
 		showHistory: true,
@@ -61,7 +64,7 @@ const routes = [
 	{
 		id: 62,
 		name: "Reason Definitions",
-		path: siteApplicationPathStopsReasons,
+		path: siteAppStopsReasonsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -72,7 +75,7 @@ const routes = [
 	{
 		id: 61,
 		name: "Reason Definitions",
-		path: siteApplicationPathSkippedTasks,
+		path: siteAppSkippedTasksPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -83,7 +86,7 @@ const routes = [
 	{
 		id: 58,
 		name: "Reason Definitions",
-		path: siteApplicationPathMissingItems,
+		path: siteAppMissingItemsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -94,7 +97,7 @@ const routes = [
 	{
 		id: 50,
 		name: "Reason Definitions",
-		path: siteApplicationPathStatusChanges,
+		path: siteAppStatusChangesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -105,7 +108,7 @@ const routes = [
 	{
 		id: 48,
 		name: "Model Definitions",
-		path: sitApplicationPathModelStatuses,
+		path: siteAppModelStatusesPath,
 		component: SiteAppModelStatuses,
 		showAdd: true,
 		showHistory: true,
@@ -114,7 +117,7 @@ const routes = [
 	{
 		id: 49,
 		name: "Model Definitions",
-		path: siteApplicationPathModelTypes,
+		path: siteAppModelTypesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
@@ -125,26 +128,63 @@ const routes = [
 	{
 		id: 59,
 		name: "Task Definitions",
-		path: siteApplicationOperationModesPath,
+		path: siteAppOperationModesPath,
 		component: OperatingModes,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,
 	},
 	{
-		id: 53,
-		name: "Defect Definitions",
-		path: siteApplicationPathDefectStatus,
-		component: DefectStatuses,
+		id: 55,
+		name: "Feedback Definitions",
+		path: siteAppFeedbackClassificationsPath,
+		component: SingleColumnTableCommonComponent,
 		showAdd: true,
-		showHistory: false,
+		showHistory: true,
 		showSwitch: false,
+		header: "Feedback Classifications",
+		api: differentAPIs.FeedbackClassificationsAPIs,
+		showDefault: true,
+		pathToPatch: "defaultFeedbackClassificationID",
 	},
 	{
-		id: 109,
-		name: "User Definitions",
-		path: siteApplicationPathUserPositions,
-		component: UserPositions,
+		id: 47,
+		name: "Task Definitions",
+		path: siteAppTaskActions,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Action",
+		api: differentAPIs.ActionsAPIs,
+	},
+	{
+		id: 63,
+		name: "Task Definitions",
+		path: siteAppTaskSystems,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Action",
+		api: differentAPIs.SystemsAPIs,
+	},
+	{
+		id: 64,
+		name: "Task Definitions",
+		path: siteAppLubricants,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Lubricants",
+		api: differentAPIs.LubricantsAPIs,
+	},
+	{
+		id: 53,
+		name: "Defect Definitions",
+		path: siteAppDefectStatusPath,
+		component: DefectStatuses,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,
@@ -156,7 +196,7 @@ const SiteAppPage = () => {
 		<SiteApplicationContext>
 			<SiteApplication>
 				{routes.map((route) => (
-					<Route key={route.id} path={route.path} exact>
+					<Route key={route.id} path={siteAppPath + route.path} exact>
 						<SingleComponent {...route} />
 					</Route>
 				))}

@@ -28,6 +28,32 @@ import {
 	getStopReasons,
 	patchStopReasons,
 } from "services/clients/sites/siteApplications/stopReasons";
+//Feedback Classifications
+import {
+	addFeedbackClassifications,
+	getFeedbackClassifications,
+	getDefaultFeedbackClassifications,
+	patchFeedbackClassifications,
+	patchDefaultFeedbackClassifications,
+} from "services/clients/sites/siteApplications/feedbackClassifications";
+//Actions
+import {
+	addActions,
+	getActions,
+	patchActions,
+} from "services/clients/sites/siteApplications/actions";
+//Systems
+import {
+	addSystems,
+	getSystems,
+	patchSystems,
+} from "services/clients/sites/siteApplications/systems";
+//Lubricants
+import {
+	addLubricants,
+	getLubricants,
+	patchLubricants,
+} from "services/clients/sites/siteApplications/lubricants";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -59,6 +85,33 @@ const differentAPIs = {
 		postAPI: addStatusChanges,
 		patchAPI: patchStatusChanges,
 		deleteAPI: `${BASE_API_PATH}changestatusreasons`,
+	},
+
+	FeedbackClassificationsAPIs: {
+		getAPI: getFeedbackClassifications,
+		getDefaultAPI: getDefaultFeedbackClassifications,
+		postAPI: addFeedbackClassifications,
+		patchAPI: patchFeedbackClassifications,
+		patchDefaultAPI: patchDefaultFeedbackClassifications,
+		deleteAPI: `${BASE_API_PATH}feedbackclassifications`,
+	},
+	ActionsAPIs: {
+		getAPI: getActions,
+		postAPI: addActions,
+		patchAPI: patchActions,
+		deleteAPI: `${BASE_API_PATH}actions`,
+	},
+	SystemsAPIs: {
+		getAPI: getSystems,
+		postAPI: addSystems,
+		patchAPI: patchSystems,
+		deleteAPI: `${BASE_API_PATH}systems`,
+	},
+	LubricantsAPIs: {
+		getAPI: getLubricants,
+		postAPI: addLubricants,
+		patchAPI: patchLubricants,
+		deleteAPI: `${BASE_API_PATH}lubricants`,
 	},
 };
 
