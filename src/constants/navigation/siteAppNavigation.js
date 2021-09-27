@@ -14,6 +14,7 @@ import {
 	siteAppTaskSystems,
 	siteAppLubricants,
 	siteAppDefectTypes,
+	siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
 /**
@@ -90,6 +91,10 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 					title: "Operating Modes",
 					link: links + siteAppOperationModesPath,
 				},
+				{
+					title: "Lubricants",
+					link: links + siteAppLubricants,
+				},
 			],
 		},
 		{
@@ -114,7 +119,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Statuses",
-					link: links + "defectstatuses",
+					link: links + siteAppDefectStatusPath,
 				},
 				{
 					title: "Types",
