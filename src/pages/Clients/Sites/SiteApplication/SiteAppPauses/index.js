@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import API from "helpers/api";
@@ -7,19 +8,18 @@ import { handleSort } from "helpers/utils";
 import AddDialog from "./AddDialog/AddDialog";
 import EditDialog from "./EditDialog/EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import { useSearch } from "hooks/useSearch";
 
 const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
-	const [data, setData] = useState([]);
 	const [modal, setModal] = useState({ edit: false, delete: false });
 	const [deleteId, setDeleteId] = useState(null);
 	const [editData, setEditData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const {
+		allData,
 		setAllData,
 		handleSearch,
 		searchedData,
@@ -28,7 +28,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	} = useSearch();
 
 	const handleAddSubcat = (parentId, id, name) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		let index = newData.findIndex((el) => el.id === parentId);
 
@@ -45,11 +45,11 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		newData[index].totalSub = newData[index].totalSub + 1;
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleUpdateSubcat = (parentId, subcatID, newName) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		let pauseIndex = newData.findIndex((el) => el.id === parentId);
 		let subcatIndex = newData[pauseIndex].pauseSubcategories.findIndex(
@@ -67,11 +67,11 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		);
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleRemoveSubcat = (sub) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		let index = newData.findIndex((el) => el.id === sub.pauseID);
 
@@ -88,13 +88,13 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		newData[index].totalSub = newData[index].totalSub - 1;
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleEditDialogOpen = (id) => {
 		setModal((th) => ({ ...th, edit: true }));
 
-		data.forEach((d) => {
+		allData.forEach((d) => {
 			if (d.id === id) {
 				const dataWithSortedSubcats = d;
 
@@ -136,11 +136,12 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 					totalSub: x.pauseSubcategories.length,
 				}));
 				setAllData(mainData);
-				handleSort(mainData, setData, "name", "asc");
+				handleSort(mainData, setAllData, "name", "asc");
 				setLoading(false);
 				return result;
 			}
 		} catch (err) {}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appId]);
 
 	const handleDeleteDialogClose = () => {
@@ -149,36 +150,34 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	};
 
 	const handleAddData = (item) => {
-		const newData = [...data];
+		const newData = [...allData];
 		newData.push(item);
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleRemoveData = (id) => {
-		const newData = [...data].filter(function (item) {
+		const newData = [...allData].filter(function (item) {
 			return item.id !== id;
 		});
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleEditData = (d) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		let index = newData.findIndex((el) => el.id === d.id);
 		newData[index] = d;
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	useEffect(() => {
 		handleGetData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	const mainData = searchQuery.length === 0 ? data : searchedData;
 
 	return (
 		<div>
@@ -211,7 +210,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={"Pause Reasons"}
-					dataCount={data.length}
+					dataCount={allData.length}
 					description="Create and manage Pause Reasons"
 				/>
 				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
@@ -221,10 +220,11 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 				/>
 			</div>
 			<CommonApplicationTable
-				setData={setData}
+				setData={setAllData}
 				setSearch={setSearchData}
+				searchedData={searchedData}
 				searchQuery={searchQuery}
-				data={mainData}
+				data={allData}
 				columns={["name", "totalSub"]}
 				headers={["Name", "Number of subcategories"]}
 				isLoading={loading}
