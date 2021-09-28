@@ -3,32 +3,34 @@ import SiteApplicationContext from "contexts/SiteApplicationContext";
 import differentAPIs from "helpers/differentAPIs";
 import {
 	siteAppCustomCaptionsPath,
+	siteAppDefectStatusPath,
+	siteAppDefectTypesPath,
 	siteAppDetailPath,
+	siteAppFeedbackClassificationsPath,
+	siteAppFeedbackPrioritiesPath,
+	siteAppFeedbackStatuses,
+	siteAppLubricantsPath,
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
 	siteAppPath,
 	siteAppOperationModesPath,
 	siteAppPausePath,
+	siteAppPositionsPath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
-	siteAppFeedbackClassificationsPath,
 	siteAppTaskActionsPath,
 	siteAppTaskSystemsPath,
-	siteAppLubricantsPath,
-	siteAppDefectTypesPath,
-	siteAppFeedbackPrioritiesPath,
 	siteAppUserRolesPath,
-	siteAppDefectStatusPath,
-	siteAppDefectRiskRatingsPath
+	siteAppDefectRiskRatingsPath,
 } from "helpers/routePaths";
-
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import OperatingModes from "../OperatingModes";
+import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
@@ -36,6 +38,7 @@ import SingleComponent from "./SingleComponent";
 import UserRoles from "../UserRoles";
 import DefectStatuses from "../DefectStatuses";
 import DefectRiskRatings from "../DefectRiskRatings";
+import UserPositions from "../UserPositions";
 
 const routes = [
 	{
@@ -159,6 +162,15 @@ const routes = [
 		pathToPatch: "defaultFeedbackClassificationID",
 	},
 	{
+		id: 57,
+		name: "Feedback Definitions",
+		path: siteAppFeedbackStatuses,
+		component: SiteAppFeedbackStatuses,
+		showAdd: true,
+		showSwitch: false,
+		header: "Feedback Statuses",
+	},
+	{
 		id: 47,
 		name: "Task Definitions",
 		path: siteAppTaskActionsPath,
@@ -220,7 +232,6 @@ const routes = [
 		showDefault: true,
 		pathToPatch: "defaultFeedbackPriorityID",
 	},
-
 	{
 		id: 60,
 		name: "User Definitions",
@@ -244,6 +255,15 @@ const routes = [
 		name: "Defect Definitions",
 		path: siteAppDefectRiskRatingsPath,
 		component: DefectRiskRatings,
+		showHistory: true,
+		showSwitch: false,
+		showAdd: true,
+	},
+	{
+		id: 109,
+		name: "User Definitions",
+		path: siteAppPositionsPath,
+		component: UserPositions,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,

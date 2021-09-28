@@ -160,8 +160,6 @@ const CommonContent = ({
 		// eslint-disable-next-line
 	}, [dataChanged]);
 
-	const mainData = searchQuery.length === 0 ? data : searchedData;
-
 	//ShowDefault
 
 	const handleDefaultDialogOpen = (id, name) => {
@@ -325,12 +323,13 @@ const CommonContent = ({
 					</div>
 
 					<CommonApplicationTable
-						data={mainData}
+						data={data}
 						columns={["name"]}
 						headers={["Name"]}
 						setData={setData}
 						setSearch={setSearchData}
 						searchQuery={searchQuery}
+						searchedData={searchedData}
 						isLoading={loading}
 						menuData={
 							showDefault

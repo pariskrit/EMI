@@ -13,6 +13,11 @@ import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 
 const useStyles = makeStyles((theme) => ({
+	detailsContainer: {
+		marginTop: 15,
+		display: "flex",
+		justifyContent: "center",
+	},
 	inputText: {
 		fontSize: 14,
 	},
@@ -120,60 +125,63 @@ function ServiceOptions({ details, setError }) {
 	}, [details]);
 
 	return (
-		<AccordionBox title="Service Options">
-			<Grid container spacing={2}>
-				<Grid item xs={12}>
-					<Typography gutterBottom className={classes.labelText}>
-						User Confirmation Message<span style={{ color: "#E31212" }}>*</span>
-					</Typography>
-					<TextAreaInputField
-						value={checkLists.userConfirmationMessage ?? ""}
-						minRows={3}
-						onChange={onTextAreaChange}
-						onBlur={handleConfirmationMessageUpdate}
-						onKeyPress={onKeyPress}
-						disabled={!checkLists.showServiceUserConfirmation}
-					/>
+		<div className={classes.detailsContainer}>
+			<AccordionBox title="Service Options">
+				<Grid container spacing={2}>
+					<Grid item xs={12}>
+						<Typography gutterBottom className={classes.labelText}>
+							User Confirmation Message
+							<span style={{ color: "#E31212" }}>*</span>
+						</Typography>
+						<TextAreaInputField
+							value={checkLists.userConfirmationMessage ?? ""}
+							minRows={3}
+							onChange={onTextAreaChange}
+							onBlur={handleConfirmationMessageUpdate}
+							onKeyPress={onKeyPress}
+							disabled={!checkLists.showServiceUserConfirmation}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<div className={classes.tickInputContainer}>
+							<FormGroup className={classes.tickboxSpacing}>
+								<FormControlLabel
+									control={
+										<EMICheckbox
+											state={checkLists.showServiceUserConfirmation ?? false}
+											changeHandler={onServiceUserConfirmationChange}
+										/>
+									}
+									label={
+										<Typography className={classes.inputText}>
+											Enable confirm user screen
+										</Typography>
+									}
+								/>
+							</FormGroup>
+						</div>
+						<div className={classes.tickInputContainer}>
+							<FormGroup className={classes.tickboxSpacing}>
+								<FormControlLabel
+									control={
+										<EMICheckbox
+											state={checkLists.raisingDefectCopiesTaskName ?? false}
+											changeHandler={onraisingDefectCopiesTaskNameChange}
+										/>
+									}
+									label={
+										<Typography className={classes.inputText}>
+											Raising a defect copies the task name into the defect
+											description
+										</Typography>
+									}
+								/>
+							</FormGroup>
+						</div>
+					</Grid>
 				</Grid>
-				<Grid item xs={12}>
-					<div className={classes.tickInputContainer}>
-						<FormGroup className={classes.tickboxSpacing}>
-							<FormControlLabel
-								control={
-									<EMICheckbox
-										state={checkLists.showServiceUserConfirmation ?? false}
-										changeHandler={onServiceUserConfirmationChange}
-									/>
-								}
-								label={
-									<Typography className={classes.inputText}>
-										Enable confirm user screen
-									</Typography>
-								}
-							/>
-						</FormGroup>
-					</div>
-					<div className={classes.tickInputContainer}>
-						<FormGroup className={classes.tickboxSpacing}>
-							<FormControlLabel
-								control={
-									<EMICheckbox
-										state={checkLists.raisingDefectCopiesTaskName ?? false}
-										changeHandler={onraisingDefectCopiesTaskNameChange}
-									/>
-								}
-								label={
-									<Typography className={classes.inputText}>
-										Raising a defect copies the task name into the defect
-										description
-									</Typography>
-								}
-							/>
-						</FormGroup>
-					</div>
-				</Grid>
-			</Grid>
-		</AccordionBox>
+			</AccordionBox>
+		</div>
 	);
 }
 

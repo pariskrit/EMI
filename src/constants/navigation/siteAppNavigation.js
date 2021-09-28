@@ -5,6 +5,7 @@ import {
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
 	siteAppOperationModesPath,
+	siteAppFeedbackClassificationsPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -13,10 +14,12 @@ import {
 	siteAppTaskSystemsPath,
 	siteAppLubricantsPath,
 	siteAppDefectTypesPath,
-	siteAppFeedbackClassificationsPath,
 	siteAppFeedbackPrioritiesPath,
 	siteAppUserRolesPath,
 	siteAppDefectRiskRatingsPath,
+	siteAppDefectStatusPath,
+	siteAppDetailPath,
+	siteAppPositionsPath,
 } from "helpers/routePaths";
 
 /**
@@ -32,7 +35,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Application",
-					link: links,
+					link: links + siteAppDetailPath,
 				},
 				{
 					title: "Custom Captions",
@@ -104,7 +107,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Positions",
-					link: links + "positions",
+					link: links + siteAppPositionsPath,
 				},
 				{
 					title: "Roles",
@@ -121,7 +124,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Statuses",
-					link: links + "defectstatuses",
+					link: links + siteAppDefectStatusPath,
 				},
 				{
 					title: "Types",
@@ -142,7 +145,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Statuses",
-					link: links + "feedbackstatuses",
+					link: links + "/feedbackstatuses",
 				},
 			],
 		},
