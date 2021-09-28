@@ -22,6 +22,7 @@ import {
 	siteAppTaskSystemsPath,
 	siteAppUserRolesPath,
 	siteAppFeedbackStatuses,
+  siteAppPositionsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
@@ -35,6 +36,7 @@ import SiteAppPauses from "../SiteAppPauses";
 import UserRoles from "../UserRoles";
 import SingleComponent from "./SingleComponent";
 import DefectStatuses from "../DefectStatuses";
+import UserPositions from "../UserPositions";
 import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 
 const routes = [
@@ -245,6 +247,15 @@ const routes = [
 		component: DefectStatuses,
 		showAdd: true,
 		showHistory: true,
+		showSwitch: false,
+	},
+	{
+		id: 109,
+		name: "User Definitions",
+		path: siteAppPositionsPath,
+		component: UserPositions,
+		showAdd: true,
+		showHistory: false,
 		showSwitch: false,
 	},
 ];

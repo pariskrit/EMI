@@ -18,6 +18,7 @@ import {
 	siteAppUserRolesPath,
 	siteAppDefectStatusPath,
 	siteAppDetailPath,
+	siteAppPositionsPath,
 } from "helpers/routePaths";
 
 /**
@@ -105,7 +106,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Positions",
-					link: links + "positions",
+					link: links + siteAppPositionsPath,
 				},
 				{
 					title: "Roles",

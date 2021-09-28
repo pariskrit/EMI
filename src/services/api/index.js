@@ -29,6 +29,7 @@ const BASE_API_PATH_FEEDBACK_PRIORITIES = `${BASE_API_PATH}feedbackpriorities`;
 const BASE_API_PATH_ACTIONS = `${BASE_API_PATH}actions`;
 const BASE_API_PATH_SYSTEMS = `${BASE_API_PATH}systems`;
 const BASE_API_PATH_LUBRICANTS = `${BASE_API_PATH}lubricants`;
+const BASE_API_PATH_POSITIONS = `${BASE_API_PATH}positions`;
 const BASE_API_PATH_DEFECT_TYPES = `${BASE_API_PATH}defecttypes`;
 const BASE_API_PATH_ROLES = `${BASE_API_PATH}roles`;
 
@@ -69,6 +70,7 @@ export const Apis = {
 	ModelStatuses: `${BASE_API_PATH_MODEL_STATUSES}`,
 	ModelTypes: `${BASE_API_PATH_MODEL_TYPES}`,
 	defectStatuses: `${BASE_API_PATH_DEFECT_STATUSES}`,
+	positions: `${BASE_API_PATH_POSITIONS}`,
 
 	//skippedTasks
 	SkippedTasks: `${BASE_API_PATH_SKIPPED_TASKS}`,
