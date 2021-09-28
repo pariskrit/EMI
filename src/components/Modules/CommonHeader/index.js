@@ -226,7 +226,7 @@ const CommonHeader = ({
 						}
 					>
 						{showSwitch && (
-							<div>
+							<div style={{ marginLeft: "20px" }}>
 								{isUpdating ? (
 									<FormControlLabel
 										className={classes.statusSwitch}
