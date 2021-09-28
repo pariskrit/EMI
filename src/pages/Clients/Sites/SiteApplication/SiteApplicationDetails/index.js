@@ -4,73 +4,65 @@ import Application from "./Application";
 import License from "./License";
 import ServiceOptions from "./ServiceOptions";
 import { getSiteDetails } from "services/clients/sites/siteDetails";
-import {
-	getSiteApplicationDetail,
-	patchApplicationDetail,
-} from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import { SiteContext } from "contexts/SiteApplicationContext";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 
 function SiteApplicationDetails({ appId }) {
 	const [showLicenseTile, setShowLicenseTile] = useState(false);
-	const [{ details, openConfirmationModal }, dispatch] = useContext(
+	const [{ details, openConfirmationModal, isActive }, dispatch] = useContext(
 		SiteContext
 	);
+	const [siteAppDetails, setSiteAppDetails] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const closeConfirmationModal = () =>
 		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: false });
 
-	const fetchSiteApplicationDetails = async () => {
-		try {
-			const result = await getSiteApplicationDetail(appId);
+	const fetchSiteDetails = async () => {
+		const siteResult = await getSiteDetails(details.data.siteID);
 
-			dispatch({
-				type: "SET_SITE_APP_DETAIL",
-				payload: {
-					name: result.data.application.name,
-					purpose: result.data.application.purpose,
-					logo: {
-						name: result.data.application.logoFilename,
-						url: result.data.application.logoURL,
-					},
-					licenses: result.data.licenses,
-					licenseType: result.data.licenseType,
-					isActive: result.data.isActive,
-					showServiceUserConfirmation: result.data.showServiceUserConfirmation,
-					userConfirmationMessage: result.data.userConfirmationMessage,
-					raisingDefectCopiesTaskName: result.data.raisingDefectCopiesTaskName,
-				},
-			});
-
-			const siteResult = await getSiteDetails(result.data.siteID);
-
-			if (siteResult.data.licenseType === 3) {
-				setShowLicenseTile(true);
-			}
-		} catch (error) {
-			console.log(error);
+		if (siteResult.data.licenseType === 3) {
+			setShowLicenseTile(true);
 		}
 	};
 
 	const changeStatus = async () => {
 		setIsUpdating(true);
 		const result = await patchApplicationDetail(appId, [
-			{ op: "replace", path: "isActive", value: !details.isActive },
+			{ op: "replace", path: "isActive", value: !isActive },
 		]);
 
-		if (!result.status) {
+		if (result.status) {
+			dispatch({ type: "TOGGLE_ISACTIVE", payload: !isActive });
+		} else {
 			console.log("error");
 		}
-		await fetchSiteApplicationDetails();
+
 		setIsUpdating(false);
 		closeConfirmationModal();
 	};
 
 	useEffect(() => {
-		fetchSiteApplicationDetails();
+		if (Object.keys(details).length > 0) {
+			setSiteAppDetails({
+				name: details.data.application.name,
+				purpose: details.data.application.purpose,
+				logo: {
+					name: details.data.application.logoFilename,
+					url: details.data.application.logoURL,
+				},
+				licenses: details.data.licenses,
+				licenseType: details.data.licenseType,
+				isActive: details.data.isActive,
+				showServiceUserConfirmation: details.data.showServiceUserConfirmation,
+				userConfirmationMessage: details.data.userConfirmationMessage,
+				raisingDefectCopiesTaskName: details.data.raisingDefectCopiesTaskName,
+			});
+			fetchSiteDetails();
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [details]);
 	return (
 		<>
 			<ConfirmChangeDialog
@@ -81,13 +73,13 @@ function SiteApplicationDetails({ appId }) {
 			/>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<Application details={details} />
+					<Application details={siteAppDetails} />
 				</Grid>
 				<Grid item xs={12}>
-					<ServiceOptions details={details} />
+					<ServiceOptions details={siteAppDetails} />
 				</Grid>
 				<Grid item xs={12}>
-					{showLicenseTile ? <License details={details} /> : null}
+					{showLicenseTile ? <License details={siteAppDetails} /> : null}
 				</Grid>
 			</Grid>
 		</>

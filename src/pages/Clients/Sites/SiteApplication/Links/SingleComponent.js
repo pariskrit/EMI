@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { SiteContext } from "contexts/SiteApplicationContext";
 import { useParams, useLocation } from "react-router";
 import CommonHeaderWrapper from "components/Modules/CommonHeaderWrapper";
 import SiteApplicationNavigation from "constants/navigation/siteAppNavigation";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 
 const SingleComponent = (route) => {
 	const location = useLocation();
@@ -16,6 +17,26 @@ const SingleComponent = (route) => {
 
 	const openConfirmationModal = () =>
 		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: true });
+
+	const fetchSiteApplicationDetails = async () => {
+		const result = await getSiteApplicationDetail(appId);
+
+		dispatch({
+			type: "SET_SITE_APP_DETAIL",
+			payload: result,
+		});
+
+		dispatch({
+			type: "TOGGLE_ISACTIVE",
+			payload: result.data.isActive,
+		});
+	};
+
+	useEffect(() => {
+		if (Object.keys(state.details) <= 0) {
+			fetchSiteApplicationDetails();
+		}
+	}, []);
 
 	return (
 		<div className="container">
@@ -33,7 +54,7 @@ const SingleComponent = (route) => {
 				showSwitch={route.showSwitch}
 				handlePatchIsActive={openConfirmationModal}
 				showHistory={route.showHistory}
-				currentStatus={state.details.isActive ?? false}
+				currentStatus={state.isActive}
 			/>
 			{
 				<route.component

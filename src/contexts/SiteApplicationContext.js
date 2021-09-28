@@ -4,6 +4,7 @@ const initialState = {
 	showAdd: false,
 	openConfirmationModal: false,
 	details: {},
+	isActive: false,
 };
 
 function reducer(state, action) {
@@ -24,6 +25,13 @@ function reducer(state, action) {
 			return {
 				...state,
 				openConfirmationModal: action.payload,
+			};
+		}
+
+		case "TOGGLE_ISACTIVE": {
+			return {
+				...state,
+				isActive: action.payload,
 			};
 		}
 		default:
