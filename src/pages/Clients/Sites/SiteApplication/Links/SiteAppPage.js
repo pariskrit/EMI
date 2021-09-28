@@ -7,9 +7,8 @@ import {
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
-	siteAppOperationModesPath,
 	siteAppPath,
-	siteAppPathFeedbackClassifications,
+	siteAppOperationModesPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
@@ -20,6 +19,7 @@ import {
 	siteAppLubricantsPath,
 	siteAppDefectTypesPath,
 	siteAppFeedbackPrioritiesPath,
+	siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -31,6 +31,7 @@ import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
+import DefectStatuses from "../DefectStatuses";
 
 const routes = [
 	{
@@ -214,6 +215,15 @@ const routes = [
 		api: differentAPIs.FeedbackPrioritiesAPIs,
 		showDefault: true,
 		pathToPatch: "defaultFeedbackPriorityID",
+	},
+	{
+		id: 53,
+		name: "Defect Definitions",
+		path: siteAppDefectStatusPath,
+		component: DefectStatuses,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
 	},
 ];
 

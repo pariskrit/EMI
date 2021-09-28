@@ -227,9 +227,19 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 				data={mainData}
 				columns={["name", "totalSub"]}
 				headers={["Name", "Number of subcategories"]}
-				onEdit={handleEditDialogOpen}
-				onDelete={handleDeleteDialogOpen}
 				isLoading={loading}
+				menuData={[
+					{
+						name: "Edit",
+						handler: handleEditDialogOpen,
+						isDelete: false,
+					},
+					{
+						name: "Delete",
+						handler: handleDeleteDialogOpen,
+						isDelete: true,
+					},
+				]}
 			/>
 		</div>
 	);

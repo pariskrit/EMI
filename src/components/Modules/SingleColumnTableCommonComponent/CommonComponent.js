@@ -160,8 +160,6 @@ const CommonContent = ({
 		// eslint-disable-next-line
 	}, [dataChanged]);
 
-	const mainData = searchQuery.length === 0 ? data : searchedData;
-
 	//ShowDefault
 
 	const handleDefaultDialogOpen = (id, name) => {
@@ -322,34 +320,49 @@ const CommonContent = ({
 						/>
 					</div>
 
-					{!showDefault ? (
-						<CommonApplicationTable
-							data={mainData}
-							columns={["name"]}
-							headers={["Name"]}
-							setData={setData}
-							onEdit={handleEditDialogOpen}
-							onDelete={(id) => handleDeleteDialogOpen(id)}
-							setSearch={setSearchData}
-							searchQuery={searchQuery}
-							isLoading={loading}
-						/>
-					) : (
-						<CommonApplicationTable
-							data={mainData}
-							columns={["name"]}
-							headers={["Name"]}
-							setData={setData}
-							onEdit={handleEditDialogOpen}
-							onDelete={(id) => handleDeleteDialogOpen(id)}
-							setSearch={setSearchData}
-							searchQuery={searchQuery}
-							isLoading={loading}
-							openDefaultDialog={handleDefaultDialogOpen}
-							showDefault={showDefault}
-							defaultID={defaultData}
-						/>
-					)}
+					<CommonApplicationTable
+						data={data}
+						columns={["name"]}
+						headers={["Name"]}
+						setData={setData}
+						setSearch={setSearchData}
+						searchQuery={searchQuery}
+						searchedData={searchedData}
+						isLoading={loading}
+						menuData={
+							showDefault
+								? [
+										{
+											name: "Edit",
+											handler: handleEditDialogOpen,
+											isDelete: false,
+										},
+										{
+											name: "Delete",
+											handler: handleDeleteDialogOpen,
+											isDelete: true,
+										},
+										{
+											name: "Make Default Status",
+											handler: handleDefaultDialogOpen,
+											isDelete: false,
+										},
+								  ]
+								: [
+										{
+											name: "Edit",
+											handler: handleEditDialogOpen,
+											isDelete: false,
+										},
+										{
+											name: "Delete",
+											handler: handleDeleteDialogOpen,
+											isDelete: true,
+										},
+								  ]
+						}
+						defaultID={defaultData}
+					/>
 				</>
 			</CommonBody>
 		</div>

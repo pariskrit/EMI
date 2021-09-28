@@ -28,6 +28,8 @@ export const siteAppLubricantsPath = "/lubricants";
 export const siteAppDefectTypesPath = "/defecttypes";
 export const siteAppFeedbackClassificationsPath = "/feedbackclassifications";
 export const siteAppFeedbackPrioritiesPath = "/feedbackpriorities";
+export const siteAppFeedbackClassificationsPath = "/feedbackclassifications";
+export const siteAppDefectStatusPath = "/defectstatuses";
 
 //Applications
 export const applicationListPath = "/applications";
