@@ -159,6 +159,7 @@ function DefectStatuses({ appId, setError }) {
 				]}
 				setSearch={setSearchData}
 				searchQuery={searchQuery}
+				searchedData={searchedData}
 				isLoading={isLoading}
 				menuData={[
 					{

@@ -318,7 +318,7 @@ const AddDialog = ({
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
-						Add New
+						{isEdit ? "Save" : "Add New"}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
