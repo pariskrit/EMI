@@ -3,7 +3,7 @@
  */
 const FeedbackStatusTypes = {
 	O: "Outstanding",
-	C: "Complete"
+	C: "Complete",
 };
 
 export default FeedbackStatusTypes;

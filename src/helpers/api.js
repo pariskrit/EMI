@@ -2,7 +2,10 @@ import axios from "axios";
 
 // Setting base URL for backend requests
 const instance = axios.create({
-	baseURL: process.env.REACT_APP_API_ENDPOINT !== undefined ? process.env.REACT_APP_API_ENDPOINT : "https://localhost:44310",
+	baseURL:
+		process.env.REACT_APP_API_ENDPOINT !== undefined
+			? process.env.REACT_APP_API_ENDPOINT
+			: "https://localhost:44310",
 	withCredentials: true,
 	credentials: "include",
 });
@@ -33,7 +36,11 @@ instance.interceptors.response.use(
 			// Attempting to refresh token
 			try {
 				let refreshToken = await fetch(
-					`${process.env.REACT_APP_API_ENDPOINT !== undefined ? process.env.REACT_APP_API_ENDPOINT : "https://localhost:44310"}/api/Token/RefreshToken`,
+					`${
+						process.env.REACT_APP_API_ENDPOINT !== undefined
+							? process.env.REACT_APP_API_ENDPOINT
+							: "https://localhost:44310"
+					}/api/Token/RefreshToken`,
 					{
 						withCredentials: true,
 						credentials: "include",

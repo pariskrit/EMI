@@ -21,6 +21,7 @@ import {
 	siteAppTaskActionsPath,
 	siteAppTaskSystemsPath,
 	siteAppUserRolesPath,
+	siteAppFeedbackStatuses,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
@@ -33,6 +34,8 @@ import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import UserRoles from "../UserRoles";
 import SingleComponent from "./SingleComponent";
+import DefectStatuses from "../DefectStatuses";
+import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 
 const routes = [
 	{
@@ -154,6 +157,15 @@ const routes = [
 		api: differentAPIs.FeedbackClassificationsAPIs,
 		showDefault: true,
 		pathToPatch: "defaultFeedbackClassificationID",
+	},
+	{
+		id: 57,
+		name: "Feedback Definitions",
+		path: siteAppFeedbackStatuses,
+		component: SiteAppFeedbackStatuses,
+		showAdd: true,
+		showSwitch: false,
+		header: "Feedback Statuses",
 	},
 	{
 		id: 47,
