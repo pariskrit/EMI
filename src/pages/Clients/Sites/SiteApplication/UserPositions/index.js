@@ -71,7 +71,11 @@ function DefectStatuses({ appId, setError }) {
 		setAllData(newList);
 	};
 
-	const closeAddModal = () => dispatch({ type: "ADD_TOGGLE" });
+	const closeAddModal = () => {
+		dispatch({ type: "ADD_TOGGLE" });
+		setDataToEdit({});
+		setIsEdit(false);
+	};
 
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
