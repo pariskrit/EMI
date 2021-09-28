@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
-import API from "helpers/api";
-import { BASE_API_PATH } from "helpers/constants";
 import { handleSort } from "helpers/utils";
 import AddDialog from "./AddDialog/AddDialog";
 import EditDialog from "./EditDialog/EditDialog";
@@ -12,6 +10,7 @@ import { showError } from "redux/common/actions";
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import { useSearch } from "hooks/useSearch";
+import { getPauses } from "services/clients/sites/siteApplications/pauses";
 
 const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	const [modal, setModal] = useState({ edit: false, delete: false });
@@ -130,8 +129,8 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	const handleGetData = useCallback(async () => {
 		setLoading(true);
 		try {
-			let result = await API.get(`${BASE_API_PATH}Pauses?siteAppId=${appId}`);
-			if (result.status === 200) {
+			let result = await getPauses(appId);
+			if (result.status) {
 				const mainData = result.data.map((x) => ({
 					...x,
 					totalSub: x.pauseSubcategories.length,
