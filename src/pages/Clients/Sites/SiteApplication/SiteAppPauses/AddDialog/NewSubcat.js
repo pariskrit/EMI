@@ -7,7 +7,7 @@ const AS = SubcatStyle();
 // Default state schemas
 //const defaultErrorSchema = { name: null };
 
-const NewSubcat = ({ subcats, handleAddSubcat, setIsAddNew }) => {
+const NewSubcat = ({ handleAddSubcat, setIsAddNew }) => {
 	// Init state
 	const [subcatName, setSubcatName] = useState("");
 	//const [errors, setErrors] = useState(defaultErrorSchema);

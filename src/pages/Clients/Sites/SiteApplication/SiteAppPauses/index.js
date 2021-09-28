@@ -18,6 +18,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	const [deleteId, setDeleteId] = useState(null);
 	const [editData, setEditData] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [is404, setIs404] = useState(false);
 	const {
 		allData,
 		setAllData,
@@ -139,6 +140,8 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 				handleSort(mainData, setAllData, "name", "asc");
 				setLoading(false);
 				return result;
+			} else {
+				setIs404(true);
 			}
 		} catch (err) {}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,70 +182,77 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return (
-		<div>
-			<AddDialog
-				open={state.showAdd}
-				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
-				applicationID={appId}
-				handleAddData={handleAddData}
-				getError={getError}
-			/>
-			<DeleteDialog
-				entityName="Pause"
-				open={modal.delete}
-				closeHandler={handleDeleteDialogClose}
-				deleteID={deleteId}
-				deleteEndpoint="/api/Pauses"
-				handleRemoveData={handleRemoveData}
-			/>
-
-			<EditDialog
-				open={modal.edit}
-				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
-				editData={editData}
-				handleRemoveSubcat={handleRemoveSubcat}
-				handleAddSubcat={handleAddSubcat}
-				handleEditData={handleEditData}
-				handleUpdateSubcatStateName={handleUpdateSubcat}
-				getError={getError}
-			/>
-			<div className="detailsContainer">
-				<DetailsPanel
-					header={"Pause Reasons"}
-					dataCount={allData.length}
-					description="Create and manage Pause Reasons"
+	if (is404 === false) {
+		return (
+			<div>
+				<AddDialog
+					open={state.showAdd}
+					closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
+					applicationID={appId}
+					handleAddData={handleAddData}
+					getError={getError}
 				/>
-				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
-				<MobileSearchField
+				<DeleteDialog
+					entityName="Pause"
+					open={modal.delete}
+					closeHandler={handleDeleteDialogClose}
+					deleteID={deleteId}
+					deleteEndpoint="/api/Pauses"
+					handleRemoveData={handleRemoveData}
+				/>
+
+				<EditDialog
+					open={modal.edit}
+					closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
+					editData={editData}
+					handleRemoveSubcat={handleRemoveSubcat}
+					handleAddSubcat={handleAddSubcat}
+					handleEditData={handleEditData}
+					handleUpdateSubcatStateName={handleUpdateSubcat}
+					getError={getError}
+				/>
+				<div className="detailsContainer">
+					<DetailsPanel
+						header={"Pause Reasons"}
+						dataCount={allData.length}
+						description="Create and manage Pause Reasons"
+					/>
+					<SearchField
+						searchQuery={searchQuery}
+						setSearchQuery={handleSearch}
+					/>
+					<MobileSearchField
+						searchQuery={searchQuery}
+						setSearchQuery={handleSearch}
+					/>
+				</div>
+				<CommonApplicationTable
+					setData={setAllData}
+					setSearch={setSearchData}
+					searchedData={searchedData}
 					searchQuery={searchQuery}
-					setSearchQuery={handleSearch}
+					data={allData}
+					columns={["name", "totalSub"]}
+					headers={["Name", "Number of subcategories"]}
+					isLoading={loading}
+					menuData={[
+						{
+							name: "Edit",
+							handler: handleEditDialogOpen,
+							isDelete: false,
+						},
+						{
+							name: "Delete",
+							handler: handleDeleteDialogOpen,
+							isDelete: true,
+						},
+					]}
 				/>
 			</div>
-			<CommonApplicationTable
-				setData={setAllData}
-				setSearch={setSearchData}
-				searchedData={searchedData}
-				searchQuery={searchQuery}
-				data={allData}
-				columns={["name", "totalSub"]}
-				headers={["Name", "Number of subcategories"]}
-				isLoading={loading}
-				menuData={[
-					{
-						name: "Edit",
-						handler: handleEditDialogOpen,
-						isDelete: false,
-					},
-					{
-						name: "Delete",
-						handler: handleDeleteDialogOpen,
-						isDelete: true,
-					},
-				]}
-			/>
-		</div>
-	);
+		);
+	} else {
+		return <p>404: Application id {appId} does not exist.</p>;
+	}
 };
 
 const mapDispatchToProps = (dispatch) => ({
