@@ -8,31 +8,37 @@ import {
 	siteAppDetailPath,
 	siteAppFeedbackClassificationsPath,
 	siteAppFeedbackPrioritiesPath,
+	siteAppFeedbackStatuses,
 	siteAppLubricantsPath,
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
-	siteAppOperationModesPath,
 	siteAppPath,
+	siteAppOperationModesPath,
 	siteAppPausePath,
+	siteAppPositionsPath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
 	siteAppTaskActionsPath,
 	siteAppTaskSystemsPath,
 	siteAppUserRolesPath,
+	siteAppDefectRiskRatingsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
-import DefectStatuses from "../DefectStatuses";
 import OperatingModes from "../OperatingModes";
+import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
-import UserRoles from "../UserRoles";
 import SingleComponent from "./SingleComponent";
+import UserRoles from "../UserRoles";
+import DefectStatuses from "../DefectStatuses";
+import DefectRiskRatings from "../DefectRiskRatings";
+import UserPositions from "../UserPositions";
 
 const routes = [
 	{
@@ -156,6 +162,15 @@ const routes = [
 		pathToPatch: "defaultFeedbackClassificationID",
 	},
 	{
+		id: 57,
+		name: "Feedback Definitions",
+		path: siteAppFeedbackStatuses,
+		component: SiteAppFeedbackStatuses,
+		showAdd: true,
+		showSwitch: false,
+		header: "Feedback Statuses",
+	},
+	{
 		id: 47,
 		name: "Task Definitions",
 		path: siteAppTaskActionsPath,
@@ -232,7 +247,25 @@ const routes = [
 		path: siteAppDefectStatusPath,
 		component: DefectStatuses,
 		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+	},
+	{
+		id: 52,
+		name: "Defect Definitions",
+		path: siteAppDefectRiskRatingsPath,
+		component: DefectRiskRatings,
 		showHistory: true,
+		showSwitch: false,
+		showAdd: true,
+	},
+	{
+		id: 109,
+		name: "User Definitions",
+		path: siteAppPositionsPath,
+		component: UserPositions,
+		showAdd: true,
+		showHistory: false,
 		showSwitch: false,
 	},
 ];

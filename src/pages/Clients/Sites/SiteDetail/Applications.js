@@ -119,6 +119,7 @@ const Applications = ({
 					showDeleteIcon={false}
 					showQuantity={false}
 					onChangeApp={onOpenChangeConfirmDialog}
+					redirect
 				/>
 			</AccordionBox>
 		</>

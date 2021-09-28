@@ -178,9 +178,19 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 						searchQuery={searchQuery}
 						columns={["name", "canRegisterDefects"]}
 						headers={["Name", "Can Raise Defects"]}
-						onEdit={handleEditDialogOpen}
-						onDelete={handleDeleteDialogOpen}
 						isLoading={loading}
+						menuData={[
+							{
+								name: "Edit",
+								handler: handleEditDialogOpen,
+								isDelete: false,
+							},
+							{
+								name: "Delete",
+								handler: handleDeleteDialogOpen,
+								isDelete: true,
+							},
+						]}
 					/>
 				</>
 			</CommonBody>

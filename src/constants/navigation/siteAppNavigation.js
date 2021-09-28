@@ -16,8 +16,10 @@ import {
 	siteAppDefectTypesPath,
 	siteAppFeedbackPrioritiesPath,
 	siteAppUserRolesPath,
+	siteAppDefectRiskRatingsPath,
 	siteAppDefectStatusPath,
 	siteAppDetailPath,
+	siteAppPositionsPath,
 } from "helpers/routePaths";
 
 /**
@@ -105,7 +107,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Positions",
-					link: links + "positions",
+					link: links + siteAppPositionsPath,
 				},
 				{
 					title: "Roles",
@@ -118,7 +120,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Risk Ratings",
-					link: links + "defectriskratings",
+					link: links + siteAppDefectRiskRatingsPath,
 				},
 				{
 					title: "Statuses",
@@ -143,7 +145,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Statuses",
-					link: links + "feedbackstatuses",
+					link: links + "/feedbackstatuses",
 				},
 			],
 		},

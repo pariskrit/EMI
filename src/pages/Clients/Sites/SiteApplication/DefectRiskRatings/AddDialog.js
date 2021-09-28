@@ -1,103 +1,102 @@
+import * as yup from "yup";
 import React, { useState } from "react";
-import API from "helpers/api";
-import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import * as yup from "yup";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import FeedbackStatusTypes from "helpers/feedbackStatusTypes";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
+import { addDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
 
-// Init styled components
 const ADD = AddDialogStyle();
 
-// Yup validation schema
 const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	type: yup
-		.string("This field must be a string")
-		.required("This field is required"),
+	action: yup.string("This field must be a string"),
 });
 
-// Default state schemas
-const defaultErrorSchema = { name: null, type: null };
-const defaultStateSchema = { name: "", type: "O" };
+const defaultErrorSchema = { name: null, action: null };
+const defaultStateSchema = { name: "", action: "" };
 
-const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
-	// Init state
+const AddDialog = ({
+	open,
+	closeHandler,
+	applicationID,
+	handleAddData,
+	getError,
+}) => {
+	//Init State
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
-	// Handlers
 	const closeOverride = () => {
-		// Clearing input state and errors
 		setInput(defaultStateSchema);
 		setErrors(defaultErrorSchema);
 
 		closeHandler();
 	};
+
 	const handleAddClick = async () => {
-		// Adding progress indicator
 		setIsUpdating(true);
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 
-			console.log(localChecker);
-
-			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
-				// Creating new data
 				const newData = await handleCreateData();
 
 				if (newData.success) {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
+					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
 
-				setErrors({ ...errors, ...newErrors });
+				setErrors({ ...errors, newErrors });
 				setIsUpdating(false);
 			}
 		} catch (err) {
-			// TODO: handle non validation errors here
 			console.log(err);
 
 			setIsUpdating(false);
 			closeOverride();
 		}
 	};
+
 	const handleCreateData = async () => {
-		// Attempting to create
 		try {
-			// Submitting to backend
-			const result = await API.post("/api/ApplicationFeedbackStatuses", {
-				applicationId: applicationID,
+			const result = await addDefectRiskRatings({
+				siteAppId: applicationID,
 				name: input.name,
-				type: input.type,
+				action: input.action,
 			});
 
-			// Handling success
-			if (result.status === 201) {
-				// Adding new type to state
+			//Hadling success
+			if (result.status) {
 				handleAddData({
 					id: result.data,
-					applicationID: applicationID,
+					siteAppId: applicationID,
 					name: input.name,
-					type: input.type,
+					action: input.action,
 				});
-
 				return { success: true };
 			} else {
-				throw new Error(result);
+				if (result.data.detail) {
+					getError(result.data.detail);
+					return {
+						success: false,
+						errors: {
+							name: null,
+						},
+					};
+				} else {
+					return { success: false, errors: { ...result.data.errors } };
+				}
 			}
 		} catch (err) {
 			if (err.response.data.errors !== undefined) {
@@ -132,7 +131,7 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New Feedback Status</ADD.HeaderText>}
+						{<ADD.HeaderText>Add New Defect Risk Rating</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeHandler} variant="contained">
@@ -165,26 +164,17 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 							</ADD.LeftInputContainer>
 
 							<ADD.RightInputContainer>
-								<ADD.InputLabel>
-									Type<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-								<TextField
-									error={errors.type === null ? false : true}
-									helperText={errors.type === null ? null : errors.type}
-									fullWidth={true}
-									select
-									value={input.type}
-									onChange={(e) => {
-										setInput({ ...input, type: e.target.value });
-									}}
+								<ADD.NameLabel>Action</ADD.NameLabel>
+								<ADD.NameInput
+									error={errors.action === null ? false : true}
+									helperText={errors.action === null ? null : errors.action}
 									variant="outlined"
-								>
-									{Object.keys(FeedbackStatusTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{FeedbackStatusTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
+									value={input.action}
+									onKeyDown={handleEnterPress}
+									onChange={(e) => {
+										setInput({ ...input, action: e.target.value });
+									}}
+								/>
 							</ADD.RightInputContainer>
 						</ADD.InputContainer>
 					</div>

@@ -9,19 +9,30 @@ import {
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 
-const Row = ({ row, classes, onDeleteApp, onChangeApp, showDeleteIcon }) => {
+const Row = ({
+	row,
+	classes,
+	onDeleteApp,
+	onChangeApp,
+	showDeleteIcon,
+	redirect,
+}) => {
 	const { clientId, id } = useParams();
 
 	return (
 		<TableRow>
 			<TableCell>
-				<Link
-					to={`${clientsPath}/${clientId}/sites/${id}${applicationListPath}/${
-						row.id + siteAppDetailPath
-					}`}
-				>
+				{redirect ? (
+					<Link
+						to={`${clientsPath}/${clientId}/sites/${id}${applicationListPath}/${
+							row.id + siteAppDetailPath
+						}`}
+					>
+						<span className={classes.appName}>{row.name}</span>
+					</Link>
+				) : (
 					<span className={classes.appName}>{row.name}</span>
-				</Link>
+				)}
 			</TableCell>
 			{showDeleteIcon && <TableCell>{row.totalSites}</TableCell>}
 			<TableCell
