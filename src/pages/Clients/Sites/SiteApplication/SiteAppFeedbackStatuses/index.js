@@ -40,6 +40,7 @@ const SiteAppFeedbackStatuses = ({
 	const [deleteId, setDeleteId] = useState(false);
 	const [editData, setEditData] = useState({});
 	const [defaultId, setDefaultId] = useState(null);
+	const [is404, setIs404] = useState(false);
 
 	const handleGetData = useCallback(async () => {
 		setLoading(true);
@@ -62,6 +63,7 @@ const SiteAppFeedbackStatuses = ({
 
 				return true;
 			} else {
+				setIs404(true);
 				// If error, throwing to catch
 				throw new Error(result);
 			}
@@ -162,77 +164,84 @@ const SiteAppFeedbackStatuses = ({
 		setDeleteId(null);
 	};
 
-	return (
-		<div>
-			<DefaultDialog
-				open={model.default}
-				closeHandler={() => setModel((th) => ({ ...th, default: false }))}
-				data={confirmDefault}
-				entity="Feedback Status"
-				handleDefaultUpdate={handleDefaultUpdate}
-			/>
-			<AddEditDialog
-				open={state.showAdd}
-				editMode={model.edit}
-				closeHandler={handleAddEditDialogClose}
-				data={editData}
-				handleAddData={handleAddData}
-				handleEditData={handleEditData}
-				applicationID={appId}
-				getError={getError}
-			/>
-			<DeleteDialog
-				entityName="Feedback Statuses"
-				open={model.delete}
-				closeHandler={handleDeleteDialogClose}
-				deleteEndpoint={`${BASE_API_PATH}feedbackstatuses`}
-				deleteID={deleteId}
-				handleRemoveData={handleRemoveData}
-			/>
-			<div className="detailsContainer">
-				<DetailsPanel
-					header={header}
-					dataCount={allData.length}
-					description="Create and manage Model Statuses"
+	if (is404 === false) {
+		return (
+			<div>
+				<DefaultDialog
+					open={model.default}
+					closeHandler={() => setModel((th) => ({ ...th, default: false }))}
+					data={confirmDefault}
+					entity="Feedback Status"
+					handleDefaultUpdate={handleDefaultUpdate}
 				/>
+				<AddEditDialog
+					open={state.showAdd}
+					editMode={model.edit}
+					closeHandler={handleAddEditDialogClose}
+					data={editData}
+					handleAddData={handleAddData}
+					handleEditData={handleEditData}
+					applicationID={appId}
+					getError={getError}
+				/>
+				<DeleteDialog
+					entityName="Feedback Statuses"
+					open={model.delete}
+					closeHandler={handleDeleteDialogClose}
+					deleteEndpoint={`${BASE_API_PATH}feedbackstatuses`}
+					deleteID={deleteId}
+					handleRemoveData={handleRemoveData}
+				/>
+				<div className="detailsContainer">
+					<DetailsPanel
+						header={header}
+						dataCount={allData.length}
+						description="Create and manage Model Statuses"
+					/>
 
-				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
+					<SearchField
+						searchQuery={searchQuery}
+						setSearchQuery={handleSearch}
+					/>
 
-				<MobileSearchField
+					<MobileSearchField
+						searchQuery={searchQuery}
+						setSearchQuery={handleSearch}
+					/>
+				</div>
+				<CommonApplicationTable
+					defaultID={defaultId}
+					data={allData}
+					columns={["name", "statusType"]}
+					headers={["Name", "Type"]}
+					setData={setAllData}
+					setSearch={setSearchData}
+					searchedData={searchedData}
 					searchQuery={searchQuery}
-					setSearchQuery={handleSearch}
+					isLoading={loading}
+					menuData={[
+						{
+							name: "Edit",
+							handler: handleEditDialogOpen,
+							isDelete: false,
+						},
+						{
+							name: "Delete",
+							handler: handleDeleteDialogOpen,
+							isDelete: true,
+						},
+						{
+							name: "Make Default Status",
+							handler: handleDefaultDialogOpen,
+							isDelete: false,
+						},
+					]}
 				/>
 			</div>
-			<CommonApplicationTable
-				defaultID={defaultId}
-				data={allData}
-				columns={["name", "statusType"]}
-				headers={["Name", "Type"]}
-				setData={setAllData}
-				setSearch={setSearchData}
-				searchedData={searchedData}
-				searchQuery={searchQuery}
-				isLoading={loading}
-				menuData={[
-					{
-						name: "Edit",
-						handler: handleEditDialogOpen,
-						isDelete: false,
-					},
-					{
-						name: "Delete",
-						handler: handleDeleteDialogOpen,
-						isDelete: true,
-					},
-					{
-						name: "Make Default Status",
-						handler: handleDefaultDialogOpen,
-						isDelete: false,
-					},
-				]}
-			/>
-		</div>
-	);
+		);
+	} else {
+		return <p>404: Application id {appId} does not exist.</p>;
+	}
 };
 
 const mapDispatchToProps = (dispatch) => ({
