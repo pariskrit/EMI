@@ -8,7 +8,7 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 // Init styled components
 const AC = ContentStyle();
 
-function MobileSearchField({ searchQuery, setSearchQuery }) {
+function MobileSearchField({ searchQuery, setSearchQuery, header }) {
 	return (
 		<div className="mobileSearchCustomCaptions">
 			<AC.SearchContainerMobile>
@@ -21,7 +21,7 @@ function MobileSearchField({ searchQuery, setSearchQuery }) {
 							<AC.SearchInput
 								value={searchQuery}
 								onChange={setSearchQuery}
-								label="Search custom captions"
+								label={header ? `Search ${header}` : "Search"}
 							/>
 						</Grid>
 					</Grid>

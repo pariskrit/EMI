@@ -3,35 +3,41 @@ import SiteApplicationContext from "contexts/SiteApplicationContext";
 import differentAPIs from "helpers/differentAPIs";
 import {
 	siteAppCustomCaptionsPath,
+	siteAppDefectStatusPath,
+	siteAppDefectTypesPath,
 	siteAppDetailPath,
+	siteAppFeedbackClassificationsPath,
+	siteAppFeedbackPrioritiesPath,
+	siteAppFeedbackStatuses,
+	siteAppLubricantsPath,
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
 	siteAppPath,
 	siteAppOperationModesPath,
 	siteAppPausePath,
+	siteAppPositionsPath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
-	siteAppFeedbackClassificationsPath,
-	siteAppTaskActions,
-	siteAppTaskSystems,
-	siteAppLubricants,
-	siteAppDefectStatusPath,
-	siteAppPositionsPath,
-	siteAppDefectTypes,
+	siteAppTaskActionsPath,
+	siteAppTaskSystemsPath,
+	siteAppUserRolesPath,
+	siteAppDefectRiskRatingsPath,
 } from "helpers/routePaths";
-
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import OperatingModes from "../OperatingModes";
+import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
+import UserRoles from "../UserRoles";
 import DefectStatuses from "../DefectStatuses";
+import DefectRiskRatings from "../DefectRiskRatings";
 import UserPositions from "../UserPositions";
 
 const routes = [
@@ -72,6 +78,7 @@ const routes = [
 		showHistory: true,
 		showSwitch: false,
 		header: "Stop Reasons",
+		subHeader: "Stop",
 		api: differentAPIs.StopReasonsAPIs,
 	},
 	{
@@ -83,6 +90,7 @@ const routes = [
 		showHistory: true,
 		showSwitch: false,
 		header: "Skipped Tasks",
+		subHeader: "Skipped Task",
 		api: differentAPIs.SkippedTasksAPIs,
 	},
 	{
@@ -94,6 +102,7 @@ const routes = [
 		showHistory: true,
 		showSwitch: false,
 		header: "Missing Part or Tool Reasons",
+		subHeader: "Missing Part or Tool Reason",
 		api: differentAPIs.MissingPartAPIs,
 	},
 	{
@@ -105,6 +114,7 @@ const routes = [
 		showHistory: true,
 		showSwitch: false,
 		header: "Status Changes",
+		subHeader: "Status Change",
 		api: differentAPIs.StatusChangesAPIs,
 	},
 	{
@@ -125,6 +135,7 @@ const routes = [
 		showHistory: true,
 		showSwitch: false,
 		header: "Model Types",
+		subHeader: "Model Type",
 		api: differentAPIs.ModelTypesAPIs,
 	},
 	{
@@ -145,53 +156,90 @@ const routes = [
 		showHistory: true,
 		showSwitch: false,
 		header: "Feedback Classifications",
+		subHeader: "Feedback Classification",
 		api: differentAPIs.FeedbackClassificationsAPIs,
 		showDefault: true,
 		pathToPatch: "defaultFeedbackClassificationID",
 	},
 	{
+		id: 57,
+		name: "Feedback Definitions",
+		path: siteAppFeedbackStatuses,
+		component: SiteAppFeedbackStatuses,
+		showAdd: true,
+		showSwitch: false,
+		header: "Feedback Statuses",
+	},
+	{
 		id: 47,
 		name: "Task Definitions",
-		path: siteAppTaskActions,
+		path: siteAppTaskActionsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
-		header: "Action",
+		header: "Actions",
+		subHeader: "Action",
 		api: differentAPIs.ActionsAPIs,
 	},
 	{
 		id: 63,
 		name: "Task Definitions",
-		path: siteAppTaskSystems,
+		path: siteAppTaskSystemsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
-		header: "Action",
+		header: "Systems",
+		subHeader: "System",
 		api: differentAPIs.SystemsAPIs,
 	},
 	{
 		id: 64,
 		name: "Task Definitions",
-		path: siteAppLubricants,
+		path: siteAppLubricantsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
 		header: "Lubricants",
+		subHeader: "Lubricant",
 		api: differentAPIs.LubricantsAPIs,
 	},
 	{
 		id: 54,
 		name: "Defect Definitions",
-		path: siteAppDefectTypes,
+		path: siteAppDefectTypesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
 		header: "Defect Types",
+		subHeader: "Defect Type",
 		api: differentAPIs.DefectTypesAPIs,
+	},
+	{
+		id: 56,
+		name: "Feedback Definitions",
+		path: siteAppFeedbackPrioritiesPath,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Feedback Priorities",
+		subHeader: "Feedback Priority",
+		api: differentAPIs.FeedbackPrioritiesAPIs,
+		showDefault: true,
+		pathToPatch: "defaultFeedbackPriorityID",
+	},
+	{
+		id: 60,
+		name: "User Definitions",
+		path: siteAppUserRolesPath,
+		component: UserRoles,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
 	},
 	{
 		id: 53,
@@ -199,8 +247,17 @@ const routes = [
 		path: siteAppDefectStatusPath,
 		component: DefectStatuses,
 		showAdd: true,
+		showHistory: false,
+		showSwitch: false,
+	},
+	{
+		id: 52,
+		name: "Defect Definitions",
+		path: siteAppDefectRiskRatingsPath,
+		component: DefectRiskRatings,
 		showHistory: true,
 		showSwitch: false,
+		showAdd: true,
 	},
 	{
 		id: 109,

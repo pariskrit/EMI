@@ -18,7 +18,7 @@ const SingleComponent = (route) => {
 		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: true });
 
 	return (
-		<>
+		<div className="container">
 			<CommonHeaderWrapper
 				crumbs={["Clients", "Site", "Application"]}
 				navigation={navigation}
@@ -41,12 +41,13 @@ const SingleComponent = (route) => {
 					dispatch={dispatch}
 					appId={appId}
 					header={route.header}
+					subHeader={route.subHeader}
 					apis={route.api}
 					showDefault={route.showDefault}
 					pathToPatch={route.pathToPatch}
 				/>
 			}
-		</>
+		</div>
 	);
 };
 

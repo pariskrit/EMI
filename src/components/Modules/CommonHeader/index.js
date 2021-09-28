@@ -211,7 +211,7 @@ const CommonHeader = ({
 
 	return (
 		<ThemeProvider theme={theme}>
-			<div className="container">
+			<div>
 				<div className={"topContainerCustomCaptions"}>
 					<NavDetails
 						status={status}

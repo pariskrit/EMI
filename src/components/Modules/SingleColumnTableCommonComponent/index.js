@@ -9,6 +9,7 @@ function SingleColumnTableCommonComponent({
 	dispatch,
 	getError,
 	header,
+	subHeader,
 	apis,
 	showDefault,
 	pathToPatch,
@@ -19,14 +20,22 @@ function SingleColumnTableCommonComponent({
 	// Init state
 	const [is404, setIs404] = useState(false);
 
-	// Rendering pauses content with Navbar. Otherwise, 404 error
+	// Rendering content. Otherwise, 404 error
 	if (is404 === false) {
 		return (
 			<CommonComponent
 				id={appId}
 				setIs404={setIs404}
 				getError={getError}
-				{...{ header, apis, state, dispatch, showDefault, pathToPatch }}
+				{...{
+					header,
+					subHeader,
+					apis,
+					state,
+					dispatch,
+					showDefault,
+					pathToPatch,
+				}}
 			/>
 		);
 	} else {

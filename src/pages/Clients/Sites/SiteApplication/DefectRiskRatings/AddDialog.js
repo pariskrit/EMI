@@ -5,20 +5,19 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { addDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
 
-// Init styled components
 const ADD = AddDialogStyle();
 
-// Yup validation schema
 const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
+	action: yup.string("This field must be a string"),
 });
 
-// Default state schemas
-const defaultErrorSchema = { name: null };
-const defaultStateSchema = { name: "" };
+const defaultErrorSchema = { name: null, action: null };
+const defaultStateSchema = { name: "", action: "" };
 
 const AddDialog = ({
 	open,
@@ -26,33 +25,26 @@ const AddDialog = ({
 	applicationID,
 	handleAddData,
 	getError,
-	subHeader,
-	postAPI,
 }) => {
-	// Init state
+	//Init State
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
-	// Handlers
 	const closeOverride = () => {
-		// Clearing input state and errors
 		setInput(defaultStateSchema);
 		setErrors(defaultErrorSchema);
 
 		closeHandler();
 	};
+
 	const handleAddClick = async () => {
-		// Adding progress indicator
 		setIsUpdating(true);
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 
-			console.log(localChecker);
-			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
-				// Creating new data
 				const newData = await handleCreateData();
 
 				if (newData.success) {
@@ -65,38 +57,37 @@ const AddDialog = ({
 			} else {
 				const newErrors = generateErrorState(localChecker);
 
-				setErrors({ ...errors, ...newErrors });
+				setErrors({ ...errors, newErrors });
 				setIsUpdating(false);
 			}
 		} catch (err) {
-			// TODO: handle non validation errors here
 			console.log(err);
 
 			setIsUpdating(false);
 			closeOverride();
 		}
 	};
+
 	const handleCreateData = async () => {
-		// Attempting to create data
 		try {
-			const newData = await postAPI({
-				siteAppID: applicationID,
+			const result = await addDefectRiskRatings({
+				siteAppId: applicationID,
 				name: input.name,
+				action: input.action,
 			});
 
-			// Handling success
-			if (newData.status) {
-				// Adding data to state
+			//Hadling success
+			if (result.status) {
 				handleAddData({
-					id: newData.data,
-					siteAppID: applicationID,
+					id: result.data,
+					siteAppId: applicationID,
 					name: input.name,
+					action: input.action,
 				});
-
 				return { success: true };
 			} else {
-				if (newData.data.detail) {
-					getError(newData.data.detail);
+				if (result.data.detail) {
+					getError(result.data.detail);
 					return {
 						success: false,
 						errors: {
@@ -104,7 +95,7 @@ const AddDialog = ({
 						},
 					};
 				} else {
-					return { success: false, errors: { ...newData.data.errors } };
+					return { success: false, errors: { ...result.data.errors } };
 				}
 			}
 		} catch (err) {
@@ -132,18 +123,18 @@ const AddDialog = ({
 				fullWidth={true}
 				maxWidth="md"
 				open={open}
-				onClose={closeOverride}
-				aria-labelledby="add-title"
-				aria-describedby="add-description"
+				onClose={closeHandler}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New {subHeader}</ADD.HeaderText>}
+						{<ADD.HeaderText>Add New Defect Risk Rating</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeOverride} variant="contained">
+						<ADD.CancelButton onClick={closeHandler} variant="contained">
 							Cancel
 						</ADD.CancelButton>
 						<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
@@ -155,7 +146,7 @@ const AddDialog = ({
 				<ADD.DialogContent>
 					<div>
 						<ADD.InputContainer>
-							<ADD.NameInputContainer>
+							<ADD.LeftInputContainer>
 								<ADD.NameLabel>
 									Name<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.NameLabel>
@@ -170,7 +161,21 @@ const AddDialog = ({
 										setInput({ ...input, name: e.target.value });
 									}}
 								/>
-							</ADD.NameInputContainer>
+							</ADD.LeftInputContainer>
+
+							<ADD.RightInputContainer>
+								<ADD.NameLabel>Action</ADD.NameLabel>
+								<ADD.NameInput
+									error={errors.action === null ? false : true}
+									helperText={errors.action === null ? null : errors.action}
+									variant="outlined"
+									value={input.action}
+									onKeyDown={handleEnterPress}
+									onChange={(e) => {
+										setInput({ ...input, action: e.target.value });
+									}}
+								/>
+							</ADD.RightInputContainer>
 						</ADD.InputContainer>
 					</div>
 				</ADD.DialogContent>

@@ -10,10 +10,13 @@ import {
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
-	siteAppTaskActions,
-	siteAppTaskSystems,
-	siteAppLubricants,
-	siteAppDefectTypes,
+	siteAppTaskActionsPath,
+	siteAppTaskSystemsPath,
+	siteAppLubricantsPath,
+	siteAppDefectTypesPath,
+	siteAppFeedbackPrioritiesPath,
+	siteAppUserRolesPath,
+	siteAppDefectRiskRatingsPath,
 	siteAppDefectStatusPath,
 	siteAppDetailPath,
 	siteAppPositionsPath,
@@ -83,11 +86,11 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Actions",
-					link: links + siteAppTaskActions,
+					link: links + siteAppTaskActionsPath,
 				},
 				{
 					title: "Systems",
-					link: links + siteAppTaskSystems,
+					link: links + siteAppTaskSystemsPath,
 				},
 				{
 					title: "Operating Modes",
@@ -95,7 +98,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Lubricants",
-					link: links + siteAppLubricants,
+					link: links + siteAppLubricantsPath,
 				},
 			],
 		},
@@ -108,7 +111,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Roles",
-					link: links + "roles",
+					link: links + siteAppUserRolesPath,
 				},
 			],
 		},
@@ -117,7 +120,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Risk Ratings",
-					link: links + "defectriskratings",
+					link: links + siteAppDefectRiskRatingsPath,
 				},
 				{
 					title: "Statuses",
@@ -125,7 +128,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Types",
-					link: links + siteAppDefectTypes,
+					link: links + siteAppDefectTypesPath,
 				},
 			],
 		},
@@ -138,11 +141,11 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Priorities",
-					link: links + "feedbackpriorities",
+					link: links + siteAppFeedbackPrioritiesPath,
 				},
 				{
 					title: "Statuses",
-					link: links + "feedbackstatuses",
+					link: links + "/feedbackstatuses",
 				},
 			],
 		},
