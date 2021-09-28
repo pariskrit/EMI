@@ -11,7 +11,10 @@ import EMICheckbox from "components/Elements/EMICheckbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Typography from "@material-ui/core/Typography";
 import Dropdown from "components/Elements/Dropdown";
-import { addPosition } from "services/clients/sites/siteApplications/userPositions";
+import {
+	addPosition,
+	updatePosition,
+} from "services/clients/sites/siteApplications/userPositions";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -21,7 +24,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	changeSkippedTasks: yup
+	allowChangeSkippedTaskStatus: yup
 		.string("This field must be a string")
 		.required("This field is required"),
 });
@@ -29,12 +32,12 @@ const schema = yup.object({
 // Default state schemas
 const defaultErrorSchema = {
 	name: null,
-	changeSkippedTasks: false,
+	allowChangeSkippedTaskStatus: false,
 };
 
 const defaultStateSchema = {
 	name: "",
-	changeSkippedTasks: false,
+	allowChangeSkippedTaskStatus: false,
 };
 
 const listOfInputs = [
@@ -56,6 +59,8 @@ const AddDialog = ({
 	handleAddData,
 	setError,
 	dataToEdit,
+	handleEditData,
+	isEdit,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -88,7 +93,9 @@ const AddDialog = ({
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				// Creating new data
-				const newData = await handleCreateData();
+				const newData = isEdit
+					? await handleUpdateData()
+					: await handleCreateData();
 
 				if (newData.success) {
 					setIsUpdating(false);
@@ -123,7 +130,7 @@ const AddDialog = ({
 			userAccess: dropDownInput[6].value,
 			analyticsAccess: dropDownInput[7].value,
 			settingsAccess: dropDownInput[8].value,
-			allowChangeSkippedTaskStatus: input.changeSkippedTasks,
+			allowChangeSkippedTaskStatus: input.allowChangeSkippedTaskStatus,
 		});
 
 		// Handling success
@@ -142,7 +149,91 @@ const AddDialog = ({
 				userAccess: dropDownInput[6].label,
 				analyticsAccess: dropDownInput[7].label,
 				settingsAccess: dropDownInput[8].label,
-				allowChangeSkippedTaskStatus: input.changeSkippedTasks,
+				allowChangeSkippedTaskStatus: input.allowChangeSkippedTaskStatus,
+			});
+
+			return { success: true };
+		} else {
+			setError(result.data.detail);
+			return { success: false };
+		}
+	};
+
+	const handleUpdateData = async () => {
+		console.log(input, dropDownInput);
+
+		const result = await updatePosition(dataToEdit.id, [
+			{
+				op: "replace",
+				path: "name",
+				value: input.name,
+			},
+			{
+				op: "replace",
+				path: "modelAccess",
+				value: dropDownInput[0].value,
+			},
+			{
+				op: "replace",
+				path: "noticeboardAccess",
+				value: dropDownInput[4].value,
+			},
+			{
+				op: "replace",
+				path: "feedbackAccess",
+				value: dropDownInput[5].value,
+			},
+			{
+				op: "replace",
+				path: "userAccess",
+				value: dropDownInput[6].value,
+			},
+			{
+				op: "replace",
+				path: "settingsAccess",
+				value: dropDownInput[8].value,
+			},
+			{
+				op: "replace",
+				path: "serviceAccess",
+				value: dropDownInput[1].value,
+			},
+			{
+				op: "replace",
+				path: "defectAccess",
+				value: dropDownInput[2].value,
+			},
+			{
+				op: "replace",
+				path: "defectExportAccess",
+				value: dropDownInput[3].value,
+			},
+			{
+				op: "replace",
+				path: "analyticsAccess",
+				value: dropDownInput[7].value,
+			},
+			{
+				op: "replace",
+				path: "allowChangeSkippedTaskStatus",
+				value: input.allowChangeSkippedTaskStatus,
+			},
+		]);
+		if (result.status) {
+			handleEditData({
+				id: dataToEdit.id,
+				applicationID,
+				name: input.name,
+				modelAccess: dropDownInput[0].label,
+				serviceAccess: dropDownInput[1].label,
+				defectAccess: dropDownInput[2].label,
+				defectExportAccess: dropDownInput[3].label,
+				noticeboardAccess: dropDownInput[4].label,
+				feedbackAccess: dropDownInput[5].label,
+				userAccess: dropDownInput[6].label,
+				analyticsAccess: dropDownInput[7].label,
+				settingsAccess: dropDownInput[8].label,
+				allowChangeSkippedTaskStatus: input.allowChangeSkippedTaskStatus,
 			});
 
 			return { success: true };
@@ -167,22 +258,20 @@ const AddDialog = ({
 
 	useEffect(() => {
 		if (Object.keys(dataToEdit).length > 0 && open) {
-			const getType = (value) =>
-				positionTypes.find((type) => type.value === value).label;
-
 			setInput({
 				name: dataToEdit.name,
 				allowChangeSkippedTaskStatus: dataToEdit.allowChangeSkippedTaskStatus,
 			});
+
 			setDropDownInput([
-				...listOfInputs.map((input) => ({
-					label: getType(dataToEdit[input.name]),
-					value: dataToEdit[input.name],
+				...listOfInputs.map((i) => ({
+					label: dataToEdit[i.name],
+					value: dataToEdit[i.name][0],
 				})),
 			]);
 		}
 	}, [dataToEdit, open]);
-	console.log(dropDownInput);
+
 	return (
 		<Dialog
 			fullWidth={true}
@@ -196,7 +285,7 @@ const AddDialog = ({
 
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					{<ADD.HeaderText>Add Position</ADD.HeaderText>}
+					<ADD.HeaderText>{isEdit ? "Edit" : "Add"} Position</ADD.HeaderText>
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">

@@ -20,4 +20,13 @@ const addPosition = async (payload) => {
 	}
 };
 
-export { getPositions, addPosition };
+const updatePosition = async (id, payload) => {
+	try {
+		let response = await API.patch(`${Apis.positions}/${id}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export { getPositions, addPosition, updatePosition };

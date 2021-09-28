@@ -10,7 +10,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
-import AddDialog from "./AddDialog";
+import AddEditDialog from "./AddEditDialog";
 import { Apis } from "services/api";
 
 function DefectStatuses({ appId, setError }) {
@@ -27,7 +27,7 @@ function DefectStatuses({ appId, setError }) {
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
 	const [defaultId, setDefaultId] = useState(null);
-	const [openEditDialog, setOpenEditDialog] = useState(false);
+	const [isEdit, setIsEdit] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
 	const addData = (newData) => setAllData([...allData, newData]);
@@ -41,6 +41,7 @@ function DefectStatuses({ appId, setError }) {
 		let index = allData.findIndex((el) => el.id === id);
 
 		setDataToEdit(allData[index]);
+		setIsEdit(true);
 		dispatch({ type: "ADD_TOGGLE" });
 	};
 
@@ -95,13 +96,15 @@ function DefectStatuses({ appId, setError }) {
 				deleteEndpoint={Apis.positions}
 				handleRemoveData={handleRemoveData}
 			/>
-			<AddDialog
+			<AddEditDialog
 				open={showAdd}
 				closeHandler={closeAddModal}
 				applicationID={appId}
 				handleAddData={addData}
 				dataToEdit={dataToEdit}
+				handleEditData={handleEditData}
 				setError={setError}
+				isEdit={isEdit}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
