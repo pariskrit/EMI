@@ -1,10 +1,14 @@
-import * as yup from "yup";
 import React, { useState } from "react";
+import API from "helpers/api";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import AddDialogStyle from "styles/application/AddDialogStyle";
+import EMICheckbox from "components/Elements/EMICheckbox";
+import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+
+import { addRoles } from "services/clients/sites/siteApplications/userRoles";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -14,20 +18,21 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
+	defects: yup
+		.boolean("This field must be a boolean (true or false)")
+		.required("This field is required"),
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null };
-const defaultStateSchema = { name: "" };
+const defaultErrorSchema = { name: null, defects: null };
+const defaultStateSchema = { name: "", defects: false };
 
-const AddDialog = ({
+const AddRoleDialog = ({
 	open,
 	closeHandler,
 	applicationID,
 	handleAddData,
 	getError,
-	subHeader,
-	postAPI,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -49,7 +54,6 @@ const AddDialog = ({
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 
-			console.log(localChecker);
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				// Creating new data
@@ -64,7 +68,6 @@ const AddDialog = ({
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
-
 				setErrors({ ...errors, ...newErrors });
 				setIsUpdating(false);
 			}
@@ -77,26 +80,28 @@ const AddDialog = ({
 		}
 	};
 	const handleCreateData = async () => {
-		// Attempting to create data
+		// Attempting to create member
 		try {
-			const newData = await postAPI({
-				siteAppID: applicationID,
+			const result = await addRoles({
+				siteAppId: applicationID,
 				name: input.name,
+				canRegisterDefects: input.defects,
 			});
 
 			// Handling success
-			if (newData.status) {
-				// Adding data to state
+			if (result.status) {
+				// Adding new member to state
 				handleAddData({
-					id: newData.data,
-					siteAppID: applicationID,
+					id: result.data,
+					applicationID: applicationID,
 					name: input.name,
+					canRegisterDefects: input.defects,
 				});
 
 				return { success: true };
 			} else {
-				if (newData.data.detail) {
-					getError(newData.data.detail);
+				if (result.data.detail) {
+					getError(result.data.detail);
 					return {
 						success: false,
 						errors: {
@@ -104,7 +109,7 @@ const AddDialog = ({
 						},
 					};
 				} else {
-					return { success: false, errors: { ...newData.data.errors } };
+					return { success: false, errors: { ...result.data.errors } };
 				}
 			}
 		} catch (err) {
@@ -139,8 +144,8 @@ const AddDialog = ({
 				{isUpdating ? <LinearProgress /> : null}
 
 				<ADD.ActionContainer>
-					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New {subHeader}</ADD.HeaderText>}
+					<DialogTitle id="add-dialog-title">
+						{<ADD.HeaderText>Add New Role</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -171,6 +176,21 @@ const AddDialog = ({
 									}}
 								/>
 							</ADD.NameInputContainer>
+
+							<ADD.CheckboxContainer>
+								<ADD.CheckboxLabel>
+									<EMICheckbox
+										state={input.defects}
+										changeHandler={() => {
+											setInput({
+												...input,
+												defects: !input.defects,
+											});
+										}}
+									/>
+									Can Role register defects?
+								</ADD.CheckboxLabel>
+							</ADD.CheckboxContainer>
 						</ADD.InputContainer>
 					</div>
 				</ADD.DialogContent>
@@ -179,4 +199,4 @@ const AddDialog = ({
 	);
 };
 
-export default AddDialog;
+export default AddRoleDialog;
