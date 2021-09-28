@@ -22,6 +22,7 @@ function DefectStatuses({ appId, setError }) {
 	const {
 		allData,
 		searchQuery,
+		searchedData,
 		handleSearch,
 		setAllData,
 		setSearchData,
@@ -159,6 +160,7 @@ function DefectStatuses({ appId, setError }) {
 				headers={["Name", "Type"]}
 				setSearch={setSearchData}
 				searchQuery={searchQuery}
+				searchedData={searchedData}
 				isLoading={isLoading}
 				defaultID={defaultId}
 				menuData={[

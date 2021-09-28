@@ -59,6 +59,7 @@ const CommonApplicationTable = ({
 	data,
 	setData,
 	setSearch,
+	searchedData,
 	searchQuery,
 	columns,
 	headers,
@@ -78,7 +79,7 @@ const CommonApplicationTable = ({
 
 		// Sorting table
 		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
-		else handleSort(data, setSearch, field, newMethod);
+		else handleSort(searchedData, setSearch, field, newMethod);
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
@@ -122,66 +123,68 @@ const CommonApplicationTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{data.length !== 0 ? (
-							data.map((row, index) => (
-								<TableRow key={row.id}>
-									{columns.map((col, i, arr) => (
-										<TableCell
-											key={col}
-											component="th"
-											scope="row"
-											className={clsx(classes.dataCell, classes.nameRow, {
-												[classes.lastCell]: index === data.length - 1,
-											})}
-										>
-											<AT.CellContainer key={col}>
-												<AT.TableBodyText
-													className={clsx({
-														[classes.defaultNameText]:
-															row.id === defaultID && i === 0,
-													})}
-												>
-													{row[col]}
-												</AT.TableBodyText>
-												{row.id === defaultID && i === 0 ? (
-													<Typography className={classes.defaultText}>
-														(Default)
-													</Typography>
-												) : null}
-												{arr.length === i + 1 ? (
-													<AT.DotMenu
-														onClick={(e) => {
-															setAnchorEl(
-																anchorEl === e.currentTarget
-																	? null
-																	: e.currentTarget
-															);
-															setSelectedData(
-																anchorEl === e.currentTarget ? null : index
-															);
-														}}
+							(searchQuery.length === 0 ? data : searchedData).map(
+								(row, index) => (
+									<TableRow key={row.id}>
+										{columns.map((col, i, arr) => (
+											<TableCell
+												key={col}
+												component="th"
+												scope="row"
+												className={clsx(classes.dataCell, classes.nameRow, {
+													[classes.lastCell]: index === data.length - 1,
+												})}
+											>
+												<AT.CellContainer key={col}>
+													<AT.TableBodyText
+														className={clsx({
+															[classes.defaultNameText]:
+																row.id === defaultID && i === 0,
+														})}
 													>
-														<AT.TableMenuButton>
-															<MenuIcon />
-														</AT.TableMenuButton>
-
-														<PopupMenu
-															index={index}
-															selectedData={selectedData}
-															anchorEl={anchorEl}
-															id={row.id}
-															clickAwayHandler={() => {
-																setAnchorEl(null);
-																setSelectedData(null);
+														{`${row[col]}`}
+													</AT.TableBodyText>
+													{row.id === defaultID && i === 0 ? (
+														<Typography className={classes.defaultText}>
+															(Default)
+														</Typography>
+													) : null}
+													{arr.length === i + 1 ? (
+														<AT.DotMenu
+															onClick={(e) => {
+																setAnchorEl(
+																	anchorEl === e.currentTarget
+																		? null
+																		: e.currentTarget
+																);
+																setSelectedData(
+																	anchorEl === e.currentTarget ? null : index
+																);
 															}}
-															menuData={menuData}
-														/>
-													</AT.DotMenu>
-												) : null}
-											</AT.CellContainer>
-										</TableCell>
-									))}
-								</TableRow>
-							))
+														>
+															<AT.TableMenuButton>
+																<MenuIcon />
+															</AT.TableMenuButton>
+
+															<PopupMenu
+																index={index}
+																selectedData={selectedData}
+																anchorEl={anchorEl}
+																id={row.id}
+																clickAwayHandler={() => {
+																	setAnchorEl(null);
+																	setSelectedData(null);
+																}}
+																menuData={menuData}
+															/>
+														</AT.DotMenu>
+													) : null}
+												</AT.CellContainer>
+											</TableCell>
+										))}
+									</TableRow>
+								)
+							)
 						) : (
 							<TableRow>
 								{headers.map((head, i) => {

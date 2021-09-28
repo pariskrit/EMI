@@ -1,33 +1,37 @@
-import * as yup from "yup";
-import Dialog from "@material-ui/core/Dialog";
 import React, { useState, useEffect } from "react";
+import EditDialogStyle from "styles/application/EditDialogStyle";
+import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import EditDialogStyle from "styles/application/EditDialogStyle";
+import EMICheckbox from "components/Elements/EMICheckbox";
+import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+
+import { patchRoles } from "services/clients/sites/siteApplications/userRoles";
 
 // Init styled components
 const AED = EditDialogStyle();
 
 // Yup validation schema
-const schema = yup.object().shape({
+const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
+		.required("This field is required"),
+	defects: yup
+		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
 });
 
 // Default state schemas
-const defaultErrorSchema = { name: null };
-const defaultStateSchema = { name: "" };
+const defaultErrorSchema = { name: null, defects: null };
+const defaultStateSchema = { name: "", defects: false };
 
-const EditStopDialog = ({
+const EditRoleDialog = ({
 	open,
 	closeHandler,
 	data,
 	handleEditData,
 	getError,
-	patchAPI,
-	subHeader,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -41,28 +45,35 @@ const EditStopDialog = ({
 		closeHandler();
 	};
 	const handleUpdateData = async () => {
-		// Attempting to update data
+		// Attempting to create member
 		try {
-			let updateName = await patchAPI(data.id, [
+			const result = await patchRoles(data.id, [
 				{
 					op: "replace",
 					path: "name",
 					value: input.name,
 				},
+				{
+					op: "replace",
+					path: "canRegisterDefects",
+					value: input.defects,
+				},
 			]);
 
-			// if success, adding data to reducer
-			if (updateName.status) {
-				// Updating state
+			// Handling success
+			if (result.status) {
+				// Adding new member to state
 				handleEditData({
 					id: data.id,
+					applicationID: data.applicationID,
 					name: input.name,
+					canRegisterDefects: input.defects,
 				});
 
 				return { success: true };
 			} else {
-				if (updateName.data.detail) {
-					getError(updateName.data.detail);
+				if (result.data.detail) {
+					getError(result.data.detail);
 					return {
 						success: false,
 						errors: {
@@ -70,7 +81,7 @@ const EditStopDialog = ({
 						},
 					};
 				} else {
-					return { success: false, errors: { ...updateName.data.errors } };
+					return { success: false, errors: { ...result.data.errors } };
 				}
 			}
 		} catch (err) {
@@ -125,10 +136,10 @@ const EditStopDialog = ({
 		}
 	};
 
-	// Updating name after data set
+	// Updating input state
 	useEffect(() => {
 		if (data !== null && open) {
-			setInput({ name: data.name });
+			setInput({ name: data.name, defects: data.canRegisterDefects });
 		}
 	}, [data, open]);
 
@@ -145,8 +156,8 @@ const EditStopDialog = ({
 				{isUpdating ? <LinearProgress /> : null}
 
 				<AED.ActionContainer>
-					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit {subHeader}</AED.HeaderText>}
+					<DialogTitle id="edit-dialog-title">
+						{<AED.HeaderText>Edit Role</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeOverride} variant="contained">
@@ -177,6 +188,21 @@ const EditStopDialog = ({
 									}}
 								/>
 							</AED.NameInputContainer>
+
+							<AED.CheckboxContainer>
+								<AED.CheckboxLabel>
+									<EMICheckbox
+										state={input.defects}
+										changeHandler={() => {
+											setInput({
+												...input,
+												defects: !input.defects,
+											});
+										}}
+									/>
+									Can Role register defects?
+								</AED.CheckboxLabel>
+							</AED.CheckboxContainer>
 						</AED.InputContainer>
 					</div>
 				</AED.DialogContent>
@@ -185,4 +211,4 @@ const EditStopDialog = ({
 	);
 };
 
-export default EditStopDialog;
+export default EditRoleDialog;
