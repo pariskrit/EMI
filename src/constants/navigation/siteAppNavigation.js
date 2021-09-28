@@ -14,8 +14,8 @@ import {
 	siteAppTaskSystemsPath,
 	siteAppLubricantsPath,
 	siteAppDefectTypesPath,
-	siteAppFeedbackClassificationsPath,
 	siteAppFeedbackPrioritiesPath,
+	siteAppUserRolesPath,
 	siteAppDefectStatusPath,
 	siteAppDetailPath,
 } from "helpers/routePaths";
@@ -109,7 +109,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Roles",
-					link: links + "roles",
+					link: links + siteAppUserRolesPath,
 				},
 			],
 		},

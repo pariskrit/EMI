@@ -19,6 +19,7 @@ import {
 	siteAppLubricantsPath,
 	siteAppDefectTypesPath,
 	siteAppFeedbackPrioritiesPath,
+	siteAppUserRolesPath,
 	siteAppDefectStatusPath,
 } from "helpers/routePaths";
 
@@ -31,6 +32,7 @@ import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
 import SingleComponent from "./SingleComponent";
+import UserRoles from "../UserRoles";
 import DefectStatuses from "../DefectStatuses";
 
 const routes = [
@@ -216,6 +218,15 @@ const routes = [
 		showDefault: true,
 		pathToPatch: "defaultFeedbackPriorityID",
 	},
+	{
+		id: 60,
+		name: "User Definitions",
+		path: siteAppUserRolesPath,
+		component: UserRoles,
+    showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+  },
 	{
 		id: 53,
 		name: "Defect Definitions",
