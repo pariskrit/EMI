@@ -26,7 +26,7 @@ const AddDialog = ({
 	applicationID,
 	handleAddData,
 	getError,
-	header,
+	subHeader,
 	postAPI,
 }) => {
 	// Init state
@@ -140,7 +140,7 @@ const AddDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New {header}</ADD.HeaderText>}
+						{<ADD.HeaderText>Add New {subHeader}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">

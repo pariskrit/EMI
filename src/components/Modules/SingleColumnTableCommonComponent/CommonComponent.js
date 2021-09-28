@@ -23,6 +23,7 @@ const CommonContent = ({
 	setIs404,
 	getError,
 	header,
+	subHeader,
 	state,
 	dispatch,
 	apis,
@@ -191,7 +192,7 @@ const CommonContent = ({
 			const result = await apis.patchDefaultAPI(id, [
 				{
 					op: "replace",
-					path: pathToPatch,
+					path: `${pathToPatch}`,
 					value: confirmDefault[0],
 				},
 			]);
@@ -227,7 +228,7 @@ const CommonContent = ({
 				// if success, adding data to state
 				if (result.status) {
 					// Setting default
-					setDefaultData(result.data.defaultFeedbackClassificationID);
+					setDefaultData(result.data[pathToPatch]);
 				} else {
 					// If error, throwing to catch
 
@@ -258,8 +259,6 @@ const CommonContent = ({
 		// eslint-disable-next-line
 	}, [defaultData]);
 
-	// console.log("sagar", defaultData);
-
 	return (
 		<div className="container">
 			{/* Start of dialogs */}
@@ -269,7 +268,7 @@ const CommonContent = ({
 				applicationID={id}
 				handleAddData={handleAddData}
 				getError={getError}
-				header={header}
+				subHeader={subHeader}
 				postAPI={apis.postAPI}
 			/>
 			<EditDialog
@@ -279,10 +278,10 @@ const CommonContent = ({
 				handleEditData={handleEditData}
 				getError={getError}
 				patchAPI={apis.patchAPI}
-				header={header}
+				subHeader={subHeader}
 			/>
 			<DeleteDialog
-				entityName={header}
+				entityName={subHeader}
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
 				deleteEndpoint={apis.deleteAPI}
@@ -295,7 +294,7 @@ const CommonContent = ({
 					open={openDefaultDialog}
 					closeHandler={handleDefaultDialogClose}
 					data={confirmDefault}
-					entity={header}
+					entity={subHeader}
 					handleDefaultUpdate={handleDefaultUpdate}
 				/>
 			)}

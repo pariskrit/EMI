@@ -22,10 +22,12 @@ export const siteAppModelTypesPath = "/modeltypes";
 export const siteAppSkippedTasksPath = "/skippedtasks";
 export const siteAppMissingItemsPath = "/missingitems";
 export const siteAppStatusChangesPath = "/statuschanges";
-export const siteAppTaskActions = "/actions";
-export const siteAppTaskSystems = "/systems";
-export const siteAppLubricants = "/lubricants";
-export const siteAppDefectTypes = "/defecttypes";
+export const siteAppTaskActionsPath = "/actions";
+export const siteAppTaskSystemsPath = "/systems";
+export const siteAppLubricantsPath = "/lubricants";
+export const siteAppDefectTypesPath = "/defecttypes";
+export const siteAppFeedbackClassificationsPath = "/feedbackclassifications";
+export const siteAppFeedbackPrioritiesPath = "/feedbackpriorities";
 export const siteAppFeedbackClassificationsPath = "/feedbackclassifications";
 export const siteAppDefectStatusPath = "/defectstatuses";
 
