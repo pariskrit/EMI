@@ -16,6 +16,7 @@ import {
 	siteAppDefectTypesPath,
 	siteAppFeedbackPrioritiesPath,
 	siteAppUserRolesPath,
+	siteAppDefectRiskRatingsPath,
 	siteAppDefectStatusPath,
 	siteAppDetailPath,
 	siteAppPositionsPath,
@@ -119,7 +120,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 			dropdown: [
 				{
 					title: "Risk Ratings",
-					link: links + "defectriskratings",
+					link: links + siteAppDefectRiskRatingsPath,
 				},
 				{
 					title: "Statuses",
