@@ -144,6 +144,31 @@ const CommonApplicationTable = ({
 													>
 														{row[col]}
 													</AT.TableBodyText>
+												) : (
+													<AT.TableBodyText>{`${row[col]}`}</AT.TableBodyText>
+												)}
+												{showDefault && row.id === defaultID ? (
+													<Typography className={classes.defaultText}>
+														(Default)
+													</Typography>
+												) : null}
+
+												{arr.length === i + 1 ? (
+													<AT.DotMenu
+														onClick={(e) => {
+															setAnchorEl(
+																anchorEl === e.currentTarget
+																	? null
+																	: e.currentTarget
+															);
+															setSelectedData(
+																anchorEl === e.currentTarget ? null : index
+															);
+														}}
+													>
+														<AT.TableMenuButton>
+															<MenuIcon />
+														</AT.TableMenuButton>
 													{row.id === defaultID && i === 0 ? (
 														<Typography className={classes.defaultText}>
 															(Default)
@@ -165,7 +190,6 @@ const CommonApplicationTable = ({
 															<AT.TableMenuButton>
 																<MenuIcon />
 															</AT.TableMenuButton>
-
 															<PopupMenu
 																index={index}
 																selectedData={selectedData}

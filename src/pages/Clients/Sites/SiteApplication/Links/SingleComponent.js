@@ -41,6 +41,7 @@ const SingleComponent = (route) => {
 					dispatch={dispatch}
 					appId={appId}
 					header={route.header}
+					subHeader={route.subHeader}
 					apis={route.api}
 					showDefault={route.showDefault}
 					pathToPatch={route.pathToPatch}
