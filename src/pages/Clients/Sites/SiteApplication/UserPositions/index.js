@@ -133,6 +133,7 @@ function DefectStatuses({ appId, setError }) {
 			</div>
 			<CommonApplicationTable
 				data={allData}
+				setData={setAllData}
 				columns={[
 					"name",
 					"modelAccess",
