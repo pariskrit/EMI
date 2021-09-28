@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import API from "helpers/api";
+import React, { useState, useEffect } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -9,6 +8,10 @@ import { handleValidateObj, generateErrorState } from "helpers/utils";
 import FeedbackStatusTypes from "helpers/feedbackStatusTypes";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
+import {
+	addFeedbackStatuses,
+	patchFeedbackStatuses,
+} from "services/clients/sites/siteApplications/feedbackStatuses";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -27,11 +30,26 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, type: null };
 const defaultStateSchema = { name: "", type: "O" };
 
-const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
+const AddEditDialog = ({
+	open,
+	closeHandler,
+	applicationID,
+	handleAddData,
+	editMode,
+	handleEditData,
+	data,
+	getError,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+
+	useEffect(() => {
+		if (editMode) {
+			setInput({ name: data.name, type: data.type });
+		}
+	}, [editMode, data]);
 
 	// Handlers
 	const closeOverride = () => {
@@ -47,8 +65,6 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
-
-			console.log(localChecker);
 
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
@@ -79,42 +95,135 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 		// Attempting to create
 		try {
 			// Submitting to backend
-			const result = await API.post("/api/ApplicationFeedbackStatuses", {
-				applicationId: applicationID,
+
+			const result = await addFeedbackStatuses({
+				siteAppId: applicationID,
 				name: input.name,
 				type: input.type,
 			});
 
 			// Handling success
-			if (result.status === 201) {
+			if (result.status) {
 				// Adding new type to state
 				handleAddData({
 					id: result.data,
 					applicationID: applicationID,
 					name: input.name,
 					type: input.type,
+					statusType: FeedbackStatusTypes[input.type],
 				});
 
 				return { success: true };
 			} else {
-				throw new Error(result);
+				if (result.data.detail) {
+					getError(result.data.detail);
+				} else if (result.data.errors !== undefined) {
+					setErrors({ ...errors, ...result.data.errors });
+				} else {
+					// If no explicit errors provided, throws to caller
+					throw new Error(result);
+				}
+
+				return { success: false };
 			}
 		} catch (err) {
-			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
+			console.log(err);
+		}
+	};
 
-			return { success: false };
+	const handleUpdate = async () => {
+		// Adding progress indicator
+		setIsUpdating(true);
+
+		try {
+			const localChecker = await handleValidateObj(schema, input);
+
+			// Attempting API call if no local validaton errors
+			if (!localChecker.some((el) => el.valid === false)) {
+				// Updating data
+				const updatedData = await handleUpdateData();
+
+				if (updatedData.success) {
+					setIsUpdating(false);
+					closeOverride();
+				} else {
+					setIsUpdating(false);
+				}
+			} else {
+				const newErrors = generateErrorState(localChecker);
+
+				setErrors({ ...errors, ...newErrors });
+				setIsUpdating(false);
+			}
+		} catch (err) {
+			// TODO: handle non validation errors here
+			console.log(err);
+
+			setIsUpdating(false);
+			closeOverride();
+		}
+	};
+
+	const handleUpdateData = async () => {
+		// Attempting to update data
+		try {
+			const result = await patchFeedbackStatuses(data.id, [
+				{
+					op: "replace",
+					path: "name",
+					value: input.name,
+				},
+				{
+					op: "replace",
+					path: "type",
+					value: input.type,
+				},
+			]);
+
+			// Handling success
+			if (result.status) {
+				// Updating state to match DB
+				handleEditData({
+					id: data.id,
+					name: input.name,
+					type: input.type,
+					statusType: FeedbackStatusTypes[input.type],
+				});
+
+				return { success: true };
+			} else {
+				if (result.data.detail) {
+					getError(result.data.detail);
+				} else if (result.data.errors !== undefined) {
+					setErrors({ ...errors, ...result.data.errors });
+				} else {
+					// If no explicit errors provided, throws to caller
+					throw new Error(result);
+				}
+
+				return { success: false };
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const handleSubmit = () => {
+		if (!editMode) {
+			handleAddClick();
+		} else {
+			handleUpdate();
 		}
 	};
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
-			handleAddClick();
+			if (editMode) {
+				handleUpdate();
+			} else {
+				handleAddClick();
+			}
 		}
 	};
 
@@ -124,7 +233,7 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 				fullWidth={true}
 				maxWidth="md"
 				open={open}
-				onClose={closeHandler}
+				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
@@ -132,14 +241,18 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New Feedback Status</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								{editMode ? "Edit" : "Add New"} Feedback Status
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeHandler} variant="contained">
+						<ADD.CancelButton onClick={closeOverride} variant="contained">
 							Cancel
 						</ADD.CancelButton>
-						<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
-							Add New
+						<ADD.ConfirmButton variant="contained" onClick={handleSubmit}>
+							{editMode ? "Edit" : "Add New"}
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>
@@ -194,4 +307,4 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 	);
 };
 
-export default AddDialog;
+export default AddEditDialog;

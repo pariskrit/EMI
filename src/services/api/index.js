@@ -24,11 +24,14 @@ const BASE_API_PATH_MISSING_PART_OR_TOOL_REASONS = `${BASE_API_PATH}MissingPartT
 const BASE_API_PATH_STATUS_CHANGES = `${BASE_API_PATH}changestatusreasons`;
 const BASE_API_PATH_DEFECT_STATUSES = `${BASE_API_PATH}defectstatuses`;
 const BASE_API_PATH_FEEDBACK_CLASSIFICATIONS = `${BASE_API_PATH}feedbackclassifications`;
+const BASE_API_PATH_FEEDBACK_STATUSES = `${BASE_API_PATH}feedbackstatuses`;
+const BASE_API_PATH_FEEDBACK_PRIORITIES = `${BASE_API_PATH}feedbackpriorities`;
 const BASE_API_PATH_ACTIONS = `${BASE_API_PATH}actions`;
 const BASE_API_PATH_SYSTEMS = `${BASE_API_PATH}systems`;
 const BASE_API_PATH_LUBRICANTS = `${BASE_API_PATH}lubricants`;
 const BASE_API_PATH_POSITIONS = `${BASE_API_PATH}positions`;
 const BASE_API_PATH_DEFECT_TYPES = `${BASE_API_PATH}defecttypes`;
+const BASE_API_PATH_ROLES = `${BASE_API_PATH}roles`;
 
 export const Apis = {
 	//client detail screen
@@ -81,6 +84,12 @@ export const Apis = {
 	//feedbackClassifications
 	FeedbackClassifications: `${BASE_API_PATH_FEEDBACK_CLASSIFICATIONS}`,
 
+	// feedbackStatuses
+	FeedbackStatuses: `${BASE_API_PATH_FEEDBACK_STATUSES}`,
+
+	//feedbackPriorities
+	FeedbackPriorities: `${BASE_API_PATH_FEEDBACK_PRIORITIES}`,
+
 	//actions
 	Actions: `${BASE_API_PATH_ACTIONS}`,
 
@@ -92,4 +101,7 @@ export const Apis = {
 
 	//defecttypes
 	DefectTypes: `${BASE_API_PATH_DEFECT_TYPES}`,
+
+	//userroles
+	Roles: `${BASE_API_PATH_ROLES}`,
 };
