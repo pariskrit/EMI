@@ -3,37 +3,36 @@ import SiteApplicationContext from "contexts/SiteApplicationContext";
 import differentAPIs from "helpers/differentAPIs";
 import {
 	siteAppCustomCaptionsPath,
+	siteAppDefectStatusPath,
+	siteAppDefectTypesPath,
 	siteAppDetailPath,
+	siteAppFeedbackClassificationsPath,
+	siteAppFeedbackPrioritiesPath,
+	siteAppLubricantsPath,
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
 	siteAppModelTypesPath,
-	siteAppPath,
 	siteAppOperationModesPath,
+	siteAppPath,
 	siteAppPausePath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
-	siteAppFeedbackClassificationsPath,
 	siteAppTaskActionsPath,
 	siteAppTaskSystemsPath,
-	siteAppLubricantsPath,
-	siteAppDefectTypesPath,
-	siteAppFeedbackPrioritiesPath,
 	siteAppUserRolesPath,
-	siteAppDefectStatusPath,
 } from "helpers/routePaths";
-
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
+import DefectStatuses from "../DefectStatuses";
 import OperatingModes from "../OperatingModes";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
-import SingleComponent from "./SingleComponent";
 import UserRoles from "../UserRoles";
-import DefectStatuses from "../DefectStatuses";
+import SingleComponent from "./SingleComponent";
 
 const routes = [
 	{
@@ -223,10 +222,10 @@ const routes = [
 		name: "User Definitions",
 		path: siteAppUserRolesPath,
 		component: UserRoles,
-    showAdd: true,
+		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
-  },
+	},
 	{
 		id: 53,
 		name: "Defect Definitions",
