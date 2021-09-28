@@ -42,7 +42,6 @@ const useStyles = makeStyles({
 	dataCell: {
 		height: 50,
 	},
-
 	defaultText: {
 		fontFamily: "Roboto Condensed",
 		fontSize: 14,
@@ -51,7 +50,6 @@ const useStyles = makeStyles({
 		paddingLeft: 5,
 		display: "inline-flex",
 	},
-
 	defaultNameText: {
 		fontWeight: "bold",
 	},
@@ -61,15 +59,13 @@ const CommonApplicationTable = ({
 	data,
 	setData,
 	setSearch,
+	searchedData,
 	searchQuery,
 	columns,
 	headers,
-	onEdit,
-	onDelete,
 	isLoading,
-	showDefault,
-	openDefaultDialog,
 	defaultID,
+	menuData,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -83,7 +79,7 @@ const CommonApplicationTable = ({
 
 		// Sorting table
 		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
-		else handleSort(data, setSearch, field, newMethod);
+		else handleSort(searchedData, setSearch, field, newMethod);
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
@@ -127,22 +123,23 @@ const CommonApplicationTable = ({
 					</AT.TableHead>
 					<TableBody>
 						{data.length !== 0 ? (
-							data.map((row, index) => (
-								<TableRow key={row.id}>
-									{columns.map((col, i, arr) => (
-										<TableCell
-											key={col}
-											component="th"
-											scope="row"
-											className={clsx(classes.dataCell, classes.nameRow, {
-												[classes.lastCell]: index === data.length - 1,
-											})}
-										>
-											<AT.CellContainer key={col}>
-												{showDefault ? (
+							(searchQuery.length === 0 ? data : searchedData).map(
+								(row, index) => (
+									<TableRow key={row.id}>
+										{columns.map((col, i, arr) => (
+											<TableCell
+												key={col}
+												component="th"
+												scope="row"
+												className={clsx(classes.dataCell, classes.nameRow, {
+													[classes.lastCell]: index === data.length - 1,
+												})}
+											>
+												<AT.CellContainer key={col}>
 													<AT.TableBodyText
 														className={clsx({
-															[classes.defaultNameText]: row.id === defaultID,
+															[classes.defaultNameText]:
+																row.id === defaultID && i === 0,
 														})}
 													>
 														{row[col]}
@@ -172,8 +169,27 @@ const CommonApplicationTable = ({
 														<AT.TableMenuButton>
 															<MenuIcon />
 														</AT.TableMenuButton>
-
-														{showDefault ? (
+													{row.id === defaultID && i === 0 ? (
+														<Typography className={classes.defaultText}>
+															(Default)
+														</Typography>
+													) : null}
+													{arr.length === i + 1 ? (
+														<AT.DotMenu
+															onClick={(e) => {
+																setAnchorEl(
+																	anchorEl === e.currentTarget
+																		? null
+																		: e.currentTarget
+																);
+																setSelectedData(
+																	anchorEl === e.currentTarget ? null : index
+																);
+															}}
+														>
+															<AT.TableMenuButton>
+																<MenuIcon />
+															</AT.TableMenuButton>
 															<PopupMenu
 																index={index}
 																selectedData={selectedData}
@@ -183,55 +199,16 @@ const CommonApplicationTable = ({
 																	setAnchorEl(null);
 																	setSelectedData(null);
 																}}
-																menuData={[
-																	{
-																		name: "Edit",
-																		handler: () => onEdit(row.id),
-																		isDelete: false,
-																	},
-																	{
-																		name: "Delete",
-																		handler: () => onDelete(row.id),
-																		isDelete: true,
-																	},
-																	{
-																		name: "Make Default Status",
-																		handler: openDefaultDialog,
-																		isDelete: false,
-																	},
-																]}
+																menuData={menuData}
 															/>
-														) : (
-															<PopupMenu
-																index={index}
-																selectedData={selectedData}
-																anchorEl={anchorEl}
-																id={row.id}
-																clickAwayHandler={() => {
-																	setAnchorEl(null);
-																	setSelectedData(null);
-																}}
-																menuData={[
-																	{
-																		name: "Edit",
-																		handler: () => onEdit(row.id),
-																		isDelete: false,
-																	},
-																	{
-																		name: "Delete",
-																		handler: () => onDelete(row.id),
-																		isDelete: true,
-																	},
-																]}
-															/>
-														)}
-													</AT.DotMenu>
-												) : null}
-											</AT.CellContainer>
-										</TableCell>
-									))}
-								</TableRow>
-							))
+														</AT.DotMenu>
+													) : null}
+												</AT.CellContainer>
+											</TableCell>
+										))}
+									</TableRow>
+								)
+							)
 						) : (
 							<TableRow>
 								{headers.map((head, i) => {
@@ -263,12 +240,14 @@ CommonApplicationTable.defaultProps = {
 	],
 	columns: ["name"],
 	headers: ["Name"],
+	defaultID: null,
 	onEdit: (id) => console.log("Edit", id),
 	onDelete: (id) => console.log("Delete", id),
 };
 
 CommonApplicationTable.propTypes = {
 	data: PropTypes.array,
+	defaultID: PropTypes.number,
 	columns: PropTypes.array,
 	headers: PropTypes.array,
 	onEdit: PropTypes.func,

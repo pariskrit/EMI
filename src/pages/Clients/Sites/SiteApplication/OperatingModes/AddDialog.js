@@ -121,7 +121,7 @@ const AddDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add Action</ADD.HeaderText>}
+						{<ADD.HeaderText>Add Defect Status</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
