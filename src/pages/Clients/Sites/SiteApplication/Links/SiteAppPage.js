@@ -19,6 +19,7 @@ import {
 	siteAppLubricants,
 	siteAppDefectStatusPath,
 	siteAppPositionsPath,
+	siteAppDefectTypes,
 } from "helpers/routePaths";
 
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
@@ -182,12 +183,23 @@ const routes = [
 		api: differentAPIs.LubricantsAPIs,
 	},
 	{
+		id: 54,
+		name: "Defect Definitions",
+		path: siteAppDefectTypes,
+		component: SingleColumnTableCommonComponent,
+		showAdd: true,
+		showHistory: true,
+		showSwitch: false,
+		header: "Defect Types",
+		api: differentAPIs.DefectTypesAPIs,
+	},
+	{
 		id: 53,
 		name: "Defect Definitions",
 		path: siteAppDefectStatusPath,
 		component: DefectStatuses,
 		showAdd: true,
-		showHistory: false,
+		showHistory: true,
 		showSwitch: false,
 	},
 	{
