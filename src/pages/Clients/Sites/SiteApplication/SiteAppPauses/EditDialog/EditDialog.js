@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import API from "helpers/api";
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
