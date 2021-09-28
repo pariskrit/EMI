@@ -162,8 +162,6 @@ const SiteAppFeedbackStatuses = ({
 		setDeleteId(null);
 	};
 
-	const mainData = searchQuery.length === 0 ? allData : searchedData;
-
 	return (
 		<div>
 			<DefaultDialog
@@ -207,11 +205,12 @@ const SiteAppFeedbackStatuses = ({
 			</div>
 			<CommonApplicationTable
 				defaultID={defaultId}
-				data={mainData}
+				data={allData}
 				columns={["name", "statusType"]}
 				headers={["Name", "Type"]}
 				setData={setAllData}
 				setSearch={setSearchData}
+				searchedData={searchedData}
 				searchQuery={searchQuery}
 				isLoading={loading}
 				menuData={[
