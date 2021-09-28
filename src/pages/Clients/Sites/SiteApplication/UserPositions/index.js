@@ -4,7 +4,7 @@ import MobileSearchField from "components/Elements/SearchField/MobileSearchField
 import SearchField from "components/Elements/SearchField/SearchField";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import { SiteContext } from "contexts/SiteApplicationContext";
-import { positionTypes } from "helpers/constants";
+import { positionAccessTypes } from "helpers/constants";
 import { useSearch } from "hooks/useSearch";
 import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -26,11 +26,27 @@ function DefectStatuses({ appId, setError }) {
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
-	const [defaultId, setDefaultId] = useState(null);
 	const [isEdit, setIsEdit] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	const addData = (newData) => setAllData([...allData, newData]);
+	const addData = (newData) =>
+		setAllData([
+			...allData,
+			{
+				...newData,
+				modelAccess: positionAccessTypes[newData.modelAccess],
+				serviceAccess: positionAccessTypes[newData.serviceAccess],
+				defectAccess: positionAccessTypes[newData.defectAccess],
+				defectExportAccess: positionAccessTypes[newData.defectExportAccess],
+				noticeboardAccess: positionAccessTypes[newData.noticeboardAccess],
+				feedbackAccess: positionAccessTypes[newData.feedbackAccess],
+				userAccess: positionAccessTypes[newData.userAccess],
+				analyticsAccess: positionAccessTypes[newData.analyticsAccess],
+				settingsAccess: positionAccessTypes[newData.settingsAccess],
+				allowChangeSkippedTaskStatus:
+					positionAccessTypes[newData.allowChangeSkippedTaskStatus],
+			},
+		]);
 
 	const onOpenDeleteDialog = (id) => {
 		setDeleteId(id);
@@ -63,21 +79,18 @@ function DefectStatuses({ appId, setError }) {
 		const result = await getPositions(appId);
 		setLoading(false);
 
-		const getType = (value) =>
-			positionTypes.find((type) => type.value === value).label;
-
 		setAllData([
 			...result.data.map((res) => ({
 				...res,
-				analyticsAccess: getType(res.analyticsAccess),
-				defectAccess: getType(res.defectAccess),
-				defectExportAccess: getType(res.defectExportAccess),
-				feedbackAccess: getType(res.feedbackAccess),
-				modelAccess: getType(res.modelAccess),
-				noticeboardAccess: getType(res.noticeboardAccess),
-				serviceAccess: getType(res.serviceAccess),
-				settingsAccess: getType(res.settingsAccess),
-				userAccess: getType(res.userAccess),
+				analyticsAccess: positionAccessTypes[res.analyticsAccess],
+				defectAccess: positionAccessTypes[res.defectAccess],
+				defectExportAccess: positionAccessTypes[res.defectExportAccess],
+				feedbackAccess: positionAccessTypes[res.feedbackAccess],
+				modelAccess: positionAccessTypes[res.modelAccess],
+				noticeboardAccess: positionAccessTypes[res.noticeboardAccess],
+				serviceAccess: positionAccessTypes[res.serviceAccess],
+				settingsAccess: positionAccessTypes[res.settingsAccess],
+				userAccess: positionAccessTypes[res.userAccess],
 			})),
 		]);
 	};
@@ -147,7 +160,6 @@ function DefectStatuses({ appId, setError }) {
 				setSearch={setSearchData}
 				searchQuery={searchQuery}
 				isLoading={isLoading}
-				defaultID={defaultId}
 				menuData={[
 					{
 						name: "Edit",

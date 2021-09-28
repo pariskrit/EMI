@@ -40,11 +40,18 @@ export const defectStatusTypes = [
 	{ label: "Complete", value: "C" },
 ];
 
-export const positionTypes = [
-	{ label: "Full", value: "F" },
-	{ label: "Edit", value: "E" },
-	{ label: "Read-Only", value: "R" },
-	{ label: "None", value: "N" },
-];
+// export const positionTypes = [
+// 	{ label: "Full", value: "F" },
+// 	{ label: "Edit", value: "E" },
+// 	{ label: "Read-Only", value: "R" },
+// 	{ label: "None", value: "N" },
+// ];
+
+export const positionAccessTypes = {
+	F: "Full",
+	E: "Edit",
+	R: "Read-Only",
+	N: "None",
+};
 
 export const DefaultPageSize = 12;
