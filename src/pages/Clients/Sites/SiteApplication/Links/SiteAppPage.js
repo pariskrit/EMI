@@ -8,6 +8,7 @@ import {
 	siteAppDetailPath,
 	siteAppFeedbackClassificationsPath,
 	siteAppFeedbackPrioritiesPath,
+	siteAppFeedbackStatuses,
 	siteAppLubricantsPath,
 	siteAppMissingItemsPath,
 	siteAppModelStatusesPath,
@@ -15,14 +16,13 @@ import {
 	siteAppOperationModesPath,
 	siteAppPath,
 	siteAppPausePath,
+	siteAppPositionsPath,
 	siteAppSkippedTasksPath,
 	siteAppStatusChangesPath,
 	siteAppStopsReasonsPath,
 	siteAppTaskActionsPath,
 	siteAppTaskSystemsPath,
 	siteAppUserRolesPath,
-	siteAppFeedbackStatuses,
-  siteAppPositionsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
@@ -30,14 +30,13 @@ import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import DefectStatuses from "../DefectStatuses";
 import OperatingModes from "../OperatingModes";
+import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
 import SiteAppPauses from "../SiteAppPauses";
+import UserPositions from "../UserPositions";
 import UserRoles from "../UserRoles";
 import SingleComponent from "./SingleComponent";
-import DefectStatuses from "../DefectStatuses";
-import UserPositions from "../UserPositions";
-import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 
 const routes = [
 	{
