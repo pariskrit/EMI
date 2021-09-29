@@ -33,7 +33,8 @@ const SingleComponent = (route) => {
 	};
 
 	useEffect(() => {
-		if (Object.keys(state.details) <= 0) {
+		console.log(state);
+		if (Object.keys(state.details).length === 0) {
 			fetchSiteApplicationDetails();
 		}
 	}, []);
