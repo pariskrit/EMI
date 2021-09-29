@@ -9,7 +9,6 @@ const AS = SubcatStyle();
 
 const Subcat = ({
 	id,
-	subcats,
 	setIsUpdating,
 	sub,
 	handleRemoveSubcat,

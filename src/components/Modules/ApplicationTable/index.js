@@ -50,6 +50,7 @@ const ApplicationTable = ({
 	onChangeApp,
 	showDeleteIcon,
 	showQuantity,
+	redirect,
 }) => {
 	const classes = useStyles();
 
@@ -82,6 +83,7 @@ const ApplicationTable = ({
 							showQuantity={showQuantity}
 							onDeleteApp={() => onDeleteApp(row.id)}
 							onChangeApp={() => onChangeApp(row.id)}
+							redirect={redirect}
 						/>
 					))
 				)}
@@ -103,6 +105,7 @@ ApplicationTable.defaultProps = {
 	isLoading: false,
 	showDeleteIcon: true,
 	showQuantity: true,
+	redirect: false,
 };
 
 ApplicationTable.propTypes = {

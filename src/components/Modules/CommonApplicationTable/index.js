@@ -53,6 +53,9 @@ const useStyles = makeStyles({
 	defaultNameText: {
 		fontWeight: "bold",
 	},
+	tableHead: {
+		whiteSpace: "nowrap",
+	},
 });
 
 const CommonApplicationTable = ({
@@ -92,7 +95,7 @@ const CommonApplicationTable = ({
 	return (
 		<div>
 			<AT.TableContainer component={Paper} elevation={0}>
-				<Table aria-label="Table">
+				<Table aria-label="Table" style={{ tableLayout: "fixed" }}>
 					<AT.TableHead>
 						<TableRow className={classes.tableHead}>
 							{headers.map((header, index) => (
