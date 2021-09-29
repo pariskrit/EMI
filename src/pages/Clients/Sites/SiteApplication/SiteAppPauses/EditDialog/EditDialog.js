@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import API from "helpers/api";
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
@@ -10,6 +9,7 @@ import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { updatePauses } from "services/clients/sites/siteApplications/pauses";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -60,7 +60,7 @@ const EditPauseDialog = ({
 	const handleUpdateData = async (d) => {
 		try {
 			// Attempting to update pause
-			let result = await API.patch(`/api/Pauses/${editData.id}`, [
+			let result = await updatePauses(editData.id, [
 				{
 					op: "replace",
 					path: "name",
@@ -69,7 +69,7 @@ const EditPauseDialog = ({
 			]);
 
 			// if success, adding data to reducer
-			if (result.status === 200) {
+			if (result.status) {
 				// Updating state
 				handleEditData({
 					id: editData.id,
@@ -80,21 +80,18 @@ const EditPauseDialog = ({
 				return { success: true };
 			} else {
 				// If error, throwing to catch
-				throw new Error(result);
+				if (result.data.detail) {
+					// setErrors({ ...errors, ...{ alert: result.data.detail } });
+					getError(result.data.detail);
+				} else {
+					// If no explicit errors provided, throws to caller
+					throw new Error(result);
+				}
+
+				return { success: false };
 			}
 		} catch (err) {
-			if (
-				err.response.data.detail !== null ||
-				err.response.data.detail !== undefined
-			) {
-				// setErrors({ ...errors, ...{ alert: err.response.data.detail } });
-				getError(err.response.data.detail);
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
-
-			return { success: false };
+			console.log(err);
 		}
 	};
 	const handleSave = async () => {

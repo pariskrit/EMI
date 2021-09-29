@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import API from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
@@ -10,6 +9,7 @@ import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { addPauses } from "services/clients/sites/siteApplications/pauses";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -123,14 +123,14 @@ const AddPauseDialog = ({
 			const localChecker = await handleValidateObj(schema, input);
 
 			if (!localChecker.some((el) => el.valid === false)) {
-				const result = await API.post("/api/Pauses", {
+				const result = await addPauses({
 					siteAppId: applicationID,
 					name: input.name,
 					pauseSubcategories: subcats.map((name) => ({ name: name })),
 				});
 
 				// Handling success
-				if (result.status === 201) {
+				if (result.status) {
 					const data = result.data;
 					// Adding data to state
 					handleAddData({
@@ -146,7 +146,20 @@ const AddPauseDialog = ({
 
 					return true;
 				} else {
-					throw new Error(result);
+					if (result.data.detail !== null || result.data.detail !== undefined) {
+						// Removing loading indicator
+						setIsUpdating(false);
+
+						// Setting alert error
+						getError(result.data.detail);
+					} else {
+						// Removing loading indicator
+						setIsUpdating(false);
+
+						// TODO: Non validation error handling
+
+						return false;
+					}
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
@@ -157,24 +170,7 @@ const AddPauseDialog = ({
 				return false;
 			}
 		} catch (err) {
-			if (
-				err.response.data.detail !== null ||
-				err.response.data.detail !== undefined
-			) {
-				// Removing loading indicator
-				setIsUpdating(false);
-
-				// Setting alert error
-				getError(err.response.data.detail);
-			} else {
-				// Removing loading indicator
-				setIsUpdating(false);
-
-				// TODO: Non validation error handling
-				console.log(err);
-
-				return false;
-			}
+			console.log(err);
 		}
 	};
 	const handleAddNewClick = () => {
@@ -250,7 +246,6 @@ const AddPauseDialog = ({
 						{/* Field to add new subcat */}
 						{isAddNew ? (
 							<NewSubcat
-								subcats={subcats}
 								handleAddSubcat={handleAddLocalSubcat}
 								setIsAddNew={setIsAddNew}
 							/>
@@ -264,7 +259,6 @@ const AddPauseDialog = ({
 										<Subcat
 											key={index}
 											id={index}
-											subcats={subcats}
 											setIsUpdating={setIsUpdating}
 											sub={sub}
 											handleRemoveSubcat={handleRemoveLocalSubcat}

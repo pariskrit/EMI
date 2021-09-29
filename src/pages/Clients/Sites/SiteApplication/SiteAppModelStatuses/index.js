@@ -8,7 +8,6 @@ import AddStatusDialog from "./AddDialog";
 import EditStatusDialog from "./EditDialog";
 import ModelStatusesTable from "./ModelStatusesTable";
 import { showError } from "redux/common/actions";
-
 import { getModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
 import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import SearchField from "components/Elements/SearchField/SearchField";
@@ -60,6 +59,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 			console.log(err);
 			return false;
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appId]);
 
 	const onEditClick = (id) => {
