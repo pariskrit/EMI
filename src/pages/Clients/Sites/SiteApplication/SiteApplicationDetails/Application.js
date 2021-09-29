@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	inputText: {
 		fontSize: 14,
+		cursor: "none",
 	},
 
 	assetParentContainer: {

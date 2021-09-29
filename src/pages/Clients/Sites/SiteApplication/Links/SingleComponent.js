@@ -33,10 +33,11 @@ const SingleComponent = (route) => {
 	};
 
 	useEffect(() => {
-		console.log(state);
-		if (Object.keys(state.details).length === 0) {
+		if (location.pathname.split("/")[7] === "detail") {
 			fetchSiteApplicationDetails();
 		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

@@ -26,7 +26,7 @@ import {
 	siteAppDefectRiskRatingsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
-import React from "react";
+import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
