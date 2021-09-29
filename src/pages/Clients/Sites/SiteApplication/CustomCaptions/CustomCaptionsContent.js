@@ -122,7 +122,7 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 	}, [handleGetData]);
 
 	return (
-		<div className="container">
+		<div>
 			{/* Spinner should start here */}
 			{haveData ? (
 				<>

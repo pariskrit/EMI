@@ -260,7 +260,7 @@ const CommonContent = ({
 	}, [defaultData]);
 
 	return (
-		<div className="container">
+		<div>
 			{/* Start of dialogs */}
 			<AddDialog
 				open={state.showAdd}
