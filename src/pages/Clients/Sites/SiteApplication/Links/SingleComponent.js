@@ -13,6 +13,8 @@ const SingleComponent = (route) => {
 
 	const navigation = SiteApplicationNavigation(clientId, id, appId);
 
+	let crumbs = JSON.parse(localStorage.getItem("crumbs"));
+
 	const openAddModal = () => dispatch({ type: "ADD_TOGGLE" });
 
 	const openConfirmationModal = () =>
@@ -20,6 +22,16 @@ const SingleComponent = (route) => {
 
 	const fetchSiteApplicationDetails = async () => {
 		const result = await getSiteApplicationDetail(appId);
+
+		if (!crumbs.hasOwnProperty("applicationName")) {
+			localStorage.setItem(
+				"crumbs",
+				JSON.stringify({
+					...crumbs,
+					applicationName: result.data.application.name,
+				})
+			);
+		}
 
 		dispatch({
 			type: "SET_SITE_APP_DETAIL",
@@ -40,10 +52,11 @@ const SingleComponent = (route) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const { clientName, siteName, applicationName } = crumbs;
 	return (
 		<div className="container">
 			<CommonHeaderWrapper
-				crumbs={["Clients", "Site", "Application"]}
+				crumbs={[clientName, siteName, applicationName]}
 				navigation={navigation}
 				current={route.name}
 				applicationName={
