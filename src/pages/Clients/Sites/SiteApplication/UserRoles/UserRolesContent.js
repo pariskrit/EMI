@@ -18,7 +18,6 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 	const [editData, setEditData] = useState({});
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [dataChanged, setDataChanged] = useState(false);
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [deleteId, setDeleteId] = useState(null);
 
@@ -113,7 +112,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 
 	useEffect(() => {
 		if (dataChanged) {
-			handleSort(allData, setAllData, currentTableSort[0], currentTableSort[1]);
+			handleSort(allData, setAllData, "name", "asc");
 
 			setDataChanged(false);
 		}

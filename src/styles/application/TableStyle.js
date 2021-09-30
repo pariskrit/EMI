@@ -11,7 +11,9 @@ import IconButton from "@material-ui/core/IconButton";
 const MAX_ROW_HEIGHT = 51;
 
 const TableStyle = () => {
-	const media = "@media (max-width: 414px)";
+	const mediaMobile = "@media (max-width: 414px)";
+	const mediaIpadpro = "@media (max-width: 1024px)";
+	const mediaIpad = "@media (max-width: 768px)";
 
 	return {
 		TableContainer: styled(TableContainer)({
@@ -21,14 +23,22 @@ const TableStyle = () => {
 			borderColor: ColourConstants.tableBorder,
 			borderWidth: 1,
 			borderRadius: 0,
-			[media]: {
+			[mediaMobile]: {
 				maxWidth: "87vw",
+				overflowX: "auto",
+			},
+			[mediaIpadpro]: {
+				maxWidth: "87vw",
+				overflowX: "auto",
+			},
+			[mediaIpad]: {
+				maxWidth: "85vw",
 				overflowX: "auto",
 			},
 		}),
 		TableHead: styled(TableHead)({
 			userSelect: "none",
-			[media]: {
+			[mediaMobile]: {
 				whiteSpace: "nowrap",
 			},
 		}),

@@ -73,6 +73,7 @@ const useStyles = makeStyles({
 		alignItems: "flex-start",
 		[media]: {
 			marginTop: "10px",
+			marginBottom: "10px",
 			justifyContent: "space-between",
 		},
 	},
@@ -165,13 +166,13 @@ const CommonHeader = ({
 					/>
 					<div
 						className={
-							showAdd || showDuplicate || showHistory || showSave || showSwitch
+							showAdd || showDuplicate || showSave || showSwitch
 								? classes.wrapper
 								: ""
 						}
 					>
 						{showSwitch && (
-							<div>
+							<div style={{ marginLeft: "20px" }}>
 								{isUpdating ? (
 									<FormControlLabel
 										className={classes.statusSwitch}

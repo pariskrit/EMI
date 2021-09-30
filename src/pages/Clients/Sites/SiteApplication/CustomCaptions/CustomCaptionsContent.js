@@ -15,9 +15,8 @@ import MobileSearchField from "components/Elements/SearchField/MobileSearchField
 // Init styled components
 const AC = ContentStyle();
 
-const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
+const CustomCaptionsContent = ({ id, setIs404, state }) => {
 	// Init state
-	const [applicationName, setApplicationName] = useState("");
 	const [data, setData] = useState({});
 	const [haveData, setHaveData] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -34,11 +33,6 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 
 				// if success, adding data to state
 				if (result.status) {
-					// Updating name if required
-					if (updateName) {
-						setApplicationName(result.data.name);
-					}
-
 					// Replacing CC nulls with empty string. Needed for input state consistancy
 					let nullReplaced = result.data;
 
@@ -106,8 +100,6 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 		let updateName = true;
 
 		if (state !== undefined) {
-			setApplicationName(state.applicationName);
-
 			updateName = false;
 		}
 
@@ -122,7 +114,7 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 	}, [handleGetData]);
 
 	return (
-		<div className="container">
+		<div>
 			{/* Spinner should start here */}
 			{haveData ? (
 				<>

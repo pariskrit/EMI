@@ -19,7 +19,21 @@ import { handleSort } from "helpers/utils";
 
 const AT = TableStyle();
 
+const mediaMobile = "@media(max-width: 414px)";
+const mediaIpad = "@media(max-width: 1024px)";
+
 const useStyles = makeStyles({
+	tableContainer: {
+		tableLayout: "fixed",
+		[mediaMobile]: {
+			tableLayout: "auto",
+		},
+		[mediaIpad]: {
+			maxWidth: "100%",
+			overflowX: "auto",
+			tableLayout: "auto",
+		},
+	},
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -95,7 +109,7 @@ const CommonApplicationTable = ({
 	return (
 		<div>
 			<AT.TableContainer component={Paper} elevation={0}>
-				<Table aria-label="Table" style={{ tableLayout: "fixed" }}>
+				<Table aria-label="Table" className={classes.tableContainer}>
 					<AT.TableHead>
 						<TableRow className={classes.tableHead}>
 							{headers.map((header, index) => (
