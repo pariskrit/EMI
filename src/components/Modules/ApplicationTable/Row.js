@@ -31,7 +31,7 @@ const Row = ({
 						<span className={classes.appName}>{row.name}</span>
 					</Link>
 				) : (
-					<span className={classes.appName}>{row.name}</span>
+					<span>{row.name}</span>
 				)}
 			</TableCell>
 			{showDeleteIcon && <TableCell>{row.totalSites}</TableCell>}
