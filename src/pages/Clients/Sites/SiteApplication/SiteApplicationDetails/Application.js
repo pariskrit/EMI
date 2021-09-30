@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	inputText: {
 		fontSize: 14,
-		cursor: "none",
+		//cursor: "none",
+		color: "#000000de",
 	},
 
 	assetParentContainer: {
@@ -97,6 +98,7 @@ const Application = ({ details }) => {
 							<TextField
 								variant="outlined"
 								fullWidth
+								disabled
 								value={details?.name ?? ""}
 								InputProps={{
 									classes: {
@@ -115,6 +117,7 @@ const Application = ({ details }) => {
 							<TextField
 								variant="outlined"
 								fullWidth
+								disabled
 								value={details?.purpose ?? ""}
 								InputProps={{
 									classes: {
