@@ -4,9 +4,9 @@ import LaunchItem from "./LaunchItem";
 import Grid from "@material-ui/core/Grid";
 
 // MOCK DATA IMPORTS
-import zm from "../../assets/zm.png";
-import rm from "../../assets/rm.png";
-import es from "../../assets/es.png";
+import zm from "assets/zm.png";
+import rm from "assets/rm.png";
+import es from "assets/es.png";
 
 // MOCK DATA
 const MOCK_DATA = [

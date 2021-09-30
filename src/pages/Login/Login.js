@@ -7,7 +7,7 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { applicationListPath } from "helpers/routePaths";
+import { clientsPath } from "helpers/routePaths";
 import { useHistory } from "react-router-dom";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
@@ -159,7 +159,7 @@ const Login = () => {
 	};
 	const successRedirect = () => {
 		// Update below to change redirect location
-		history.push(applicationListPath);
+		history.push(clientsPath);
 
 		return true;
 	};
