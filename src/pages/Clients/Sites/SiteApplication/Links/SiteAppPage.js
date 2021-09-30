@@ -26,10 +26,9 @@ import {
 	siteAppDefectRiskRatingsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
-import React from "react";
+import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import SiteApplication from "..";
-import OperatingModes from "../OperatingModes";
 import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 import SiteApplicationDetails from "../SiteApplicationDetails";
 import SiteAppModelStatuses from "../SiteAppModelStatuses";
@@ -138,14 +137,20 @@ const routes = [
 		subHeader: "Model Type",
 		api: differentAPIs.ModelTypesAPIs,
 	},
+
 	{
 		id: 59,
 		name: "Task Definitions",
 		path: siteAppOperationModesPath,
-		component: OperatingModes,
+		component: SingleColumnTableCommonComponent,
 		showAdd: true,
 		showHistory: false,
 		showSwitch: false,
+		header: "Operating Modes",
+		subHeader: "Operating Mode",
+		api: differentAPIs.OperatingModesAPIs,
+		pathToPatch: "defaultOperatingModeID",
+		showDefault: true,
 	},
 	{
 		id: 55,

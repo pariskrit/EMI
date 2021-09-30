@@ -21,6 +21,7 @@ function reducer(state, action) {
 				details: action.payload,
 			};
 		}
+
 		case "TOGGLE_CONFIRMATION_MODAL": {
 			return {
 				...state,

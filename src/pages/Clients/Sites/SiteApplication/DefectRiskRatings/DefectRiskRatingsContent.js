@@ -34,7 +34,6 @@ const DefectRiskRatingsContent = ({
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [confirmDefault, setConfirmDefault] = useState([null, null]);
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 
 	const {
 		allData,
@@ -230,7 +229,7 @@ const DefectRiskRatingsContent = ({
 
 	useEffect(() => {
 		if (dataChanged) {
-			handleSort(allData, setAllData, currentTableSort[0], currentTableSort[1]);
+			handleSort(allData, setAllData, "name", "asc");
 
 			setDataChanged(false);
 		}

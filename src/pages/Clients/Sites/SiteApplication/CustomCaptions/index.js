@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import CustomCaptionsContent from "./CustomCaptionsContent";
 
-const CustomCaptions = ({ state, dispatch }) => {
+const CustomCaptions = () => {
 	// Init params
 	const { appId } = useParams();
 

@@ -33,7 +33,6 @@ const CommonContent = ({
 	// Init state
 	const [data, setData] = useState([]);
 	const [haveData, setHaveData] = useState(false);
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dataChanged, setDataChanged] = useState(false);
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [editData, setEditData] = useState({});
@@ -153,7 +152,7 @@ const CommonContent = ({
 
 	useEffect(() => {
 		if (dataChanged) {
-			handleSort(data, setData, currentTableSort[0], currentTableSort[1]);
+			handleSort(data, setData, "name", "asc");
 
 			setDataChanged(false);
 		}
@@ -260,7 +259,7 @@ const CommonContent = ({
 	}, [defaultData]);
 
 	return (
-		<div className="container">
+		<div>
 			{/* Start of dialogs */}
 			<AddDialog
 				open={state.showAdd}

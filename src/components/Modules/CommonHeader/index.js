@@ -5,7 +5,6 @@ import {
 } from "@material-ui/core/styles";
 import RestoreIcon from "@material-ui/icons/Restore";
 import NavDetails from "components/Elements/NavDetails";
-import PropTypes from "prop-types";
 import React from "react";
 import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
@@ -74,64 +73,12 @@ const useStyles = makeStyles({
 		alignItems: "flex-start",
 		[media]: {
 			marginTop: "10px",
+			marginBottom: "10px",
 			justifyContent: "space-between",
 		},
 	},
 });
 
-// Active/Inactive switch
-// const IOSSwitch = withStyles((theme) => ({
-// 	root: {
-// 		width: 42,
-// 		height: 26,
-// 		padding: 0,
-// 		margin: theme.spacing(1),
-// 	},
-// 	switchBase: {
-// 		padding: 1,
-// 		"&$checked": {
-// 			transform: "translateX(16px)",
-// 			color: theme.palette.common.white,
-// 			"& + $track": {
-// 				backgroundColor: ColourConstants.confirmButton,
-// 				opacity: 1,
-// 				border: "none",
-// 			},
-// 		},
-// 		"&$focusVisible $thumb": {
-// 			color: ColourConstants.confirmButton,
-// 			border: "6px solid #fff",
-// 		},
-// 	},
-// 	thumb: {
-// 		width: 24,
-// 		height: 24,
-// 	},
-// 	track: {
-// 		borderRadius: 26 / 2,
-// 		border: `1px solid ${theme.palette.grey[400]}`,
-// 		backgroundColor: ColourConstants.cancelButton,
-// 		opacity: 1,
-// 		transition: theme.transitions.create(["background-color", "border"]),
-// 	},
-// 	checked: {},
-// 	focusVisible: {},
-// }))(({ classes, ...props }) => {
-// 	return (
-// 		<Switch
-// 			focusVisibleClassName={classes.focusVisible}
-// 			disableRipple
-// 			classes={{
-// 				root: classes.root,
-// 				switchBase: classes.switchBase,
-// 				thumb: classes.thumb,
-// 				track: classes.track,
-// 				checked: classes.checked,
-// 			}}
-// 			{...props}
-// 		/>
-// 	);
-// });
 // Active/Inactive updating state switch
 const IOSSwitchUpdated = withStyles((theme) => ({
 	root: {
@@ -203,7 +150,6 @@ const CommonHeader = ({
 	isUpdating,
 	currentStatus,
 	handlePatchIsActive,
-
 	navigation,
 	data,
 }) => {
@@ -220,13 +166,13 @@ const CommonHeader = ({
 					/>
 					<div
 						className={
-							showAdd || showDuplicate || showHistory || showSave || showSwitch
+							showAdd || showDuplicate || showSave || showSwitch
 								? classes.wrapper
 								: ""
 						}
 					>
 						{showSwitch && (
-							<div>
+							<div style={{ marginLeft: "20px" }}>
 								{isUpdating ? (
 									<FormControlLabel
 										className={classes.statusSwitch}
