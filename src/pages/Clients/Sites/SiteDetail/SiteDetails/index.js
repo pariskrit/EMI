@@ -126,6 +126,13 @@ const SiteDetails = ({
 		}
 
 		if (result.status) {
+			localStorage.setItem(
+				"crumbs",
+				JSON.stringify({
+					clientName: result.data.clientName,
+					siteName: result.data.name,
+				})
+			);
 			setNewSiteDetails(result.data);
 			setNewInput(result.data);
 			fetchListOfRegions(result.data.regionName);

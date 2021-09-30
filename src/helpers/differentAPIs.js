@@ -68,6 +68,15 @@ import {
 	patchFeedbackPriorities,
 	patchDefaultFeedbackPriorities,
 } from "services/clients/sites/siteApplications/feedbackPriorities";
+import {
+	addOperatingModes,
+	getOperatingModes,
+	updateOperatingModes,
+} from "services/clients/sites/siteApplications/operatingModes";
+import {
+	getSiteApplicationDetail,
+	patchApplicationDetail,
+} from "services/clients/sites/siteApplications/siteApplicationDetails";
 
 const differentAPIs = {
 	StopReasonsAPIs: {
@@ -140,6 +149,14 @@ const differentAPIs = {
 		patchAPI: patchFeedbackPriorities,
 		patchDefaultAPI: patchDefaultFeedbackPriorities,
 		deleteAPI: `${BASE_API_PATH}feedbackpriorities`,
+	},
+	OperatingModesAPIs: {
+		getAPI: getOperatingModes,
+		postAPI: addOperatingModes,
+		patchAPI: updateOperatingModes,
+		getDefaultAPI: getSiteApplicationDetail,
+		patchDefaultAPI: patchApplicationDetail,
+		deleteAPI: `${BASE_API_PATH}operatingmodes`,
 	},
 };
 
