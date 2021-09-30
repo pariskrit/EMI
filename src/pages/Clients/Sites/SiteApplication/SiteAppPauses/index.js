@@ -219,10 +219,12 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 					<SearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
+						header="Pauses"
 					/>
 					<MobileSearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
+						header="Pauses"
 					/>
 				</div>
 				<CommonApplicationTable

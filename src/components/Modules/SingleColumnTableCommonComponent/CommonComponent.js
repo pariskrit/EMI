@@ -15,9 +15,6 @@ import EditDialog from "./EditDialog";
 // Show Default
 import DefaultDialog from "components/Elements/DefaultDialog";
 
-// Init styled components
-//const AC = ContentStyle();
-
 const CommonContent = ({
 	id,
 	setIs404,
@@ -218,34 +215,36 @@ const CommonContent = ({
 
 	// Fetch side effect to get application details
 	useEffect(() => {
-		const getApplicationData = async () => {
-			// Attempting to get data
-			try {
-				// Getting data from API
-				let result = await apis.getDefaultAPI(id);
+		if (showDefault) {
+			const getApplicationData = async () => {
+				// Attempting to get data
+				try {
+					// Getting data from API
+					let result = await apis.getDefaultAPI(id);
 
-				// if success, adding data to state
-				if (result.status) {
-					// Setting default
-					setDefaultData(result.data[pathToPatch]);
-				} else {
-					// If error, throwing to catch
+					// if success, adding data to state
+					if (result.status) {
+						// Setting default
+						setDefaultData(result.data[pathToPatch]);
+					} else {
+						// If error, throwing to catch
 
-					throw new Error(result);
+						throw new Error(result);
+					}
+				} catch (err) {
+					// TODO: real error handling
+					console.log(err);
+					return false;
 				}
-			} catch (err) {
-				// TODO: real error handling
-				console.log(err);
-				return false;
-			}
-		};
+			};
 
-		// Getting application and updating state
-		getApplicationData()
-			.then(() => {
-				console.log("application name updated");
-			})
-			.catch((err) => console.log(err));
+			// Getting application and updating state
+			getApplicationData()
+				.then(() => {
+					console.log("application name updated");
+				})
+				.catch((err) => console.log(err));
+		}
 		// eslint-disable-next-line
 	}, []);
 
