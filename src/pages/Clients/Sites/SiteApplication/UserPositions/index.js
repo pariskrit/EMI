@@ -43,8 +43,6 @@ function DefectStatuses({ appId, setError }) {
 				userAccess: positionAccessTypes[newData.userAccess],
 				analyticsAccess: positionAccessTypes[newData.analyticsAccess],
 				settingsAccess: positionAccessTypes[newData.settingsAccess],
-				allowChangeSkippedTaskStatus:
-					positionAccessTypes[newData.allowChangeSkippedTaskStatus],
 			},
 		]);
 
