@@ -182,11 +182,16 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 					description="Create and manage Model Statuses"
 				/>
 
-				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
+				<SearchField
+					searchQuery={searchQuery}
+					setSearchQuery={handleSearch}
+					header="Model Statuses"
+				/>
 
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
+					header="Model Statuses"
 				/>
 			</div>
 			<ModelStatusesTable

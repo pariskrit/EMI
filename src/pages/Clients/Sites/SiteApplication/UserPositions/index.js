@@ -127,10 +127,15 @@ function DefectStatuses({ appId, setError }) {
 					dataCount={allData.length}
 					description="Create and manage Positions"
 				/>
-				<SearchField searchQuery={searchQuery} setSearchQuery={handleSearch} />
+				<SearchField
+					searchQuery={searchQuery}
+					setSearchQuery={handleSearch}
+					header="Positions"
+				/>
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
+					header="Positions"
 				/>
 			</div>
 			<CommonApplicationTable

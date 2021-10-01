@@ -128,11 +128,13 @@ const CustomCaptionsContent = ({ id, setIs404, state }) => {
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={(e) => setSearchQuery(e.target.value)}
+							header="Custom Captions"
 						/>
 
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={(e) => setSearchQuery(e.target.value)}
+							header="Custom Captions"
 						/>
 					</div>
 

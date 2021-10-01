@@ -202,11 +202,13 @@ const SiteAppFeedbackStatuses = ({
 					<SearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
+						header="Feedback Statuses"
 					/>
 
 					<MobileSearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
+						header="Feedback Statuses"
 					/>
 				</div>
 				<CommonApplicationTable
