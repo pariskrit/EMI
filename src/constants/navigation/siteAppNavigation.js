@@ -20,6 +20,7 @@ import {
 	siteAppDefectStatusPath,
 	siteAppDetailPath,
 	siteAppPositionsPath,
+	siteAppFeedbackStatuses,
 } from "helpers/routePaths";
 
 /**
@@ -145,7 +146,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId) => {
 				},
 				{
 					title: "Statuses",
-					link: links + "/feedbackstatuses",
+					link: links + siteAppFeedbackStatuses,
 				},
 			],
 		},
