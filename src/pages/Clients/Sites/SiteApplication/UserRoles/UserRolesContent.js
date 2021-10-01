@@ -54,6 +54,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 			console.log(err);
 			return false;
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, setIs404]);
 
 	useEffect(() => {

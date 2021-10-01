@@ -121,6 +121,7 @@ function ClientDocuments({ clientId, getError }) {
 		return () => {
 			cancelFetch.current = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

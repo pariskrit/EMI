@@ -100,6 +100,7 @@ const AddAppDialog = ({
 			setSelectedApplication({});
 			setAvailableApplications([]);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 
 	return (
