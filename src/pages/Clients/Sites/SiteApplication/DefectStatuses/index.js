@@ -95,15 +95,21 @@ function DefectStatuses({ appId, setError }) {
 	const fetchDefectStatuses = async () => {
 		const result = await getDefectStatuses(appId);
 		const res = await getSiteApplicationDetail(appId);
-		setDefaultId(res.data.defaultDefectStatusID);
-		setAllData([
-			...result.data.map((res) => ({
-				...res,
-				type: defectStatusTypes.find((type) => type.value === res.type)[
-					"label"
-				],
-			})),
-		]);
+
+		if (res.status) {
+			setDefaultId(res.data.defaultDefectStatusID);
+			setAllData([
+				...result.data.map((res) => ({
+					...res,
+					type: defectStatusTypes.find((type) => type.value === res.type)[
+						"label"
+					],
+				})),
+			]);
+		} else {
+			setError("Please Login Again");
+		}
+
 		setLoading(false);
 	};
 
@@ -156,6 +162,7 @@ function DefectStatuses({ appId, setError }) {
 			</div>
 			<CommonApplicationTable
 				data={allData}
+				setData={setAllData}
 				columns={["name", "type"]}
 				headers={["Name", "Type"]}
 				setSearch={setSearchData}
