@@ -67,16 +67,16 @@ const OtherAssets = () => {
 	const id = 1;
 
 	// Handlers
-	const addAssetHandler = (name, alt, src) => {
-		dispatch({
-			type: "add",
-			payload: {
-				name: name,
-				alt: alt,
-				src: src,
-			},
-		});
-	};
+	// const addAssetHandler = (name, alt, src) => {
+	// 	dispatch({
+	// 		type: "add",
+	// 		payload: {
+	// 			name: name,
+	// 			alt: alt,
+	// 			src: src,
+	// 		},
+	// 	});
+	// };
 	const deleteAssetHandler = (index) => {
 		dispatch({
 			type: "delete",

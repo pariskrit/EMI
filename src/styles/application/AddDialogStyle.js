@@ -93,7 +93,7 @@ const AddDialogStyle = () => {
 		LeftInputContainer: styled("div")({
 			paddingRight: 15,
 			width: "50%",
-			["@media (max-width:414px)"]: {
+			[media]: {
 				width: "100%",
 				paddingRight: 0,
 				marginBottom: "20px",

@@ -4,8 +4,6 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-	TextField,
-	Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { generateErrorState, handleValidateObj } from "helpers/utils";

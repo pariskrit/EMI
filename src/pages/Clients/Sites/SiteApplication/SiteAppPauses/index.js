@@ -123,7 +123,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 
 	const handleDeleteDialogOpen = (id) => {
 		setDeleteId(id);
-		setModal((th) => ({ ...modal, delete: true }));
+		setModal((th) => ({ ...th, delete: true }));
 	};
 
 	const handleGetData = useCallback(async () => {
