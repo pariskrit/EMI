@@ -45,8 +45,8 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 			if (result.status) {
 				setLoading(false);
 
-				setDefaultId(res.data.defaultModelStatusID);
-				setAllData(result.data);
+				setDefaultId(res?.data?.defaultModelStatusID);
+				setAllData(result?.data);
 
 				return true;
 			} else {
