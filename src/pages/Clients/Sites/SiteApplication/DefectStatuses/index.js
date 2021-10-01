@@ -96,19 +96,15 @@ function DefectStatuses({ appId, setError }) {
 		const result = await getDefectStatuses(appId);
 		const res = await getSiteApplicationDetail(appId);
 
-		if (res.status) {
-			setDefaultId(res.data.defaultDefectStatusID);
-			setAllData([
-				...result.data.map((res) => ({
-					...res,
-					type: defectStatusTypes.find((type) => type.value === res.type)[
-						"label"
-					],
-				})),
-			]);
-		} else {
-			setError("Please Login Again");
-		}
+		setDefaultId(res.data.defaultDefectStatusID);
+		setAllData([
+			...result?.data?.map((res) => ({
+				...res,
+				type: defectStatusTypes.find((type) => type.value === res.type)[
+					"label"
+				],
+			})),
+		]);
 
 		setLoading(false);
 	};
