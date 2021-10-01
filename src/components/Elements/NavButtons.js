@@ -7,15 +7,40 @@ import MenuDropdown from "./MenuDropdown";
 import ColourConstants from "helpers/colourConstants";
 import PropTypes from "prop-types";
 
+const media = "@media(max-width: 768px)";
+
 const useStyles = makeStyles((theme) => ({
-	root: {
+	desktopNav: {
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
 		"& > *": {
 			margin: theme.spacing(1),
 		},
+		[media]: {
+			display: "none",
+		},
 	},
+
+	mobileNav: {
+		display: "none",
+		[media]: {
+			display: "flex",
+			flexDirection: "column",
+			alignItems: "center",
+			"& > *": {
+				margin: theme.spacing(1),
+			},
+		},
+	},
+	background: {
+		position: " absolute",
+		top: 0,
+		left: 0,
+		height: "100vh",
+		width: "100vw",
+	},
+
 	buttonGroup: {
 		width: "99.5%",
 	},
@@ -47,50 +72,99 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 
 	return (
-		<div className={`${classes.root} buttonGroup`}>
-			<ButtonGroup
-				fullWidth={true}
-				className={`${classes.buttonGroup} `}
-				aria-label="outlined primary button group"
-				size="small"
-			>
-				{navigation.map((navItem, index) => {
-					// TODO: below is updated zeroth button to be current. This needs to come
-					// from state in prod
+		<>
+			<div
+				className={classes.background}
+				onClick={() => {
+					setAnchorEl(null);
+					setSelectedButton(null);
+				}}
+			></div>
+			<div className={` buttonGroup ${classes.desktopNav}`}>
+				<ButtonGroup
+					fullWidth={true}
+					className={`${classes.buttonGroup} `}
+					aria-label="outlined primary button group"
+					size="small"
+				>
+					{navigation.map((navItem, index) => {
+						// TODO: below is updated zeroth button to be current. This needs to come
+						// from state in prod
 
-					return (
-						<Button
-							className={`${
-								navItem.name === current
-									? clsx(classes.curveButton, classes.curveButtonCurrent)
-									: classes.curveButton
-							} largeBtn`}
-							onMouseEnter={(e) => {
-								setAnchorEl(e.currentTarget);
-								setSelectedButton(index);
-							}}
-							onMouseLeave={() => {
-								setAnchorEl(null);
-								setSelectedButton(null);
-							}}
-							onClick={() => onClick(navItem.url)}
-							key={index}
-						>
-							{navItem.name}
-							{navItem?.dropdown?.length > 0 && (
-								<MenuDropdown
-									index={index}
-									selectedButton={selectedButton}
-									anchorEl={anchorEl}
-									content={navItem.dropdown}
-									applicationName={applicationName}
-								/>
-							)}
-						</Button>
-					);
-				})}
-			</ButtonGroup>
-		</div>
+						return (
+							<Button
+								className={`${
+									navItem.name === current
+										? clsx(classes.curveButton, classes.curveButtonCurrent)
+										: classes.curveButton
+								} largeBtn`}
+								onMouseEnter={(e) => {
+									setAnchorEl(e.currentTarget);
+									setSelectedButton(index);
+								}}
+								onMouseLeave={() => {
+									setAnchorEl(null);
+									setSelectedButton(null);
+								}}
+								onClick={() => onClick(navItem.url)}
+								key={index}
+							>
+								{navItem.name}
+								{navItem?.dropdown?.length > 0 && (
+									<MenuDropdown
+										index={index}
+										selectedButton={selectedButton}
+										anchorEl={anchorEl}
+										content={navItem.dropdown}
+										applicationName={applicationName}
+									/>
+								)}
+							</Button>
+						);
+					})}
+				</ButtonGroup>
+			</div>
+			<div className={` buttonGroup ${classes.mobileNav}`}>
+				<ButtonGroup
+					fullWidth={true}
+					className={`${classes.buttonGroup} `}
+					aria-label="outlined primary button group"
+					size="small"
+				>
+					{navigation.map((navItem, index) => {
+						// TODO: below is updated zeroth button to be current. This needs to come
+						// from state in prod
+
+						return (
+							<Button
+								className={`${
+									navItem.name === current
+										? clsx(classes.curveButton, classes.curveButtonCurrent)
+										: classes.curveButton
+								} largeBtn`}
+								onClick={(e) => {
+									setAnchorEl(e.currentTarget);
+									setSelectedButton(index);
+									onClick(navItem.url);
+								}}
+								key={index}
+							>
+								{navItem.name}
+								{navItem?.dropdown?.length > 0 && (
+									<MenuDropdown
+										index={index}
+										selectedButton={selectedButton}
+										anchorEl={anchorEl}
+										content={navItem.dropdown}
+										applicationName={applicationName}
+									/>
+								)}
+							</Button>
+						);
+					})}
+				</ButtonGroup>
+			</div>
+		</>
 	);
 };
 
