@@ -24,7 +24,6 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 	const [applicationName, setApplicationName] = useState("");
 	const [data, setData] = useState([]);
 	const [haveData, setHaveData] = useState(false);
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dataChanged, setDataChanged] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openAddDialog, setOpenAddDialog] = useState(false);
@@ -199,7 +198,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 
 	useEffect(() => {
 		if (dataChanged) {
-			handleSort(data, setData, currentTableSort[0], currentTableSort[1]);
+			handleSort(data, setData, "name", "asc");
 
 			if (searchQuery !== "") {
 				handleSearch();

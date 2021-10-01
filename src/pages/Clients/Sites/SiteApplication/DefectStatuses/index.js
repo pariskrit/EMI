@@ -109,6 +109,7 @@ function DefectStatuses({ appId, setError }) {
 
 	useEffect(() => {
 		fetchDefectStatuses();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

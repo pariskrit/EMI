@@ -48,6 +48,7 @@ const Details = () => {
 		return () => {
 			cancelFetch.current = true;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return (
 		<div style={{ marginTop: 22 }}>

@@ -22,7 +22,7 @@ import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
 import { applicationListPath, clientsPath } from "helpers/routePaths";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./style.scss";
 
