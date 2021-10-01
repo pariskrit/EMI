@@ -81,20 +81,24 @@ function DefectStatuses({ appId, setError }) {
 		const result = await getPositions(appId);
 		setLoading(false);
 
-		setAllData([
-			...result?.data?.map((res) => ({
-				...res,
-				analyticsAccess: positionAccessTypes[res.analyticsAccess],
-				defectAccess: positionAccessTypes[res.defectAccess],
-				defectExportAccess: positionAccessTypes[res.defectExportAccess],
-				feedbackAccess: positionAccessTypes[res.feedbackAccess],
-				modelAccess: positionAccessTypes[res.modelAccess],
-				noticeboardAccess: positionAccessTypes[res.noticeboardAccess],
-				serviceAccess: positionAccessTypes[res.serviceAccess],
-				settingsAccess: positionAccessTypes[res.settingsAccess],
-				userAccess: positionAccessTypes[res.userAccess],
-			})),
-		]);
+		if (!result.status) {
+			console.log("error occurred login again");
+		} else {
+			setAllData([
+				...result?.data?.map((res) => ({
+					...res,
+					analyticsAccess: positionAccessTypes[res.analyticsAccess],
+					defectAccess: positionAccessTypes[res.defectAccess],
+					defectExportAccess: positionAccessTypes[res.defectExportAccess],
+					feedbackAccess: positionAccessTypes[res.feedbackAccess],
+					modelAccess: positionAccessTypes[res.modelAccess],
+					noticeboardAccess: positionAccessTypes[res.noticeboardAccess],
+					serviceAccess: positionAccessTypes[res.serviceAccess],
+					settingsAccess: positionAccessTypes[res.settingsAccess],
+					userAccess: positionAccessTypes[res.userAccess],
+				})),
+			]);
+		}
 	};
 
 	useEffect(() => {
