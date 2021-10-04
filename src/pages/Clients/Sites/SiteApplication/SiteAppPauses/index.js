@@ -170,7 +170,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		const newData = [...allData];
 
 		let index = newData.findIndex((el) => el.id === d.id);
-		newData[index] = d;
+		newData[index] = { ...d, totalSub: d.pauseSubcategories.length };
 
 		// Updating state
 		setAllData(newData);
