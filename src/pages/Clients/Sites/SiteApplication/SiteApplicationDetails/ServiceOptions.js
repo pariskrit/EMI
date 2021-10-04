@@ -5,7 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { Card, CardContent, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { useParams } from "react-router";
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import TextAreaInputField from "components/Elements/TextAreaInputField";

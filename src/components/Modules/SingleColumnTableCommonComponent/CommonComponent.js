@@ -78,6 +78,7 @@ const CommonContent = ({
 			console.log(err);
 			return false;
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, setIs404]);
 
 	const handleAddData = (d) => {

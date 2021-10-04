@@ -53,11 +53,11 @@ const SiteAppFeedbackStatuses = ({
 			if (result.status) {
 				setLoading(false);
 
-				setDefaultId(res.data.defaultFeedbackStatusID);
+				setDefaultId(res?.data?.defaultFeedbackStatusID);
 				setAllData(
-					result.data.map((x) => ({
+					result?.data?.map((x) => ({
 						...x,
-						statusType: FeedbackStatusTypes[x.type],
+						statusType: FeedbackStatusTypes[x?.type],
 					}))
 				);
 

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { editSiteDepartments } from "services/clients/sites/siteDepartments";
 

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import API from "../../../helpers/api";
-import EditDialogStyle from "../../../styles/application/EditDialogStyle";
+import API from "helpers/api";
+import EditDialogStyle from "styles/application/EditDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
 const AED = EditDialogStyle();
