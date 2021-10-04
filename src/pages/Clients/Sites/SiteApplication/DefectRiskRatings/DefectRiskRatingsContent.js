@@ -237,8 +237,6 @@ const DefectRiskRatingsContent = ({
 		// eslint-disable-next-line
 	}, [dataChanged]);
 
-	const mainData = searchQuery.length === 0 ? allData : searchedData;
-
 	return (
 		<div className="container">
 			{/* DIALOGS */}
@@ -299,7 +297,7 @@ const DefectRiskRatingsContent = ({
 					</div>
 
 					<CommonApplicationTable
-						data={mainData}
+						data={allData}
 						setData={setAllData}
 						setSearch={setSearchData}
 						searchQuery={searchQuery}
@@ -324,6 +322,7 @@ const DefectRiskRatingsContent = ({
 								isDelete: false,
 							},
 						]}
+						searchedData={searchedData}
 					/>
 				</>
 			</CommonBody>
