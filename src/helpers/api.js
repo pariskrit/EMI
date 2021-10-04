@@ -12,8 +12,8 @@ const instance = axios.create({
 
 // Setting auth (if JWT present)
 if (
-	localStorage.getItem("token") !== undefined ||
-	localStorage.getItem("token") !== null
+	localStorage.getItem("token") !== null ||
+	localStorage.getItem("token") !== undefined
 ) {
 	instance.defaults.headers.common[
 		"Authorization"
@@ -22,6 +22,11 @@ if (
 
 instance.interceptors.response.use(
 	(response) => {
+		if (response.config.url === "/api/Users/Login") {
+			instance.defaults.headers.common[
+				"Authorization"
+			] = `bearer ${response.data.jwtToken}`;
+		}
 		return response;
 	},
 	async (error) => {

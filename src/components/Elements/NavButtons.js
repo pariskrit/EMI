@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
 			width: "100vw",
 		},
 	},
-
 	buttonGroup: {
 		width: "99.5%",
 	},

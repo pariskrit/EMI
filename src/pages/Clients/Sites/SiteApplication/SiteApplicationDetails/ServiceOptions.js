@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: "3%",
 	},
 	tickInputContainer: {
-		width: "100%",
+		width: "fit-content",
 	},
 	labelText: {
 		fontFamily: "Roboto Condensed",
