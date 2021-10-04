@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,9 +14,9 @@ import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
 import Watermark from "assets/watermark.png";
-import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
+import { loginUser } from "redux/auth/actions";
 
 // Yup validation schema
 const schema = yup.object({
@@ -98,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Login = () => {
+const Login = ({ userLoading, loginData }) => {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -106,13 +107,11 @@ const Login = () => {
 	// Init state
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [attemptLogin, setAttemptLogin] = useState(false);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
 	// Handlers
 	const loginHandler = async (email, password) => {
 		// Setting spinner
-		setAttemptLogin(true);
 
 		// Attempting login
 		try {
@@ -124,36 +123,20 @@ const Login = () => {
 
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
-				// Making backend request
-				let loginConfirm = await API.post("/api/Users/Login", {
-					email: email,
-					password: password,
-				});
-
-				if (loginConfirm.status === 200) {
-					// Adding JWT to localStorage
-					localStorage.setItem("token", loginConfirm.data.jwtToken);
-
-					// Redirecting
+				const response = await loginData(input);
+				if (response) {
 					successRedirect();
-
 					return true;
 				} else {
-					throw new Error(loginConfirm);
+					throw new Error(response);
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
 
 				setErrors({ ...errors, ...newErrors });
-				setAttemptLogin(false);
 			}
 		} catch (err) {
 			// Removing spinner
-			setAttemptLogin(false);
-
-			console.log("We didn't log in");
-			console.log(err);
-
 			return false;
 		}
 	};
@@ -190,7 +173,7 @@ const Login = () => {
 					</div>
 
 					<div className={classes.loginFormContainer}>
-						{attemptLogin ? (
+						{userLoading ? (
 							<div className={classes.spinnerContainer}>
 								<CircularProgress />
 							</div>
@@ -256,4 +239,9 @@ const Login = () => {
 	);
 };
 
-export default Login;
+const mapStateToProps = ({ authData: { userLoading } }) => ({ userLoading });
+const mapDispatchToProps = (dispatch) => ({
+	loginData: (data) => dispatch(loginUser(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
