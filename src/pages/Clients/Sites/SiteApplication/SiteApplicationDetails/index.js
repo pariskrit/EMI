@@ -45,7 +45,8 @@ function SiteApplicationDetails({
 	};
 
 	useEffect(() => {
-		if (Object.keys(details).length > 0) {
+		const isDetailsPresent = Object.keys(details).length > 0;
+		if (isDetailsPresent) {
 			setSiteAppDetails({
 				name: details.data.application.name,
 				purpose: details.data.application.purpose,
@@ -63,8 +64,16 @@ function SiteApplicationDetails({
 			setIsLoading(false);
 			fetchSiteDetails();
 		}
+
+		return () => {
+			if (isDetailsPresent) {
+				dispatch({ type: "RESET_SITE_APP_DETAIL" });
+			}
+		};
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [details]);
+
 	return (
 		<>
 			<ConfirmChangeDialog
