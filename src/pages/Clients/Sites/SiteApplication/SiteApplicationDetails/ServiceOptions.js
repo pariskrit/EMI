@@ -5,7 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { Grid } from "@material-ui/core";
+import { Accordion, CircularProgress, Grid } from "@material-ui/core";
 import { useParams } from "react-router";
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 		maxWidth: "fit-content",
 	},
 }));
-function ServiceOptions({ details, setError }) {
+function ServiceOptions({ details, setError, loading }) {
 	const classes = useStyles();
 	const [checkLists, setCheckLists] = useState({});
 	const { appId } = useParams();
@@ -123,6 +123,14 @@ function ServiceOptions({ details, setError }) {
 			});
 		}
 	}, [details]);
+
+	if (loading) {
+		return (
+			<AccordionBox title="Service Options">
+				<CircularProgress />
+			</AccordionBox>
+		);
+	}
 
 	return (
 		<div className={classes.detailsContainer}>

@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import ColourConstants from "helpers/colourConstants";
 import AccordionBox from "components/Layouts/AccordionBox";
 import Divider from "@material-ui/core/Divider";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	detailsContainer: {
@@ -80,9 +81,17 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Application = ({ details }) => {
+const Application = ({ details, loading }) => {
 	// Init hooks
 	const classes = useStyles();
+
+	if (loading) {
+		return (
+			<AccordionBox title="Details">
+				<CircularProgress />
+			</AccordionBox>
+		);
+	}
 
 	return (
 		<div className={classes.detailsContainer}>

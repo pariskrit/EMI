@@ -22,6 +22,13 @@ function reducer(state, action) {
 			};
 		}
 
+		case "RESET_SITE_APP_DETAIL": {
+			return {
+				...state,
+				details: {},
+			};
+		}
+
 		case "TOGGLE_CONFIRMATION_MODAL": {
 			return {
 				...state,
