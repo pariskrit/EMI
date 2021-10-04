@@ -75,6 +75,7 @@ const useStyles = makeStyles({
 			marginTop: "10px",
 			marginBottom: "10px",
 			justifyContent: "space-between",
+			zIndex: 1,
 		},
 	},
 });
