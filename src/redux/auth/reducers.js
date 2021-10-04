@@ -9,5 +9,17 @@ const initialState = {
 export const authSlice = createSlice({
 	name: "authData",
 	initialState,
-	reducers: {},
+	reducers: {
+		loginRequest: (state) => {
+			state.userLoading = true;
+		},
+		dataSuccess: (state, { payload }) => {
+			state.userLoading = false;
+			state.userDetail = payload.data;
+			state.hasData = true;
+		},
+		userFailure: (state) => {
+			state.userLoading = false;
+		},
+	},
 });
