@@ -34,13 +34,14 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	background: {
-		position: " absolute",
-		top: 0,
-		left: 0,
-		height: "100vh",
-		width: "100vw",
+		[media]: {
+			position: " absolute",
+			top: 0,
+			left: 0,
+			height: "100vh",
+			width: "100vw",
+		},
 	},
-
 	buttonGroup: {
 		width: "99.5%",
 	},
