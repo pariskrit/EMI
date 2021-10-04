@@ -125,7 +125,6 @@ const Login = ({ userLoading, loginData }) => {
 			if (!localChecker.some((el) => el.valid === false)) {
 				const response = await loginData(input);
 				if (response) {
-					localStorage.setItem("token", response.data.jwtToken);
 					successRedirect();
 					return true;
 				} else {

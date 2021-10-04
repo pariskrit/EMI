@@ -8,6 +8,7 @@ export const loginUser = (input) => async (dispatch) => {
 	return new Promise((resolve, reject) => {
 		API.post("/api/Users/Login", input)
 			.then((res) => {
+				localStorage.setItem("token", res.data.jwtToken);
 				dispatch(dataSuccess({ payload: res.data }));
 				resolve(res.data);
 			})
