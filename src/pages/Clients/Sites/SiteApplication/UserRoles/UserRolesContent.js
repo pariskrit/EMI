@@ -191,6 +191,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 								isDelete: true,
 							},
 						]}
+						searchedData={searchedData}
 					/>
 				</>
 			</CommonBody>
