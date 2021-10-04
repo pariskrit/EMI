@@ -81,9 +81,11 @@ function DefectStatuses({ appId, setError }) {
 		const result = await getPositions(appId);
 		setLoading(false);
 
-		if (result.status) {
+		if (!result.status) {
+			console.log("error occurred login again");
+		} else {
 			setAllData([
-				...result.data.map((res) => ({
+				...result?.data?.map((res) => ({
 					...res,
 					analyticsAccess: positionAccessTypes[res.analyticsAccess],
 					defectAccess: positionAccessTypes[res.defectAccess],
@@ -96,8 +98,6 @@ function DefectStatuses({ appId, setError }) {
 					userAccess: positionAccessTypes[res.userAccess],
 				})),
 			]);
-		} else {
-			setError("Please login again");
 		}
 	};
 

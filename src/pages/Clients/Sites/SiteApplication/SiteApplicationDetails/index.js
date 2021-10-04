@@ -1,18 +1,18 @@
 import { Grid } from "@material-ui/core";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Application from "./Application";
 import License from "./License";
 import ServiceOptions from "./ServiceOptions";
 import { getSiteDetails } from "services/clients/sites/siteDetails";
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
-import { SiteContext } from "contexts/SiteApplicationContext";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 
-function SiteApplicationDetails({ appId }) {
+function SiteApplicationDetails({
+	appId,
+	state: { details, openConfirmationModal, isActive },
+	dispatch,
+}) {
 	const [showLicenseTile, setShowLicenseTile] = useState(false);
-	const [{ details, openConfirmationModal, isActive }, dispatch] = useContext(
-		SiteContext
-	);
 	const [siteAppDetails, setSiteAppDetails] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 
@@ -22,7 +22,7 @@ function SiteApplicationDetails({ appId }) {
 	const fetchSiteDetails = async () => {
 		const siteResult = await getSiteDetails(details.data.siteID);
 
-		if (siteResult.data.licenseType === 3) {
+		if (siteResult?.data?.licenseType === 3) {
 			setShowLicenseTile(true);
 		}
 	};

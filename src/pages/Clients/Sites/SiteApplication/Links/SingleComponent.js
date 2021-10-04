@@ -33,15 +33,17 @@ const SingleComponent = (route) => {
 			);
 		}
 
-		dispatch({
-			type: "SET_SITE_APP_DETAIL",
-			payload: result,
-		});
+		if (result.status) {
+			dispatch({
+				type: "SET_SITE_APP_DETAIL",
+				payload: result,
+			});
 
-		dispatch({
-			type: "TOGGLE_ISACTIVE",
-			payload: result.data.isActive,
-		});
+			dispatch({
+				type: "TOGGLE_ISACTIVE",
+				payload: result.data.isActive,
+			});
+		}
 	};
 
 	useEffect(() => {
