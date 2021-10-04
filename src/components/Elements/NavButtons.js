@@ -34,11 +34,13 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	background: {
-		position: " absolute",
-		top: 0,
-		left: 0,
-		height: "100vh",
-		width: "100vw",
+		[media]: {
+			position: " absolute",
+			top: 0,
+			left: 0,
+			height: "100vh",
+			width: "100vw",
+		},
 	},
 
 	buttonGroup: {
@@ -71,13 +73,16 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 	const [selectedButton, setSelectedButton] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
+	const [selectedButtonMobile, setSelectedButtonMobile] = useState(null);
+	const [anchorElMobile, setAnchorElMobile] = useState(null);
+
 	return (
 		<>
 			<div
 				className={classes.background}
 				onClick={() => {
-					setAnchorEl(null);
-					setSelectedButton(null);
+					setAnchorElMobile(null);
+					setSelectedButtonMobile(null);
 				}}
 			></div>
 			<div className={` buttonGroup ${classes.desktopNav}`}>
@@ -124,7 +129,7 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 					})}
 				</ButtonGroup>
 			</div>
-			<div className={` buttonGroup ${classes.mobileNav}`}>
+			<div className={`buttonGroup ${classes.mobileNav}`}>
 				<ButtonGroup
 					fullWidth={true}
 					className={`${classes.buttonGroup} `}
@@ -143,8 +148,8 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 										: classes.curveButton
 								} largeBtn`}
 								onClick={(e) => {
-									setAnchorEl(e.currentTarget);
-									setSelectedButton(index);
+									setAnchorElMobile(e.currentTarget);
+									setSelectedButtonMobile(index);
 									onClick(navItem.url);
 								}}
 								key={index}
@@ -153,8 +158,8 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 								{navItem?.dropdown?.length > 0 && (
 									<MenuDropdown
 										index={index}
-										selectedButton={selectedButton}
-										anchorEl={anchorEl}
+										selectedButton={selectedButtonMobile}
+										anchorEl={anchorElMobile}
 										content={navItem.dropdown}
 										applicationName={applicationName}
 									/>
