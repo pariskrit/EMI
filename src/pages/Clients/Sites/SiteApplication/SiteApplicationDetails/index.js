@@ -15,6 +15,7 @@ function SiteApplicationDetails({
 	const [showLicenseTile, setShowLicenseTile] = useState(false);
 	const [siteAppDetails, setSiteAppDetails] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const closeConfirmationModal = () =>
 		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: false });
@@ -59,6 +60,7 @@ function SiteApplicationDetails({
 				userConfirmationMessage: details.data.userConfirmationMessage,
 				raisingDefectCopiesTaskName: details.data.raisingDefectCopiesTaskName,
 			});
+			setIsLoading(false);
 			fetchSiteDetails();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,10 +75,10 @@ function SiteApplicationDetails({
 			/>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<Application details={siteAppDetails} />
+					<Application details={siteAppDetails} loading={isLoading} />
 				</Grid>
 				<Grid item xs={12}>
-					<ServiceOptions details={siteAppDetails} />
+					<ServiceOptions details={siteAppDetails} loading={isLoading} />
 				</Grid>
 				<Grid item xs={12}>
 					{showLicenseTile ? <License details={siteAppDetails} /> : null}
