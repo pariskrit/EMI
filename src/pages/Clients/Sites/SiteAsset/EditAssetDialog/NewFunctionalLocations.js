@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Grid, makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { postSiteAssetReferences } from "services/clients/sites/siteAssets/references";
+import useOutsideClick from "hooks/useOutsideClick";
 
 const schema = yup.object({
 	name: yup
@@ -61,6 +62,7 @@ const NewFunctionalLocations = ({
 	handleAddFunctional,
 	getError,
 }) => {
+	const ref = useRef(null);
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultInputSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
@@ -136,10 +138,18 @@ const NewFunctionalLocations = ({
 		closeOverride();
 	};
 
+	const handleEnterPress = (e) => {
+		if (e.keyCode === 13) {
+			saveFuncLoc();
+		}
+	};
+
+	useOutsideClick(ref, () => saveFuncLoc());
+
 	return (
 		<div className={classes.mainWrap}>
 			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
-			<form>
+			<form ref={ref}>
 				<div className="desktopTableViewEdit">
 					<Grid container spacing={2}>
 						<Grid item sm={6}>
@@ -152,7 +162,7 @@ const NewFunctionalLocations = ({
 								value={input.name}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 								autoFocus
 							/>
 						</Grid>
@@ -168,7 +178,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.description === null ? null : errors.description
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -183,7 +193,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -198,7 +208,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.workCenter === null ? null : errors.workCenter
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 					</Grid>
@@ -215,7 +225,7 @@ const NewFunctionalLocations = ({
 								value={input.name}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -230,7 +240,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.description === null ? null : errors.description
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -245,7 +255,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -260,7 +270,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.workCenter === null ? null : errors.workCenter
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 					</Grid>
