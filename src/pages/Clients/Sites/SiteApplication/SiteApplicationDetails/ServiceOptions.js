@@ -102,12 +102,6 @@ function ServiceOptions({ details, setError, loading }) {
 		}
 	};
 
-	const onKeyPress = (e) => {
-		if (e.key === "Enter") {
-			handleConfirmationMessageUpdate();
-		}
-	};
-
 	useEffect(() => {
 		if (Object.keys(details).length > 0) {
 			const {
@@ -146,7 +140,6 @@ function ServiceOptions({ details, setError, loading }) {
 							minRows={3}
 							onChange={onTextAreaChange}
 							onBlur={handleConfirmationMessageUpdate}
-							onKeyPress={onKeyPress}
 							disabled={!checkLists.showServiceUserConfirmation}
 						/>
 					</Grid>
