@@ -374,6 +374,7 @@ const AddDialog = ({
 							<FormControlLabel
 								control={
 									<EMICheckbox
+										state={input.allowChangeSkippedTaskStatus}
 										changeHandler={() => {
 											setInput({
 												...input,
