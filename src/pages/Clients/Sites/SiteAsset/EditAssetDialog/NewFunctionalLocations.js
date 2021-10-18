@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { connect } from "react-redux";
 import { Grid, makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
@@ -61,6 +62,7 @@ const NewFunctionalLocations = ({
 	setIsAddNew,
 	handleAddFunctional,
 	getError,
+	error,
 }) => {
 	const ref = useRef(null);
 	const classes = useStyles();
@@ -106,25 +108,27 @@ const NewFunctionalLocations = ({
 
 	const saveFuncLoc = async () => {
 		// e.preventDefault();
-		setLoading(true);
-		setErrors(defaultErrorSchema);
-		try {
-			const localChecker = await handleValidateObj(schema, input);
-			if (!localChecker.some((el) => el.valid === false)) {
-				const updateData = await handleCreateFuncLocations();
-				if (updateData.success) {
-					closeOverride();
-					setIsAddNew(false);
+		if (!error.status) {
+			setLoading(true);
+			setErrors(defaultErrorSchema);
+			try {
+				const localChecker = await handleValidateObj(schema, input);
+				if (!localChecker.some((el) => el.valid === false)) {
+					const updateData = await handleCreateFuncLocations();
+					if (updateData.success) {
+						closeOverride();
+						setIsAddNew(false);
+					} else {
+						setLoading(false);
+					}
 				} else {
+					const newError = generateErrorState(localChecker);
+					setErrors({ ...errors, ...newError });
 					setLoading(false);
 				}
-			} else {
-				const newError = generateErrorState(localChecker);
-				setErrors({ ...errors, ...newError });
-				setLoading(false);
+			} catch (err) {
+				console.log(err);
 			}
-		} catch (err) {
-			console.log(err);
 		}
 	};
 
@@ -281,5 +285,5 @@ const NewFunctionalLocations = ({
 		</div>
 	);
 };
-
-export default NewFunctionalLocations;
+const mapStateToProps = ({ commonData: { error } }) => ({ error });
+export default connect(mapStateToProps)(NewFunctionalLocations);
