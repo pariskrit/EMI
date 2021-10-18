@@ -129,14 +129,14 @@ const SiteDetails = ({
 			return;
 		}
 
-		setNewInput({ ...newInput, isUpdating: true, isDisabled: true });
+		setUpdating({ [newInput.label]: { isUpdating: true } });
 
 		const response = await updateSiteDetails(siteId, newInput);
 		await fetchSiteDetails();
 		if (!response.status) {
 			setError(response.data.detail);
 		}
-		setNewInput({ ...newInput, isUpdating: false, isDisabled: false });
+		setUpdating(false);
 	};
 
 	const fetchSiteDetails = async () => {
@@ -230,12 +230,11 @@ const SiteDetails = ({
 									<TextField
 										name="name"
 										InputProps={{
-											endAdornment:
-												newInput.label === "name" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["name"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={newInput.label === "name" && newInput.isUpdating}
+										disabled={isUpdating["name"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.name || ""}
@@ -272,14 +271,11 @@ const SiteDetails = ({
 									<TextField
 										name="company"
 										InputProps={{
-											endAdornment:
-												newInput.label === "company" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["company"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={
-											newInput.label === "company" && newInput.isUpdating
-										}
+										disabled={isUpdating["company"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.company || ""}
@@ -298,21 +294,17 @@ const SiteDetails = ({
 									<TextField
 										name="address"
 										InputProps={{
-											endAdornment:
-												newInput.label === "address" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["address"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={
-											newInput.label === "address" && newInput.isUpdating
-										}
+										disabled={isUpdating["address"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.address || ""}
 										onChange={onInputChange}
 										onBlur={onUpdateInput}
 										onFocus={setSelectedInputValue}
-										onKeyDown={onEnterKeyPress}
 										multiline
 									/>
 								</div>
@@ -325,15 +317,11 @@ const SiteDetails = ({
 									<TextField
 										name="businessNumber"
 										InputProps={{
-											endAdornment:
-												newInput.label === "businessNumber" &&
-												newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["businessNumber"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={
-											newInput.label === "businessNumber" && newInput.isUpdating
-										}
+										disabled={isUpdating["businessNumber"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.businessNumber || ""}
@@ -369,15 +357,14 @@ const SiteDetails = ({
 									<TextField
 										name="licenses"
 										InputProps={{
-											endAdornment:
-												newInput.label === "licenses" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["licenses"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
 										disabled={
 											(![0, 1].includes(selectedLicenseType.value) &&
 												clientLicenseType === 3) ||
-											(newInput.label === "licenses" && newInput.isUpdating)
+											isUpdating["licenses"]?.isUpdating
 										}
 										fullWidth
 										type="number"
