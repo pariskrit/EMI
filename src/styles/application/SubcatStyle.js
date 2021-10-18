@@ -1,7 +1,7 @@
 import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import TextField from "@material-ui/core/TextField";
-import { ReactComponent as DeleteIcon } from "../../assets/icons/deleteIcon.svg";
+import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import Typography from "@material-ui/core/Typography";
 
 const SubcatStyle = () => {
