@@ -56,6 +56,7 @@ const EditPauseDialog = ({
 		closeHandler();
 		// Removing new subcat input
 		setIsAddNew(false);
+		setErrors(defaultErrorSchema);
 	};
 	const handleUpdateData = async (d) => {
 		try {
