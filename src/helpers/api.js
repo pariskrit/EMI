@@ -34,7 +34,10 @@ instance.interceptors.response.use(
 		const originalRequest = error.config;
 
 		// Checking if 401 and ensuring not already attempted refresh
-		if (error.response.status === 401 && !originalRequest._retry) {
+		if (
+			(error.response.status === 401 || error.response.status === 403) &&
+			!originalRequest._retry
+		) {
 			// Setting retry to prevent infinite loop
 			originalRequest._retry = true;
 
