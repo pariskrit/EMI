@@ -31,7 +31,6 @@ const Assets = ({ data, count, siteId, isLoading, fetchAsset, getError }) => {
 	const [editData, setEditData] = useState({});
 	const [total, setTotal] = useState(null);
 	const [page, setPage] = useState({ pageNo: 1, perPage: DefaultPageSize });
-	const [searchText, setSearchText] = useState("");
 	const searchRef = useRef("");
 
 	const fetchSiteAssets = async (searchText) => {
