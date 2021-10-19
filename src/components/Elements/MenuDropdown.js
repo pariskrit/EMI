@@ -50,6 +50,7 @@ const MenuDropdown = ({
 			open={open}
 			anchorEl={anchorEl}
 			placement={index === 0 ? "bottom-start" : "bottom"}
+			style={{ zIndex: 2 }}
 		>
 			<Paper className={classes.popperPaper}>
 				<List component="nav" aria-label="main mailbox folders">

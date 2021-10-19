@@ -40,6 +40,9 @@ const useStyles = makeStyles({
 		borderBottomWidth: 1,
 		backgroundColor: ColourConstants.tableBackground,
 		fontWeight: "bold",
+		borderRightColor: "#979797",
+		borderRightStyle: "solid",
+		borderRightWidth: "1px",
 	},
 	selectedTableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,

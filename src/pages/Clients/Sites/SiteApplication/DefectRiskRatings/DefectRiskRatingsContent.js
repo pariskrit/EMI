@@ -1,6 +1,4 @@
 import { handleSort } from "helpers/utils";
-import { useSearch } from "hooks/useSearch";
-
 import CommonBody from "components/Modules/CommonBody";
 import React, { useState, useCallback, useEffect } from "react";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -35,14 +33,20 @@ const DefectRiskRatingsContent = ({
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [confirmDefault, setConfirmDefault] = useState([null, null]);
 
-	const {
-		allData,
-		setAllData,
-		handleSearch,
-		searchedData,
-		searchQuery,
-		setSearchData,
-	} = useSearch();
+	const [allData, setAllData] = useState([]);
+	const [searchedData, setSearchData] = useState([]);
+	const [searchQuery, setSearchQuery] = useState("");
+
+	const handleSearch = (e) => {
+		const { value } = e.target;
+		setSearchQuery(value);
+		const filtered = allData.filter((x) => {
+			const regex = new RegExp(value, "gi");
+			if (x.name.match(regex)) return x.name.match(regex);
+			else if (x.action.match(regex)) return x.action.match(regex);
+		});
+		setSearchData(filtered);
+	};
 
 	const handleGetData = useCallback(async () => {
 		setLoading(true);

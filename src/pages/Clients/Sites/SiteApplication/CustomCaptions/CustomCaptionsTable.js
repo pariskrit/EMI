@@ -33,6 +33,7 @@ const useStyles = makeStyles({
 
 const CustomCaptionsTable = ({
 	data,
+	defaultData,
 	searchQuery,
 	handleUpdateCustomCaption,
 }) => {
@@ -46,10 +47,14 @@ const CustomCaptionsTable = ({
 	const customCaptionInputs = [
 		{
 			singularKey: "modelTemplateCC",
-			singularValue: data.modelTemplateCC,
-			singularDefault: "Model Template",
+			singularValue: data.modelTemplateCC
+				? data.modelTemplateCC
+				: defaultData.modelTemplateCC,
+			singularDefault: defaultData.modelTemplateCC || "Model Template",
 			pluralKey: "modelTemplatePluralCC",
-			pluralValue: data.modelTemplatePluralCC,
+			pluralValue: data.modelTemplatePluralCC
+				? data.modelTemplatePluralCC
+				: defaultData.modelTemplatePluralCC,
 			pluralDefault: "Model Templates",
 
 			indents: 0,
@@ -57,10 +62,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "projectNumberCC",
-			singularValue: data.projectNumberCC,
-			singularDefault: "Project Number",
+			singularValue: data.projectNumberCC
+				? data.projectNumberCC
+				: defaultData.projectNumberCC,
+			singularDefault: defaultData.projectNumberCC || "Project Number",
 			pluralKey: "projectNumberPluralCC",
-			pluralValue: data.projectNumberPluralCC,
+			pluralValue: data.projectNumberPluralCC
+				? data.projectNumberPluralCC
+				: defaultData.projectNumberPluralCC,
 			pluralDefault: "Project Numbers",
 
 			indents: 0,
@@ -68,10 +77,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "locationCC",
-			singularValue: data.locationCC,
-			singularDefault: "Location",
+			singularValue: data.locationCC ? data.locationCC : defaultData.locationCC,
+			singularDefault: defaultData.locationCC || "Location",
 			pluralKey: "locationPluralCC",
-			pluralValue: data.locationPluralCC,
+			pluralValue: data.locationPluralCC
+				? data.locationPluralCC
+				: defaultData.locationPluralCC,
 			pluralDefault: "Locations",
 
 			indents: 0,
@@ -79,10 +90,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "stageCC",
-			singularValue: data.stageCC,
-			singularDefault: "Stage",
+			singularValue: data.stageCC ? data.stageCC : defaultData.stageCC,
+			singularDefault: defaultData.stageCC || "Stage",
 			pluralKey: "stagePluralCC",
-			pluralValue: data.stagePluralCC,
+			pluralValue: data.stagePluralCC
+				? data.stagePluralCC
+				: defaultData.stagePluralCC,
 			pluralDefault: "Stages",
 
 			indents: 0,
@@ -90,10 +103,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "zoneCC",
-			singularValue: data.zoneCC,
-			singularDefault: "Zone",
+			singularValue: data.zoneCC ? data.zoneCC : defaultData.zoneCC,
+			singularDefault: defaultData.zoneCC || "Zone",
 			pluralKey: "zonePluralCC",
-			pluralValue: data.zonePluralCC,
+			pluralValue: data.zonePluralCC
+				? data.zonePluralCC
+				: defaultData.zonePluralCC,
 			pluralDefault: "Zones",
 
 			indents: 0,
@@ -101,10 +116,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "intervalCC",
-			singularValue: data.intervalCC,
-			singularDefault: "Interval",
+			singularValue: data.intervalCC ? data.intervalCC : defaultData.intervalCC,
+			singularDefault: defaultData.intervalCC || "Interval",
 			pluralKey: "intervalPluralCC",
-			pluralValue: data.intervalPluralCC,
+			pluralValue: data.intervalPluralCC
+				? data.intervalPluralCC
+				: defaultData.intervalPluralCC,
 			pluralDefault: "Intervals",
 
 			indents: 0,
@@ -112,10 +129,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "taskListNoCC",
-			singularValue: data.taskListNoCC,
-			singularDefault: "Task List Number",
+			singularValue: data.taskListNoCC
+				? data.taskListNoCC
+				: defaultData.taskListNoCC,
+			singularDefault: defaultData.taskListNoCC || "Task List Number",
 			pluralKey: "taskListNoPluralCC",
-			pluralValue: data.taskListNoPluralCC,
+			pluralValue: data.taskListNoPluralCC
+				? data.taskListNoPluralCC
+				: defaultData.taskListNoPluralCC,
 			pluralDefault: "Task List Numbers",
 
 			indents: 1,
@@ -123,10 +144,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "questionCC",
-			singularValue: data.questionCC,
-			singularDefault: "Question",
+			singularValue: data.questionCC ? data.questionCC : defaultData.questionCC,
+			singularDefault: defaultData.questionCC || "Question",
 			pluralKey: "questionPluralCC",
-			pluralValue: data.questionPluralCC,
+			pluralValue: data.questionPluralCC
+				? data.questionPluralCC
+				: defaultData.questionPluralCC,
 			pluralDefault: "Questions",
 
 			indents: 0,
@@ -134,10 +157,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "taskCC",
-			singularValue: data.taskCC,
-			singularDefault: "Task",
+			singularValue: data.taskCC ? data.taskCC : defaultData.taskCC,
+			singularDefault: defaultData.taskCC || "Task",
 			pluralKey: "taskPluralCC",
-			pluralValue: data.taskPluralCC,
+			pluralValue: data.taskPluralCC
+				? data.taskPluralCC
+				: defaultData.taskPluralCC,
 			pluralDefault: "Tasks",
 
 			indents: 0,
@@ -145,10 +170,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "actionRequiredCC",
-			singularValue: data.actionRequiredCC,
-			singularDefault: "Action",
+			singularValue: data.actionRequiredCC
+				? data.actionRequiredCC
+				: defaultData.actionRequiredCC,
+			singularDefault: defaultData.actionRequiredCC || "Action",
 			pluralKey: "actionRequiredPluralCC",
-			pluralValue: data.actionRequiredPluralCC,
+			pluralValue: data.actionRequiredPluralCC
+				? data.actionRequiredPluralCC
+				: defaultData.actionRequiredPluralCC,
 			pluralDefault: "Actions",
 
 			indents: 1,
@@ -156,10 +185,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "operatingModeCC",
-			singularValue: data.operatingModeCC,
-			singularDefault: "Operating Mode",
+			singularValue: data.operatingModeCC
+				? data.operatingModeCC
+				: defaultData.operatingModeCC,
+			singularDefault: defaultData.operatingModeCC || "Operating Mode",
 			pluralKey: "operatingModePluralCC",
-			pluralValue: data.operatingModePluralCC,
+			pluralValue: data.operatingModePluralCC
+				? data.operatingModePluralCC
+				: defaultData.operatingModePluralCC,
 			pluralDefault: "Operating Modes",
 
 			indents: 1,
@@ -167,10 +200,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "systemCC",
-			singularValue: data.systemCC,
-			singularDefault: "System",
+			singularValue: data.systemCC ? data.systemCC : defaultData.systemCC,
+			singularDefault: defaultData.systemCC || "System",
 			pluralKey: "systemPluralCC",
-			pluralValue: data.systemPluralCC,
+			pluralValue: data.systemPluralCC
+				? data.systemPluralCC
+				: defaultData.systemPluralCC,
 			pluralDefault: "Systems",
 
 			indents: 1,
@@ -178,10 +213,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "safetyCriticalCC",
-			singularValue: data.safetyCriticalCC,
-			singularDefault: "Safety Critical",
+			singularValue: data.safetyCriticalCC
+				? data.safetyCriticalCC
+				: defaultData.safetyCriticalCC,
+			singularDefault: defaultData.safetyCriticalCC || "Safety Critical",
 			pluralKey: "safetyCriticalPluralCC",
-			pluralValue: data.safetyCriticalPluralCC,
+			pluralValue: data.safetyCriticalPluralCC
+				? data.safetyCriticalPluralCC
+				: defaultData.safetyCriticalPluralCC,
 			pluralDefault: "Safety Critical",
 
 			indents: 1,
@@ -189,10 +228,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "partCC",
-			singularValue: data.partCC,
-			singularDefault: "Part",
+			singularValue: data.partCC ? data.partCC : defaultData.partCC,
+			singularDefault: defaultData.partCC || "Part",
 			pluralKey: "partPluralCC",
-			pluralValue: data.partPluralCC,
+			pluralValue: data.partPluralCC
+				? data.partPluralCC
+				: defaultData.partPluralCC,
 			pluralDefault: "Parts",
 
 			indents: 1,
@@ -200,10 +241,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "partQuantityCC",
-			singularValue: data.partQuantityCC,
-			singularDefault: "Part Quantity",
+			singularValue: data.partQuantityCC
+				? data.partQuantityCC
+				: defaultData.partQuantityCC,
+			singularDefault: defaultData.partQuantityCC || "Part Quantity",
 			pluralKey: "partQuantityPluralCC",
-			pluralValue: data.partQuantityPluralCC,
+			pluralValue: data.partQuantityPluralCC
+				? data.partQuantityPluralCC
+				: defaultData.partQuantityPluralCC,
 			pluralDefault: "Part Quantities",
 
 			indents: 2,
@@ -211,10 +256,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "partNameCC",
-			singularValue: data.partNameCC,
-			singularDefault: "Part Name",
+			singularValue: data.partNameCC ? data.partNameCC : defaultData.partNameCC,
+			singularDefault: defaultData.partNameCC || "Part Name",
 			pluralKey: "partNamePluralCC",
-			pluralValue: data.partNamePluralCC,
+			pluralValue: data.partNamePluralCC
+				? data.partNamePluralCC
+				: defaultData.partNamePluralCC,
 			pluralDefault: "Part Names",
 
 			indents: 2,
@@ -222,10 +269,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "partDescriptionCC",
-			singularValue: data.partDescriptionCC,
-			singularDefault: "Part Description",
+			singularValue: data.partDescriptionCC
+				? data.partDescriptionCC
+				: defaultData.partDescriptionCC,
+			singularDefault: defaultData.partDescriptionCC || "Part Description",
 			pluralKey: "partDescriptionPluralCC",
-			pluralValue: data.partDescriptionPluralCC,
+			pluralValue: data.partDescriptionPluralCC
+				? data.partDescriptionPluralCC
+				: defaultData.partDescriptionPluralCC,
 			pluralDefault: "Part Descriptions",
 
 			indents: 2,
@@ -233,10 +284,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "partStockNumberCC",
-			singularValue: data.partStockNumberCC,
-			singularDefault: "Part Stock Number",
+			singularValue: data.partStockNumberCC
+				? data.partStockNumberCC
+				: defaultData.partStockNumberCC,
+			singularDefault: defaultData.partStockNumberCC || "Part Stock Number",
 			pluralKey: "partStockNumberPluralCC",
-			pluralValue: data.partStockNumberPluralCC,
+			pluralValue: data.partStockNumberPluralCC
+				? data.partStockNumberPluralCC
+				: defaultData.partStockNumberPluralCC,
 			pluralDefault: "Part Stock Numbers",
 
 			indents: 2,
@@ -244,10 +299,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "toolCC",
-			singularValue: data.toolCC,
-			singularDefault: "Tool",
+			singularValue: data.toolCC ? data.toolCC : defaultData.toolCC,
+			singularDefault: defaultData.toolCC || "Tool",
 			pluralKey: "toolPluralCC",
-			pluralValue: data.toolPluralCC,
+			pluralValue: data.toolPluralCC
+				? data.toolPluralCC
+				: defaultData.toolPluralCC,
 			pluralDefault: "Tools",
 
 			indents: 1,
@@ -255,10 +312,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "toolQuantityCC",
-			singularValue: data.toolQuantityCC,
-			singularDefault: "Tool Quantity",
+			singularValue: data.toolQuantityCC
+				? data.toolQuantityCC
+				: defaultData.toolQuantityCC,
+			singularDefault: defaultData.toolQuantityCC || "Tool Quantity",
 			pluralKey: "toolQuantityPluralCC",
-			pluralValue: data.toolQuantityPluralCC,
+			pluralValue: data.toolQuantityPluralCC
+				? data.toolQuantityPluralCC
+				: defaultData.toolQuantityPluralCC,
 			pluralDefault: "Tool Quantities",
 
 			indents: 2,
@@ -266,10 +327,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "toolDescriptionCC",
-			singularValue: data.toolDescriptionCC,
-			singularDefault: "Tool Description",
+			singularValue: data.toolDescriptionCC
+				? data.toolDescriptionCC
+				: defaultData.toolDescriptionCC,
+			singularDefault: defaultData.toolDescriptionCC || "Tool Description",
 			pluralKey: "toolDescriptionPluralCC",
-			pluralValue: data.toolDescriptionPluralCC,
+			pluralValue: data.toolDescriptionPluralCC
+				? data.toolDescriptionPluralCC
+				: defaultData.toolDescriptionPluralCC,
 			pluralDefault: "Tool Descriptions",
 
 			indents: 2,
@@ -277,10 +342,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "lubricantCC",
-			singularValue: data.lubricantCC,
-			singularDefault: "Lubricant",
+			singularValue: data.lubricantCC
+				? data.lubricantCC
+				: defaultData.lubricantCC,
+			singularDefault: defaultData.lubricantCC || "Lubricant",
 			pluralKey: "lubricantPluralCC",
-			pluralValue: data.lubricantPluralCC,
+			pluralValue: data.lubricantPluralCC
+				? data.lubricantPluralCC
+				: defaultData.lubricantPluralCC,
 			pluralDefault: "Lubricants",
 
 			indents: 1,
@@ -288,10 +357,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "workbookCC",
-			singularValue: data.workbookCC,
-			singularDefault: "Workbook",
+			singularValue: data.workbookCC ? data.workbookCC : defaultData.workbookCC,
+			singularDefault: defaultData.workbookCC || "Workbook",
 			pluralKey: "workbookPluralCC",
-			pluralValue: data.workbookPluralCC,
+			pluralValue: data.workbookPluralCC
+				? data.workbookPluralCC
+				: defaultData.workbookPluralCC,
 			pluralDefault: "Workbooks",
 
 			indents: 1,
@@ -299,10 +370,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "purposeCC",
-			singularValue: data.purposeCC,
-			singularDefault: "Purpose",
+			singularValue: data.purposeCC ? data.purposeCC : defaultData.purposeCC,
+			singularDefault: defaultData.purposeCC || "Purpose",
 			pluralKey: "purposePluralCC",
-			pluralValue: data.purposePluralCC,
+			pluralValue: data.purposePluralCC
+				? data.purposePluralCC
+				: defaultData.purposePluralCC,
 			pluralDefault: "Purposes",
 
 			indents: 2,
@@ -310,10 +383,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "procedureCC",
-			singularValue: data.procedureCC,
-			singularDefault: "Procedure",
+			singularValue: data.procedureCC
+				? data.procedureCC
+				: defaultData.procedureCC,
+			singularDefault: defaultData.procedureCC || "Procedure",
 			pluralKey: "procedurePluralCC",
-			pluralValue: data.procedurePluralCC,
+			pluralValue: data.procedurePluralCC
+				? data.procedurePluralCC
+				: defaultData.procedurePluralCC,
 			pluralDefault: "Procedures",
 
 			indents: 2,
@@ -321,10 +398,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "possibleHazardsCC",
-			singularValue: data.possibleHazardsCC,
-			singularDefault: "Possible Hazard",
+			singularValue: data.possibleHazardsCC
+				? data.possibleHazardsCC
+				: defaultData.possibleHazardsCC,
+			singularDefault: defaultData.possibleHazardsCC || "Possible Hazard",
 			pluralKey: "possibleHazardsPluralCC",
-			pluralValue: data.possibleHazardsPluralCC,
+			pluralValue: data.possibleHazardsPluralCC
+				? data.possibleHazardsPluralCC
+				: defaultData.possibleHazardsPluralCC,
 			pluralDefault: "Possible Hazards",
 
 			indents: 2,
@@ -332,10 +413,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "additionalPPECC",
-			singularValue: data.additionalPPECC,
-			singularDefault: "Additional PPE",
+			singularValue: data.additionalPPECC
+				? data.additionalPPECC
+				: defaultData.additionalPPECC,
+			singularDefault: defaultData.additionalPPECC || "Additional PPE",
 			pluralKey: "additionalPPEPluralCC",
-			pluralValue: data.additionalPPEPluralCC,
+			pluralValue: data.additionalPPEPluralCC
+				? data.additionalPPEPluralCC
+				: defaultData.additionalPPEPluralCC,
 			pluralDefault: "Additional PPEs",
 
 			indents: 2,
@@ -343,10 +428,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "specificationCC",
-			singularValue: data.specificationCC,
-			singularDefault: "Specification",
+			singularValue: data.specificationCC
+				? data.specificationCC
+				: defaultData.specificationCC,
+			singularDefault: defaultData.specificationCC || "Specification",
 			pluralKey: "specificationPluralCC",
-			pluralValue: data.specificationPluralCC,
+			pluralValue: data.specificationPluralCC
+				? data.specificationPluralCC
+				: defaultData.specificationPluralCC,
 			pluralDefault: "Specifications",
 
 			indents: 2,
@@ -354,10 +443,15 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "contaminationControlsCC",
-			singularValue: data.contaminationControlsCC,
-			singularDefault: "Contamination Control",
+			singularValue: data.contaminationControlsCC
+				? data.contaminationControlsCC
+				: defaultData.contaminationControlsCC,
+			singularDefault:
+				defaultData.contaminationControlsCC || "Contamination Control",
 			pluralKey: "contaminationControlsPluralCC",
-			pluralValue: data.contaminationControlsPluralCC,
+			pluralValue: data.contaminationControlsPluralCC
+				? data.contaminationControlsPluralCC
+				: defaultData.contaminationControlsPluralCC,
 			pluralDefault: "Contamination Controls",
 
 			indents: 2,
@@ -365,10 +459,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "otherInformationCC",
-			singularValue: data.otherInformationCC,
-			singularDefault: "Other Information",
+			singularValue: data.otherInformationCC
+				? data.otherInformationCC
+				: defaultData.otherInformationCC,
+			singularDefault: defaultData.otherInformationCC || "Other Information",
 			pluralKey: "otherInformationPluralCC",
-			pluralValue: data.otherInformationPluralCC,
+			pluralValue: data.otherInformationPluralCC
+				? data.otherInformationPluralCC
+				: defaultData.otherInformationPluralCC,
 			pluralDefault: "Other Information",
 
 			indents: 2,
@@ -376,10 +474,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "correctiveActionsCC",
-			singularValue: data.correctiveActionsCC,
-			singularDefault: "Corrective Action",
+			singularValue: data.correctiveActionsCC
+				? data.correctiveActionsCC
+				: defaultData.correctiveActionsCC,
+			singularDefault: defaultData.correctiveActionsCC || "Corrective Action",
 			pluralKey: "correctiveActionsPluralCC",
-			pluralValue: data.correctiveActionsPluralCC,
+			pluralValue: data.correctiveActionsPluralCC
+				? data.correctiveActionsPluralCC
+				: defaultData.correctiveActionsPluralCC,
 			pluralDefault: "Corrective Actions",
 
 			indents: 2,
@@ -387,10 +489,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "isolationsCC",
-			singularValue: data.isolationsCC,
-			singularDefault: "Isolation",
+			singularValue: data.isolationsCC
+				? data.isolationsCC
+				: defaultData.isolationsCC,
+			singularDefault: defaultData.isolationsCC || "Isolation",
 			pluralKey: "isolationsPluralCC",
-			pluralValue: data.isolationsPluralCC,
+			pluralValue: data.isolationsPluralCC
+				? data.isolationsPluralCC
+				: defaultData.isolationsPluralCC,
 			pluralDefault: "Isolations",
 
 			indents: 2,
@@ -398,10 +504,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "controlsCC",
-			singularValue: data.controlsCC,
-			singularDefault: "Control",
+			singularValue: data.controlsCC ? data.controlsCC : defaultData.controlsCC,
+			singularDefault: defaultData.controlsCC || "Control",
 			pluralKey: "controlsPluralCC",
-			pluralValue: data.controlsPluralCC,
+			pluralValue: data.controlsPluralCC
+				? data.controlsPluralCC
+				: defaultData.controlsPluralCC,
 			pluralDefault: "Controls",
 
 			indents: 2,
@@ -409,10 +517,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "customField1CC",
-			singularValue: data.customField1CC,
-			singularDefault: "Custom Field 1",
+			singularValue: data.customField1CC
+				? data.customField1CC
+				: defaultData.customField1CC,
+			singularDefault: defaultData.customField1CC || "Custom Field 1",
 			pluralKey: "customField1PluralCC",
-			pluralValue: data.customField1PluralCC,
+			pluralValue: data.customField1PluralCC
+				? data.customField1PluralCC
+				: defaultData.customField1PluralCC,
 			pluralDefault: "Custom Field 1",
 
 			indents: 2,
@@ -420,10 +532,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "customField2CC",
-			singularValue: data.customField2CC,
-			singularDefault: "Custom Field 2",
+			singularValue: data.customField2CC
+				? data.customField2CC
+				: defaultData.customField2CC,
+			singularDefault: defaultData.customField2CC || "Custom Field 2",
 			pluralKey: "customField2PluralCC",
-			pluralValue: data.customField2PluralCC,
+			pluralValue: data.customField2PluralCC
+				? data.customField2PluralCC
+				: defaultData.customField2PluralCC,
 			pluralDefault: "Custom Field 2",
 
 			indents: 2,
@@ -431,10 +547,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "customField3CC",
-			singularValue: data.customField3CC,
-			singularDefault: "Custom Field 3",
+			singularValue: data.customField3CC
+				? data.customField3CC
+				: defaultData.customField3CC,
+			singularDefault: defaultData.customField3CC || "Custom Field 3",
 			pluralKey: "customField3PluralCC",
-			pluralValue: data.customField3PluralCC,
+			pluralValue: data.customField3PluralCC
+				? data.customField3PluralCC
+				: defaultData.customField3PluralCC,
 			pluralDefault: "Custom Field 3",
 
 			indents: 2,
@@ -442,10 +562,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "makeCC",
-			singularValue: data.makeCC,
-			singularDefault: "Make",
+			singularValue: data.makeCC ? data.makeCC : defaultData.makeCC,
+			singularDefault: defaultData.makeCC || "Make",
 			pluralKey: "makePluralCC",
-			pluralValue: data.makePluralCC,
+			pluralValue: data.makePluralCC
+				? data.makePluralCC
+				: defaultData.makePluralCC,
 			pluralDefault: "Makes",
 
 			indents: 0,
@@ -453,10 +575,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "modelCC",
-			singularValue: data.modelCC,
-			singularDefault: "Model",
+			singularValue: data.modelCC ? data.modelCC : defaultData.modelCC,
+			singularDefault: defaultData.modelCC || "Model",
 			pluralKey: "modelPluralCC",
-			pluralValue: data.modelPluralCC,
+			pluralValue: data.modelPluralCC
+				? data.modelPluralCC
+				: defaultData.modelPluralCC,
 			pluralDefault: "Models",
 
 			indents: 0,
@@ -464,10 +588,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "modelTypeCC",
-			singularValue: data.modelTypeCC,
-			singularDefault: "Model Type",
+			singularValue: data.modelTypeCC
+				? data.modelTypeCC
+				: defaultData.modelTypeCC,
+			singularDefault: defaultData.modelTypeCC || "Model Type",
 			pluralKey: "modelTypePluralCC",
-			pluralValue: data.modelTypePluralCC,
+			pluralValue: data.modelTypePluralCC
+				? data.modelTypePluralCC
+				: defaultData.modelTypePluralCC,
 			pluralDefault: "Model Types",
 
 			indents: 0,
@@ -475,10 +603,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "developerNameCC",
-			singularValue: data.developerNameCC,
-			singularDefault: "Developer Name",
+			singularValue: data.developerNameCC
+				? data.developerNameCC
+				: defaultData.developerNameCC,
+			singularDefault: defaultData.developerNameCC || "Developer Name",
 			pluralKey: "developerNamePluralCC",
-			pluralValue: data.developerNamePluralCC,
+			pluralValue: data.developerNamePluralCC
+				? data.developerNamePluralCC
+				: defaultData.developerNamePluralCC,
 			pluralDefault: "Developer Names",
 
 			indents: 0,
@@ -486,10 +618,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "roleCC",
-			singularValue: data.roleCC,
-			singularDefault: "Role",
+			singularValue: data.roleCC ? data.roleCC : defaultData.roleCC,
+			singularDefault: defaultData.roleCC || "Role",
 			pluralKey: "rolePluralCC",
-			pluralValue: data.rolePluralCC,
+			pluralValue: data.rolePluralCC
+				? data.rolePluralCC
+				: defaultData.rolePluralCC,
 			pluralDefault: "Roles",
 
 			indents: 0,
@@ -497,10 +631,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "tutorialCC",
-			singularValue: data.tutorialCC,
-			singularDefault: "Tutorial",
+			singularValue: data.tutorialCC ? data.tutorialCC : defaultData.tutorialCC,
+			singularDefault: defaultData.tutorialCC || "Tutorial",
 			pluralKey: "tutorialPluralCC",
-			pluralValue: data.tutorialPluralCC,
+			pluralValue: data.tutorialPluralCC
+				? data.tutorialPluralCC
+				: defaultData.tutorialPluralCC,
 			pluralDefault: "Tutorials",
 
 			indents: 0,
@@ -508,10 +644,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "feedbackCC",
-			singularValue: data.feedbackCC,
-			singularDefault: "Feedback",
+			singularValue: data.feedbackCC ? data.feedbackCC : defaultData.feedbackCC,
+			singularDefault: defaultData.feedbackCC || "Feedback",
 			pluralKey: "feedbackPluralCC",
-			pluralValue: data.feedbackPluralCC,
+			pluralValue: data.feedbackPluralCC
+				? data.feedbackPluralCC
+				: defaultData.feedbackPluralCC,
 			pluralDefault: "Feedbacks",
 
 			indents: 0,
@@ -519,10 +657,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "changeRequiredCC",
-			singularValue: data.changeRequiredCC,
-			singularDefault: "Change Required",
+			singularValue: data.changeRequiredCC
+				? data.changeRequiredCC
+				: defaultData.changeRequiredCC,
+			singularDefault: defaultData.changeRequiredCC || "Change Required",
 			pluralKey: "changeRequiredPluralCC",
-			pluralValue: data.changeRequiredPluralCC,
+			pluralValue: data.changeRequiredPluralCC
+				? data.changeRequiredPluralCC
+				: defaultData.changeRequiredPluralCC,
 			pluralDefault: "Changes Required",
 
 			indents: 1,
@@ -530,10 +672,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "benefitCC",
-			singularValue: data.benefitCC,
-			singularDefault: "Benefit",
+			singularValue: data.benefitCC ? data.benefitCC : defaultData.benefitCC,
+			singularDefault: defaultData.benefitCC || "Benefit",
 			pluralKey: "benefitPluralCC",
-			pluralValue: data.benefitPluralCC,
+			pluralValue: data.benefitPluralCC
+				? data.benefitPluralCC
+				: defaultData.benefitPluralCC,
 			pluralDefault: "Benefits",
 
 			indents: 1,
@@ -541,10 +685,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "classificationCC",
-			singularValue: data.classificationCC,
-			singularDefault: "Classification",
+			singularValue: data.classificationCC
+				? data.classificationCC
+				: defaultData.classificationCC,
+			singularDefault: defaultData.classificationCC || "Classification",
 			pluralKey: "classificationPluralCC",
-			pluralValue: data.classificationPluralCC,
+			pluralValue: data.classificationPluralCC
+				? data.classificationPluralCC
+				: defaultData.classificationPluralCC,
 			pluralDefault: "Classifications",
 
 			indents: 1,
@@ -552,10 +700,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "priorityCC",
-			singularValue: data.priorityCC,
-			singularDefault: "Priority",
+			singularValue: data.priorityCC ? data.priorityCC : defaultData.priorityCC,
+			singularDefault: defaultData.priorityCC || "Priority",
 			pluralKey: "priorityPluralCC",
-			pluralValue: data.priorityPluralCC,
+			pluralValue: data.priorityPluralCC
+				? data.priorityPluralCC
+				: defaultData.priorityPluralCC,
 			pluralDefault: "Priorities",
 
 			indents: 1,
@@ -563,10 +713,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "feedbackStatusCC",
-			singularValue: data.feedbackStatusCC,
-			singularDefault: "Feedback Status",
+			singularValue: data.feedbackStatusCC
+				? data.feedbackStatusCC
+				: defaultData.feedbackStatusCC,
+			singularDefault: defaultData.feedbackStatusCC || "Feedback Status",
 			pluralKey: "feedbackStatusPluralCC",
-			pluralValue: data.feedbackStatusPluralCC,
+			pluralValue: data.feedbackStatusPluralCC
+				? data.feedbackStatusPluralCC
+				: defaultData.feedbackStatusPluralCC,
 			pluralDefault: "Feedback Statues",
 
 			indents: 1,
@@ -574,10 +728,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "userCC",
-			singularValue: data.userCC,
-			singularDefault: "User",
+			singularValue: data.userCC ? data.userCC : defaultData.userCC,
+			singularDefault: defaultData.userCC || "User",
 			pluralKey: "userPluralCC",
-			pluralValue: data.userPluralCC,
+			pluralValue: data.userPluralCC
+				? data.userPluralCC
+				: defaultData.userPluralCC,
 			pluralDefault: "Users",
 
 			indents: 0,
@@ -585,10 +741,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "positionCC",
-			singularValue: data.positionCC,
-			singularDefault: "Position",
+			singularValue: data.positionCC ? data.positionCC : defaultData.positionCC,
+			singularDefault: defaultData.positionCC || "Position",
 			pluralKey: "positionPluralCC",
-			pluralValue: data.positionPluralCC,
+			pluralValue: data.positionPluralCC
+				? data.positionPluralCC
+				: defaultData.positionPluralCC,
 			pluralDefault: "Positions",
 
 			indents: 1,
@@ -596,10 +754,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "serviceCC",
-			singularValue: data.serviceCC,
-			singularDefault: "Service",
+			singularValue: data.serviceCC ? data.serviceCC : defaultData.serviceCC,
+			singularDefault: defaultData.serviceCC || "Service",
 			pluralKey: "servicePluralCC",
-			pluralValue: data.servicePluralCC,
+			pluralValue: data.servicePluralCC
+				? data.servicePluralCC
+				: defaultData.servicePluralCC,
 			pluralDefault: "Services",
 
 			indents: 0,
@@ -607,10 +767,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "serviceWorkOrderCC",
-			singularValue: data.serviceWorkOrderCC,
-			singularDefault: "Service Work Order",
+			singularValue: data.serviceWorkOrderCC
+				? data.serviceWorkOrderCC
+				: defaultData.serviceWorkOrderCC,
+			singularDefault: defaultData.serviceWorkOrderCC || "Service Work Order",
 			pluralKey: "serviceWorkOrderPluralCC",
-			pluralValue: data.serviceWorkOrderPluralCC,
+			pluralValue: data.serviceWorkOrderPluralCC
+				? data.serviceWorkOrderPluralCC
+				: defaultData.serviceWorkOrderPluralCC,
 			pluralDefault: "Service Work Orders",
 
 			indents: 1,
@@ -618,10 +782,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "pauseReasonCC",
-			singularValue: data.pauseReasonCC,
-			singularDefault: "Pause Reason",
+			singularValue: data.pauseReasonCC
+				? data.pauseReasonCC
+				: defaultData.pauseReasonCC,
+			singularDefault: defaultData.pauseReasonCC || "Pause Reason",
 			pluralKey: "pauseReasonPluralCC",
-			pluralValue: data.pauseReasonPluralCC,
+			pluralValue: data.pauseReasonPluralCC
+				? data.pauseReasonPluralCC
+				: defaultData.pauseReasonPluralCC,
 			pluralDefault: "Pause Reasons",
 
 			indents: 1,
@@ -629,10 +797,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "stopReasonCC",
-			singularValue: data.stopReasonCC,
-			singularDefault: "Stop Reason",
+			singularValue: data.stopReasonCC
+				? data.stopReasonCC
+				: defaultData.stopReasonCC,
+			singularDefault: defaultData.stopReasonCC || "Stop Reason",
 			pluralKey: "stopReasonPluralCC",
-			pluralValue: data.stopReasonPluralCC,
+			pluralValue: data.stopReasonPluralCC
+				? data.stopReasonPluralCC
+				: defaultData.stopReasonPluralCC,
 			pluralDefault: "Stop Reasons",
 
 			indents: 1,
@@ -640,10 +812,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "skipReasonCC",
-			singularValue: data.skipReasonCC,
-			singularDefault: "Skip Reason",
+			singularValue: data.skipReasonCC
+				? data.skipReasonCC
+				: defaultData.skipReasonCC,
+			singularDefault: defaultData.skipReasonCC || "Skip Reason",
 			pluralKey: "skipReasonPluralCC",
-			pluralValue: data.skipReasonPluralCC,
+			pluralValue: data.skipReasonPluralCC
+				? data.skipReasonPluralCC
+				: defaultData.skipReasonPluralCC,
 			pluralDefault: "Skip Reasons",
 
 			indents: 1,
@@ -651,20 +827,26 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "defectCC",
-			singularValue: data.defectCC,
-			singularDefault: "Defect",
+			singularValue: data.defectCC ? data.defectCC : defaultData.defectCC,
+			singularDefault: defaultData.defectCC || "Defect",
 			pluralKey: "defectPluralCC",
-			pluralValue: data.defectPluralCC,
+			pluralValue: data.defectPluralCC
+				? data.defectPluralCC
+				: defaultData.defectPluralCC,
 			pluralDefault: "Defects",
 			indents: 0,
 		},
 
 		{
 			singularKey: "defectWorkOrderCC",
-			singularValue: data.defectWorkOrderCC,
-			singularDefault: "Defect Work Order",
+			singularValue: data.defectWorkOrderCC
+				? data.defectWorkOrderCC
+				: defaultData.defectWorkOrderCC,
+			singularDefault: defaultData.defectWorkOrderCC || "Defect Work Order",
 			pluralKey: "defectWorkOrderPluralCC",
-			pluralValue: data.defectWorkOrderPluralCC,
+			pluralValue: data.defectWorkOrderPluralCC
+				? data.defectWorkOrderPluralCC
+				: defaultData.defectWorkOrderPluralCC,
 			pluralDefault: "Defect Work Orders",
 
 			indents: 1,
@@ -672,10 +854,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "defectStatusCC",
-			singularValue: data.defectStatusCC,
-			singularDefault: "Defect Status",
+			singularValue: data.defectStatusCC
+				? data.defectStatusCC
+				: defaultData.defectStatusCC,
+			singularDefault: defaultData.defectStatusCC || "Defect Status",
 			pluralKey: "defectStatusPluralCC",
-			pluralValue: data.defectStatusPluralCC,
+			pluralValue: data.defectStatusPluralCC
+				? data.defectStatusPluralCC
+				: defaultData.defectStatusPluralCC,
 			pluralDefault: "Defect Statues",
 
 			indents: 1,
@@ -683,10 +869,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "defectTypeCC",
-			singularValue: data.defectTypeCC,
-			singularDefault: "Defect Type",
+			singularValue: data.defectTypeCC
+				? data.defectTypeCC
+				: defaultData.defectTypeCC,
+			singularDefault: defaultData.defectTypeCC || "Defect Type",
 			pluralKey: "defectTypePluralCC",
-			pluralValue: data.defectTypePluralCC,
+			pluralValue: data.defectTypePluralCC
+				? data.defectTypePluralCC
+				: defaultData.defectTypePluralCC,
 			pluralDefault: "Defect Types",
 
 			indents: 1,
@@ -694,10 +884,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "typeCC",
-			singularValue: data.typeCC,
-			singularDefault: "Type",
+			singularValue: data.typeCC ? data.typeCC : defaultData.typeCC,
+			singularDefault: defaultData.typeCC || "Type",
 			pluralKey: "typePluralCC",
-			pluralValue: data.typePluralCC,
+			pluralValue: data.typePluralCC
+				? data.typePluralCC
+				: defaultData.typePluralCC,
 			pluralDefault: "Types",
 
 			indents: 1,
@@ -705,10 +897,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "riskRatingCC",
-			singularValue: data.riskRatingCC,
-			singularDefault: "Risk Rating",
+			singularValue: data.riskRatingCC
+				? data.riskRatingCC
+				: defaultData.riskRatingCC,
+			singularDefault: defaultData.riskRatingCC || "Risk Rating",
 			pluralKey: "riskRatingPluralCC",
-			pluralValue: data.riskRatingPluralCC,
+			pluralValue: data.riskRatingPluralCC
+				? data.riskRatingPluralCC
+				: defaultData.riskRatingPluralCC,
 			pluralDefault: "Risk Ratings",
 
 			indents: 1,
@@ -716,10 +912,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "riskRatingActionCC",
-			singularValue: data.riskRatingActionCC,
-			singularDefault: "Risk Rating Action",
+			singularValue: data.riskRatingActionCC
+				? data.riskRatingActionCC
+				: defaultData.riskRatingActionCC,
+			singularDefault: defaultData.riskRatingActionCC || "Risk Rating Action",
 			pluralKey: "riskRatingActionPluralCC",
-			pluralValue: data.riskRatingActionPluralCC,
+			pluralValue: data.riskRatingActionPluralCC
+				? data.riskRatingActionPluralCC
+				: defaultData.riskRatingActionPluralCC,
 			pluralDefault: "Risk Rating Actions",
 
 			indents: 2,
@@ -727,20 +927,28 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "riskRatingMatrixCC",
-			singularValue: data.riskRatingMatrixCC,
-			singularDefault: "Risk Rating Matrix",
+			singularValue: data.riskRatingMatrixCC
+				? data.riskRatingMatrixCC
+				: defaultData.riskRatingMatrixCC,
+			singularDefault: defaultData.riskRatingMatrixCC || "Risk Rating Matrix",
 			pluralKey: "riskRatingMatrixPluralCC",
-			pluralValue: data.riskRatingMatrixPluralCC,
+			pluralValue: data.riskRatingMatrixPluralCC
+				? data.riskRatingMatrixPluralCC
+				: defaultData.riskRatingMatrixPluralCC,
 			pluralDefault: "Risk Rating Matrices",
 			indents: 1,
 		},
 
 		{
 			singularKey: "departmentCC",
-			singularValue: data.departmentCC,
-			singularDefault: "Department",
+			singularValue: data.departmentCC
+				? data.departmentCC
+				: defaultData.departmentCC,
+			singularDefault: defaultData.departmentCC || "Department",
 			pluralKey: "departmentPluralCC",
-			pluralValue: data.departmentPluralCC,
+			pluralValue: data.departmentPluralCC
+				? data.departmentPluralCC
+				: defaultData.departmentPluralCC,
 			pluralDefault: "Departments",
 
 			indents: 0,
@@ -748,10 +956,12 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "assetCC",
-			singularValue: data.assetCC,
-			singularDefault: "Asset",
+			singularValue: data.assetCC ? data.assetCC : defaultData.assetCC,
+			singularDefault: defaultData.assetCC || "Asset",
 			pluralKey: "assetPluralCC",
-			pluralValue: data.assetPluralCC,
+			pluralValue: data.assetPluralCC
+				? data.assetPluralCC
+				: defaultData.assetPluralCC,
 			pluralDefault: "Assets",
 
 			indents: 0,
@@ -759,10 +969,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "assetReferenceCC",
-			singularValue: data.assetReferenceCC,
-			singularDefault: "Asset Reference",
+			singularValue: data.assetReferenceCC
+				? data.assetReferenceCC
+				: defaultData.assetReferenceCC,
+			singularDefault: defaultData.assetReferenceCC || "Asset Reference",
 			pluralKey: "assetReferencePluralCC",
-			pluralValue: data.assetReferencePluralCC,
+			pluralValue: data.assetReferencePluralCC
+				? data.assetReferencePluralCC
+				: defaultData.assetReferencePluralCC,
 			pluralDefault: "Asset References",
 
 			indents: 1,
@@ -770,10 +984,14 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "assetPlannerGroupCC",
-			singularValue: data.assetPlannerGroupCC,
-			singularDefault: "Asset Planner Group",
+			singularValue: data.assetPlannerGroupCC
+				? data.assetPlannerGroupCC
+				: defaultData.assetPlannerGroupCC,
+			singularDefault: defaultData.assetPlannerGroupCC || "Asset Planner Group",
 			pluralKey: "assetPlannerGroupPluralCC",
-			pluralValue: data.assetPlannerGroupPluralCC,
+			pluralValue: data.assetPlannerGroupPluralCC
+				? data.assetPlannerGroupPluralCC
+				: defaultData.assetPlannerGroupPluralCC,
 			pluralDefault: "Asset Planner Groups",
 
 			indents: 1,
@@ -781,10 +999,15 @@ const CustomCaptionsTable = ({
 
 		{
 			singularKey: "assetMainWorkCenterCC",
-			singularValue: data.assetMainWorkCenterCC,
-			singularDefault: "Asset Main Work Center",
+			singularValue: data.assetMainWorkCenterCC
+				? data.assetMainWorkCenterCC
+				: defaultData.assetMainWorkCenterCC,
+			singularDefault:
+				defaultData.assetMainWorkCenterCC || "Asset Main Work Center",
 			pluralKey: "assetMainWorkCenterPluralCC",
-			pluralValue: data.assetMainWorkCenterPluralCC,
+			pluralValue: data.assetMainWorkCenterPluralCC
+				? data.assetMainWorkCenterPluralCC
+				: defaultData.assetMainWorkCenterPluralCC,
 			pluralDefault: "Asset Main Work Centers",
 
 			indents: 1,

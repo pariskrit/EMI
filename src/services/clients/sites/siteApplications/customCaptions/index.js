@@ -14,6 +14,18 @@ const getCustomCaptions = async (id) => {
 
 //#endregion
 
+//#region get cc
+const getDefaultCustomCaptions = async (id) => {
+	try {
+		let response = await API.get(`/api/applications/${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+//#endregion
+
 //#region patch cc
 const patchCustomCaptions = async (id, requestData) => {
 	try {
@@ -26,4 +38,4 @@ const patchCustomCaptions = async (id, requestData) => {
 
 //#endregion
 
-export { getCustomCaptions, patchCustomCaptions };
+export { getCustomCaptions, patchCustomCaptions, getDefaultCustomCaptions };
