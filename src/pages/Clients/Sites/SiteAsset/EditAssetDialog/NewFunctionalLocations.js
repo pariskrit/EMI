@@ -151,9 +151,9 @@ const NewFunctionalLocations = ({
 	useOutsideClick(ref, () => saveFuncLoc());
 
 	return (
-		<div className={classes.mainWrap}>
+		<div ref={ref} className={classes.mainWrap}>
 			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
-			<form ref={ref}>
+			<form>
 				<div className="desktopTableViewEdit">
 					<Grid container spacing={2}>
 						<Grid item sm={6}>
