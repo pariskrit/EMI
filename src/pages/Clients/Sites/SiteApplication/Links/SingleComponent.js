@@ -47,7 +47,7 @@ const SingleComponent = (route) => {
 	};
 
 	useEffect(() => {
-		if (location.pathname.split("/")[7] === "detail") {
+		if (Object.keys(state.details).length === 0) {
 			fetchSiteApplicationDetails();
 		}
 
