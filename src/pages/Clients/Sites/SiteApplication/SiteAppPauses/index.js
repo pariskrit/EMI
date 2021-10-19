@@ -49,6 +49,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	};
 
 	const handleUpdateSubcat = (parentId, subcatID, newName) => {
+		console.log(parentId, subcatID, newName);
 		const newData = [...allData];
 
 		let pauseIndex = newData.findIndex((el) => el.id === parentId);
