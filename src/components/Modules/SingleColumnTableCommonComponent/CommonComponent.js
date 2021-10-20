@@ -28,7 +28,6 @@ const CommonContent = ({
 	pathToPatch,
 }) => {
 	// Init state
-	const [data, setData] = useState([]);
 	const [haveData, setHaveData] = useState(false);
 	const [dataChanged, setDataChanged] = useState(false);
 	const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -37,6 +36,7 @@ const CommonContent = ({
 	const [deleteID, setDeleteID] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const {
+		allData,
 		setAllData,
 		handleSearch,
 		searchedData,
@@ -62,7 +62,7 @@ const CommonContent = ({
 			// if success, adding data to state
 			if (result.status) {
 				setAllData(result.data);
-				handleSort(result.data, setData, "name", "asc");
+				handleSort(result.data, setAllData, "name", "asc");
 				setLoading(false);
 				return true;
 			} // Handling 404
@@ -82,43 +82,44 @@ const CommonContent = ({
 	}, [id, setIs404]);
 
 	const handleAddData = (d) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		newData.push(d);
 
-		setData(newData);
+		setAllData(newData);
 
 		setDataChanged(true);
 	};
 
 	const handleEditData = (d) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		let index = newData.findIndex((el) => el.id === d.id);
 		newData[index] = d;
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 
 		setDataChanged(true);
 	};
 
 	const handleRemoveData = (id) => {
-		const newData = [...data].filter(function (item) {
+		const newData = [...allData].filter(function (item) {
 			return item.id !== id;
 		});
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 
 		setDataChanged(true);
 	};
 
 	const handleEditDialogOpen = (id) => {
-		let index = data.findIndex((el) => el.id === id);
+		let index = allData.findIndex((el) => el.id === id);
 
 		if (index >= 0) {
-			setEditData(data[index]);
+			// setEditData(data[index]);
+			setEditData(allData[index]);
 			setOpenEditDialog(true);
 		}
 	};
@@ -150,7 +151,7 @@ const CommonContent = ({
 
 	useEffect(() => {
 		if (dataChanged) {
-			handleSort(data, setData, "name", "asc");
+			handleSort(allData, setAllData, "name", "asc");
 
 			setDataChanged(false);
 		}
@@ -169,7 +170,7 @@ const CommonContent = ({
 	};
 
 	const handleSetDefault = (defaultID) => {
-		const newData = [...data];
+		const newData = [...allData];
 
 		let index = newData.findIndex((el) => el.id === defaultID);
 
@@ -178,7 +179,7 @@ const CommonContent = ({
 		}
 
 		// Updating state
-		setData(newData);
+		setAllData(newData);
 	};
 
 	const handleDefaultUpdate = async () => {
@@ -305,7 +306,8 @@ const CommonContent = ({
 					<div className="detailsContainer">
 						<DetailsPanel
 							header={header}
-							dataCount={haveData ? data.length : 0}
+							dataCount={haveData ? allData.length : 0}
+							// dataCount={haveData ? data.length : 0}
 							description={`Create and manage ${header}`}
 						/>
 
@@ -322,10 +324,10 @@ const CommonContent = ({
 					</div>
 
 					<CommonApplicationTable
-						data={data}
+						data={allData}
 						columns={["name"]}
 						headers={["Name"]}
-						setData={setData}
+						setData={setAllData}
 						setSearch={setSearchData}
 						searchQuery={searchQuery}
 						searchedData={searchedData}

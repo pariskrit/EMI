@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -9,6 +9,7 @@ import {
 	patchCustomCaptions,
 	getDefaultCustomCaptions,
 } from "services/clients/sites/siteApplications/customCaptions";
+import { SiteContext } from "contexts/SiteApplicationContext";
 
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
@@ -19,42 +20,15 @@ const AC = ContentStyle();
 const CustomCaptionsContent = ({ id, setIs404, state }) => {
 	// Init state
 	const [data, setData] = useState({});
-	const [defaultData, setDefaultData] = useState({});
+	// const [defaultData, setDefaultData] = useState({});
 	const [haveData, setHaveData] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 
+	// const [state, dispatch] = useContext(SiteContext);
+
+	let defaultData = state.defaultCustomCaptionsData;
+
 	// Handlers
-	const handleGetDefaultData = async () => {
-		try {
-			let result = await getDefaultCustomCaptions(id);
-			if (result.status) {
-				let nullReplaced = result.data;
-
-				Object.keys(nullReplaced).forEach((el) => {
-					if (el.indexOf("CC") !== -1 && nullReplaced[el] === null) {
-						nullReplaced[el] = "";
-					} else {
-						return;
-					}
-				});
-
-				setDefaultData(nullReplaced);
-			} else {
-				// If error, throwing to catch
-				throw new Error(result);
-			}
-		} catch (err) {
-			console.log(err);
-			return false;
-		}
-	};
-
-	useEffect(() => {
-		handleGetDefaultData();
-
-		// eslint-disable-next-line
-	}, []);
-
 	const handleGetData = useCallback(
 		async (updateName) => {
 			// NOTE: using useCallback to remove linter error. It's memoizing the function (similar
@@ -132,10 +106,6 @@ const CustomCaptionsContent = ({ id, setIs404, state }) => {
 	useEffect(() => {
 		// Handling update of name if state not provided
 		let updateName = true;
-
-		if (state !== undefined) {
-			updateName = false;
-		}
 
 		// Getting data and updating state
 		handleGetData(updateName)
