@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import { connect } from "react-redux";
 import { Grid, makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
@@ -64,7 +64,7 @@ const NewFunctionalLocations = ({
 	getError,
 	error,
 }) => {
-	const ref = useRef(null);
+	const childRef = useRef(null);
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultInputSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
@@ -148,10 +148,9 @@ const NewFunctionalLocations = ({
 		}
 	};
 
-	useOutsideClick(ref, () => saveFuncLoc());
-
+	useOutsideClick(childRef, () => saveFuncLoc(), "parentDiv");
 	return (
-		<div ref={ref} className={classes.mainWrap}>
+		<div ref={childRef} className={classes.mainWrap}>
 			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			<form>
 				<div className="desktopTableViewEdit">

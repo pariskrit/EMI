@@ -9,9 +9,15 @@ function useOutsideClick(ref, setDrop, parentRef) {
 	 */
 
 	function handleClickOutside(event) {
-		if (parentRef) {
+		const parent = document.getElementById(parentRef);
+		const button = event.target.tagName === "SPAN";
+		const classes =
+			event.target.className === "MuiDialog-container  MuiDialog-scrollPaper";
+		const outSideOrButton = button || classes;
+
+		if (parentRef && !outSideOrButton) {
 			if (ref.current && !ref.current.contains(event.target)) {
-				if (!parentRef.current.contains(event.target)) {
+				if (parent.contains(event.target)) {
 					setDrop();
 				}
 			}

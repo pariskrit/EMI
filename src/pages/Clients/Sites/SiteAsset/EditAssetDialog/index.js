@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogTitle,
@@ -9,7 +10,6 @@ import {
 import CurveButton from "components/Elements/CurveButton";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
-import React, { useEffect, useState } from "react";
 import { editSiteAsset } from "services/clients/sites/siteAssets";
 import { getSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 import EditDialogStyle from "styles/application/EditDialogStyle";
@@ -234,7 +234,7 @@ const EditAssetDialog = ({
 					</ET.ConfirmButton>
 				</ET.ButtonContainer>
 			</ET.ActionContainer>
-			<ET.DialogContent>
+			<ET.DialogContent id="parentDiv">
 				<div>
 					<ET.InputContainer>
 						<ET.LeftInputContainer>
