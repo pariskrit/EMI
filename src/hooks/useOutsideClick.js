@@ -15,7 +15,7 @@ function useOutsideClick(ref, setDrop, parentRef) {
 			event.target.className === "MuiDialog-container  MuiDialog-scrollPaper";
 		const outSideOrButton = button || outSide;
 
-		if (parentRef && !outSideOrButton) {
+		if (parentRef && outSideOrButton) {
 			if (ref.current && !ref.current.contains(event.target)) {
 				if (parent.contains(event.target)) {
 					setDrop();
