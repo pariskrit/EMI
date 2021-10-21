@@ -27,6 +27,8 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		setSearchData,
 	} = useSearch();
 
+	let defaultData = state.defaultCustomCaptionsData;
+
 	const handleAddSubcat = (parentId, id, name) => {
 		const newData = [...allData];
 
