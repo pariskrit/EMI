@@ -186,8 +186,6 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 
 	const { showAdd, details } = state;
 
-	console.log(state);
-
 	if (is404 === false) {
 		return (
 			<div>

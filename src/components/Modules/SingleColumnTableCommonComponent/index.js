@@ -13,9 +13,11 @@ function SingleColumnTableCommonComponent({
 	apis,
 	showDefault,
 	pathToPatch,
+	singleCaption,
 }) {
 	// Init params
 	const { appId } = useParams();
+	console.log(singleCaption);
 
 	// Init state
 	const [is404, setIs404] = useState(false);

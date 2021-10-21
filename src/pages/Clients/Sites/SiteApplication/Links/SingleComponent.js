@@ -124,11 +124,11 @@ const SingleComponent = (route) => {
 							state={state}
 							dispatch={dispatch}
 							appId={appId}
-							header={route.header}
-							subHeader={route.subHeader}
 							apis={route.api}
 							showDefault={route.showDefault}
 							pathToPatch={route.pathToPatch}
+							singleCaption={route.singleCaption}
+							pluralCaption={route.pluralCaption}
 						/>
 					}
 				</div>
