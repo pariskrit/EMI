@@ -7,9 +7,7 @@ import "./customCaptions.css";
 import {
 	getCustomCaptions,
 	patchCustomCaptions,
-	getDefaultCustomCaptions,
 } from "services/clients/sites/siteApplications/customCaptions";
-import { SiteContext } from "contexts/SiteApplicationContext";
 
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
