@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -7,7 +7,9 @@ import "./customCaptions.css";
 import {
 	getCustomCaptions,
 	patchCustomCaptions,
+	getDefaultCustomCaptions,
 } from "services/clients/sites/siteApplications/customCaptions";
+import { SiteContext } from "contexts/SiteApplicationContext";
 
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
@@ -18,8 +20,13 @@ const AC = ContentStyle();
 const CustomCaptionsContent = ({ id, setIs404, state }) => {
 	// Init state
 	const [data, setData] = useState({});
+	// const [defaultData, setDefaultData] = useState({});
 	const [haveData, setHaveData] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
+
+	// const [state, dispatch] = useContext(SiteContext);
+
+	let defaultData = state.defaultCustomCaptionsData;
 
 	// Handlers
 	const handleGetData = useCallback(
@@ -65,6 +72,7 @@ const CustomCaptionsContent = ({ id, setIs404, state }) => {
 		},
 		[id, setIs404]
 	);
+
 	const handleUpdateCustomCaption = async (key, value) => {
 		try {
 			let updateData = await patchCustomCaptions(id, [
@@ -98,10 +106,6 @@ const CustomCaptionsContent = ({ id, setIs404, state }) => {
 	useEffect(() => {
 		// Handling update of name if state not provided
 		let updateName = true;
-
-		if (state !== undefined) {
-			updateName = false;
-		}
 
 		// Getting data and updating state
 		handleGetData(updateName)
@@ -140,6 +144,7 @@ const CustomCaptionsContent = ({ id, setIs404, state }) => {
 
 					<CustomCaptionsTable
 						data={data}
+						defaultData={defaultData}
 						searchQuery={searchQuery}
 						handleUpdateCustomCaption={handleUpdateCustomCaption}
 					/>

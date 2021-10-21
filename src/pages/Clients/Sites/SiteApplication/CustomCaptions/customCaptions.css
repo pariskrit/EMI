@@ -54,5 +54,6 @@
 
 	.inputCustomCaptionRow {
 		width: 200px !important;
+		z-index: 1;
 	}
 }

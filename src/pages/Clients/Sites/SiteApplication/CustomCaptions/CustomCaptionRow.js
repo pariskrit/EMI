@@ -118,7 +118,7 @@ const CustomCaptionRow = ({
 			</AT.DataCell>
 
 			<AT.DataCell className={classes.inputCell}>
-				<AT.CellContainer>
+				<AT.CellContainer style={{ zIndex: 1 }}>
 					<TextField
 						className={`${classes.root} inputCustomCaptionRow`}
 						InputProps={{

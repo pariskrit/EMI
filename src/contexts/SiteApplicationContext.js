@@ -5,6 +5,7 @@ const initialState = {
 	openConfirmationModal: false,
 	details: {},
 	isActive: false,
+	defaultCustomCaptionsData: {},
 };
 
 function reducer(state, action) {
@@ -42,6 +43,14 @@ function reducer(state, action) {
 				isActive: action.payload,
 			};
 		}
+
+		case "DEFAULT_CUSTOM_CAPTIONS_DATA": {
+			return {
+				...state,
+				defaultCustomCaptionsData: action.payload,
+			};
+		}
+
 		default:
 			return state;
 	}

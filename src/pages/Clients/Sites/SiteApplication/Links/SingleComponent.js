@@ -4,6 +4,7 @@ import { useParams, useLocation } from "react-router";
 import CommonHeaderWrapper from "components/Modules/CommonHeaderWrapper";
 import SiteApplicationNavigation from "constants/navigation/siteAppNavigation";
 import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { getDefaultCustomCaptions } from "services/clients/sites/siteApplications/customCaptions";
 
 const SingleComponent = (route) => {
 	const location = useLocation();
@@ -46,10 +47,40 @@ const SingleComponent = (route) => {
 		}
 	};
 
+	const fetchDefaultCustomCaptionsData = async () => {
+		try {
+			let result = await getDefaultCustomCaptions(appId);
+			if (result.status) {
+				let nullReplaced = result.data;
+
+				Object.keys(nullReplaced).forEach((el) => {
+					if (el.indexOf("CC") !== -1 && nullReplaced[el] === null) {
+						nullReplaced[el] = "";
+					} else {
+						return;
+					}
+				});
+
+				dispatch({
+					type: "DEFAULT_CUSTOM_CAPTIONS_DATA",
+					payload: nullReplaced,
+				});
+			} else {
+				// If error, throwing to catch
+				throw new Error(result);
+			}
+		} catch (err) {
+			console.log(err);
+			return false;
+		}
+	};
+
 	useEffect(() => {
 		if (location.pathname.split("/")[7] === "detail") {
 			fetchSiteApplicationDetails();
 		}
+
+		fetchDefaultCustomCaptionsData();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

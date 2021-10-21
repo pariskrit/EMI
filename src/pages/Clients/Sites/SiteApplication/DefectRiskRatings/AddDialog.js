@@ -57,7 +57,7 @@ const AddDialog = ({
 			} else {
 				const newErrors = generateErrorState(localChecker);
 
-				setErrors({ ...errors, newErrors });
+				setErrors({ ...errors, ...newErrors });
 				setIsUpdating(false);
 			}
 		} catch (err) {

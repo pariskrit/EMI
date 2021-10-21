@@ -12,6 +12,8 @@ import MobileSearchField from "components/Elements/SearchField/MobileSearchField
 import EditDialog from "./EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
+import UserRolesTable from "./UserRolesTable";
+
 const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 	const [haveData, setHaveData] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -171,27 +173,14 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 						/>
 					</div>
 
-					<CommonApplicationTable
-						data={mainData}
+					<UserRolesTable
 						setData={setAllData}
+						data={mainData}
 						setSearch={setSearchData}
+						onEdit={handleEditDialogOpen}
+						onDelete={handleDeleteDialogOpen}
 						searchQuery={searchQuery}
-						columns={["name", "canRegisterDefects"]}
-						headers={["Name", "Can Raise Defects"]}
 						isLoading={loading}
-						menuData={[
-							{
-								name: "Edit",
-								handler: handleEditDialogOpen,
-								isDelete: false,
-							},
-							{
-								name: "Delete",
-								handler: handleDeleteDialogOpen,
-								isDelete: true,
-							},
-						]}
-						searchedData={searchedData}
 					/>
 				</>
 			</CommonBody>
