@@ -46,966 +46,748 @@ const CustomCaptionsTable = ({
 	// Data to render custom captions
 	const customCaptionInputs = [
 		{
-			singularKey: "modelTemplateCC",
-			singularValue: data.modelTemplateCC || defaultData.modelTemplate,
+			singularKey: "modelTemplate",
+			singularValue: defaultData.modelTemplate,
 			singularDefault: defaultData.modelTemplate || "Model Template",
-			pluralKey: "modelTemplatePluralCC",
-			pluralValue: data.modelTemplatePluralCC
-				? data.modelTemplatePluralCC
-				: defaultData.modelTemplatePlural,
+			pluralKey: "modelTemplatePlural",
+			pluralValue: defaultData.modelTemplatePlural,
 			pluralDefault: "Model Templates",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "projectNumberCC",
-			singularValue: data.projectNumberCC
-				? data.projectNumberCC
-				: defaultData.projectNumber,
+			singularKey: "projectNumber",
+			singularValue: defaultData.projectNumber,
 			singularDefault: defaultData.projectNumber || "Project Number",
-			pluralKey: "projectNumberPluralCC",
-			pluralValue: data.projectNumberPluralCC
-				? data.projectNumberPluralCC
-				: defaultData.projectNumberPlural,
+			pluralKey: "projectNumberPlural",
+			pluralValue: defaultData.projectNumberPlural,
 			pluralDefault: "Project Numbers",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "locationCC",
-			singularValue: data.locationCC ? data.locationCC : defaultData.location,
+			singularKey: "location",
+			singularValue: defaultData.location,
 			singularDefault: defaultData.location || "Location",
-			pluralKey: "locationPluralCC",
-			pluralValue: data.locationPluralCC
-				? data.locationPluralCC
-				: defaultData.locationPlural,
+			pluralKey: "locationPlural",
+			pluralValue: defaultData.locationPlural,
 			pluralDefault: "Locations",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "stageCC",
-			singularValue: data.stageCC ? data.stageCC : defaultData.stage,
+			singularKey: "stage",
+			singularValue: defaultData.stage,
 			singularDefault: defaultData.stage || "Stage",
-			pluralKey: "stagePluralCC",
-			pluralValue: data.stagePluralCC
-				? data.stagePluralCC
-				: defaultData.stagePlural,
+			pluralKey: "stagePlural",
+			pluralValue: defaultData.stagePlural,
 			pluralDefault: "Stages",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "zoneCC",
-			singularValue: data.zoneCC ? data.zoneCC : defaultData.zone,
+			singularKey: "zone",
+			singularValue: defaultData.zone,
 			singularDefault: defaultData.zone || "Zone",
-			pluralKey: "zonePluralCC",
-			pluralValue: data.zonePluralCC
-				? data.zonePluralCC
-				: defaultData.zonePlural,
+			pluralKey: "zonePlural",
+			pluralValue: defaultData.zonePlural,
 			pluralDefault: "Zones",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "intervalCC",
-			singularValue: data.intervalCC ? data.intervalCC : defaultData.interval,
+			singularKey: "interval",
+			singularValue: defaultData.interval,
 			singularDefault: defaultData.interval || "Interval",
-			pluralKey: "intervalPluralCC",
-			pluralValue: data.intervalPluralCC
-				? data.intervalPluralCC
-				: defaultData.intervalPlural,
+			pluralKey: "intervalPlural",
+			pluralValue: defaultData.intervalPlural,
 			pluralDefault: "Intervals",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "taskListNoCC",
-			singularValue: data.taskListNoCC
-				? data.taskListNoCC
-				: defaultData.taskListNo,
+			singularKey: "taskListNo",
+			singularValue: defaultData.taskListNo,
 			singularDefault: defaultData.taskListNo || "Task List Number",
-			pluralKey: "taskListNoPluralCC",
-			pluralValue: data.taskListNoPluralCC
-				? data.taskListNoPluralCC
-				: defaultData.taskListNoPlural,
+			pluralKey: "taskListNoPlural",
+			pluralValue: defaultData.taskListNoPlural,
 			pluralDefault: "Task List Numbers",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "questionCC",
-			singularValue: data.questionCC ? data.questionCC : defaultData.question,
+			singularKey: "question",
+			singularValue: defaultData.question,
 			singularDefault: defaultData.question || "Question",
-			pluralKey: "questionPluralCC",
-			pluralValue: data.questionPluralCC
-				? data.questionPluralCC
-				: defaultData.questionPlural,
+			pluralKey: "questionPlural",
+			pluralValue: defaultData.questionPlural,
 			pluralDefault: "Questions",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "taskCC",
-			singularValue: data.taskCC ? data.taskCC : defaultData.task,
+			singularKey: "task",
+			singularValue: defaultData.task,
 			singularDefault: defaultData.task || "Task",
-			pluralKey: "taskPluralCC",
-			pluralValue: data.taskPluralCC
-				? data.taskPluralCC
-				: defaultData.taskPlural,
+			pluralKey: "taskPlural",
+			pluralValue: defaultData.taskPlural,
 			pluralDefault: "Tasks",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "actionRequiredCC",
-			singularValue: data.actionRequiredCC
-				? data.actionRequiredCC
-				: defaultData.actionRequired,
+			singularKey: "actionRequired",
+			singularValue: defaultData.actionRequired,
 			singularDefault: defaultData.actionRequired || "Action",
-			pluralKey: "actionRequiredPluralCC",
-			pluralValue: data.actionRequiredPluralCC
-				? data.actionRequiredPluralCC
-				: defaultData.actionRequiredPlural,
+			pluralKey: "actionRequiredPlural",
+			pluralValue: defaultData.actionRequiredPlural,
 			pluralDefault: "Actions",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "operatingModeCC",
-			singularValue: data.operatingModeCC
-				? data.operatingModeCC
-				: defaultData.operatingMode,
+			singularKey: "operatingMode",
+			singularValue: defaultData.operatingMode,
 			singularDefault: defaultData.operatingMode || "Operating Mode",
-			pluralKey: "operatingModePluralCC",
-			pluralValue: data.operatingModePluralCC
-				? data.operatingModePluralCC
-				: defaultData.operatingModePlural,
+			pluralKey: "operatingModePlural",
+			pluralValue: defaultData.operatingModePlural,
 			pluralDefault: "Operating Modes",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "systemCC",
-			singularValue: data.systemCC ? data.systemCC : defaultData.system,
+			singularKey: "system",
+			singularValue: defaultData.system,
 			singularDefault: defaultData.system || "System",
-			pluralKey: "systemPluralCC",
-			pluralValue: data.systemPluralCC
-				? data.systemPluralCC
-				: defaultData.systemPlural,
+			pluralKey: "systemPlural",
+			pluralValue: defaultData.systemPlural,
 			pluralDefault: "Systems",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "safetyCriticalCC",
-			singularValue: data.safetyCriticalCC
-				? data.safetyCriticalCC
-				: defaultData.safetyCritical,
+			singularKey: "safetyCritical",
+			singularValue: defaultData.safetyCritical,
 			singularDefault: defaultData.safetyCritical || "Safety Critical",
-			pluralKey: "safetyCriticalPluralCC",
-			pluralValue: data.safetyCriticalPluralCC
-				? data.safetyCriticalPluralCC
-				: defaultData.safetyCriticalPlural,
+			pluralKey: "safetyCriticalPlural",
+			pluralValue: defaultData.safetyCriticalPlural,
 			pluralDefault: "Safety Critical",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "partCC",
-			singularValue: data.partCC ? data.partCC : defaultData.part,
+			singularKey: "part",
+			singularValue: defaultData.part,
 			singularDefault: defaultData.part || "Part",
-			pluralKey: "partPluralCC",
-			pluralValue: data.partPluralCC
-				? data.partPluralCC
-				: defaultData.partPlural,
+			pluralKey: "partPlural",
+			pluralValue: defaultData.partPlural,
 			pluralDefault: "Parts",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "partQuantityCC",
-			singularValue: data.partQuantityCC
-				? data.partQuantityCC
-				: defaultData.partQuantity,
+			singularKey: "partQuantity",
+			singularValue: defaultData.partQuantity,
 			singularDefault: defaultData.partQuantity || "Part Quantity",
-			pluralKey: "partQuantityPluralCC",
-			pluralValue: data.partQuantityPluralCC
-				? data.partQuantityPluralCC
-				: defaultData.partQuantityPlural,
+			pluralKey: "partQuantityPlural",
+			pluralValue: defaultData.partQuantityPlural,
 			pluralDefault: "Part Quantities",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "partNameCC",
-			singularValue: data.partNameCC ? data.partNameCC : defaultData.partName,
+			singularKey: "partName",
+			singularValue: defaultData.partName,
 			singularDefault: defaultData.partName || "Part Name",
-			pluralKey: "partNamePluralCC",
-			pluralValue: data.partNamePluralCC
-				? data.partNamePluralCC
-				: defaultData.partNamePlural,
+			pluralKey: "partNamePlural",
+			pluralValue: defaultData.partNamePlural,
 			pluralDefault: "Part Names",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "partDescriptionCC",
-			singularValue: data.partDescriptionCC
-				? data.partDescriptionCC
-				: defaultData.partDescription,
+			singularKey: "partDescription",
+			singularValue: defaultData.partDescription,
 			singularDefault: defaultData.partDescription || "Part Description",
-			pluralKey: "partDescriptionPluralCC",
-			pluralValue: data.partDescriptionPluralCC
-				? data.partDescriptionPluralCC
-				: defaultData.partDescriptionPlural,
+			pluralKey: "partDescriptionPlural",
+			pluralValue: defaultData.partDescriptionPlural,
 			pluralDefault: "Part Descriptions",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "partStockNumberCC",
-			singularValue: data.partStockNumberCC
-				? data.partStockNumberCC
-				: defaultData.partStockNumber,
+			singularKey: "partStockNumber",
+			singularValue: defaultData.partStockNumber,
 			singularDefault: defaultData.partStockNumber || "Part Stock Number",
-			pluralKey: "partStockNumberPluralCC",
-			pluralValue: data.partStockNumberPluralCC
-				? data.partStockNumberPluralCC
-				: defaultData.partStockNumberPlural,
+			pluralKey: "partStockNumberPlural",
+			pluralValue: defaultData.partStockNumberPlural,
 			pluralDefault: "Part Stock Numbers",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "toolCC",
-			singularValue: data.toolCC ? data.toolCC : defaultData.tool,
+			singularKey: "tool",
+			singularValue: defaultData.tool,
 			singularDefault: defaultData.tool || "Tool",
-			pluralKey: "toolPluralCC",
-			pluralValue: data.toolPluralCC
-				? data.toolPluralCC
-				: defaultData.toolPlural,
+			pluralKey: "toolPlural",
+			pluralValue: defaultData.toolPlural,
 			pluralDefault: "Tools",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "toolQuantityCC",
-			singularValue: data.toolQuantityCC
-				? data.toolQuantityCC
-				: defaultData.toolQuantity,
+			singularKey: "toolQuantity",
+			singularValue: defaultData.toolQuantity,
 			singularDefault: defaultData.toolQuantity || "Tool Quantity",
-			pluralKey: "toolQuantityPluralCC",
-			pluralValue: data.toolQuantityPluralCC
-				? data.toolQuantityPluralCC
-				: defaultData.toolQuantityPlural,
+			pluralKey: "toolQuantityPlural",
+			pluralValue: defaultData.toolQuantityPlural,
 			pluralDefault: "Tool Quantities",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "toolDescriptionCC",
-			singularValue: data.toolDescriptionCC
-				? data.toolDescriptionCC
-				: defaultData.toolDescription,
+			singularKey: "toolDescription",
+			singularValue: defaultData.toolDescription,
 			singularDefault: defaultData.toolDescription || "Tool Description",
-			pluralKey: "toolDescriptionPluralCC",
-			pluralValue: data.toolDescriptionPluralCC
-				? data.toolDescriptionPluralCC
-				: defaultData.toolDescriptionPlural,
+			pluralKey: "toolDescriptionPlural",
+			pluralValue: defaultData.toolDescriptionPlural,
 			pluralDefault: "Tool Descriptions",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "lubricantCC",
-			singularValue: data.lubricantCC
-				? data.lubricantCC
-				: defaultData.lubricant,
+			singularKey: "lubricant",
+			singularValue: defaultData.lubricant,
 			singularDefault: defaultData.lubricant || "Lubricant",
-			pluralKey: "lubricantPluralCC",
-			pluralValue: data.lubricantPluralCC
-				? data.lubricantPluralCC
-				: defaultData.lubricantPlural,
+			pluralKey: "lubricantPlural",
+			pluralValue: defaultData.lubricantPlural,
 			pluralDefault: "Lubricants",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "workbookCC",
-			singularValue: data.workbookCC ? data.workbookCC : defaultData.workbook,
+			singularKey: "workbook",
+			singularValue: defaultData.workbook,
 			singularDefault: defaultData.workbook || "Workbook",
-			pluralKey: "workbookPluralCC",
-			pluralValue: data.workbookPluralCC
-				? data.workbookPluralCC
-				: defaultData.workbookPlural,
+			pluralKey: "workbookPlural",
+			pluralValue: defaultData.workbookPlural,
 			pluralDefault: "Workbooks",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "purposeCC",
-			singularValue: data.purposeCC ? data.purposeCC : defaultData.purpose,
+			singularKey: "purpose",
+			singularValue: defaultData.purpose,
 			singularDefault: defaultData.purpose || "Purpose",
-			pluralKey: "purposePluralCC",
-			pluralValue: data.purposePluralCC
-				? data.purposePluralCC
-				: defaultData.purposePlural,
+			pluralKey: "purposePlural",
+			pluralValue: defaultData.purposePlural,
 			pluralDefault: "Purposes",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "procedureCC",
-			singularValue: data.procedureCC
-				? data.procedureCC
-				: defaultData.procedure,
+			singularKey: "procedure",
+			singularValue: defaultData.procedure,
 			singularDefault: defaultData.procedure || "Procedure",
-			pluralKey: "procedurePluralCC",
-			pluralValue: data.procedurePluralCC
-				? data.procedurePluralCC
-				: defaultData.procedurePlural,
+			pluralKey: "procedurePlural",
+			pluralValue: defaultData.procedurePlural,
 			pluralDefault: "Procedures",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "possibleHazardsCC",
-			singularValue: data.possibleHazardsCC
-				? data.possibleHazardsCC
-				: defaultData.possibleHazards,
+			singularKey: "possibleHazards",
+			singularValue: defaultData.possibleHazards,
 			singularDefault: defaultData.possibleHazards || "Possible Hazard",
-			pluralKey: "possibleHazardsPluralCC",
-			pluralValue: data.possibleHazardsPluralCC
-				? data.possibleHazardsPluralCC
-				: defaultData.possibleHazardsPlural,
+			pluralKey: "possibleHazardsPlural",
+			pluralValue: defaultData.possibleHazardsPlural,
 			pluralDefault: "Possible Hazards",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "additionalPPECC",
-			singularValue: data.additionalPPECC
-				? data.additionalPPECC
-				: defaultData.additionalPPE,
+			singularKey: "additionalPPE",
+			singularValue: defaultData.additionalPPE,
 			singularDefault: defaultData.additionalPPE || "Additional PPE",
-			pluralKey: "additionalPPEPluralCC",
-			pluralValue: data.additionalPPEPluralCC
-				? data.additionalPPEPluralCC
-				: defaultData.additionalPPEPlural,
+			pluralKey: "additionalPPEPlural",
+			pluralValue: defaultData.additionalPPEPlural,
 			pluralDefault: "Additional PPEs",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "specificationCC",
-			singularValue: data.specificationCC
-				? data.specificationCC
-				: defaultData.specification,
+			singularKey: "specification",
+			singularValue: defaultData.specification,
 			singularDefault: defaultData.specification || "Specification",
-			pluralKey: "specificationPluralCC",
-			pluralValue: data.specificationPluralCC
-				? data.specificationPluralCC
-				: defaultData.specificationPlural,
+			pluralKey: "specificationPlural",
+			pluralValue: defaultData.specificationPlural,
 			pluralDefault: "Specifications",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "contaminationControlsCC",
-			singularValue: data.contaminationControlsCC
-				? data.contaminationControlsCC
-				: defaultData.contaminationControls,
+			singularKey: "contaminationControls",
+			singularValue: defaultData.contaminationControls,
 			singularDefault:
 				defaultData.contaminationControls || "Contamination Control",
-			pluralKey: "contaminationControlsPluralCC",
-			pluralValue: data.contaminationControlsPluralCC
-				? data.contaminationControlsPluralCC
-				: defaultData.contaminationControlsPlural,
+			pluralKey: "contaminationControlsPlural",
+			pluralValue: defaultData.contaminationControlsPlural,
 			pluralDefault: "Contamination Controls",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "otherInformationCC",
-			singularValue: data.otherInformationCC
-				? data.otherInformationCC
-				: defaultData.otherInformation,
+			singularKey: "otherInformation",
+			singularValue: defaultData.otherInformation,
 			singularDefault: defaultData.otherInformation || "Other Information",
-			pluralKey: "otherInformationPluralCC",
-			pluralValue: data.otherInformationPluralCC
-				? data.otherInformationPluralCC
-				: defaultData.otherInformationPlural,
+			pluralKey: "otherInformationPlural",
+			pluralValue: defaultData.otherInformationPlural,
 			pluralDefault: "Other Information",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "correctiveActionsCC",
-			singularValue: data.correctiveActionsCC
-				? data.correctiveActionsCC
-				: defaultData.correctiveActions,
+			singularKey: "correctiveActions",
+			singularValue: defaultData.correctiveActions,
 			singularDefault: defaultData.correctiveActions || "Corrective Action",
-			pluralKey: "correctiveActionsPluralCC",
-			pluralValue: data.correctiveActionsPluralCC
-				? data.correctiveActionsPluralCC
-				: defaultData.correctiveActionsPlural,
+			pluralKey: "correctiveActionsPlural",
+			pluralValue: defaultData.correctiveActionsPlural,
 			pluralDefault: "Corrective Actions",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "isolationsCC",
-			singularValue: data.isolationsCC
-				? data.isolationsCC
-				: defaultData.isolations,
+			singularKey: "isolations",
+			singularValue: defaultData.isolations,
 			singularDefault: defaultData.isolations || "Isolation",
-			pluralKey: "isolationsPluralCC",
-			pluralValue: data.isolationsPluralCC
-				? data.isolationsPluralCC
-				: defaultData.isolationsPlural,
+			pluralKey: "isolationsPlural",
+			pluralValue: defaultData.isolationsPlural,
 			pluralDefault: "Isolations",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "controlsCC",
-			singularValue: data.controlsCC ? data.controlsCC : defaultData.controls,
+			singularKey: "controls",
+			singularValue: defaultData.controls,
 			singularDefault: defaultData.controls || "Control",
-			pluralKey: "controlsPluralCC",
-			pluralValue: data.controlsPluralCC
-				? data.controlsPluralCC
-				: defaultData.controlsPlural,
+			pluralKey: "controlsPlural",
+			pluralValue: defaultData.controlsPlural,
 			pluralDefault: "Controls",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "customField1CC",
-			singularValue: data.customField1CC
-				? data.customField1CC
-				: defaultData.customField1,
+			singularKey: "customField1",
+			singularValue: defaultData.customField1,
 			singularDefault: defaultData.customField1 || "Custom Field 1",
-			pluralKey: "customField1PluralCC",
-			pluralValue: data.customField1PluralCC
-				? data.customField1PluralCC
-				: defaultData.customField1Plural,
+			pluralKey: "customField1Plural",
+			pluralValue: defaultData.customField1Plural,
 			pluralDefault: "Custom Field 1",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "customField2CC",
-			singularValue: data.customField2CC
-				? data.customField2CC
-				: defaultData.customField2,
+			singularKey: "customField2",
+			singularValue: defaultData.customField2,
 			singularDefault: defaultData.customField2 || "Custom Field 2",
-			pluralKey: "customField2PluralCC",
-			pluralValue: data.customField2PluralCC
-				? data.customField2PluralCC
-				: defaultData.customField2Plural,
+			pluralKey: "customField2Plural",
+			pluralValue: defaultData.customField2Plural,
 			pluralDefault: "Custom Field 2",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "customField3CC",
-			singularValue: data.customField3CC
-				? data.customField3CC
-				: defaultData.customField3,
+			singularKey: "customField3",
+			singularValue: defaultData.customField3,
 			singularDefault: defaultData.customField3 || "Custom Field 3",
-			pluralKey: "customField3PluralCC",
-			pluralValue: data.customField3PluralCC
-				? data.customField3PluralCC
-				: defaultData.customField3Plural,
+			pluralKey: "customField3Plural",
+			pluralValue: defaultData.customField3Plural,
 			pluralDefault: "Custom Field 3",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "makeCC",
-			singularValue: data.makeCC ? data.makeCC : defaultData.make,
+			singularKey: "make",
+			singularValue: defaultData.make,
 			singularDefault: defaultData.make || "Make",
-			pluralKey: "makePluralCC",
-			pluralValue: data.makePluralCC
-				? data.makePluralCC
-				: defaultData.makePlural,
+			pluralKey: "makePlural",
+			pluralValue: defaultData.makePlural,
 			pluralDefault: "Makes",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "modelCC",
-			singularValue: data.modelCC ? data.modelCC : defaultData.model,
+			singularKey: "model",
+			singularValue: defaultData.model,
 			singularDefault: defaultData.model || "Model",
-			pluralKey: "modelPluralCC",
-			pluralValue: data.modelPluralCC
-				? data.modelPluralCC
-				: defaultData.modelPlural,
+			pluralKey: "modelPlural",
+			pluralValue: defaultData.modelPlural,
 			pluralDefault: "Models",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "modelTypeCC",
-			singularValue: data.modelTypeCC
-				? data.modelTypeCC
-				: defaultData.modelType,
+			singularKey: "modelType",
+			singularValue: defaultData.modelType,
 			singularDefault: defaultData.modelType || "Model Type",
-			pluralKey: "modelTypePluralCC",
-			pluralValue: data.modelTypePluralCC
-				? data.modelTypePluralCC
-				: defaultData.modelTypePlural,
+			pluralKey: "modelTypePlural",
+			pluralValue: defaultData.modelTypePlural,
 			pluralDefault: "Model Types",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "developerNameCC",
-			singularValue: data.developerNameCC
-				? data.developerNameCC
-				: defaultData.developerName,
+			singularKey: "developerName",
+			singularValue: defaultData.developerName,
 			singularDefault: defaultData.developerName || "Developer Name",
-			pluralKey: "developerNamePluralCC",
-			pluralValue: data.developerNamePluralCC
-				? data.developerNamePluralCC
-				: defaultData.developerNamePlural,
+			pluralKey: "developerNamePlural",
+			pluralValue: defaultData.developerNamePlural,
 			pluralDefault: "Developer Names",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "roleCC",
-			singularValue: data.roleCC ? data.roleCC : defaultData.role,
+			singularKey: "role",
+			singularValue: defaultData.role,
 			singularDefault: defaultData.role || "Role",
-			pluralKey: "rolePluralCC",
-			pluralValue: data.rolePluralCC
-				? data.rolePluralCC
-				: defaultData.rolePlural,
+			pluralKey: "rolePlural",
+			pluralValue: defaultData.rolePlural,
 			pluralDefault: "Roles",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "tutorialCC",
-			singularValue: data.tutorialCC ? data.tutorialCC : defaultData.tutorial,
+			singularKey: "tutorial",
+			singularValue: defaultData.tutorial,
 			singularDefault: defaultData.tutorial || "Tutorial",
-			pluralKey: "tutorialPluralCC",
-			pluralValue: data.tutorialPluralCC
-				? data.tutorialPluralCC
-				: defaultData.tutorialPlural,
+			pluralKey: "tutorialPlural",
+			pluralValue: defaultData.tutorialPlural,
 			pluralDefault: "Tutorials",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "feedbackCC",
-			singularValue: data.feedbackCC ? data.feedbackCC : defaultData.feedback,
+			singularKey: "feedback",
+			singularValue: defaultData.feedback,
 			singularDefault: defaultData.feedback || "Feedback",
-			pluralKey: "feedbackPluralCC",
-			pluralValue: data.feedbackPluralCC
-				? data.feedbackPluralCC
-				: defaultData.feedbackPlural,
+			pluralKey: "feedbackPlural",
+			pluralValue: defaultData.feedbackPlural,
 			pluralDefault: "Feedbacks",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "changeRequiredCC",
-			singularValue: data.changeRequiredCC
-				? data.changeRequiredCC
-				: defaultData.changeRequired,
+			singularKey: "changeRequired",
+			singularValue: defaultData.changeRequired,
 			singularDefault: defaultData.changeRequired || "Change Required",
-			pluralKey: "changeRequiredPluralCC",
-			pluralValue: data.changeRequiredPluralCC
-				? data.changeRequiredPluralCC
-				: defaultData.changeRequiredPlural,
+			pluralKey: "changeRequiredPlural",
+			pluralValue: defaultData.changeRequiredPlural,
 			pluralDefault: "Changes Required",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "benefitCC",
-			singularValue: data.benefitCC ? data.benefitCC : defaultData.benefit,
+			singularKey: "benefit",
+			singularValue: defaultData.benefit,
 			singularDefault: defaultData.benefit || "Benefit",
-			pluralKey: "benefitPluralCC",
-			pluralValue: data.benefitPluralCC
-				? data.benefitPluralCC
-				: defaultData.benefitPlural,
+			pluralKey: "benefitPlural",
+			pluralValue: defaultData.benefitPlural,
 			pluralDefault: "Benefits",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "classificationCC",
-			singularValue: data.classificationCC
-				? data.classificationCC
-				: defaultData.classification,
+			singularKey: "classification",
+			singularValue: defaultData.classification,
 			singularDefault: defaultData.classification || "Classification",
-			pluralKey: "classificationPluralCC",
-			pluralValue: data.classificationPluralCC
-				? data.classificationPluralCC
-				: defaultData.classificationPlural,
+			pluralKey: "classificationPlural",
+			pluralValue: defaultData.classificationPlural,
 			pluralDefault: "Classifications",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "priorityCC",
-			singularValue: data.priorityCC ? data.priorityCC : defaultData.priority,
+			singularKey: "priority",
+			singularValue: defaultData.priority,
 			singularDefault: defaultData.priority || "Priority",
-			pluralKey: "priorityPluralCC",
-			pluralValue: data.priorityPluralCC
-				? data.priorityPluralCC
-				: defaultData.priorityPlural,
+			pluralKey: "priorityPlural",
+			pluralValue: defaultData.priorityPlural,
 			pluralDefault: "Priorities",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "feedbackStatusCC",
-			singularValue: data.feedbackStatusCC
-				? data.feedbackStatusCC
-				: defaultData.feedbackStatus,
+			singularKey: "feedbackStatus",
+			singularValue: defaultData.feedbackStatus,
 			singularDefault: defaultData.feedbackStatus || "Feedback Status",
-			pluralKey: "feedbackStatusPluralCC",
-			pluralValue: data.feedbackStatusPluralCC
-				? data.feedbackStatusPluralCC
-				: defaultData.feedbackStatusPlural,
+			pluralKey: "feedbackStatusPlural",
+			pluralValue: defaultData.feedbackStatusPlural,
 			pluralDefault: "Feedback Statues",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "userCC",
-			singularValue: data.userCC ? data.userCC : defaultData.user,
+			singularKey: "user",
+			singularValue: defaultData.user,
 			singularDefault: defaultData.user || "User",
-			pluralKey: "userPluralCC",
-			pluralValue: data.userPluralCC
-				? data.userPluralCC
-				: defaultData.userPlural,
+			pluralKey: "userPlural",
+			pluralValue: defaultData.userPlural,
 			pluralDefault: "Users",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "positionCC",
-			singularValue: data.positionCC ? data.positionCC : defaultData.position,
+			singularKey: "position",
+			singularValue: defaultData.position,
 			singularDefault: defaultData.position || "Position",
-			pluralKey: "positionPluralCC",
-			pluralValue: data.positionPluralCC
-				? data.positionPluralCC
-				: defaultData.positionPlural,
+			pluralKey: "positionPlural",
+			pluralValue: defaultData.positionPlural,
 			pluralDefault: "Positions",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "serviceCC",
-			singularValue: data.serviceCC ? data.serviceCC : defaultData.service,
+			singularKey: "service",
+			singularValue: defaultData.service,
 			singularDefault: defaultData.service || "Service",
-			pluralKey: "servicePluralCC",
-			pluralValue: data.servicePluralCC
-				? data.servicePluralCC
-				: defaultData.servicePlural,
+			pluralKey: "servicePlural",
+			pluralValue: defaultData.servicePlural,
 			pluralDefault: "Services",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "serviceWorkOrderCC",
-			singularValue: data.serviceWorkOrderCC
-				? data.serviceWorkOrderCC
-				: defaultData.serviceWorkOrder,
+			singularKey: "serviceWorkOrder",
+			singularValue: defaultData.serviceWorkOrder,
 			singularDefault: defaultData.serviceWorkOrder || "Service Work Order",
-			pluralKey: "serviceWorkOrderPluralCC",
-			pluralValue: data.serviceWorkOrderPluralCC
-				? data.serviceWorkOrderPluralCC
-				: defaultData.serviceWorkOrderPlural,
+			pluralKey: "serviceWorkOrderPlural",
+			pluralValue: defaultData.serviceWorkOrderPlural,
 			pluralDefault: "Service Work Orders",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "pauseReasonCC",
-			singularValue: data.pauseReasonCC
-				? data.pauseReasonCC
-				: defaultData.pauseReason,
+			singularKey: "pauseReason",
+			singularValue: defaultData.pauseReason,
 			singularDefault: defaultData.pauseReason || "Pause Reason",
-			pluralKey: "pauseReasonPluralCC",
-			pluralValue: data.pauseReasonPluralCC
-				? data.pauseReasonPluralCC
-				: defaultData.pauseReasonPlural,
+			pluralKey: "pauseReasonPlural",
+			pluralValue: defaultData.pauseReasonPlural,
 			pluralDefault: "Pause Reasons",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "stopReasonCC",
-			singularValue: data.stopReasonCC
-				? data.stopReasonCC
-				: defaultData.stopReason,
+			singularKey: "stopReason",
+			singularValue: defaultData.stopReason,
 			singularDefault: defaultData.stopReason || "Stop Reason",
-			pluralKey: "stopReasonPluralCC",
-			pluralValue: data.stopReasonPluralCC
-				? data.stopReasonPluralCC
-				: defaultData.stopReasonPlural,
+			pluralKey: "stopReasonPlural",
+			pluralValue: defaultData.stopReasonPlural,
 			pluralDefault: "Stop Reasons",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "skipReasonCC",
-			singularValue: data.skipReasonCC
-				? data.skipReasonCC
-				: defaultData.skipReason,
+			singularKey: "skipReason",
+			singularValue: defaultData.skipReason,
 			singularDefault: defaultData.skipReason || "Skip Reason",
-			pluralKey: "skipReasonPluralCC",
-			pluralValue: data.skipReasonPluralCC
-				? data.skipReasonPluralCC
-				: defaultData.skipReasonPlural,
+			pluralKey: "skipReasonPlural",
+			pluralValue: defaultData.skipReasonPlural,
 			pluralDefault: "Skip Reasons",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "defectCC",
-			singularValue: data.defectCC ? data.defectCC : defaultData.defect,
+			singularKey: "defect",
+			singularValue: defaultData.defect,
 			singularDefault: defaultData.defect || "Defect",
-			pluralKey: "defectPluralCC",
-			pluralValue: data.defectPluralCC
-				? data.defectPluralCC
-				: defaultData.defectPlural,
+			pluralKey: "defectPlural",
+			pluralValue: defaultData.defectPlural,
 			pluralDefault: "Defects",
 			indents: 0,
 		},
 
 		{
-			singularKey: "defectWorkOrderCC",
-			singularValue: data.defectWorkOrderCC
-				? data.defectWorkOrderCC
-				: defaultData.defectWorkOrder,
+			singularKey: "defectWorkOrder",
+			singularValue: defaultData.defectWorkOrder,
 			singularDefault: defaultData.defectWorkOrder || "Defect Work Order",
-			pluralKey: "defectWorkOrderPluralCC",
-			pluralValue: data.defectWorkOrderPluralCC
-				? data.defectWorkOrderPluralCC
-				: defaultData.defectWorkOrderPlural,
+			pluralKey: "defectWorkOrderPlural",
+			pluralValue: defaultData.defectWorkOrderPlural,
 			pluralDefault: "Defect Work Orders",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "defectStatusCC",
-			singularValue: data.defectStatusCC
-				? data.defectStatusCC
-				: defaultData.defectStatus,
+			singularKey: "defectStatus",
+			singularValue: defaultData.defectStatus,
 			singularDefault: defaultData.defectStatus || "Defect Status",
-			pluralKey: "defectStatusPluralCC",
-			pluralValue: data.defectStatusPluralCC
-				? data.defectStatusPluralCC
-				: defaultData.defectStatusPlural,
+			pluralKey: "defectStatusPlural",
+			pluralValue: defaultData.defectStatusPlural,
 			pluralDefault: "Defect Statues",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "defectTypeCC",
-			singularValue: data.defectTypeCC
-				? data.defectTypeCC
-				: defaultData.defectType,
+			singularKey: "defectType",
+			singularValue: defaultData.defectType,
 			singularDefault: defaultData.defectType || "Defect Type",
-			pluralKey: "defectTypePluralCC",
-			pluralValue: data.defectTypePluralCC
-				? data.defectTypePluralCC
-				: defaultData.defectTypePlural,
+			pluralKey: "defectTypePlural",
+			pluralValue: defaultData.defectTypePlural,
 			pluralDefault: "Defect Types",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "typeCC",
-			singularValue: data.typeCC ? data.typeCC : defaultData.type,
+			singularKey: "type",
+			singularValue: defaultData.type,
 			singularDefault: defaultData.type || "Type",
-			pluralKey: "typePluralCC",
-			pluralValue: data.typePluralCC
-				? data.typePluralCC
-				: defaultData.typePlural,
+			pluralKey: "typePlural",
+			pluralValue: defaultData.typePlural,
 			pluralDefault: "Types",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "riskRatingCC",
-			singularValue: data.riskRatingCC
-				? data.riskRatingCC
-				: defaultData.riskRating,
+			singularKey: "riskRating",
+			singularValue: defaultData.riskRating,
 			singularDefault: defaultData.riskRating || "Risk Rating",
-			pluralKey: "riskRatingPluralCC",
-			pluralValue: data.riskRatingPluralCC
-				? data.riskRatingPluralCC
-				: defaultData.riskRatingPlural,
+			pluralKey: "riskRatingPlural",
+			pluralValue: defaultData.riskRatingPlural,
 			pluralDefault: "Risk Ratings",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "riskRatingActionCC",
-			singularValue: data.riskRatingActionCC
-				? data.riskRatingActionCC
-				: defaultData.riskRatingAction,
+			singularKey: "riskRatingAction",
+			singularValue: defaultData.riskRatingAction,
 			singularDefault: defaultData.riskRatingAction || "Risk Rating Action",
-			pluralKey: "riskRatingActionPluralCC",
-			pluralValue: data.riskRatingActionPluralCC
-				? data.riskRatingActionPluralCC
-				: defaultData.riskRatingActionPlural,
+			pluralKey: "riskRatingActionPlural",
+			pluralValue: defaultData.riskRatingActionPlural,
 			pluralDefault: "Risk Rating Actions",
 
 			indents: 2,
 		},
 
 		{
-			singularKey: "riskRatingMatrixCC",
-			singularValue: data.riskRatingMatrixCC
-				? data.riskRatingMatrixCC
-				: defaultData.riskRatingMatrix,
+			singularKey: "riskRatingMatrix",
+			singularValue: defaultData.riskRatingMatrix,
 			singularDefault: defaultData.riskRatingMatrix || "Risk Rating Matrix",
-			pluralKey: "riskRatingMatrixPluralCC",
-			pluralValue: data.riskRatingMatrixPluralCC
-				? data.riskRatingMatrixPluralCC
-				: defaultData.riskRatingMatrixPlural,
+			pluralKey: "riskRatingMatrixPlural",
+			pluralValue: defaultData.riskRatingMatrixPlural,
 			pluralDefault: "Risk Rating Matrices",
 			indents: 1,
 		},
 
 		{
-			singularKey: "departmentCC",
-			singularValue: data.departmentCC
-				? data.departmentCC
-				: defaultData.department,
+			singularKey: "department",
+			singularValue: defaultData.department,
 			singularDefault: defaultData.department || "Department",
-			pluralKey: "departmentPluralCC",
-			pluralValue: data.departmentPluralCC
-				? data.departmentPluralCC
-				: defaultData.departmentPlural,
+			pluralKey: "departmentPlural",
+			pluralValue: defaultData.departmentPlural,
 			pluralDefault: "Departments",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "assetCC",
-			singularValue: data.assetCC ? data.assetCC : defaultData.asset,
+			singularKey: "asset",
+			singularValue: defaultData.asset,
 			singularDefault: defaultData.asset || "Asset",
-			pluralKey: "assetPluralCC",
-			pluralValue: data.assetPluralCC
-				? data.assetPluralCC
-				: defaultData.assetPlural,
+			pluralKey: "assetPlural",
+			pluralValue: defaultData.assetPlural,
 			pluralDefault: "Assets",
 
 			indents: 0,
 		},
 
 		{
-			singularKey: "assetReferenceCC",
-			singularValue: data.assetReferenceCC
-				? data.assetReferenceCC
-				: defaultData.assetReference,
+			singularKey: "assetReference",
+			singularValue: defaultData.assetReference,
 			singularDefault: defaultData.assetReference || "Asset Reference",
-			pluralKey: "assetReferencePluralCC",
-			pluralValue: data.assetReferencePluralCC
-				? data.assetReferencePluralCC
-				: defaultData.assetReferencePlural,
+			pluralKey: "assetReferencePlural",
+			pluralValue: defaultData.assetReferencePlural,
 			pluralDefault: "Asset References",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "assetPlannerGroupCC",
-			singularValue: data.assetPlannerGroupCC
-				? data.assetPlannerGroupCC
-				: defaultData.assetPlannerGroup,
+			singularKey: "assetPlannerGroup",
+			singularValue: defaultData.assetPlannerGroup,
 			singularDefault: defaultData.assetPlannerGroup || "Asset Planner Group",
-			pluralKey: "assetPlannerGroupPluralCC",
-			pluralValue: data.assetPlannerGroupPluralCC
-				? data.assetPlannerGroupPluralCC
-				: defaultData.assetPlannerGroupPlural,
+			pluralKey: "assetPlannerGroupPlural",
+			pluralValue: defaultData.assetPlannerGroupPlural,
 			pluralDefault: "Asset Planner Groups",
 
 			indents: 1,
 		},
 
 		{
-			singularKey: "assetMainWorkCenterCC",
-			singularValue: data.assetMainWorkCenterCC
-				? data.assetMainWorkCenterCC
-				: defaultData.assetMainWorkCenter,
+			singularKey: "assetMainWorkCenter",
+			singularValue: defaultData.assetMainWorkCenter,
 			singularDefault:
 				defaultData.assetMainWorkCenter || "Asset Main Work Center",
-			pluralKey: "assetMainWorkCenterPluralCC",
-			pluralValue: data.assetMainWorkCenterPluralCC
-				? data.assetMainWorkCenterPluralCC
-				: defaultData.assetMainWorkCenterPlural,
+			pluralKey: "assetMainWorkCenterPlural",
+			pluralValue: defaultData.assetMainWorkCenterPlural,
 			pluralDefault: "Asset Main Work Centers",
 
 			indents: 1,
