@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import { Grid } from "@material-ui/core";
@@ -9,47 +9,29 @@ import { BASE_API_PATH } from "helpers/constants";
 import EditAssetDialog from "./EditAssetDialog";
 import { getSiteAssets } from "services/clients/sites/siteAssets";
 import { DefaultPageSize } from "helpers/constants";
-//import useDidMountEffect from "hooks/useDidMountEffect";
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
 
 const AC = ContentStyle();
 
-const Assets = ({
-	data,
-	count,
-	siteId,
-	isLoading,
-	searchedData,
-	fetchAsset,
-	getError,
-}) => {
+const Assets = ({ data, count, siteId, isLoading, fetchAsset, getError }) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
 	const [editData, setEditData] = useState({});
 	const [total, setTotal] = useState(null);
 	const [page, setPage] = useState({ pageNo: 1, perPage: DefaultPageSize });
-	//const [searchText, setSearchText] = useState("");
 	const searchRef = useRef("");
-
-	// useDidMountEffect(() => {
-	// 	const fetchSiteAssets = async () => {
-	// 		try {
-	// 			const response = await getSiteAssets(siteId, page.pageNo, searchText);
-
-	// 			if (response.status) {
-	// 				setAsset(response.data);
-	// 				return response;
-	// 			} else {
-	// 				throw new Error(response);
-	// 			}
-	// 		} catch (err) {
-	// 			console.log(err);
-	// 			return err;
-	// 		}
-	// 	};
-
-	// 	fetchSiteAssets();
-	// }, [page, searchText]);
 
 	const fetchSiteAssets = async (searchText) => {
 		try {
@@ -120,12 +102,13 @@ const Assets = ({
 		}
 	};
 
-	const handleSearch = (e) => {
-		const { value } = e.target;
-		//setSearchText(value);
-		searchRef.current = value;
-		fetchSiteAssets(value);
-	};
+	const handleSearch = useCallback(
+		debounce((value) => {
+			searchRef.current = value;
+			fetchSiteAssets(value);
+		}, 500),
+		[]
+	);
 
 	return (
 		<>
@@ -162,7 +145,10 @@ const Assets = ({
 									<SearchIcon />
 								</Grid>
 								<Grid item>
-									<AC.SearchInput onChange={handleSearch} label="Search" />
+									<AC.SearchInput
+										onChange={(e) => handleSearch(e.target.value)}
+										label="Search"
+									/>
 								</Grid>
 							</Grid>
 						</AC.SearchInner>

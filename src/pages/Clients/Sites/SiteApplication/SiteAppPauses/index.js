@@ -49,6 +49,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	};
 
 	const handleUpdateSubcat = (parentId, subcatID, newName) => {
+		console.log(parentId, subcatID, newName);
 		const newData = [...allData];
 
 		let pauseIndex = newData.findIndex((el) => el.id === parentId);
@@ -181,11 +182,15 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const { showAdd, details } = state;
+
+	console.log(state);
+
 	if (is404 === false) {
 		return (
 			<div>
 				<AddDialog
-					open={state.showAdd}
+					open={showAdd}
 					closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
 					applicationID={appId}
 					handleAddData={handleAddData}
@@ -212,7 +217,9 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 				/>
 				<div className="detailsContainer">
 					<DetailsPanel
-						header={"Pause Reasons"}
+						header={`${
+							details?.data?.application?.pauseReasonCC || "PauseCC"
+						} Reasons`}
 						dataCount={allData.length}
 						description="Create and manage Pause Reasons"
 					/>

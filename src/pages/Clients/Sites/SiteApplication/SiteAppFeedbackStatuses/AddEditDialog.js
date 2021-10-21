@@ -252,7 +252,7 @@ const AddEditDialog = ({
 							Cancel
 						</ADD.CancelButton>
 						<ADD.ConfirmButton variant="contained" onClick={handleSubmit}>
-							{editMode ? "Edit" : "Add New"}
+							Save
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>

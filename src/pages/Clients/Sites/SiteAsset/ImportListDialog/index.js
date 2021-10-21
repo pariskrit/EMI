@@ -117,13 +117,15 @@ const ImportListDialog = ({
 			</AT.ActionContainer>
 			<DialogContent>
 				<div className={classes.content}>
-					<DropUpload
-						filesUploading={loading}
-						setFilesUploading={setLoading}
-						isImageUploaded={false}
-						uploadReturn={onDocumentUpload}
-						apiPath={`${BASE_API_PATH}SiteAssets/${siteId}/uploadList`}
-					/>
+					{!show && (
+						<DropUpload
+							filesUploading={loading}
+							setFilesUploading={setLoading}
+							isImageUploaded={false}
+							uploadReturn={onDocumentUpload}
+							apiPath={`${BASE_API_PATH}SiteAssets/${siteId}/uploadList`}
+						/>
+					)}
 					{show ? (
 						<>
 							{allZero ? (

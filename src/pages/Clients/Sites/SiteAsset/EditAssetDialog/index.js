@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogTitle,
@@ -9,7 +10,6 @@ import {
 import CurveButton from "components/Elements/CurveButton";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
-import React, { useEffect, useState } from "react";
 import { editSiteAsset } from "services/clients/sites/siteAssets";
 import { getSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 import EditDialogStyle from "styles/application/EditDialogStyle";
@@ -110,6 +110,7 @@ const EditAssetDialog = ({
 		setFunctionalLocations([]);
 		closeHandler();
 		setInput(defaultStateSchema);
+		setErrors(defaultErrorSchema);
 		// Removing new subcat input
 		setIsAddNew(false);
 	};
@@ -120,7 +121,6 @@ const EditAssetDialog = ({
 				{ op: "replace", path: "name", value: d.name },
 				{ op: "replace", path: "description", value: d.description },
 			]);
-			console.log(result);
 			if (result.status) {
 				handleEditData({
 					id: editData.id,
@@ -143,20 +143,6 @@ const EditAssetDialog = ({
 			}
 		} catch (err) {
 			throw new Error(err.response);
-			// if (
-			// 	err.response.data.detail !== null ||
-			// 	err.response.data.detail !== undefined
-			// ) {
-			// 	setErrors({
-			// 		name: err.response.data.detail,
-			// 		description: err.response.data.detail,
-			// 	});
-			// } else {
-			// 	// If no explicit errors provided, throws to caller
-			// 	throw new Error(err);
-			// }
-
-			// return { success: false };
 		}
 	};
 
@@ -248,7 +234,7 @@ const EditAssetDialog = ({
 					</ET.ConfirmButton>
 				</ET.ButtonContainer>
 			</ET.ActionContainer>
-			<ET.DialogContent>
+			<ET.DialogContent id="parentDiv">
 				<div>
 					<ET.InputContainer>
 						<ET.LeftInputContainer>

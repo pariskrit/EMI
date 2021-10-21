@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import API from "helpers/api";
 import SubcatStyle from "styles/application/SubcatStyle";
 
@@ -16,8 +16,13 @@ const NewSubcat = ({
 	getError,
 }) => {
 	// Init state
+	const ref = useRef(null);
 	const [subcatName, setSubcatName] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
+
+	useEffect(() => {
+		ref.current.focus();
+	}, []);
 
 	// Handlers
 	const closeOverride = () => {
@@ -70,34 +75,35 @@ const NewSubcat = ({
 
 			// Closing
 			closeOverride();
+		} else {
+			setIsUpdating(true);
+
+			try {
+				// Creating subcat
+				const newSubcat = await handleCreateSubcat();
+
+				if (newSubcat.success) {
+					// Clearning input state
+					setSubcatName("");
+
+					// removing indicator
+					setIsUpdating(false);
+
+					// Removing input box
+					setIsAddNew(false);
+				} else {
+					// Removing indicator
+					setIsUpdating(false);
+				}
+			} catch (err) {
+				// TODO: handle non validation errors here
+				console.log(err);
+
+				setIsUpdating(false);
+				closeOverride();
+			}
 		}
 		// Setting progress indicator
-		setIsUpdating(true);
-
-		try {
-			// Creating subcat
-			const newSubcat = await handleCreateSubcat();
-
-			if (newSubcat.success) {
-				// Clearning input state
-				setSubcatName("");
-
-				// removing indicator
-				setIsUpdating(false);
-
-				// Removing input box
-				setIsAddNew(false);
-			} else {
-				// Removing indicator
-				setIsUpdating(false);
-			}
-		} catch (err) {
-			// TODO: handle non validation errors here
-			console.log(err);
-
-			setIsUpdating(false);
-			closeOverride();
-		}
 	};
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
@@ -114,6 +120,7 @@ const NewSubcat = ({
 	return (
 		<AS.SubcatContainer>
 			<AS.NameInput
+				inputRef={ref}
 				error={errors.name === null ? false : true}
 				helperText={errors.name === null ? null : errors.name}
 				onKeyDown={handleEnterPress}

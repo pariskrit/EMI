@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { connect } from "react-redux";
 import { Grid, makeStyles, TextField } from "@material-ui/core";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { postSiteAssetReferences } from "services/clients/sites/siteAssets/references";
+import useOutsideClick from "hooks/useOutsideClick";
 
 const schema = yup.object({
 	name: yup
@@ -60,7 +62,9 @@ const NewFunctionalLocations = ({
 	setIsAddNew,
 	handleAddFunctional,
 	getError,
+	error,
 }) => {
+	const childRef = useRef(null);
 	const classes = useStyles();
 	const [input, setInput] = useState(defaultInputSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
@@ -104,25 +108,27 @@ const NewFunctionalLocations = ({
 
 	const saveFuncLoc = async () => {
 		// e.preventDefault();
-		setLoading(true);
-		setErrors(defaultErrorSchema);
-		try {
-			const localChecker = await handleValidateObj(schema, input);
-			if (!localChecker.some((el) => el.valid === false)) {
-				const updateData = await handleCreateFuncLocations();
-				if (updateData.success) {
-					closeOverride();
-					setIsAddNew(false);
+		if (!error.status) {
+			setLoading(true);
+			setErrors(defaultErrorSchema);
+			try {
+				const localChecker = await handleValidateObj(schema, input);
+				if (!localChecker.some((el) => el.valid === false)) {
+					const updateData = await handleCreateFuncLocations();
+					if (updateData.success) {
+						closeOverride();
+						setIsAddNew(false);
+					} else {
+						setLoading(false);
+					}
 				} else {
+					const newError = generateErrorState(localChecker);
+					setErrors({ ...errors, ...newError });
 					setLoading(false);
 				}
-			} else {
-				const newError = generateErrorState(localChecker);
-				setErrors({ ...errors, ...newError });
-				setLoading(false);
+			} catch (err) {
+				console.log(err);
 			}
-		} catch (err) {
-			console.log(err);
 		}
 	};
 
@@ -136,8 +142,15 @@ const NewFunctionalLocations = ({
 		closeOverride();
 	};
 
+	const handleEnterPress = (e) => {
+		if (e.keyCode === 13) {
+			saveFuncLoc();
+		}
+	};
+
+	useOutsideClick(childRef, () => saveFuncLoc(), "parentDiv");
 	return (
-		<div className={classes.mainWrap}>
+		<div ref={childRef} className={classes.mainWrap}>
 			<DeleteIcon className={classes.deleteIcon} onClick={onDeleteApp} />
 			<form>
 				<div className="desktopTableViewEdit">
@@ -152,7 +165,7 @@ const NewFunctionalLocations = ({
 								value={input.name}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 								autoFocus
 							/>
 						</Grid>
@@ -168,7 +181,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.description === null ? null : errors.description
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -183,7 +196,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -198,7 +211,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.workCenter === null ? null : errors.workCenter
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 					</Grid>
@@ -215,7 +228,7 @@ const NewFunctionalLocations = ({
 								value={input.name}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -230,7 +243,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.description === null ? null : errors.description
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -245,7 +258,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -260,7 +273,7 @@ const NewFunctionalLocations = ({
 								helperText={
 									errors.workCenter === null ? null : errors.workCenter
 								}
-								onBlur={saveFuncLoc}
+								onKeyDown={handleEnterPress}
 							/>
 						</Grid>
 					</Grid>
@@ -271,5 +284,5 @@ const NewFunctionalLocations = ({
 		</div>
 	);
 };
-
-export default NewFunctionalLocations;
+const mapStateToProps = ({ commonData: { error } }) => ({ error });
+export default connect(mapStateToProps)(NewFunctionalLocations);

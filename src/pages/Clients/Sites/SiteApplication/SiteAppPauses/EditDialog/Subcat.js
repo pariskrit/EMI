@@ -15,6 +15,7 @@ const Subcat = ({
 	handleUpdateSubcatStateName,
 	getError,
 }) => {
+	console.log(sub);
 	// Init state
 	const [attemptDelete, setAttemptDelete] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
@@ -87,9 +88,9 @@ const Subcat = ({
 			]);
 
 			// Handling succesful update
-			if (result.status === 200) {
+			if (result.status === 200 || result.status === 204) {
 				// Updating name in parent state
-				handleUpdateSubcatStateName(sub.applicationPauseID, sub.id, subcatName);
+				handleUpdateSubcatStateName(sub.pauseID, sub.id, subcatName);
 
 				// Removing edit box
 				setIsEdit(false);
@@ -102,6 +103,7 @@ const Subcat = ({
 				throw new Error(result);
 			}
 		} catch (err) {
+			console.log(err);
 			// Handling duplicate subcat error
 			if (
 				err.response.data.detail !== undefined ||
