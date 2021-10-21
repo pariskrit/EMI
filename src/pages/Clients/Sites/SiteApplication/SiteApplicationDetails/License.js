@@ -73,7 +73,6 @@ function License({ details }) {
 			setInput(details);
 		}
 	}, [details]);
-
 	return (
 		<AccordionBox title="License">
 			<Grid container spacing={2}>
@@ -106,6 +105,7 @@ function License({ details }) {
 							onChange={onInputChange}
 							onBlur={updateInput}
 							onKeyDown={onEnterKeyPress}
+							disabled={input.licenseType === 2}
 						/>
 					</div>
 				</Grid>

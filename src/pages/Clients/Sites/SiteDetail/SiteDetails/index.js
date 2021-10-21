@@ -20,6 +20,7 @@ import {
 import "./siteDetails.scss";
 import { Facebook } from "react-spinners-css";
 import AccordionBox from "components/Layouts/AccordionBox";
+import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -46,6 +47,8 @@ const SiteDetails = ({
 	const [clientLicenseType, setClientLicenseType] = useState(0);
 	const [selectedLicenseType, setSelectedLicenseType] = useState({});
 	const [newInput, setNewInput] = useState({});
+	const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+	const [isUpdating, setUpdating] = useState(false);
 
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
@@ -68,32 +71,47 @@ const SiteDetails = ({
 		}
 	};
 
-	const onDropDownInputChange = async (value, inputName) => {
+	const onCloseConfirmationDialog = () => setOpenConfirmationDialog(false);
+
+	const onLicenseInputChange = (value) => {
+		if (value.label === selectedLicenseType.label) {
+			setSelectedLicenseType({ value });
+			return;
+		}
+
+		setSelectedLicenseType({
+			value,
+			newInput: { label: "licenseType", value: value.value },
+		});
+
+		setOpenConfirmationDialog(true);
+	};
+
+	const onRegionInputChange = (value) => {
 		const { regionName } = siteDetails;
-		let newInput = null;
 
 		if (value.label === regionName) {
-			setSelectedRegion(value);
+			setSelectedRegion({ value });
 			return;
 		}
 
-		if (value.label === selectedLicenseType.label) {
-			setSelectedLicenseType(value);
-			return;
-		}
+		const region = listOfRegions.find((region) => region.name === value.label);
 
-		if (inputName === "region") {
-			setSelectedRegion(value);
-			const region = listOfRegions.find(
-				(region) => region.name === value.label
-			);
+		setSelectedRegion({
+			value,
+			newInput: { label: "regionID", value: region.id },
+		});
 
-			newInput = { label: "regionID", value: region.id };
-		} else {
-			setSelectedLicenseType(value);
-			newInput = { label: "licenseType", value: value.value };
-		}
+		setOpenConfirmationDialog(true);
+	};
 
+	const handleConfirmDropdown = async () => {
+		setUpdating(true);
+
+		const newInput =
+			selectedLicenseType?.newInput?.label === "licenseType"
+				? selectedLicenseType?.newInput
+				: selectedRegion?.newInput;
 		const response = await updateSiteDetails(siteId, newInput);
 
 		if (!response.status) {
@@ -101,6 +119,9 @@ const SiteDetails = ({
 		} else {
 			await fetchSiteDetails();
 		}
+
+		setOpenConfirmationDialog(false);
+		setUpdating(false);
 	};
 
 	const onUpdateInput = async () => {
@@ -108,14 +129,14 @@ const SiteDetails = ({
 			return;
 		}
 
-		setNewInput({ ...newInput, isUpdating: true, isDisabled: true });
+		setUpdating({ [newInput.label]: { isUpdating: true } });
 
 		const response = await updateSiteDetails(siteId, newInput);
 		await fetchSiteDetails();
 		if (!response.status) {
 			setError(response.data.detail);
 		}
-		setNewInput({ ...newInput, isUpdating: false, isDisabled: false });
+		setUpdating(false);
 	};
 
 	const fetchSiteDetails = async () => {
@@ -150,7 +171,9 @@ const SiteDetails = ({
 				(region) => region.name === regionName
 			);
 			setListOfRegions(result.data);
-			setSelectedRegion({ label: regionName, value: indexOfSelectedRegion });
+			setSelectedRegion({
+				value: { label: regionName, value: indexOfSelectedRegion },
+			});
 		}
 	};
 
@@ -165,8 +188,10 @@ const SiteDetails = ({
 					(option) => option.value === licenseType
 				);
 				setSelectedLicenseType({
-					label: licenseName.label,
-					value: licenseName.value,
+					value: {
+						label: licenseName.label,
+						value: licenseName.value,
+					},
 				});
 			}
 		}
@@ -184,6 +209,12 @@ const SiteDetails = ({
 
 	return (
 		<>
+			<ConfirmChangeDialog
+				open={openConfirmationDialog}
+				isUpdating={isUpdating}
+				closeHandler={onCloseConfirmationDialog}
+				handleChangeConfirm={handleConfirmDropdown}
+			/>
 			<AccordionBox title="Site Details">
 				{/* Desktop View */}
 				{isLoading ? (
@@ -199,12 +230,11 @@ const SiteDetails = ({
 									<TextField
 										name="name"
 										InputProps={{
-											endAdornment:
-												newInput.label === "name" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["name"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={newInput.label === "name" && newInput.isUpdating}
+										disabled={isUpdating["name"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.name || ""}
@@ -225,10 +255,10 @@ const SiteDetails = ({
 											label: region.name,
 											value: index,
 										}))}
-										selectedValue={selectedRegion}
+										selectedValue={selectedRegion.value}
 										label=""
 										required={true}
-										onChange={(value) => onDropDownInputChange(value, "region")}
+										onChange={(value) => onRegionInputChange(value)}
 										width="auto"
 									/>
 								</div>
@@ -241,14 +271,11 @@ const SiteDetails = ({
 									<TextField
 										name="company"
 										InputProps={{
-											endAdornment:
-												newInput.label === "company" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["company"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={
-											newInput.label === "company" && newInput.isUpdating
-										}
+										disabled={isUpdating["company"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.company || ""}
@@ -267,21 +294,17 @@ const SiteDetails = ({
 									<TextField
 										name="address"
 										InputProps={{
-											endAdornment:
-												newInput.label === "address" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["address"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={
-											newInput.label === "address" && newInput.isUpdating
-										}
+										disabled={isUpdating["address"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.address || ""}
 										onChange={onInputChange}
 										onBlur={onUpdateInput}
 										onFocus={setSelectedInputValue}
-										onKeyDown={onEnterKeyPress}
 										multiline
 									/>
 								</div>
@@ -294,15 +317,11 @@ const SiteDetails = ({
 									<TextField
 										name="businessNumber"
 										InputProps={{
-											endAdornment:
-												newInput.label === "businessNumber" &&
-												newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["businessNumber"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
-										disabled={
-											newInput.label === "businessNumber" && newInput.isUpdating
-										}
+										disabled={isUpdating["businessNumber"]?.isUpdating}
 										fullWidth
 										variant="outlined"
 										value={newSiteDetails?.businessNumber || ""}
@@ -320,13 +339,11 @@ const SiteDetails = ({
 									</Typography>
 									<Dropdown
 										options={siteOptions}
-										selectedValue={selectedLicenseType}
+										selectedValue={selectedLicenseType.value}
 										label=""
 										required={true}
 										width="auto"
-										onChange={(value) =>
-											onDropDownInputChange(value, "license")
-										}
+										onChange={(value) => onLicenseInputChange(value)}
 										disabled={clientLicenseType !== 3}
 									/>
 								</div>
@@ -340,15 +357,14 @@ const SiteDetails = ({
 									<TextField
 										name="licenses"
 										InputProps={{
-											endAdornment:
-												newInput.label === "licenses" && newInput.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
+											endAdornment: isUpdating["licenses"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
 										}}
 										disabled={
 											(![0, 1].includes(selectedLicenseType.value) &&
 												clientLicenseType === 3) ||
-											(newInput.label === "licenses" && newInput.isUpdating)
+											isUpdating["licenses"]?.isUpdating
 										}
 										fullWidth
 										type="number"
@@ -398,7 +414,7 @@ const SiteDetails = ({
 								selectedValue={selectedRegion}
 								label=""
 								required={true}
-								onChange={(value) => onDropDownInputChange(value, "region")}
+								onChange={(value) => onRegionInputChange(value)}
 								width="auto"
 							/>
 						</div>
@@ -466,7 +482,7 @@ const SiteDetails = ({
 								label=""
 								required={true}
 								width="auto"
-								onChange={(value) => onDropDownInputChange(value, "license")}
+								onChange={(value) => onLicenseInputChange(value)}
 								disabled={clientLicenseType !== 3}
 							/>
 						</div>
