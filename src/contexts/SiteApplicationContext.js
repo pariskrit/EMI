@@ -6,6 +6,7 @@ const initialState = {
 	details: {},
 	isActive: false,
 	defaultCustomCaptionsData: {},
+	// haveData: false,
 };
 
 function reducer(state, action) {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import CustomCaptionsContent from "./CustomCaptionsContent";
 
-const CustomCaptions = ({ state }) => {
+const CustomCaptions = ({ state, dispatch }) => {
 	// Init params
 	const { appId } = useParams();
 
@@ -12,7 +12,7 @@ const CustomCaptions = ({ state }) => {
 	// Rendering positions content with Navbar. Otherwise, 404 error
 	if (is404 === false) {
 		return (
-			<CustomCaptionsContent id={appId} setIs404={setIs404} state={state} />
+			<CustomCaptionsContent id={appId} setIs404={setIs404} state={state} dispatch={dispatch}/>
 		);
 	} else {
 		return <p>404: Application id {appId} does not exist.</p>;
