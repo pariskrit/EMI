@@ -83,6 +83,7 @@ const SingleComponent = (route) => {
 	const fetchData = async () => {
 		setLoading(true);
 		if (Object.keys(state.details).length === 0) {
+			console.log("fetching site details");
 			await fetchSiteApplicationDetails();
 		}
 
@@ -97,7 +98,7 @@ const SingleComponent = (route) => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
+	console.log(location);
 	const { clientName, siteName, applicationName } = crumbs;
 	return (
 		<>
