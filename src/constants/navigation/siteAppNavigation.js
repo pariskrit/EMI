@@ -27,7 +27,13 @@ import {
  * NOTE: This is currently a helper. In production, this data may come from either the API
  * or can be hard coded. Probably not approproate as a helper function
  */
-const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
+const SiteApplicationNavigation = (
+	clientId,
+	siteId,
+	appId,
+	data,
+	defaultCustom
+) => {
 	// Setting navigation links with correct application ID
 	const links = `${clientsPath}/${clientId}/sites/${siteId}/applications/${appId}`;
 	const navigation = [
@@ -48,7 +54,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
 			name: "Reason Definitions",
 			dropdown: [
 				{
-					title: defaultCustom.pauseReasonPlural,
+					title: data?.pauseReasonPluralCC || defaultCustom.pauseReasonPlural,
 					link: links + siteAppPausePath,
 				},
 				{
