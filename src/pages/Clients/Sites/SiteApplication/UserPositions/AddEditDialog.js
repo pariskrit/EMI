@@ -107,6 +107,7 @@ const AddDialog = ({
 	dataToEdit,
 	handleEditData,
 	isEdit = false,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -311,7 +312,9 @@ const AddDialog = ({
 
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					<ADD.HeaderText>{isEdit ? "Edit" : "Add"} Position</ADD.HeaderText>
+					<ADD.HeaderText>
+						{isEdit ? "Edit" : "Add"} {header}
+					</ADD.HeaderText>
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">

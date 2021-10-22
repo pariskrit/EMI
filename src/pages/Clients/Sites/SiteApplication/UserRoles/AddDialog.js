@@ -32,6 +32,7 @@ const AddRoleDialog = ({
 	applicationID,
 	handleAddData,
 	getError,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -144,7 +145,7 @@ const AddRoleDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="add-dialog-title">
-						{<ADD.HeaderText>Add New Role</ADD.HeaderText>}
+						{<ADD.HeaderText>Add New {header}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">

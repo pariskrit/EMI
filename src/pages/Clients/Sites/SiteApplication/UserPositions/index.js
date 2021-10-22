@@ -22,7 +22,14 @@ function DefectStatuses({ appId, setError }) {
 		setSearchData,
 		searchedData,
 	} = useSearch();
-	const [{ showAdd }, dispatch] = useContext(SiteContext);
+	const [
+		{
+			showAdd,
+			details: { data },
+			defaultCustomCaptionsData: { position, positionPlural },
+		},
+		dispatch,
+	] = useContext(SiteContext);
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
@@ -109,7 +116,7 @@ function DefectStatuses({ appId, setError }) {
 	return (
 		<>
 			<DeleteDialog
-				entityName="Position"
+				entityName={data?.positionCC || position}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -125,22 +132,25 @@ function DefectStatuses({ appId, setError }) {
 				handleEditData={handleEditData}
 				setError={setError}
 				isEdit={isEdit}
+				header={data?.positionCC || position}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={"Positions"}
+					header={data?.positionPluralCC || positionPlural}
 					dataCount={allData.length}
-					description="Create and manage Positions"
+					description={`Create and manage ${
+						data?.positionPluralCC || positionPlural
+					}`}
 				/>
 				<SearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header="Positions"
+					header={data?.positionPluralCC || positionPlural}
 				/>
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header="Positions"
+					header={data?.positionPluralCC || positionPlural}
 				/>
 			</div>
 			<CommonApplicationTable

@@ -241,15 +241,22 @@ const DefectRiskRatingsContent = ({
 		// eslint-disable-next-line
 	}, [dataChanged]);
 
+	const {
+		showAdd,
+		details: { data },
+		defaultCustomCaptionsData: { riskRating, riskRatingPlural },
+	} = state;
+
 	return (
 		<div className="container">
 			{/* DIALOGS */}
 			<AddDialog
-				open={state.showAdd}
+				open={showAdd}
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
 				applicationID={id}
 				getError={getError}
 				handleAddData={handleAddData}
+				header={data?.riskRatingCC || riskRating}
 			/>
 
 			<EditDialog
@@ -258,18 +265,19 @@ const DefectRiskRatingsContent = ({
 				data={editData}
 				handleEditData={handleEditData}
 				getError={getError}
+				header={data?.riskRatingCC || riskRating}
 			/>
 
 			<DefaultDialog
 				open={openDefaultDialog}
 				closeHandler={handleDefaultDialogClose}
 				data={confirmDefault}
-				entity="Safety Critical Risk Rating"
+				entity={`Safety Critical ${data?.riskRatingCC || riskRating}`}
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 
 			<DeleteDialog
-				entityName="Defect Risk Rating"
+				entityName={`Defect ${data?.riskRatingCC || riskRating}`}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -282,21 +290,23 @@ const DefectRiskRatingsContent = ({
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
-							header="Defect Risk Ratings"
+							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
 							dataCount={haveData ? allData.length : 0}
-							description="Create and manage Defect Risk Ratings"
+							description={`Create and manage Defect ${
+								data?.riskRatingPluralCC || riskRatingPlural
+							}`}
 						/>
 
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header="Default Risk Ratings"
+							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
 						/>
 
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header="Default Rist Ratings"
+							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
 						/>
 					</div>
 

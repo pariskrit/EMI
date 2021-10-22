@@ -25,6 +25,7 @@ const AddDialog = ({
 	applicationID,
 	handleAddData,
 	getError,
+	header,
 }) => {
 	//Init State
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -131,7 +132,7 @@ const AddDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New Defect Risk Rating</ADD.HeaderText>}
+						{<ADD.HeaderText>Add New Defect {header}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeHandler} variant="contained">
