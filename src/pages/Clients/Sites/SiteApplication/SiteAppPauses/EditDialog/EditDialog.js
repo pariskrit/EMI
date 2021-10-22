@@ -40,6 +40,7 @@ const EditPauseDialog = ({
 	handleEditData,
 	handleUpdateSubcatStateName,
 	getError,
+	header,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -166,7 +167,7 @@ const EditPauseDialog = ({
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						<AED.HeaderText>Edit Pause Reason</AED.HeaderText>
+						<AED.HeaderText>Edit {header}</AED.HeaderText>
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeOverride} variant="contained">
@@ -212,7 +213,7 @@ const EditPauseDialog = ({
 									)
 								</AED.HeaderText>
 
-								<AED.InfoText>Add additional Pause reasons</AED.InfoText>
+								<AED.InfoText>Add additional {header}</AED.InfoText>
 							</APD.SecondaryHeaderContainer>
 						</AED.InputContainer>
 

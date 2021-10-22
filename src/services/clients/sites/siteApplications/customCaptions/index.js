@@ -17,7 +17,7 @@ const getCustomCaptions = async (id) => {
 //#region get cc
 const getDefaultCustomCaptions = async (id) => {
 	try {
-		let response = await API.get(`${Apis.Applications}/${id}/customcaptions`);
+		let response = await API.get(`/api/applications/${id}/customcaptions`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

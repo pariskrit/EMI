@@ -8,15 +8,16 @@ function SingleColumnTableCommonComponent({
 	state,
 	dispatch,
 	getError,
-	header,
-	subHeader,
 	apis,
 	showDefault,
 	pathToPatch,
 	singleCaption,
+	pluralCaption,
 }) {
 	// Init params
 	const { appId } = useParams();
+
+	console.log("check", singleCaption);
 
 	// Init state
 	const [is404, setIs404] = useState(false);
@@ -29,8 +30,8 @@ function SingleColumnTableCommonComponent({
 				setIs404={setIs404}
 				getError={getError}
 				{...{
-					header,
-					subHeader,
+					singleCaption,
+					pluralCaption,
 					apis,
 					state,
 					dispatch,

@@ -37,6 +37,7 @@ const AddPauseDialog = ({
 	applicationID,
 	handleAddData,
 	getError,
+	header,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -196,7 +197,7 @@ const AddPauseDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						<ADD.HeaderText>Add Pause Reason</ADD.HeaderText>
+						<ADD.HeaderText>Add {header}</ADD.HeaderText>
 					</DialogTitle>
 
 					<ADD.ButtonContainer>
@@ -239,7 +240,7 @@ const AddPauseDialog = ({
 									Sub-categories ({subcats.length})
 								</ADD.HeaderText>
 
-								<ADD.InfoText>Add additional pause reasons</ADD.InfoText>
+								<ADD.InfoText>Add additional {header}</ADD.InfoText>
 							</APD.SecondaryHeaderContainer>
 						</ADD.InputContainer>
 

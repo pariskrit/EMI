@@ -17,7 +17,12 @@ const SingleComponent = (route) => {
 	const [state, dispatch] = useContext(SiteContext);
 	const [loading, setLoading] = useState(false);
 
-	const navigation = SiteApplicationNavigation(clientId, id, appId);
+	const navigation = SiteApplicationNavigation(
+		clientId,
+		id,
+		appId,
+		state.defaultCustomCaptionsData
+	);
 
 	let crumbs = JSON.parse(localStorage.getItem("crumbs"));
 
