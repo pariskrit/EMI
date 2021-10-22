@@ -96,7 +96,7 @@ const SingleComponent = (route) => {
 		fetchData();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [appId]);
 
 	const { clientName, siteName, applicationName } = crumbs;
 	return (
