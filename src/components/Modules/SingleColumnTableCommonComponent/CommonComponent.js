@@ -190,7 +190,6 @@ const CommonContent = ({
 	const handleDefaultUpdate = async () => {
 		// Attempting to update default
 		try {
-			console.log(confirmDefault[0]);
 			// Patching change to API
 			const result = await apis.patchDefaultAPI(id, [
 				{

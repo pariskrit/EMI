@@ -105,8 +105,6 @@ const SingleComponent = (route) => {
 
 	const { clientName, siteName, applicationName } = crumbs;
 
-	console.log(state.details);
-	console.log(state.defaultCustomCaptionsData);
 	return (
 		<>
 			{!loading ? (
