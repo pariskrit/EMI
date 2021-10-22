@@ -17,8 +17,6 @@ function SingleColumnTableCommonComponent({
 	// Init params
 	const { appId } = useParams();
 
-	console.log("check", singleCaption);
-
 	// Init state
 	const [is404, setIs404] = useState(false);
 
