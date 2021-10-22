@@ -188,8 +188,6 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		defaultCustomCaptionsData: { pauseReason, pauseReasonPlural },
 	} = state;
 
-	console.log(state.details);
-
 	if (is404 === false) {
 		return (
 			<div>
