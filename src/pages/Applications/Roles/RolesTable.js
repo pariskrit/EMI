@@ -36,6 +36,17 @@ const useStyles = makeStyles({
 	defectsRow: {
 		width: "20%",
 	},
+
+	yesText: {
+		color: ColourConstants.yesText,
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+	},
+	noText: {
+		color: ColourConstants.commonText,
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+	},
 });
 
 const RolesTable = ({
@@ -131,8 +142,14 @@ const RolesTable = ({
 								</AT.DataCell>
 								<AT.DataCell>
 									<AT.CellContainer>
-										<AT.TableBodyText>
-											{d.canRegisterDefects.toString()}
+										<AT.TableBodyText
+											className={clsx({
+												[classes.yesText]: d.canRegisterDefects,
+												[classes.noText]: !d.canRegisterDefects,
+											})}
+										>
+											{/* {d.canRegisterDefects.toString()} */}
+											{d.canRegisterDefects ? "Yes" : "No"}
 										</AT.TableBodyText>
 
 										<AT.DotMenu

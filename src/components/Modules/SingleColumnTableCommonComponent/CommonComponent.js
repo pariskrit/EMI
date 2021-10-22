@@ -19,8 +19,8 @@ const CommonContent = ({
 	id,
 	setIs404,
 	getError,
-	header,
-	subHeader,
+	singleCaption,
+	pluralCaption,
 	state,
 	dispatch,
 	apis,
@@ -43,6 +43,9 @@ const CommonContent = ({
 		searchQuery,
 		setSearchData,
 	} = useSearch();
+
+	const { defaultCustomCaptionsData } = state;
+
 
 	// Show Default
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
@@ -268,7 +271,7 @@ const CommonContent = ({
 				applicationID={id}
 				handleAddData={handleAddData}
 				getError={getError}
-				subHeader={subHeader}
+				subHeader={defaultCustomCaptionsData[singleCaption]}
 				postAPI={apis.postAPI}
 			/>
 			<EditDialog
@@ -278,10 +281,10 @@ const CommonContent = ({
 				handleEditData={handleEditData}
 				getError={getError}
 				patchAPI={apis.patchAPI}
-				subHeader={subHeader}
+				subHeader={defaultCustomCaptionsData[singleCaption]}
 			/>
 			<DeleteDialog
-				entityName={subHeader}
+				entityName={defaultCustomCaptionsData[singleCaption]}
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
 				deleteEndpoint={apis.deleteAPI}
@@ -294,7 +297,7 @@ const CommonContent = ({
 					open={openDefaultDialog}
 					closeHandler={handleDefaultDialogClose}
 					data={confirmDefault}
-					entity={subHeader}
+					entity={defaultCustomCaptionsData[singleCaption]}
 					handleDefaultUpdate={handleDefaultUpdate}
 				/>
 			)}
@@ -305,21 +308,21 @@ const CommonContent = ({
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
-							header={header}
+							header={defaultCustomCaptionsData[pluralCaption]}
 							dataCount={haveData ? allData.length : 0}
 							// dataCount={haveData ? data.length : 0}
-							description={`Create and manage ${header}`}
+							description={`Create and manage ${defaultCustomCaptionsData[pluralCaption]}`}
 						/>
 
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={header}
+							header={defaultCustomCaptionsData[pluralCaption]}
 						/>
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={header}
+							header={defaultCustomCaptionsData[pluralCaption]}
 						/>
 					</div>
 
