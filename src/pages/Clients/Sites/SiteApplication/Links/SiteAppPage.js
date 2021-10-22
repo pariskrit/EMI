@@ -100,8 +100,8 @@ const routes = [
 		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
-		header: "Missing Part or Tool Reasons",
-		subHeader: "Missing Part or Tool Reason",
+		singleCaption: { main: "toolCC", default: "tool" },
+		pluralCaption: { main: "toolPluralCC", default: "toolPlural" },
 		api: differentAPIs.MissingPartAPIs,
 	},
 	{
