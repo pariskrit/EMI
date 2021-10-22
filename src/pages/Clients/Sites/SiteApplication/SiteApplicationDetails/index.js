@@ -65,6 +65,12 @@ function SiteApplicationDetails({
 			fetchSiteDetails();
 		}
 
+		return () => {
+			if (isDetailsPresent) {
+				dispatch({ type: "RESET_SITE_APP_DETAIL" });
+			}
+		};
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [details]);
 
