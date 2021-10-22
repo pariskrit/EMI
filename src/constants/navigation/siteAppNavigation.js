@@ -1,3 +1,4 @@
+import DefaultDialog from "components/Elements/DefaultDialog";
 import {
 	clientsPath,
 	siteAppCustomCaptionsPath,
@@ -58,15 +59,15 @@ const SiteApplicationNavigation = (
 					link: links + siteAppPausePath,
 				},
 				{
-					title: "Stops",
+					title: data?.stopReasonPluralCC || defaultCustom.stopReasonPlural,
 					link: links + siteAppStopsReasonsPath,
 				},
 				{
-					title: "Skipped Tasks",
+					title: data?.skipReasonPluralCC || defaultCustom.skipReasonPlural,
 					link: links + siteAppSkippedTasksPath,
 				},
 				{
-					title: "Missing Part or Tools",
+					title: data?.toolPluralCC || defaultCustom.toolPlural,
 					link: links + siteAppMissingItemsPath,
 				},
 				{
@@ -83,7 +84,7 @@ const SiteApplicationNavigation = (
 					link: links + siteAppModelStatusesPath,
 				},
 				{
-					title: "Types",
+					title: data?.modelTypePluralCC || defaultCustom.modelTypePlural,
 					link: links + siteAppModelTypesPath,
 				},
 			],
@@ -92,19 +93,21 @@ const SiteApplicationNavigation = (
 			name: "Task Definitions",
 			dropdown: [
 				{
-					title: "Actions",
+					title:
+						data?.actionRequiredPluralCC || defaultCustom.actionRequiredPlural,
 					link: links + siteAppTaskActionsPath,
 				},
 				{
-					title: "Systems",
+					title: data?.systemPluralCC || defaultCustom.systemPlural,
 					link: links + siteAppTaskSystemsPath,
 				},
 				{
-					title: "Operating Modes",
+					title:
+						data?.operatingModePluralCC || defaultCustom.operatingModePlural,
 					link: links + siteAppOperationModesPath,
 				},
 				{
-					title: "Lubricants",
+					title: data?.lubricantPluralCC || defaultCustom.lubricantPlural,
 					link: links + siteAppLubricantsPath,
 				},
 			],
@@ -113,11 +116,11 @@ const SiteApplicationNavigation = (
 			name: "User Definitions",
 			dropdown: [
 				{
-					title: "Positions",
+					title: data?.positionPluralCC || defaultCustom.positionPlural,
 					link: links + siteAppPositionsPath,
 				},
 				{
-					title: "Roles",
+					title: data?.rolePluralCC || defaultCustom.rolePlural,
 					link: links + siteAppUserRolesPath,
 				},
 			],
@@ -126,15 +129,15 @@ const SiteApplicationNavigation = (
 			name: "Defect Definitions",
 			dropdown: [
 				{
-					title: "Risk Ratings",
+					title: data?.riskRatingPluralCC || defaultCustom.riskRatingPlural,
 					link: links + siteAppDefectRiskRatingsPath,
 				},
 				{
-					title: "Statuses",
+					title: data?.defectStatusPluralCC || defaultCustom.defectStatusPlural,
 					link: links + siteAppDefectStatusPath,
 				},
 				{
-					title: "Types",
+					title: data?.defectTypePluralCC || defaultCustom.defectTypePlural,
 					link: links + siteAppDefectTypesPath,
 				},
 			],
@@ -143,15 +146,17 @@ const SiteApplicationNavigation = (
 			name: "Feedback Definitions",
 			dropdown: [
 				{
-					title: "Classifications",
+					title:
+						data?.classificationPluralCC || defaultCustom.classificationPlural,
 					link: links + siteAppFeedbackClassificationsPath,
 				},
 				{
-					title: "Priorities",
+					title: data?.priorityPluralCC || defaultCustom.priorityPlural,
 					link: links + siteAppFeedbackPrioritiesPath,
 				},
 				{
-					title: "Statuses",
+					title:
+						data?.feedbackStatusPluralCC || defaultCustom.feedbackStatusPlural,
 					link: links + siteAppFeedbackStatuses,
 				},
 			],
