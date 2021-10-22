@@ -145,7 +145,12 @@ const UserRolesTable = ({
 								</AT.DataCell>
 								<AT.DataCell>
 									<AT.CellContainer>
-										<Typography className={classes.noText}>
+										<Typography
+											className={clsx({
+												[classes.yesText]: d.canRegisterDefects,
+												[classes.noText]: !d.canRegisterDefects,
+											})}
+										>
 											{d.canRegisterDefects ? "Yes" : "No"}
 										</Typography>
 
