@@ -27,8 +27,6 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		setSearchData,
 	} = useSearch();
 
-	let defaultData = state.defaultCustomCaptionsData;
-
 	const handleAddSubcat = (parentId, id, name) => {
 		const newData = [...allData];
 
@@ -184,9 +182,13 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const { showAdd, details } = state;
+	const {
+		showAdd,
+		details: { data },
+		defaultCustomCaptionsData: { pauseReason, pauseReasonPlural },
+	} = state;
 
-	console.log(state);
+	console.log(state.details);
 
 	if (is404 === false) {
 		return (
@@ -197,9 +199,10 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 					applicationID={appId}
 					handleAddData={handleAddData}
 					getError={getError}
+					header={data?.pauseReasonCC || pauseReason}
 				/>
 				<DeleteDialog
-					entityName="Pause"
+					entityName={data?.pauseReasonCC || pauseReason}
 					open={modal.delete}
 					closeHandler={handleDeleteDialogClose}
 					deleteID={deleteId}
@@ -216,24 +219,25 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 					handleEditData={handleEditData}
 					handleUpdateSubcatStateName={handleUpdateSubcat}
 					getError={getError}
+					header={data?.pauseReasonCC || pauseReason}
 				/>
 				<div className="detailsContainer">
 					<DetailsPanel
-						header={`${
-							details?.data?.application?.pauseReasonCC || "PauseCC"
-						} Reasons`}
+						header={data?.pauseReasonPluralCC || pauseReasonPlural}
 						dataCount={allData.length}
-						description="Create and manage Pause Reasons"
+						description={`Create and manage ${
+							data?.pauseReasonPluralCC || pauseReasonPlural
+						}`}
 					/>
 					<SearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
-						header="Pauses"
+						header={data?.pauseReasonPluralCC || pauseReasonPlural}
 					/>
 					<MobileSearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
-						header="Pauses"
+						header={data?.pauseReasonPluralCC || pauseReasonPlural}
 					/>
 				</div>
 				<CommonApplicationTable
