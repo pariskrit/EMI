@@ -99,7 +99,9 @@ const SingleComponent = (route) => {
 
 	useEffect(() => {
 		fetchData();
-
+		return () => {
+			console.log("unmounted");
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

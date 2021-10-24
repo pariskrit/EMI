@@ -160,7 +160,11 @@ const CommonHeader = ({
 		<ThemeProvider theme={theme}>
 			<div>
 				<div className={"topContainerCustomCaptions"}>
-					<NavDetails status={status} lastSaved={lastSaved} />
+					<NavDetails
+						status={status}
+						lastSaved={lastSaved}
+						staticCrumbs={crumbs}
+					/>
 					<div
 						className={
 							showAdd || showDuplicate || showSave || showSwitch
