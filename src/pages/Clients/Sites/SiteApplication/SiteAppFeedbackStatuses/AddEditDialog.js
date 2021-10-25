@@ -39,6 +39,7 @@ const AddEditDialog = ({
 	handleEditData,
 	data,
 	getError,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -243,7 +244,7 @@ const AddEditDialog = ({
 					<DialogTitle id="alert-dialog-title">
 						{
 							<ADD.HeaderText>
-								{editMode ? "Edit" : "Add New"} Feedback Status
+								{editMode ? "Edit" : "Add New"} Feedback {header}
 							</ADD.HeaderText>
 						}
 					</DialogTitle>

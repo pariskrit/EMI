@@ -27,7 +27,14 @@ function DefectStatuses({ appId, setError }) {
 		setAllData,
 		setSearchData,
 	} = useSearch();
-	const [{ showAdd }, dispatch] = useContext(SiteContext);
+	const [
+		{
+			showAdd,
+			details: { data },
+			defaultCustomCaptionsData: { defectStatus, defectStatusPlural },
+		},
+		dispatch,
+	] = useContext(SiteContext);
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
@@ -124,7 +131,7 @@ function DefectStatuses({ appId, setError }) {
 				open={openDefaultDialog}
 				closeHandler={closeDefaultDialog}
 				data={confirmDefault}
-				entity="Default Status"
+				entity={data?.defectStatusCC || defectStatus}
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 			<AddDialog
@@ -133,6 +140,7 @@ function DefectStatuses({ appId, setError }) {
 				applicationID={appId}
 				handleAddData={addData}
 				setError={setError}
+				header={data?.defectStatusCC || defectStatus}
 			/>
 			<EditDialog
 				open={openEditDialog}
@@ -140,9 +148,10 @@ function DefectStatuses({ appId, setError }) {
 				data={dataToEdit}
 				setError={setError}
 				handleEditData={handleEditData}
+				header={data?.defectStatusCC || defectStatus}
 			/>
 			<DeleteDialog
-				entityName="Defect Status"
+				entityName={`Defect ${data?.defectStatusCC || defectStatus}`}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -151,19 +160,21 @@ function DefectStatuses({ appId, setError }) {
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={"Defect Statuses"}
+					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
 					dataCount={allData.length}
-					description="Create and manage Defect Statuses"
+					description={`Create and manage Defect ${
+						data?.defectStatusPluralCC || defectStatusPlural
+					}`}
 				/>
 				<SearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header="Defect Statuses"
+					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
 				/>
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header="Defect Statuses"
+					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
 				/>
 			</div>
 			<CommonApplicationTable

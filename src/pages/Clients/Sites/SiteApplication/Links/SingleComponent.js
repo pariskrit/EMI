@@ -15,7 +15,7 @@ const SingleComponent = (route) => {
 	const siteAppIds = useParams();
 	const { clientId, id, appId } = siteAppIds;
 	const [state, dispatch] = useContext(SiteContext);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const navigation = SiteApplicationNavigation(
 		clientId,
@@ -91,7 +91,6 @@ const SingleComponent = (route) => {
 	};
 
 	const fetchData = async () => {
-		setLoading(true);
 		if (Object.keys(state.details).length === 0) {
 			await fetchSiteApplicationDetails();
 		}
@@ -112,7 +111,11 @@ const SingleComponent = (route) => {
 
 	return (
 		<>
-			{!loading ? (
+			{loading ? (
+				<AC.SpinnerContainer>
+					<CircularProgress />
+				</AC.SpinnerContainer>
+			) : (
 				<div className="container">
 					<CommonHeaderWrapper
 						crumbs={[clientName, siteName, applicationName]}
@@ -143,10 +146,6 @@ const SingleComponent = (route) => {
 						/>
 					}
 				</div>
-			) : (
-				<AC.SpinnerContainer>
-					<CircularProgress />
-				</AC.SpinnerContainer>
 			)}
 		</>
 	);

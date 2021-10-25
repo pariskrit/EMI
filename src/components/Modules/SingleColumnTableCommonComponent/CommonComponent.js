@@ -80,7 +80,7 @@ const CommonContent = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+
 			return false;
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,6 +149,7 @@ const CommonContent = ({
 		handleGetData()
 			.then(() => {
 				// Rendering data
+
 				setHaveData(true);
 			})
 			.catch((err) => console.log(err));

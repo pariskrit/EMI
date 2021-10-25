@@ -28,6 +28,7 @@ const EditStopDialog = ({
 	data,
 	handleEditData,
 	getError,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -152,7 +153,7 @@ const EditStopDialog = ({
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit Defect Risk Rating</AED.HeaderText>}
+						{<AED.HeaderText>Edit Defect {header}</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeOverride} variant="contained">

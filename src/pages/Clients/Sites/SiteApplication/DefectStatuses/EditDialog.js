@@ -27,7 +27,14 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, type: null };
 const defaultStateSchema = { name: "", type: "" };
 
-const EditDialog = ({ open, closeHandler, data, handleEditData, setError }) => {
+const EditDialog = ({
+	open,
+	closeHandler,
+	data,
+	handleEditData,
+	setError,
+	header,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -132,7 +139,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, setError }) => {
 
 			<AED.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					{<AED.HeaderText>Edit Defect Status</AED.HeaderText>}
+					{<AED.HeaderText>Edit Defect {header}</AED.HeaderText>}
 				</DialogTitle>
 				<AED.ButtonContainer>
 					<AED.CancelButton onClick={closeHandler} variant="contained">
