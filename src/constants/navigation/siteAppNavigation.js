@@ -27,7 +27,16 @@ import {
  * NOTE: This is currently a helper. In production, this data may come from either the API
  * or can be hard coded. Probably not approproate as a helper function
  */
-const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
+const SiteApplicationNavigation = (
+	clientId,
+	siteId,
+	appId,
+	data,
+	defaultCustom
+) => {
+	console.log(data);
+	console.log("default", defaultCustom);
+
 	// Setting navigation links with correct application ID
 	const links = `${clientsPath}/${clientId}/sites/${siteId}/applications/${appId}`;
 	const navigation = [
@@ -48,19 +57,19 @@ const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
 			name: "Reason Definitions",
 			dropdown: [
 				{
-					title: defaultCustom.pauseReasonPlural,
+					title: data?.pauseReasonPluralCC || defaultCustom.pauseReasonPlural,
 					link: links + siteAppPausePath,
 				},
 				{
-					title: "Stops",
+					title: data?.stopReasonPluralCC || defaultCustom.stopReasonPlural,
 					link: links + siteAppStopsReasonsPath,
 				},
 				{
-					title: "Skipped Tasks",
+					title: data?.skipReasonPluralCC || defaultCustom.skipReasonPlural,
 					link: links + siteAppSkippedTasksPath,
 				},
 				{
-					title: "Missing Part or Tools",
+					title: data?.toolPluralCC || defaultCustom.toolPlural,
 					link: links + siteAppMissingItemsPath,
 				},
 				{
@@ -77,7 +86,7 @@ const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
 					link: links + siteAppModelStatusesPath,
 				},
 				{
-					title: "Types",
+					title: data?.modelTypePluralCC || defaultCustom.modelTypePlural,
 					link: links + siteAppModelTypesPath,
 				},
 			],
@@ -86,19 +95,21 @@ const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
 			name: "Task Definitions",
 			dropdown: [
 				{
-					title: "Actions",
+					title:
+						data?.actionRequiredPluralCC || defaultCustom.actionRequiredPlural,
 					link: links + siteAppTaskActionsPath,
 				},
 				{
-					title: "Systems",
+					title: data?.systemPluralCC || defaultCustom.systemPlural,
 					link: links + siteAppTaskSystemsPath,
 				},
 				{
-					title: "Operating Modes",
+					title:
+						data?.operatingModePluralCC || defaultCustom.operatingModePlural,
 					link: links + siteAppOperationModesPath,
 				},
 				{
-					title: "Lubricants",
+					title: data?.lubricantPluralCC || defaultCustom.lubricantPlural,
 					link: links + siteAppLubricantsPath,
 				},
 			],
@@ -107,11 +118,11 @@ const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
 			name: "User Definitions",
 			dropdown: [
 				{
-					title: "Positions",
+					title: data?.positionPluralCC || defaultCustom.positionPlural,
 					link: links + siteAppPositionsPath,
 				},
 				{
-					title: "Roles",
+					title: data?.rolePluralCC || defaultCustom.rolePlural,
 					link: links + siteAppUserRolesPath,
 				},
 			],
@@ -120,15 +131,15 @@ const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
 			name: "Defect Definitions",
 			dropdown: [
 				{
-					title: "Risk Ratings",
+					title: data?.riskRatingPluralCC || defaultCustom.riskRatingPlural,
 					link: links + siteAppDefectRiskRatingsPath,
 				},
 				{
-					title: "Statuses",
+					title: data?.defectStatusPluralCC || defaultCustom.defectStatusPlural,
 					link: links + siteAppDefectStatusPath,
 				},
 				{
-					title: "Types",
+					title: data?.defectTypePluralCC || defaultCustom.defectTypePlural,
 					link: links + siteAppDefectTypesPath,
 				},
 			],
@@ -137,15 +148,17 @@ const SiteApplicationNavigation = (clientId, siteId, appId, defaultCustom) => {
 			name: "Feedback Definitions",
 			dropdown: [
 				{
-					title: "Classifications",
+					title:
+						data?.classificationPluralCC || defaultCustom.classificationPlural,
 					link: links + siteAppFeedbackClassificationsPath,
 				},
 				{
-					title: "Priorities",
+					title: data?.priorityPluralCC || defaultCustom.priorityPlural,
 					link: links + siteAppFeedbackPrioritiesPath,
 				},
 				{
-					title: "Statuses",
+					title:
+						data?.feedbackStatusPluralCC || defaultCustom.feedbackStatusPlural,
 					link: links + siteAppFeedbackStatuses,
 				},
 			],

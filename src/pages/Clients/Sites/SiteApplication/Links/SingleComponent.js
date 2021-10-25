@@ -21,6 +21,7 @@ const SingleComponent = (route) => {
 		clientId,
 		id,
 		appId,
+		state.details?.data,
 		state.defaultCustomCaptionsData
 	);
 
