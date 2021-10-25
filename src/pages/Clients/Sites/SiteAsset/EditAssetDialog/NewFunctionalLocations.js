@@ -8,7 +8,7 @@ import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { postSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 import useOutsideClick from "hooks/useOutsideClick";
 
-const schema = yup.object({
+const schema = yup.object().shape({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required")
@@ -148,6 +148,18 @@ const NewFunctionalLocations = ({
 		}
 	};
 
+	const handleBlur = (e) => {
+		const { name, value } = e.target;
+		schema
+			.validateAt([name], { [name]: value })
+			.then((res) => {
+				setErrors((th) => ({ ...th, [name]: null }));
+			})
+			.catch((err) => {
+				setErrors((th) => ({ ...th, [name]: err.errors }));
+			});
+	};
+
 	useOutsideClick(childRef, () => saveFuncLoc(), "parentDiv");
 	return (
 		<div ref={childRef} className={classes.mainWrap}>
@@ -166,6 +178,7 @@ const NewFunctionalLocations = ({
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 								autoFocus
 							/>
 						</Grid>
@@ -182,6 +195,7 @@ const NewFunctionalLocations = ({
 									errors.description === null ? null : errors.description
 								}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -197,6 +211,7 @@ const NewFunctionalLocations = ({
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 							/>
 						</Grid>
 						<Grid item sm={6}>
@@ -212,6 +227,7 @@ const NewFunctionalLocations = ({
 									errors.workCenter === null ? null : errors.workCenter
 								}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 							/>
 						</Grid>
 					</Grid>
@@ -229,6 +245,7 @@ const NewFunctionalLocations = ({
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -244,6 +261,7 @@ const NewFunctionalLocations = ({
 									errors.description === null ? null : errors.description
 								}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -259,6 +277,7 @@ const NewFunctionalLocations = ({
 									errors.plannerGroup === null ? null : errors.plannerGroup
 								}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -274,6 +293,7 @@ const NewFunctionalLocations = ({
 									errors.workCenter === null ? null : errors.workCenter
 								}
 								onKeyDown={handleEnterPress}
+								onBlur={handleBlur}
 							/>
 						</Grid>
 					</Grid>

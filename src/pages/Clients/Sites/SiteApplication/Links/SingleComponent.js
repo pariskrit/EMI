@@ -73,7 +73,11 @@ const SingleComponent = (route) => {
 
 				dispatch({
 					type: "DEFAULT_CUSTOM_CAPTIONS_DATA",
-					payload: nullReplaced,
+					payload: {
+						...nullReplaced,
+						statusChange: "Status Change",
+						statusChangePlural: "Status Changes",
+					},
 				});
 			} else {
 				// If error, throwing to catch
@@ -101,9 +105,10 @@ const SingleComponent = (route) => {
 		fetchData();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [appId]);
 
 	const { clientName, siteName, applicationName } = crumbs;
+
 	return (
 		<>
 			{!loading ? (
@@ -129,11 +134,11 @@ const SingleComponent = (route) => {
 							state={state}
 							dispatch={dispatch}
 							appId={appId}
-							header={route.header}
-							subHeader={route.subHeader}
 							apis={route.api}
 							showDefault={route.showDefault}
 							pathToPatch={route.pathToPatch}
+							singleCaption={route.singleCaption}
+							pluralCaption={route.pluralCaption}
 						/>
 					}
 				</div>

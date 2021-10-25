@@ -26,8 +26,11 @@ function reducer(state, action) {
 
 		case "RESET_SITE_APP_DETAIL": {
 			return {
-				...state,
+				showAdd: false,
+				openConfirmationModal: false,
 				details: {},
+				isActive: false,
+				defaultCustomCaptionsData: {},
 			};
 		}
 

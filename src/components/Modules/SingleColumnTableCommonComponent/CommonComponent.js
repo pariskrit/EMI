@@ -44,8 +44,10 @@ const CommonContent = ({
 		setSearchData,
 	} = useSearch();
 
-	const { defaultCustomCaptionsData } = state;
-
+	const {
+		defaultCustomCaptionsData,
+		details: { data },
+	} = state;
 
 	// Show Default
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
@@ -188,7 +190,6 @@ const CommonContent = ({
 	const handleDefaultUpdate = async () => {
 		// Attempting to update default
 		try {
-			console.log(confirmDefault[0]);
 			// Patching change to API
 			const result = await apis.patchDefaultAPI(id, [
 				{
@@ -271,7 +272,10 @@ const CommonContent = ({
 				applicationID={id}
 				handleAddData={handleAddData}
 				getError={getError}
-				subHeader={defaultCustomCaptionsData[singleCaption]}
+				subHeader={
+					data?.[singleCaption.main] ||
+					defaultCustomCaptionsData[singleCaption.default]
+				}
 				postAPI={apis.postAPI}
 			/>
 			<EditDialog
@@ -281,10 +285,16 @@ const CommonContent = ({
 				handleEditData={handleEditData}
 				getError={getError}
 				patchAPI={apis.patchAPI}
-				subHeader={defaultCustomCaptionsData[singleCaption]}
+				subHeader={
+					data?.[singleCaption.main] ||
+					defaultCustomCaptionsData[singleCaption.default]
+				}
 			/>
 			<DeleteDialog
-				entityName={defaultCustomCaptionsData[singleCaption]}
+				entityName={
+					data?.[singleCaption.main] ||
+					defaultCustomCaptionsData[singleCaption.default]
+				}
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
 				deleteEndpoint={apis.deleteAPI}
@@ -297,7 +307,10 @@ const CommonContent = ({
 					open={openDefaultDialog}
 					closeHandler={handleDefaultDialogClose}
 					data={confirmDefault}
-					entity={defaultCustomCaptionsData[singleCaption]}
+					entity={
+						data?.[singleCaption.main] ||
+						defaultCustomCaptionsData[singleCaption.default]
+					}
 					handleDefaultUpdate={handleDefaultUpdate}
 				/>
 			)}
@@ -308,21 +321,33 @@ const CommonContent = ({
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
-							header={defaultCustomCaptionsData[pluralCaption]}
+							header={
+								data?.[pluralCaption.main] ||
+								defaultCustomCaptionsData[pluralCaption.default]
+							}
 							dataCount={haveData ? allData.length : 0}
 							// dataCount={haveData ? data.length : 0}
-							description={`Create and manage ${defaultCustomCaptionsData[pluralCaption]}`}
+							description={`Create and manage ${
+								data?.[pluralCaption.main] ||
+								defaultCustomCaptionsData[pluralCaption.default]
+							}`}
 						/>
 
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={defaultCustomCaptionsData[pluralCaption]}
+							header={
+								data?.[pluralCaption.main] ||
+								defaultCustomCaptionsData[pluralCaption.default]
+							}
 						/>
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={defaultCustomCaptionsData[pluralCaption]}
+							header={
+								data?.[pluralCaption.main] ||
+								defaultCustomCaptionsData[pluralCaption.default]
+							}
 						/>
 					</div>
 
