@@ -7,7 +7,6 @@ import { handleSort } from "helpers/utils";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import SearchField from "components/Elements/SearchField/SearchField";
 import { getRoles } from "services/clients/sites/siteApplications/userRoles";
-import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import EditDialog from "./EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
