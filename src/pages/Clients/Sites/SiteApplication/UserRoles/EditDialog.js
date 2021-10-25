@@ -32,6 +32,7 @@ const EditRoleDialog = ({
 	data,
 	handleEditData,
 	getError,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -157,7 +158,7 @@ const EditRoleDialog = ({
 
 				<AED.ActionContainer>
 					<DialogTitle id="edit-dialog-title">
-						{<AED.HeaderText>Edit Role</AED.HeaderText>}
+						{<AED.HeaderText>Edit {header}</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeOverride} variant="contained">

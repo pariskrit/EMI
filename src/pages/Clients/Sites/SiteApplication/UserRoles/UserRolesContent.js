@@ -123,19 +123,24 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 
 	//Rendering content, otherwise, 404 error
 	const mainData = searchQuery.length === 0 ? allData : searchedData;
-
+	const {
+		showAdd,
+		details: { data },
+		defaultCustomCaptionsData: { role, rolePlural },
+	} = state;
 	return (
 		<div className="container">
 			<AddDialog
-				open={state.showAdd}
+				open={showAdd}
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
 				applicationID={id}
 				handleAddData={handleAddData}
 				getError={getError}
+				header={data?.roleCC || role}
 			/>
 
 			<DeleteDialog
-				entityName="Role"
+				entityName={data?.roleCC || role}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -149,26 +154,29 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 				data={editData}
 				handleEditData={handleEditData}
 				getError={getError}
+				header={data?.roleCC || role}
 			/>
 
 			<CommonBody {...{ haveData }}>
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
-							header="Roles"
+							header={data?.rolePluralCC || rolePlural}
 							dataCount={haveData ? allData.length : 0}
-							description="Create and manage Roles"
+							description={`Create and manage ${
+								data?.rolePluralCC || rolePlural
+							}`}
 						/>
 
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header="Roles"
+							header={data?.rolePluralCC || rolePlural}
 						/>
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header="Roles"
+							header={data?.rolePluralCC || rolePlural}
 						/>
 					</div>
 

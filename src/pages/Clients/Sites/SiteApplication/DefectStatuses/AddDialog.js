@@ -33,6 +33,7 @@ const AddDialog = ({
 	applicationID,
 	handleAddData,
 	setError,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -128,7 +129,7 @@ const AddDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add Action</ADD.HeaderText>}
+						{<ADD.HeaderText>Add Defect {header}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">

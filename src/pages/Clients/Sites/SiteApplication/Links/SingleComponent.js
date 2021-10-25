@@ -15,7 +15,7 @@ const SingleComponent = (route) => {
 	const siteAppIds = useParams();
 	const { clientId, id, appId } = siteAppIds;
 	const [state, dispatch] = useContext(SiteContext);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const navigation = SiteApplicationNavigation(
 		clientId,
@@ -74,7 +74,11 @@ const SingleComponent = (route) => {
 
 				dispatch({
 					type: "DEFAULT_CUSTOM_CAPTIONS_DATA",
-					payload: nullReplaced,
+					payload: {
+						...nullReplaced,
+						statusChange: "Status Change",
+						statusChangePlural: "Status Changes",
+					},
 				});
 			} else {
 				// If error, throwing to catch
@@ -87,7 +91,6 @@ const SingleComponent = (route) => {
 	};
 
 	const fetchData = async () => {
-		setLoading(true);
 		if (Object.keys(state.details).length === 0) {
 			await fetchSiteApplicationDetails();
 		}
@@ -102,12 +105,17 @@ const SingleComponent = (route) => {
 		fetchData();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [appId]);
 
 	const { clientName, siteName, applicationName } = crumbs;
+
 	return (
 		<>
-			{!loading ? (
+			{loading ? (
+				<AC.SpinnerContainer>
+					<CircularProgress />
+				</AC.SpinnerContainer>
+			) : (
 				<div className="container">
 					<CommonHeaderWrapper
 						crumbs={[clientName, siteName, applicationName]}
@@ -130,18 +138,14 @@ const SingleComponent = (route) => {
 							state={state}
 							dispatch={dispatch}
 							appId={appId}
-							header={route.header}
-							subHeader={route.subHeader}
 							apis={route.api}
 							showDefault={route.showDefault}
 							pathToPatch={route.pathToPatch}
+							singleCaption={route.singleCaption}
+							pluralCaption={route.pluralCaption}
 						/>
 					}
 				</div>
-			) : (
-				<AC.SpinnerContainer>
-					<CircularProgress />
-				</AC.SpinnerContainer>
 			)}
 		</>
 	);

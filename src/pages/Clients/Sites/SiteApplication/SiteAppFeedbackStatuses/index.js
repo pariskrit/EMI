@@ -163,7 +163,11 @@ const SiteAppFeedbackStatuses = ({
 		setModel((th) => ({ ...th, delete: false }));
 		setDeleteId(null);
 	};
-
+	const {
+		showAdd,
+		details: { data },
+		defaultCustomCaptionsData: { feedbackStatus, feedbackStatusPlural },
+	} = state;
 	if (is404 === false) {
 		return (
 			<div>
@@ -171,11 +175,11 @@ const SiteAppFeedbackStatuses = ({
 					open={model.default}
 					closeHandler={() => setModel((th) => ({ ...th, default: false }))}
 					data={confirmDefault}
-					entity="Feedback Status"
+					entity={`Feedback ${data?.feedbackStatusCC || feedbackStatus}`}
 					handleDefaultUpdate={handleDefaultUpdate}
 				/>
 				<AddEditDialog
-					open={state.showAdd}
+					open={showAdd}
 					editMode={model.edit}
 					closeHandler={handleAddEditDialogClose}
 					data={editData}
@@ -183,9 +187,10 @@ const SiteAppFeedbackStatuses = ({
 					handleEditData={handleEditData}
 					applicationID={appId}
 					getError={getError}
+					header={data?.feedbackStatusCC || feedbackStatus}
 				/>
 				<DeleteDialog
-					entityName="Feedback Statuses"
+					entityName={`Feedback ${data?.feedbackStatusCC || feedbackStatus}`}
 					open={model.delete}
 					closeHandler={handleDeleteDialogClose}
 					deleteEndpoint={`${BASE_API_PATH}feedbackstatuses`}
@@ -194,7 +199,9 @@ const SiteAppFeedbackStatuses = ({
 				/>
 				<div className="detailsContainer">
 					<DetailsPanel
-						header={header}
+						header={`Feedback ${
+							data?.feedbackStatusPluralCC || feedbackStatusPlural
+						}`}
 						dataCount={allData.length}
 						description="Create and manage Model Statuses"
 					/>
@@ -202,13 +209,17 @@ const SiteAppFeedbackStatuses = ({
 					<SearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
-						header="Feedback Statuses"
+						header={`Feedback ${
+							data?.feedbackStatusPluralCC || feedbackStatusPlural
+						}`}
 					/>
 
 					<MobileSearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
-						header="Feedback Statuses"
+						header={`Feedback ${
+							data?.feedbackStatusPluralCC || feedbackStatusPlural
+						}`}
 					/>
 				</div>
 				<CommonApplicationTable
