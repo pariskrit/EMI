@@ -112,8 +112,11 @@ const routes = [
 		showAdd: true,
 		showHistory: true,
 		showSwitch: false,
-		header: "Status Changes",
-		subHeader: "Status Change",
+		singleCaption: { main: "statusChangeCC", default: "statusChange" },
+		pluralCaption: {
+			main: "statusChangePluralCC",
+			default: "statusChangePlural",
+		},
 		api: differentAPIs.StatusChangesAPIs,
 	},
 	{

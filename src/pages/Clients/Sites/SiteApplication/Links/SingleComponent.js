@@ -73,7 +73,11 @@ const SingleComponent = (route) => {
 
 				dispatch({
 					type: "DEFAULT_CUSTOM_CAPTIONS_DATA",
-					payload: nullReplaced,
+					payload: {
+						...nullReplaced,
+						statusChange: "Status Change",
+						statusChangePlural: "Status Changes",
+					},
 				});
 			} else {
 				// If error, throwing to catch
