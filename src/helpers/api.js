@@ -32,7 +32,7 @@ instance.interceptors.response.use(
 	async (error) => {
 		// Storing original request
 		const originalRequest = error.config;
-		console.log(originalRequest);
+
 		// Checking if 401 and ensuring not already attempted refresh
 		if (
 			(error.response.status === 401 || error.response.status === 403) &&

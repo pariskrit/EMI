@@ -6,6 +6,7 @@ const initialState = {
 	details: {},
 	isActive: false,
 	defaultCustomCaptionsData: {},
+	apiErrorPresent: true,
 	// haveData: false,
 };
 
