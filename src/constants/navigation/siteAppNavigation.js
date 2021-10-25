@@ -34,9 +34,6 @@ const SiteApplicationNavigation = (
 	data,
 	defaultCustom
 ) => {
-	console.log(data);
-	console.log("default", defaultCustom);
-
 	// Setting navigation links with correct application ID
 	const links = `${clientsPath}/${clientId}/sites/${siteId}/applications/${appId}`;
 	const navigation = [
