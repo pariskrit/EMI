@@ -9,7 +9,6 @@ import EditStatusDialog from "./EditDialog";
 import ModelStatusesTable from "./ModelStatusesTable";
 import { showError } from "redux/common/actions";
 import { getModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
-import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import { useSearch } from "hooks/useSearch";
@@ -35,17 +34,17 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	} = useSearch();
 
 	const handleGetData = useCallback(async () => {
+		setDefaultId(state?.details?.data?.defaultModelStatusID);
+
 		setLoading(true);
 		// Attempting to get data
 		try {
 			// Getting data from API
 			let result = await getModelStatuses(appId);
-			let res = await getSiteApplicationDetail(appId);
 			// if success, adding data to state
 			if (result.status) {
 				setLoading(false);
 
-				setDefaultId(res?.data?.defaultModelStatusID);
 				setAllData(result?.data);
 
 				return true;
