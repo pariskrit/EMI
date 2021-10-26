@@ -175,7 +175,7 @@ const SiteAppFeedbackStatuses = ({
 					open={model.default}
 					closeHandler={() => setModel((th) => ({ ...th, default: false }))}
 					data={confirmDefault}
-					entity={`Feedback ${data?.feedbackStatusCC || feedbackStatus}`}
+					entity={`${data?.feedbackStatusCC || feedbackStatus}`}
 					handleDefaultUpdate={handleDefaultUpdate}
 				/>
 				<AddEditDialog
@@ -190,7 +190,7 @@ const SiteAppFeedbackStatuses = ({
 					header={data?.feedbackStatusCC || feedbackStatus}
 				/>
 				<DeleteDialog
-					entityName={`Feedback ${data?.feedbackStatusCC || feedbackStatus}`}
+					entityName={`${data?.feedbackStatusCC || feedbackStatus}`}
 					open={model.delete}
 					closeHandler={handleDeleteDialogClose}
 					deleteEndpoint={`${BASE_API_PATH}feedbackstatuses`}
@@ -199,11 +199,11 @@ const SiteAppFeedbackStatuses = ({
 				/>
 				<div className="detailsContainer">
 					<DetailsPanel
-						header={`Feedback ${
+						header={`${data?.feedbackStatusPluralCC || feedbackStatusPlural}`}
+						dataCount={allData.length}
+						description={`Create and manage ${
 							data?.feedbackStatusPluralCC || feedbackStatusPlural
 						}`}
-						dataCount={allData.length}
-						description="Create and manage Model Statuses"
 					/>
 
 					<SearchField
@@ -217,9 +217,7 @@ const SiteAppFeedbackStatuses = ({
 					<MobileSearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
-						header={`Feedback ${
-							data?.feedbackStatusPluralCC || feedbackStatusPlural
-						}`}
+						header={`${data?.feedbackStatusPluralCC || feedbackStatusPlural}`}
 					/>
 				</div>
 				<CommonApplicationTable
