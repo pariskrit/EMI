@@ -85,7 +85,6 @@ const SingleComponent = (route) => {
 				throw new Error(result);
 			}
 		} catch (err) {
-			console.log(err);
 			return false;
 		}
 	};
