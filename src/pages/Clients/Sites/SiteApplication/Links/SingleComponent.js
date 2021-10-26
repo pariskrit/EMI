@@ -55,12 +55,14 @@ const SingleComponent = (route) => {
 				type: "TOGGLE_ISACTIVE",
 				payload: result.data.isActive,
 			});
+
+			return result.data;
 		}
 	};
 
-	const fetchDefaultCustomCaptionsData = async () => {
+	const fetchDefaultCustomCaptionsData = async (applicationId) => {
 		try {
-			let result = await getDefaultCustomCaptions(appId);
+			let result = await getDefaultCustomCaptions(applicationId);
 			if (result.status) {
 				let nullReplaced = result.data;
 
@@ -90,13 +92,14 @@ const SingleComponent = (route) => {
 	};
 
 	const fetchData = async () => {
-		if (Object.keys(state.details).length === 0) {
-			await fetchSiteApplicationDetails();
+		if (
+			location.pathname.split("/")[7] === "detail" ||
+			Object.keys(state.details).length === 0
+		) {
+			const response = await fetchSiteApplicationDetails();
+			await fetchDefaultCustomCaptionsData(response.applicationID);
 		}
 
-		if (Object.keys(state.defaultCustomCaptionsData).length === 0) {
-			await fetchDefaultCustomCaptionsData();
-		}
 		setLoading(false);
 	};
 
@@ -104,7 +107,7 @@ const SingleComponent = (route) => {
 		fetchData();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [appId]);
+	}, []);
 
 	const { clientName, siteName, applicationName } = crumbs;
 
