@@ -244,7 +244,7 @@ const AddEditDialog = ({
 					<DialogTitle id="alert-dialog-title">
 						{
 							<ADD.HeaderText>
-								{editMode ? "Edit" : "Add New"} Feedback {header}
+								{editMode ? "Edit" : "Add New"} {header}
 							</ADD.HeaderText>
 						}
 					</DialogTitle>
