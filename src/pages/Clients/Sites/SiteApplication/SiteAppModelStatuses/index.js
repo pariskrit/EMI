@@ -187,7 +187,9 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 						data?.modelCC || defaultCustomCaptionsData.model
 					} Statuses`}
 					dataCount={allData.length}
-					description="Create and manage Model Statuses"
+					description={`Create and manage ${
+						data?.modelCC || defaultCustomCaptionsData.model
+					} Statuses`}
 				/>
 
 				<SearchField
