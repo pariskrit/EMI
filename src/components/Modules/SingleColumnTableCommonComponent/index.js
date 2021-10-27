@@ -13,6 +13,7 @@ function SingleColumnTableCommonComponent({
 	pathToPatch,
 	singleCaption,
 	pluralCaption,
+	isMissingPartOrTools,
 }) {
 	// Init params
 	const { appId } = useParams();
@@ -35,6 +36,7 @@ function SingleColumnTableCommonComponent({
 					dispatch,
 					showDefault,
 					pathToPatch,
+					isMissingPartOrTools,
 				}}
 			/>
 		);
