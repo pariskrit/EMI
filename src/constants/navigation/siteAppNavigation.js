@@ -66,7 +66,9 @@ const SiteApplicationNavigation = (
 					link: links + siteAppSkippedTasksPath,
 				},
 				{
-					title: data?.toolPluralCC || defaultCustom.toolPlural,
+					title: `Missing ${data?.partCC || defaultCustom.part} or ${
+						data?.toolPluralCC || defaultCustom.toolPlural
+					}`,
 					link: links + siteAppMissingItemsPath,
 				},
 				{
@@ -76,7 +78,8 @@ const SiteApplicationNavigation = (
 			],
 		},
 		{
-			name: "Model Definitions",
+			name: `${data?.modelCC || defaultCustom?.model} Definitions`,
+			main: "Model Definitions",
 			dropdown: [
 				{
 					title: "Statuses",
@@ -89,7 +92,8 @@ const SiteApplicationNavigation = (
 			],
 		},
 		{
-			name: "Task Definitions",
+			name: `${data?.taskCC || defaultCustom?.task} Definitions`,
+			main: "Task Definitions",
 			dropdown: [
 				{
 					title:
@@ -112,7 +116,8 @@ const SiteApplicationNavigation = (
 			],
 		},
 		{
-			name: "User Definitions",
+			name: `${data?.userCC || defaultCustom?.user} Definitions`,
+			main: "User Definitions",
 			dropdown: [
 				{
 					title: data?.positionPluralCC || defaultCustom.positionPlural,
@@ -125,7 +130,8 @@ const SiteApplicationNavigation = (
 			],
 		},
 		{
-			name: "Defect Definitions",
+			name: `${data?.defectCC || defaultCustom?.defect} Definitions`,
+			main: "Defect Definitions",
 			dropdown: [
 				{
 					title: data?.riskRatingPluralCC || defaultCustom.riskRatingPlural,
@@ -142,7 +148,8 @@ const SiteApplicationNavigation = (
 			],
 		},
 		{
-			name: "Feedback Definitions",
+			name: `${data?.feedbackCC || defaultCustom.feedback} Definitions`,
+			main: "Feedback Definitions",
 			dropdown: [
 				{
 					title:
