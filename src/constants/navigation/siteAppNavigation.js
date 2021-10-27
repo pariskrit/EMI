@@ -39,6 +39,7 @@ const SiteApplicationNavigation = (
 	const navigation = [
 		{
 			name: "Details",
+			main: "Details",
 			dropdown: [
 				{
 					title: "Application",
@@ -52,6 +53,7 @@ const SiteApplicationNavigation = (
 		},
 		{
 			name: "Reason Definitions",
+			main: "Reason Definitions",
 			dropdown: [
 				{
 					title: data?.pauseReasonPluralCC || defaultCustom.pauseReasonPlural,
@@ -66,9 +68,9 @@ const SiteApplicationNavigation = (
 					link: links + siteAppSkippedTasksPath,
 				},
 				{
-					title: `Missing ${data?.partCC || defaultCustom.part} or ${
-						data?.toolPluralCC || defaultCustom.toolPlural
-					}`,
+					title: `Missing ${
+						data?.partPluralCC || defaultCustom.partPlural
+					} or ${data?.toolPluralCC || defaultCustom.toolPlural}`,
 					link: links + siteAppMissingItemsPath,
 				},
 				{
