@@ -193,7 +193,6 @@ const DefectRiskRatingsContent = ({
 	const handleDefaultUpdate = async () => {
 		// Attempting to update default
 		try {
-			console.log(confirmDefault[0]);
 			// Patching change to API
 			const result = await patchDefaultDefectRiskRatings(id, [
 				{
@@ -244,7 +243,7 @@ const DefectRiskRatingsContent = ({
 	const {
 		showAdd,
 		details: { data },
-		defaultCustomCaptionsData: { riskRating, riskRatingPlural },
+		defaultCustomCaptionsData: { riskRating, riskRatingPlural, safetyCritical },
 	} = state;
 
 	return (
@@ -272,12 +271,14 @@ const DefectRiskRatingsContent = ({
 				open={openDefaultDialog}
 				closeHandler={handleDefaultDialogClose}
 				data={confirmDefault}
-				entity={`Safety Critical ${data?.riskRatingCC || riskRating}`}
+				entity={`${data?.safetyCriticalCC || safetyCritical} ${
+					data?.riskRatingCC || riskRating
+				}`}
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 
 			<DeleteDialog
-				entityName={`Defect ${data?.riskRatingCC || riskRating}`}
+				entityName={`${data?.riskRatingCC || riskRating}`}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -300,13 +301,13 @@ const DefectRiskRatingsContent = ({
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
+							header={`${data?.riskRatingPluralCC || riskRatingPlural}`}
 						/>
 
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
+							header={`${data?.riskRatingPluralCC || riskRatingPlural}`}
 						/>
 					</div>
 
@@ -331,7 +332,9 @@ const DefectRiskRatingsContent = ({
 								isDelete: true,
 							},
 							{
-								name: "Make Safety Critical Default",
+								name: `Make ${
+									data?.safetyCriticalCC || safetyCritical
+								} Default`,
 								handler: handleDefaultDialogOpen,
 								isDelete: false,
 							},

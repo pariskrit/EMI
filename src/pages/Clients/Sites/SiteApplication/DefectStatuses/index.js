@@ -11,14 +11,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
-import {
-	getSiteApplicationDetail,
-	patchApplicationDetail,
-} from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 
-function DefectStatuses({ appId, setError }) {
+function DefectStatuses({ appId, setError, state }) {
 	const {
 		allData,
 		searchQuery,
@@ -100,13 +97,12 @@ function DefectStatuses({ appId, setError }) {
 	};
 
 	const fetchDefectStatuses = async () => {
+		setDefaultId(state.details.data?.defaultDefectStatusID);
 		const result = await getDefectStatuses(appId);
-		const res = await getSiteApplicationDetail(appId);
 
 		if (!result.status) {
 			console.log("error login again");
 		} else {
-			setDefaultId(res.data.defaultDefectStatusID);
 			setAllData([
 				...result?.data?.map((res) => ({
 					...res,
@@ -151,7 +147,7 @@ function DefectStatuses({ appId, setError }) {
 				header={data?.defectStatusCC || defectStatus}
 			/>
 			<DeleteDialog
-				entityName={`Defect ${data?.defectStatusCC || defectStatus}`}
+				entityName={`${data?.defectStatusCC || defectStatus}`}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -160,21 +156,21 @@ function DefectStatuses({ appId, setError }) {
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
+					header={`${data?.defectStatusPluralCC || defectStatusPlural}`}
 					dataCount={allData.length}
-					description={`Create and manage Defect ${
+					description={`Create and manage ${
 						data?.defectStatusPluralCC || defectStatusPlural
 					}`}
 				/>
 				<SearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
+					header={`${data?.defectStatusPluralCC || defectStatusPlural}`}
 				/>
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
+					header={`${data?.defectStatusPluralCC || defectStatusPlural}`}
 				/>
 			</div>
 			<CommonApplicationTable
