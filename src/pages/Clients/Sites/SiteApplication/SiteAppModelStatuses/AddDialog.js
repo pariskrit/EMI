@@ -31,6 +31,7 @@ const AddStatusDialog = ({
 	applicationID,
 	handleAddData,
 	getError,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -136,7 +137,7 @@ const AddStatusDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add New Status</ADD.HeaderText>}
+						{<ADD.HeaderText>Add New {header}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeHandler} variant="contained">

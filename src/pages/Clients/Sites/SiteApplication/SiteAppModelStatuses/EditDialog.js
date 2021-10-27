@@ -31,6 +31,7 @@ const EditStatusDialog = ({
 	data,
 	handleEditData,
 	getError,
+	header,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -149,7 +150,7 @@ const EditStatusDialog = ({
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit Model Status</AED.HeaderText>}
+						{<AED.HeaderText>Edit {header}</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeHandler} variant="contained">
