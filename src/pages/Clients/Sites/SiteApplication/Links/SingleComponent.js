@@ -145,6 +145,7 @@ const SingleComponent = (route) => {
 							pathToPatch={route.pathToPatch}
 							singleCaption={route.singleCaption}
 							pluralCaption={route.pluralCaption}
+							isMissingPartOrTools={route.isMissingPartOrTools}
 						/>
 					}
 				</div>
