@@ -1,13 +1,12 @@
+import React, { useEffect, useState } from "react";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import SearchField from "components/Elements/SearchField/SearchField";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
-import { SiteContext } from "contexts/SiteApplicationContext";
 import { defectStatusTypes } from "helpers/constants";
 import { useSearch } from "hooks/useSearch";
-import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
@@ -15,7 +14,7 @@ import { patchApplicationDetail } from "services/clients/sites/siteApplications/
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 
-function DefectStatuses({ appId, setError, state }) {
+function DefectStatuses({ appId, setError, state, dispatch }) {
 	const {
 		allData,
 		searchQuery,
@@ -24,14 +23,7 @@ function DefectStatuses({ appId, setError, state }) {
 		setAllData,
 		setSearchData,
 	} = useSearch();
-	const [
-		{
-			showAdd,
-			details: { data },
-			defaultCustomCaptionsData: { defectStatus, defectStatusPlural },
-		},
-		dispatch,
-	] = useContext(SiteContext);
+
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
@@ -40,6 +32,12 @@ function DefectStatuses({ appId, setError, state }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [confirmDefault, setConfirmDefault] = useState([]);
+
+	const {
+		showAdd,
+		details: { data },
+		defaultCustomCaptionsData: { defectStatus, defectStatusPlural },
+	} = state;
 
 	const addData = (newData) => setAllData([...allData, newData]);
 
