@@ -290,9 +290,9 @@ const DefectRiskRatingsContent = ({
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
-							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
+							header={`${data?.riskRatingPluralCC || riskRatingPlural}`}
 							dataCount={haveData ? allData.length : 0}
-							description={`Create and manage Defect ${
+							description={`Create and manage ${
 								data?.riskRatingPluralCC || riskRatingPlural
 							}`}
 						/>
