@@ -15,13 +15,7 @@ import FeedbackStatusTypes from "helpers/feedbackStatusTypes";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import API from "helpers/api";
 
-const SiteAppFeedbackStatuses = ({
-	state,
-	dispatch,
-	appId,
-	getError,
-	header,
-}) => {
+const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 	const {
 		allData,
 		setAllData,
@@ -209,9 +203,7 @@ const SiteAppFeedbackStatuses = ({
 					<SearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
-						header={`Feedback ${
-							data?.feedbackStatusPluralCC || feedbackStatusPlural
-						}`}
+						header={`${data?.feedbackStatusPluralCC || feedbackStatusPlural}`}
 					/>
 
 					<MobileSearchField

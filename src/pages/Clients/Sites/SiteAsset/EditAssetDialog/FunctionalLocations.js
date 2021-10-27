@@ -10,6 +10,7 @@ import {
 	updateSiteAssetReferences,
 } from "services/clients/sites/siteAssets/references";
 import "./edit.css";
+import { connect } from "react-redux";
 
 const schema = yup.object({
 	name: yup
@@ -92,6 +93,7 @@ const FunctionalLocations = ({
 	handleRemoveFuncLoc,
 	handleUpdateFuncLoc,
 	getError,
+	error,
 }) => {
 	const ref = useRef();
 	const classes = useStyles();
@@ -175,48 +177,50 @@ const FunctionalLocations = ({
 
 	const handleSubmit = async () => {
 		// e.preventDefault();
-		if (isEdit) {
-			setLoading(true);
-			setErrors(defaultErrorSchema);
+		if (!error.status) {
+			if (isEdit) {
+				setLoading(true);
+				setErrors(defaultErrorSchema);
 
-			// Check if the input is same with previous one or not
-			if (
-				sub.name === input.name &&
-				sub.description === input.description &&
-				sub.workCenter === input.workCenter &&
-				sub.plannerGroup === input.plannerGroup
-			) {
-				setIsEdit(false);
-				setLoading(false);
-				return true;
-			}
-			try {
-				const localChecker = await handleValidateObj(schema, input);
-				if (!localChecker.some((el) => el.valid === false)) {
-					const updateData = await handleEditFuncLoc();
-					if (updateData.success) {
-						handleUpdateFuncLoc({
-							id: sub.id,
-							siteAssetID: sub.siteAssetID,
-							...input,
-						});
+				// Check if the input is same with previous one or not
+				if (
+					sub.name === input.name &&
+					sub.description === input.description &&
+					sub.workCenter === input.workCenter &&
+					sub.plannerGroup === input.plannerGroup
+				) {
+					setIsEdit(false);
+					setLoading(false);
+					return true;
+				}
+				try {
+					const localChecker = await handleValidateObj(schema, input);
+					if (!localChecker.some((el) => el.valid === false)) {
+						const updateData = await handleEditFuncLoc();
+						if (updateData.success) {
+							handleUpdateFuncLoc({
+								id: sub.id,
+								siteAssetID: sub.siteAssetID,
+								...input,
+							});
+						} else {
+							setLoading(false);
+						}
 					} else {
+						const newError = generateErrorState(localChecker);
+						setErrors({ ...errors, ...newError });
 						setLoading(false);
 					}
-				} else {
-					const newError = generateErrorState(localChecker);
-					setErrors({ ...errors, ...newError });
+				} catch (err) {
+					console.log(err);
+					setIsEdit(false);
 					setLoading(false);
 				}
-			} catch (err) {
-				console.log(err);
-				setIsEdit(false);
-				setLoading(false);
 			}
 		}
 	};
 
-	useOutsideClick(ref, () => handleSubmit());
+	useOutsideClick(ref, () => handleSubmit(), "parentDiv");
 
 	const handleShowEdit = () => {
 		const main = { ...sub };
@@ -439,5 +443,6 @@ const FunctionalLocations = ({
 		</div>
 	);
 };
+const mapStateToProps = ({ commonData: { error } }) => ({ error });
 
-export default FunctionalLocations;
+export default connect(mapStateToProps)(FunctionalLocations);

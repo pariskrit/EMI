@@ -1,24 +1,20 @@
+import React, { useEffect, useState } from "react";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import SearchField from "components/Elements/SearchField/SearchField";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
-import { SiteContext } from "contexts/SiteApplicationContext";
 import { defectStatusTypes } from "helpers/constants";
 import { useSearch } from "hooks/useSearch";
-import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
-import {
-	getSiteApplicationDetail,
-	patchApplicationDetail,
-} from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 
-function DefectStatuses({ appId, setError }) {
+function DefectStatuses({ appId, setError, state, dispatch }) {
 	const {
 		allData,
 		searchQuery,
@@ -27,14 +23,7 @@ function DefectStatuses({ appId, setError }) {
 		setAllData,
 		setSearchData,
 	} = useSearch();
-	const [
-		{
-			showAdd,
-			details: { data },
-			defaultCustomCaptionsData: { defectStatus, defectStatusPlural },
-		},
-		dispatch,
-	] = useContext(SiteContext);
+
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
@@ -43,6 +32,12 @@ function DefectStatuses({ appId, setError }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [confirmDefault, setConfirmDefault] = useState([]);
+
+	const {
+		showAdd,
+		details: { data },
+		defaultCustomCaptionsData: { defectStatus, defectStatusPlural },
+	} = state;
 
 	const addData = (newData) => setAllData([...allData, newData]);
 
@@ -100,13 +95,12 @@ function DefectStatuses({ appId, setError }) {
 	};
 
 	const fetchDefectStatuses = async () => {
+		setDefaultId(state.details.data?.defaultDefectStatusID);
 		const result = await getDefectStatuses(appId);
-		const res = await getSiteApplicationDetail(appId);
 
 		if (!result.status) {
 			console.log("error login again");
 		} else {
-			setDefaultId(res.data.defaultDefectStatusID);
 			setAllData([
 				...result?.data?.map((res) => ({
 					...res,
@@ -151,7 +145,7 @@ function DefectStatuses({ appId, setError }) {
 				header={data?.defectStatusCC || defectStatus}
 			/>
 			<DeleteDialog
-				entityName={`Defect ${data?.defectStatusCC || defectStatus}`}
+				entityName={`${data?.defectStatusCC || defectStatus}`}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -160,21 +154,21 @@ function DefectStatuses({ appId, setError }) {
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
+					header={`${data?.defectStatusPluralCC || defectStatusPlural}`}
 					dataCount={allData.length}
-					description={`Create and manage Defect ${
+					description={`Create and manage ${
 						data?.defectStatusPluralCC || defectStatusPlural
 					}`}
 				/>
 				<SearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
+					header={`${data?.defectStatusPluralCC || defectStatusPlural}`}
 				/>
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header={`Defect ${data?.defectStatusPluralCC || defectStatusPlural}`}
+					header={`${data?.defectStatusPluralCC || defectStatusPlural}`}
 				/>
 			</div>
 			<CommonApplicationTable
