@@ -22,7 +22,17 @@ const CustomCaptionsContent = ({ id, state, dispatch }) => {
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
-		setData(state.details.data);
+		let nullReplaced = state.details.data;
+
+		Object.keys(nullReplaced).forEach((el) => {
+			if (el.indexOf("CC") !== -1 && nullReplaced[el] === null) {
+				nullReplaced[el] = "";
+			} else {
+				return;
+			}
+		});
+
+		setData(nullReplaced);
 		setHaveData(true);
 	}, [state]);
 
