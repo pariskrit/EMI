@@ -26,6 +26,7 @@ const CommonContent = ({
 	apis,
 	showDefault,
 	pathToPatch,
+	isMissingPartOrTools,
 }) => {
 	// Init state
 	const [haveData, setHaveData] = useState(false);
@@ -274,8 +275,16 @@ const CommonContent = ({
 				handleAddData={handleAddData}
 				getError={getError}
 				subHeader={
-					data?.[singleCaption.main] ||
-					defaultCustomCaptionsData[singleCaption.default]
+					isMissingPartOrTools
+						? `Missing ${
+								data?.[singleCaption.main] ||
+								defaultCustomCaptionsData[singleCaption.default]
+						  } or ${
+								data?.[pluralCaption.main] ||
+								defaultCustomCaptionsData[pluralCaption.default]
+						  }`
+						: data?.[singleCaption.main] ||
+						  defaultCustomCaptionsData[singleCaption.default]
 				}
 				postAPI={apis.postAPI}
 			/>
@@ -287,14 +296,30 @@ const CommonContent = ({
 				getError={getError}
 				patchAPI={apis.patchAPI}
 				subHeader={
-					data?.[singleCaption.main] ||
-					defaultCustomCaptionsData[singleCaption.default]
+					isMissingPartOrTools
+						? `Missing ${
+								data?.[singleCaption.main] ||
+								defaultCustomCaptionsData[singleCaption.default]
+						  } or ${
+								data?.[pluralCaption.main] ||
+								defaultCustomCaptionsData[pluralCaption.default]
+						  }`
+						: data?.[singleCaption.main] ||
+						  defaultCustomCaptionsData[singleCaption.default]
 				}
 			/>
 			<DeleteDialog
 				entityName={
-					data?.[singleCaption.main] ||
-					defaultCustomCaptionsData[singleCaption.default]
+					isMissingPartOrTools
+						? `Missing ${
+								data?.[singleCaption.main] ||
+								defaultCustomCaptionsData[singleCaption.default]
+						  } or ${
+								data?.[pluralCaption.main] ||
+								defaultCustomCaptionsData[pluralCaption.default]
+						  }`
+						: data?.[singleCaption.main] ||
+						  defaultCustomCaptionsData[singleCaption.default]
 				}
 				open={openDeleteDialog}
 				closeHandler={handleDeleteDialogClose}
@@ -323,14 +348,30 @@ const CommonContent = ({
 					<div className="detailsContainer">
 						<DetailsPanel
 							header={
-								data?.[pluralCaption.main] ||
-								defaultCustomCaptionsData[pluralCaption.default]
+								isMissingPartOrTools
+									? `Missing ${
+											data?.[singleCaption.main] ||
+											defaultCustomCaptionsData[singleCaption.default]
+									  } or ${
+											data?.[pluralCaption.main] ||
+											defaultCustomCaptionsData[pluralCaption.default]
+									  }`
+									: data?.[pluralCaption.main] ||
+									  defaultCustomCaptionsData[pluralCaption.default]
 							}
 							dataCount={haveData ? allData.length : 0}
 							// dataCount={haveData ? data.length : 0}
 							description={`Create and manage ${
-								data?.[pluralCaption.main] ||
-								defaultCustomCaptionsData[pluralCaption.default]
+								isMissingPartOrTools
+									? `Missing ${
+											data?.[singleCaption.main] ||
+											defaultCustomCaptionsData[singleCaption.default]
+									  } or ${
+											data?.[pluralCaption.main] ||
+											defaultCustomCaptionsData[pluralCaption.default]
+									  }`
+									: data?.[pluralCaption.main] ||
+									  defaultCustomCaptionsData[pluralCaption.default]
 							}`}
 						/>
 
@@ -338,16 +379,32 @@ const CommonContent = ({
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
 							header={
-								data?.[pluralCaption.main] ||
-								defaultCustomCaptionsData[pluralCaption.default]
+								isMissingPartOrTools
+									? `Missing ${
+											data?.[singleCaption.main] ||
+											defaultCustomCaptionsData[singleCaption.default]
+									  } or ${
+											data?.[pluralCaption.main] ||
+											defaultCustomCaptionsData[pluralCaption.default]
+									  }`
+									: data?.[pluralCaption.main] ||
+									  defaultCustomCaptionsData[pluralCaption.default]
 							}
 						/>
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
 							header={
-								data?.[pluralCaption.main] ||
-								defaultCustomCaptionsData[pluralCaption.default]
+								isMissingPartOrTools
+									? `Missing ${
+											data?.[singleCaption.main] ||
+											defaultCustomCaptionsData[singleCaption.default]
+									  } or ${
+											data?.[pluralCaption.main] ||
+											defaultCustomCaptionsData[pluralCaption.default]
+									  }`
+									: data?.[pluralCaption.main] ||
+									  defaultCustomCaptionsData[pluralCaption.default]
 							}
 						/>
 					</div>
