@@ -33,8 +33,13 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		setSearchData,
 	} = useSearch();
 
+	const {
+		details: { data },
+		defaultCustomCaptionsData,
+	} = state;
+
 	const handleGetData = useCallback(async () => {
-		setDefaultId(state?.details?.data?.defaultModelStatusID);
+		setDefaultId(data?.defaultModelStatusID);
 
 		setLoading(true);
 		// Attempting to get data
@@ -148,6 +153,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				applicationID={appId}
 				handleAddData={handleAddData}
 				getError={getError}
+				header={data?.modelCC || defaultCustomCaptionsData.model}
 			/>
 			<EditStatusDialog
 				open={modal.edit}
@@ -155,16 +161,17 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
 				handleEditData={handleEditData}
 				getError={getError}
+				header={data?.modelCC || defaultCustomCaptionsData.model}
 			/>
 			<DefaultDialog
 				open={modal.default}
 				closeHandler={() => setModal((th) => ({ ...th, default: false }))}
 				data={confirmDefault}
-				entity="Status"
+				entity={data?.modelCC || defaultCustomCaptionsData.model}
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 			<DeleteDialog
-				entityName="Model Status"
+				entityName={data?.modelCC || defaultCustomCaptionsData.model}
 				open={modal.delete}
 				closeHandler={() => {
 					setDeleteId(null);
@@ -176,21 +183,29 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={"Model Statuses"}
+					header={`${
+						data?.modelCC || defaultCustomCaptionsData.model
+					} Statuses`}
 					dataCount={allData.length}
-					description="Create and manage Model Statuses"
+					description={`Create and manage ${
+						data?.modelCC || defaultCustomCaptionsData.model
+					} Statuses`}
 				/>
 
 				<SearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header="Model Statuses"
+					header={`${
+						data?.modelCC || defaultCustomCaptionsData.model
+					} Statuses`}
 				/>
 
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header="Model Statuses"
+					header={`${
+						data?.modelCC || defaultCustomCaptionsData.model
+					} Statuses`}
 				/>
 			</div>
 			<ModelStatusesTable

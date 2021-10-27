@@ -42,8 +42,7 @@ const DefectRiskRatingsContent = ({
 		setSearchQuery(value);
 		const filtered = allData.filter((x) => {
 			const regex = new RegExp(value, "gi");
-			if (x.name.match(regex)) return x.name.match(regex);
-			else if (x.action.match(regex)) return x.action.match(regex);
+			return x.name.match(regex) || x.action.match(regex);
 		});
 		setSearchData(filtered);
 	};
@@ -193,7 +192,6 @@ const DefectRiskRatingsContent = ({
 	const handleDefaultUpdate = async () => {
 		// Attempting to update default
 		try {
-			console.log(confirmDefault[0]);
 			// Patching change to API
 			const result = await patchDefaultDefectRiskRatings(id, [
 				{
@@ -244,7 +242,7 @@ const DefectRiskRatingsContent = ({
 	const {
 		showAdd,
 		details: { data },
-		defaultCustomCaptionsData: { riskRating, riskRatingPlural },
+		defaultCustomCaptionsData: { riskRating, riskRatingPlural, safetyCritical },
 	} = state;
 
 	return (
@@ -272,12 +270,14 @@ const DefectRiskRatingsContent = ({
 				open={openDefaultDialog}
 				closeHandler={handleDefaultDialogClose}
 				data={confirmDefault}
-				entity={`Safety Critical ${data?.riskRatingCC || riskRating}`}
+				entity={`${data?.safetyCriticalCC || safetyCritical} ${
+					data?.riskRatingCC || riskRating
+				}`}
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 
 			<DeleteDialog
-				entityName={`Defect ${data?.riskRatingCC || riskRating}`}
+				entityName={`${data?.riskRatingCC || riskRating}`}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -290,9 +290,9 @@ const DefectRiskRatingsContent = ({
 				<>
 					<div className="detailsContainer">
 						<DetailsPanel
-							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
+							header={`${data?.riskRatingPluralCC || riskRatingPlural}`}
 							dataCount={haveData ? allData.length : 0}
-							description={`Create and manage Defect ${
+							description={`Create and manage ${
 								data?.riskRatingPluralCC || riskRatingPlural
 							}`}
 						/>
@@ -300,13 +300,13 @@ const DefectRiskRatingsContent = ({
 						<SearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
+							header={`${data?.riskRatingPluralCC || riskRatingPlural}`}
 						/>
 
 						<MobileSearchField
 							searchQuery={searchQuery}
 							setSearchQuery={handleSearch}
-							header={`Defect ${data?.riskRatingPluralCC || riskRatingPlural}`}
+							header={`${data?.riskRatingPluralCC || riskRatingPlural}`}
 						/>
 					</div>
 
@@ -331,7 +331,9 @@ const DefectRiskRatingsContent = ({
 								isDelete: true,
 							},
 							{
-								name: "Make Safety Critical Default",
+								name: `Make ${
+									data?.safetyCriticalCC || safetyCritical
+								} Default`,
 								handler: handleDefaultDialogOpen,
 								isDelete: false,
 							},
