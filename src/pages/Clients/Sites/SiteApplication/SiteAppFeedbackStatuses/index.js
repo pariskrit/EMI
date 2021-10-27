@@ -203,9 +203,7 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 					<SearchField
 						searchQuery={searchQuery}
 						setSearchQuery={handleSearch}
-						header={`Feedback ${
-							data?.feedbackStatusPluralCC || feedbackStatusPlural
-						}`}
+						header={`${data?.feedbackStatusPluralCC || feedbackStatusPlural}`}
 					/>
 
 					<MobileSearchField
