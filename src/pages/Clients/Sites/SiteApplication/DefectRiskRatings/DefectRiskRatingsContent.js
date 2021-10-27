@@ -42,8 +42,7 @@ const DefectRiskRatingsContent = ({
 		setSearchQuery(value);
 		const filtered = allData.filter((x) => {
 			const regex = new RegExp(value, "gi");
-			if (x.name.match(regex)) return x.name.match(regex);
-			else if (x.action.match(regex)) return x.action.match(regex);
+			return x.name.match(regex) || x.action.match(regex);
 		});
 		setSearchData(filtered);
 	};
