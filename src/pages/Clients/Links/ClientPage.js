@@ -1,5 +1,4 @@
 import React from "react";
-import { Route } from "react-router-dom";
 import { clientDetailPath, clientsPath } from "helpers/routePaths";
 import ClientList from "pages/Clients/ClientList/ClientList";
 import Client from "..";
@@ -12,9 +11,9 @@ export default function ClientPage() {
 			<ProtectedRoute path={clientsPath} exact>
 				<ClientList />
 			</ProtectedRoute>
-			<Route path={clientDetailPath} exact>
+			<ProtectedRoute path={clientDetailPath} exact>
 				<ClientDetails />
-			</Route>
+			</ProtectedRoute>
 		</Client>
 	);
 }
