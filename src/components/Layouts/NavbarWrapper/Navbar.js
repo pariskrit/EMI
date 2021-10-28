@@ -17,6 +17,7 @@ import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
+import { ReactComponent as Home } from "assets/icons/home.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
@@ -187,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Navbar() {
+function Navbar({ isApplicationPortal = false }) {
 	// Init hooks
 	const classes = useStyles();
 
@@ -226,57 +227,79 @@ function Navbar() {
 							<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
 						</div>
 					)}
+					{isApplicationPortal ? (
+						<Link to="/portal" className={classes.navLink}>
+							<div
+								className={`${classes.navListContainer} mobNavListContainer`}
+							>
+								<ListItem button className={classes.currentItemBackground}>
+									<ListItemIcon className={classes.navIconContainer}>
+										<Home
+											className={classes.navIconCurrent}
+											alt={`Home icon`}
+										/>
+									</ListItemIcon>
+									<ListItemText
+										classes={{
+											primary: classes.listItemTextPrimaryCurrent,
+										}}
+										primary="Application Portal"
+									/>
+								</ListItem>
+							</div>
+						</Link>
+					) : (
+						<List>
+							{[
+								["Clients", ClientIcon, clientsPath],
+								["Applications", ApplicationIcon, applicationListPath],
+								["Models", ModelIcon, "/"],
+								["Users", UserIcon, "/"],
+								["Analytics", AnalyticsIcon, "/"],
+							].map((item, index) => {
+								// Storing SVG
+								let NavIcon = item[1];
 
-					<List>
-						{[
-							["Clients", ClientIcon, clientsPath],
-							["Applications", ApplicationIcon, applicationListPath],
-							["Models", ModelIcon, "/"],
-							["Users", UserIcon, "/"],
-							["Analytics", AnalyticsIcon, "/"],
-						].map((item, index) => {
-							// Storing SVG
-							let NavIcon = item[1];
-
-							return (
-								<Link to={item[2]} className={classes.navLink} key={item[0]}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-										key={item[0]}
-									>
-										<ListItem
-											button
-											className={
-												item[0].toLowerCase() === activeLink
-													? classes.currentItemBackground
-													: null
-											}
+								return (
+									<Link to={item[2]} className={classes.navLink} key={item[0]}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+											key={item[0]}
 										>
-											<ListItemIcon className={classes.navIconContainer}>
-												<NavIcon
-													className={
-														item[0].toLowerCase() === activeLink
-															? classes.navIconCurrent
-															: classes.navIcon
-													}
-													alt={`${item[0]} icon`}
+											<ListItem
+												button
+												className={
+													item[0].toLowerCase() === activeLink
+														? classes.currentItemBackground
+														: null
+												}
+											>
+												<ListItemIcon className={classes.navIconContainer}>
+													<NavIcon
+														className={
+															item[0].toLowerCase() === activeLink
+																? classes.navIconCurrent
+																: classes.navIcon
+														}
+														alt={`${item[0]} icon`}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													classes={{
+														primary:
+															item[0].toLowerCase() === activeLink
+																? classes.listItemTextPrimaryCurrent
+																: classes.listItemTextPrimary,
+													}}
+													primary={item[0]}
 												/>
-											</ListItemIcon>
-											<ListItemText
-												classes={{
-													primary:
-														item[0].toLowerCase() === activeLink
-															? classes.listItemTextPrimaryCurrent
-															: classes.listItemTextPrimary,
-												}}
-												primary={item[0]}
-											/>
-										</ListItem>
-									</div>
-								</Link>
-							);
-						})}
-					</List>
+											</ListItem>
+										</div>
+									</Link>
+								);
+							})}
+						</List>
+					)}
 
 					<div
 						className={clsx(classes.footerClose, {

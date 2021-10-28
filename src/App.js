@@ -6,6 +6,7 @@ import Home from "pages/Home/Home";
 import Launch from "pages/Launch/Launch";
 import Login from "pages/Login/Login";
 import "./App.scss";
+import ApplicationPortal from "pages/ApplicationPortal";
 
 function App() {
 	return (
@@ -23,6 +24,9 @@ function App() {
 
 					<Route path="/launch" exact>
 						<Launch />
+					</Route>
+					<Route path="/portal" exact>
+						<ApplicationPortal />
 					</Route>
 					<MainApp />
 				</Switch>
