@@ -81,7 +81,8 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 		setAllData(newData);
 	};
 
-	const handleDefaultDialogOpen = (id, name) => {
+	const handleDefaultDialogOpen = (id) => {
+		const { name } = allData.find((x) => x.id === id);
 		setConfirmDefault([id, name]);
 		setModel((th) => ({ ...th, default: true }));
 	};
