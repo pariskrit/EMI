@@ -271,7 +271,7 @@ const DefectRiskRatingsContent = ({
 				open={openDefaultDialog}
 				closeHandler={handleDefaultDialogClose}
 				data={confirmDefault}
-				entity={`${data?.safetyCriticalCC}`}
+				entity={`${data?.safetyCriticalCC || safetyCritical}`}
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 
