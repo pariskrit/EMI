@@ -101,8 +101,16 @@ const routes = [
 		showHistory: true,
 		showSwitch: false,
 		isMissingPartOrTools: true,
-		singleCaption: { main: "partCC", default: "part" },
-		pluralCaption: { main: "toolPluralCC", default: "toolPlural" },
+		singleCaption: {
+			part: "partCC",
+			defaultPart: "part",
+			tool: "toolCC",
+			defaultTool: "tool",
+		},
+		pluralCaption: {
+			tool: "toolPluralCC",
+			defaultTool: "toolPlural",
+		},
 		api: differentAPIs.MissingPartAPIs,
 	},
 	{

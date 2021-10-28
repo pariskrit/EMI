@@ -277,11 +277,11 @@ const CommonContent = ({
 				subHeader={
 					isMissingPartOrTools
 						? `Missing ${
-								data?.[singleCaption.main] ||
-								defaultCustomCaptionsData[singleCaption.default]
+								data?.[singleCaption.part] ||
+								defaultCustomCaptionsData[singleCaption.defaultPart]
 						  } or ${
-								data?.[pluralCaption.main] ||
-								defaultCustomCaptionsData[pluralCaption.default]
+								data?.[singleCaption.tool] ||
+								defaultCustomCaptionsData[singleCaption.defaultTool]
 						  }`
 						: data?.[singleCaption.main] ||
 						  defaultCustomCaptionsData[singleCaption.default]
@@ -298,11 +298,11 @@ const CommonContent = ({
 				subHeader={
 					isMissingPartOrTools
 						? `Missing ${
-								data?.[singleCaption.main] ||
-								defaultCustomCaptionsData[singleCaption.default]
+								data?.[singleCaption.part] ||
+								defaultCustomCaptionsData[singleCaption.defaultPart]
 						  } or ${
-								data?.[pluralCaption.main] ||
-								defaultCustomCaptionsData[pluralCaption.default]
+								data?.[singleCaption.tool] ||
+								defaultCustomCaptionsData[singleCaption.defaultTool]
 						  }`
 						: data?.[singleCaption.main] ||
 						  defaultCustomCaptionsData[singleCaption.default]
@@ -312,11 +312,11 @@ const CommonContent = ({
 				entityName={
 					isMissingPartOrTools
 						? `Missing ${
-								data?.[singleCaption.main] ||
-								defaultCustomCaptionsData[singleCaption.default]
+								data?.[singleCaption.part] ||
+								defaultCustomCaptionsData[singleCaption.defaultPart]
 						  } or ${
-								data?.[pluralCaption.main] ||
-								defaultCustomCaptionsData[pluralCaption.default]
+								data?.[singleCaption.tool] ||
+								defaultCustomCaptionsData[singleCaption.defaultTool]
 						  }`
 						: data?.[singleCaption.main] ||
 						  defaultCustomCaptionsData[singleCaption.default]
@@ -350,11 +350,11 @@ const CommonContent = ({
 							header={
 								isMissingPartOrTools
 									? `Missing ${
-											data?.[singleCaption.main] ||
-											defaultCustomCaptionsData[singleCaption.default]
+											data?.[singleCaption.part] ||
+											defaultCustomCaptionsData[singleCaption.defaultPart]
 									  } or ${
-											data?.[pluralCaption.main] ||
-											defaultCustomCaptionsData[pluralCaption.default]
+											data?.[pluralCaption.tool] ||
+											defaultCustomCaptionsData[pluralCaption.defaultTool]
 									  }`
 									: data?.[pluralCaption.main] ||
 									  defaultCustomCaptionsData[pluralCaption.default]
@@ -364,11 +364,11 @@ const CommonContent = ({
 							description={`Create and manage ${
 								isMissingPartOrTools
 									? `Missing ${
-											data?.[singleCaption.main] ||
-											defaultCustomCaptionsData[singleCaption.default]
+											data?.[singleCaption.part] ||
+											defaultCustomCaptionsData[singleCaption.defaultPart]
 									  } or ${
-											data?.[pluralCaption.main] ||
-											defaultCustomCaptionsData[pluralCaption.default]
+											data?.[pluralCaption.tool] ||
+											defaultCustomCaptionsData[pluralCaption.defaultTool]
 									  }`
 									: data?.[pluralCaption.main] ||
 									  defaultCustomCaptionsData[pluralCaption.default]
@@ -381,11 +381,11 @@ const CommonContent = ({
 							header={
 								isMissingPartOrTools
 									? `Missing ${
-											data?.[singleCaption.main] ||
-											defaultCustomCaptionsData[singleCaption.default]
+											data?.[singleCaption.part] ||
+											defaultCustomCaptionsData[singleCaption.defaultPart]
 									  } or ${
-											data?.[pluralCaption.main] ||
-											defaultCustomCaptionsData[pluralCaption.default]
+											data?.[pluralCaption.tool] ||
+											defaultCustomCaptionsData[pluralCaption.defaultTool]
 									  }`
 									: data?.[pluralCaption.main] ||
 									  defaultCustomCaptionsData[pluralCaption.default]
@@ -397,8 +397,8 @@ const CommonContent = ({
 							header={
 								isMissingPartOrTools
 									? `Missing ${
-											data?.[singleCaption.main] ||
-											defaultCustomCaptionsData[singleCaption.default]
+											data?.[singleCaption.part] ||
+											defaultCustomCaptionsData[singleCaption.defaultPart]
 									  } or ${
 											data?.[pluralCaption.main] ||
 											defaultCustomCaptionsData[pluralCaption.default]
