@@ -153,7 +153,7 @@ const EditStopDialog = ({
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit Defect {header}</AED.HeaderText>}
+						{<AED.HeaderText>Edit {header}</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeOverride} variant="contained">

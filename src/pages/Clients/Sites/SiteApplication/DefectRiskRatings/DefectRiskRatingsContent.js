@@ -167,7 +167,8 @@ const DefectRiskRatingsContent = ({
 	};
 
 	//Default Dialog
-	const handleDefaultDialogOpen = (id, name) => {
+	const handleDefaultDialogOpen = (id) => {
+		const { name } = allData.find((x) => x.id === id);
 		setConfirmDefault([id, name]);
 		setOpenDefaultDialog(true);
 	};
