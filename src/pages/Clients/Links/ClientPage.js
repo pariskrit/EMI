@@ -4,13 +4,14 @@ import { clientDetailPath, clientsPath } from "helpers/routePaths";
 import ClientList from "pages/Clients/ClientList/ClientList";
 import Client from "..";
 import ClientDetails from "../ClientDetailScreen/ClientDetails";
+import ProtectedRoute from "components/HOC/ProtectedRoute";
 
 export default function ClientPage() {
 	return (
 		<Client>
-			<Route path={clientsPath} exact>
+			<ProtectedRoute path={clientsPath} exact>
 				<ClientList />
-			</Route>
+			</ProtectedRoute>
 			<Route path={clientDetailPath} exact>
 				<ClientDetails />
 			</Route>
