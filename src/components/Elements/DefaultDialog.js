@@ -106,7 +106,7 @@ const DefaultDialog = ({
 					<DialogTitle id="alert-dialog-title">
 						{
 							<Typography className={classes.headerText}>
-								Make Default {entity}
+								Make default {entity}
 							</Typography>
 						}
 					</DialogTitle>
