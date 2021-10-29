@@ -167,7 +167,8 @@ const DefectRiskRatingsContent = ({
 	};
 
 	//Default Dialog
-	const handleDefaultDialogOpen = (id, name) => {
+	const handleDefaultDialogOpen = (id) => {
+		const { name } = allData.find((x) => x.id === id);
 		setConfirmDefault([id, name]);
 		setOpenDefaultDialog(true);
 	};
@@ -270,9 +271,7 @@ const DefectRiskRatingsContent = ({
 				open={openDefaultDialog}
 				closeHandler={handleDefaultDialogClose}
 				data={confirmDefault}
-				entity={`${data?.safetyCriticalCC || safetyCritical} ${
-					data?.riskRatingCC || riskRating
-				}`}
+				entity={`${data?.safetyCriticalCC || safetyCritical}`}
 				handleDefaultUpdate={handleDefaultUpdate}
 			/>
 
