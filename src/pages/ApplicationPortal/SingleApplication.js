@@ -109,4 +109,4 @@ function SingleApplication({ data }) {
 	);
 }
 
-export default SingleApplication;
+export default React.memo(SingleApplication);

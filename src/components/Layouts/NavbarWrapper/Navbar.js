@@ -18,6 +18,7 @@ import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as Home } from "assets/icons/home.svg";
+import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
@@ -332,6 +333,23 @@ function Navbar({ isApplicationPortal = false }) {
 										}}
 										primary="Russell Harland"
 										secondary="Site: Ahafo - Ghana"
+									/>
+								</ListItem>
+							</div>
+							<div>
+								<ListItem key="logoutIcon">
+									<ListItemIcon className={classes.navIconContainer}>
+										<LogoutIcon
+											alt="Logout Button"
+											className={classes.navIcon}
+										/>
+									</ListItemIcon>
+									<ListItemText
+										classes={{
+											primary: classes.listItemTextPrimary,
+											secondary: classes.listItemTextSecondary,
+										}}
+										primary="Logout"
 									/>
 								</ListItem>
 							</div>

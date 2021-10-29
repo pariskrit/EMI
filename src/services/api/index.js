@@ -34,6 +34,8 @@ const BASE_API_PATH_POSITIONS = `${BASE_API_PATH}positions`;
 const BASE_API_PATH_DEFECT_TYPES = `${BASE_API_PATH}defecttypes`;
 const BASE_API_PATH_ROLES = `${BASE_API_PATH}roles`;
 const BASE_API_PATH_DEFECT_RISK_RATINGS = `${BASE_API_PATH}defectriskratings`;
+const BASE_API_PATH_APPLICATION_PORTAL = `${BASE_API_PATH}users/me/clients`;
+const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
 
 export const Apis = {
 	//client detail screen
@@ -112,4 +114,7 @@ export const Apis = {
 
 	//defectRiskRatings
 	DefectRiskRatings: `${BASE_API_PATH_DEFECT_RISK_RATINGS}`,
+
+	ApplicationPortal: `${BASE_API_PATH_APPLICATION_PORTAL}`,
+	ApplicationsAndSites: `${BASE_API_PATH_APPLICATIONS_AND_SITES}`,
 };
