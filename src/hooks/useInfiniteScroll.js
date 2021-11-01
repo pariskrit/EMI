@@ -8,6 +8,7 @@ function useInfiniteScroll(data, count, fetchData, page, searchText) {
 	const countRef = useRef(count);
 	const pageRef = useRef(page);
 	const prevPageRef = useRef(0);
+	const threshold = 1;
 
 	useMemo(() => {
 		dataRef.current = data;
@@ -42,8 +43,9 @@ function useInfiniteScroll(data, count, fetchData, page, searchText) {
 		if (loading) return;
 
 		if (
-			window.innerHeight + document.documentElement.scrollTop ===
-			document.documentElement.offsetHeight
+			document.documentElement.offsetHeight -
+				(window.innerHeight + document.documentElement.scrollTop) <=
+			threshold
 		) {
 			fetchMoreData();
 		}
