@@ -2,7 +2,7 @@ import { TableCell, TableRow } from "@material-ui/core";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import IOSSwitch from "components/Elements/IOSSwitch";
 import {
-	applicationListPath,
+	applicationPath,
 	clientsPath,
 	siteAppDetailPath,
 } from "helpers/routePaths";
@@ -24,7 +24,7 @@ const Row = ({
 			<TableCell>
 				{redirect ? (
 					<Link
-						to={`${clientsPath}/${clientId}/sites/${id}${applicationListPath}/${
+						to={`${clientsPath}/${clientId}/sites/${id}${applicationPath}/${
 							row.id + siteAppDetailPath
 						}`}
 					>

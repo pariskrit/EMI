@@ -125,7 +125,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 				current="Assets"
 				navigation={siteScreenNavigation}
 				onNavClick={(urlToGo) =>
-					history.push(`/clients/${clientId}/sites/${id}${urlToGo}`)
+					history.push(`/app/clients/${clientId}/sites/${id}${urlToGo}`)
 				}
 				status=""
 				lastSaved=""

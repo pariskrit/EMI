@@ -6,6 +6,8 @@ import Home from "pages/Home/Home";
 import Launch from "pages/Launch/Launch";
 import Login from "pages/Login/Login";
 import "./App.scss";
+import ProtectedRoute from "components/HOC/ProtectedRoute";
+import ProtectedLogin from "components/HOC/ProtectedLogin";
 
 function App() {
 	return (
@@ -17,14 +19,15 @@ function App() {
 						<Home />
 					</Route>
 
-					<Route path="/login" exact>
+					{/* <Route path="/login" exact>
 						<Login />
-					</Route>
+					</Route> */}
+					<ProtectedLogin path="/login" exact component={Login} />
 
 					<Route path="/launch" exact>
 						<Launch />
 					</Route>
-					<MainApp />
+					<ProtectedRoute path="/app" component={MainApp} />
 				</Switch>
 			</Router>
 		</div>

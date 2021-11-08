@@ -1,7 +1,13 @@
 import API from "helpers/api";
 import { authSlice } from "./reducers";
 
-const { loginRequest, dataSuccess, userFailure } = authSlice.actions;
+const {
+	loginRequest,
+	userRequest,
+	dataSuccess,
+	logOutSuccess,
+	userFailure,
+} = authSlice.actions;
 
 export const loginUser = (input) => async (dispatch) => {
 	dispatch(loginRequest());
@@ -9,7 +15,8 @@ export const loginUser = (input) => async (dispatch) => {
 		API.post("/api/Users/Login", input)
 			.then((res) => {
 				localStorage.setItem("token", res.data.jwtToken);
-				dispatch(dataSuccess({ payload: res.data }));
+				localStorage.setItem("me", JSON.stringify(res.data));
+				dispatch(dataSuccess({ data: res.data }));
 				resolve(res.data);
 			})
 			.catch((err) => {
@@ -18,4 +25,28 @@ export const loginUser = (input) => async (dispatch) => {
 			});
 	});
 };
-export const getUserDetail = () => async (dispatch) => {};
+
+export const getUserDetail = () => async (dispatch) => {
+	dispatch(userRequest());
+	API.get("/api/Users/me")
+		.then((res) => {
+			dispatch(dataSuccess({ data: res.data }));
+		})
+		.catch((err) => {
+			dispatch(userFailure());
+		});
+};
+
+export const logOutUser = (token) => (dispatch) => {
+	return new Promise((res, rej) => {
+		API.post("/api/Token/RevokeToken", { token })
+			.then((response) => {
+				dispatch(logOutSuccess());
+				res(response);
+			})
+			.catch((err) => {
+				dispatch(userFailure());
+				rej(err);
+			});
+	});
+};
