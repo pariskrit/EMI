@@ -144,7 +144,7 @@ Dropdown.defaultProps = {
 	selectedValue: {},
 	onChange: () => {},
 	placeholder: "Select Item",
-	label: "Label",
+	label: "",
 	required: false,
 };
 
