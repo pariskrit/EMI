@@ -17,13 +17,15 @@ const MainApp = ({ isAuthenticated, fetchDetailUser }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated]);
 	return (
-		<NavbarWrapper>
-			<ApplicationPage />
-			<ClientPage />
-			<SitePage />
-			<SiteAppPage />
-			<UsersPage />
-		</NavbarWrapper>
+		<Switch>
+			<NavbarWrapper>
+				<ApplicationPage />
+				<ClientPage />
+				<SitePage />
+				<SiteAppPage />
+				<UsersPage />
+			</NavbarWrapper>
+		</Switch>
 	);
 };
 const mapStateToProps = ({ authData: { isAuthenticated } }) => ({

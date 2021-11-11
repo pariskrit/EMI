@@ -281,36 +281,25 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 								["Clients", ClientIcon, clientsPath],
 								["Applications", ApplicationIcon, applicationListPath],
 								["Models", ModelIcon, "/"],
-								["Users", UserIcon, "/"],
+								["Users", UserIcon, usersPath],
 								["Analytics", AnalyticsIcon, "/"],
 							].map((item, index) => {
 								// Storing SVG
 								let NavIcon = item[1];
 
-					<List>
-						{[
-							["Clients", ClientIcon, clientsPath],
-							["Applications", ApplicationIcon, applicationListPath],
-							["Models", ModelIcon, "/"],
-							["Users", UserIcon, usersPath],
-							["Analytics", AnalyticsIcon, "/"],
-						].map((item, index) => {
-							// Storing SVG
-							let NavIcon = item[1];
-
-							return (
-								<Link to={item[2]} className={classes.navLink} key={item[0]}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-										key={item[0]}
-									>
-										<ListItem
-											button
-											className={
-												item[0].toLowerCase() === activeLink
-													? classes.currentItemBackground
-													: null
-											}
+								return (
+									<Link to={item[2]} className={classes.navLink} key={item[0]}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+											key={item[0]}
+										>
+											<ListItem
+												button
+												className={
+													item[0].toLowerCase() === activeLink
+														? classes.currentItemBackground
+														: null
+												}
 											>
 												<ListItemIcon className={classes.navIconContainer}>
 													<NavIcon

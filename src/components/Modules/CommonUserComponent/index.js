@@ -129,7 +129,6 @@ const UserDetails = ({ title, apis, getError, showNotes, data, setData }) => {
 						/>
 					</Grid>
 					{showNotes && (
-
 						<Grid item xs={12}>
 							<UserNotes
 								id={+id}
@@ -142,8 +141,7 @@ const UserDetails = ({ title, apis, getError, showNotes, data, setData }) => {
 						</Grid>
 					)}
 				</Grid>
-				</div>
-			)}
+			</div>
 		</>
 	);
 };

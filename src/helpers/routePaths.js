@@ -3,11 +3,11 @@ export const clientsPath = "/app/clients";
 export const clientDetailPath = clientsPath + "/:id";
 
 //Users List
-export const usersPath = "/users";
+export const usersPath = "/app/users";
 export const userDetailPath = usersPath + "/:id";
 
 //User Profile
-export const userProfilePath = "/me";
+export const userProfilePath = "/app/me";
 
 // Sites
 export const sitePath = clientsPath + "/:clientId/sites/:id";
