@@ -37,7 +37,13 @@ const BASE_API_PATH_DEFECT_RISK_RATINGS = `${BASE_API_PATH}defectriskratings`;
 const BASE_API_PATH_APPLICATION_PORTAL = `${BASE_API_PATH}users/me/clients`;
 const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
 
+//Users
+const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
+
 export const Apis = {
+	//users list
+	UsersList: `${BASE_API_PATH_USERSLIST}`,
+
 	//client detail screen
 	Clients: `${BASE_API_PATH_CLIENTS}`,
 	ClientApplication: `${BASE_API_CLIENT_APPLICATION}`,

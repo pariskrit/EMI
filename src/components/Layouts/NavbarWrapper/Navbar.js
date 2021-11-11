@@ -25,7 +25,11 @@ import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
-import { applicationListPath, clientsPath } from "helpers/routePaths";
+import {
+	applicationListPath,
+	clientsPath,
+	usersPath,
+} from "helpers/routePaths";
 import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
@@ -282,19 +286,30 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 								// Storing SVG
 								let NavIcon = item[1];
 
-								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-											key={item[0]}
-										>
-											<ListItem
-												button
-												className={
-													item[0].toLowerCase() === activeLink
-														? classes.currentItemBackground
-														: null
-												}
+					<List>
+						{[
+							["Clients", ClientIcon, clientsPath],
+							["Applications", ApplicationIcon, applicationListPath],
+							["Models", ModelIcon, "/"],
+							["Users", UserIcon, usersPath],
+							["Analytics", AnalyticsIcon, "/"],
+						].map((item, index) => {
+							// Storing SVG
+							let NavIcon = item[1];
+
+							return (
+								<Link to={item[2]} className={classes.navLink} key={item[0]}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+										key={item[0]}
+									>
+										<ListItem
+											button
+											className={
+												item[0].toLowerCase() === activeLink
+													? classes.currentItemBackground
+													: null
+											}
 											>
 												<ListItemIcon className={classes.navIconContainer}>
 													<NavIcon
@@ -418,7 +433,7 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 						["Clients", ClientIcon, clientsPath],
 						["Applications", ApplicationIcon, applicationListPath],
 						["Models", ModelIcon, "/"],
-						["Users", UserIcon, "/"],
+						["Users", UserIcon, usersPath],
 						["Analytics", AnalyticsIcon, "/"],
 					].map((item, index) => {
 						// Storing SVG

@@ -68,9 +68,9 @@ const SiteApplicationNavigation = (
 					link: links + siteAppSkippedTasksPath,
 				},
 				{
-					title: `Missing ${
-						data?.partPluralCC || defaultCustom.partPlural
-					} or ${data?.toolPluralCC || defaultCustom.toolPlural}`,
+					title: `Missing ${data?.partCC || defaultCustom.part} or ${
+						data?.toolPluralCC || defaultCustom.toolPlural
+					}`,
 					link: links + siteAppMissingItemsPath,
 				},
 				{
