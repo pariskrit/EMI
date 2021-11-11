@@ -151,12 +151,10 @@ const CommonHeader = ({
 	isUpdating,
 	currentStatus,
 	handlePatchIsActive,
-	navigation,
-	data,
+
+	showPasswordReset,
 }) => {
 	const classes = useStyles();
-
-	console.log("sagar", currentStatus);
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -211,6 +209,11 @@ const CommonHeader = ({
 							</div>
 						)}
 						<div className={classes.buttons}>
+							{showPasswordReset && (
+								<AT.GeneralButton className={classes.importButton}>
+									Reset Password
+								</AT.GeneralButton>
+							)}
 							{showDuplicate && (
 								<AT.GeneralButton
 									onClick={onDuplicate}
@@ -250,7 +253,7 @@ const CommonHeader = ({
 
 CommonHeader.defaultProps = {
 	crumbs: ["Parent", "Child", "so on.."],
-	status: false,
+	status: true,
 	showAdd: false,
 	showHistory: false,
 	showSwitch: false,

@@ -24,6 +24,8 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
 
+	console.log("sagar", count);
+
 	const fetchSiteAssets = async (pNo) => {
 		try {
 			const response = await getSiteAssets(id, pNo, DefaultPageSize, "");

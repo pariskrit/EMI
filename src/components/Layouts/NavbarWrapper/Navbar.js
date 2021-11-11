@@ -29,6 +29,7 @@ import {
 	applicationListPath,
 	clientsPath,
 	usersPath,
+	userProfilePath,
 } from "helpers/routePaths";
 import "./style.scss";
 import { connect } from "react-redux";
@@ -354,7 +355,11 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 							<div
 								className={`${classes.navListContainer} mobNavListContainer`}
 							>
-								<ListItem key="userProfileIcon">
+								<ListItem
+									button={true}
+									key="userProfileIcon"
+									onClick={() => history.push(userProfilePath)}
+								>
 									<ListItemIcon className={classes.navIconContainer}>
 										<UserProfileIcon
 											alt="user profile icon"

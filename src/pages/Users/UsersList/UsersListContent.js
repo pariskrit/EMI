@@ -151,6 +151,7 @@ const UsersListContent = ({ getError }) => {
 		}
 	};
 
+
 	const importSuccess = () => {
 		fetchData(1);
 	};
