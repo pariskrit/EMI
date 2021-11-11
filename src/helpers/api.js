@@ -82,9 +82,8 @@ instance.interceptors.response.use(
 			}
 		}
 
-		// localStorage.clear();
-		// window.location = "/login";
-		console.log(error);
+		localStorage.clear();
+		window.location = "/login";
 
 		// Returning with error if this is the second instance OR not 401
 		return Promise.reject(error);
