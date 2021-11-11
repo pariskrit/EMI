@@ -52,6 +52,7 @@ const UsersListContent = ({ getError }) => {
 
 	//Init State
 	const [haveData, setHaveData] = useState(false);
+
 	const [dataCount, setDataCount] = useState(null);
 	const [modal, setModal] = useState({ import: false, add: false });
 
@@ -81,9 +82,7 @@ const UsersListContent = ({ getError }) => {
 					result = result.data;
 
 					setAllData(result);
-
 					setDataCount(result.length);
-
 					return true;
 				} else {
 					// Throwing error if failed
@@ -151,7 +150,6 @@ const UsersListContent = ({ getError }) => {
 		}
 	};
 
-
 	const importSuccess = () => {
 		fetchData(1);
 	};
@@ -189,10 +187,10 @@ const UsersListContent = ({ getError }) => {
 						component="h1"
 						gutterBottom
 					>
-						{dataCount === null ? (
+						{allData.length === 0 ? (
 							<strong>{"Users List"}</strong>
 						) : (
-							<strong>{`Users List (${dataCount})`}</strong>
+							<strong>{`Users List (${allData.length})`}</strong>
 						)}
 					</Typography>
 					{haveData ? (

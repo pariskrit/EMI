@@ -59,10 +59,22 @@ const patchExternalReference = async (id, data) => {
 };
 //end
 
+// #region patch notes
+const patchSwitchUserDetails = async (id, data) => {
+	try {
+		let response = await API.patch(`${Apis.UsersList}/${id}`, data);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+//end
+
 export {
 	getUserDetailsNotes,
 	getUserDetails,
 	postUserDetailsNote,
 	patchUserDetails,
 	patchExternalReference,
+	patchSwitchUserDetails,
 };

@@ -4,10 +4,15 @@ import {
 	getUserDetailsNotes,
 	postUserDetailsNote,
 	patchUserDetails,
+	patchSwitchUserDetails,
 	patchExternalReference,
 } from "services/users/userDetails";
 import {
 	getUserProfile,
+	patchUserProfile,
+	postUserProfile,
+	postPasswordReset,
+	patchSwitchUserProfile,
 	// patchUser,
 	// postPassword,
 } from "services/users/userProfile";
@@ -18,11 +23,16 @@ const differentUserAPIs = {
 		getNotesAPI: getUserDetailsNotes,
 		postNotesAPI: postUserDetailsNote,
 		patchAPI: patchUserDetails,
+		patchSwitchAPI: patchSwitchUserDetails,
 		patchExternalReferenceAPI: patchExternalReference,
 		deleteNoteAPI: `${BASE_API_PATH}clientusernotes`,
 	},
 	UserProfileAPIs: {
 		getAPI: getUserProfile,
+		patchAPI: patchUserProfile,
+		postAPI: postUserProfile,
+		postPasswordResetAPI: postPasswordReset,
+		patchSwitchAPI: patchSwitchUserProfile,
 		// patchAPI: patchUser,
 		// postAPI: postPassword,
 	},

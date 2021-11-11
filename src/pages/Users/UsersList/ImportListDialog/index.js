@@ -86,7 +86,6 @@ const ImportListDialog = ({ open, handleClose, importSuccess, getError }) => {
 			closeOverride();
 		});
 	};
-
 	return (
 		<Dialog open={open} onClose={closeOverride} fullWidth maxWidth="md">
 			<AT.ActionContainer>

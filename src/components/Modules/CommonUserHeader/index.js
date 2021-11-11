@@ -21,6 +21,8 @@ const CommonUserHeader = ({
 	navigation,
 	current,
 	showPasswordReset,
+	onPasswordReset,
+	apis,
 }) => {
 	return (
 		<>
@@ -42,6 +44,7 @@ const CommonUserHeader = ({
 					currentStatus,
 					handlePatchIsActive,
 					showPasswordReset,
+					onPasswordReset,
 				}}
 			/>
 

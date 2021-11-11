@@ -2,7 +2,7 @@ import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
-//#region get users detail
+//#region get users profile
 const getUserProfile = async () => {
 	try {
 		let response = await API.get(`${Apis.UserProfile}`);
@@ -12,46 +12,48 @@ const getUserProfile = async () => {
 	}
 };
 
-//endnd
+//#endregion
 
-//#region notes
-const getUserDetailsNotes = async (id) => {
+// #region patch notes
+const patchUserProfile = async (id = "me", data) => {
 	try {
-		let response = await API.get(`${Apis.UserDetailsNote}${id}`);
+		let response = await API.patch(`${Apis.UserProfile}`, data);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
 	}
 };
+//end
 
+// #region patch notes
+const patchSwitchUserProfile = async (id = "me", data) => {
+	try {
+		let response = await API.patch(`${Apis.UserProfile}`, data);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+//end
+
+// #region post user profile
+const postUserProfile = async (data) => {
+	try {
+		let response = await API.post(`${Apis.UserProfilePasswordChange}`, data);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
 //end
 
 // #region post notes
-const postUserDetailsNote = async (data) => {
+const postPasswordReset = async (id, data) => {
 	try {
-		let response = await API.post(`${Apis.UserDetailsNotePost}`, data);
-		return getAPIResponse(response);
-	} catch (err) {
-		return getAPIResponse(err?.response);
-	}
-};
-//end
-
-// #region patch notes
-const patchUserDetails = async (id, data) => {
-	try {
-		let response = await API.patch(`${Apis.UsersList}/${id}`, data);
-		return getAPIResponse(response);
-	} catch (err) {
-		return getAPIResponse(err?.response);
-	}
-};
-//end
-
-// #region patch notes
-const patchExternalReference = async (id, data) => {
-	try {
-		let response = await API.patch(`${Apis.UserDetailReference}/${id}`, data);
+		let response = await API.post(
+			`${Apis.UsersList}/${id}/changepassword`,
+			data
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -61,8 +63,8 @@ const patchExternalReference = async (id, data) => {
 
 export {
 	getUserProfile,
-	getUserDetailsNotes,
-	postUserDetailsNote,
-	patchUserDetails,
-	patchExternalReference,
+	patchUserProfile,
+	postUserProfile,
+	postPasswordReset,
+	patchSwitchUserProfile,
 };

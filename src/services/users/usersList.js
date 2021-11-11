@@ -30,7 +30,6 @@ const addUserToList = async (data) => {
 
 //end
 
-
 // Import from list
 const importUserList = async (data) => {
 	try {

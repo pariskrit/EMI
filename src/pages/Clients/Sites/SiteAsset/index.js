@@ -72,6 +72,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+
 	const addAsset = async (input) => {
 		try {
 			const response = await addSiteAsset({

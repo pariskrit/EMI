@@ -17,57 +17,20 @@ const useStyles = makeStyles({
 	},
 });
 
-const UserDetails = ({ title, apis, getError }) => {
+const UserDetails = ({ title, apis, getError, showNotes, data, setData }) => {
 	const { id } = useParams();
 
 	const classes = useStyles();
 
 	//Init State
-	const [allData, setAllData] = useState([]);
-	const [haveData, setHaveData] = useState(false);
+	// const [allData, setAllData] = useState([]);
+	// const [haveData, setHaveData] = useState(false);
 	const [errors, setErrors] = useState({
 		firstName: null,
 		lastName: null,
 		email: null,
 	});
 	const [notes, setNotes] = useState([]);
-
-	//Fetch Data
-	// Handlers
-	const handleGetData = useCallback(async () => {
-		// NOTE: using useCallback to remove linter error. It's memoizing the function (similar
-		// to caching), which should technically prevent unrequired backend calls
-		// Attempting to get data
-		try {
-			// Getting data from API
-			let result = await apis.getAPI(id);
-
-			// if success, adding data to state
-			if (result.status) {
-				setAllData(result.data);
-				return true;
-			} // Handling 404
-			else if (result.status === 404) {
-				return;
-			} else {
-				// If error, throwing to catch
-				throw new Error(result);
-			}
-		} catch (err) {
-			// TODO: real error handling
-
-			return false;
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id]);
-
-	// Fetch Side effect to get data
-	useEffect(() => {
-		// Getting data and updating state
-		handleGetData()
-			.then(() => setHaveData(true))
-			.catch((err) => console.log(err));
-	}, [handleGetData]);
 
 	//Handle Update
 	const handleApiCall = async (path, value) => {
@@ -77,6 +40,7 @@ const UserDetails = ({ title, apis, getError }) => {
 					{ op: "replace", path, value },
 				]);
 				if (result.status) {
+					localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 					return true;
 				} else {
 					throw new Error(result);
@@ -152,23 +116,20 @@ const UserDetails = ({ title, apis, getError }) => {
 
 	return (
 		<>
-			{!haveData ? (
-				<AC.SpinnerContainer>
-					<CircularProgress />
-				</AC.SpinnerContainer>
-			) : (
-				<div className={classes.detailContainer}>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<UserDetail
-								title={title}
-								data={allData}
-								setData={setAllData}
-								patchData={handleApiCall}
-								errors={errors}
-								setErrors={setErrors}
-							/>
-						</Grid>
+			<div className={classes.detailContainer}>
+				<Grid container spacing={2}>
+					<Grid item xs={12}>
+						<UserDetail
+							title={title}
+							data={data}
+							setData={setData}
+							patchData={handleApiCall}
+							errors={errors}
+							setErrors={setErrors}
+						/>
+					</Grid>
+					{showNotes && (
+
 						<Grid item xs={12}>
 							<UserNotes
 								id={+id}
@@ -179,7 +140,8 @@ const UserDetails = ({ title, apis, getError }) => {
 								handleGetNotes={handleGetNotes}
 							/>
 						</Grid>
-					</Grid>
+					)}
+				</Grid>
 				</div>
 			)}
 		</>

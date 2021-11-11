@@ -359,6 +359,9 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 									button={true}
 									key="userProfileIcon"
 									onClick={() => history.push(userProfilePath)}
+									className={
+										"me" === activeLink ? classes.currentItemBackground : null
+									}
 								>
 									<ListItemIcon className={classes.navIconContainer}>
 										<UserProfileIcon

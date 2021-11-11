@@ -13,13 +13,7 @@ export default function UsersPage() {
 			<Route path={usersPath} exact>
 				<UsersList />
 			</Route>
-			{/* <Route path={userDetailPath} exact>
-				<UserDetail />
-			</Route> */}
 			<UserPage />
-			<Route path={userDetailPath} exact>
-				<UserDetail />
-			</Route>
 		</>
 	);
 }

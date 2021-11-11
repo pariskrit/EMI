@@ -151,8 +151,8 @@ const CommonHeader = ({
 	isUpdating,
 	currentStatus,
 	handlePatchIsActive,
-
 	showPasswordReset,
+	onPasswordReset,
 }) => {
 	const classes = useStyles();
 
@@ -210,7 +210,10 @@ const CommonHeader = ({
 						)}
 						<div className={classes.buttons}>
 							{showPasswordReset && (
-								<AT.GeneralButton className={classes.importButton}>
+								<AT.GeneralButton
+									className={classes.importButton}
+									onClick={onPasswordReset}
+								>
 									Reset Password
 								</AT.GeneralButton>
 							)}
