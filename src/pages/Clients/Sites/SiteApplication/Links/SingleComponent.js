@@ -34,16 +34,13 @@ const SingleComponent = (route) => {
 
 	const fetchSiteApplicationDetails = async () => {
 		const result = await getSiteApplicationDetail(appId);
-
-		if (!crumbs.hasOwnProperty("applicationName")) {
-			localStorage.setItem(
-				"crumbs",
-				JSON.stringify({
-					...crumbs,
-					applicationName: result.data.application.name,
-				})
-			);
-		}
+		localStorage.setItem(
+			"crumbs",
+			JSON.stringify({
+				...crumbs,
+				applicationName: result.data.application.name,
+			})
+		);
 
 		if (result.status) {
 			dispatch({

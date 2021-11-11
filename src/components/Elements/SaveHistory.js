@@ -9,6 +9,8 @@ const useStyles = makeStyles((theme) => ({
 		// marginTop: 10,
 		// marginBottom: 10,
 		paddingLeft: 2,
+		display: "flex",
+		gap: "20px",
 	},
 	historyText: {
 		display: "flex",
@@ -45,6 +47,10 @@ const SaveHistory = () => {
 		<div className={`${classes.historyContainer} mt-sm`}>
 			<div className={classes.historyText}>
 				<Typography className={classes.lastSaved}>Last saved:</Typography>
+				<Typography className={classes.timestampSize}>{lastSave}</Typography>
+			</div>
+			<div className={classes.historyText}>
+				<Typography className={classes.lastSaved}>Last login:</Typography>
 				<Typography className={classes.timestampSize}>{lastSave}</Typography>
 			</div>
 		</div>
