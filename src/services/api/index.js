@@ -34,8 +34,44 @@ const BASE_API_PATH_POSITIONS = `${BASE_API_PATH}positions`;
 const BASE_API_PATH_DEFECT_TYPES = `${BASE_API_PATH}defecttypes`;
 const BASE_API_PATH_ROLES = `${BASE_API_PATH}roles`;
 const BASE_API_PATH_DEFECT_RISK_RATINGS = `${BASE_API_PATH}defectriskratings`;
+const BASE_API_PATH_APPLICATION_PORTAL = `${BASE_API_PATH}users/me/clients`;
+const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
+
+//Users
+const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
+
+//Users
+const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
+
+//UserDetails
+const BASE_API_PATH_USERDETAILSNOTEPOST = `${BASE_API_PATH}clientusernotes`;
+const BASE_API_PATH_USERDETAILSNOTE = `${BASE_API_PATH_USERDETAILSNOTEPOST}?clientUserId=`;
+const BASE_API_PATH_USERREFERENCE = `${BASE_API_PATH}/clientuser`;
+const BASE_API_PATH_USERPROFILE = `${BASE_API_PATH_USERSLIST}/me`;
+
+//Users
+const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
+
+//UserDetails
+const BASE_API_PATH_USERDETAILSNOTEPOST = `${BASE_API_PATH}clientusernotes`;
+const BASE_API_PATH_USERDETAILSNOTE = `${BASE_API_PATH_USERDETAILSNOTEPOST}?clientUserId=`;
+const BASE_API_PATH_USERREFERENCE = `${BASE_API_PATH}clientuser`;
+const BASE_API_PATH_USERPROFILE = `${BASE_API_PATH_USERSLIST}/me`;
+const BASE_API_PATH_USERPROFILEPASSWORDCHANGE = `${BASE_API_PATH_USERPROFILE}/ChangePassword`;
 
 export const Apis = {
+	//users list
+	UsersList: `${BASE_API_PATH_USERSLIST}`,
+
+	//userDetails
+	UserDetailsNote: `${BASE_API_PATH_USERDETAILSNOTE}`,
+	UserDetailsNotePost: `${BASE_API_PATH_USERDETAILSNOTEPOST}`,
+	UserDetailReference: `${BASE_API_PATH_USERREFERENCE}`,
+
+	//userProfile
+	UserProfile: `${BASE_API_PATH_USERPROFILE}`,
+	UserProfilePasswordChange: `${BASE_API_PATH_USERPROFILEPASSWORDCHANGE}`,
+
 	//client detail screen
 	Clients: `${BASE_API_PATH_CLIENTS}`,
 	ClientApplication: `${BASE_API_CLIENT_APPLICATION}`,
@@ -112,4 +148,7 @@ export const Apis = {
 
 	//defectRiskRatings
 	DefectRiskRatings: `${BASE_API_PATH_DEFECT_RISK_RATINGS}`,
+
+	ApplicationPortal: `${BASE_API_PATH_APPLICATION_PORTAL}`,
+	ApplicationsAndSites: `${BASE_API_PATH_APPLICATIONS_AND_SITES}`,
 };

@@ -15,14 +15,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /* Adds Navbar component  */
-function NavbarWrapper({ children }) {
+function NavbarWrapper({ isApplicationPortal, children }) {
 	// Init hooks
 	const classes = useStyles();
 
 	return (
 		<div className={classes.root}>
 			<CssBaseline />
-			<Navbar />
+			<Navbar isApplicationPortal={isApplicationPortal} />
 
 			<main className={classes.content}>{children}</main>
 		</div>

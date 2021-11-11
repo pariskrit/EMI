@@ -26,6 +26,7 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
+		"dev": "env-cmd -f .env.development react-scripts start",
 		"predeploy:dev": "env-cmd -f .env.development react-scripts build",
 		"deploy:dev": "aws s3 sync build/ s3://emi3-frontend-test-deploy",
 		"postdeploy:dev": "aws cloudfront create-invalidation --distribution-id EUI7SR933CLTU --paths /*",

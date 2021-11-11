@@ -9,7 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { clientsPath } from "helpers/routePaths";
-import { useHistory } from "react-router-dom";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
@@ -99,10 +98,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Login = ({ userLoading, loginData }) => {
+const Login = ({ userLoading, loginData, location, history }) => {
+	// from will provide previous path redirect from
+	const { state } = location;
 	// Init hooks
 	const classes = useStyles();
-	const history = useHistory();
 
 	// Init state
 	const [email, setEmail] = useState("");
@@ -142,8 +142,8 @@ const Login = ({ userLoading, loginData }) => {
 	};
 	const successRedirect = () => {
 		// Update below to change redirect location
-		history.push(clientsPath);
-
+		// if Previous location available redirect to previous location
+		history.push(state?.from?.pathname ? state?.from?.pathname : clientsPath);
 		return true;
 	};
 	const handleEnterPress = (e) => {

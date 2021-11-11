@@ -1,5 +1,8 @@
+import React, { useState } from "react";
+import { Link, useLocation, useHistory } from "react-router-dom";
 // Bottom Navigation
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
@@ -17,14 +20,20 @@ import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
-// Logo imports
+import { ReactComponent as Home } from "assets/icons/home.svg";
+import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
-import { applicationListPath, clientsPath } from "helpers/routePaths";
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import {
+	applicationListPath,
+	clientsPath,
+	usersPath,
+	userProfilePath,
+} from "helpers/routePaths";
 import "./style.scss";
+import { connect } from "react-redux";
+import { logOutUser } from "redux/auth/actions";
 
 // Size constants
 const drawerWidth = 240;
@@ -187,18 +196,37 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Navbar() {
+function Navbar({ isApplicationPortal = false, userLogOut }) {
 	// Init hooks
 	const classes = useStyles();
+	const history = useHistory();
 
 	// Setting state
 	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const location = useLocation();
 	let activeLink = location.pathname.split("/")[1];
 
 	// Handlers
 	const handleDrawerChange = () => {
 		setOpen(!open);
+	};
+
+	const handleLogout = async () => {
+		setLoading(true);
+		const token = localStorage.getItem("token");
+		try {
+			const logOut = await userLogOut(token);
+			if (logOut.status === 200) {
+				localStorage.clear();
+				history.push("/login");
+			} else {
+				throw new Error(logOut);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+		setLoading(false);
 	};
 
 	return (
@@ -226,13 +254,45 @@ function Navbar() {
 							<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
 						</div>
 					)}
+					{isApplicationPortal ? (
+						<Link to="/portal" className={classes.navLink}>
+							<div
+								className={`${classes.navListContainer} mobNavListContainer`}
+							>
+								<ListItem button className={classes.currentItemBackground}>
+									<ListItemIcon className={classes.navIconContainer}>
+										<Home
+											className={classes.navIconCurrent}
+											alt={`Home icon`}
+										/>
+									</ListItemIcon>
+									<ListItemText
+										classes={{
+											primary: classes.listItemTextPrimaryCurrent,
+										}}
+										primary="Application Portal"
+									/>
+								</ListItem>
+							</div>
+						</Link>
+					) : (
+						<List>
+							{[
+								["Clients", ClientIcon, clientsPath],
+								["Applications", ApplicationIcon, applicationListPath],
+								["Models", ModelIcon, "/"],
+								["Users", UserIcon, "/"],
+								["Analytics", AnalyticsIcon, "/"],
+							].map((item, index) => {
+								// Storing SVG
+								let NavIcon = item[1];
 
 					<List>
 						{[
 							["Clients", ClientIcon, clientsPath],
 							["Applications", ApplicationIcon, applicationListPath],
 							["Models", ModelIcon, "/"],
-							["Users", UserIcon, "/"],
+							["Users", UserIcon, usersPath],
 							["Analytics", AnalyticsIcon, "/"],
 						].map((item, index) => {
 							// Storing SVG
@@ -251,32 +311,33 @@ function Navbar() {
 													? classes.currentItemBackground
 													: null
 											}
-										>
-											<ListItemIcon className={classes.navIconContainer}>
-												<NavIcon
-													className={
-														item[0].toLowerCase() === activeLink
-															? classes.navIconCurrent
-															: classes.navIcon
-													}
-													alt={`${item[0]} icon`}
+											>
+												<ListItemIcon className={classes.navIconContainer}>
+													<NavIcon
+														className={
+															item[0].toLowerCase() === activeLink
+																? classes.navIconCurrent
+																: classes.navIcon
+														}
+														alt={`${item[0]} icon`}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													classes={{
+														primary:
+															item[0].toLowerCase() === activeLink
+																? classes.listItemTextPrimaryCurrent
+																: classes.listItemTextPrimary,
+													}}
+													primary={item[0]}
 												/>
-											</ListItemIcon>
-											<ListItemText
-												classes={{
-													primary:
-														item[0].toLowerCase() === activeLink
-															? classes.listItemTextPrimaryCurrent
-															: classes.listItemTextPrimary,
-												}}
-												primary={item[0]}
-											/>
-										</ListItem>
-									</div>
-								</Link>
-							);
-						})}
-					</List>
+											</ListItem>
+										</div>
+									</Link>
+								);
+							})}
+						</List>
+					)}
 
 					<div
 						className={clsx(classes.footerClose, {
@@ -291,11 +352,17 @@ function Navbar() {
 									[classes.miniProfileDivider]: !open,
 								})}
 							/>
-
 							<div
 								className={`${classes.navListContainer} mobNavListContainer`}
 							>
-								<ListItem key="userProfileIcon">
+								<ListItem
+									button={true}
+									key="userProfileIcon"
+									onClick={() => history.push(userProfilePath)}
+									className={
+										"me" === activeLink ? classes.currentItemBackground : null
+									}
+								>
 									<ListItemIcon className={classes.navIconContainer}>
 										<UserProfileIcon
 											alt="user profile icon"
@@ -309,6 +376,27 @@ function Navbar() {
 										}}
 										primary="Russell Harland"
 										secondary="Site: Ahafo - Ghana"
+									/>
+								</ListItem>
+							</div>
+							<div>
+								<ListItem key="logoutIcon" button={true} onClick={handleLogout}>
+									<ListItemIcon className={classes.navIconContainer}>
+										{loading ? (
+											<CircularProgress />
+										) : (
+											<LogoutIcon
+												alt="Logout Button"
+												className={classes.navIcon}
+											/>
+										)}
+									</ListItemIcon>
+									<ListItemText
+										classes={{
+											primary: classes.listItemTextPrimary,
+											secondary: classes.listItemTextSecondary,
+										}}
+										primary="Logout"
 									/>
 								</ListItem>
 							</div>
@@ -353,7 +441,7 @@ function Navbar() {
 						["Clients", ClientIcon, clientsPath],
 						["Applications", ApplicationIcon, applicationListPath],
 						["Models", ModelIcon, "/"],
-						["Users", UserIcon, "/"],
+						["Users", UserIcon, usersPath],
 						["Analytics", AnalyticsIcon, "/"],
 					].map((item, index) => {
 						// Storing SVG
@@ -405,7 +493,6 @@ function Navbar() {
 							);
 						}
 					})}
-
 					<div className={`${classes.navListContainer} mobNavListContainer`}>
 						<ListItem key="userProfileIcon">
 							<ListItemIcon className={classes.navIconContainer}>
@@ -416,10 +503,33 @@ function Navbar() {
 							</ListItemIcon>
 						</ListItem>
 					</div>
+					<div>
+						<ListItem key="logoutIcon" button={true} onClick={handleLogout}>
+							<ListItemIcon className={classes.navIconContainer}>
+								{loading ? (
+									<CircularProgress />
+								) : (
+									<LogoutIcon alt="Logout Button" className={classes.navIcon} />
+								)}
+							</ListItemIcon>
+							<ListItemText
+								classes={{
+									primary: classes.listItemTextPrimary,
+									secondary: classes.listItemTextSecondary,
+								}}
+								primary="Logout"
+							/>
+						</ListItem>
+					</div>
+					)
 				</BottomNavigation>
 			</div>
 		</>
 	);
 }
 
-export default React.memo(Navbar);
+const mapDispatchToProps = (dispatch) => ({
+	userLogOut: (token) => dispatch(logOutUser(token)),
+});
+
+export default connect(null, mapDispatchToProps)(React.memo(Navbar));

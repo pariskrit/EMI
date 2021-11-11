@@ -30,14 +30,15 @@ instance.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
+		// if (error.response.status === 401 || error.response.status === 403) {
+		// 	localStorage.clear();
+		// 	window.location = "/login";
+		// }
 		// Storing original request
 		const originalRequest = error.config;
 
 		// Checking if 401 and ensuring not already attempted refresh
-		if (
-			(error.response.status === 401 || error.response.status === 403) &&
-			!originalRequest._retry
-		) {
+		if (error.response.status === 401 && !originalRequest._retry) {
 			// Setting retry to prevent infinite loop
 			originalRequest._retry = true;
 
@@ -80,6 +81,9 @@ instance.interceptors.response.use(
 				return Promise.reject(err);
 			}
 		}
+
+		localStorage.clear();
+		window.location = "/login";
 
 		// Returning with error if this is the second instance OR not 401
 		return Promise.reject(error);

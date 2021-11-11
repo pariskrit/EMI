@@ -61,7 +61,7 @@ const NavDetails = ({ staticCrumbs, crumbs, status }) => {
 			<div className="left-section flex-wrap  mb-sm">
 				{status && (
 					<div className="flex mr-sm mt-sm">
-						<b>Status:</b>{" "}
+						<b>Status:</b>
 						<div
 							className={`${classes.icon} flex`}
 							style={{
