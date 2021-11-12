@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -67,6 +67,13 @@ const useStyles = makeStyles((theme) => ({
 function RegionAndSite({ region, sites, clientId }) {
 	const classes = useStyles();
 
+	useEffect(() => {
+		const storage = JSON.parse(localStorage.getItem("crumbs"));
+		localStorage.setItem(
+			"crumbs",
+			JSON.stringify({ ...storage, applicationName })
+		);
+	}, []);
 	return (
 		<Accordion className={classes.accordionParent}>
 			<AccordionSummary
