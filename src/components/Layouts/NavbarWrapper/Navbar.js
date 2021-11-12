@@ -205,7 +205,7 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
-	let activeLink = location.pathname.split("/")[1];
+	let activeLink = location.pathname.split("/")[2];
 
 	// Handlers
 	const handleDrawerChange = () => {
