@@ -67,7 +67,7 @@ function Portal() {
 		fetchListOfClients();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	console.log(listOfClients, isLoading);
+
 	if (isLoading.initial) {
 		return <CircularProgress />;
 	}
