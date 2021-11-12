@@ -67,13 +67,13 @@ const useStyles = makeStyles((theme) => ({
 function RegionAndSite({ region, sites, clientId }) {
 	const classes = useStyles();
 
-	useEffect(() => {
-		// const storage = JSON.parse(localStorage.getItem("crumbs"));
-		// localStorage.setItem(
-		// 	"crumbs",
-		// 	JSON.stringify({ ...storage, applicationName })
-		// );
-	}, []);
+	// useEffect(() => {
+	// 	const storage = JSON.parse(localStorage.getItem("crumbs"));
+	// 	localStorage.setItem(
+	// 		"crumbs",
+	// 		JSON.stringify({ ...storage, siteNamme:sites.name })
+	// 	);
+	// }, []);
 	return (
 		<Accordion className={classes.accordionParent}>
 			<AccordionSummary

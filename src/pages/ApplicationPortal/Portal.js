@@ -62,10 +62,7 @@ function Portal() {
 		const res = await getApplicationsAndSites(clientId);
 		setApplicationList(res.data);
 		setClientId(clientId);
-		localStorage.setItem(
-			"crumbs",
-			JSON.stringify({ applicationName: selectedClient.name })
-		);
+
 		setLoading({ ...isLoading, applications: false, showText: false });
 	};
 
