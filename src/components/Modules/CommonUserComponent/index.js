@@ -4,10 +4,6 @@ import { Grid } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback, useState, useEffect } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import ContentStyle from "styles/application/ContentStyle";
-
-const AC = ContentStyle();
 
 const useStyles = makeStyles({
 	detailContainer: {
@@ -60,7 +56,7 @@ const UserDetails = ({ title, apis, getError, showNotes, data, setData }) => {
 					{ op: "replace", path, value },
 				]);
 				if (result.status) {
-					return true;
+					return result.data;
 				} else {
 					const err = result.data.errors;
 					setErrors({ ...errors, ...err });

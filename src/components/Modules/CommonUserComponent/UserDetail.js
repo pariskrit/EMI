@@ -2,14 +2,7 @@ import React from "react";
 import AccordionBox from "components/Layouts/AccordionBox";
 import { Grid, TextField, Typography } from "@material-ui/core";
 
-const UserDetail = ({
-	title,
-	data,
-	setData,
-	patchData,
-	errors,
-	setErrors,
-}) => {
+const UserDetail = ({ title, data, setData, patchData, errors, setErrors }) => {
 	// const [userDetail, setUserDetail] = useState({});
 
 	const handleInputChange = (name, value) => {
