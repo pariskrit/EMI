@@ -55,11 +55,17 @@ function Portal() {
 	};
 
 	const fetchApplicationsAndSites = async (clientId) => {
+		const selectedClient = listOfClients.find(
+			(client) => client.id === clientId
+		);
 		setLoading({ ...isLoading, applications: true, showText: false });
 		const res = await getApplicationsAndSites(clientId);
 		setApplicationList(res.data);
 		setClientId(clientId);
-
+		localStorage.setItem(
+			"crumbs",
+			JSON.stringify({ applicationName: selectedClient.name })
+		);
 		setLoading({ ...isLoading, applications: false, showText: false });
 	};
 
