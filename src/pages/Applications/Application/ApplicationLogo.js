@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 const ApplicationLogo = ({
 	logoTrademark,
 	logoURL,
+	logoName,
 	newLogoKey,
 	newLogoFilename,
 	newLogoTrademark,
@@ -64,6 +65,7 @@ const ApplicationLogo = ({
 	// Init state
 	const [loading, setIsLoading] = useState(true);
 	const [showUpload, setShowUpload] = useState(false);
+	const [filesUploading, setFilesUploading] = useState(false);
 	const [logo, setLogo] = useState({
 		name: "",
 		src: "",
@@ -78,8 +80,8 @@ const ApplicationLogo = ({
 
 			if (result.status === 200) {
 				setLogo({
-					name: "Application Logo",
-					alt: "Application Logo",
+					name: result.data.logoFilename,
+					alt: result.data.logoFilename,
 					src: result.data.logoURL,
 				});
 
@@ -120,6 +122,7 @@ const ApplicationLogo = ({
 	const handleDelete = () => {
 		// Showing uploader
 		setShowUpload(true);
+		setFilesUploading(false);
 
 		// Updating logo state
 		newLogoKey("");
@@ -139,9 +142,9 @@ const ApplicationLogo = ({
 			setIsLoading(false);
 		} else {
 			setLogo({
-				name: "Application logo",
+				name: logoName,
 				src: logoURL,
-				alt: "Application logo",
+				alt: logoName,
 			});
 
 			setShowUpload(false);
@@ -171,7 +174,10 @@ const ApplicationLogo = ({
 							<DropUploadBox
 								uploadReturn={handleLogoUpload}
 								apiPath={`${BASE_API_PATH}Applications/${id}/upload`}
-								filesUploading={loading}
+								isImageUploaded={true}
+								inApplication={true}
+								filesUploading={filesUploading}
+								setFilesUploading={setFilesUploading}
 							/>
 						</div>
 					) : (
@@ -181,7 +187,8 @@ const ApplicationLogo = ({
 								name={logo.name}
 								src={logo.src}
 								alt={logo.alt}
-								handleDelete={handleDelete}
+								deleteLogo={handleDelete}
+								deleteEndpoint={`${BASE_API_PATH}Applications`}
 							/>
 
 							<div>

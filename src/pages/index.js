@@ -7,7 +7,6 @@ import ClientPage from "pages/Clients/Links/ClientPage";
 import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
-import { Switch } from "react-router";
 import { connect } from "react-redux";
 import { getUserDetail } from "redux/auth/actions";
 
