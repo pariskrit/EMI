@@ -34,6 +34,7 @@ const SingleComponent = (route) => {
 
 	const fetchSiteApplicationDetails = async () => {
 		const result = await getSiteApplicationDetail(appId);
+		console.log(crumbs);
 		localStorage.setItem(
 			"crumbs",
 			JSON.stringify({
