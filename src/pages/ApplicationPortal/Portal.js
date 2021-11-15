@@ -59,7 +59,6 @@ function Portal() {
 		const res = await getApplicationsAndSites(clientId);
 		setApplicationList(res.data);
 		setClientId(clientId);
-
 		setLoading({ ...isLoading, applications: false, showText: false });
 	};
 
@@ -67,7 +66,7 @@ function Portal() {
 		fetchListOfClients();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	console.log(listOfClients, isLoading);
+
 	if (isLoading.initial) {
 		return <CircularProgress />;
 	}

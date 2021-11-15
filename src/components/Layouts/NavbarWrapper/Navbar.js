@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useHistory } from "react-router-dom";
+import { useGoogleLogout } from "react-google-login";
+
 // Bottom Navigation
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -22,6 +24,7 @@ import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as Home } from "assets/icons/home.svg";
 import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
+// Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
@@ -34,6 +37,7 @@ import {
 import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
+import { useMsal } from "@azure/msal-react";
 
 // Size constants
 const drawerWidth = 240;
@@ -196,16 +200,24 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Navbar({ isApplicationPortal = false, userLogOut }) {
+function Navbar({ userLogOut, isApplicationPortal = false }) {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
+	const { signOut } = useGoogleLogout({
+		jsSrc: "https://apis.google.com/js/api.js",
+		onFailure: (res) => console.log(res),
+		clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+		redirectUri: "/",
+		onLogoutSuccess: () => history.push("/login"),
+	});
 
 	// Setting state
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
-	let activeLink = location.pathname.split("/")[1];
+	const { instance } = useMsal();
+	let activeLink = location.pathname.split("/")[2];
 
 	// Handlers
 	const handleDrawerChange = () => {
@@ -213,12 +225,31 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 	};
 
 	const handleLogout = async () => {
+		const loginType = localStorage.getItem("loginType");
+
 		setLoading(true);
 		const token = localStorage.getItem("token");
 		try {
 			const logOut = await userLogOut(token);
+
+			// Successful response after revoke token
 			if (logOut.status === 200) {
 				localStorage.clear();
+				// if loginType !==undefined
+				if (loginType) {
+					if (loginType === "GOOGLE") {
+						// GOOGLE SIGNOUT
+						signOut();
+						return true;
+					}
+					if (loginType === "MICROSOFT") {
+						// MICROSOFT SIGNOUT
+
+						signOutMicrosoftHandler();
+						return true;
+					}
+				}
+
 				history.push("/login");
 			} else {
 				throw new Error(logOut);
@@ -228,6 +259,15 @@ function Navbar({ isApplicationPortal = false, userLogOut }) {
 		}
 		setLoading(false);
 	};
+
+	function signOutMicrosoftHandler() {
+		const accountId = localStorage.getItem("homeAccoundId");
+		const logoutRequest = {
+			account: instance.getAccountByHomeId(accountId),
+			postLogoutRedirectUri: "http://localhost:3000/login",
+		};
+		instance.logoutRedirect(logoutRequest);
+	}
 
 	return (
 		<>

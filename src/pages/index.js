@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { Switch } from "react-router";
+// import { connect } from "react-redux";
 import NavbarWrapper from "components/Layouts/NavbarWrapper";
 import ApplicationPage from "pages/Applications/Links/ApplicationPage";
 import ClientPage from "pages/Clients/Links/ClientPage";
@@ -9,13 +11,13 @@ import { Switch } from "react-router";
 import { connect } from "react-redux";
 import { getUserDetail } from "redux/auth/actions";
 
-const MainApp = ({ isAuthenticated, fetchDetailUser }) => {
-	useEffect(() => {
-		if (!isAuthenticated) {
-			fetchDetailUser();
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isAuthenticated]);
+const MainApp = () => {
+	// useEffect(() => {
+	// 	if (!isAuthenticated) {
+	// 		fetchDetailUser();
+	// 	}
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [isAuthenticated]);
 	return (
 		<Switch>
 			<NavbarWrapper>
@@ -28,11 +30,11 @@ const MainApp = ({ isAuthenticated, fetchDetailUser }) => {
 		</Switch>
 	);
 };
-const mapStateToProps = ({ authData: { isAuthenticated } }) => ({
-	isAuthenticated,
-});
-const mapDispatchToProps = (dispatch) => ({
-	fetchDetailUser: () => dispatch(getUserDetail()),
-});
+// const mapStateToProps = ({ authData: { isAuthenticated } }) => ({
+// 	isAuthenticated,
+// });
+// const mapDispatchToProps = (dispatch) => ({
+// 	fetchDetailUser: () => dispatch(getUserDetail()),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainApp);
+export default MainApp;

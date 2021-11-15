@@ -90,7 +90,7 @@ const SingleComponent = (route) => {
 
 	const fetchData = async () => {
 		if (
-			location.pathname.split("/")[7] === "detail" ||
+			location.pathname.split("/")[8] === "detail" ||
 			Object.keys(state.details).length === 0
 		) {
 			const response = await fetchSiteApplicationDetails();

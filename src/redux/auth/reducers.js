@@ -13,9 +13,6 @@ export const authSlice = createSlice({
 		userRequest: (state) => {
 			state.userLoading = true;
 		},
-		loginRequest: (state) => {
-			state.userLoading = true;
-		},
 		dataSuccess: (state, { payload }) => {
 			state.userLoading = false;
 			state.userDetail = payload.data;

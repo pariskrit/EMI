@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: "0 4px",
 	},
 }));
+
 function RegionAndSite({ region, sites, clientId }) {
 	const classes = useStyles();
 

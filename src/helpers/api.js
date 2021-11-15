@@ -22,7 +22,12 @@ if (
 
 instance.interceptors.response.use(
 	(response) => {
-		if (response.config.url === "/api/Users/Login") {
+		const url = response.config.url;
+		if (
+			url === "/api/Users/Login" ||
+			url === "/Account/google" ||
+			url === "/Account/microsoft"
+		) {
 			instance.defaults.headers.common[
 				"Authorization"
 			] = `bearer ${response.data.jwtToken}`;
@@ -55,7 +60,7 @@ instance.interceptors.response.use(
 						credentials: "include",
 						method: "POST",
 						headers: {
-							Authorization: `Bearer ${localStorage.getItem("token")}`,
+							Authorization: `bearer ${localStorage.getItem("token")}`,
 							"Content-Type": "application/json",
 						},
 					}
@@ -82,8 +87,15 @@ instance.interceptors.response.use(
 			}
 		}
 
-		localStorage.clear();
-		window.location = "/login";
+		// const url = error.config.url;
+		// if (
+		// 	url !== "/Account/google" ||
+		// 	url !== "/Account/microsoft" ||
+		// 	url !== "/api/Users/Login"
+		// ) {
+		// 	localStorage.clear();
+		// 	window.location = "/login";
+		// }
 
 		// Returning with error if this is the second instance OR not 401
 		return Promise.reject(error);

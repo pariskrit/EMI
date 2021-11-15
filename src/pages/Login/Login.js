@@ -8,6 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { GoogleLogin } from "react-google-login";
 import { clientsPath } from "helpers/routePaths";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
@@ -15,7 +16,9 @@ import LoginImage from "assets/spash_no_background.png";
 import Watermark from "assets/watermark.png";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
-import { loginUser } from "redux/auth/actions";
+import { loginSocialAccount, loginUser } from "redux/auth/actions";
+import { showError } from "redux/common/actions";
+import { useMsal } from "@azure/msal-react";
 
 // Yup validation schema
 const schema = yup.object({
@@ -42,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 		backgroundPosition: "center",
 	},
 	paper: {
-		margin: theme.spacing(8, 4),
+		margin: "20px 32px",
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
@@ -84,6 +87,51 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: 15,
 		paddingBottom: 15,
 	},
+	googleBtn: {
+		width: "230px",
+		height: "42px",
+		backgroundColor: "#4285f4",
+		borderRadius: "2px",
+		boxShadow: "0 3px 4px 0 rgba(0,0,0,.25)",
+		"&:hover": {
+			cursor: "pointer",
+		},
+	},
+	googleIconWrapper: {
+		position: "absolute",
+		marginTop: "1px",
+		marginLeft: "1px",
+		width: "40px",
+		height: "40px",
+		borderRadius: "2px",
+		backgroundColor: "#fff",
+	},
+	googleIcon: {
+		position: "absolute",
+		marginTop: "11px",
+		marginLeft: "11px",
+		width: "18px",
+		height: "18px",
+	},
+	microsoftbtn: {
+		width: "255px",
+		height: "42px",
+		marginTop: "11px",
+		borderRadius: "2px",
+		boxShadow: "0 3px 4px 0 rgba(0,0,0,.25)",
+		"&:hover": {
+			cursor: "pointer",
+		},
+		backgroundColor: "#2b2c2c",
+	},
+	btnText: {
+		float: "right",
+		margin: "11px 11px 0 0",
+		color: "#fff",
+		fontSize: "14px",
+		letterSpacing: "0.2px",
+		fontFamily: "Roboto",
+	},
 	footer: {
 		height: 50,
 		justifyContent: "center",
@@ -98,9 +146,17 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Login = ({ userLoading, loginData, location, history }) => {
+const Login = ({
+	userLoading,
+	loginData,
+	loginSocialAccount,
+	getErrors,
+	location,
+	history,
+}) => {
 	// from will provide previous path redirect from
 	const { state } = location;
+
 	// Init hooks
 	const classes = useStyles();
 
@@ -108,6 +164,7 @@ const Login = ({ userLoading, loginData, location, history }) => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const { instance } = useMsal();
 
 	// Handlers
 	const loginHandler = async (email, password) => {
@@ -140,12 +197,60 @@ const Login = ({ userLoading, loginData, location, history }) => {
 			return false;
 		}
 	};
+
+	const responseGoogle = async (res) => {
+		try {
+			const respon = await loginSocialAccount(
+				{ token: res.Zb.id_token },
+				"GOOGLE",
+				"/Account/google"
+			);
+			if (respon) {
+				successRedirect();
+				return true;
+			} else {
+				throw new Error(respon);
+			}
+		} catch (err) {
+			getErrors(err.response.data.detail);
+			return false;
+		}
+	};
+
+	function signInMicrosoftHandler() {
+		instance
+			.loginPopup()
+			.then((res) => responseMicrosoft(res))
+			.catch((error) => console.log(error));
+	}
+
+	const responseMicrosoft = async (data) => {
+		// some actions
+
+		try {
+			const respon = await loginSocialAccount(
+				{ token: data.idToken },
+				"MICROSOFT",
+				"/Account/microsoft"
+			);
+			if (respon) {
+				localStorage.setItem("homeAccoundId", data.account.homeAccountId);
+				successRedirect();
+			} else {
+				throw new Error(respon);
+			}
+		} catch (err) {
+			getErrors(err.response.data.detail);
+		}
+	};
+
 	const successRedirect = () => {
 		// Update below to change redirect location
 		// if Previous location available redirect to previous location
 		history.push(state?.from?.pathname ? state?.from?.pathname : clientsPath);
 		return true;
 	};
+
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
@@ -226,6 +331,48 @@ const Login = ({ userLoading, loginData, location, history }) => {
 								</div>
 							</form>
 						)}
+						<div style={{ marginTop: "11px" }}>
+							<GoogleLogin
+								clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+								render={(renderProps) => (
+									<div
+										onClick={renderProps.onClick}
+										disabled={renderProps.disabled}
+										className={classes.googleBtn}
+									>
+										<div className={classes.googleIconWrapper}>
+											<img
+												alt=""
+												className={classes.googleIcon}
+												src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+											/>
+										</div>
+										<p className={classes.btnText}>
+											<b>CONTINUE WITH GOOGLE</b>
+										</p>
+									</div>
+								)}
+								onSuccess={responseGoogle}
+								onFailure={responseGoogle}
+								cookiePolicy={"single_host_origin"}
+							/>
+						</div>
+
+						<div
+							onClick={signInMicrosoftHandler}
+							className={classes.microsoftbtn}
+						>
+							<div className={classes.googleIconWrapper}>
+								<img
+									alt=""
+									className={classes.googleIcon}
+									src="https://img.icons8.com/color/96/000000/microsoft.png"
+								/>
+							</div>
+							<p className={classes.btnText}>
+								<b>CONTINUE WITH MICROSOFT</b>
+							</p>
+						</div>
 					</div>
 
 					<footer className={classes.footer}>
@@ -239,9 +386,14 @@ const Login = ({ userLoading, loginData, location, history }) => {
 	);
 };
 
-const mapStateToProps = ({ authData: { userLoading } }) => ({ userLoading });
+const mapStateToProps = ({ authData: { userLoading } }) => ({
+	userLoading,
+});
 const mapDispatchToProps = (dispatch) => ({
 	loginData: (data) => dispatch(loginUser(data)),
+	loginSocialAccount: (data, loginType, url) =>
+		dispatch(loginSocialAccount(data, loginType, url)),
+	getErrors: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
