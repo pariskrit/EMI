@@ -15,6 +15,7 @@ const SingleComponent = (route) => {
 	const navigation = UserNavigation();
 	const { id } = useParams();
 	const [allData, setAllData] = useState({});
+	const [inputData, setInputData] = useState({});
 	const [loading, setLoading] = useState(true);
 	const [openSwitch, setOpenSwitch] = useState(false);
 	const [openPasswordReset, setOpenPasswordReset] = useState(false);
@@ -32,6 +33,7 @@ const SingleComponent = (route) => {
 			// if success, adding data to state
 			if (result.status) {
 				setAllData({ ...result.data });
+				setInputData({ ...result.data });
 				localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 				setLoading(false);
 				return true;
@@ -53,9 +55,12 @@ const SingleComponent = (route) => {
 	// Fetch Side effect to get data
 	useEffect(() => {
 		// Getting data and updating state
-		route.details
-			? handleGetData().catch((err) => console.log(err))
-			: setAllData(route.userDetail);
+		if (route.details) {
+			handleGetData().catch((err) => console.log(err));
+		} else {
+			setAllData(route.userDetail);
+			setInputData(route.userDetail);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [handleGetData, route.details]);
 
@@ -144,6 +149,8 @@ const SingleComponent = (route) => {
 							showNotes={route.showNotes}
 							data={allData}
 							setData={setAllData}
+							inputData={inputData}
+							setInputData={setInputData}
 						/>
 					}
 				</div>
