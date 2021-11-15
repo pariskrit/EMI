@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
 import UserNavigation from "constants/navigation/userNavigation";
 import CommonUserHeader from "components/Modules/CommonUserHeader";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -13,7 +14,8 @@ const SingleComponent = (route) => {
 	let getError = route.getError;
 	const navigation = UserNavigation();
 	const { id } = useParams();
-	const [allData, setAllData] = useState([]);
+	const [allData, setAllData] = useState({});
+	const [inputData, setInputData] = useState({});
 	const [loading, setLoading] = useState(true);
 	const [openSwitch, setOpenSwitch] = useState(false);
 	const [openPasswordReset, setOpenPasswordReset] = useState(false);
@@ -31,6 +33,7 @@ const SingleComponent = (route) => {
 			// if success, adding data to state
 			if (result.status) {
 				setAllData({ ...result.data });
+				setInputData({ ...result.data });
 				localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 				setLoading(false);
 				return true;
@@ -52,8 +55,23 @@ const SingleComponent = (route) => {
 	// Fetch Side effect to get data
 	useEffect(() => {
 		// Getting data and updating state
-		handleGetData().catch((err) => console.log(err));
-	}, [handleGetData]);
+		if (route.details) {
+			handleGetData().catch((err) => console.log(err));
+		} else {
+			setAllData(route.userDetail);
+			setInputData(route.userDetail);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [handleGetData, route.details]);
+
+	useEffect(() => {
+		if (allData.id) {
+			setLoading(false);
+			localStorage.setItem("userCrumbs", JSON.stringify(allData));
+		} else {
+			setLoading(true);
+		}
+	}, [allData]);
 
 	let titleName = JSON.parse(localStorage.getItem("userCrumbs"));
 
@@ -70,7 +88,11 @@ const SingleComponent = (route) => {
 			setOpenSwitch(false);
 			setAllData({ ...allData, active: result.data.active });
 		} else {
-			console.log("error");
+			if (result.data.detail) {
+				getError(result.data.detail);
+			} else {
+				return { success: false, errors: { ...result.data.errors } };
+			}
 		}
 
 		setIsUpdating(false);
@@ -115,7 +137,7 @@ const SingleComponent = (route) => {
 						showSave={route.showSave}
 						showPasswordReset={route.showPasswordReset}
 						handlePatchIsActive={openConfirmationModal}
-						crumbs={["Users", `${titleName.firstName} ${titleName.lastName}`]}
+						crumbs={["Users", `${titleName?.firstName} ${titleName?.lastName}`]}
 						currentStatus={allData?.active}
 						onPasswordReset={passwordResetModalHandler}
 					/>
@@ -127,6 +149,8 @@ const SingleComponent = (route) => {
 							showNotes={route.showNotes}
 							data={allData}
 							setData={setAllData}
+							inputData={inputData}
+							setInputData={setInputData}
 						/>
 					}
 				</div>
@@ -134,6 +158,8 @@ const SingleComponent = (route) => {
 		</>
 	);
 };
+const mapStateToProps = ({ authData: { userDetail } }) => ({
+	userDetail,
+});
 
-export default SingleComponent;
-
+export default connect(mapStateToProps)(SingleComponent);

@@ -146,39 +146,15 @@ const AddAssetDialog = ({
 
 				return { success: true };
 			} else {
-				// Throwing response if error
-				throw new Error(result);
+				if (result.data) {
+					getError(result.data);
+					return { success: false };
+				} else {
+					return { success: false, errors: { ...result.data.errors } };
+				}
 			}
 		} catch (err) {
-			if (
-				err.response.data.errors !== undefined &&
-				err.response.data.detail === undefined
-			) {
-				// Removing spinner
-
-				return { success: false, errors: err.response.data.errors };
-			} else if (
-				err.response.data.errors !== undefined &&
-				err.response.data.detail !== undefined
-			) {
-				return {
-					success: false,
-					errors: { name: err.response.data.detail },
-				};
-			} else {
-				// If no explicit errors provided, throws to caller
-				throw new Error(err);
-			}
- // to be reviewed
-				//if (result.data) {
-//getError(result.data);
-				//	return { success: false };
-			//} else {
-				//	return { success: false, errors: { ...result.data.errors } };
-			//	}
-			//}
-	//	} catch (err) {
-		//	throw new Error(err.response);
+			throw new Error(err.response);
 		}
 	};
 
