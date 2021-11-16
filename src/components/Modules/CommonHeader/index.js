@@ -156,8 +156,6 @@ const CommonHeader = ({
 }) => {
 	const classes = useStyles();
 
-	console.log("sagar", currentStatus);
-
 	return (
 		<ThemeProvider theme={theme}>
 			<div>
