@@ -89,6 +89,7 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 		if (result.status) {
 			// Updating default state
 			setDefaultId(confirmDefault[0]);
+			dispatch({ type: "SET_SITE_APP_DETAIL", payload: result });
 		} else {
 			// setError(result.data.detail);
 		}

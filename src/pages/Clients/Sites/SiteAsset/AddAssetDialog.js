@@ -136,7 +136,7 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
 							<ADD.NameLabel>
-								Name<ADD.RequiredStar>*</ADD.RequiredStar>
+								Asset<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.name === null ? false : true}
