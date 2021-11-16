@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route } from "react-router";
 import { clientDetailPath, clientsPath } from "helpers/routePaths";
 import ClientList from "pages/Clients/ClientList/ClientList";
 import Client from "..";
@@ -11,6 +11,7 @@ export default function ClientPage() {
 			<Route path={clientsPath} exact>
 				<ClientList />
 			</Route>
+
 			<Route path={clientDetailPath} exact>
 				<ClientDetails />
 			</Route>

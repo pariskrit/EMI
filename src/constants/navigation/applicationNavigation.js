@@ -1,6 +1,6 @@
 import {
 	actionsPath,
-	applicationPath,
+	applicationListPath,
 	customCaptionsPath,
 	defectRiskRatingsPath,
 	defectStatusesPath,
@@ -31,29 +31,29 @@ const ApplicationNavigation = (id) => {
 		{
 			name: "Details",
 			dropdown: [
-				{ title: "Application", link: `${applicationPath}/${id}` },
+				{ title: "Application", link: `${applicationListPath}/${id}` },
 				{
 					title: "Custom Captions",
-					link: `${applicationPath}/${id}${customCaptionsPath}`,
+					link: `${applicationListPath}/${id}${customCaptionsPath}`,
 				},
 			],
 		},
 		{
 			name: "Reason Definitions",
 			dropdown: [
-				{ title: "Pauses", link: `${applicationPath}/${id}${pausesPath}` },
-				{ title: "Stops", link: `${applicationPath}/${id}${stopsPath}` },
+				{ title: "Pauses", link: `${applicationListPath}/${id}${pausesPath}` },
+				{ title: "Stops", link: `${applicationListPath}/${id}${stopsPath}` },
 				{
 					title: "Skipped Tasks",
-					link: `${applicationPath}/${id}${skippedTasksPath}`,
+					link: `${applicationListPath}/${id}${skippedTasksPath}`,
 				},
 				{
 					title: "Missing Part or Tools",
-					link: `${applicationPath}/${id}${missingItemsPath}`,
+					link: `${applicationListPath}/${id}${missingItemsPath}`,
 				},
 				{
 					title: "Status Changes",
-					link: `${applicationPath}/${id}${StatusChangesPath}`,
+					link: `${applicationListPath}/${id}${StatusChangesPath}`,
 				},
 			],
 		},
@@ -62,19 +62,28 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Statuses",
-					link: `${applicationPath}/${id}${modelStatusesPath}`,
+					link: `${applicationListPath}/${id}${modelStatusesPath}`,
 				},
-				{ title: "Types", link: `${applicationPath}/${id}${modelTypesPath}` },
+				{
+					title: "Types",
+					link: `${applicationListPath}/${id}${modelTypesPath}`,
+				},
 			],
 		},
 		{
 			name: "Task Definitions",
 			dropdown: [
-				{ title: "Actions", link: `${applicationPath}/${id}${actionsPath}` },
-				{ title: "Systems", link: `${applicationPath}/${id}${systemsPath}` },
+				{
+					title: "Actions",
+					link: `${applicationListPath}/${id}${actionsPath}`,
+				},
+				{
+					title: "Systems",
+					link: `${applicationListPath}/${id}${systemsPath}`,
+				},
 				{
 					title: "Operating Modes",
-					link: `${applicationPath}/${id}${operatingModesPath}`,
+					link: `${applicationListPath}/${id}${operatingModesPath}`,
 				},
 			],
 		},
@@ -83,9 +92,9 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Positions",
-					link: `${applicationPath}/${id}${positionsPath}`,
+					link: `${applicationListPath}/${id}${positionsPath}`,
 				},
-				{ title: "Roles", link: `${applicationPath}/${id}${rolesPath}` },
+				{ title: "Roles", link: `${applicationListPath}/${id}${rolesPath}` },
 			],
 		},
 		{
@@ -93,13 +102,16 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Risk Ratings",
-					link: `${applicationPath}/${id}${defectRiskRatingsPath}`,
+					link: `${applicationListPath}/${id}${defectRiskRatingsPath}`,
 				},
 				{
 					title: "Statuses",
-					link: `${applicationPath}/${id}${defectStatusesPath}`,
+					link: `${applicationListPath}/${id}${defectStatusesPath}`,
 				},
-				{ title: "Types", link: `${applicationPath}/${id}${defectTypesPath}` },
+				{
+					title: "Types",
+					link: `${applicationListPath}/${id}${defectTypesPath}`,
+				},
 			],
 		},
 		{
@@ -107,15 +119,15 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Classifications",
-					link: `${applicationPath}/${id}${feedbackClassificationsPath}`,
+					link: `${applicationListPath}/${id}${feedbackClassificationsPath}`,
 				},
 				{
 					title: "Priorities",
-					link: `${applicationPath}/${id}${feedbackPrioritiesPath}`,
+					link: `${applicationListPath}/${id}${feedbackPrioritiesPath}`,
 				},
 				{
 					title: "Statuses",
-					link: `${applicationPath}/${id}${feedbackStatusesPath}`,
+					link: `${applicationListPath}/${id}${feedbackStatusesPath}`,
 				},
 			],
 		},

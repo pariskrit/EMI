@@ -17,7 +17,7 @@ import "./applicationtable.css";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { applicationPath } from "helpers/routePaths";
+import { applicationListPath } from "helpers/routePaths";
 
 // Init styled components
 const AT = TableStyle();
@@ -169,7 +169,7 @@ const ApplicationTable = ({
 							>
 								<Link
 									className={classes.nameLink}
-									to={`${applicationPath}/${row.id}`}
+									to={`/app${applicationListPath}/${row.id}`}
 								>
 									{row.name}
 								</Link>
@@ -238,7 +238,7 @@ const ApplicationTable = ({
 												{
 													name: "Edit",
 													handler: () => {
-														history.push(`${applicationPath}/${row.id}`);
+														history.push(`${applicationListPath}/${row.id}`);
 													},
 													isDelete: false,
 												},

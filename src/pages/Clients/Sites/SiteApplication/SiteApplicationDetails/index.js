@@ -22,7 +22,13 @@ function SiteApplicationDetails({
 
 	const fetchSiteDetails = async () => {
 		const siteResult = await getSiteDetails(details.data.siteID);
-
+		localStorage.setItem(
+			"crumbs",
+			JSON.stringify({
+				clientName: siteResult.data.clientName,
+				siteName: siteResult.data.name,
+			})
+		);
 		if (siteResult?.data?.licenseType === 3) {
 			setShowLicenseTile(true);
 		}

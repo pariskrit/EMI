@@ -1,6 +1,13 @@
 // Client Details
-export const clientsPath = "/clients";
+export const clientsPath = "/app/clients";
 export const clientDetailPath = clientsPath + "/:id";
+
+//Users List
+export const usersPath = "/app/users";
+export const userDetailPath = usersPath + "/:id";
+
+//User Profile
+export const userProfilePath = "/app/me";
 
 // Sites
 export const sitePath = clientsPath + "/:clientId/sites/:id";
@@ -37,7 +44,7 @@ export const siteAppFeedbackStatuses = "/feedbackstatuses";
 //Applications
 export const applicationListPath = "/applications";
 export const applicationPath = "/applications";
-export const applicationDetailsPath = "/applications/:id";
+export const applicationDetailsPath = "/app/applications/:id";
 export const customCaptionsPath = "/customcaptions";
 export const modelStatusesPath = "/modelstatuses";
 export const positionsPath = "/positions";

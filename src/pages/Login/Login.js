@@ -8,15 +8,17 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { GoogleLogin } from "react-google-login";
 import { clientsPath } from "helpers/routePaths";
-import { useHistory } from "react-router-dom";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
 import Watermark from "assets/watermark.png";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
-import { loginUser } from "redux/auth/actions";
+import { loginSocialAccount, loginUser } from "redux/auth/actions";
+import MicrosoftLogin from "react-microsoft-login";
+import { showError } from "redux/common/actions";
 
 // Yup validation schema
 const schema = yup.object({
@@ -85,6 +87,40 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: 15,
 		paddingBottom: 15,
 	},
+	googleBtn: {
+		width: "230px",
+		height: "42px",
+		backgroundColor: "#4285f4",
+		borderRadius: "2px",
+		boxShadow: "0 3px 4px 0 rgba(0,0,0,.25)",
+		"&:hover": {
+			cursor: "pointer",
+		},
+	},
+	googleIconWrapper: {
+		position: "absolute",
+		marginTop: "1px",
+		marginLeft: "1px",
+		width: "40px",
+		height: "40px",
+		borderRadius: "2px",
+		backgroundColor: "#fff",
+	},
+	googleIcon: {
+		position: "absolute",
+		marginTop: "11px",
+		marginLeft: "11px",
+		width: "18px",
+		height: "18px",
+	},
+	btnText: {
+		float: "right",
+		margin: "11px 11px 0 0",
+		color: "#fff",
+		fontSize: "14px",
+		letterSpacing: "0.2px",
+		fontFamily: "Roboto",
+	},
 	footer: {
 		height: 50,
 		justifyContent: "center",
@@ -99,15 +135,25 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Login = ({ userLoading, loginData }) => {
+const Login = ({
+	userLoading,
+	loginData,
+	loginSocialAccount,
+	getErrors,
+	location,
+	history,
+}) => {
+	// from will provide previous path redirect from
+	const { state } = location;
+
 	// Init hooks
 	const classes = useStyles();
-	const history = useHistory();
 
 	// Init state
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [msalInstance, onMsalInstanceChange] = useState();
 
 	// Handlers
 	const loginHandler = async (email, password) => {
@@ -140,17 +186,68 @@ const Login = ({ userLoading, loginData }) => {
 			return false;
 		}
 	};
+
+	const responseGoogle = async (res) => {
+		try {
+			const respon = await loginSocialAccount(
+				{ token: res.Zb.id_token },
+				"GOOGLE",
+				"/Account/google"
+			);
+			if (respon) {
+				successRedirect();
+				return true;
+			} else {
+				throw new Error(respon);
+			}
+		} catch (err) {
+			getErrors(err.response.data.detail);
+			return false;
+		}
+	};
+
+	const responseMicrosoft = async (err, data, msal) => {
+		// some actions
+		if (!err && data) {
+			onMsalInstanceChange(msal);
+
+			try {
+				const respon = await loginSocialAccount(
+					{ token: data.idToken.rawIdToken },
+					"MICROSOFT",
+					"/Account/microsoft"
+				);
+
+				if (respon) {
+					successRedirect();
+				} else {
+					throw new Error(respon);
+				}
+			} catch (err) {
+				getErrors(err.response.data.detail);
+			}
+		} else {
+			console.log(err);
+		}
+	};
+
 	const successRedirect = () => {
 		// Update below to change redirect location
-		history.push(clientsPath);
-
+		// if Previous location available redirect to previous location
+		history.push(state?.from?.pathname ? state?.from?.pathname : clientsPath);
 		return true;
 	};
+
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
 			loginHandler(email, password);
 		}
+	};
+
+	const logoutHandler = () => {
+		console.log(msalInstance);
+		msalInstance.logout();
 	};
 
 	return (
@@ -226,6 +323,44 @@ const Login = ({ userLoading, loginData }) => {
 								</div>
 							</form>
 						)}
+
+						{msalInstance ? (
+							<button onClick={logoutHandler}>Logout</button>
+						) : (
+							<MicrosoftLogin
+								clientId={process.env.REACT_APP_CLIENT_ID}
+								authCallback={responseMicrosoft}
+								buttonTheme="dark"
+								postLogoutRedirectUri="http://localhost:3000/login"
+							/>
+						)}
+					</div>
+
+					<div style={{ marginTop: "11px" }}>
+						<GoogleLogin
+							clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+							render={(renderProps) => (
+								<div
+									onClick={renderProps.onClick}
+									disabled={renderProps.disabled}
+									className={classes.googleBtn}
+								>
+									<div className={classes.googleIconWrapper}>
+										<img
+											alt=""
+											className={classes.googleIcon}
+											src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+										/>
+									</div>
+									<p className={classes.btnText}>
+										<b>CONTINUE WITH GOOGLE</b>
+									</p>
+								</div>
+							)}
+							onSuccess={responseGoogle}
+							onFailure={responseGoogle}
+							cookiePolicy={"single_host_origin"}
+						/>
 					</div>
 
 					<footer className={classes.footer}>
@@ -242,6 +377,9 @@ const Login = ({ userLoading, loginData }) => {
 const mapStateToProps = ({ authData: { userLoading } }) => ({ userLoading });
 const mapDispatchToProps = (dispatch) => ({
 	loginData: (data) => dispatch(loginUser(data)),
+	loginSocialAccount: (data, loginType, url) =>
+		dispatch(loginSocialAccount(data, loginType, url)),
+	getErrors: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -16,9 +16,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	description: yup
-		.string("This field must be a string")
-		.required("This field is required"),
+	description: yup.string("This field must be a string"),
 });
 
 // Default state schemas

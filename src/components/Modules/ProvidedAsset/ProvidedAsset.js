@@ -83,6 +83,7 @@ const ProvidedAsset = ({
 	deleteLogo,
 	noBottomDivider,
 	isRec,
+	deleteEndpoint,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -120,7 +121,7 @@ const ProvidedAsset = ({
 				open={openDialog}
 				closeHandler={closeDialogHandler}
 				entityName="logo"
-				deleteEndpoint={`${BASE_API_PATH}Clients`}
+				deleteEndpoint={deleteEndpoint}
 				deleteID={id}
 				handleRemoveData={deleteLogo}
 				isLogo={true}
