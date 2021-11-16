@@ -101,23 +101,14 @@ const ClientLogo = ({
 						isImageUploaded={true}
 						filesUploading={filesUploading}
 						setFilesUploading={setFilesUploading}
-						// setErrorMessage={setErrorMessage}
-						// setOpenErrorModal={setOpen}
 					/>
 				) : (
-					// <DropUploadBox
-					// 	uploadReturn={onLogoUpload}
-					// 	clientID={clientId}
-					// 	isImageUploaded={true}
-					// 	filesUploading={filesUploading}
-					// 	setFilesUploading={setFilesUploading}
-					// 	getError={getError}
-					// />
 					<ProviderAsset
 						name={clientDetail.logoFilename}
 						src={clientDetail.logoURL}
 						alt={clientDetail.logoFilename}
 						deleteLogo={onDeleteLogo}
+						deleteEndpoint={`${BASE_API_PATH}Clients`}
 					/>
 				)}
 			</AccordionBox>

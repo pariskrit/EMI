@@ -342,6 +342,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 					</Grid>
 					<Grid item xs={6} className="desktopViewGrid">
 						<ApplicationLogo
+							logoName={data.logoFilename}
 							logoTrademark={inputData.isLogoTrademarked}
 							logoURL={data.logoURL}
 							newLogoKey={(newLogoKey) => {

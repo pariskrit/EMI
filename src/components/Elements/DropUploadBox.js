@@ -51,6 +51,7 @@ const DropUpload = ({
 	filesUploading,
 	setFilesUploading,
 	getError,
+	inApplication,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -104,9 +105,14 @@ const DropUpload = ({
 	const getUploadLink = async (fileName) => {
 		// Attemptong to get signed s3 upload link
 		try {
-			let uploadLink = await API.post(apiPath, {
-				Filename: fileName,
-			});
+			let uploadLink = await API.post(
+				apiPath,
+				inApplication
+					? { fileType: fileName }
+					: {
+							Filename: fileName,
+					  }
+			);
 
 			// Getting URL from stream if success
 			if (uploadLink.status === 200) {

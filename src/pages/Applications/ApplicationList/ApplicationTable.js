@@ -169,7 +169,7 @@ const ApplicationTable = ({
 							>
 								<Link
 									className={classes.nameLink}
-									to={`${applicationListPath}/${row.id}`}
+									to={`/app${applicationListPath}/${row.id}`}
 								>
 									{row.name}
 								</Link>
