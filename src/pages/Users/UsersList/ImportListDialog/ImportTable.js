@@ -8,7 +8,6 @@ import {
 	Typography,
 } from "@material-ui/core";
 const ImportTable = ({ data, title }) => {
-	const test = title.includes("References");
 	if (data.length === 0) {
 		return null;
 	} else {

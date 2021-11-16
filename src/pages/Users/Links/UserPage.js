@@ -20,6 +20,7 @@ const routes = [
 		showNotes: true,
 		api: differentUserAPIs.UserDetailsAPIs,
 		title: "User Details",
+		details: true,
 	},
 	{
 		id: 100,
@@ -32,6 +33,7 @@ const routes = [
 		showNotes: false,
 		api: differentUserAPIs.UserProfileAPIs,
 		title: "User Profile",
+		details: false,
 	},
 ];
 
@@ -52,4 +54,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(UserPage);
-

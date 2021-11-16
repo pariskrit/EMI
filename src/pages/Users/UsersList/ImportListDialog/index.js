@@ -6,12 +6,11 @@ import {
 	makeStyles,
 	Button,
 } from "@material-ui/core";
-import DropUpload from "components/Elements/DropUploadBox";
-import { BASE_API_PATH } from "helpers/constants";
 import ImportTable from "./ImportTable";
-import AddDialogStyle from "styles/application/AddDialogStyle";
-import API from "helpers/api";
+import { BASE_API_PATH } from "helpers/constants";
 import { importUserList } from "services/users/usersList";
+import DropUpload from "components/Elements/DropUploadBox";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 
 const AT = AddDialogStyle();
 
@@ -32,7 +31,6 @@ const useStyles = makeStyles({
 		},
 	},
 });
-
 
 const ImportListDialog = ({ open, handleClose, importSuccess, getError }) => {
 	const classes = useStyles();
@@ -79,7 +77,7 @@ const ImportListDialog = ({ open, handleClose, importSuccess, getError }) => {
 		});
 	};
 
-	const onImportAsset = () => {
+	const onImportUser = () => {
 		setLoading(true);
 		importDocument(file.key, true).then(async (res) => {
 			await importSuccess();
@@ -118,10 +116,10 @@ const ImportListDialog = ({ open, handleClose, importSuccess, getError }) => {
 									<Button
 										variant="outlined"
 										color="primary"
-										onClick={onImportAsset}
+										onClick={onImportUser}
 										className={classes.button}
 									>
-										{loading ? "Importing ..." : "Import Assets"}
+										{loading ? "Importing ..." : "Import Users"}
 									</Button>
 									<ImportTable title="New Users" data={data} />
 								</>

@@ -240,7 +240,7 @@ const EditAssetDialog = ({
 						<ET.LeftInputContainer>
 							<div className={classes.inputContainer}>
 								<ET.NameLabel>
-									Name<ET.RequiredStar>*</ET.RequiredStar>
+									Asset<ET.RequiredStar>*</ET.RequiredStar>
 								</ET.NameLabel>
 								<TextField
 									name="name"
