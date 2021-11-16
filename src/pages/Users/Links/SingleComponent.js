@@ -1,4 +1,3 @@
-import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect, useCallback } from "react";
 import UserNavigation from "constants/navigation/userNavigation";
@@ -55,14 +54,8 @@ const SingleComponent = (route) => {
 	// Fetch Side effect to get data
 	useEffect(() => {
 		// Getting data and updating state
-		if (route.details) {
-			handleGetData().catch((err) => console.log(err));
-		} else {
-			setAllData(route.userDetail);
-			setInputData(route.userDetail);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [handleGetData, route.details]);
+		handleGetData().catch((err) => console.log(err));
+	}, [handleGetData]);
 
 	useEffect(() => {
 		if (allData.id) {
@@ -158,8 +151,5 @@ const SingleComponent = (route) => {
 		</>
 	);
 };
-const mapStateToProps = ({ authData: { userDetail } }) => ({
-	userDetail,
-});
 
-export default connect(mapStateToProps)(SingleComponent);
+export default SingleComponent;
