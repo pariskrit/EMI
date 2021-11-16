@@ -38,7 +38,7 @@ const NavDetails = ({ staticCrumbs, crumbs, status }) => {
 	return (
 		<div>
 			<Breadcrumbs aria-label="breadcrumb" separator={<DefaultSeparator />}>
-				{staticCrumbs?.length > 0
+				{staticCrumbs?.length > 0 && staticCrumbs.every((crumb) => crumb)
 					? staticCrumbs?.map((crumb, i) => (
 							<Typography
 								key={i}

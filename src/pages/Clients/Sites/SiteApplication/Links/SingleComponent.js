@@ -24,9 +24,7 @@ const SingleComponent = (route) => {
 		state.details?.data,
 		state.defaultCustomCaptionsData
 	);
-
 	let crumbs = JSON.parse(localStorage.getItem("crumbs")) ?? {};
-
 	const openAddModal = () => dispatch({ type: "ADD_TOGGLE" });
 
 	const openConfirmationModal = () =>
@@ -34,10 +32,14 @@ const SingleComponent = (route) => {
 
 	const fetchSiteApplicationDetails = async () => {
 		const result = await getSiteApplicationDetail(appId);
+		let newCrumbs = crumbs;
+		if (location.pathname.split("/")[8] === "detail") {
+			newCrumbs = [];
+		}
 		localStorage.setItem(
 			"crumbs",
 			JSON.stringify({
-				...crumbs,
+				...newCrumbs,
 				applicationName: result.data.application.name,
 			})
 		);
@@ -105,9 +107,7 @@ const SingleComponent = (route) => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
 	const { clientName, siteName, applicationName } = crumbs;
-
 	return (
 		<>
 			{loading ? (

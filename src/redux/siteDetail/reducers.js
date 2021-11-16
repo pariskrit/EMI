@@ -17,5 +17,8 @@ export const siteDetailSlice = createSlice({
 				payload.data.name,
 			];
 		},
+		setCrumbs: (state, { payload }) => {
+			state.crumbs = payload;
+		},
 	},
 });
