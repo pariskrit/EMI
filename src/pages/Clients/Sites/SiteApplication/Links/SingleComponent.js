@@ -25,7 +25,7 @@ const SingleComponent = (route) => {
 		state.defaultCustomCaptionsData
 	);
 
-	let crumbs = JSON.parse(localStorage.getItem("crumbs"));
+	let crumbs = JSON.parse(localStorage.getItem("crumbs")) ?? {};
 
 	const openAddModal = () => dispatch({ type: "ADD_TOGGLE" });
 

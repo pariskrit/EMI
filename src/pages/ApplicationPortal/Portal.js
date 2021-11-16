@@ -40,7 +40,7 @@ function Portal() {
 	};
 
 	const fetchListOfClients = async () => {
-		const res = await getClientList(24);
+		const res = await getClientList();
 
 		if (res.status) {
 			setListOfClients([
@@ -55,9 +55,6 @@ function Portal() {
 	};
 
 	const fetchApplicationsAndSites = async (clientId) => {
-		const selectedClient = listOfClients.find(
-			(client) => client.id === clientId
-		);
 		setLoading({ ...isLoading, applications: true, showText: false });
 		const res = await getApplicationsAndSites(clientId);
 		setApplicationList(res.data);
