@@ -6,11 +6,14 @@ import ServiceOptions from "./ServiceOptions";
 import { getSiteDetails } from "services/clients/sites/siteDetails";
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
+import { connect } from "react-redux";
+import { setNavCrumbs } from "redux/siteDetail/actions";
 
 function SiteApplicationDetails({
 	appId,
 	state: { details, openConfirmationModal, isActive },
 	dispatch,
+	setCrumbs,
 }) {
 	const [showLicenseTile, setShowLicenseTile] = useState(false);
 	const [siteAppDetails, setSiteAppDetails] = useState({});
@@ -22,13 +25,20 @@ function SiteApplicationDetails({
 
 	const fetchSiteDetails = async () => {
 		const siteResult = await getSiteDetails(details.data.siteID);
+		let crumbs = JSON.parse(localStorage.getItem("crumbs"));
 		localStorage.setItem(
 			"crumbs",
 			JSON.stringify({
+				...crumbs,
 				clientName: siteResult.data.clientName,
 				siteName: siteResult.data.name,
 			})
 		);
+		setCrumbs([
+			siteResult.data.clientName,
+			siteResult.data.name,
+			crumbs.applicationName,
+		]);
 		if (siteResult?.data?.licenseType === 3) {
 			setShowLicenseTile(true);
 		}
@@ -49,7 +59,6 @@ function SiteApplicationDetails({
 		setIsUpdating(false);
 		closeConfirmationModal();
 	};
-
 	useEffect(() => {
 		const isDetailsPresent = Object.keys(details).length > 0;
 		if (isDetailsPresent) {
@@ -97,4 +106,9 @@ function SiteApplicationDetails({
 	);
 }
 
-export default SiteApplicationDetails;
+const mapDispatchToProps = (dispatch) => ({
+	setCrumbs: (crumbs) => dispatch(setNavCrumbs(crumbs)),
+});
+
+export default connect(null, mapDispatchToProps)(SiteApplicationDetails);
+// export default SiteApplicationDetails;

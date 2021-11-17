@@ -247,7 +247,7 @@ const CommonHeader = ({
 };
 
 CommonHeader.defaultProps = {
-	crumbs: ["Parent", "Child", "so on.."],
+	crumbs: [],
 	status: false,
 	showAdd: false,
 	showHistory: false,

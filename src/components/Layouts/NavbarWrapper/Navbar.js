@@ -408,6 +408,35 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 									/>
 								</ListItem>
 							</div>
+
+							{!isApplicationPortal ? (
+								<Link to="/portal" className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem
+											button
+											className={
+												"portal" === activeLink
+													? classes.currentItemBackground
+													: null
+											}
+										>
+											<ListItemIcon className={classes.navIconContainer}>
+												<Home className={classes.navIcon} alt={`Home icon`} />
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimary,
+													secondary: classes.listItemTextSecondary,
+												}}
+												primary="Application Portal"
+											/>
+										</ListItem>
+									</div>
+								</Link>
+							) : null}
+
 							<div>
 								<ListItem key="logoutIcon" button={true} onClick={handleLogout}>
 									<ListItemIcon className={classes.navIconContainer}>
