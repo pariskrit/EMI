@@ -20,7 +20,6 @@ const routes = [
 		showNotes: true,
 		api: differentUserAPIs.UserDetailsAPIs,
 		title: "User Details",
-		details: true,
 	},
 	{
 		id: 100,
@@ -33,7 +32,6 @@ const routes = [
 		showNotes: false,
 		api: differentUserAPIs.UserProfileAPIs,
 		title: "User Profile",
-		details: false,
 	},
 ];
 
