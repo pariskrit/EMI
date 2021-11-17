@@ -17,8 +17,8 @@ import Watermark from "assets/watermark.png";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { loginSocialAccount, loginUser } from "redux/auth/actions";
+import MicrosoftLogin from "react-microsoft-login";
 import { showError } from "redux/common/actions";
-import { useMsal } from "@azure/msal-react";
 
 // Yup validation schema
 const schema = yup.object({
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 		backgroundPosition: "center",
 	},
 	paper: {
-		margin: "20px 32px",
+		margin: theme.spacing(8, 4),
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
@@ -113,17 +113,6 @@ const useStyles = makeStyles((theme) => ({
 		width: "18px",
 		height: "18px",
 	},
-	microsoftbtn: {
-		width: "255px",
-		height: "42px",
-		marginTop: "11px",
-		borderRadius: "2px",
-		boxShadow: "0 3px 4px 0 rgba(0,0,0,.25)",
-		"&:hover": {
-			cursor: "pointer",
-		},
-		backgroundColor: "#2b2c2c",
-	},
 	btnText: {
 		float: "right",
 		margin: "11px 11px 0 0",
@@ -164,7 +153,7 @@ const Login = ({
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
-	const { instance } = useMsal();
+	const [msalInstance, onMsalInstanceChange] = useState();
 
 	// Handlers
 	const loginHandler = async (email, password) => {
@@ -217,30 +206,28 @@ const Login = ({
 		}
 	};
 
-	function signInMicrosoftHandler() {
-		instance
-			.loginPopup()
-			.then((res) => responseMicrosoft(res))
-			.catch((error) => console.log(error));
-	}
-
-	const responseMicrosoft = async (data) => {
+	const responseMicrosoft = async (err, data, msal) => {
 		// some actions
+		if (!err && data) {
+			onMsalInstanceChange(msal);
 
-		try {
-			const respon = await loginSocialAccount(
-				{ token: data.idToken },
-				"MICROSOFT",
-				"/Account/microsoft"
-			);
-			if (respon) {
-				localStorage.setItem("homeAccoundId", data.account.homeAccountId);
-				successRedirect();
-			} else {
-				throw new Error(respon);
+			try {
+				const respon = await loginSocialAccount(
+					{ token: data.idToken.rawIdToken },
+					"MICROSOFT",
+					"/Account/microsoft"
+				);
+
+				if (respon) {
+					successRedirect();
+				} else {
+					throw new Error(respon);
+				}
+			} catch (err) {
+				getErrors(err.response.data.detail);
 			}
-		} catch (err) {
-			getErrors(err.response.data.detail);
+		} else {
+			console.log(err);
 		}
 	};
 
@@ -256,6 +243,11 @@ const Login = ({
 		if (e.keyCode === 13) {
 			loginHandler(email, password);
 		}
+	};
+
+	const logoutHandler = () => {
+		console.log(msalInstance);
+		msalInstance.logout();
 	};
 
 	return (
@@ -331,48 +323,44 @@ const Login = ({
 								</div>
 							</form>
 						)}
-						<div style={{ marginTop: "11px" }}>
-							<GoogleLogin
-								clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-								render={(renderProps) => (
-									<div
-										onClick={renderProps.onClick}
-										disabled={renderProps.disabled}
-										className={classes.googleBtn}
-									>
-										<div className={classes.googleIconWrapper}>
-											<img
-												alt=""
-												className={classes.googleIcon}
-												src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-											/>
-										</div>
-										<p className={classes.btnText}>
-											<b>CONTINUE WITH GOOGLE</b>
-										</p>
-									</div>
-								)}
-								onSuccess={responseGoogle}
-								onFailure={responseGoogle}
-								cookiePolicy={"single_host_origin"}
-							/>
-						</div>
 
-						<div
-							onClick={signInMicrosoftHandler}
-							className={classes.microsoftbtn}
-						>
-							<div className={classes.googleIconWrapper}>
-								<img
-									alt=""
-									className={classes.googleIcon}
-									src="https://img.icons8.com/color/96/000000/microsoft.png"
-								/>
-							</div>
-							<p className={classes.btnText}>
-								<b>CONTINUE WITH MICROSOFT</b>
-							</p>
-						</div>
+						{msalInstance ? (
+							<button onClick={logoutHandler}>Logout</button>
+						) : (
+							<MicrosoftLogin
+								clientId={process.env.REACT_APP_CLIENT_ID}
+								authCallback={responseMicrosoft}
+								buttonTheme="dark"
+								postLogoutRedirectUri="http://localhost:3000/login"
+							/>
+						)}
+					</div>
+
+					<div style={{ marginTop: "11px" }}>
+						<GoogleLogin
+							clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+							render={(renderProps) => (
+								<div
+									onClick={renderProps.onClick}
+									disabled={renderProps.disabled}
+									className={classes.googleBtn}
+								>
+									<div className={classes.googleIconWrapper}>
+										<img
+											alt=""
+											className={classes.googleIcon}
+											src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+										/>
+									</div>
+									<p className={classes.btnText}>
+										<b>CONTINUE WITH GOOGLE</b>
+									</p>
+								</div>
+							)}
+							onSuccess={responseGoogle}
+							onFailure={responseGoogle}
+							cookiePolicy={"single_host_origin"}
+						/>
 					</div>
 
 					<footer className={classes.footer}>
@@ -386,9 +374,7 @@ const Login = ({
 	);
 };
 
-const mapStateToProps = ({ authData: { userLoading } }) => ({
-	userLoading,
-});
+const mapStateToProps = ({ authData: { userLoading } }) => ({ userLoading });
 const mapDispatchToProps = (dispatch) => ({
 	loginData: (data) => dispatch(loginUser(data)),
 	loginSocialAccount: (data, loginType, url) =>
