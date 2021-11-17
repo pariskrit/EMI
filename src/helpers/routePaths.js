@@ -44,7 +44,7 @@ export const siteAppPositionsPath = "/positions";
 export const siteAppFeedbackStatuses = "/feedbackstatuses";
 
 //Applications
-export const applicationListPath = "/applications";
+export const applicationListPath = "/app/applications";
 export const applicationPath = "/applications";
 export const applicationDetailsPath = "/app/applications/:id";
 export const customCaptionsPath = "/customcaptions";

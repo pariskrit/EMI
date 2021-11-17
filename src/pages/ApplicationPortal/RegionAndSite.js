@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { Link } from "react-router-dom";
 import {
-	applicationListPath,
+	applicationPath,
 	clientsPath,
 	siteAppDetailPath,
 } from "helpers/routePaths";
@@ -110,7 +110,7 @@ function RegionAndSite({ region, sites, clientId }) {
 							target="_blank"
 							to={`${clientsPath}/${clientId}/sites/${
 								site.id
-							}${applicationListPath}/${site.siteAppID + siteAppDetailPath}`}
+							}${applicationPath}/${site.siteAppID + siteAppDetailPath}`}
 						>
 							{site.name}
 						</Link>

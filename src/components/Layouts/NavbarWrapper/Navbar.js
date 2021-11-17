@@ -320,7 +320,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						<List>
 							{[
 								["Clients", ClientIcon, clientsPath],
-								["Applications", ApplicationIcon, "/app" + applicationListPath],
+								["Applications", ApplicationIcon, applicationListPath],
 								["Models", ModelIcon, "/"],
 								["Users", UserIcon, usersPath],
 								["Analytics", AnalyticsIcon, "/"],
