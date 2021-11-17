@@ -209,7 +209,10 @@ const Login = ({
 				throw new Error(respon);
 			}
 		} catch (err) {
-			getErrors(err.response.data.detail);
+			if (err.response) {
+				getErrors(err?.response?.data?.detail);
+			}
+
 			return false;
 		}
 	};

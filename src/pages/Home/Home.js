@@ -12,7 +12,9 @@ const Home = () => {
 			</Container>
 
 			<Container>
-				<Link to="/applications">Check out the Application List Screen</Link>
+				<Link to="/app/applications">
+					Check out the Application List Screen
+				</Link>
 			</Container>
 		</Container>
 	);
