@@ -171,7 +171,11 @@ const Login = ({
 			if (!localChecker.some((el) => el.valid === false)) {
 				const response = await loginData(input);
 				if (response) {
-					successRedirect();
+					if (response?.position?.siteAppID) {
+						successRedirect();
+					} else {
+						redirectToPortal();
+					}
 					return true;
 				} else {
 					throw new Error(response);
@@ -195,7 +199,11 @@ const Login = ({
 				"/Account/google"
 			);
 			if (respon) {
-				successRedirect();
+				if (respon?.position?.siteAppID) {
+					successRedirect();
+				} else {
+					redirectToPortal();
+				}
 				return true;
 			} else {
 				throw new Error(respon);
@@ -219,7 +227,11 @@ const Login = ({
 				);
 
 				if (respon) {
-					successRedirect();
+					if (respon?.position?.siteAppID) {
+						successRedirect();
+					} else {
+						redirectToPortal();
+					}
 				} else {
 					throw new Error(respon);
 				}
@@ -237,6 +249,8 @@ const Login = ({
 		history.push(state?.from?.pathname ? state?.from?.pathname : clientsPath);
 		return true;
 	};
+
+	const redirectToPortal = () => history.push("/app/portal");
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode

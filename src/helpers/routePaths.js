@@ -6,6 +6,8 @@ export const clientDetailPath = clientsPath + "/:id";
 export const usersPath = "/app/users";
 export const userDetailPath = usersPath + "/:id";
 
+//Application Portal
+export const applicationPortalPath = "/app/portal";
 //User Profile
 export const userProfilePath = "/app/me";
 

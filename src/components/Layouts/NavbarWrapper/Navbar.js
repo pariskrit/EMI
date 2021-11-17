@@ -33,6 +33,7 @@ import {
 	clientsPath,
 	usersPath,
 	userProfilePath,
+	applicationPortalPath,
 } from "helpers/routePaths";
 import "./style.scss";
 import { connect } from "react-redux";
@@ -319,7 +320,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						<List>
 							{[
 								["Clients", ClientIcon, clientsPath],
-								["Applications", ApplicationIcon, applicationListPath],
+								["Applications", ApplicationIcon, "/app" + applicationListPath],
 								["Models", ModelIcon, "/"],
 								["Users", UserIcon, usersPath],
 								["Analytics", AnalyticsIcon, "/"],
@@ -410,7 +411,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 							</div>
 
 							{!isApplicationPortal ? (
-								<Link to="/portal" className={classes.navLink}>
+								<Link to={applicationPortalPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
 									>

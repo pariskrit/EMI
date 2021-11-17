@@ -49,7 +49,7 @@ import Applications from "..";
 export default function ApplicationPage() {
 	return (
 		<Applications>
-			<Route path={applicationListPath} exact>
+			<Route path={`/app${applicationListPath}`} exact>
 				<ApplicationList />
 			</Route>
 
