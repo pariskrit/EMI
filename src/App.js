@@ -31,7 +31,6 @@ function App() {
 					<Route path="/portal" exact>
 						<ApplicationPortal />
 					</Route>
-					<MainApp />
 					<ProtectedRoute path="/app" component={MainApp} />
 				</Switch>
 			</Router>
