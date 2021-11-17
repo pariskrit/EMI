@@ -55,6 +55,8 @@ const UserDetail = ({
 					setUpdating(false);
 					return true;
 				} else {
+					setUpdating(false);
+
 					const err = result.data.errors;
 					setErrors({ ...errors, ...err });
 					// console.log(result.data.errors);
