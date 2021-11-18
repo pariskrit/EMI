@@ -257,11 +257,7 @@ const Login = ({
 			if (!localChecker.some((el) => el.valid === false)) {
 				const response = await loginData(input);
 				if (response) {
-					if (response?.position?.siteAppID) {
-						successRedirect();
-					} else {
-						redirectToPortal();
-					}
+					redirectToPortalOrDefault(response?.position?.siteAppID);
 					return true;
 				} else {
 					throw new Error(response);
@@ -287,11 +283,7 @@ const Login = ({
 			);
 
 			if (respon) {
-				if (respon?.position?.siteAppID) {
-					successRedirect();
-				} else {
-					redirectToPortal();
-				}
+				redirectToPortalOrDefault(respon?.position?.siteAppID);
 				return true;
 			} else {
 				throw new Error(respon);
@@ -321,11 +313,7 @@ const Login = ({
 
 			if (respon) {
 				localStorage.setItem("homeAccoundId", data.account.homeAccountId);
-				if (respon?.position?.siteAppID) {
-					successRedirect();
-				} else {
-					redirectToPortal();
-				}
+				redirectToPortalOrDefault(respon?.position?.siteAppID);
 			} else {
 				throw new Error(respon);
 			}
@@ -333,6 +321,9 @@ const Login = ({
 			console.error(err);
 		}
 	};
+
+	const redirectToPortalOrDefault = (positionNotNull) =>
+		positionNotNull ? successRedirect() : redirectToPortal();
 
 	const successRedirect = () => {
 		// Update below to change redirect location
