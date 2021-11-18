@@ -320,7 +320,8 @@ const Login = ({
 				} else {
 					throw new Error(respon);
 				}
-				} catch (err) {}
+			} catch (err) {}
+		}
 	};
 
 	const successRedirect = () => {
