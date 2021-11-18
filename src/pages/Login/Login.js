@@ -235,6 +235,8 @@ const Login = ({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [msalInstance, onMsalInstanceChange] = useState();
 
+	const { instance } = useMsal();
+
 	const { signIn } = useGoogleLogin({
 		jsSrc: "https://apis.google.com/js/api.js",
 		onFailure: (res) => console.log(res),
@@ -299,6 +301,13 @@ const Login = ({
 		}
 	};
 
+	function signInMicrosoftHandler() {
+		instance
+			.loginPopup()
+			.then((res) => responseMicrosoft(res))
+			.catch((error) => console.log(error));
+	}
+
 	const responseMicrosoft = async (err, data, msal) => {
 		// some actions
 		if (!err && data) {
@@ -320,7 +329,8 @@ const Login = ({
 				} else {
 					throw new Error(respon);
 				}
-				} catch (err) {}
+			} catch (err) {}
+		}
 	};
 
 	const successRedirect = () => {
