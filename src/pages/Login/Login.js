@@ -233,7 +233,7 @@ const Login = ({
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
-	const [msalInstance, onMsalInstanceChange] = useState();
+	const { instance } = useMsal();
 
 	const { signIn } = useGoogleLogin({
 		jsSrc: "https://apis.google.com/js/api.js",
@@ -273,6 +273,7 @@ const Login = ({
 			}
 		} catch (err) {
 			// Removing spinner
+			console.error(err);
 			return false;
 		}
 	};
@@ -280,10 +281,11 @@ const Login = ({
 	const responseGoogle = async (res) => {
 		try {
 			const respon = await loginSocialAccount(
-				{ token: res.Zb.id_token },
+				{ token: res.tokenId },
 				"GOOGLE",
 				"/Account/google"
 			);
+
 			if (respon) {
 				if (respon?.position?.siteAppID) {
 					successRedirect();
@@ -295,32 +297,40 @@ const Login = ({
 				throw new Error(respon);
 			}
 		} catch (err) {
+			console.error(err);
 			return false;
 		}
 	};
 
-	const responseMicrosoft = async (err, data, msal) => {
+	function signInMicrosoftHandler() {
+		instance
+			.loginPopup()
+			.then((res) => responseMicrosoft(res))
+			.catch((error) => console.log(error));
+	}
+
+	const responseMicrosoft = async (data) => {
 		// some actions
-		if (!err && data) {
-			onMsalInstanceChange(msal);
 
-			try {
-				const respon = await loginSocialAccount(
-					{ token: data.idToken.rawIdToken },
-					"MICROSOFT",
-					"/Account/microsoft"
-				);
+		try {
+			const respon = await loginSocialAccount(
+				{ token: data.idToken },
+				"MICROSOFT",
+				"/Account/microsoft"
+			);
 
-				if (respon) {
-					if (respon?.position?.siteAppID) {
-						successRedirect();
-					} else {
-						redirectToPortal();
-					}
+			if (respon) {
+				localStorage.setItem("homeAccoundId", data.account.homeAccountId);
+				if (respon?.position?.siteAppID) {
+					successRedirect();
 				} else {
-					throw new Error(respon);
+					redirectToPortal();
 				}
-			} catch (err) {}
+			} else {
+				throw new Error(respon);
+			}
+		} catch (err) {
+			console.error(err);
 		}
 	};
 
@@ -338,11 +348,6 @@ const Login = ({
 		if (e.keyCode === 13) {
 			loginHandler(email, password);
 		}
-	};
-
-	const logoutHandler = () => {
-		console.log(msalInstance);
-		msalInstance.logout();
 	};
 
 	return (
