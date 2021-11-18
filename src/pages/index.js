@@ -8,6 +8,8 @@ import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
 import { getUserDetail } from "redux/auth/actions";
+import ApplicationPortal from "./ApplicationPortal";
+import { applicationPortalPath } from "helpers/routePaths";
 
 const MainApp = ({ location }) => {
 	// useEffect(() => {
@@ -19,9 +21,13 @@ const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
 		return <Redirect to="/login" />;
 	}
+
 	return (
 		<Switch>
-			<NavbarWrapper>
+			<NavbarWrapper
+				isApplicationPortal={location.pathname === applicationPortalPath}
+			>
+				<ApplicationPortal />
 				<ApplicationPage />
 				<ClientPage />
 				<SitePage />

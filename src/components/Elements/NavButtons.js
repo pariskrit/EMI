@@ -98,7 +98,7 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 						return (
 							<Button
 								className={`${
-									navItem.main === current
+									navItem.name === current
 										? clsx(classes.curveButton, classes.curveButtonCurrent)
 										: classes.curveButton
 								} largeBtn`}
@@ -142,7 +142,7 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 						return (
 							<Button
 								className={`${
-									navItem.main === current
+									navItem.name === current
 										? clsx(classes.curveButton, classes.curveButtonCurrent)
 										: classes.curveButton
 								} largeBtn`}

@@ -1,12 +1,13 @@
-import NavbarWrapper from "components/Layouts/NavbarWrapper";
 import React from "react";
 import Portal from "./Portal";
+import { Route } from "react-router-dom";
+import { applicationPortalPath } from "helpers/routePaths";
 
 function ApplicationPortal() {
 	return (
-		<NavbarWrapper isApplicationPortal>
+		<Route path={applicationPortalPath} exact>
 			<Portal />
-		</NavbarWrapper>
+		</Route>
 	);
 }
 
