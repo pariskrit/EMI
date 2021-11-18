@@ -66,6 +66,9 @@ instance.interceptors.response.use(
 					}
 				);
 
+				if (refreshToken.status === 401) {
+					throw new Error(refreshToken);
+				}
 				// Getting JSON stream
 				refreshToken = await refreshToken.json();
 
@@ -83,6 +86,8 @@ instance.interceptors.response.use(
 				return instance(originalRequest);
 			} catch (err) {
 				// Returning error if present
+				localStorage.clear();
+				window.location = "/login";
 				return Promise.reject(err);
 			}
 		}

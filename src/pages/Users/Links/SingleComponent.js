@@ -51,6 +51,7 @@ const SingleComponent = (route) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
+
 	// Fetch Side effect to get data
 	useEffect(() => {
 		// Getting data and updating state

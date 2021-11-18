@@ -8,7 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { GoogleLogin } from "react-google-login";
+import { useGoogleLogin } from "react-google-login";
 import { clientsPath } from "helpers/routePaths";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
@@ -17,8 +17,8 @@ import Watermark from "assets/watermark.png";
 import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { loginSocialAccount, loginUser } from "redux/auth/actions";
-import MicrosoftLogin from "react-microsoft-login";
-import { showError } from "redux/common/actions";
+import { useMsal } from "@azure/msal-react";
+import ErrorIcon from "@material-ui/icons/Error";
 
 // Yup validation schema
 const schema = yup.object({
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		alignItems: "center",
 		marginBottom: 70,
-		marginTop: 30,
+		marginTop: 0,
 	},
 	logo: {
 		width: 300,
@@ -67,71 +67,151 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		minWidth: 380,
+		borderRadius: "5px",
+		marginTop: "-50px",
+		width: "340px",
 	},
 	spinnerContainer: {
 		marginTop: 20,
 	},
 	form: {
 		width: "100%",
-		marginTop: theme.spacing(1),
+		marginTop: "theme.spacing(1)",
 	},
 	submitContainer: {
-		display: "flex",
-		flexDirection: "row-reverse",
+		width: "100%",
 	},
 	submit: {
 		backgroundColor: ColourConstants.confirmButton,
 		marginTop: 10,
-		width: 150,
-		paddingTop: 15,
-		paddingBottom: 15,
+		width: "100%",
 	},
 	googleBtn: {
-		width: "230px",
-		height: "42px",
-		backgroundColor: "#4285f4",
+		width: "100%",
+		height: "38px",
+		backgroundColor: "#f8f8f9",
 		borderRadius: "2px",
 		boxShadow: "0 3px 4px 0 rgba(0,0,0,.25)",
 		"&:hover": {
 			cursor: "pointer",
+			backgroundColor: "#fff",
 		},
+		display: "flex",
+		alignItems: "center",
+		gap: "70px",
 	},
 	googleIconWrapper: {
-		position: "absolute",
-		marginTop: "1px",
-		marginLeft: "1px",
-		width: "40px",
-		height: "40px",
+		width: "45px",
+		height: "38px",
 		borderRadius: "2px",
 		backgroundColor: "#fff",
+		display: "flex",
+		justifyItems: "center",
 	},
 	googleIcon: {
-		position: "absolute",
+		margin: "auto",
+		width: "20px",
+		height: "20px",
+	},
+	microsoftbtn: {
+		width: "100%",
+		height: "38px",
 		marginTop: "11px",
-		marginLeft: "11px",
-		width: "18px",
-		height: "18px",
+		borderRadius: "2px",
+		boxShadow: "0 3px 4px 0 rgba(0,0,0,.25)",
+		backgroundColor: "#00a1f1",
+		"&:hover": {
+			cursor: "pointer",
+			backgroundColor: "#55ceff",
+		},
+		display: "flex",
+		alignItems: "center",
+		gap: "70px",
 	},
 	btnText: {
-		float: "right",
-		margin: "11px 11px 0 0",
-		color: "#fff",
+		color: "#5e5e5e",
 		fontSize: "14px",
 		letterSpacing: "0.2px",
 		fontFamily: "Roboto",
 	},
 	footer: {
-		height: 50,
-		justifyContent: "center",
-		alignItems: "center",
-		position: "absolute",
-		bottom: 0,
+		position: "fixed",
+		bottom: "8px",
 	},
 	footerText: {
 		fontSize: "1em",
 		margin: 0,
 		padding: 0,
+	},
+
+	divider: {
+		fontSize: "1.1em",
+		margin: "15px 0",
+		position: "relative",
+		width: "100%",
+		display: "flex",
+		alignItems: "center",
+		color: "rgba(0,0,0,0.6)",
+	},
+
+	dividerText: {
+		width: "50px",
+		zindex: 2,
+		margin: "auto",
+		textAlign: "center",
+	},
+
+	title: {
+		marginTop: 0,
+		fontSize: "20px",
+		fontWeight: "bold",
+	},
+
+	errorMsg: {
+		width: "100%",
+		display: "flex",
+		height: "35px",
+		alignItems: "center",
+		border: "1px solid rgba(0,0,0,0.2)",
+		marginBottom: "10px",
+		gap: "15px",
+	},
+
+	errorIcon: {
+		backgroundColor: "#e34843",
+		height: "100%",
+		width: "38px",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+
+	firstLine: {
+		height: "1px",
+		width: "45%",
+		position: "absolute",
+		backgroundColor: "rgba(0,0,0,0.2)",
+	},
+
+	secondLine: {
+		height: "1px",
+		width: "45%",
+		position: "absolute",
+		backgroundColor: "rgba(0,0,0,0.2)",
+		right: 0,
+	},
+
+	labels: {
+		"& .MuiOutlinedInput-root": {
+			height: "38px",
+			overflow: "hidden",
+		},
+		"& .MuiInputLabel-outlined": {
+			transform: "translate(14px, 13px) scale(0.9)",
+		},
+		"& .MuiInputLabel-shrink": {
+			transform: "translate(14px, -6px) scale(0.75)",
+		},
 	},
 }));
 
@@ -139,9 +219,9 @@ const Login = ({
 	userLoading,
 	loginData,
 	loginSocialAccount,
-	getErrors,
 	location,
 	history,
+	errorMessage,
 }) => {
 	// from will provide previous path redirect from
 	const { state } = location;
@@ -155,10 +235,16 @@ const Login = ({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [msalInstance, onMsalInstanceChange] = useState();
 
+	const { signIn } = useGoogleLogin({
+		jsSrc: "https://apis.google.com/js/api.js",
+		onFailure: (res) => console.log(res),
+		clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+		onSuccess: (res) => responseGoogle(res),
+		cookiePolicy: "single_host_origin",
+	});
+
 	// Handlers
 	const loginHandler = async (email, password) => {
-		// Setting spinner
-
 		// Attempting login
 		try {
 			var input = {
@@ -209,10 +295,6 @@ const Login = ({
 				throw new Error(respon);
 			}
 		} catch (err) {
-			if (err.response) {
-				getErrors(err?.response?.data?.detail);
-			}
-
 			return false;
 		}
 	};
@@ -238,12 +320,7 @@ const Login = ({
 				} else {
 					throw new Error(respon);
 				}
-			} catch (err) {
-				getErrors(err.response.data.detail);
-			}
-		} else {
-			console.log(err);
-		}
+				} catch (err) {}
 	};
 
 	const successRedirect = () => {
@@ -292,92 +369,103 @@ const Login = ({
 								<CircularProgress />
 							</div>
 						) : (
-							<form className={classes.form} noValidate>
-								<TextField
-									error={errors.email === null ? false : true}
-									helperText={errors.email === null ? null : errors.email}
-									variant="outlined"
-									margin="normal"
-									required
-									fullWidth
-									id="email"
-									value={email}
-									label="Email"
-									name="email"
-									autoComplete="email"
-									onChange={(e) => setEmail(e.target.value)}
-									onKeyDown={handleEnterPress}
-								/>
-								<TextField
-									error={errors.password === null ? false : true}
-									helperText={errors.password === null ? null : errors.password}
-									variant="outlined"
-									margin="normal"
-									required
-									fullWidth
-									name="password"
-									label="Password"
-									type="password"
-									id="password"
-									value={password}
-									autoComplete="current-password"
-									onChange={(e) => setPassword(e.target.value)}
-									onKeyDown={handleEnterPress}
-								/>
-
-								<div className={classes.submitContainer}>
-									<Button
-										fullWidth
-										variant="contained"
-										color="primary"
-										className={classes.submit}
-										onClick={(e) => {
-											loginHandler(email, password);
-										}}
-									>
-										Log In
-									</Button>
-								</div>
-							</form>
-						)}
-
-						{msalInstance ? (
-							<button onClick={logoutHandler}>Logout</button>
-						) : (
-							<MicrosoftLogin
-								clientId={process.env.REACT_APP_CLIENT_ID}
-								authCallback={responseMicrosoft}
-								buttonTheme="dark"
-								postLogoutRedirectUri="http://localhost:3000/login"
-							/>
-						)}
-					</div>
-
-					<div style={{ marginTop: "11px" }}>
-						<GoogleLogin
-							clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-							render={(renderProps) => (
-								<div
-									onClick={renderProps.onClick}
-									disabled={renderProps.disabled}
-									className={classes.googleBtn}
-								>
-									<div className={classes.googleIconWrapper}>
-										<img
-											alt=""
-											className={classes.googleIcon}
-											src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-										/>
+							<>
+								{errorMessage !== "" && (
+									<div className={classes.errorMsg}>
+										<span className={classes.errorIcon}>
+											<ErrorIcon style={{ color: "white" }} />
+										</span>
+										{errorMessage}
 									</div>
-									<p className={classes.btnText}>
-										<b>CONTINUE WITH GOOGLE</b>
-									</p>
+								)}
+								<form className={classes.form} noValidate>
+									<TextField
+										className={classes.labels}
+										error={errors.email === null ? false : true}
+										helperText={errors.email === null ? null : errors.email}
+										variant="outlined"
+										margin="normal"
+										required
+										fullWidth
+										id="email"
+										value={email}
+										label="Email"
+										name="email"
+										autoComplete="email"
+										onChange={(e) => setEmail(e.target.value)}
+										onKeyDown={handleEnterPress}
+									/>
+									<TextField
+										className={classes.labels}
+										error={errors.password === null ? false : true}
+										helperText={
+											errors.password === null ? null : errors.password
+										}
+										variant="outlined"
+										margin="normal"
+										required
+										fullWidth
+										name="password"
+										label="Password"
+										type="password"
+										id="password"
+										value={password}
+										autoComplete="current-password"
+										onChange={(e) => setPassword(e.target.value)}
+										onKeyDown={handleEnterPress}
+									/>
+
+									<div className={classes.submitContainer}>
+										<Button
+											fullWidth
+											variant="contained"
+											color="primary"
+											className={classes.submit}
+											onClick={(e) => {
+												loginHandler(email, password);
+											}}
+										>
+											Sign In
+										</Button>
+									</div>
+								</form>
+							</>
+						)}
+						<div className={classes.divider}>
+							<span className={classes.firstLine}></span>
+							<span className={classes.dividerText}>OR</span>
+							<span className={classes.secondLine}></span>
+						</div>
+						<div style={{ width: "100%" }}>
+							<div onClick={signIn} className={classes.googleBtn}>
+								<div className={classes.googleIconWrapper}>
+									<img
+										alt=""
+										className={classes.googleIcon}
+										src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+									/>
 								</div>
-							)}
-							onSuccess={responseGoogle}
-							onFailure={responseGoogle}
-							cookiePolicy={"single_host_origin"}
-						/>
+								<p className={classes.btnText}>
+									<b>Sign In With Google</b>
+								</p>
+							</div>
+						</div>
+
+						<div
+							onClick={signInMicrosoftHandler}
+							className={classes.microsoftbtn}
+						>
+							<div className={classes.googleIconWrapper}>
+								<img
+									alt=""
+									className={classes.googleIcon}
+									src="https://img.icons8.com/color/96/000000/microsoft.png"
+								/>
+							</div>
+							<p className={classes.btnText} style={{ color: "#fff" }}>
+								<b>Sign In With Microsoft</b>
+							</p>
+						</div>
 					</div>
 
 					<footer className={classes.footer}>
@@ -391,12 +479,15 @@ const Login = ({
 	);
 };
 
-const mapStateToProps = ({ authData: { userLoading } }) => ({ userLoading });
+const mapStateToProps = ({ authData: { userLoading, errorMessage } }) => ({
+	userLoading,
+	errorMessage,
+});
+
 const mapDispatchToProps = (dispatch) => ({
 	loginData: (data) => dispatch(loginUser(data)),
 	loginSocialAccount: (data, loginType, url) =>
 		dispatch(loginSocialAccount(data, loginType, url)),
-	getErrors: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

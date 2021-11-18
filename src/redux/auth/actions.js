@@ -19,7 +19,7 @@ export const loginUser = (input) => async (dispatch) => {
 				resolve(res);
 			})
 			.catch((err) => {
-				dispatch(userFailure());
+				dispatch(userFailure(err.response.data.detail));
 				reject(err);
 			});
 	});
@@ -40,7 +40,7 @@ export const loginSocialAccount = (input, loginType, url) => async (
 				resolve(res);
 			})
 			.catch((err) => {
-				dispatch(userFailure());
+				dispatch(userFailure(err.response.data.detail));
 				reject(err);
 			});
 	});

@@ -4,6 +4,7 @@ const initialState = {
 	userDetail: {},
 	userLoading: false,
 	isAuthenticated: false,
+	errorMessage: "",
 };
 
 export const authSlice = createSlice({
@@ -17,11 +18,13 @@ export const authSlice = createSlice({
 			state.userLoading = false;
 			state.userDetail = payload.data;
 			state.isAuthenticated = true;
+			state.errorMessage = "";
 		},
 		logOutSuccess: (state) => {
 			state.userDetail = {};
 		},
-		userFailure: (state) => {
+		userFailure: (state, msg) => {
+			state.errorMessage = msg.payload;
 			state.userLoading = false;
 		},
 	},
