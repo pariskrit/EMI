@@ -82,12 +82,14 @@ function Portal() {
 				<Grid item xs={12}>
 					<div className={styles.siteContainer}>
 						<Typography variant="subtitle2">Clients</Typography>
-						<Dropdown
-							options={listOfClients}
-							placeholder="Select Client"
-							onChange={onInputChange}
-							selectedValue={selectedClient}
-						/>
+						<div style={{ width: "100px" }}>
+							<Dropdown
+								options={listOfClients}
+								placeholder="Select Client"
+								onChange={onInputChange}
+								selectedValue={selectedClient}
+							/>
+						</div>
 					</div>
 				</Grid>
 			</Grid>
