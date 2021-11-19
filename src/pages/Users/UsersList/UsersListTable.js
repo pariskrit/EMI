@@ -162,12 +162,12 @@ const UserTable = ({
 								<AT.DataCell key={col}>
 									<AT.CellContainer key={col}>
 										<AT.TableBodyText>
-											<Link
+											{/* <Link
 												className={classes.nameLink}
 												to={`${usersPath}/${row.id}`}
-											>
+											> */}
 												{row[col]}
-											</Link>
+											{/* </Link> */}
 										</AT.TableBodyText>
 
 										{arr.length === i + 1 ? (
