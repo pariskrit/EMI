@@ -101,9 +101,11 @@ const SingleComponent = (route) => {
 	return (
 		<>
 			{loading ? (
-				<AC.SpinnerContainer>
-					<CircularProgress />
-				</AC.SpinnerContainer>
+				<div className="container">
+					<AC.SpinnerContainer>
+						<CircularProgress />
+					</AC.SpinnerContainer>
+				</div>
 			) : (
 				<div className="container">
 					{openSwitch && (

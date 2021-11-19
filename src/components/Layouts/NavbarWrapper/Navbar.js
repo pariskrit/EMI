@@ -199,6 +199,33 @@ const useStyles = makeStyles((theme) => ({
 		left: 0,
 		zIndex: 50,
 	},
+
+	// always show category
+
+	line: {
+		height: "100%",
+		width: "2px",
+		backgroundColor: "#925e16",
+		zIndex: 10,
+	},
+
+	logoutIcon: {
+		transform: "scale(0.35)",
+		fill: "#FFFFFF",
+		marginTop: "-15px",
+	},
+
+	innerBottomNav: {
+		width: "80vw",
+		overflowX: "scroll",
+		overflowY: "hidden",
+		display: "flex",
+	},
+
+	alwaysShow: {
+		display: "flex",
+		backgroundColor: "black",
+	},
 }));
 
 function Navbar({ userLogOut, isApplicationPortal = false }) {
@@ -496,63 +523,108 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 				<BottomNavigation
 					className={`${classes.bottomNavigationContainer} mobileNavigation`}
 				>
-					{[
-						["Clients", ClientIcon, clientsPath],
-						["Applications", ApplicationIcon, applicationListPath],
-						["Models", ModelIcon, "/"],
-						["Users", UserIcon, usersPath],
-						["Analytics", AnalyticsIcon, "/"],
-					].map((item, index) => {
-						// Storing SVG
-						let NavIcon = item[1];
+					<div className={classes.innerBottomNav}>
+						{[
+							["Clients", ClientIcon, clientsPath],
+							["Applications", ApplicationIcon, applicationListPath],
+							["Models", ModelIcon, "/"],
+							["Users", UserIcon, usersPath],
+							["Analytics", AnalyticsIcon, "/"],
+						].map((item, index) => {
+							// Storing SVG
+							let NavIcon = item[1];
 
-						// Note: Currently hardcoding current selection -- pull from global state
-						// when implemented
-						if (index === 1) {
-							return (
-								<Link to={item[2]} className={classes.navLink} key={index}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-									>
-										<BottomNavigationAction
-											label="Recents"
-											key={item[0]}
-											className={classes.currentItemBackground}
-											value="recents"
-											icon={
-												<NavIcon
-													className={classes.navIconCurrent}
-													alt={`${item[0]} icon`}
-												/>
-											}
+							// Note: Currently hardcoding current selection -- pull from global state
+							// when implemented
+							if (index === 1) {
+								return (
+									<Link to={item[2]} className={classes.navLink} key={index}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<BottomNavigationAction
+												label="Recents"
+												key={item[0]}
+												className={classes.currentItemBackground}
+												value="recents"
+												icon={
+													<NavIcon
+														className={classes.navIconCurrent}
+														alt={`${item[0]} icon`}
+													/>
+												}
+											/>
+										</div>
+									</Link>
+								);
+							} else {
+								return (
+									<Link to={item[2]} className={classes.navLink} key={index}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<BottomNavigationAction
+												label="Recents"
+												key={item[0]}
+												className={classes.currentItemBackground}
+												value="recents"
+												icon={
+													<NavIcon
+														className={classes.navIconCurrent}
+														alt={`${item[0]} icon`}
+													/>
+												}
+											/>
+										</div>
+									</Link>
+								);
+							}
+						})}
+					</div>
+					<div className={classes.line}></div>
+					<div className={classes.alwaysShow}>
+						<Link to={userProfilePath} className={classes.navLink}>
+							<div
+								className={`${classes.navListContainer} mobNavListContainer`}
+							>
+								<BottomNavigationAction
+									label="Recents"
+									key={"User Profile"}
+									className={classes.currentItemBackground}
+									value="recents"
+									icon={
+										<UserProfileIcon
+											alt="user profile icon"
+											className={classes.navIconCurrent}
 										/>
-									</div>
-								</Link>
-							);
-						} else {
-							return (
-								<Link to={item[2]} className={classes.navLink} key={index}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-									>
-										<BottomNavigationAction
-											label="Recents"
-											key={item[0]}
-											className={classes.currentItemBackground}
-											value="recents"
-											icon={
-												<NavIcon
-													className={classes.navIconCurrent}
-													alt={`${item[0]} icon`}
-												/>
-											}
-										/>
-									</div>
-								</Link>
-							);
-						}
-					})}
-					<div className={`${classes.navListContainer} mobNavListContainer`}>
+									}
+								/>
+							</div>
+						</Link>
+						<div onClick={handleLogout} className={classes.navLink}>
+							<div
+								className={`${classes.navListContainer} mobNavListContainer`}
+							>
+								<BottomNavigationAction
+									label="Recents"
+									key={"Logout"}
+									className={classes.currentItemBackground}
+									value="recents"
+									icon={
+										loading ? (
+											<CircularProgress />
+										) : (
+											<LogoutIcon
+												alt="Logout Button"
+												className={classes.logoutIcon}
+											/>
+										)
+									}
+								/>
+							</div>
+						</div>
+					</div>
+					{/* <div className={`${classes.navListContainer} mobNavListContainer`}>
 						<ListItem key="userProfileIcon">
 							<ListItemIcon className={classes.navIconContainer}>
 								<UserProfileIcon
@@ -562,7 +634,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 							</ListItemIcon>
 						</ListItem>
 					</div>
-					<div>
+					<div className={`${classes.navListContainer} mobNavListContainer`}>
 						<ListItem key="logoutIcon" button={true} onClick={handleLogout}>
 							<ListItemIcon className={classes.navIconContainer}>
 								{loading ? (
@@ -579,7 +651,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 								primary="Logout"
 							/>
 						</ListItem>
-					</div>
+					</div> */}
 					)
 				</BottomNavigation>
 			</div>

@@ -11,7 +11,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AddNoteDialog from "./AddNoteDialog";
 import UserNoteRow from "./UserNoteRow";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import { BASE_API_PATH } from "helpers/constants";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -22,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
 	tableHead: {
 		backgroundColor: "#D2D2D9",
 		border: "1px solid",
+	},
+
+	tableBody: {
+		whiteSpace: "noWrap",
 	},
 }));
 
@@ -101,7 +104,7 @@ const UserNotes = ({ id, getError, setNotes, apis, handleGetNotes, notes }) => {
 							<TableCell></TableCell>
 						</TableRow>
 					</TableHead>
-					<TableBody>
+					<TableBody className={classes.tableBody}>
 						{notes.map((row) => (
 							<UserNoteRow
 								key={row.id}

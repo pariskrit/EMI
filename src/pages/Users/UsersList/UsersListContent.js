@@ -21,12 +21,17 @@ import { DefaultPageSize } from "helpers/constants";
 
 const AT = ActionButtonStyle();
 
+const media = "@media(max-width: 414px)";
+
 const useStyles = makeStyles({
 	listActions: {
 		marginBottom: 30,
 	},
 	headerContainer: {
 		display: "flex",
+		[media]: {
+			flexDirection: "column",
+		},
 	},
 	headerText: {
 		fontSize: 21,
@@ -34,6 +39,9 @@ const useStyles = makeStyles({
 	buttonContainer: {
 		display: "flex",
 		marginLeft: "auto",
+		[media]: {
+			marginLeft: 0,
+		},
 	},
 	importButton: {
 		background: "#ED8738",
