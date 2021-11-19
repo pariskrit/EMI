@@ -1,6 +1,6 @@
 import React from "react";
 import ErrorDialog from "components/Elements/ErrorDialog";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch,Redirect } from "react-router-dom";
 import MainApp from "pages";
 import Home from "pages/Home/Home";
 import Launch from "pages/Launch/Launch";
@@ -16,13 +16,16 @@ function App() {
 			<ErrorDialog />
 			<Router>
 				<Switch>
-					<Route path="/" exact>
+					{/* <Route path="/" exact>
 						<Home />
-					</Route>
+					</Route> */}
 
 					{/* <Route path="/login" exact>
 						<Login />
 					</Route> */}
+
+					<Route path='/' exact><Redirect to='/login'/></Route>
+					
 					<ProtectedLogin path="/login" exact component={Login} />
 
 					<Route path="/launch" exact>

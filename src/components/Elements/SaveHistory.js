@@ -4,6 +4,8 @@ import Typography from "@material-ui/core/Typography";
 import ColourConstants from "../../helpers/colourConstants";
 import dayjs from "dayjs";
 
+const media = "@media (max-width: 414px)";
+
 const useStyles = makeStyles((theme) => ({
 	historyContainer: {
 		// marginTop: 10,
@@ -11,6 +13,10 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: 2,
 		display: "flex",
 		gap: "20px",
+		[media]: {
+			display: "block",
+			width: "100%",
+		},
 	},
 	historyText: {
 		display: "flex",

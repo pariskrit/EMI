@@ -156,7 +156,6 @@ const CommonHeader = ({
 }) => {
 	const classes = useStyles();
 
-
 	return (
 		<ThemeProvider theme={theme}>
 			<div>

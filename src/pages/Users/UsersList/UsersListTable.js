@@ -24,6 +24,8 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
+const media = "@media (max-width: 414px)";
+
 const useStyles = makeStyles({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
@@ -35,6 +37,9 @@ const useStyles = makeStyles({
 		borderRightStyle: "solid",
 		borderRightWidth: "1px",
 	},
+	tableBody: {
+		whiteSpace: "noWrap",
+	},
 	selectedTableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -44,7 +49,11 @@ const useStyles = makeStyles({
 		color: "#FFFFFF",
 	},
 	nameRow: {
-		width: "40%",
+		width: 130,
+		[media]: {
+			width: 130,
+			// width: "auto",
+		},
 	},
 	clientsRow: {
 		width: "20%",
@@ -64,9 +73,6 @@ const useStyles = makeStyles({
 	},
 	lastCell: {
 		borderBottom: "none",
-	},
-	tableHead: {
-		whiteSpace: "nowrap",
 	},
 });
 
@@ -121,9 +127,9 @@ const UserTable = ({
 
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>
-			<Table aria-label="Table" style={{ tableLayout: "fixed" }}>
+			<Table aria-label="Table">
 				<AT.TableHead>
-					<TableRow className={classes.tableHead}>
+					<TableRow>
 						{headers.map((header, i) => (
 							<TableCell
 								key={header}
@@ -149,18 +155,11 @@ const UserTable = ({
 						))}
 					</TableRow>
 				</AT.TableHead>
-				<TableBody>
+				<TableBody className={classes.tableBody}>
 					{(searchQuery === "" ? data : searchedData).map((row, index) => (
 						<TableRow key={index}>
 							{columns.map((col, i, arr) => (
-								<TableCell
-									key={col}
-									component="th"
-									scope="row"
-									className={clsx(classes.dataCell, classes.nameRow, {
-										[classes.lastCell]: index === data.length - 1,
-									})}
-								>
+								<AT.DataCell key={col}>
 									<AT.CellContainer key={col}>
 										<AT.TableBodyText>
 											<Link
@@ -220,7 +219,7 @@ const UserTable = ({
 											</AT.DotMenu>
 										) : null}
 									</AT.CellContainer>
-								</TableCell>
+								</AT.DataCell>
 							))}
 						</TableRow>
 					))}
