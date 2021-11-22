@@ -22,7 +22,7 @@ const CommonUserHeader = ({
 	current,
 	showPasswordReset,
 	onPasswordReset,
-	apis,
+	role,
 }) => {
 	return (
 		<>
@@ -47,11 +47,9 @@ const CommonUserHeader = ({
 					onPasswordReset,
 				}}
 			/>
-
-			<NavButtons
-				navigation={navigation}
-				current={current}
-			/>
+			{role === "SuperAdmin" ? null : (
+				<NavButtons navigation={navigation} current={current} />
+			)}
 		</>
 	);
 };

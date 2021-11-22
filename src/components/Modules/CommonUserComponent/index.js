@@ -22,6 +22,7 @@ const UserDetails = ({
 	setData,
 	inputData,
 	setInputData,
+	role,
 }) => {
 	const { id } = useParams();
 
@@ -87,9 +88,10 @@ const UserDetails = ({
 							id={+id}
 							inputData={inputData}
 							setInputData={setInputData}
+							role={role}
 						/>
 					</Grid>
-					{showNotes && (
+					{showNotes && role !== "SuperAdmin" && (
 						<Grid item xs={12}>
 							<UserNotes
 								id={+id}

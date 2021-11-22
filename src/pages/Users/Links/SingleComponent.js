@@ -31,8 +31,8 @@ const SingleComponent = (route) => {
 
 			// if success, adding data to state
 			if (result.status) {
-				setAllData({ ...result.data });
-				setInputData({ ...result.data });
+				setAllData(result.data);
+				setInputData(result.data);
 				localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 				setLoading(false);
 				return true;
@@ -50,7 +50,6 @@ const SingleComponent = (route) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
-
 
 	// Fetch Side effect to get data
 	useEffect(() => {
@@ -136,6 +135,7 @@ const SingleComponent = (route) => {
 						crumbs={["Users", `${titleName?.firstName} ${titleName?.lastName}`]}
 						currentStatus={allData?.active}
 						onPasswordReset={passwordResetModalHandler}
+						role={route.role}
 					/>
 					{
 						<route.component
@@ -147,6 +147,8 @@ const SingleComponent = (route) => {
 							setData={setAllData}
 							inputData={inputData}
 							setInputData={setInputData}
+							showExternalReferenceNumber={route.showExternalReferenceNumber}
+							role={route.role}
 						/>
 					}
 				</div>
