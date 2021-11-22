@@ -220,29 +220,6 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
-					<Grid item sm={6}>
-						<Typography>External Reference Number </Typography>
-						<TextField
-							name="externalRef"
-							variant="outlined"
-							fullWidth
-							value=""
-							onChange={(e) => handleInputChange("externalRef", e.target.value)}
-							onBlur={(e) => handleUpdateData(e)}
-							onFocus={(e) =>
-								setInputValueOnFocus({
-									label: e.target.name,
-									value: e.target.value,
-								})
-							}
-							disabled={isUpdating["externalRef"]?.isUpdating}
-							InputProps={{
-								endAdornment: isUpdating["externalRef"]?.isUpdating ? (
-									<Facebook size={20} color="#A79EB4" />
-								) : null,
-							}}
-						/>
-					</Grid>
 				</Grid>
 			</div>
 			<div className={classes.mobileViewUserDetail}>
@@ -350,29 +327,6 @@ const UserDetail = ({
 							disabled={isUpdating["phone"]?.isUpdating}
 							InputProps={{
 								endAdornment: isUpdating["phone"]?.isUpdating ? (
-									<Facebook size={20} color="#A79EB4" />
-								) : null,
-							}}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<Typography>External Reference Number </Typography>
-						<TextField
-							name="externalRef"
-							variant="outlined"
-							fullWidth
-							value=""
-							onChange={(e) => handleInputChange("externalRef", e.target.value)}
-							onBlur={(e) => handleUpdateData(e)}
-							onFocus={(e) =>
-								setInputValueOnFocus({
-									label: e.target.name,
-									value: e.target.value,
-								})
-							}
-							disabled={isUpdating["externalRef"]?.isUpdating}
-							InputProps={{
-								endAdornment: isUpdating["externalRef"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
 							}}

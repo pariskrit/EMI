@@ -241,12 +241,12 @@ const CommonHeader = ({
 							{showSave && (
 								<AT.GeneralButton onClick={onClickSave}>Save</AT.GeneralButton>
 							)}
+							{showHistory && (
+								<div className="restore">
+									<RestoreIcon className={classes.restore} />
+								</div>
+							)}
 						</div>
-						{showHistory && (
-							<div className="restore">
-								<RestoreIcon className={classes.restore} />
-							</div>
-						)}
 					</div>
 				</div>
 			</div>
