@@ -22,6 +22,7 @@ const UserDetails = ({
 	setData,
 	inputData,
 	setInputData,
+	showExternalReferenceNumber,
 }) => {
 	const { id } = useParams();
 
@@ -87,6 +88,7 @@ const UserDetails = ({
 							id={+id}
 							inputData={inputData}
 							setInputData={setInputData}
+							showExternalReferenceNumber={showExternalReferenceNumber}
 						/>
 					</Grid>
 					{showNotes && (

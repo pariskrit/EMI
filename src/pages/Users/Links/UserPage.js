@@ -20,6 +20,7 @@ const routes = [
 		showNotes: true,
 		api: differentUserAPIs.UserDetailsAPIs,
 		title: "User Details",
+		showExternalReferenceNumber: true,
 	},
 	{
 		id: 100,

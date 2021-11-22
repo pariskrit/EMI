@@ -80,6 +80,7 @@ const DefectStatusesTable = ({
 	// Init hooks
 	const classes = useStyles();
 
+
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);

@@ -25,6 +25,7 @@ const UserDetail = ({
 	apis,
 	inputData,
 	setInputData,
+	showExternalReferenceNumber,
 }) => {
 	const classes = useStyles();
 
@@ -220,6 +221,33 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
+					{showExternalReferenceNumber && (
+						<Grid item sm={6}>
+							<Typography>External Reference Number </Typography>
+							<TextField
+								name="externalRef"
+								variant="outlined"
+								fullWidth
+								value=""
+								onChange={(e) =>
+									handleInputChange("externalRef", e.target.value)
+								}
+								onBlur={(e) => handleUpdateData(e)}
+								onFocus={(e) =>
+									setInputValueOnFocus({
+										label: e.target.name,
+										value: e.target.value,
+									})
+								}
+								disabled={isUpdating["externalRef"]?.isUpdating}
+								InputProps={{
+									endAdornment: isUpdating["externalRef"]?.isUpdating ? (
+										<Facebook size={20} color="#A79EB4" />
+									) : null,
+								}}
+							/>
+						</Grid>
+					)}
 				</Grid>
 			</div>
 			<div className={classes.mobileViewUserDetail}>
@@ -332,6 +360,33 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
+					{showExternalReferenceNumber && (
+						<Grid item xs={12}>
+							<Typography>External Reference Number </Typography>
+							<TextField
+								name="externalRef"
+								variant="outlined"
+								fullWidth
+								value=""
+								onChange={(e) =>
+									handleInputChange("externalRef", e.target.value)
+								}
+								onBlur={(e) => handleUpdateData(e)}
+								onFocus={(e) =>
+									setInputValueOnFocus({
+										label: e.target.name,
+										value: e.target.value,
+									})
+								}
+								disabled={isUpdating["externalRef"]?.isUpdating}
+								InputProps={{
+									endAdornment: isUpdating["externalRef"]?.isUpdating ? (
+										<Facebook size={20} color="#A79EB4" />
+									) : null,
+								}}
+							/>
+						</Grid>
+					)}
 				</Grid>
 			</div>
 		</AccordionBox>

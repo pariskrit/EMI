@@ -131,7 +131,6 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 			setInput({ name: data.name, type: data.type });
 		}
 	}, [data, open]);
-	console.log(input);
 	return (
 		<div>
 			<Dialog
