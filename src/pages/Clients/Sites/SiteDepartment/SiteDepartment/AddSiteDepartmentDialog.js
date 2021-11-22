@@ -202,9 +202,7 @@ const AddDepartmentDialog = ({
 								/>
 							</ADD.LeftInputContainer>
 							<ADD.RightInputContainer>
-								<ADD.NameLabel>
-									Description<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
+								<ADD.NameLabel>Description</ADD.NameLabel>
 								<ADD.NameInput
 									error={errors.description === null ? false : true}
 									helperText={

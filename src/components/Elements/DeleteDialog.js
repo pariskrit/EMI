@@ -4,6 +4,8 @@ import API from "helpers/api";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { connect } from "react-redux";
+import { showError } from "redux/common/actions";
 
 // Init styled components
 const ADD = DeleteDialogStyle();
@@ -16,6 +18,7 @@ const DeleteDialog = ({
 	deleteID,
 	handleRemoveData,
 	isLogo = false,
+	getError,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -52,6 +55,9 @@ const DeleteDialog = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
+			if (err.response.data.detail) {
+				getError(err.response.data.detail);
+			}
 			console.log(err);
 
 			return false;
@@ -108,4 +114,8 @@ const DeleteDialog = ({
 	);
 };
 
-export default DeleteDialog;
+const mapDispatchToProps = (dispatch) => ({
+	getError: (msg) => dispatch(showError(msg)),
+});
+
+export default connect(null, mapDispatchToProps)(DeleteDialog);
