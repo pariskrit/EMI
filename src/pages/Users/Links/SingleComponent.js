@@ -31,8 +31,8 @@ const SingleComponent = (route) => {
 
 			// if success, adding data to state
 			if (result.status) {
-				setAllData({ ...result.data });
-				setInputData({ ...result.data });
+				setAllData(result.data);
+				setInputData(result.data);
 				localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 				setLoading(false);
 				return true;
@@ -135,6 +135,7 @@ const SingleComponent = (route) => {
 						crumbs={["Users", `${titleName?.firstName} ${titleName?.lastName}`]}
 						currentStatus={allData?.active}
 						onPasswordReset={passwordResetModalHandler}
+						role={route.role}
 					/>
 					{
 						<route.component
@@ -147,6 +148,7 @@ const SingleComponent = (route) => {
 							inputData={inputData}
 							setInputData={setInputData}
 							showExternalReferenceNumber={route.showExternalReferenceNumber}
+							role={route.role}
 						/>
 					}
 				</div>

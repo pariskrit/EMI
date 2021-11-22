@@ -25,7 +25,7 @@ const UserDetail = ({
 	apis,
 	inputData,
 	setInputData,
-	showExternalReferenceNumber,
+	role,
 }) => {
 	const classes = useStyles();
 
@@ -221,7 +221,7 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
-					{showExternalReferenceNumber && (
+					{role !== "SuperAdmin" && (
 						<Grid item sm={6}>
 							<Typography>External Reference Number </Typography>
 							<TextField
@@ -360,7 +360,7 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
-					{showExternalReferenceNumber && (
+					{role !== "SuperAdmin" && (
 						<Grid item xs={12}>
 							<Typography>External Reference Number </Typography>
 							<TextField
