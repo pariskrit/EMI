@@ -61,7 +61,7 @@ const UsersListContent = ({ getError }) => {
 	//Init State
 	const [haveData, setHaveData] = useState(false);
 
-	const [dataCount, setDataCount] = useState(null);
+	// const [dataCount, setDataCount] = useState(null);
 	const [modal, setModal] = useState({ import: false, add: false });
 
 	const [deleteID, setDeleteID] = useState(null);
@@ -90,7 +90,7 @@ const UsersListContent = ({ getError }) => {
 					result = result.data;
 
 					setAllData(result);
-					setDataCount(result.length);
+					// setDataCount(result.length);
 					return true;
 				} else {
 					// Throwing error if failed
