@@ -270,12 +270,6 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						signOut();
 						return true;
 					}
-					if (loginType === "MICROSOFT") {
-						// MICROSOFT SIGNOUT
-
-						signOutMicrosoftHandler();
-						return true;
-					}
 				}
 
 				history.push("/login");
@@ -287,15 +281,6 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		}
 		setLoading(false);
 	};
-
-	function signOutMicrosoftHandler() {
-		const accountId = localStorage.getItem("homeAccoundId");
-		const logoutRequest = {
-			account: instance.getAccountByHomeId(accountId),
-			postLogoutRedirectUri: "http://localhost:3000/login",
-		};
-		instance.logoutRedirect(logoutRequest);
-	}
 
 	return (
 		<>

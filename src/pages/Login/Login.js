@@ -312,7 +312,6 @@ const Login = ({
 			);
 
 			if (respon) {
-				localStorage.setItem("homeAccoundId", data.account.homeAccountId);
 				redirectToPortalOrDefault(respon?.position?.siteAppID);
 			} else {
 				throw new Error(respon);
