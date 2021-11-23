@@ -135,7 +135,6 @@ const SingleComponent = (route) => {
 						crumbs={["Users", `${titleName?.firstName} ${titleName?.lastName}`]}
 						currentStatus={allData?.active}
 						onPasswordReset={passwordResetModalHandler}
-						role={route.role}
 					/>
 					{
 						<route.component
@@ -148,7 +147,6 @@ const SingleComponent = (route) => {
 							inputData={inputData}
 							setInputData={setInputData}
 							showExternalReferenceNumber={route.showExternalReferenceNumber}
-							role={route.role}
 						/>
 					}
 				</div>

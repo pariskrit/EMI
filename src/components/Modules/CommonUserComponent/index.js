@@ -5,6 +5,9 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback, useState, useEffect } from "react";
 
+import Roles from "helpers/roles";
+import RoleWrapper from "components/Modules/RoleWrapper";
+
 const useStyles = makeStyles({
 	detailContainer: {
 		marginTop: 25,
@@ -22,7 +25,6 @@ const UserDetails = ({
 	setData,
 	inputData,
 	setInputData,
-	role,
 }) => {
 	const { id } = useParams();
 
@@ -88,11 +90,10 @@ const UserDetails = ({
 							id={+id}
 							inputData={inputData}
 							setInputData={setInputData}
-							role={role}
 						/>
 					</Grid>
-					{showNotes && role !== "SuperAdmin" && (
-						<Grid item xs={12}>
+					<Grid item xs={12}>
+						<RoleWrapper accessRoles={[Roles.user, Roles.clientAdmin]}>
 							<UserNotes
 								id={+id}
 								notes={notes}
@@ -101,8 +102,8 @@ const UserDetails = ({
 								apis={apis}
 								handleGetNotes={handleGetNotes}
 							/>
-						</Grid>
-					)}
+						</RoleWrapper>
+					</Grid>
 				</Grid>
 			</div>
 		</>

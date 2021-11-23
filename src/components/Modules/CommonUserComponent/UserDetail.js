@@ -4,6 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/Layouts/AccordionBox";
 import { Grid, TextField, Typography } from "@material-ui/core";
 
+import Roles from "helpers/roles";
+import RoleWrapper from "components/Modules/RoleWrapper";
+
 const media = "@media(max-width: 414px)";
 
 const useStyles = makeStyles(() => ({
@@ -63,7 +66,6 @@ const UserDetail = ({
 					{ op: "replace", path, value },
 				]);
 				if (result.status) {
-					console.log("inside", result.data);
 					localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 					setInputData(result.data);
 					setUpdating(false);
@@ -73,7 +75,6 @@ const UserDetail = ({
 
 					const err = result.data.errors;
 					setErrors({ ...errors, ...err });
-					// console.log(result.data.errors);
 					throw new Error(result);
 				}
 			} catch (err) {
@@ -221,8 +222,9 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
-					{role !== "SuperAdmin" && (
-						<Grid item sm={6}>
+
+					<Grid item sm={6}>
+						<RoleWrapper accessRoles={[Roles.user, Roles.clientAdmin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
 								name="externalRef"
@@ -246,8 +248,8 @@ const UserDetail = ({
 									) : null,
 								}}
 							/>
-						</Grid>
-					)}
+						</RoleWrapper>
+					</Grid>
 				</Grid>
 			</div>
 			<div className={classes.mobileViewUserDetail}>
@@ -360,8 +362,9 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
-					{role !== "SuperAdmin" && (
-						<Grid item xs={12}>
+
+					<Grid item xs={12}>
+						<RoleWrapper accessRoles={[Roles.user, Roles.clientAdmin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
 								name="externalRef"
@@ -385,8 +388,8 @@ const UserDetail = ({
 									) : null,
 								}}
 							/>
-						</Grid>
-					)}
+						</RoleWrapper>
+					</Grid>
 				</Grid>
 			</div>
 		</AccordionBox>

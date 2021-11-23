@@ -35,12 +35,12 @@ const routes = [
 	},
 ];
 
-const UserPage = ({ getError, role = "SuperAdmin" }) => {
+const UserPage = ({ getError }) => {
 	return (
 		<div>
 			{routes.map((route) => (
 				<Route key={route.id} path={route.path} exact>
-					<SingleComponent {...route} getError={getError} role={role} />
+					<SingleComponent {...route} getError={getError} />
 				</Route>
 			))}
 		</div>
