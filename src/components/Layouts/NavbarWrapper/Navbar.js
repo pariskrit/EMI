@@ -38,6 +38,7 @@ import {
 import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
+import AddToHomeScreenIcon from "@material-ui/icons/AddToHomeScreen";
 
 // Size constants
 const drawerWidth = 240;
@@ -139,6 +140,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	navIcon: {
 		transform: "scale(0.8)",
+	},
+	homeIcon: {
+		transform: "scale(1.1)",
 	},
 	navIconCurrent: {
 		transform: "scale(0.8)",
@@ -336,7 +340,10 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 									>
 										<ListItem button className={null}>
 											<ListItemIcon className={classes.navIconContainer}>
-												<Home className={classes.navIcon} alt={`Home icon`} />
+												<AddToHomeScreenIcon
+													className={classes.homeIcon}
+													alt={`Home icon`}
+												/>
 											</ListItemIcon>
 											<ListItemText
 												classes={{
