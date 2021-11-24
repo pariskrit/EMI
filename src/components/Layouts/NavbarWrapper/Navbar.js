@@ -38,7 +38,6 @@ import {
 import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
-import { useMsal } from "@azure/msal-react";
 
 // Size constants
 const drawerWidth = 240;
@@ -244,8 +243,9 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
-	const { instance } = useMsal();
+
 	let activeLink = location.pathname.split("/")[2];
+	const userData = localStorage.getItem("me");
 
 	// Handlers
 	const handleDrawerChange = () => {
@@ -422,7 +422,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 								</ListItem>
 							</div>
 
-							{!isApplicationPortal ? (
+							{userData.position != null ? (
 								<Link to={applicationPortalPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
