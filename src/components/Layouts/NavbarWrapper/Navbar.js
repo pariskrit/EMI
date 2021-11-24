@@ -245,7 +245,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 	const location = useLocation();
 
 	let activeLink = location.pathname.split("/")[2];
-	const userData = localStorage.getItem("me");
+	const user = JSON.parse(localStorage.getItem("me"));
 
 	// Handlers
 	const handleDrawerChange = () => {
@@ -308,26 +308,47 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						</div>
 					)}
 					{isApplicationPortal ? (
-						<Link to="/portal" className={classes.navLink}>
-							<div
-								className={`${classes.navListContainer} mobNavListContainer`}
-							>
-								<ListItem button className={classes.currentItemBackground}>
-									<ListItemIcon className={classes.navIconContainer}>
-										<Home
-											className={classes.navIconCurrent}
-											alt={`Home icon`}
+						<>
+							<Link to="/portal" className={classes.navLink}>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+								>
+									<ListItem button className={classes.currentItemBackground}>
+										<ListItemIcon className={classes.navIconContainer}>
+											<Home
+												className={classes.navIconCurrent}
+												alt={`Home icon`}
+											/>
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimaryCurrent,
+											}}
+											primary="Application Portal"
 										/>
-									</ListItemIcon>
-									<ListItemText
-										classes={{
-											primary: classes.listItemTextPrimaryCurrent,
-										}}
-										primary="Application Portal"
-									/>
-								</ListItem>
-							</div>
-						</Link>
+									</ListItem>
+								</div>
+							</Link>
+							{user.isAdmin ? (
+								<Link to="/" className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={null}>
+											<ListItemIcon className={classes.navIconContainer}>
+												<Home className={classes.navIcon} alt={`Home icon`} />
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimary,
+												}}
+												primary="Go To Home"
+											/>
+										</ListItem>
+									</div>
+								</Link>
+							) : null}
+						</>
 					) : (
 						<List>
 							{[
@@ -422,7 +443,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 								</ListItem>
 							</div>
 
-							{userData.position != null ? (
+							{user.position != null ? (
 								<Link to={applicationPortalPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
