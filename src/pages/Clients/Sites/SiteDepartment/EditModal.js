@@ -15,8 +15,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	description: yup
-		.string("This field must be a string")
+	description: yup.string("This field must be a string"),
 });
 
 // Default state schemas
@@ -182,9 +181,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 								/>
 							</AED.LeftInputContainer>
 							<AED.RightInputContainer>
-								<AED.NameLabel>
-									Description<AED.RequiredStar>*</AED.RequiredStar>
-								</AED.NameLabel>
+								<AED.NameLabel>Description</AED.NameLabel>
 								<AED.NameInput
 									error={errors.description === null ? false : true}
 									helperText={

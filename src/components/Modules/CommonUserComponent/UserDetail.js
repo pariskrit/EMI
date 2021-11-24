@@ -4,6 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/Layouts/AccordionBox";
 import { Grid, TextField, Typography } from "@material-ui/core";
 
+import Roles from "helpers/roles";
+import RoleWrapper from "components/Modules/RoleWrapper";
+
 const media = "@media(max-width: 414px)";
 
 const useStyles = makeStyles(() => ({
@@ -25,6 +28,7 @@ const UserDetail = ({
 	apis,
 	inputData,
 	setInputData,
+	role,
 }) => {
 	const classes = useStyles();
 
@@ -62,7 +66,6 @@ const UserDetail = ({
 					{ op: "replace", path, value },
 				]);
 				if (result.status) {
-					console.log("inside", result.data);
 					localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 					setInputData(result.data);
 					setUpdating(false);
@@ -72,7 +75,6 @@ const UserDetail = ({
 
 					const err = result.data.errors;
 					setErrors({ ...errors, ...err });
-					// console.log(result.data.errors);
 					throw new Error(result);
 				}
 			} catch (err) {
@@ -220,28 +222,33 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
+
 					<Grid item sm={6}>
-						<Typography>External Reference Number </Typography>
-						<TextField
-							name="externalRef"
-							variant="outlined"
-							fullWidth
-							value=""
-							onChange={(e) => handleInputChange("externalRef", e.target.value)}
-							onBlur={(e) => handleUpdateData(e)}
-							onFocus={(e) =>
-								setInputValueOnFocus({
-									label: e.target.name,
-									value: e.target.value,
-								})
-							}
-							disabled={isUpdating["externalRef"]?.isUpdating}
-							InputProps={{
-								endAdornment: isUpdating["externalRef"]?.isUpdating ? (
-									<Facebook size={20} color="#A79EB4" />
-								) : null,
-							}}
-						/>
+						<RoleWrapper accessRoles={[Roles.user, Roles.clientAdmin]}>
+							<Typography>External Reference Number </Typography>
+							<TextField
+								name="externalRef"
+								variant="outlined"
+								fullWidth
+								value=""
+								onChange={(e) =>
+									handleInputChange("externalRef", e.target.value)
+								}
+								onBlur={(e) => handleUpdateData(e)}
+								onFocus={(e) =>
+									setInputValueOnFocus({
+										label: e.target.name,
+										value: e.target.value,
+									})
+								}
+								disabled={isUpdating["externalRef"]?.isUpdating}
+								InputProps={{
+									endAdornment: isUpdating["externalRef"]?.isUpdating ? (
+										<Facebook size={20} color="#A79EB4" />
+									) : null,
+								}}
+							/>
+						</RoleWrapper>
 					</Grid>
 				</Grid>
 			</div>
@@ -355,28 +362,33 @@ const UserDetail = ({
 							}}
 						/>
 					</Grid>
+
 					<Grid item xs={12}>
-						<Typography>External Reference Number </Typography>
-						<TextField
-							name="externalRef"
-							variant="outlined"
-							fullWidth
-							value=""
-							onChange={(e) => handleInputChange("externalRef", e.target.value)}
-							onBlur={(e) => handleUpdateData(e)}
-							onFocus={(e) =>
-								setInputValueOnFocus({
-									label: e.target.name,
-									value: e.target.value,
-								})
-							}
-							disabled={isUpdating["externalRef"]?.isUpdating}
-							InputProps={{
-								endAdornment: isUpdating["externalRef"]?.isUpdating ? (
-									<Facebook size={20} color="#A79EB4" />
-								) : null,
-							}}
-						/>
+						<RoleWrapper accessRoles={[Roles.user, Roles.clientAdmin]}>
+							<Typography>External Reference Number </Typography>
+							<TextField
+								name="externalRef"
+								variant="outlined"
+								fullWidth
+								value=""
+								onChange={(e) =>
+									handleInputChange("externalRef", e.target.value)
+								}
+								onBlur={(e) => handleUpdateData(e)}
+								onFocus={(e) =>
+									setInputValueOnFocus({
+										label: e.target.name,
+										value: e.target.value,
+									})
+								}
+								disabled={isUpdating["externalRef"]?.isUpdating}
+								InputProps={{
+									endAdornment: isUpdating["externalRef"]?.isUpdating ? (
+										<Facebook size={20} color="#A79EB4" />
+									) : null,
+								}}
+							/>
+						</RoleWrapper>
 					</Grid>
 				</Grid>
 			</div>

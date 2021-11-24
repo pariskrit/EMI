@@ -27,7 +27,7 @@ const routes = [
 		path: userProfilePath,
 		component: CommonUserComponent,
 		showHistory: true,
-		showSwitch: true,
+		showSwitch: false,
 		showPasswordReset: true,
 		showNotes: false,
 		api: differentUserAPIs.UserProfileAPIs,

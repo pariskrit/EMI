@@ -2,6 +2,9 @@ import React from "react";
 import CommonHeader from "./CommonHeader";
 import NavButtons from "components/Elements/NavButtons";
 
+import Roles from "helpers/roles";
+import RoleWrapper from "components/Modules/RoleWrapper";
+
 const CommonUserHeader = ({
 	status,
 	lastSaved,
@@ -22,7 +25,6 @@ const CommonUserHeader = ({
 	current,
 	showPasswordReset,
 	onPasswordReset,
-	apis,
 }) => {
 	return (
 		<>
@@ -47,11 +49,9 @@ const CommonUserHeader = ({
 					onPasswordReset,
 				}}
 			/>
-
-			<NavButtons
-				navigation={navigation}
-				current={current}
-			/>
+			<RoleWrapper accessRoles={[Roles.user, Roles.clientAdmin]}>
+				<NavButtons navigation={navigation} current={current} />
+			</RoleWrapper>
 		</>
 	);
 };
