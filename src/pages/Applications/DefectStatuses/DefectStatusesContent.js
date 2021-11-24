@@ -233,7 +233,7 @@ const DefectStatusesContent = ({ navigation, id, setIs404, state }) => {
 					setApplicationName(result.data.name);
 
 					// Setting default
-					setDefaultData(result.data.defaultDefectStatusID);
+					setDefaultData(result.data.defaultStatusID);
 				} else {
 					// If error, throwing to catch
 					throw new Error(result);

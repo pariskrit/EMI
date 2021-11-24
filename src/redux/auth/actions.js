@@ -14,7 +14,10 @@ export const loginUser = (input) => async (dispatch) => {
 		API.post("/api/Users/Login", input)
 			.then((res) => {
 				localStorage.setItem("token", res.data.jwtToken);
-				localStorage.setItem("me", JSON.stringify(res.data));
+				localStorage.setItem(
+					"me",
+					JSON.stringify({ ...res.data, role: "superAdmin" })
+				);
 				dispatch(dataSuccess({ data: res.data }));
 				resolve(res);
 			})
@@ -33,7 +36,10 @@ export const loginSocialAccount = (input, loginType, url) => async (
 		API.post(url, input)
 			.then((res) => {
 				localStorage.setItem("token", res.data.jwtToken);
-				localStorage.setItem("me", JSON.stringify(res.data));
+				localStorage.setItem(
+					"me",
+					JSON.stringify({ ...res.data, role: "superAdmin" })
+				);
 				localStorage.setItem("loginType", loginType);
 				dispatch(dataSuccess({ data: { ...res.data } }));
 

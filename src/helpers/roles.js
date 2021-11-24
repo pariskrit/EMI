@@ -1,5 +1,5 @@
 export default {
-	superAdmin: ["Super Admin"],
-	clientAdmin: ["Super Admin", "Client Admin"],
-	user: ["Super Admin", "Client Admin", "User"],
+	superAdmin: "superAdmin",
+	clientAdmin: "clientAdmin",
+	user: "user",
 };

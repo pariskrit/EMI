@@ -454,7 +454,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 								<ListItem key="logoutIcon" button={true} onClick={handleLogout}>
 									<ListItemIcon className={classes.navIconContainer}>
 										{loading ? (
-											<CircularProgress />
+											<CircularProgress size="30px" />
 										) : (
 											<LogoutIcon
 												alt="Logout Button"
@@ -597,7 +597,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 									value="recents"
 									icon={
 										loading ? (
-											<CircularProgress />
+											<CircularProgress size="30px" />
 										) : (
 											<LogoutIcon
 												alt="Logout Button"
