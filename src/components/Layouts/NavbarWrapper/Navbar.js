@@ -38,7 +38,7 @@ import {
 import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
-import { useMsal } from "@azure/msal-react";
+import AddToHomeScreenIcon from "@material-ui/icons/AddToHomeScreen";
 
 // Size constants
 const drawerWidth = 240;
@@ -144,6 +144,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	navIcon: {
 		transform: "scale(0.8)",
+	},
+	homeIcon: {
+		transform: "scale(1.1)",
 	},
 	navIconCurrent: {
 		transform: "scale(0.8)",
@@ -264,8 +267,9 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
-	const { instance } = useMsal();
+
 	let activeLink = location.pathname.split("/")[2];
+	const user = JSON.parse(localStorage.getItem("me"));
 
 	// Handlers
 	const handleDrawerChange = () => {
@@ -290,12 +294,6 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						signOut();
 						return true;
 					}
-					if (loginType === "MICROSOFT") {
-						// MICROSOFT SIGNOUT
-
-						signOutMicrosoftHandler();
-						return true;
-					}
 				}
 
 				history.push("/login");
@@ -307,15 +305,6 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		}
 		setLoading(false);
 	};
-
-	function signOutMicrosoftHandler() {
-		const accountId = localStorage.getItem("homeAccoundId");
-		const logoutRequest = {
-			account: instance.getAccountByHomeId(accountId),
-			postLogoutRedirectUri: "http://localhost:3000/login",
-		};
-		instance.logoutRedirect(logoutRequest);
-	}
 
 	return (
 		<>
@@ -343,26 +332,50 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						</div>
 					)}
 					{isApplicationPortal ? (
-						<Link to="/portal" className={classes.navLink}>
-							<div
-								className={`${classes.navListContainer} mobNavListContainer`}
-							>
-								<ListItem button className={classes.currentItemBackground}>
-									<ListItemIcon className={classes.navIconContainer}>
-										<Home
-											className={classes.navIconCurrent}
-											alt={`Home icon`}
+						<>
+							<Link to="/portal" className={classes.navLink}>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+								>
+									<ListItem button className={classes.currentItemBackground}>
+										<ListItemIcon className={classes.navIconContainer}>
+											<Home
+												className={classes.navIconCurrent}
+												alt={`Home icon`}
+											/>
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimaryCurrent,
+											}}
+											primary="Application Portal"
 										/>
-									</ListItemIcon>
-									<ListItemText
-										classes={{
-											primary: classes.listItemTextPrimaryCurrent,
-										}}
-										primary="Application Portal"
-									/>
-								</ListItem>
-							</div>
-						</Link>
+									</ListItem>
+								</div>
+							</Link>
+							{user.isAdmin ? (
+								<Link to="/" className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={null}>
+											<ListItemIcon className={classes.navIconContainer}>
+												<AddToHomeScreenIcon
+													className={classes.homeIcon}
+													alt={`Home icon`}
+												/>
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimary,
+												}}
+												primary="Go To Home"
+											/>
+										</ListItem>
+									</div>
+								</Link>
+							) : null}
+						</>
 					) : (
 						<List className={`${classes.upperContent} upperContent`}>
 							{[
@@ -457,7 +470,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 								</ListItem>
 							</div>
 
-							{!isApplicationPortal ? (
+							{user.position != null ? (
 								<Link to={applicationPortalPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
