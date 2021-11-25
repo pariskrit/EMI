@@ -38,7 +38,7 @@ import {
 import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
-import AddToHomeScreenIcon from "@material-ui/icons/AddToHomeScreen";
+import SettingsIcon from "@material-ui/icons/Settings";
 
 // Size constants
 const drawerWidth = 240;
@@ -360,7 +360,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 									>
 										<ListItem button className={null}>
 											<ListItemIcon className={classes.navIconContainer}>
-												<AddToHomeScreenIcon
+												<SettingsIcon
 													className={classes.homeIcon}
 													alt={`Home icon`}
 												/>
@@ -369,7 +369,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 												classes={{
 													primary: classes.listItemTextPrimary,
 												}}
-												primary="Go To Home"
+												primary="Admin Mode"
 											/>
 										</ListItem>
 									</div>
