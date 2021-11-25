@@ -6,7 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import RegionAndSite from "./RegionAndSite";
-import "./style.scss";
 
 const media = "@media(max-width: 414px)";
 const mediaSmall = "@media(max-width: 376px)";
