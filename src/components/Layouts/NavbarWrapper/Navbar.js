@@ -35,10 +35,11 @@ import {
 	userProfilePath,
 	applicationPortalPath,
 } from "helpers/routePaths";
-import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
 import { useMsal } from "@azure/msal-react";
+import { showError } from "redux/common/actions";
+import "./style.scss";
 
 // Size constants
 const drawerWidth = 240;
@@ -228,7 +229,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Navbar({ userLogOut, isApplicationPortal = false }) {
+function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -283,7 +284,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 				throw new Error(logOut);
 			}
 		} catch (err) {
-			console.log(err);
+			getError(err.response.data.detail);
 		}
 		setLoading(false);
 	};
@@ -661,6 +662,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 
 const mapDispatchToProps = (dispatch) => ({
 	userLogOut: (token) => dispatch(logOutUser(token)),
+	getError: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(null, mapDispatchToProps)(React.memo(Navbar));
