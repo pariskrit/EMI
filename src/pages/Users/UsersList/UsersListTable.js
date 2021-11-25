@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -166,7 +165,7 @@ const UserTable = ({
 												className={classes.nameLink}
 												to={`${usersPath}/${row.id}`}
 											> */}
-												{row[col]}
+											{row[col]}
 											{/* </Link> */}
 										</AT.TableBodyText>
 

@@ -1,7 +1,3 @@
-import React, { useState } from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
-import { useGoogleLogout } from "react-google-login";
-
 // Bottom Navigation
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -12,33 +8,37 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
+import SettingsIcon from "@material-ui/icons/Settings";
 import MiniLogo from "assets/EMI-symbol.png";
 import { ReactComponent as AnalyticsIcon } from "assets/icons/analyticsIcon.svg";
 import { ReactComponent as ApplicationIcon } from "assets/icons/applicationsIcon.svg";
 // Importing icons
 import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as CloseIcon } from "assets/icons/close-panel.svg";
+import { ReactComponent as Home } from "assets/icons/home.svg";
+import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
-import { ReactComponent as Home } from "assets/icons/home.svg";
-import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
 import {
 	applicationListPath,
-	clientsPath,
-	usersPath,
-	userProfilePath,
 	applicationPortalPath,
+	clientsPath,
+	userProfilePath,
+	usersPath,
 } from "helpers/routePaths";
-import "./style.scss";
+import React, { useState } from "react";
+import { useGoogleLogout } from "react-google-login";
 import { connect } from "react-redux";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { logOutUser } from "redux/auth/actions";
-import SettingsIcon from "@material-ui/icons/Settings";
+import { showError } from "redux/common/actions";
+import "./style.scss";
 
 // Size constants
 const drawerWidth = 240;
@@ -251,7 +251,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Navbar({ userLogOut, isApplicationPortal = false }) {
+function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -301,9 +301,8 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 				throw new Error(logOut);
 			}
 		} catch (err) {
-			console.log(err);
+			getError(err.response.data.detail);
 		}
-		setLoading(false);
 	};
 
 	return (
@@ -694,6 +693,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 
 const mapDispatchToProps = (dispatch) => ({
 	userLogOut: (token) => dispatch(logOutUser(token)),
+	getError: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(null, mapDispatchToProps)(React.memo(Navbar));

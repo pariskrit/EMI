@@ -64,15 +64,16 @@ export const getUserDetail = () => async (dispatch) => {
 		});
 };
 
-export const logOutUser = (token) => (dispatch) => {
+export const logOutUser = () => (dispatch) => {
 	return new Promise((res, rej) => {
-		API.post("/api/Token/RevokeToken", { token })
+		API.post("/api/Users/Logout")
 			.then((response) => {
 				dispatch(logOutSuccess());
 				res(response);
 			})
 			.catch((err) => {
 				dispatch(userFailure());
+				console.log(err.response);
 				rej(err);
 			});
 	});
