@@ -286,7 +286,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 		} catch (err) {
 			getError(err.response.data.detail);
 		}
-		setLoading(false);
 	};
 
 	function signOutMicrosoftHandler() {
