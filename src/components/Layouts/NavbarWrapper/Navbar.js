@@ -44,6 +44,10 @@ import SettingsIcon from "@material-ui/icons/Settings";
 const drawerWidth = 240;
 const minDrawerWidth = 62;
 
+const mediaHeight = "@media(max-height: 593px)";
+const mediaHeight2 = "@media(max-height: 493px)";
+const mediaHeight3 = "@media(max-height: 450px)";
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
@@ -172,7 +176,7 @@ const useStyles = makeStyles((theme) => ({
 		position: "fixed",
 		bottom: 0,
 		textAlign: "center",
-		paddingBottom: 10,
+		// paddingBottom: 10,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -208,7 +212,7 @@ const useStyles = makeStyles((theme) => ({
 	line: {
 		height: "100%",
 		width: "2px",
-		backgroundColor: "#925e16",
+		backgroundColor: "#ffdeb0",
 		zIndex: 10,
 	},
 
@@ -228,6 +232,22 @@ const useStyles = makeStyles((theme) => ({
 	alwaysShow: {
 		display: "flex",
 		backgroundColor: "black",
+	},
+
+	upperContent: {
+		[mediaHeight]: {
+			// backgroundColor: "black",
+			maxHeight: "190px",
+			overflowY: "scroll",
+			overflowX: "hidden",
+			boxSizing: "content-box",
+		},
+		[mediaHeight2]: {
+			maxHeight: "120px",
+		},
+		[mediaHeight3]: {
+			maxHeight: "50px",
+		},
 	},
 }));
 
@@ -357,7 +377,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 							) : null}
 						</>
 					) : (
-						<List>
+						<List className={`${classes.upperContent} upperContent`}>
 							{[
 								["Clients", ClientIcon, clientsPath],
 								["Applications", ApplicationIcon, applicationListPath],
