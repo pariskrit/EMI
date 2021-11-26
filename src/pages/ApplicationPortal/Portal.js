@@ -68,7 +68,11 @@ function Portal() {
 	}, []);
 
 	if (isLoading.initial) {
-		return <CircularProgress />;
+		return (
+			<div className="container">
+				<CircularProgress />
+			</div>
+		);
 	}
 
 	return (
