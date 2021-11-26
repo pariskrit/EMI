@@ -26,16 +26,18 @@ const useStyles = makeStyles((theme) => ({
 
 	logo: {
 		height: 40,
-		width: 248,
+		//width: 248,
 
 		[media]: {
 			width: 200,
 			height: 38,
+			objectFit: "contain",
 		},
 
 		[mediaSmall]: {
 			width: 150,
 			height: 34,
+			objectFit: "contain",
 		},
 	},
 	summaryContainer: {
