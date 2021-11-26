@@ -73,7 +73,6 @@ export const logOutUser = () => (dispatch) => {
 			})
 			.catch((err) => {
 				dispatch(userFailure());
-				console.log(err.response);
 				rej(err);
 			});
 	});
