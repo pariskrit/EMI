@@ -45,8 +45,12 @@ const drawerWidth = 240;
 const minDrawerWidth = 62;
 
 const mediaHeight = "@media(max-height: 593px)";
-const mediaHeight2 = "@media(max-height: 493px)";
-const mediaHeight3 = "@media(max-height: 450px)";
+const mediaHeight2 = "@media(max-height: 518px)";
+const mediaHeight3 = "@media(max-height: 475px)";
+const mediaHeight4 = "@media(max-height: 457px)";
+const mediaHeight5 = "@media(max-height: 429px)";
+const mediaHeight6 = "@media(max-height: 379px)";
+const mediaHeight7 = "@media(max-height: 321px)";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -211,7 +215,7 @@ const useStyles = makeStyles((theme) => ({
 
 	line: {
 		height: "100%",
-		width: "2px",
+		width: "1px",
 		backgroundColor: "#ffdeb0",
 		zIndex: 10,
 	},
@@ -229,6 +233,14 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 	},
 
+	mobPortal: {
+		width: "80vw",
+		overflowX: "scroll",
+		overflowY: "hidden",
+		display: "flex",
+		alignItems: "center",
+	},
+
 	alwaysShow: {
 		display: "flex",
 		backgroundColor: "black",
@@ -237,16 +249,30 @@ const useStyles = makeStyles((theme) => ({
 	upperContent: {
 		[mediaHeight]: {
 			// backgroundColor: "black",
-			maxHeight: "190px",
+			height: "300px",
+			maxHeight: "400px",
 			overflowY: "scroll",
 			overflowX: "hidden",
 			boxSizing: "content-box",
 		},
 		[mediaHeight2]: {
-			maxHeight: "120px",
+			maxHeight: "41.1%",
+			// overflowY: "hidden",
 		},
 		[mediaHeight3]: {
-			maxHeight: "50px",
+			maxHeight: "35%",
+		},
+		[mediaHeight4]: {
+			maxHeight: "34%",
+		},
+		[mediaHeight5]: {
+			maxHeight: "26%",
+		},
+		[mediaHeight6]: {
+			maxHeight: "20%",
+		},
+		[mediaHeight7]: {
+			maxHeight: "7%",
 		},
 	},
 }));
@@ -332,7 +358,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 					)}
 					{isApplicationPortal ? (
 						<>
-							<Link to="/portal" className={classes.navLink}>
+							<Link to={applicationPortalPath} className={classes.navLink}>
 								<div
 									className={`${classes.navListContainer} mobNavListContainer`}
 								>
@@ -555,64 +581,99 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 				<BottomNavigation
 					className={`${classes.bottomNavigationContainer} mobileNavigation`}
 				>
-					<div className={classes.innerBottomNav}>
-						{[
-							["Clients", ClientIcon, clientsPath],
-							["Applications", ApplicationIcon, applicationListPath],
-							["Models", ModelIcon, "/"],
-							["Users", UserIcon, usersPath],
-							["Analytics", AnalyticsIcon, "/"],
-						].map((item, index) => {
-							// Storing SVG
-							let NavIcon = item[1];
+					{isApplicationPortal ? (
+						<div className={classes.mobPortal}>
+							<Link to={applicationPortalPath} className={classes.navLink}>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+								>
+									<ListItem button className={classes.currentItemBackground}>
+										<ListItemIcon className={classes.navIconContainer}>
+											<Home
+												className={classes.navIconCurrent}
+												alt={`Home icon`}
+											/>
+										</ListItemIcon>
+									</ListItem>
+								</div>
+							</Link>
+							{user.isAdmin ? (
+								<Link to="/" className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={null}>
+											<ListItemIcon className={classes.navIconContainer}>
+												<SettingsIcon
+													className={classes.homeIcon}
+													alt={`Home icon`}
+												/>
+											</ListItemIcon>
+										</ListItem>
+									</div>
+								</Link>
+							) : null}
+						</div>
+					) : (
+						<div className={classes.innerBottomNav}>
+							{[
+								["Clients", ClientIcon, clientsPath],
+								["Applications", ApplicationIcon, applicationListPath],
+								["Models", ModelIcon, "/"],
+								["Users", UserIcon, usersPath],
+								["Analytics", AnalyticsIcon, "/"],
+							].map((item, index) => {
+								// Storing SVG
+								let NavIcon = item[1];
 
-							// Note: Currently hardcoding current selection -- pull from global state
-							// when implemented
-							if (index === 1) {
-								return (
-									<Link to={item[2]} className={classes.navLink} key={index}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<BottomNavigationAction
-												label="Recents"
-												key={item[0]}
-												className={classes.currentItemBackground}
-												value="recents"
-												icon={
-													<NavIcon
-														className={classes.navIconCurrent}
-														alt={`${item[0]} icon`}
-													/>
-												}
-											/>
-										</div>
-									</Link>
-								);
-							} else {
-								return (
-									<Link to={item[2]} className={classes.navLink} key={index}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<BottomNavigationAction
-												label="Recents"
-												key={item[0]}
-												className={classes.currentItemBackground}
-												value="recents"
-												icon={
-													<NavIcon
-														className={classes.navIconCurrent}
-														alt={`${item[0]} icon`}
-													/>
-												}
-											/>
-										</div>
-									</Link>
-								);
-							}
-						})}
-					</div>
+								// Note: Currently hardcoding current selection -- pull from global state
+								// when implemented
+								if (index === 1) {
+									return (
+										<Link to={item[2]} className={classes.navLink} key={index}>
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+											>
+												<BottomNavigationAction
+													label="Recents"
+													key={item[0]}
+													className={classes.currentItemBackground}
+													value="recents"
+													icon={
+														<NavIcon
+															className={classes.navIconCurrent}
+															alt={`${item[0]} icon`}
+														/>
+													}
+												/>
+											</div>
+										</Link>
+									);
+								} else {
+									return (
+										<Link to={item[2]} className={classes.navLink} key={index}>
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+											>
+												<BottomNavigationAction
+													label="Recents"
+													key={item[0]}
+													className={classes.currentItemBackground}
+													value="recents"
+													icon={
+														<NavIcon
+															className={classes.navIconCurrent}
+															alt={`${item[0]} icon`}
+														/>
+													}
+												/>
+											</div>
+										</Link>
+									);
+								}
+							})}
+						</div>
+					)}
 					<div className={classes.line}></div>
 					<div className={classes.alwaysShow}>
 						<Link to={userProfilePath} className={classes.navLink}>

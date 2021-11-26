@@ -9,11 +9,20 @@ import RegionAndSite from "./RegionAndSite";
 
 const media = "@media(max-width: 414px)";
 const mediaSmall = "@media(max-width: 376px)";
+const mediaDesktop = "@media(min-width: 1200px) and (max-width: 1440px)";
 
 const useStyles = makeStyles((theme) => ({
 	itemSize: {
-		// width: "50%",
+		minWidth: "600px",
 		marginTop: "25px",
+
+		[mediaDesktop]: {
+			width: "50%",
+		},
+
+		[media]: {
+			minWidth: "100%",
+		},
 	},
 	accordionParent: {
 		borderStyle: "solid",
