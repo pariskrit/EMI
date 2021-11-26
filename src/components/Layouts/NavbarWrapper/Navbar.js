@@ -1,7 +1,3 @@
-import React, { useState } from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
-import { useGoogleLogout } from "react-google-login";
-
 // Bottom Navigation
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -12,38 +8,45 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
+import SettingsIcon from "@material-ui/icons/Settings";
 import MiniLogo from "assets/EMI-symbol.png";
 import { ReactComponent as AnalyticsIcon } from "assets/icons/analyticsIcon.svg";
 import { ReactComponent as ApplicationIcon } from "assets/icons/applicationsIcon.svg";
 // Importing icons
 import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as CloseIcon } from "assets/icons/close-panel.svg";
+import { ReactComponent as Home } from "assets/icons/home.svg";
+import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
-import { ReactComponent as Home } from "assets/icons/home.svg";
-import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
 import {
 	applicationListPath,
-	clientsPath,
-	usersPath,
-	userProfilePath,
 	applicationPortalPath,
+	clientsPath,
+	userProfilePath,
+	usersPath,
 } from "helpers/routePaths";
+import React, { useState } from "react";
+import { useGoogleLogout } from "react-google-login";
 import { connect } from "react-redux";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { logOutUser } from "redux/auth/actions";
-import { useMsal } from "@azure/msal-react";
 import { showError } from "redux/common/actions";
 import "./style.scss";
 
 // Size constants
 const drawerWidth = 240;
 const minDrawerWidth = 62;
+
+const mediaHeight = "@media(max-height: 593px)";
+const mediaHeight2 = "@media(max-height: 493px)";
+const mediaHeight3 = "@media(max-height: 450px)";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -142,6 +145,9 @@ const useStyles = makeStyles((theme) => ({
 	navIcon: {
 		transform: "scale(0.8)",
 	},
+	homeIcon: {
+		transform: "scale(1.1)",
+	},
 	navIconCurrent: {
 		transform: "scale(0.8)",
 		fill: "#FFFFFF",
@@ -170,7 +176,7 @@ const useStyles = makeStyles((theme) => ({
 		position: "fixed",
 		bottom: 0,
 		textAlign: "center",
-		paddingBottom: 10,
+		// paddingBottom: 10,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -206,7 +212,7 @@ const useStyles = makeStyles((theme) => ({
 	line: {
 		height: "100%",
 		width: "2px",
-		backgroundColor: "#925e16",
+		backgroundColor: "#ffdeb0",
 		zIndex: 10,
 	},
 
@@ -227,6 +233,22 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		backgroundColor: "black",
 	},
+
+	upperContent: {
+		[mediaHeight]: {
+			// backgroundColor: "black",
+			maxHeight: "190px",
+			overflowY: "scroll",
+			overflowX: "hidden",
+			boxSizing: "content-box",
+		},
+		[mediaHeight2]: {
+			maxHeight: "120px",
+		},
+		[mediaHeight3]: {
+			maxHeight: "50px",
+		},
+	},
 }));
 
 function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
@@ -245,8 +267,9 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
-	const { instance } = useMsal();
+
 	let activeLink = location.pathname.split("/")[2];
+	const user = JSON.parse(localStorage.getItem("me"));
 
 	// Handlers
 	const handleDrawerChange = () => {
@@ -271,12 +294,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 						signOut();
 						return true;
 					}
-					if (loginType === "MICROSOFT") {
-						// MICROSOFT SIGNOUT
-
-						signOutMicrosoftHandler();
-						return true;
-					}
 				}
 
 				history.push("/login");
@@ -287,15 +304,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 			getError(err.response.data.detail);
 		}
 	};
-
-	function signOutMicrosoftHandler() {
-		const accountId = localStorage.getItem("homeAccoundId");
-		const logoutRequest = {
-			account: instance.getAccountByHomeId(accountId),
-			postLogoutRedirectUri: "http://localhost:3000/login",
-		};
-		instance.logoutRedirect(logoutRequest);
-	}
 
 	return (
 		<>
@@ -323,28 +331,52 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 						</div>
 					)}
 					{isApplicationPortal ? (
-						<Link to="/portal" className={classes.navLink}>
-							<div
-								className={`${classes.navListContainer} mobNavListContainer`}
-							>
-								<ListItem button className={classes.currentItemBackground}>
-									<ListItemIcon className={classes.navIconContainer}>
-										<Home
-											className={classes.navIconCurrent}
-											alt={`Home icon`}
+						<>
+							<Link to="/portal" className={classes.navLink}>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+								>
+									<ListItem button className={classes.currentItemBackground}>
+										<ListItemIcon className={classes.navIconContainer}>
+											<Home
+												className={classes.navIconCurrent}
+												alt={`Home icon`}
+											/>
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimaryCurrent,
+											}}
+											primary="Application Portal"
 										/>
-									</ListItemIcon>
-									<ListItemText
-										classes={{
-											primary: classes.listItemTextPrimaryCurrent,
-										}}
-										primary="Application Portal"
-									/>
-								</ListItem>
-							</div>
-						</Link>
+									</ListItem>
+								</div>
+							</Link>
+							{user.isAdmin ? (
+								<Link to="/" className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={null}>
+											<ListItemIcon className={classes.navIconContainer}>
+												<SettingsIcon
+													className={classes.homeIcon}
+													alt={`Home icon`}
+												/>
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimary,
+												}}
+												primary="Admin Mode"
+											/>
+										</ListItem>
+									</div>
+								</Link>
+							) : null}
+						</>
 					) : (
-						<List>
+						<List className={`${classes.upperContent} upperContent`}>
 							{[
 								["Clients", ClientIcon, clientsPath],
 								["Applications", ApplicationIcon, applicationListPath],
@@ -437,7 +469,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 								</ListItem>
 							</div>
 
-							{!isApplicationPortal ? (
+							{user.position != null ? (
 								<Link to={applicationPortalPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
