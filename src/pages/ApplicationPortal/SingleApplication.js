@@ -7,9 +7,12 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import RegionAndSite from "./RegionAndSite";
 
+const media = "@media(max-width: 414px)";
+const mediaSmall = "@media(max-width: 376px)";
+
 const useStyles = makeStyles((theme) => ({
 	itemSize: {
-		width: "50%",
+		// width: "50%",
 		marginTop: "25px",
 	},
 	accordionParent: {
@@ -23,13 +26,29 @@ const useStyles = makeStyles((theme) => ({
 
 	logo: {
 		height: 40,
-		width: 248,
+		//width: 248,
+
+		[media]: {
+			width: 200,
+			height: 38,
+			objectFit: "contain",
+		},
+
+		[mediaSmall]: {
+			width: 150,
+			height: 34,
+			objectFit: "contain",
+		},
 	},
 	summaryContainer: {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
 		gap: "25px",
+
+		[media]: {
+			gap: "0px",
+		},
 	},
 	summaryContainerRight: {
 		display: "flex",

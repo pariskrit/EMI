@@ -112,5 +112,12 @@ $border-color: #c1c1c1;
 		&.downward {
 			bottom: 15px;
 		}
+
+		@media screen and (max-width: 414px) {
+			width: 330px;
+		}
+		@media screen and (max-width: 376px) {
+			width: 300px;
+		}
 	}
 }
