@@ -18,6 +18,7 @@ import ImportListDialog from "./ImportListDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
+import DragAndDropTable from "components/HOC/DragAndDropTable";
 
 const AT = ActionButtonStyle();
 
@@ -237,7 +238,7 @@ const UsersListContent = ({ getError }) => {
 				) : null}
 			</div>
 			{haveData ? (
-				<UsersListTable
+				<DragAndDropTable
 					data={mainData}
 					headers={["First Name", "Surname", "Email Address", "Phone"]}
 					columns={["firstName", "lastName", "email", "phone"]}
@@ -246,10 +247,10 @@ const UsersListContent = ({ getError }) => {
 					searchQuery={searchQuery}
 					searchedData={searchedData}
 					setSearchData={setSearchData}
-					handleDeleteDialogOpen={handleDeleteDialogOpen}
+					handleDelete={handleDeleteDialogOpen}
 					searchText={searchRef.current}
-					onPageChange={handlePage}
-					page={page.pageNo}
+					handleEdit={(id) => console.log(id)}
+					handleDragEnd={(e) => console.log(e)}
 				/>
 			) : (
 				<CircularProgress />
