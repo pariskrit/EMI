@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
+import { makeStyles } from "@material-ui/core/styles";
 import TableStyle from "styles/application/TableStyle";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -63,11 +63,6 @@ const useStyles = makeStyles({
 
 const DragAndDropTable = ({
 	data,
-	setData,
-	handleSort,
-	searchQuery,
-	searchedData,
-	setSearchedData,
 	handleDragEnd,
 	headers,
 	columns,
@@ -78,25 +73,15 @@ const DragAndDropTable = ({
 	const classes = useStyles();
 
 	// Init State
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
-	// Handlers
-	const handleSortClick = (field) => {
-		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
-
-		// Sorting table
-		handleSort(data, setData, field, newMethod);
-
-		// Sorting searched table if present
-		if (searchQuery !== "") {
-			handleSort(searchedData, setSearchedData, field, newMethod);
+	const getRowData = (dat, i) => {
+		if (i === 0) {
+			return "icon" + dat;
+		} else {
+			return dat;
 		}
-
-		// Updating header state
-		setCurrentTableSort([field, newMethod]);
 	};
 
 	return (
@@ -105,30 +90,13 @@ const DragAndDropTable = ({
 				<Table aria-label="Table">
 					<AT.TableHead>
 						<TableRow className={classes.tableHead}>
-							<TableCell className={classes.tableHeadRow}>
-								<AT.CellContainer>ICON</AT.CellContainer>
-							</TableCell>
-							{headers.map((header, index) => (
+							{headers.map((header) => (
 								<TableCell
 									key={header}
-									onClick={() => {
-										handleSortClick(columns[index]);
-									}}
-									className={clsx(classes.nameRow, {
-										[classes.selectedTableHeadRow]:
-											currentTableSort[0] === columns[index],
-										[classes.tableHeadRow]:
-											currentTableSort[0] !== columns[index],
-									})}
+									className={clsx(classes.tableHeadRow, classes.nameRow)}
 								>
 									<AT.CellContainer className="flex justify-between">
 										{header}
-										{currentTableSort[0] === columns[index] &&
-										currentTableSort[1] === "desc" ? (
-											<AT.DefaultArrow fill="#FFFFFF" />
-										) : (
-											<AT.DescArrow fill="#FFFFFF" />
-										)}
 									</AT.CellContainer>
 								</TableCell>
 							))}
@@ -141,85 +109,78 @@ const DragAndDropTable = ({
 								ref={pp.innerRef}
 								{...pp.droppableProps}
 							>
-								{(searchQuery === "" ? data : searchedData).map(
-									(row, index) => (
-										<Draggable
-											key={row.id}
-											draggableId={row.id + ""}
-											index={index}
-										>
-											{(provider, snapshot) => (
-												<TableRow
-													key={index}
-													{...provider.draggableProps}
-													ref={provider.innerRef}
-												>
-													<AT.DataCell {...provider.dragHandleProps}>
-														<AT.CellContainer>
-															<AT.TableBodyText>=</AT.TableBodyText>
-														</AT.CellContainer>{" "}
-													</AT.DataCell>
-													{columns.map((col, i, arr) => (
-														<AT.DataCell key={col}>
-															<AT.CellContainer key={col}>
-																<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+								{data.map((row, index) => (
+									<Draggable
+										key={row.id}
+										draggableId={row.id + ""}
+										index={index}
+									>
+										{(provider) => (
+											<TableRow
+												key={index}
+												{...provider.draggableProps}
+												ref={provider.innerRef}
+											>
+												<AT.DataCell
+													{...provider.dragHandleProps}
+												></AT.DataCell>
+												{columns.map((col, i, arr) => (
+													<AT.DataCell key={col}>
+														<AT.CellContainer key={col}>
+															<AT.TableBodyText>
+																{getRowData(row[col], i)}
+															</AT.TableBodyText>
 
-																{arr.length === i + 1 ? (
-																	<AT.DotMenu
-																		onClick={(e) => {
-																			setAnchorEl(
-																				anchorEl === e.currentTarget
-																					? null
-																					: e.currentTarget
-																			);
-																			setSelectedData(
-																				anchorEl === e.currentTarget
-																					? null
-																					: index
-																			);
+															{arr.length === i + 1 ? (
+																<AT.DotMenu
+																	onClick={(e) => {
+																		setAnchorEl(
+																			anchorEl === e.currentTarget
+																				? null
+																				: e.currentTarget
+																		);
+																		setSelectedData(
+																			anchorEl === e.currentTarget
+																				? null
+																				: index
+																		);
+																	}}
+																>
+																	<AT.TableMenuButton>
+																		<MenuIcon />
+																	</AT.TableMenuButton>
+
+																	<PopupMenu
+																		index={index}
+																		selectedData={selectedData}
+																		anchorEl={anchorEl}
+																		id={row.id}
+																		clickAwayHandler={() => {
+																			setAnchorEl(null);
+																			setSelectedData(null);
 																		}}
-																	>
-																		<AT.TableMenuButton>
-																			<MenuIcon />
-																		</AT.TableMenuButton>
-
-																		<PopupMenu
-																			index={index}
-																			selectedData={selectedData}
-																			anchorEl={anchorEl}
-																			isLast={
-																				searchQuery === ""
-																					? index === data.length - 1
-																					: index === searchedData.length - 1
-																			}
-																			id={row.id}
-																			clickAwayHandler={() => {
-																				setAnchorEl(null);
-																				setSelectedData(null);
-																			}}
-																			menuData={[
-																				{
-																					name: "Edit",
-																					handler: handleEdit,
-																					isDelete: false,
-																				},
-																				{
-																					name: "Delete",
-																					handler: handleDelete,
-																					isDelete: true,
-																				},
-																			]}
-																		/>
-																	</AT.DotMenu>
-																) : null}
-															</AT.CellContainer>
-														</AT.DataCell>
-													))}
-												</TableRow>
-											)}
-										</Draggable>
-									)
-								)}
+																		menuData={[
+																			{
+																				name: "Edit",
+																				handler: handleEdit,
+																				isDelete: false,
+																			},
+																			{
+																				name: "Delete",
+																				handler: handleDelete,
+																				isDelete: true,
+																			},
+																		]}
+																	/>
+																</AT.DotMenu>
+															) : null}
+														</AT.CellContainer>
+													</AT.DataCell>
+												))}
+											</TableRow>
+										)}
+									</Draggable>
+								))}
 								{pp.placeholder}
 							</TableBody>
 						)}
@@ -232,14 +193,9 @@ const DragAndDropTable = ({
 
 DragAndDropTable.propTypes = {
 	data: PropTypes.array.isRequired,
-	setData: PropTypes.any,
-	handleSort: PropTypes.func,
 	handleDelete: PropTypes.func,
 	handleEdit: PropTypes.func,
-	searchQuery: PropTypes.string,
 	handleDeleteDialogOpen: PropTypes.func,
-	searchedData: PropTypes.array,
-	setSearchedData: PropTypes.any,
 	handleDragEnd: PropTypes.func.isRequired,
 	headers: PropTypes.arrayOf(PropTypes.string),
 	columns: PropTypes.arrayOf(PropTypes.string),

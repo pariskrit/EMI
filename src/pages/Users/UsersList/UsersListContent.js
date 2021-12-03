@@ -242,13 +242,7 @@ const UsersListContent = ({ getError }) => {
 					data={mainData}
 					headers={["First Name", "Surname", "Email Address", "Phone"]}
 					columns={["firstName", "lastName", "email", "phone"]}
-					setData={setAllData}
-					handleSort={handleSort}
-					searchQuery={searchQuery}
-					searchedData={searchedData}
-					setSearchData={setSearchData}
 					handleDelete={handleDeleteDialogOpen}
-					searchText={searchRef.current}
 					handleEdit={(id) => console.log(id)}
 					handleDragEnd={(e) => console.log(e)}
 				/>
