@@ -9,18 +9,18 @@ import Typography from "@material-ui/core/Typography";
 import { getUsersList } from "services/users/usersList";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-
-import SearchField from "components/Elements/SearchField/SearchField";
-import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import ContentStyle from "styles/application/ContentStyle";
+import { Grid } from "@material-ui/core";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 import AddUserDialog from "./AddUserDialog";
 import ImportListDialog from "./ImportListDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
-import DragAndDropTable from "components/HOC/DragAndDropTable";
 
 const AT = ActionButtonStyle();
+const AC = ContentStyle();
 
 const media = "@media(max-width: 414px)";
 
@@ -50,9 +50,11 @@ const useStyles = makeStyles({
 	productButton: {
 		backgroundColor: ColourConstants.confirmButton,
 		color: "#FFFFFF",
-		fontSize: 15,
 		fontFamily: "Roboto Condensed",
 		width: 150,
+		fontSize: "13.5px",
+		fontWeight: "bold",
+		marginRight: "10px",
 	},
 });
 
@@ -62,7 +64,7 @@ const UsersListContent = ({ getError }) => {
 	//Init State
 	const [haveData, setHaveData] = useState(false);
 
-	const [dataCount, setDataCount] = useState(null);
+	// const [dataCount, setDataCount] = useState(null);
 	const [modal, setModal] = useState({ import: false, add: false });
 
 	const [deleteID, setDeleteID] = useState(null);
@@ -75,7 +77,6 @@ const UsersListContent = ({ getError }) => {
 	const {
 		allData,
 		setAllData,
-		handleSearch,
 		searchedData,
 		searchQuery,
 		setSearchData,
@@ -83,15 +84,15 @@ const UsersListContent = ({ getError }) => {
 	} = useUserSearch();
 
 	const fetchData = useCallback(
-		async (pNo) => {
+		async (pNo, searchText) => {
 			try {
-				let result = await getUsersList(pNo, DefaultPageSize, "");
+				let result = await getUsersList(pNo, DefaultPageSize, searchText);
 
 				if (result.status) {
 					result = result.data;
 
 					setAllData(result);
-					setDataCount(result.length);
+					// setDataCount(result.length);
 					return true;
 				} else {
 					// Throwing error if failed
@@ -163,6 +164,27 @@ const UsersListContent = ({ getError }) => {
 		fetchData(1);
 	};
 
+	const debounce = (func, delay) => {
+		let timer;
+		return function () {
+			let self = this;
+			let args = arguments;
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				func.apply(self, args);
+			}, delay);
+		};
+	};
+
+	//handle search
+	const handleSearch = useCallback(
+		debounce((value) => {
+			searchRef.current = value;
+			fetchData(1, value);
+		}, 500),
+		[]
+	);
+
 	return (
 		<div className="container">
 			<ImportListDialog
@@ -223,28 +245,37 @@ const UsersListContent = ({ getError }) => {
 				</div>
 
 				{haveData ? (
-					<>
-						<SearchField
-							searchQuery={searchQuery}
-							setSearchQuery={handleSearch}
-							header="users"
-						/>
-						<MobileSearchField
-							searchQuery={searchQuery}
-							setSearchQuery={handleSearch}
-							header="users"
-						/>
-					</>
+					<AC.SearchContainer>
+						<AC.SearchInner className="applicationSearchBtn">
+							<Grid container spacing={1} alignItems="flex-end">
+								<Grid item>
+									<SearchIcon />
+								</Grid>
+								<Grid item>
+									<AC.SearchInput
+										onChange={(e) => handleSearch(e.target.value)}
+										label="Search"
+									/>
+								</Grid>
+							</Grid>
+						</AC.SearchInner>
+					</AC.SearchContainer>
 				) : null}
 			</div>
 			{haveData ? (
-				<DragAndDropTable
+				<UsersListTable
 					data={mainData}
 					headers={["First Name", "Surname", "Email Address", "Phone"]}
 					columns={["firstName", "lastName", "email", "phone"]}
-					handleDelete={handleDeleteDialogOpen}
-					handleEdit={(id) => console.log(id)}
-					handleDragEnd={(e) => console.log(e)}
+					setData={setAllData}
+					handleSort={handleSort}
+					searchQuery={searchQuery}
+					searchedData={searchedData}
+					setSearchData={setSearchData}
+					handleDeleteDialogOpen={handleDeleteDialogOpen}
+					searchText={searchRef.current}
+					onPageChange={handlePage}
+					page={page.pageNo}
 				/>
 			) : (
 				<CircularProgress />
