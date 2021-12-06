@@ -256,8 +256,9 @@ const Login = ({
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				const response = await loginData(input);
+				console.log(response);
 				if (response.data) {
-					redirectToPortalOrDefault(response.data.position.siteAppID);
+					redirectToPortalOrDefault(response?.data?.position?.siteAppID);
 					return true;
 				} else {
 					throw new Error(response);
