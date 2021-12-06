@@ -2,7 +2,7 @@ import { handleSort } from "helpers/utils";
 import UsersListTable from "./UsersListTable";
 import Button from "@material-ui/core/Button";
 import { useUserSearch } from "hooks/useUserSearch";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, TableBody, TableRow } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -18,6 +18,7 @@ import ImportListDialog from "./ImportListDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
+import DragAndDrop from "components/Modules/DragAndDrop";
 
 const AT = ActionButtonStyle();
 const AC = ContentStyle();
@@ -262,24 +263,24 @@ const UsersListContent = ({ getError }) => {
 					</AC.SearchContainer>
 				) : null}
 			</div>
-			{haveData ? (
-				<UsersListTable
-					data={mainData}
-					headers={["First Name", "Surname", "Email Address", "Phone"]}
-					columns={["firstName", "lastName", "email", "phone"]}
-					setData={setAllData}
-					handleSort={handleSort}
-					searchQuery={searchQuery}
-					searchedData={searchedData}
-					setSearchData={setSearchData}
-					handleDeleteDialogOpen={handleDeleteDialogOpen}
-					searchText={searchRef.current}
-					onPageChange={handlePage}
-					page={page.pageNo}
-				/>
-			) : (
-				<CircularProgress />
-			)}
+
+			<DragAndDrop
+				data={mainData}
+				columns={["firstName", "lastName", "email", "phone"]}
+				headers={["First Name", "Surname", "Email Address", "Phone"]}
+				handleDragEnd={(e) => console.log(e)}
+				WrapComponent={({ children, ...props }) => (
+					<TableBody {...props}>{children}</TableBody>
+				)}
+				RowComponent={({ children, handleDrag, ...props }) => (
+					<TableRow {...props}>
+						<>
+							<h1 {...handleDrag}>hi</h1>
+							{children}
+						</>
+					</TableRow>
+				)}
+			/>
 		</div>
 	);
 };
