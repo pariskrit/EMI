@@ -195,10 +195,9 @@ DragAndDropTable.propTypes = {
 	data: PropTypes.array.isRequired,
 	handleDelete: PropTypes.func,
 	handleEdit: PropTypes.func,
-	handleDeleteDialogOpen: PropTypes.func,
 	handleDragEnd: PropTypes.func.isRequired,
-	headers: PropTypes.arrayOf(PropTypes.string),
-	columns: PropTypes.arrayOf(PropTypes.string),
+	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default DragAndDropTable;
