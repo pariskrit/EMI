@@ -268,8 +268,8 @@ const UsersListContent = ({ getError }) => {
 				handleDelete={(id) => console.log(id)}
 				handleEdit={(id) => console.log(id)}
 				handleDragEnd={(e) => console.log(e)}
-				headers={[]}
-				columns={[]}
+				headers={["First Name", "Surname", "Email Address", "Phone"]}
+				columns={["firstName", "lastName", "email", "phone"]}
 			/>
 		</div>
 	);

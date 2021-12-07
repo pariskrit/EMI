@@ -76,14 +76,6 @@ const DragAndDropTable = ({
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
-	const getRowData = (dat, i) => {
-		if (i === 0) {
-			return "icon" + dat;
-		} else {
-			return dat;
-		}
-	};
-
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>
 			<DragDropContext onDragEnd={handleDragEnd}>
@@ -121,14 +113,20 @@ const DragAndDropTable = ({
 												{...provider.draggableProps}
 												ref={provider.innerRef}
 											>
-												<AT.DataCell
-													{...provider.dragHandleProps}
-												></AT.DataCell>
 												{columns.map((col, i, arr) => (
 													<AT.DataCell key={col}>
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
-																{getRowData(row[col], i)}
+																{i === 0
+																	? (
+																			<div
+																				{...provider.dragHandleProps}
+																				ref={provider.innerRef}
+																			>
+																				Icon
+																			</div>
+																	  ) + row[col]
+																	: row[col]}
 															</AT.TableBodyText>
 
 															{arr.length === i + 1 ? (
