@@ -18,7 +18,7 @@ import ImportListDialog from "./ImportListDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
-import DragAndDropTable from "components/Modules/DragAndDropTable";
+import DragAndDrop from "components/Modules/DragAndDrop";
 
 const AT = ActionButtonStyle();
 const AC = ContentStyle();
@@ -263,13 +263,33 @@ const UsersListContent = ({ getError }) => {
 					</AC.SearchContainer>
 				) : null}
 			</div>
-			<DragAndDropTable
+
+			<DragAndDrop
 				data={mainData}
-				handleDelete={(id) => console.log(id)}
-				handleEdit={(id) => console.log(id)}
 				handleDragEnd={(e) => console.log(e)}
-				headers={["First Name", "Surname", "Email Address", "Phone"]}
-				columns={["firstName", "lastName", "email", "phone"]}
+				header={() => (
+					<thead>
+						<tr>
+							<th>Fname</th>
+							<th>Lname</th>
+							<th>Email</th>
+							<th>Phone</th>
+						</tr>
+					</thead>
+				)}
+				tableColumns={(row, index, handleDrag, ref) => (
+					<>
+						<td>
+							<span ref={ref} {...handleDrag}>
+								Icon
+							</span>
+							{row.firstName}
+						</td>
+						<td>{row.lastName}</td>
+						<td>{row.email}</td>
+						<td>{row.phone}</td>
+					</>
+				)}
 			/>
 		</div>
 	);

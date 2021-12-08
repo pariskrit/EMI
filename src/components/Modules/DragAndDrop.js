@@ -5,43 +5,55 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 const DragAndDrop = ({
 	data,
 	handleDragEnd,
-	tableHead,
-	droppableId,
+	header,
 	tableColumns,
+	droppableId,
 	tableStyle,
 	bodyStyle,
 	rowStyle,
 }) => {
 	return (
-		<DragDropContext onDragEnd={handleDragEnd}>
-			<table style={tableStyle}>
-				{tableHead}
-				<Droppable droppableId={droppableId}>
-					{(parent) => (
-						<tbody
-							ref={parent.innerRef}
-							{...parent.droppableProps}
-							tableBodyStyle={bodyStyle}
-						>
-							{data.map((row, index) => (
-								<Draggable key={row.id} draggableId={row.id + ""} index={index}>
-									{(child) => (
-										<tr
-											key={index}
-											{...child.draggableProps}
-											ref={child.innerRef}
-											rowStyle={rowStyle}
-										>
-											{tableColumns(row, index)}
-										</tr>
-									)}
-								</Draggable>
-							))}
-						</tbody>
-					)}
-				</Droppable>
-			</table>
-		</DragDropContext>
+		<div>
+			<DragDropContext onDragEnd={handleDragEnd}>
+				<table style={tableStyle}>
+					{header()}
+					<Droppable droppableId={droppableId}>
+						{(provider) => (
+							<tbody
+								className="text-capitalize"
+								ref={provider.innerRef}
+								{...provider.droppableProps}
+								style={bodyStyle}
+							>
+								{data.map((user, index) => (
+									<Draggable
+										key={user.id}
+										draggableId={user.id + ""}
+										index={index}
+									>
+										{(provider) => (
+											<tr
+												style={rowStyle}
+												{...provider.draggableProps}
+												ref={provider.innerRef}
+											>
+												{tableColumns(
+													user,
+													index,
+													provider.dragHandleProps,
+													provider.innerRef
+												)}
+											</tr>
+										)}
+									</Draggable>
+								))}
+								{provider.placeholder}
+							</tbody>
+						)}
+					</Droppable>
+				</table>
+			</DragDropContext>
+		</div>
 	);
 };
 
@@ -49,18 +61,18 @@ DragAndDrop.propTypes = {
 	data: PropTypes.array.isRequired,
 	handleDragEnd: PropTypes.func.isRequired,
 	droppableId: PropTypes.string,
-	tableHead: PropTypes.element.isRequired,
-	tableColumns: PropTypes.func.isRequired,
+	header: PropTypes.func.isRequired,
 	tableStyle: PropTypes.object,
 	bodyStyle: PropTypes.object,
 	rowStyle: PropTypes.object,
 };
 
 DragAndDrop.defaultProps = {
-	droppableId: "dnd-id",
+	droppableId: "droppable-2",
 	tableStyle: {},
 	bodyStyle: {},
 	rowStyle: {},
+	dragStyle: {},
 };
 
 export default DragAndDrop;
