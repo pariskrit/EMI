@@ -2,7 +2,7 @@ import { handleSort } from "helpers/utils";
 import UsersListTable from "./UsersListTable";
 import Button from "@material-ui/core/Button";
 import { useUserSearch } from "hooks/useUserSearch";
-import { CircularProgress, TableBody, TableRow } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -18,7 +18,6 @@ import ImportListDialog from "./ImportListDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
-import DragAndDrop from "components/Modules/DragAndDrop";
 
 const AT = ActionButtonStyle();
 const AC = ContentStyle();
@@ -263,34 +262,24 @@ const UsersListContent = ({ getError }) => {
 					</AC.SearchContainer>
 				) : null}
 			</div>
-
-			<DragAndDrop
-				data={mainData}
-				handleDragEnd={(e) => console.log(e)}
-				header={() => (
-					<thead>
-						<tr>
-							<th>Fname</th>
-							<th>Lname</th>
-							<th>Email</th>
-							<th>Phone</th>
-						</tr>
-					</thead>
-				)}
-				tableColumns={(row, index, handleDrag, ref) => (
-					<>
-						<td>
-							<span ref={ref} {...handleDrag}>
-								Icon
-							</span>
-							{row.firstName}
-						</td>
-						<td>{row.lastName}</td>
-						<td>{row.email}</td>
-						<td>{row.phone}</td>
-					</>
-				)}
-			/>
+			{haveData ? (
+				<UsersListTable
+					data={mainData}
+					headers={["First Name", "Surname", "Email Address", "Phone"]}
+					columns={["firstName", "lastName", "email", "phone"]}
+					setData={setAllData}
+					handleSort={handleSort}
+					searchQuery={searchQuery}
+					searchedData={searchedData}
+					setSearchData={setSearchData}
+					handleDeleteDialogOpen={handleDeleteDialogOpen}
+					searchText={searchRef.current}
+					onPageChange={handlePage}
+					page={page.pageNo}
+				/>
+			) : (
+				<CircularProgress />
+			)}
 		</div>
 	);
 };
