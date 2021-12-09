@@ -3,7 +3,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { Collapse, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import PopupMenu from "components/Elements/PopupMenu";
-import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { ReactComponent as BlueMenuIcon } from "assets/icons/3dot-icon.svg";
 import { ReactComponent as WhiteMenuIcon } from "assets/icons/3dot-white-icon.svg";
 
 import ModelTaskDetail from "./ModelTaskDetail";
@@ -53,7 +53,7 @@ const ModelTaskRow = ({
 									}}
 								>
 									<AT.TableMenuButton>
-										{toggle ? <WhiteMenuIcon /> : <MenuIcon />}
+										{toggle ? <WhiteMenuIcon /> : <BlueMenuIcon />}
 									</AT.TableMenuButton>
 
 									<PopupMenu
