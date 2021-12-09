@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import clsx from "clsx";
 import TableRow from "@material-ui/core/TableRow";
 import { Collapse, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
@@ -35,12 +34,7 @@ const ModelTaskRow = ({
 				}}
 			>
 				{columns.map((col, i, arr) => (
-					<TableCell
-						key={col}
-						className={clsx(classes.dataCell, {
-							[classes.lastCell]: index === data.length - 1,
-						})}
-					>
+					<TableCell key={col} className={classes.dataCell}>
 						<AT.CellContainer key={col}>
 							<AT.TableBodyText
 								style={{ color: toggle ? "#FFFFFF" : "" }}

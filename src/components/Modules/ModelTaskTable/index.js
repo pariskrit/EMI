@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 		width: "20%",
 	},
 	dataCell: {
-		height: 50,
+		height: 40,
 	},
 	nameLink: {
 		color: ColourConstants.activeLink,
@@ -52,9 +52,6 @@ const useStyles = makeStyles({
 	noImage: {
 		color: ColourConstants.commonText,
 		opacity: "50%",
-	},
-	lastCell: {
-		borderBottom: "none",
 	},
 });
 
