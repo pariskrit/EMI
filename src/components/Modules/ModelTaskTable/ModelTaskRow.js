@@ -5,8 +5,7 @@ import TableStyle from "styles/application/TableStyle";
 import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as BlueMenuIcon } from "assets/icons/3dot-icon.svg";
 import { ReactComponent as WhiteMenuIcon } from "assets/icons/3dot-white-icon.svg";
-
-import ModelTaskDetail from "./ModelTaskDetail";
+import ModelTaskExpand from "./ModelTaskExpand";
 
 const AT = TableStyle();
 
@@ -18,7 +17,6 @@ const ModelTaskRow = ({
 	anchorEl,
 	setSelectedData,
 	selectedData,
-	data,
 	row,
 	handleEdit,
 	handleDelete,
@@ -90,7 +88,7 @@ const ModelTaskRow = ({
 					colSpan={11}
 				>
 					<Collapse in={toggle} timeout="auto" unmountOnExit>
-						<ModelTaskDetail />
+						<ModelTaskExpand />
 					</Collapse>
 				</TableCell>
 			</TableRow>
