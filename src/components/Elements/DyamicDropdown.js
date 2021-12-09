@@ -88,7 +88,7 @@ function DyanamicDropdown(props) {
 		placeholder,
 		label,
 		required,
-		disabled = false,
+		disabled,
 		page,
 		onPageChange,
 		handleSort,
@@ -142,34 +142,13 @@ function DyanamicDropdown(props) {
 		dropdownlistner
 	);
 
-	const handleOutsideClick = (event) => {
-		let specifiedElement = document.getElementsByClassName(
-			"dropdown-expand active"
-		)[0];
-		let dropbox = document.getElementsByClassName("dropbox active")[0];
-		let isClickInside =
-			specifiedElement?.contains(event.target) ||
-			dropbox?.contains(event.target);
-		if (!isClickInside) {
-			setDropActive(false);
-		}
-	};
-
+	// search
 	const onFilter = (val) => {
 		if (isServerSide) {
 			handleServierSideSearch(val);
 		} else {
 			setsearchText(val);
 		}
-	};
-
-	const handleDrpdwnClick = (event) => {
-		setDropActive(true);
-		setDropUpward(
-			window.innerHeight - event.target.getBoundingClientRect().bottom < 120
-				? false
-				: true
-		);
 	};
 
 	// Handlers
@@ -184,6 +163,28 @@ function DyanamicDropdown(props) {
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
+	};
+
+	const handleOutsideClick = (event) => {
+		let specifiedElement = document.getElementsByClassName(
+			"dropdown-expand active"
+		)[0];
+		let dropbox = document.getElementsByClassName("dropbox active")[0];
+		let isClickInside =
+			specifiedElement?.contains(event.target) ||
+			dropbox?.contains(event.target);
+		if (!isClickInside) {
+			setDropActive(false);
+		}
+	};
+
+	const handleDrpdwnClick = (event) => {
+		setDropActive(true);
+		setDropUpward(
+			window.innerHeight - event.target.getBoundingClientRect().bottom < 120
+				? false
+				: true
+		);
 	};
 
 	// clear and reset dropdown content
@@ -374,9 +375,11 @@ DyanamicDropdown.defaultProps = {
 	dataSource: [],
 	selectedValue: {},
 	onChange: () => {},
+	disabled: false,
 	placeholder: "Select Item",
 	label: "",
 	dataHeader: [],
+	page: 10,
 	columns: [],
 	required: false,
 	showHeader: false,
@@ -384,6 +387,9 @@ DyanamicDropdown.defaultProps = {
 	isServerSide: false,
 	selectdValueToshow: "",
 	onClear: () => {},
+	handleServierSideSearch: () => {},
+	handleServerSideSort: () => {},
+	onPageChange: () => {},
 };
 
 DyanamicDropdown.propTypes = {
@@ -391,9 +397,11 @@ DyanamicDropdown.propTypes = {
 	dataSource: PropTypes.array,
 	selectedValue: PropTypes.object,
 	onChange: PropTypes.func,
+	disabled: PropTypes.bool,
 	placeholder: PropTypes.string,
 	hasLabel: PropTypes.bool,
 	label: PropTypes.string,
+	page: PropTypes.number,
 	dataHeader: PropTypes.array,
 	required: PropTypes.bool,
 	showHeader: PropTypes.bool,
@@ -403,4 +411,7 @@ DyanamicDropdown.propTypes = {
 	isServerSide: PropTypes.bool,
 	selectdValueToshow: PropTypes.string,
 	onClear: PropTypes.func,
+	handleServierSideSearch: PropTypes.func,
+	handleServerSideSort: PropTypes.func,
+	onPageChange: PropTypes.func,
 };
