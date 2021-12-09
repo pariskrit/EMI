@@ -1,12 +1,12 @@
 import React from "react";
-import DragAndDrop from "components/Modules/DragAndDrop";
+import DragAndDropTable from "components/Modules/DragAndDropTable";
 
 export default {
-	title: "Components/DragAndDrop",
-	component: DragAndDrop,
+	title: "Components/DragAndDropTable",
+	component: DragAndDropTable,
 };
 
-const Template = (args) => <DragAndDrop {...args} />;
+const Template = (args) => <DragAndDropTable {...args} />;
 
 export const DragDrop = Template.bind({});
 
@@ -17,38 +17,19 @@ DragDrop.args = {
 			firstName: "Rujal",
 			lastName: "Sapkota",
 			email: "rr@gmail.com",
-			phone: "345",
+			phone: "34885",
 		},
 		{
 			id: 2,
 			firstName: "TTtasd",
 			lastName: "Sapkota",
 			email: "ssr@gmail.com",
-			phone: "345sdf",
+			phone: "646546",
 		},
 	],
+	headers: ["First Name", "Last Name", "Email", "Phone"],
+	columns: ["firstName", "lastName", "email", "phone"],
 	handleDragEnd: (e) => console.log(e),
-	header: () => (
-		<thead>
-			<tr>
-				<th>Fname</th>
-				<th>Lname</th>
-				<th>Email</th>
-				<th>Phone</th>
-			</tr>
-		</thead>
-	),
-	tableColumns: (row, index, handleDrag, ref) => (
-		<>
-			<td>
-				<span ref={ref} {...handleDrag}>
-					Icon
-				</span>
-				{row.firstName}
-			</td>
-			<td>{row.lastName}</td>
-			<td>{row.email}</td>
-			<td>{row.phone}</td>
-		</>
-	),
+	handleDelete: (e) => console.log(e),
+	handleEdit: (e) => console.log(e),
 };

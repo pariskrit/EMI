@@ -8,6 +8,7 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
@@ -117,16 +118,20 @@ const DragAndDropTable = ({
 													<AT.DataCell key={col}>
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
-																{i === 0
-																	? (
-																			<div
-																				{...provider.dragHandleProps}
-																				ref={provider.innerRef}
-																			>
-																				Icon
-																			</div>
-																	  ) + row[col]
-																	: row[col]}
+																{i === 0 ? (
+																	<div
+																		{...provider.dragHandleProps}
+																		ref={provider.innerRef}
+																		style={{
+																			display: "flex",
+																			flexDirection: "space-around",
+																		}}
+																	>
+																		<DragIndicatorIcon /> {row[col]}
+																	</div>
+																) : (
+																	row[col]
+																)}
 															</AT.TableBodyText>
 
 															{arr.length === i + 1 ? (
