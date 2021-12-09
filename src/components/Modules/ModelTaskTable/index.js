@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 		width: "20%",
 	},
 	dataCell: {
-		height: 85,
+		height: 50,
 	},
 	nameLink: {
 		color: ColourConstants.activeLink,
