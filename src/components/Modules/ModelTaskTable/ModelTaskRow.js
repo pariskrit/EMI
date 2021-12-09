@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import TableRow from "@material-ui/core/TableRow";
-import { Box, Collapse, TableCell } from "@material-ui/core";
+import { Collapse, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import ModelTaskDetail from "./ModelTaskDetail";
 
 const AT = TableStyle();
 
@@ -39,7 +40,9 @@ const ModelTaskRow = ({
 						})}
 					>
 						<AT.CellContainer key={col}>
-							<AT.TableBodyText>{`${row[col]}`}</AT.TableBodyText>
+							<AT.TableBodyText
+								style={{ color: toggle ? "#FFFFFF" : "" }}
+							>{`${row[col]}`}</AT.TableBodyText>
 
 							{arr.length === i + 1 ? (
 								<AT.DotMenu
@@ -91,9 +94,7 @@ const ModelTaskRow = ({
 					colSpan={11}
 				>
 					<Collapse in={toggle} timeout="auto" unmountOnExit>
-						<div style={{ background: "#FFFFFF" }}>
-							<h1>Hello world</h1>
-						</div>
+						<ModelTaskDetail />
 					</Collapse>
 				</TableCell>
 			</TableRow>
