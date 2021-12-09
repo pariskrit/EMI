@@ -144,11 +144,8 @@ function DyanamicDropdown(props) {
 
 	// search
 	const onFilter = (val) => {
-		if (isServerSide) {
-			handleServierSideSearch(val);
-		} else {
-			setsearchText(val);
-		}
+		setsearchText(val);
+		handleServierSideSearch(val);
 	};
 
 	// Handlers
