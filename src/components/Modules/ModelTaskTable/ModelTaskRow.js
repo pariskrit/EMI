@@ -5,6 +5,8 @@ import { Collapse, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { ReactComponent as WhiteMenuIcon } from "assets/icons/3dot-white-icon.svg";
+
 import ModelTaskDetail from "./ModelTaskDetail";
 
 const AT = TableStyle();
@@ -57,7 +59,7 @@ const ModelTaskRow = ({
 									}}
 								>
 									<AT.TableMenuButton>
-										<MenuIcon style={{ background: toggle ? "#FFFFFF" : "" }} />
+										{toggle ? <WhiteMenuIcon /> : <MenuIcon />}
 									</AT.TableMenuButton>
 
 									<PopupMenu
