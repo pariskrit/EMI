@@ -17,6 +17,7 @@ const media = "@media (max-width: 414px)";
 const useStyles = makeStyles({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
+		borderTopColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
 		borderBottomWidth: 1,
 		backgroundColor: ColourConstants.tableBackground,
@@ -37,7 +38,9 @@ const useStyles = makeStyles({
 		color: "#FFFFFF",
 	},
 	nameRow: {
-		minWidth: 130,
+		minWidth: "150px",
+		width: "100%",
+		// maxWidth: "250px",
 		padding: "15px",
 		display: "flex",
 		alignItems: "center",
@@ -57,7 +60,17 @@ const useStyles = makeStyles({
 		cursor: "pointer",
 	},
 	droplistitem: {
-		maxWidth: "130px",
+		// maxWidth: "250px",
+		minWidth: "150px",
+		width: "100%",
+
+		overflow: "hidden",
+		wordBreak: "break-word",
+		padding: "0 15px",
+	},
+	firstdroplistItem: {
+		display: "flex",
+		alignItems: "center",
 	},
 });
 
@@ -105,14 +118,15 @@ function DyanamicDropdown(props) {
 		};
 	}, []);
 
+	// scroll event of dropdown when mapped to DOM
 	useEffect(() => {
 		if (dropActive) {
 			if (scrollRef.current === true) {
 				document
-					.getElementsByClassName("dropdown-expand")[0]
+					.getElementsByClassName("dropdown-content")[0]
 					.addEventListener("scroll", handleScroll);
 				setdropdownlistner(
-					document.getElementsByClassName("dropdown-expand")[0]
+					document.getElementsByClassName("dropdown-content")[0]
 				);
 				scrollRef.current = false;
 			}
@@ -148,6 +162,7 @@ function DyanamicDropdown(props) {
 			setsearchText(val);
 		}
 	};
+
 	const handleDrpdwnClick = (event) => {
 		setDropActive(true);
 		setDropUpward(
@@ -169,6 +184,14 @@ function DyanamicDropdown(props) {
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
+	};
+
+	// clear and reset dropdown content
+	const handleClear = (e) => {
+		setCurrentTableSort(["name", "asc"]);
+		onChange({});
+		onClear();
+		e.stopPropagation();
 	};
 
 	return (
@@ -198,8 +221,8 @@ function DyanamicDropdown(props) {
 					{showClear && (
 						<Typography
 							className={clsx("label", classes.clear)}
-							onClick={onClear}
-							style={{ color: "red" }}
+							onClick={handleClear}
+							style={{ color: "#E31212", textAlign: "right" }}
 						>
 							Clear
 						</Typography>
@@ -209,7 +232,6 @@ function DyanamicDropdown(props) {
 				<div className="inputbox flex justify-between" style={{ width }}>
 					<span className="flex">
 						{icon && icon}
-						{required && <span className="required">*</span>}
 						{selectedValue && selectedValue[selectdValueToshow]
 							? selectedValue[selectdValueToshow]
 							: placeholder}
@@ -219,7 +241,6 @@ function DyanamicDropdown(props) {
 			</div>
 			{dropActive && (
 				<div
-					id="dropdown-expand-id"
 					className={clsx({
 						"dropdown-expand": true,
 						active: dropActive,
@@ -240,81 +261,106 @@ function DyanamicDropdown(props) {
 
 						<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 					</div>
-					{showHeader && (
-						<div className={classes.header}>
-							{dataHeader.map((header, i) => (
-								<div
-									key={header}
-									onClick={() => {
-										handleSortClick(columns[i]);
-									}}
-									className={clsx(classes.nameRow, classes.tableHeadRow, {
-										[classes.selectedTableHeadRow]:
-											currentTableSort[0] === columns[i],
-										[classes.tableHeadRow]: currentTableSort[0] !== columns[i],
-									})}
-								>
-									<span>{header}</span>
-									{currentTableSort[0] === columns[i] &&
-									currentTableSort[1] === "desc" ? (
-										<AT.DefaultArrow fill="#FFFFFF" />
-									) : (
-										<AT.DescArrow fill="#FFFFFF" />
-									)}
-								</div>
-							))}
-						</div>
-					)}
-					<div className="drop-list">
-						{filteredList.length > 0 ? (
-							filteredList?.map((list) => (
-								<div
-									className={
-										"list-item flex " +
-										(list.id === selectedValue.id ? "selected" : "")
-									}
-									key={list.id}
-									onClick={() => {
-										onChange(list);
-										setDropActive(false);
-									}}
-								>
-									<CheckIcon className="check mr-sm" />
-									{columns.map((col, i) => (
-										<span
-											style={{ flexGrow: "1" }}
-											className={classes.droplistitem}
-											key={i}
-										>
-											{list[col]}
-										</span>
-									))}
-								</div>
-							))
-						) : (
-							<span className="no-record">No records found</span>
-						)}
-						{/* scroll to load */}
-						{loading && (
-							<div style={{ padding: "16px 10px" }}>
-								<b>Loading...</b>
+					<div className="dropdown-content">
+						{showHeader && (
+							<div className={classes.header}>
+								{dataHeader.map((header, i) => (
+									<div
+										key={header.id}
+										onClick={() => {
+											handleSortClick(columns[i].name);
+										}}
+										className={clsx(classes.nameRow, classes.tableHeadRow, {
+											[classes.selectedTableHeadRow]:
+												currentTableSort[0] === columns[i].name,
+											[classes.tableHeadRow]:
+												currentTableSort[0] !== columns[i].name,
+										})}
+										style={{
+											minWidth: header.minWidth || "150px",
+										}}
+									>
+										<span>{header.name}</span>
+										<div className="arrow">
+											<AT.DescArrow
+												fill={
+													currentTableSort[0] === columns[i].name &&
+													currentTableSort[1] === "asc"
+														? "#D2D2D9"
+														: "#F9F9FC"
+												}
+												className="arrowUp"
+											/>
+											<AT.DefaultArrow
+												fill={
+													currentTableSort[0] === columns[i].name &&
+													currentTableSort[1] === "desc"
+														? "#D2D2D9"
+														: "#F9F9FC"
+												}
+												className="arrowDown"
+											/>
+										</div>
+									</div>
+								))}
 							</div>
 						)}
+						<div className="dynamic-drop-list">
+							{filteredList.length > 0 ? (
+								filteredList?.map((list) => (
+									<div
+										className={
+											"list-item flex " +
+											(list.id === selectedValue.id ? "selected" : "")
+										}
+										key={list.id}
+										onClick={() => {
+											onChange(list);
+											setDropActive(false);
+										}}
+									>
+										{columns.map((col, i) => (
+											<span
+												style={{
+													flexGrow: "1",
+													minWidth: col.minWidth || "150px",
+												}}
+												className={clsx(classes.droplistitem, {
+													[classes.firstdroplistItem]: i === 0,
+												})}
+												key={i}
+											>
+												{i === 0 && <CheckIcon className="check mr-sm" />}
+												{list[col.name]}
+											</span>
+										))}
+									</div>
+								))
+							) : (
+								<span className="no-record">No records found</span>
+							)}
+							{/* scroll to load */}
+							{loading && (
+								<div style={{ padding: "16px 10px" }}>
+									<b>Loading...</b>
+								</div>
+							)}
 
-						{!hasMore && (
-							<div
-								style={{ textAlign: "center", padding: "16px 10px" }}
-								className="flex justify-center"
-							>
-								<b>Yay! You have seen it all</b>
-								<span
-									className="link-color ml-md cursor-pointer"
-									onClick={() => gotoTop()}
+							{!hasMore && (
+								<div
+									style={{ textAlign: "center", padding: "16px 10px" }}
+									className="flex justify-center"
 								>
-									Go to top
-								</span>
-							</div>
-						)}
+									<b>Yay! You have seen it all</b>
+									<span
+										className="link-color ml-md cursor-pointer"
+										onClick={() => gotoTop()}
+									>
+										Go to top
+									</span>
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 			)}
@@ -334,6 +380,10 @@ DyanamicDropdown.defaultProps = {
 	columns: [],
 	required: false,
 	showHeader: false,
+	showClear: false,
+	isServerSide: false,
+	selectdValueToshow: "",
+	onClear: () => {},
 };
 
 DyanamicDropdown.propTypes = {
@@ -348,4 +398,9 @@ DyanamicDropdown.propTypes = {
 	required: PropTypes.bool,
 	showHeader: PropTypes.bool,
 	columns: PropTypes.array,
+	showClear: PropTypes.bool,
+	icon: PropTypes.node,
+	isServerSide: PropTypes.bool,
+	selectdValueToshow: PropTypes.string,
+	onClear: PropTypes.func,
 };

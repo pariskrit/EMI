@@ -54,7 +54,6 @@ function Test() {
 	const handleServierSideSearch = async (searchTxt) => {
 		console.log(searchTxt);
 	};
-	console.log(data);
 	return (
 		<div style={{ margin: "30px auto" }}>
 			<h2>Dynamic Dropdown component</h2>
@@ -65,21 +64,14 @@ function Test() {
 					<DyanamicDropdown
 						dataSource={data}
 						columns={[
-							"displayName",
-							"email",
-							"phone",
-							"firstName",
-							"lastLogin",
-							"lastName",
+							{ name: "displayName", id: 1, minWidth: "130px" },
+							{ name: "email", id: 2, minWidth: "200px" },
 						]}
 						dataHeader={[
-							"displayName",
-							"email",
-							"phone",
-							"firstName",
-							"lastLogin",
-							"lastName",
+							{ name: "displayName", id: 1, minWidth: "130px" },
+							{ name: "email", id: 2, minWidth: "200px" },
 						]}
+						columnsMinWidths={[140, 140, 140, 140, 140]}
 						showHeader={true}
 						onChange={onChange}
 						selectdValueToshow="displayName"
@@ -93,6 +85,7 @@ function Test() {
 						showClear={true}
 						icon={<AppsIcon />}
 						handleServierSideSearch={handleServierSideSearch}
+						required={true}
 					/>
 				</>
 			)}
