@@ -1,25 +1,30 @@
 import React from "react";
-import { Redirect, Route } from "react-router";
+import PropTypes from "prop-types";
+import { Route, useHistory } from "react-router";
 
-const RoleRoute = ({ component: Component, location, access, ...rest }) => {
+const RoleRoute = ({ component: Component, access, ...rest }) => {
+	const history = useHistory();
 	const { position } = JSON.parse(localStorage.getItem("me"));
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				(position === null && access === null) || position[access] === "F" ? (
+				(position === null && access === "") || position[access] === "F" ? (
 					<Component {...props} />
 				) : (
-					<Redirect
-						to={{
-							pathname: "/app/applications",
-							state: { from: location },
-						}}
-					/>
+					history.goBack()
 				)
 			}
 		/>
 	);
+};
+
+RoleRoute.defaultProsp = {
+	access: "",
+};
+RoleRoute.propTypes = {
+	access: PropTypes.string,
+	component: PropTypes.elementType.isRequired,
 };
 
 export default RoleRoute;
