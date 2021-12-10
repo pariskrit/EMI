@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Route, useHistory } from "react-router";
 
-const RoleRoute = ({ component: Component, access, ...rest }) => {
+const AccessRoute = ({ component: Component, access, ...rest }) => {
 	const history = useHistory();
 	const { position } = JSON.parse(localStorage.getItem("me"));
 	return (
@@ -19,12 +19,12 @@ const RoleRoute = ({ component: Component, access, ...rest }) => {
 	);
 };
 
-RoleRoute.defaultProsp = {
+AccessRoute.defaultProsp = {
 	access: "",
 };
-RoleRoute.propTypes = {
+AccessRoute.propTypes = {
 	access: PropTypes.string,
 	component: PropTypes.elementType.isRequired,
 };
 
-export default RoleRoute;
+export default AccessRoute;

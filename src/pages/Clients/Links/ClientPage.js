@@ -4,13 +4,13 @@ import { clientDetailPath, clientsPath } from "helpers/routePaths";
 import ClientList from "pages/Clients/ClientList/ClientList";
 import Client from "..";
 import ClientDetails from "../ClientDetailScreen/ClientDetails";
-import RoleRoute from "components/HOC/RoleRoute";
+import AccessRoute from "components/HOC/AccessRoute";
 
 export default function ClientPage() {
 	return (
 		<Client>
-			<RoleRoute path={clientsPath} exact component={ClientList} />
-			<RoleRoute path={clientDetailPath} exact component={ClientDetails} />
+			<AccessRoute path={clientsPath} exact component={ClientList} />
+			<AccessRoute path={clientDetailPath} exact component={ClientDetails} />
 		</Client>
 	);
 }
