@@ -188,6 +188,7 @@ function DyanamicDropdown(props) {
 	const handleClear = (e) => {
 		setCurrentTableSort(["name", "asc"]);
 		onChange({});
+		setsearchText("");
 		onClear();
 		e.stopPropagation();
 	};
@@ -199,6 +200,7 @@ function DyanamicDropdown(props) {
 		>
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
+				style={{ width }}
 				onClick={(event) => handleDrpdwnClick(event)}
 			>
 				<div
@@ -206,8 +208,6 @@ function DyanamicDropdown(props) {
 						display: "flex",
 						justifyContent: "space-between",
 						alignItems: "center",
-						padding: "0 14px",
-						width: width,
 					}}
 				>
 					{label.length > 0 && (
@@ -227,7 +227,7 @@ function DyanamicDropdown(props) {
 					)}
 				</div>
 
-				<div className="inputbox flex justify-between" style={{ width }}>
+				<div className="inputbox flex justify-between">
 					<span className="flex">
 						{icon && icon}
 						{selectedValue && selectedValue[selectdValueToshow]

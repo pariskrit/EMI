@@ -82,6 +82,7 @@ MultiColumn.args = {
 		Description: "Loreum Ipsum Cassandara",
 		id: 2,
 	},
+	label: "Select Item",
 	showHeader: true,
 	isSelected: false,
 
