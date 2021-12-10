@@ -99,8 +99,24 @@ const ModelTaskTable = ({
 								<AT.CellContainer className="flex justify-between">
 									{header}
 									<div className="arrow">
-										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
-										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
+										<AT.DescArrow
+											fill={
+												currentTableSort[0] === columns[index] &&
+												currentTableSort[1] === "asc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowUp"
+										/>
+										<AT.DefaultArrow
+											fill={
+												currentTableSort[0] === columns[index] &&
+												currentTableSort[1] === "desc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowDown"
+										/>
 									</div>
 								</AT.CellContainer>
 							</TableCell>
