@@ -1,19 +1,19 @@
 import React from "react";
 import { Redirect, Route } from "react-router";
 
-const RoleRoute = ({ component: Component, roles, ...rest }) => {
-	const roleVerified = roles.includes("Super Admin");
+const RoleRoute = ({ component: Component, location, access, ...rest }) => {
+	const { position } = JSON.parse(localStorage.getItem("me"));
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				roleVerified ? (
+				(position === null && access === null) || position[access] === "F" ? (
 					<Component {...props} />
 				) : (
 					<Redirect
 						to={{
 							pathname: "/app/applications",
-							state: { from: props.location },
+							state: { from: location },
 						}}
 					/>
 				)

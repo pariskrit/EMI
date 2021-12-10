@@ -4,13 +4,19 @@ import { clientDetailPath, clientsPath } from "helpers/routePaths";
 import ClientList from "pages/Clients/ClientList/ClientList";
 import Client from "..";
 import ClientDetails from "../ClientDetailScreen/ClientDetails";
+import RoleRoute from "components/HOC/RoleRoute";
 
-export default function ClientPage() {
+export default function ClientPage({ location }) {
 	return (
 		<Client>
-			<Route path={clientsPath} exact>
+			<RoleRoute
+				roles={["Super Admin"]}
+				location={location}
+				path={clientsPath}
+				exact
+			>
 				<ClientList />
-			</Route>
+			</RoleRoute>
 
 			<Route path={clientDetailPath} exact>
 				<ClientDetails />

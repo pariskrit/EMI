@@ -22,7 +22,7 @@ const MainApp = ({ location }) => {
 			>
 				<ApplicationPortal />
 				<ApplicationPage />
-				<ClientPage />
+				<ClientPage location={location} />
 				<SitePage />
 				<SiteAppPage />
 				<UsersPage />
