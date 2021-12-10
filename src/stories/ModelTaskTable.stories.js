@@ -9,7 +9,7 @@ storiesOf("components/ModelTaskTable", module).add("controlled", () => {
 				id: 1,
 				action: "Fill",
 				name: "Rujal",
-				operating_mode: "Isolated",
+				operating_mode: "Filled",
 				system: "Hydraulic",
 				role: "Admin",
 				est_min: "12",

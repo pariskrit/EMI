@@ -64,7 +64,7 @@ const ModelTaskTable = ({
 	columns,
 }) => {
 	const classes = useStyles();
-	const [currentTableSort, setCurrentTableSort] = useState(["asset", "asc"]);
+	const [currentTableSort, setCurrentTableSort] = useState([]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
