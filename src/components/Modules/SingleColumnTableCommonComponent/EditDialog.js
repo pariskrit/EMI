@@ -62,7 +62,8 @@ const EditStopDialog = ({
 				return { success: true };
 			} else {
 				if (updateName.data.detail) {
-					getError(updateName.data.detail);
+					// getError(updateName.data.detail);
+					getError(`${subHeader} already exists.`);
 					return {
 						success: false,
 						errors: {
