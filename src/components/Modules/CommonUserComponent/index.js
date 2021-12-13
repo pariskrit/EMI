@@ -1,10 +1,9 @@
+import React, { useCallback, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import UserNotes from "./UserNotes";
 import UserDetail from "./UserDetail";
-import { Grid } from "@material-ui/core";
-import { useParams } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useState, useEffect } from "react";
-
 import Roles from "helpers/roles";
 import AccessWrapper from "components/Modules/AccessWrapper";
 
@@ -93,7 +92,7 @@ const UserDetails = ({
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<AccessWrapper>
+						<AccessWrapper accessRoles={[Roles.user, Roles.admin]}>
 							<UserNotes
 								id={+id}
 								notes={notes}

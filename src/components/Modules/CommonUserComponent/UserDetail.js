@@ -224,7 +224,7 @@ const UserDetail = ({
 					</Grid>
 
 					<Grid item sm={6}>
-						<AccessWrapper>
+						<AccessWrapper access={[Roles.user, Roles.admin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
 								name="externalRef"
@@ -364,7 +364,7 @@ const UserDetail = ({
 					</Grid>
 
 					<Grid item xs={12}>
-						<AccessWrapper>
+						<AccessWrapper access={[Roles.user, Roles.admin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
 								name="externalRef"
