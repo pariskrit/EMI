@@ -38,7 +38,7 @@ const routes = [
 const UserPage = ({ getError }) => {
 	return (
 		<div>
-			{routes.map((route) => (
+			{routes.map(({ id, path, ...route }) => (
 				<AccessRoute
 					access={access.userAccess}
 					key={route.id}
