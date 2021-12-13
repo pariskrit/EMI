@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback, useState, useEffect } from "react";
 
 import Roles from "helpers/roles";
-import RoleWrapper from "components/Modules/RoleWrapper";
+import AccessWrapper from "components/Modules/AccessWrapper";
 
 const useStyles = makeStyles({
 	detailContainer: {
@@ -93,7 +93,7 @@ const UserDetails = ({
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<RoleWrapper accessRoles={[Roles.user, Roles.clientAdmin]}>
+						<AccessWrapper>
 							<UserNotes
 								id={+id}
 								notes={notes}
@@ -102,7 +102,7 @@ const UserDetails = ({
 								apis={apis}
 								handleGetNotes={handleGetNotes}
 							/>
-						</RoleWrapper>
+						</AccessWrapper>
 					</Grid>
 				</Grid>
 			</div>
