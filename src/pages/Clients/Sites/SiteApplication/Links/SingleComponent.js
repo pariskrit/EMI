@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { SiteContext } from "contexts/SiteApplicationContext";
-import { useParams, useLocation } from "react-router";
 import CommonHeaderWrapper from "components/Modules/CommonHeaderWrapper";
 import SiteApplicationNavigation from "constants/navigation/siteAppNavigation";
 import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
@@ -11,9 +10,13 @@ import ContentStyle from "styles/application/ContentStyle";
 const AC = ContentStyle();
 
 const SingleComponent = (route) => {
-	const location = useLocation();
-	const siteAppIds = useParams();
-	const { clientId, id, appId } = siteAppIds;
+	const {
+		location,
+		match: {
+			params: { clientId, id, appId },
+		},
+	} = route;
+
 	const [state, dispatch] = useContext(SiteContext);
 	const [loading, setLoading] = useState(true);
 

@@ -38,6 +38,7 @@ import UserRoles from "../UserRoles";
 import DefectStatuses from "../DefectStatuses";
 import DefectRiskRatings from "../DefectRiskRatings";
 import UserPositions from "../UserPositions";
+import AccessRoute from "components/HOC/AccessRoute";
 
 const routes = [
 	{
@@ -313,9 +314,15 @@ const SiteAppPage = () => {
 		<SiteApplicationContext>
 			<SiteApplication>
 				{routes.map((route) => (
-					<Route key={route.id} path={siteAppPath + route.path} exact>
-						<SingleComponent {...route} />
-					</Route>
+					// <Route key={route.id} path={siteAppPath + route.path} exact>
+					// 	<SingleComponent {...route} />
+					// </Route>
+					<AccessRoute
+						component={(props) => <SingleComponent {...route} {...props} />}
+						key={route.id}
+						path={siteAppPath + route.path}
+						exact
+					/>
 				))}
 			</SiteApplication>
 		</SiteApplicationContext>
