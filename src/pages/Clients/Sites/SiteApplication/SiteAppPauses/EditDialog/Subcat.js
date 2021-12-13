@@ -11,54 +11,17 @@ const defaultErrorSchema = { name: null };
 const Subcat = ({
 	setIsUpdating,
 	sub,
-	handleRemoveSubcat,
 	handleUpdateSubcatStateName,
 	getError,
+	handleDelete,
 }) => {
-	console.log(sub);
 	// Init state
-	const [attemptDelete, setAttemptDelete] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const [subcatName, setSubcatName] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
 	// Handlers
-	const deleteSubcat = async () => {
-		setAttemptDelete(true);
-		// Adding progress indicator
-		setIsUpdating(true);
 
-		// Attemptint to delete subcat
-		try {
-			// Making patch to backend
-			const result = await API.delete(`/api/PauseSubcategories/${sub.id}`);
-
-			// Handling success
-			if (result.status === 200) {
-				// Updating state
-				handleRemoveSubcat(sub);
-
-				// Removing indicator
-				setIsUpdating(false);
-
-				return true;
-			} else {
-				// Throwing error if not 200
-				throw new Error(result);
-			}
-		} catch (err) {
-			// TODO: real error handling
-			console.log(err);
-
-			// Updating delete state
-			setAttemptDelete(false);
-
-			// Removing indicator
-			setIsUpdating(false);
-
-			return false;
-		}
-	};
 	const handleShowEdit = () => {
 		setSubcatName(sub.name);
 		setIsEdit(true);
@@ -131,6 +94,7 @@ const Subcat = ({
 			}
 		}
 	};
+
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
 		if (e.keyCode === 13) {
@@ -140,7 +104,7 @@ const Subcat = ({
 
 	return (
 		<>
-			{isEdit && !attemptDelete ? (
+			{isEdit ? (
 				<AS.SubcatContainer>
 					<AS.NameInput
 						type="text"
@@ -155,7 +119,7 @@ const Subcat = ({
 						}}
 					/>
 					<AS.ButtonContainer>
-						<AS.DeleteIcon onClick={deleteSubcat} />
+						<AS.DeleteIcon onClick={handleDelete} />
 					</AS.ButtonContainer>
 				</AS.SubcatContainer>
 			) : (
@@ -163,7 +127,7 @@ const Subcat = ({
 					<AS.SubcatContainer onClick={handleShowEdit}>
 						<AS.NameText>{sub.name}</AS.NameText>
 						<AS.ButtonContainer>
-							<AS.DeleteIcon onClick={deleteSubcat} />
+							<AS.DeleteIcon onClick={handleDelete} />
 						</AS.ButtonContainer>
 					</AS.SubcatContainer>
 				</>
