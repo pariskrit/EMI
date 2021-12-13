@@ -27,7 +27,6 @@ import {
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
 import React from "react";
-import { Route } from "react-router-dom";
 import SiteApplication from "..";
 import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 import SiteApplicationDetails from "../SiteApplicationDetails";
@@ -314,9 +313,6 @@ const SiteAppPage = () => {
 		<SiteApplicationContext>
 			<SiteApplication>
 				{routes.map((route) => (
-					// <Route key={route.id} path={siteAppPath + route.path} exact>
-					// 	<SingleComponent {...route} />
-					// </Route>
 					<AccessRoute
 						component={(props) => <SingleComponent {...route} {...props} />}
 						key={route.id}
