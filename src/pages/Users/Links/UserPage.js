@@ -2,7 +2,6 @@ import React from "react";
 import SingleComponent from "./SingleComponent";
 import { userDetailPath, userProfilePath } from "helpers/routePaths";
 import CommonUserComponent from "components/Modules/CommonUserComponent";
-
 import differentUserAPIs from "helpers/differentUserAPIs";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";

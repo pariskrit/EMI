@@ -39,6 +39,7 @@ import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
 import { useMsal } from "@azure/msal-react";
+import access from "helpers/access";
 
 // Size constants
 const drawerWidth = 240;
@@ -346,53 +347,96 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 					) : (
 						<List>
 							{[
-								["Clients", ClientIcon, clientsPath],
-								["Applications", ApplicationIcon, applicationListPath],
-								["Models", ModelIcon, "/"],
-								["Users", UserIcon, usersPath],
-								["Analytics", AnalyticsIcon, "/"],
-							].map((item, index) => {
-								// Storing SVG
-								let NavIcon = item[1];
+								{
+									name: "Clients",
+									icon: ClientIcon,
+									path: clientsPath,
+									access: "",
+								},
+								{
+									name: "Applications",
+									icon: ApplicationIcon,
+									path: applicationListPath,
+									access: "",
+								},
+								{
+									name: "Models",
+									icon: ModelIcon,
+									path: "/app/models",
+									access: access.modelAccess,
+								},
+								{
+									name: "Users",
+									icon: UserIcon,
+									path: usersPath,
+									access: access.userAccess,
+								},
+								{
+									name: "Analytics",
+									icon: AnalyticsIcon,
+									path: "/app/analytics",
+									access: access.analyticsAccess,
+								},
+							]
+								// Filter which sidebar navigation is accessible
+								.filter((x) => {
+									const { position } = JSON.parse(localStorage.getItem("me"));
 
-								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-											key={item[0]}
+									// If position is null it is super admin
+
+									if (
+										(position === null && x.access === "") ||
+										position[x.access] === "F"
+									)
+										return true;
+									else return false;
+								})
+								.map((item) => {
+									// Storing SVG
+									let NavIcon = item.icon;
+
+									return (
+										<Link
+											to={item.path}
+											className={classes.navLink}
+											key={item.name}
 										>
-											<ListItem
-												button
-												className={
-													item[0].toLowerCase() === activeLink
-														? classes.currentItemBackground
-														: null
-												}
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+												key={item.name}
 											>
-												<ListItemIcon className={classes.navIconContainer}>
-													<NavIcon
-														className={
-															item[0].toLowerCase() === activeLink
-																? classes.navIconCurrent
-																: classes.navIcon
-														}
-														alt={`${item[0]} icon`}
+												<ListItem
+													button
+													className={
+														item.name.toLowerCase() === activeLink
+															? classes.currentItemBackground
+															: null
+													}
+												>
+													<ListItemIcon className={classes.navIconContainer}>
+														<NavIcon
+															className={
+																item.name.toLowerCase() === activeLink
+																	? classes.navIconCurrent
+																	: classes.navIcon
+															}
+															alt={`${item.name} icon`}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														classes={{
+															primary:
+																item.name.toLowerCase() === activeLink
+																	? classes.listItemTextPrimaryCurrent
+																	: classes.listItemTextPrimary,
+														}}
+														primary={item[0]}
 													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{
-														primary:
-															item[0].toLowerCase() === activeLink
-																? classes.listItemTextPrimaryCurrent
-																: classes.listItemTextPrimary,
-													}}
-													primary={item[0]}
-												/>
-											</ListItem>
-										</div>
-									</Link>
-								);
-							})}
+												</ListItem>
+											</div>
+										</Link>
+									);
+								})}
 						</List>
 					)}
 
