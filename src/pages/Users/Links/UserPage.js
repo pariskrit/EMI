@@ -1,5 +1,4 @@
 import React from "react";
-import { Route } from "react-router-dom";
 import SingleComponent from "./SingleComponent";
 import { userDetailPath, userProfilePath } from "helpers/routePaths";
 import CommonUserComponent from "components/Modules/CommonUserComponent";
@@ -7,6 +6,8 @@ import CommonUserComponent from "components/Modules/CommonUserComponent";
 import differentUserAPIs from "helpers/differentUserAPIs";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import AccessRoute from "components/HOC/AccessRoute";
+import access from "helpers/access";
 
 const routes = [
 	{
@@ -39,9 +40,15 @@ const UserPage = ({ getError }) => {
 	return (
 		<div>
 			{routes.map((route) => (
-				<Route key={route.id} path={route.path} exact>
-					<SingleComponent {...route} getError={getError} />
-				</Route>
+				<AccessRoute
+					access={access.userAccess}
+					key={route.id}
+					path={route.path}
+					exact
+					component={(props) => (
+						<SingleComponent {...props} {...route} getError={getError} />
+					)}
+				/>
 			))}
 		</div>
 	);
