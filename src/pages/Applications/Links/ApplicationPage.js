@@ -1,61 +1,70 @@
 import React from "react";
-import { Route } from "react-router-dom";
-import Actions from "pages/Applications/Actions/Action";
-import Application from "pages/Applications/Application/Application";
-import ApplicationList from "pages/Applications/ApplicationList/ApplicationList";
-import CustomCaptions from "pages/Applications/CustomCaptions/CustomCaptions";
-import DefectRiskRatings from "pages/Applications/DefectRiskRatings/DefectRiskRatings";
-import DefectStatuses from "pages/Applications/DefectStatuses/DefectStatuses";
-import DefectTypes from "pages/Applications/DefectTypes/DefectTypes";
-import FeedbackClassifications from "pages/Applications/FeedbackClassifications/FeedbackClassifications";
-import FeedbackPriorities from "pages/Applications/FeedbackPriorities/FeedbackPriorities";
-import FeedbackStatuses from "pages/Applications/FeedbackStatuses/FeedbackStatuses";
-import MissingItems from "pages/Applications/MissingItems/MissingItems";
-import ModelStatuses from "pages/Applications/ModelStatuses/ModelStatuses";
-import ModelTypes from "pages/Applications/ModelTypes/ModelType";
-import OperatingModes from "pages/Applications/OperatingModes/OperatingModes";
-import Pauses from "pages/Applications/Pauses/Pauses";
-import Positions from "pages/Applications/Positions/Positions";
-import Roles from "pages/Applications/Roles/Roles";
-import SkippedTasks from "pages/Applications/SkippedTasks/SkippedTasks";
-import StatusChanges from "pages/Applications/StatusChanges/StatusChanges";
-import Stops from "pages/Applications/Stops/Stops";
-import Systems from "pages/Applications/Systems/System";
-import {
-	actionsPath,
-	applicationDetailsPath,
-	applicationListPath,
-	customCaptionsPath,
-	defectRiskRatingsPath,
-	defectStatusesPath,
-	defectTypesPath,
-	feedbackClassificationsPath,
-	feedbackPrioritiesPath,
-	feedbackStatusesPath,
-	missingItemsPath,
-	modelStatusesPath,
-	modelTypesPath,
-	operatingModesPath,
-	pausesPath,
-	positionsPath,
-	rolesPath,
-	skippedTasksPath,
-	StatusChangesPath,
-	stopsPath,
-	systemsPath,
-} from "helpers/routePaths";
+// import { Route } from "react-router-dom";
+// import Actions from "pages/Applications/Actions/Action";
+// import Application from "pages/Applications/Application/Application";
+// import ApplicationList from "pages/Applications/ApplicationList/ApplicationList";
+// import CustomCaptions from "pages/Applications/CustomCaptions/CustomCaptions";
+// import DefectRiskRatings from "pages/Applications/DefectRiskRatings/DefectRiskRatings";
+// import DefectStatuses from "pages/Applications/DefectStatuses/DefectStatuses";
+// import DefectTypes from "pages/Applications/DefectTypes/DefectTypes";
+// import FeedbackClassifications from "pages/Applications/FeedbackClassifications/FeedbackClassifications";
+// import FeedbackPriorities from "pages/Applications/FeedbackPriorities/FeedbackPriorities";
+// import FeedbackStatuses from "pages/Applications/FeedbackStatuses/FeedbackStatuses";
+// import MissingItems from "pages/Applications/MissingItems/MissingItems";
+// import ModelStatuses from "pages/Applications/ModelStatuses/ModelStatuses";
+// import ModelTypes from "pages/Applications/ModelTypes/ModelType";
+// import OperatingModes from "pages/Applications/OperatingModes/OperatingModes";
+// import Pauses from "pages/Applications/Pauses/Pauses";
+// import Positions from "pages/Applications/Positions/Positions";
+// import Roles from "pages/Applications/Roles/Roles";
+// import SkippedTasks from "pages/Applications/SkippedTasks/SkippedTasks";
+// import StatusChanges from "pages/Applications/StatusChanges/StatusChanges";
+// import Stops from "pages/Applications/Stops/Stops";
+// import Systems from "pages/Applications/Systems/System";
+// import {
+// 	actionsPath,
+// 	applicationDetailsPath,
+// 	applicationListPath,
+// 	customCaptionsPath,
+// 	defectRiskRatingsPath,
+// 	defectStatusesPath,
+// 	defectTypesPath,
+// 	feedbackClassificationsPath,
+// 	feedbackPrioritiesPath,
+// 	feedbackStatusesPath,
+// 	missingItemsPath,
+// 	modelStatusesPath,
+// 	modelTypesPath,
+// 	operatingModesPath,
+// 	pausesPath,
+// 	positionsPath,
+// 	rolesPath,
+// 	skippedTasksPath,
+// 	StatusChangesPath,
+// 	stopsPath,
+// 	systemsPath,
+// } from "helpers/routePaths";
 import Applications from "..";
+import AccessRoute from "components/HOC/AccessRoute";
+import { routeList } from "./routeList";
 
 export default function ApplicationPage() {
 	return (
 		<Applications>
-			<Route path={applicationListPath} exact>
-				<ApplicationList />
-			</Route>
+			{routeList.map(({ id, ...route }) => (
+				<AccessRoute key={id} {...route} exact />
+			))}
+			{/* <AccessRoute
+				path={applicationListPath}
+				component={ApplicationList}
+				exact
+			/>
 
-			<Route path={applicationDetailsPath} exact>
-				<Application />
-			</Route>
+			<AccessRoute
+				path={applicationDetailsPath}
+				component={Application}
+				exact
+			/>
 
 			<Route path={applicationDetailsPath + customCaptionsPath} exact>
 				<CustomCaptions />
@@ -131,7 +140,7 @@ export default function ApplicationPage() {
 
 			<Route path={applicationDetailsPath + feedbackStatusesPath} exact>
 				<FeedbackStatuses />
-			</Route>
+			</Route> */}
 		</Applications>
 	);
 }

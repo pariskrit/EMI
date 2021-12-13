@@ -9,7 +9,7 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) =>
-				(position === null && access === "") || position[access] === "F" ? (
+				(position === null && access === "") || position?.[access] === "F" ? (
 					<Component {...props} />
 				) : (
 					history.goBack()
@@ -19,7 +19,7 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 	);
 };
 
-AccessRoute.defaultProsp = {
+AccessRoute.defaultProps = {
 	access: "",
 };
 AccessRoute.propTypes = {
