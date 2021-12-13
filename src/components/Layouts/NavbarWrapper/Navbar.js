@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import clsx from "clsx";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { useGoogleLogout } from "react-google-login";
 
@@ -26,7 +27,6 @@ import { ReactComponent as Home } from "assets/icons/home.svg";
 import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
-import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
 import {
 	applicationListPath,
@@ -35,11 +35,11 @@ import {
 	userProfilePath,
 	applicationPortalPath,
 } from "helpers/routePaths";
-import "./style.scss";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
 import { useMsal } from "@azure/msal-react";
 import access from "helpers/access";
+import "./style.scss";
 
 // Size constants
 const drawerWidth = 240;
