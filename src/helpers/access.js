@@ -1,5 +1,6 @@
 export default {
 	analyticsAccess: "analyticsAccess",
+	analysisAccess: "analysisAccess",
 	defectAccess: "defectAccess",
 	defectExportAccess: "defectExportAccess",
 	feedbackAccess: "feedbackAccess",

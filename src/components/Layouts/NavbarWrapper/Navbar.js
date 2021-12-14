@@ -329,6 +329,36 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 			path: "/app/analytics",
 			access: access.analyticsAccess,
 		},
+		{
+			name: "Services",
+			icon: ModelIcon,
+			path: "/app/services",
+			access: access.serviceAccess,
+		},
+		{
+			name: "Defects",
+			icon: ModelIcon,
+			path: "/app/defects",
+			access: access.defectAccess,
+		},
+		{
+			name: "Analysis",
+			icon: ModelIcon,
+			path: "/app/analysis",
+			access: access.analysisAccess,
+		},
+		{
+			name: "Feedback",
+			icon: ModelIcon,
+			path: "/app/feedback",
+			access: access.feedbackAccess,
+		},
+		{
+			name: "Noticeboards",
+			icon: ModelIcon,
+			path: "/app/noticeboards",
+			access: access.noticeboardAccess,
+		},
 	]
 		// Filter which sidebar navigation is accessible
 		.filter((x) => {
