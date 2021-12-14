@@ -30,6 +30,7 @@ const ColourConstants = {
 	deleteIcon: "#E21313",
 
 	divider: "#C5C5C8",
+	dropdownheaderBorder: "##c1c1c1",
 };
 
 export default ColourConstants;

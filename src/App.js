@@ -14,6 +14,7 @@ import "./App.scss";
 // import ApplicationPortal from "pages/ApplicationPortal";
 import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
+import Test from "pages/Test";
 
 function App() {
 	return (
@@ -39,6 +40,7 @@ function App() {
 						<Launch />
 					</Route>
 					<ProtectedRoute path="/app" component={MainApp} />
+					<Route exact path="/test" component={Test} />
 				</Switch>
 			</Router>
 		</div>
