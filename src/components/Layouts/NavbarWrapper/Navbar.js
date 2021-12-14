@@ -30,7 +30,7 @@ import {
 	applicationPortalPath,
 	clientsPath,
 	userProfilePath,
-	usersPath,
+	usersPath
 } from "helpers/routePaths";
 import React, { useState } from "react";
 import { useGoogleLogout } from "react-google-login";
@@ -39,6 +39,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { logOutUser } from "redux/auth/actions";
 import { showError } from "redux/common/actions";
 import "./style.scss";
+
 
 // Size constants
 const drawerWidth = 240;
@@ -64,6 +65,22 @@ const useStyles = makeStyles((theme) => ({
 		flexShrink: 0,
 		whiteSpace: "nowrap",
 	},
+	lists: {
+		overflowX: "hidden",
+		overflowY: "auto",
+		height: "45%",
+		"&::-webkit-scrollbar": {
+			width: 5,
+			height: 5,
+		},
+		"&::-webkit-scrollbar-track": {
+			background: "#af8949",
+		},
+		"&::-webkit-scrollbar-thumb": {
+			background: "#462d04",
+			borderRadius: 12,
+		},
+	},
 	drawerOpen: {
 		backgroundColor: ColourConstants.navDrawer,
 		width: drawerWidth,
@@ -71,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen,
 		}),
+		overflow: "hidden",
 	},
 	drawerClose: {
 		backgroundColor: ColourConstants.navDrawer,
@@ -177,10 +195,12 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(3),
 	},
 	footerClose: {
-		position: "fixed",
 		bottom: 0,
 		textAlign: "center",
+<<<<<<< HEAD
 		// paddingBottom: 10,
+=======
+>>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -192,11 +212,9 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	footerOpen: {
-		position: "fixed",
 		width: drawerWidth,
 		bottom: 0,
 		textAlign: "center",
-		paddingBottom: 10,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen,
@@ -331,6 +349,90 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 		}
 	};
 
+<<<<<<< HEAD
+=======
+	function signOutMicrosoftHandler() {
+		const accountId = localStorage.getItem("homeAccoundId");
+		const logoutRequest = {
+			account: instance.getAccountByHomeId(accountId),
+			postLogoutRedirectUri: "http://localhost:3000/login",
+		};
+		instance.logoutRedirect(logoutRequest);
+	}
+
+	const navOptions = [
+		{
+			name: "Clients",
+			icon: ClientIcon,
+			path: clientsPath,
+			access: "",
+		},
+		{
+			name: "Applications",
+			icon: ApplicationIcon,
+			path: applicationListPath,
+			access: "",
+		},
+		{
+			name: "Models",
+			icon: ModelIcon,
+			path: modelPath,
+			access: access.modelAccess,
+		},
+		{
+			name: "Users",
+			icon: UserIcon,
+			path: usersPath,
+			access: access.userAccess,
+		},
+		{
+			name: "Analytics",
+			icon: AnalyticsIcon,
+			path: analyticsPath,
+			access: access.analyticsAccess,
+		},
+		{
+			name: "Services",
+			icon: ModelIcon,
+			path: servicesPath,
+			access: access.serviceAccess,
+		},
+		{
+			name: "Defects",
+			icon: ModelIcon,
+			path: defectsPath,
+			access: access.defectAccess,
+		},
+		{
+			name: "Analysis",
+			icon: ModelIcon,
+			path: analysisPath,
+			access: access.analysisAccess,
+		},
+		{
+			name: "Feedback",
+			icon: ModelIcon,
+			path: feedbackPath,
+			access: access.feedbackAccess,
+		},
+		{
+			name: "Noticeboards",
+			icon: ModelIcon,
+			path: noticeboardPath,
+			access: access.noticeboardAccess,
+		},
+	]
+		// Filter which sidebar navigation is accessible
+		.filter((x) => {
+			const { position } = JSON.parse(localStorage.getItem("me"));
+
+			// If position is null it is super admin
+
+			if (position === null || position?.[x.access] === "F") return true;
+			else return false;
+		});
+
+>>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 	return (
 		<>
 			<div className="drawerDesktop">
@@ -402,6 +504,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 							) : null}
 						</>
 					) : (
+<<<<<<< HEAD
 						<List className={`${classes.upperContent} upperContent`}>
 							{[
 								["Clients", ClientIcon, clientsPath],
@@ -410,19 +513,27 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 								["Users", UserIcon, usersPath],
 								["Analytics", AnalyticsIcon, "/"],
 							].map((item, index) => {
+=======
+						<List className={classes.lists}>
+							{navOptions.map((item) => {
+>>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 								// Storing SVG
-								let NavIcon = item[1];
+								let NavIcon = item.icon;
 
 								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
+									<Link
+										to={item.path}
+										className={classes.navLink}
+										key={item.name}
+									>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
-											key={item[0]}
+											key={item.name}
 										>
 											<ListItem
 												button
 												className={
-													item[0].toLowerCase() === activeLink
+													item.name.toLowerCase() === activeLink
 														? classes.currentItemBackground
 														: null
 												}
@@ -430,21 +541,21 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 												<ListItemIcon className={classes.navIconContainer}>
 													<NavIcon
 														className={
-															item[0].toLowerCase() === activeLink
+															item.name.toLowerCase() === activeLink
 																? classes.navIconCurrent
 																: classes.navIcon
 														}
-														alt={`${item[0]} icon`}
+														alt={`${item.name} icon`}
 													/>
 												</ListItemIcon>
 												<ListItemText
 													classes={{
 														primary:
-															item[0].toLowerCase() === activeLink
+															item.name.toLowerCase() === activeLink
 																? classes.listItemTextPrimaryCurrent
 																: classes.listItemTextPrimary,
 													}}
-													primary={item[0]}
+													primary={item.name}
 												/>
 											</ListItem>
 										</div>
@@ -581,6 +692,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 				<BottomNavigation
 					className={`${classes.bottomNavigationContainer} mobileNavigation`}
 				>
+<<<<<<< HEAD
 					{isApplicationPortal ? (
 						<div className={classes.mobPortal}>
 							<Link to={applicationPortalPath} className={classes.navLink}>
@@ -592,6 +704,53 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 											<Home
 												className={classes.navIconCurrent}
 												alt={`Home icon`}
+=======
+					<div className={classes.innerBottomNav}>
+						{navOptions.map((item, index) => {
+							// Storing SVG
+							let NavIcon = item.icon;
+
+							// Note: Currently hardcoding current selection -- pull from global state
+							// when implemented
+							if (index === 1) {
+								return (
+									<Link to={item.path} className={classes.navLink} key={index}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<BottomNavigationAction
+												label="Recents"
+												key={item.name}
+												className={classes.currentItemBackground}
+												value="recents"
+												icon={
+													<NavIcon
+														className={classes.navIconCurrent}
+														alt={`${item.name} icon`}
+													/>
+												}
+											/>
+										</div>
+									</Link>
+								);
+							} else {
+								return (
+									<Link to={item.path} className={classes.navLink} key={index}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<BottomNavigationAction
+												label="Recents"
+												key={item.name}
+												className={classes.currentItemBackground}
+												value="recents"
+												icon={
+													<NavIcon
+														className={classes.navIconCurrent}
+														alt={`${item.name} icon`}
+													/>
+												}
+>>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 											/>
 										</ListItemIcon>
 									</ListItem>

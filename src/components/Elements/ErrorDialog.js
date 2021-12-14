@@ -39,8 +39,7 @@ const ErrorDialog = ({ error, removeError }) => {
 				<CancelIcon style={{ fontSize: "9rem" }} />
 			</DialogTitle>
 			<DialogContent style={{ textAlign: "center" }}>
-				<h1>Oh shap!</h1>
-				<p>{error.message}</p>
+				<h1>{error.message}</h1>
 			</DialogContent>
 			<DialogActions className={classes.dialogAction}>
 				<CurveButton

@@ -1,12 +1,13 @@
 import React from "react";
-import { Route } from "react-router-dom";
 import SingleComponent from "./SingleComponent";
 import { userDetailPath, userProfilePath } from "helpers/routePaths";
 import CommonUserComponent from "components/Modules/CommonUserComponent";
-
 import differentUserAPIs from "helpers/differentUserAPIs";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import AccessRoute from "components/HOC/AccessRoute";
+import access from "helpers/access";
+import { Route } from "react-router-dom";
 
 const routes = [
 	{
@@ -36,13 +37,25 @@ const routes = [
 ];
 
 const UserPage = ({ getError }) => {
+	const detail = routes[0];
+	const profile = routes[1];
 	return (
 		<div>
-			{routes.map((route) => (
-				<Route key={route.id} path={route.path} exact>
-					<SingleComponent {...route} getError={getError} />
-				</Route>
-			))}
+			<Route
+				exact
+				path={profile.path}
+				component={(props) => (
+					<SingleComponent {...props} {...profile} getError={getError} />
+				)}
+			/>
+			<AccessRoute
+				access={access.userAccess}
+				path={detail.path}
+				exact
+				component={(props) => (
+					<SingleComponent {...props} {...detail} getError={getError} />
+				)}
+			/>
 		</div>
 	);
 };
