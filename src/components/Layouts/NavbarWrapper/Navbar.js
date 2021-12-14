@@ -457,7 +457,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 																? classes.listItemTextPrimaryCurrent
 																: classes.listItemTextPrimary,
 													}}
-													primary={item[0]}
+													primary={item.name}
 												/>
 											</ListItem>
 										</div>
