@@ -57,6 +57,22 @@ const useStyles = makeStyles((theme) => ({
 		flexShrink: 0,
 		whiteSpace: "nowrap",
 	},
+	lists: {
+		overflowX: "hidden",
+		overflowY: "auto",
+		height: "45%",
+		"&::-webkit-scrollbar": {
+			width: 5,
+			height: 5,
+		},
+		"&::-webkit-scrollbar-track": {
+			background: "#af8949",
+		},
+		"&::-webkit-scrollbar-thumb": {
+			background: "#462d04",
+			borderRadius: 12,
+		},
+	},
 	drawerOpen: {
 		backgroundColor: ColourConstants.navDrawer,
 		width: drawerWidth,
@@ -64,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen,
 		}),
+		overflow: "hidden",
 	},
 	drawerClose: {
 		backgroundColor: ColourConstants.navDrawer,
@@ -167,10 +184,8 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(3),
 	},
 	footerClose: {
-		position: "fixed",
 		bottom: 0,
 		textAlign: "center",
-		paddingBottom: 10,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -182,11 +197,9 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	footerOpen: {
-		position: "fixed",
 		width: drawerWidth,
 		bottom: 0,
 		textAlign: "center",
-		paddingBottom: 10,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen,
@@ -417,7 +430,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 							</div>
 						</Link>
 					) : (
-						<List>
+						<List className={classes.lists}>
 							{navOptions.map((item) => {
 								// Storing SVG
 								let NavIcon = item.icon;
