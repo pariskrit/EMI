@@ -11,6 +11,7 @@ import TableRow from "@material-ui/core/TableRow";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
 import ModelTaskRow from "./ModelTaskRow";
+import ModelTaskExpand from "./ModelTaskExpand";
 
 // Init styled components
 const AT = TableStyle();
@@ -62,6 +63,7 @@ const ModelTaskTable = ({
 	setData,
 	headers,
 	columns,
+	component: Component,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
@@ -139,6 +141,7 @@ const ModelTaskTable = ({
 								classes={classes}
 								columns={columns}
 								data={data}
+								component={Component}
 							/>
 						))
 					) : (
@@ -158,8 +161,16 @@ const ModelTaskTable = ({
 	);
 };
 
+ModelTaskTable.defaultProps = {
+	component: ModelTaskExpand,
+};
+
 ModelTaskTable.propTypes = {
 	data: PropTypes.array.isRequired,
+	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+	handleEdit: PropTypes.func.isRequired,
+	handleDelete: PropTypes.func.isRequired,
 };
 
 export default ModelTaskTable;

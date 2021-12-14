@@ -20,6 +20,7 @@ const ModelTaskRow = ({
 	row,
 	handleEdit,
 	handleDelete,
+	component: Component,
 }) => {
 	const [toggle, setToggle] = useState(false);
 	return (
@@ -88,7 +89,7 @@ const ModelTaskRow = ({
 					colSpan={11}
 				>
 					<Collapse in={toggle} timeout="auto" unmountOnExit>
-						<ModelTaskExpand />
+						<Component />
 					</Collapse>
 				</TableCell>
 			</TableRow>

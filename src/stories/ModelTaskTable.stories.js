@@ -2,6 +2,8 @@ import React from "react";
 import ModelTaskTable from "components/Modules/ModelTaskTable";
 import { storiesOf } from "@storybook/react";
 
+const TaskExpand = () => <h1>Expanded</h1>;
+
 storiesOf("components/ModelTaskTable", module).add("controlled", () => {
 	function Parent({ children }) {
 		const [data, setData] = React.useState([
@@ -70,6 +72,7 @@ storiesOf("components/ModelTaskTable", module).add("controlled", () => {
 					]}
 					handleDelete={(e) => console.log(e)}
 					handleEdit={(e) => console.log(e)}
+					component={TaskExpand}
 				/>
 			)}
 		</Parent>
