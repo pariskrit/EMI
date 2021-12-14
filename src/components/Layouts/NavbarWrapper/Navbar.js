@@ -30,7 +30,7 @@ import {
 	applicationPortalPath,
 	clientsPath,
 	userProfilePath,
-	usersPath
+	usersPath,
 } from "helpers/routePaths";
 import React, { useState } from "react";
 import { useGoogleLogout } from "react-google-login";
@@ -39,7 +39,6 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { logOutUser } from "redux/auth/actions";
 import { showError } from "redux/common/actions";
 import "./style.scss";
-
 
 // Size constants
 const drawerWidth = 240;
@@ -197,10 +196,6 @@ const useStyles = makeStyles((theme) => ({
 	footerClose: {
 		bottom: 0,
 		textAlign: "center",
-<<<<<<< HEAD
-		// paddingBottom: 10,
-=======
->>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -349,8 +344,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 		}
 	};
 
-<<<<<<< HEAD
-=======
 	function signOutMicrosoftHandler() {
 		const accountId = localStorage.getItem("homeAccoundId");
 		const logoutRequest = {
@@ -432,7 +425,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 			else return false;
 		});
 
->>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 	return (
 		<>
 			<div className="drawerDesktop">
@@ -504,19 +496,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 							) : null}
 						</>
 					) : (
-<<<<<<< HEAD
-						<List className={`${classes.upperContent} upperContent`}>
-							{[
-								["Clients", ClientIcon, clientsPath],
-								["Applications", ApplicationIcon, applicationListPath],
-								["Models", ModelIcon, "/"],
-								["Users", UserIcon, usersPath],
-								["Analytics", AnalyticsIcon, "/"],
-							].map((item, index) => {
-=======
 						<List className={classes.lists}>
 							{navOptions.map((item) => {
->>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 								// Storing SVG
 								let NavIcon = item.icon;
 
@@ -692,7 +673,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 				<BottomNavigation
 					className={`${classes.bottomNavigationContainer} mobileNavigation`}
 				>
-<<<<<<< HEAD
 					{isApplicationPortal ? (
 						<div className={classes.mobPortal}>
 							<Link to={applicationPortalPath} className={classes.navLink}>
@@ -704,53 +684,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 											<Home
 												className={classes.navIconCurrent}
 												alt={`Home icon`}
-=======
-					<div className={classes.innerBottomNav}>
-						{navOptions.map((item, index) => {
-							// Storing SVG
-							let NavIcon = item.icon;
-
-							// Note: Currently hardcoding current selection -- pull from global state
-							// when implemented
-							if (index === 1) {
-								return (
-									<Link to={item.path} className={classes.navLink} key={index}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<BottomNavigationAction
-												label="Recents"
-												key={item.name}
-												className={classes.currentItemBackground}
-												value="recents"
-												icon={
-													<NavIcon
-														className={classes.navIconCurrent}
-														alt={`${item.name} icon`}
-													/>
-												}
-											/>
-										</div>
-									</Link>
-								);
-							} else {
-								return (
-									<Link to={item.path} className={classes.navLink} key={index}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<BottomNavigationAction
-												label="Recents"
-												key={item.name}
-												className={classes.currentItemBackground}
-												value="recents"
-												icon={
-													<NavIcon
-														className={classes.navIconCurrent}
-														alt={`${item.name} icon`}
-													/>
-												}
->>>>>>> 8e55ec8b4ca090d669c6b55fec591acb58417554
 											/>
 										</ListItemIcon>
 									</ListItem>
