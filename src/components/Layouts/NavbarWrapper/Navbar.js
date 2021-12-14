@@ -542,8 +542,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 									/>
 								</ListItem>
 							</div>
-
-							{!isApplicationPortal ? (
+							{position !== null && !isApplicationPortal ? (
 								<Link to={applicationPortalPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
