@@ -23,18 +23,9 @@ function App() {
 			<ErrorDialog />
 			<Router>
 				<Switch>
-					{/* <Route path="/" exact>
-						<Home />
-					</Route> */}
-
-					{/* <Route path="/login" exact>
-						<Login />
-					</Route> */}
-
 					<Route path="/" exact>
 						<Redirect to="/login" />
 					</Route>
-
 					<ProtectedLogin path="/login" exact component={Login} />
 					<Route path="/forgot-password" exact>
 						<ForgotPassword />
