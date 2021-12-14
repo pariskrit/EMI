@@ -7,6 +7,7 @@ import { useGoogleLogout } from "react-google-login";
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
+import SettingsIcon from "@material-ui/icons/Settings";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -309,7 +310,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 	// 	};
 	// 	instance.logoutRedirect(logoutRequest);
 	// }
-
+	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
 	const navOptions = [
 		{
 			name: "Clients",
@@ -374,8 +375,6 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 	]
 		// Filter which sidebar navigation is accessible
 		.filter((x) => {
-			const { position } = JSON.parse(localStorage.getItem("me"));
-
 			// If position is null it is super admin
 
 			if (position === null || position?.[x.access] === "F") return true;
@@ -408,26 +407,50 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						</div>
 					)}
 					{isApplicationPortal ? (
-						<Link to="/portal" className={classes.navLink}>
-							<div
-								className={`${classes.navListContainer} mobNavListContainer`}
-							>
-								<ListItem button className={classes.currentItemBackground}>
-									<ListItemIcon className={classes.navIconContainer}>
-										<Home
-											className={classes.navIconCurrent}
-											alt={`Home icon`}
+						<>
+							<Link to="/portal" className={classes.navLink}>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+								>
+									<ListItem button className={classes.currentItemBackground}>
+										<ListItemIcon className={classes.navIconContainer}>
+											<Home
+												className={classes.navIconCurrent}
+												alt={`Home icon`}
+											/>
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimaryCurrent,
+											}}
+											primary="Application Portal"
 										/>
-									</ListItemIcon>
-									<ListItemText
-										classes={{
-											primary: classes.listItemTextPrimaryCurrent,
-										}}
-										primary="Application Portal"
-									/>
-								</ListItem>
-							</div>
-						</Link>
+									</ListItem>
+								</div>
+							</Link>
+							{isAdmin ? (
+								<Link to={clientsPath} className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={null}>
+											<ListItemIcon className={classes.navIconContainer}>
+												<SettingsIcon
+													className={classes.homeIcon}
+													alt={`Home icon`}
+												/>
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimary,
+												}}
+												primary="Admin Mode"
+											/>
+										</ListItem>
+									</div>
+								</Link>
+							) : null}
+						</>
 					) : (
 						<List className={classes.lists}>
 							{navOptions.map((item) => {
