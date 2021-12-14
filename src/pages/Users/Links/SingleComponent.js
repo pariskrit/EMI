@@ -6,6 +6,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import ContentStyle from "styles/application/ContentStyle";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import PasswordResetDialog from "components/Elements/PasswordResetDialog";
+import { usersPath } from "helpers/routePaths";
 
 const AC = ContentStyle();
 
@@ -132,7 +133,22 @@ const SingleComponent = (route) => {
 						showSave={route.showSave}
 						showPasswordReset={route.showPasswordReset}
 						handlePatchIsActive={openConfirmationModal}
-						crumbs={["Users", `${titleName?.firstName} ${titleName?.lastName}`]}
+						crumbs={
+							route.id === 100
+								? [
+										{
+											id: 1,
+											name: `${titleName?.firstName} ${titleName?.lastName}`,
+										},
+								  ]
+								: [
+										{ id: 1, name: "Users", url: usersPath },
+										{
+											id: 2,
+											name: `${titleName?.firstName} ${titleName?.lastName}`,
+										},
+								  ]
+						}
 						currentStatus={allData?.active}
 						onPasswordReset={passwordResetModalHandler}
 					/>

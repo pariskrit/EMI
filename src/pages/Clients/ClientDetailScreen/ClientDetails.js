@@ -15,6 +15,7 @@ import NavDetails from "components/Elements/NavDetails";
 import { fetchClientDetail, resetClient } from "redux/clientDetail/actions";
 import { showError } from "redux/common/actions";
 import "./style.scss";
+import { clientsPath } from "helpers/routePaths";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -47,7 +48,10 @@ const ClientDetails = ({
 		<div className="client-details">
 			<div className="flex justify-between">
 				<NavDetails
-					staticCrumbs={["Client", clientDetail.name]}
+					staticCrumbs={[
+						{ id: 1, name: "Clients", url: clientsPath },
+						{ id: 2, name: clientDetail.name },
+					]}
 					status={true}
 					lastSaved=""
 				/>

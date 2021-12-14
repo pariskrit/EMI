@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import API from "helpers/api";
 import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Navcrumbs from "components/Elements/Navcrumbs";
+import NavDetails from "components/Elements/NavDetails";
 import ActionButtons from "./ActionButtons";
 import SaveHistory from "components/Elements/SaveHistory";
 import NavButtons from "components/Elements/NavButtons";
@@ -13,6 +13,7 @@ import "./customCaptions.css";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import { applicationListPath } from "helpers/routePaths";
 
 // Init styled components
 const AC = ContentStyle();
@@ -126,12 +127,14 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 	return (
 		<div className="container">
 			<div className="topContainerCustomCaptions">
-				<Navcrumbs
-					crumbs={[
-						// TODO: below application name needs to be updated to reflect applicationName
-						// from fetched data
-						"Application",
-						state !== undefined ? state.applicationName : applicationName,
+				<NavDetails
+					staticCrumbs={[
+						{ id: 1, name: "Applications", url: applicationListPath },
+						{
+							id: 2,
+							name:
+								state !== undefined ? state.applicationName : applicationName,
+						},
 					]}
 				/>
 
@@ -141,7 +144,6 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 					</div>
 				) : null}
 			</div>
-			<SaveHistory />
 
 			<NavButtons
 				navigation={navigation}
