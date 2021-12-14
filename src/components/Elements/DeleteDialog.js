@@ -39,7 +39,6 @@ const DeleteDialog = ({
 					},
 				]);
 			} else {
-				console.log("dlete whole");
 				result = await API.delete(`${deleteEndpoint}/${deleteID}`);
 			}
 
@@ -72,7 +71,6 @@ const DeleteDialog = ({
 			// Once deleted, closing dialog and updating state
 			closeHandler();
 			setIsUpdating(false);
-			console.log("success");
 		});
 	};
 

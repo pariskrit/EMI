@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import Navcrumbs from "components/Elements/Navcrumbs";
+import NavDetails from "components/Elements/NavDetails";
 import SaveHistory from "components/Elements/SaveHistory";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import NavButtons from "components/Elements/NavButtons";
@@ -15,6 +15,7 @@ import ContentStyle from "styles/application/ContentStyle";
 import ActionButtons from "./ActionButtons";
 import AddStopDialog from "./AddDialog";
 import EditStopDialog from "./EditDialog";
+import { applicationListPath } from "helpers/routePaths";
 
 // Init styled components
 const AC = ContentStyle();
@@ -241,12 +242,14 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 			/>
 			{/* End dialogs */}
 			<div className="topContainerCustomCaptions">
-				<Navcrumbs
-					crumbs={[
-						// TODO: below application name needs to be updated to reflect applicationName
-						// from fetched data
-						"Application",
-						state !== undefined ? state.applicationName : applicationName,
+				<NavDetails
+					staticCrumbs={[
+						{ id: 1, name: "Applications", url: applicationListPath },
+						{
+							id: 2,
+							name:
+								state !== undefined ? state.applicationName : applicationName,
+						},
 					]}
 				/>
 
@@ -260,8 +263,6 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 			{/* Spinner should start here */}
 			{haveData ? (
 				<>
-					<SaveHistory />
-
 					<NavButtons
 						navigation={navigation}
 						applicationName={
