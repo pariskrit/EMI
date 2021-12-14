@@ -9,7 +9,7 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) =>
-				(position === null && access === "") || position?.[access] === "F" ? (
+				position === null || position?.[access] === "F" ? (
 					<Component {...props} />
 				) : (
 					history.goBack()

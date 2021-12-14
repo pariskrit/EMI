@@ -298,6 +298,48 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		instance.logoutRedirect(logoutRequest);
 	}
 
+	const navOptions = [
+		{
+			name: "Clients",
+			icon: ClientIcon,
+			path: clientsPath,
+			access: "",
+		},
+		{
+			name: "Applications",
+			icon: ApplicationIcon,
+			path: applicationListPath,
+			access: "",
+		},
+		{
+			name: "Models",
+			icon: ModelIcon,
+			path: "/app/models",
+			access: access.modelAccess,
+		},
+		{
+			name: "Users",
+			icon: UserIcon,
+			path: usersPath,
+			access: access.userAccess,
+		},
+		{
+			name: "Analytics",
+			icon: AnalyticsIcon,
+			path: "/app/analytics",
+			access: access.analyticsAccess,
+		},
+	]
+		// Filter which sidebar navigation is accessible
+		.filter((x) => {
+			const { position } = JSON.parse(localStorage.getItem("me"));
+
+			// If position is null it is super admin
+
+			if (position === null || position?.[x.access] === "F") return true;
+			else return false;
+		});
+
 	return (
 		<>
 			<div className="drawerDesktop">
@@ -346,97 +388,52 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						</Link>
 					) : (
 						<List>
-							{[
-								{
-									name: "Clients",
-									icon: ClientIcon,
-									path: clientsPath,
-									access: "",
-								},
-								{
-									name: "Applications",
-									icon: ApplicationIcon,
-									path: applicationListPath,
-									access: "",
-								},
-								{
-									name: "Models",
-									icon: ModelIcon,
-									path: "/app/models",
-									access: access.modelAccess,
-								},
-								{
-									name: "Users",
-									icon: UserIcon,
-									path: usersPath,
-									access: access.userAccess,
-								},
-								{
-									name: "Analytics",
-									icon: AnalyticsIcon,
-									path: "/app/analytics",
-									access: access.analyticsAccess,
-								},
-							]
-								// Filter which sidebar navigation is accessible
-								.filter((x) => {
-									const { position } = JSON.parse(localStorage.getItem("me"));
+							{navOptions.map((item) => {
+								// Storing SVG
+								let NavIcon = item.icon;
 
-									// If position is null it is super admin
-
-									if (
-										(position === null && x.access === "") ||
-										position[x.access] === "F"
-									)
-										return true;
-									else return false;
-								})
-								.map((item) => {
-									// Storing SVG
-									let NavIcon = item.icon;
-
-									return (
-										<Link
-											to={item.path}
-											className={classes.navLink}
+								return (
+									<Link
+										to={item.path}
+										className={classes.navLink}
+										key={item.name}
+									>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
 											key={item.name}
 										>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-												key={item.name}
+											<ListItem
+												button
+												className={
+													item.name.toLowerCase() === activeLink
+														? classes.currentItemBackground
+														: null
+												}
 											>
-												<ListItem
-													button
-													className={
-														item.name.toLowerCase() === activeLink
-															? classes.currentItemBackground
-															: null
-													}
-												>
-													<ListItemIcon className={classes.navIconContainer}>
-														<NavIcon
-															className={
-																item.name.toLowerCase() === activeLink
-																	? classes.navIconCurrent
-																	: classes.navIcon
-															}
-															alt={`${item.name} icon`}
-														/>
-													</ListItemIcon>
-													<ListItemText
-														classes={{
-															primary:
-																item.name.toLowerCase() === activeLink
-																	? classes.listItemTextPrimaryCurrent
-																	: classes.listItemTextPrimary,
-														}}
-														primary={item[0]}
+												<ListItemIcon className={classes.navIconContainer}>
+													<NavIcon
+														className={
+															item.name.toLowerCase() === activeLink
+																? classes.navIconCurrent
+																: classes.navIcon
+														}
+														alt={`${item.name} icon`}
 													/>
-												</ListItem>
-											</div>
-										</Link>
-									);
-								})}
+												</ListItemIcon>
+												<ListItemText
+													classes={{
+														primary:
+															item.name.toLowerCase() === activeLink
+																? classes.listItemTextPrimaryCurrent
+																: classes.listItemTextPrimary,
+													}}
+													primary={item[0]}
+												/>
+											</ListItem>
+										</div>
+									</Link>
+								);
+							})}
 						</List>
 					)}
 
@@ -568,33 +565,27 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 					className={`${classes.bottomNavigationContainer} mobileNavigation`}
 				>
 					<div className={classes.innerBottomNav}>
-						{[
-							["Clients", ClientIcon, clientsPath],
-							["Applications", ApplicationIcon, applicationListPath],
-							["Models", ModelIcon, "/"],
-							["Users", UserIcon, usersPath],
-							["Analytics", AnalyticsIcon, "/"],
-						].map((item, index) => {
+						{navOptions.map((item, index) => {
 							// Storing SVG
-							let NavIcon = item[1];
+							let NavIcon = item.icon;
 
 							// Note: Currently hardcoding current selection -- pull from global state
 							// when implemented
 							if (index === 1) {
 								return (
-									<Link to={item[2]} className={classes.navLink} key={index}>
+									<Link to={item.path} className={classes.navLink} key={index}>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
 										>
 											<BottomNavigationAction
 												label="Recents"
-												key={item[0]}
+												key={item.name}
 												className={classes.currentItemBackground}
 												value="recents"
 												icon={
 													<NavIcon
 														className={classes.navIconCurrent}
-														alt={`${item[0]} icon`}
+														alt={`${item.name} icon`}
 													/>
 												}
 											/>
@@ -603,19 +594,19 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 								);
 							} else {
 								return (
-									<Link to={item[2]} className={classes.navLink} key={index}>
+									<Link to={item.path} className={classes.navLink} key={index}>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
 										>
 											<BottomNavigationAction
 												label="Recents"
-												key={item[0]}
+												key={item.name}
 												className={classes.currentItemBackground}
 												value="recents"
 												icon={
 													<NavIcon
 														className={classes.navIconCurrent}
-														alt={`${item[0]} icon`}
+														alt={`${item.name} icon`}
 													/>
 												}
 											/>

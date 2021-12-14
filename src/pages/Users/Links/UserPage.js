@@ -41,8 +41,8 @@ const UserPage = ({ getError }) => {
 			{routes.map(({ id, path, ...route }) => (
 				<AccessRoute
 					access={access.userAccess}
-					key={route.id}
-					path={route.path}
+					key={id}
+					path={path}
 					exact
 					component={(props) => (
 						<SingleComponent {...props} {...route} getError={getError} />
