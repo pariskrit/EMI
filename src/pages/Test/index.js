@@ -80,7 +80,7 @@ function Test() {
 						page={page.pageNo}
 						onPageChange={onPageChange}
 						label="Select"
-						isServerSide={true}
+						isServerSide={false}
 						handleServerSideSort={handleServerSideSort}
 						showClear={true}
 						icon={<AppsIcon />}

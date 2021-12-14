@@ -19,6 +19,7 @@ import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { loginSocialAccount, loginUser } from "redux/auth/actions";
 import { useMsal } from "@azure/msal-react";
 import ErrorIcon from "@material-ui/icons/Error";
+import { Link } from "react-router-dom";
 
 // Yup validation schema
 const schema = yup.object({
@@ -211,6 +212,15 @@ const useStyles = makeStyles((theme) => ({
 		},
 		"& .MuiInputLabel-shrink": {
 			transform: "translate(14px, -6px) scale(0.75)",
+		},
+	},
+	forgotPassword: {
+		color: "#307AD6",
+		textDecoration: "none",
+		fontSize: "14px",
+		margin: "10px 0",
+		"&:hover": {
+			textDecoration: "underline",
 		},
 	},
 }));
@@ -412,6 +422,13 @@ const Login = ({
 									/>
 
 									<div className={classes.submitContainer}>
+										<Link
+											to="/forgot-password"
+											className={classes.forgotPassword}
+										>
+											Forgot Password?
+										</Link>
+
 										<Button
 											fullWidth
 											variant="contained"
