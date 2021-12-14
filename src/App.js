@@ -19,14 +19,6 @@ function App() {
 			<ErrorDialog />
 			<Router>
 				<Switch>
-					{/* <Route path="/" exact>
-						<Home />
-					</Route> */}
-
-					{/* <Route path="/login" exact>
-						<Login />
-					</Route> */}
-
 					<Route path="/" exact>
 						<Redirect to="/login" />
 					</Route>
