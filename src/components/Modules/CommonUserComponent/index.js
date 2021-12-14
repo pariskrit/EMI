@@ -19,7 +19,6 @@ const UserDetails = ({
 	title,
 	apis,
 	getError,
-	showNotes,
 	data,
 	setData,
 	inputData,

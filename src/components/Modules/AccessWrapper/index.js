@@ -7,7 +7,7 @@ const AccessWrapper = ({ children, access }) => {
 	if (position === null || access.includes(position?.name))
 		return <div>{children}</div>;
 
-	return;
+	return null;
 };
 
 AccessWrapper.defaultProps = {
