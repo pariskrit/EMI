@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import AccessRoute from "components/HOC/AccessRoute";
 import access from "helpers/access";
+import { Route } from "react-router-dom";
 
 const routes = [
 	{
@@ -36,19 +37,25 @@ const routes = [
 ];
 
 const UserPage = ({ getError }) => {
+	const detail = routes[0];
+	const profile = routes[1];
 	return (
 		<div>
-			{routes.map(({ id, path, ...route }) => (
-				<AccessRoute
-					access={access.userAccess}
-					key={id}
-					path={path}
-					exact
-					component={(props) => (
-						<SingleComponent {...props} {...route} getError={getError} />
-					)}
-				/>
-			))}
+			<Route
+				exact
+				path={profile.path}
+				component={(props) => (
+					<SingleComponent {...props} {...profile} getError={getError} />
+				)}
+			/>
+			<AccessRoute
+				access={access.userAccess}
+				path={detail.path}
+				exact
+				component={(props) => (
+					<SingleComponent {...props} {...detail} getError={getError} />
+				)}
+			/>
 		</div>
 	);
 };

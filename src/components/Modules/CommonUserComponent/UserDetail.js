@@ -28,7 +28,6 @@ const UserDetail = ({
 	apis,
 	inputData,
 	setInputData,
-	role,
 }) => {
 	const classes = useStyles();
 

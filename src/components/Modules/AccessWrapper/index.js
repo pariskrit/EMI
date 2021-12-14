@@ -15,8 +15,8 @@ AccessWrapper.defaultProps = {
 };
 
 AccessWrapper.propTypes = {
-	children: PropTypes.element.isRequired,
-	access: PropTypes.string,
+	children: PropTypes.any.isRequired,
+	access: PropTypes.array,
 };
 
 export default AccessWrapper;
