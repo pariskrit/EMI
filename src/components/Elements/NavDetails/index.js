@@ -5,12 +5,17 @@ import Typography from "@material-ui/core/Typography";
 import ColourConstants from "helpers/colourConstants";
 import SaveHistory from "../SaveHistory";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {
 		fontWeight: "bold",
 		fontSize: "20px",
 		color: ColourConstants.commonText,
+	},
+	link: {
+		fontWeight: "bold",
+		fontSize: "20px",
 	},
 	separator: {
 		fontWeight: "bold",
@@ -34,29 +39,45 @@ const NavDetails = ({ staticCrumbs, crumbs, status }) => {
 	const DefaultSeparator = () => {
 		return <span className={classes.crumbText}>{">"}</span>;
 	};
-
+	console.log(staticCrumbs);
 	return (
 		<div>
 			<Breadcrumbs aria-label="breadcrumb" separator={<DefaultSeparator />}>
-				{staticCrumbs?.length > 0 && staticCrumbs.every((crumb) => crumb)
-					? staticCrumbs?.map((crumb, i) => (
-							<Typography
-								key={i}
-								className={classes.crumbText}
-								color="textPrimary"
-							>
-								{crumb}
-							</Typography>
-					  ))
-					: crumbs.map((crumb) => (
-							<Typography
-								key={crumb}
-								className={classes.crumbText}
-								color="textPrimary"
-							>
-								{crumb}
-							</Typography>
-					  ))}
+				{staticCrumbs?.length > 0 && staticCrumbs.every((crumb) => crumb.name)
+					? staticCrumbs?.map((crumb, i) =>
+							i === staticCrumbs.length - 1 ? (
+								<Typography
+									key={crumb.id}
+									className={classes.crumbText}
+									color="textPrimary"
+								>
+									{crumb.name}
+								</Typography>
+							) : (
+								<Link to={crumb.url} key={crumb.id}>
+									<Typography key={crumb.id} className={classes.link}>
+										{crumb.name}
+									</Typography>
+								</Link>
+							)
+					  )
+					: crumbs?.map((crumb, i) =>
+							i === crumbs.length - 1 ? (
+								<Typography
+									key={crumb.id}
+									className={classes.crumbText}
+									color="textPrimary"
+								>
+									{crumb.name}
+								</Typography>
+							) : (
+								<Link to={crumb.url} key={crumb.id}>
+									<Typography key={crumb.id} className={classes.link}>
+										{crumb.name}
+									</Typography>
+								</Link>
+							)
+					  )}
 			</Breadcrumbs>
 			<div className="left-section flex-wrap  mb-sm">
 				{status && (

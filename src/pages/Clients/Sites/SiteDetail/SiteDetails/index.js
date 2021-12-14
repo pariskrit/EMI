@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
-import { fetchSiteDetail } from "redux/siteDetail/actions";
+import { fetchSiteDetail, setNavCrumbs } from "redux/siteDetail/actions";
 import { getClientDetails } from "services/clients/clientDetailScreen";
 import {
 	getListOfRegions,
@@ -21,6 +21,7 @@ import "./siteDetails.scss";
 import { Facebook } from "react-spinners-css";
 import AccordionBox from "components/Layouts/AccordionBox";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
+import { clientsPath } from "helpers/routePaths";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -38,6 +39,7 @@ const SiteDetails = ({
 	setError,
 	siteDetails,
 	handlefetchSiteDetail,
+	setCrumbs,
 }) => {
 	const classes = useStyles();
 	const { clientId } = useParams();
@@ -140,7 +142,7 @@ const SiteDetails = ({
 	};
 
 	const fetchSiteDetails = async () => {
-		const result = await handlefetchSiteDetail(siteId);
+		const result = await handlefetchSiteDetail(siteId, clientId);
 
 		if (cancelFetch.current) {
 			return;
@@ -154,6 +156,7 @@ const SiteDetails = ({
 					siteName: result.data.name,
 				})
 			);
+
 			setNewSiteDetails(result.data);
 			setNewInput(result.data);
 			fetchListOfRegions(result.data.regionName);
@@ -529,7 +532,9 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch) => ({
 	setError: (message) => dispatch(showError(message)),
-	handlefetchSiteDetail: (siteId) => dispatch(fetchSiteDetail(siteId)),
+	handlefetchSiteDetail: (siteId, clientId) =>
+		dispatch(fetchSiteDetail(siteId, clientId)),
+	setCrumbs: (crumbs) => dispatch(setNavCrumbs(crumbs)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SiteDetails);
