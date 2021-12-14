@@ -8,6 +8,7 @@ import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
 import ApplicationPortal from "./ApplicationPortal";
 import { applicationPortalPath } from "helpers/routePaths";
+import ModelsPage from "./Models/ModelLists/Links";
 
 const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
@@ -25,6 +26,7 @@ const MainApp = ({ location }) => {
 				<SitePage />
 				<SiteAppPage />
 				<UsersPage />
+				<ModelsPage />
 			</NavbarWrapper>
 		</Switch>
 	);
