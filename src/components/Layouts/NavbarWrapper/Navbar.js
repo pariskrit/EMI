@@ -38,6 +38,9 @@ import {
 	servicesPath,
 	analyticsPath,
 	defectsPath,
+	feedbackPath,
+	analysisPath,
+	noticeboardPath,
 } from "helpers/routePaths";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
@@ -361,19 +364,19 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		{
 			name: "Analysis",
 			icon: ModelIcon,
-			path: "/app/analysis",
+			path: analysisPath,
 			access: access.analysisAccess,
 		},
 		{
 			name: "Feedback",
 			icon: ModelIcon,
-			path: "/app/feedback",
+			path: feedbackPath,
 			access: access.feedbackAccess,
 		},
 		{
 			name: "Noticeboards",
 			icon: ModelIcon,
-			path: "/app/noticeboards",
+			path: noticeboardPath,
 			access: access.noticeboardAccess,
 		},
 	]

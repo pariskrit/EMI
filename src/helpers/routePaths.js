@@ -71,3 +71,6 @@ export const analyticsPath = "/app/analytics";
 export const modelPath = "/app/models";
 export const servicesPath = "/app/services";
 export const defectsPath = "/app/defects";
+export const feedbackPath = "/app/feedback";
+export const analysisPath = "/app/analysis";
+export const noticeboardPath = "/app/noticeboards";

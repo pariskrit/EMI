@@ -8,7 +8,16 @@ import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
 import ApplicationPortal from "./ApplicationPortal";
-import { applicationPortalPath } from "helpers/routePaths";
+import {
+	analysisPath,
+	analyticsPath,
+	applicationPortalPath,
+	defectsPath,
+	feedbackPath,
+	modelPath,
+	noticeboardPath,
+	servicesPath,
+} from "helpers/routePaths";
 import AccessRoute from "components/HOC/AccessRoute";
 import Services from "./Services";
 import access from "helpers/access";
@@ -34,31 +43,43 @@ const MainApp = ({ location }) => {
 				<SiteAppPage />
 				<UsersPage />
 				<AccessRoute
-					path="/app/services"
+					path={modelPath}
+					exact
+					component={(props) => <h1>Model Path</h1>}
+					access={access.modelAccess}
+				/>
+				<AccessRoute
+					path={analyticsPath}
+					exact
+					component={(props) => <h1>Analytics Path</h1>}
+					access={access.analyticsAccess}
+				/>
+				<AccessRoute
+					path={servicesPath}
 					exact
 					component={Services}
 					access={access.serviceAccess}
 				/>
 				<AccessRoute
-					path="/app/defects"
+					path={defectsPath}
 					exact
 					component={Defects}
 					access={access.defectAccess}
 				/>
 				<AccessRoute
-					path="/app/analysis"
+					path={analysisPath}
 					exact
 					component={Analysis}
 					access={access.analysisAccess}
 				/>
 				<AccessRoute
-					path="/app/feedback"
+					path={feedbackPath}
 					exact
 					component={Feedback}
 					access={access.feedbackAccess}
 				/>
 				<AccessRoute
-					path="/app/noticeboards"
+					path={noticeboardPath}
 					exact
 					component={Noticeboards}
 					access={access.noticeboardAccess}
