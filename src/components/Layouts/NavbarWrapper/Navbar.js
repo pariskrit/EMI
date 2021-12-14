@@ -34,6 +34,10 @@ import {
 	usersPath,
 	userProfilePath,
 	applicationPortalPath,
+	modelPath,
+	servicesPath,
+	analyticsPath,
+	defectsPath,
 } from "helpers/routePaths";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
@@ -327,7 +331,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		{
 			name: "Models",
 			icon: ModelIcon,
-			path: "/app/models",
+			path: modelPath,
 			access: access.modelAccess,
 		},
 		{
@@ -339,19 +343,19 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		{
 			name: "Analytics",
 			icon: AnalyticsIcon,
-			path: "/app/analytics",
+			path: analyticsPath,
 			access: access.analyticsAccess,
 		},
 		{
 			name: "Services",
 			icon: ModelIcon,
-			path: "/app/services",
+			path: servicesPath,
 			access: access.serviceAccess,
 		},
 		{
 			name: "Defects",
 			icon: ModelIcon,
-			path: "/app/defects",
+			path: defectsPath,
 			access: access.defectAccess,
 		},
 		{
