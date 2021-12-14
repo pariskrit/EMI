@@ -15,6 +15,7 @@ import "./App.scss";
 import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
 import Test from "pages/Test";
+import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 
 function App() {
 	return (
@@ -35,6 +36,9 @@ function App() {
 					</Route>
 
 					<ProtectedLogin path="/login" exact component={Login} />
+					<Route path="/forgot-password" exact>
+						<ForgotPassword />
+					</Route>
 
 					<Route path="/launch" exact>
 						<Launch />
