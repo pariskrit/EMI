@@ -49,7 +49,6 @@ const AddDialog = ({
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 
-			console.log(localChecker);
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				// Creating new data
@@ -96,7 +95,8 @@ const AddDialog = ({
 				return { success: true };
 			} else {
 				if (newData.data.detail) {
-					getError(newData.data.detail);
+					// getError(newData.data.detail);
+					getError(`${subHeader} already exists.`);
 					return {
 						success: false,
 						errors: {
