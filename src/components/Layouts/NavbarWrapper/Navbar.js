@@ -1,56 +1,56 @@
+import React, { useState } from "react";
+import clsx from "clsx";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import { useGoogleLogout } from "react-google-login";
+
 // Bottom Navigation
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
+import SettingsIcon from "@material-ui/icons/Settings";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
-import SettingsIcon from "@material-ui/icons/Settings";
 import MiniLogo from "assets/EMI-symbol.png";
 import { ReactComponent as AnalyticsIcon } from "assets/icons/analyticsIcon.svg";
 import { ReactComponent as ApplicationIcon } from "assets/icons/applicationsIcon.svg";
 // Importing icons
 import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as CloseIcon } from "assets/icons/close-panel.svg";
-import { ReactComponent as Home } from "assets/icons/home.svg";
-import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
+import { ReactComponent as Home } from "assets/icons/home.svg";
+import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
-import clsx from "clsx";
 import ColourConstants from "helpers/colourConstants";
 import {
 	applicationListPath,
-	applicationPortalPath,
 	clientsPath,
-	userProfilePath,
 	usersPath,
+	userProfilePath,
+	applicationPortalPath,
+	modelPath,
+	servicesPath,
+	analyticsPath,
+	defectsPath,
+	feedbackPath,
+	analysisPath,
+	noticeboardPath,
 } from "helpers/routePaths";
-import React, { useState } from "react";
-import { useGoogleLogout } from "react-google-login";
 import { connect } from "react-redux";
-import { Link, useHistory, useLocation } from "react-router-dom";
 import { logOutUser } from "redux/auth/actions";
-import { showError } from "redux/common/actions";
+import access from "helpers/access";
 import "./style.scss";
 
 // Size constants
 const drawerWidth = 240;
 const minDrawerWidth = 62;
-
-const mediaHeight = "@media(max-height: 593px)";
-const mediaHeight2 = "@media(max-height: 518px)";
-const mediaHeight3 = "@media(max-height: 475px)";
-const mediaHeight4 = "@media(max-height: 457px)";
-const mediaHeight5 = "@media(max-height: 429px)";
-const mediaHeight6 = "@media(max-height: 379px)";
-const mediaHeight7 = "@media(max-height: 321px)";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -64,6 +64,23 @@ const useStyles = makeStyles((theme) => ({
 		flexShrink: 0,
 		whiteSpace: "nowrap",
 	},
+	lists: {
+		overflowX: "hidden",
+		overflowY: "auto",
+		//height: "56%",
+		flex: "1",
+		"&::-webkit-scrollbar": {
+			width: 5,
+			height: 5,
+		},
+		"&::-webkit-scrollbar-track": {
+			background: "#e2b466",
+		},
+		"&::-webkit-scrollbar-thumb": {
+			background: "#734d0f45",
+			borderRadius: 12,
+		},
+	},
 	drawerOpen: {
 		backgroundColor: ColourConstants.navDrawer,
 		width: drawerWidth,
@@ -71,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen,
 		}),
+		overflow: "hidden",
 	},
 	drawerClose: {
 		backgroundColor: ColourConstants.navDrawer,
@@ -149,9 +167,6 @@ const useStyles = makeStyles((theme) => ({
 	navIcon: {
 		transform: "scale(0.8)",
 	},
-	homeIcon: {
-		transform: "scale(1.1)",
-	},
 	navIconCurrent: {
 		transform: "scale(0.8)",
 		fill: "#FFFFFF",
@@ -177,10 +192,8 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(3),
 	},
 	footerClose: {
-		position: "fixed",
 		bottom: 0,
 		textAlign: "center",
-		// paddingBottom: 10,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -192,11 +205,9 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	footerOpen: {
-		position: "fixed",
 		width: drawerWidth,
 		bottom: 0,
 		textAlign: "center",
-		paddingBottom: 10,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen,
@@ -215,8 +226,8 @@ const useStyles = makeStyles((theme) => ({
 
 	line: {
 		height: "100%",
-		width: "1px",
-		backgroundColor: "#ffdeb0",
+		width: "2px",
+		backgroundColor: "#925e16",
 		zIndex: 10,
 	},
 
@@ -233,51 +244,13 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 	},
 
-	mobPortal: {
-		width: "80vw",
-		overflowX: "scroll",
-		overflowY: "hidden",
-		display: "flex",
-		alignItems: "center",
-	},
-
 	alwaysShow: {
 		display: "flex",
 		backgroundColor: "black",
 	},
-
-	upperContent: {
-		[mediaHeight]: {
-			// backgroundColor: "black",
-			height: "300px",
-			maxHeight: "400px",
-			overflowY: "scroll",
-			overflowX: "hidden",
-			boxSizing: "content-box",
-		},
-		[mediaHeight2]: {
-			maxHeight: "41.1%",
-			// overflowY: "hidden",
-		},
-		[mediaHeight3]: {
-			maxHeight: "35%",
-		},
-		[mediaHeight4]: {
-			maxHeight: "34%",
-		},
-		[mediaHeight5]: {
-			maxHeight: "26%",
-		},
-		[mediaHeight6]: {
-			maxHeight: "20%",
-		},
-		[mediaHeight7]: {
-			maxHeight: "7%",
-		},
-	},
 }));
 
-function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
+function Navbar({ userLogOut, isApplicationPortal = false }) {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -293,9 +266,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
-
 	let activeLink = location.pathname.split("/")[2];
-	const user = JSON.parse(localStorage.getItem("me"));
 
 	// Handlers
 	const handleDrawerChange = () => {
@@ -327,9 +298,89 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 				throw new Error(logOut);
 			}
 		} catch (err) {
-			getError(err.response.data.detail);
+			console.log(err);
 		}
+		setLoading(false);
 	};
+
+	// function signOutMicrosoftHandler() {
+	// 	const accountId = localStorage.getItem("homeAccoundId");
+	// 	const logoutRequest = {
+	// 		account: instance.getAccountByHomeId(accountId),
+	// 		postLogoutRedirectUri: "http://localhost:3000/login",
+	// 	};
+	// 	instance.logoutRedirect(logoutRequest);
+	// }
+	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
+	const navOptions = [
+		{
+			name: "Clients",
+			icon: ClientIcon,
+			path: clientsPath,
+			access: "",
+		},
+		{
+			name: "Applications",
+			icon: ApplicationIcon,
+			path: applicationListPath,
+			access: "",
+		},
+		{
+			name: "Models",
+			icon: ModelIcon,
+			path: modelPath,
+			access: access.modelAccess,
+		},
+		{
+			name: "Users",
+			icon: UserIcon,
+			path: usersPath,
+			access: access.userAccess,
+		},
+		{
+			name: "Analytics",
+			icon: AnalyticsIcon,
+			path: analyticsPath,
+			access: access.analyticsAccess,
+		},
+		{
+			name: "Services",
+			icon: ModelIcon,
+			path: servicesPath,
+			access: access.serviceAccess,
+		},
+		{
+			name: "Defects",
+			icon: ModelIcon,
+			path: defectsPath,
+			access: access.defectAccess,
+		},
+		{
+			name: "Analysis",
+			icon: ModelIcon,
+			path: analysisPath,
+			access: access.analysisAccess,
+		},
+		{
+			name: "Feedback",
+			icon: ModelIcon,
+			path: feedbackPath,
+			access: access.feedbackAccess,
+		},
+		{
+			name: "Noticeboards",
+			icon: ModelIcon,
+			path: noticeboardPath,
+			access: access.noticeboardAccess,
+		},
+	]
+		// Filter which sidebar navigation is accessible
+		.filter((x) => {
+			// If position is null it is super admin
+
+			if (position === null || position?.[x.access] === "F") return true;
+			else return false;
+		});
 
 	return (
 		<>
@@ -357,8 +408,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 						</div>
 					)}
 					{isApplicationPortal ? (
-						<>
-							<Link to={applicationPortalPath} className={classes.navLink}>
+						<List className={classes.lists}>
+							<Link to="/portal" className={classes.navLink}>
 								<div
 									className={`${classes.navListContainer} mobNavListContainer`}
 								>
@@ -378,8 +429,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 									</ListItem>
 								</div>
 							</Link>
-							{user.isAdmin ? (
-								<Link to="/" className={classes.navLink}>
+							{isAdmin ? (
+								<Link to={clientsPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
 									>
@@ -400,29 +451,27 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 									</div>
 								</Link>
 							) : null}
-						</>
+						</List>
 					) : (
-						<List className={`${classes.upperContent} upperContent`}>
-							{[
-								["Clients", ClientIcon, clientsPath],
-								["Applications", ApplicationIcon, applicationListPath],
-								["Models", ModelIcon, "/"],
-								["Users", UserIcon, usersPath],
-								["Analytics", AnalyticsIcon, "/"],
-							].map((item, index) => {
+						<List className={classes.lists}>
+							{navOptions.map((item) => {
 								// Storing SVG
-								let NavIcon = item[1];
+								let NavIcon = item.icon;
 
 								return (
-									<Link to={item[2]} className={classes.navLink} key={item[0]}>
+									<Link
+										to={item.path}
+										className={classes.navLink}
+										key={item.name}
+									>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
-											key={item[0]}
+											key={item.name}
 										>
 											<ListItem
 												button
 												className={
-													item[0].toLowerCase() === activeLink
+													item.name.toLowerCase() === activeLink
 														? classes.currentItemBackground
 														: null
 												}
@@ -430,21 +479,21 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 												<ListItemIcon className={classes.navIconContainer}>
 													<NavIcon
 														className={
-															item[0].toLowerCase() === activeLink
+															item.name.toLowerCase() === activeLink
 																? classes.navIconCurrent
 																: classes.navIcon
 														}
-														alt={`${item[0]} icon`}
+														alt={`${item.name} icon`}
 													/>
 												</ListItemIcon>
 												<ListItemText
 													classes={{
 														primary:
-															item[0].toLowerCase() === activeLink
+															item.name.toLowerCase() === activeLink
 																? classes.listItemTextPrimaryCurrent
 																: classes.listItemTextPrimary,
 													}}
-													primary={item[0]}
+													primary={item.name}
 												/>
 											</ListItem>
 										</div>
@@ -494,8 +543,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 									/>
 								</ListItem>
 							</div>
-
-							{user.position != null ? (
+							{position !== null && !isApplicationPortal ? (
 								<Link to={applicationPortalPath} className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
@@ -581,99 +629,58 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 				<BottomNavigation
 					className={`${classes.bottomNavigationContainer} mobileNavigation`}
 				>
-					{isApplicationPortal ? (
-						<div className={classes.mobPortal}>
-							<Link to={applicationPortalPath} className={classes.navLink}>
-								<div
-									className={`${classes.navListContainer} mobNavListContainer`}
-								>
-									<ListItem button className={classes.currentItemBackground}>
-										<ListItemIcon className={classes.navIconContainer}>
-											<Home
-												className={classes.navIconCurrent}
-												alt={`Home icon`}
-											/>
-										</ListItemIcon>
-									</ListItem>
-								</div>
-							</Link>
-							{user.isAdmin ? (
-								<Link to="/" className={classes.navLink}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-									>
-										<ListItem button className={null}>
-											<ListItemIcon className={classes.navIconContainer}>
-												<SettingsIcon
-													className={classes.homeIcon}
-													alt={`Home icon`}
-												/>
-											</ListItemIcon>
-										</ListItem>
-									</div>
-								</Link>
-							) : null}
-						</div>
-					) : (
-						<div className={classes.innerBottomNav}>
-							{[
-								["Clients", ClientIcon, clientsPath],
-								["Applications", ApplicationIcon, applicationListPath],
-								["Models", ModelIcon, "/"],
-								["Users", UserIcon, usersPath],
-								["Analytics", AnalyticsIcon, "/"],
-							].map((item, index) => {
-								// Storing SVG
-								let NavIcon = item[1];
+					<div className={classes.innerBottomNav}>
+						{navOptions.map((item, index) => {
+							// Storing SVG
+							let NavIcon = item.icon;
 
-								// Note: Currently hardcoding current selection -- pull from global state
-								// when implemented
-								if (index === 1) {
-									return (
-										<Link to={item[2]} className={classes.navLink} key={index}>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-											>
-												<BottomNavigationAction
-													label="Recents"
-													key={item[0]}
-													className={classes.currentItemBackground}
-													value="recents"
-													icon={
-														<NavIcon
-															className={classes.navIconCurrent}
-															alt={`${item[0]} icon`}
-														/>
-													}
-												/>
-											</div>
-										</Link>
-									);
-								} else {
-									return (
-										<Link to={item[2]} className={classes.navLink} key={index}>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-											>
-												<BottomNavigationAction
-													label="Recents"
-													key={item[0]}
-													className={classes.currentItemBackground}
-													value="recents"
-													icon={
-														<NavIcon
-															className={classes.navIconCurrent}
-															alt={`${item[0]} icon`}
-														/>
-													}
-												/>
-											</div>
-										</Link>
-									);
-								}
-							})}
-						</div>
-					)}
+							// Note: Currently hardcoding current selection -- pull from global state
+							// when implemented
+							if (index === 1) {
+								return (
+									<Link to={item.path} className={classes.navLink} key={index}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<BottomNavigationAction
+												label="Recents"
+												key={item.name}
+												className={classes.currentItemBackground}
+												value="recents"
+												icon={
+													<NavIcon
+														className={classes.navIconCurrent}
+														alt={`${item.name} icon`}
+													/>
+												}
+											/>
+										</div>
+									</Link>
+								);
+							} else {
+								return (
+									<Link to={item.path} className={classes.navLink} key={index}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<BottomNavigationAction
+												label="Recents"
+												key={item.name}
+												className={classes.currentItemBackground}
+												value="recents"
+												icon={
+													<NavIcon
+														className={classes.navIconCurrent}
+														alt={`${item.name} icon`}
+													/>
+												}
+											/>
+										</div>
+									</Link>
+								);
+							}
+						})}
+					</div>
 					<div className={classes.line}></div>
 					<div className={classes.alwaysShow}>
 						<Link to={userProfilePath} className={classes.navLink}>
@@ -754,7 +761,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, getError }) {
 
 const mapDispatchToProps = (dispatch) => ({
 	userLogOut: (token) => dispatch(logOutUser(token)),
-	getError: (msg) => dispatch(showError(msg)),
 });
 
 export default connect(null, mapDispatchToProps)(React.memo(Navbar));
