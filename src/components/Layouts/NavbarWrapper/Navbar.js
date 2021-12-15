@@ -67,16 +67,17 @@ const useStyles = makeStyles((theme) => ({
 	lists: {
 		overflowX: "hidden",
 		overflowY: "auto",
-		height: "45%",
+		//height: "56%",
+		flex: "1",
 		"&::-webkit-scrollbar": {
 			width: 5,
 			height: 5,
 		},
 		"&::-webkit-scrollbar-track": {
-			background: "#af8949",
+			background: "#e2b466",
 		},
 		"&::-webkit-scrollbar-thumb": {
-			background: "#462d04",
+			background: "#734d0f45",
 			borderRadius: 12,
 		},
 	},
@@ -407,7 +408,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						</div>
 					)}
 					{isApplicationPortal ? (
-						<>
+						<List className={classes.lists}>
 							<Link to="/portal" className={classes.navLink}>
 								<div
 									className={`${classes.navListContainer} mobNavListContainer`}
@@ -450,7 +451,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 									</div>
 								</Link>
 							) : null}
-						</>
+						</List>
 					) : (
 						<List className={classes.lists}>
 							{navOptions.map((item) => {
