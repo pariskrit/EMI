@@ -11,6 +11,7 @@ import NewSubcat from "./NewSubcat";
 import ErrorAlert from "../ErrorAlert";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import DeleteDialog from "components/Elements/DeleteDialog";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -31,6 +32,7 @@ const useStyles = makeStyles({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
 });
+const defaultDelete = { delete: false, sub: {} };
 
 const EditPauseDialog = ({
 	open,
@@ -49,6 +51,7 @@ const EditPauseDialog = ({
 	const [isAddNew, setIsAddNew] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [deleteInfo, setDeleteInfo] = useState(defaultDelete);
 
 	// Handlers
 	const closeOverride = () => {
@@ -153,6 +156,14 @@ const EditPauseDialog = ({
 
 	return (
 		<div>
+			<DeleteDialog
+				entityName="Pause Content"
+				open={deleteInfo.delete}
+				closeHandler={() => setDeleteInfo(defaultDelete)}
+				deleteID={deleteInfo.sub.id}
+				deleteEndpoint="/api/ApplicationPauseSubcategories"
+				handleRemoveData={() => handleRemoveSubcat(deleteInfo.sub)}
+			/>
 			<Dialog
 				classes={{ paper: classes.paper }}
 				open={open}
@@ -240,6 +251,7 @@ const EditPauseDialog = ({
 											sub={sub}
 											handleRemoveSubcat={handleRemoveSubcat}
 											handleUpdateSubcatStateName={handleUpdateSubcatStateName}
+											handleDelete={() => setDeleteInfo({ sub, delete: true })}
 										/>
 									);
 							  })}

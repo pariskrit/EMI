@@ -1,7 +1,14 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { DefaultPageSize } from "helpers/constants";
 
-function useInfiniteScroll(data, count, fetchData, page, searchText) {
+function useInfiniteScroll(
+	data,
+	count,
+	fetchData,
+	page,
+	searchText,
+	scrollEvent = window
+) {
 	const [hasMore, setHasMore] = useState(true);
 	const [loading, setLoading] = useState(false);
 	const dataRef = useRef(data);
@@ -34,26 +41,25 @@ function useInfiniteScroll(data, count, fetchData, page, searchText) {
 	};
 
 	useEffect(() => {
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
+		scrollEvent.addEventListener("scroll", handleScroll);
+		return () => scrollEvent.removeEventListener("scroll", handleScroll);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
 	const handleScroll = () => {
 		if (loading) return;
 
 		if (
 			document.documentElement.offsetHeight -
-				(window.innerHeight + document.documentElement.scrollTop) <=
+				(scrollEvent.innerHeight + document.documentElement.scrollTop) <=
 			threshold
 		) {
 			fetchMoreData();
 		}
 	};
 	const gotoTop = () => {
-		window.scroll({ top: 0, left: 0, behavior: "smooth" });
+		scrollEvent.scroll({ top: 0, left: 0, behavior: "smooth" });
 	};
-	return { hasMore, loading, gotoTop };
+	return { hasMore, loading, gotoTop, handleScroll };
 }
 
 export default useInfiniteScroll;

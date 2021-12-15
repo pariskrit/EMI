@@ -14,6 +14,8 @@ import "./App.scss";
 // import ApplicationPortal from "pages/ApplicationPortal";
 import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
+import Test from "pages/Test";
+import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 
 function App() {
 	return (
@@ -21,24 +23,19 @@ function App() {
 			<ErrorDialog />
 			<Router>
 				<Switch>
-					{/* <Route path="/" exact>
-						<Home />
-					</Route> */}
-
-					{/* <Route path="/login" exact>
-						<Login />
-					</Route> */}
-
 					<Route path="/" exact>
 						<Redirect to="/login" />
 					</Route>
-
 					<ProtectedLogin path="/login" exact component={Login} />
+					<Route path="/forgot-password" exact>
+						<ForgotPassword />
+					</Route>
 
 					<Route path="/launch" exact>
 						<Launch />
 					</Route>
 					<ProtectedRoute path="/app" component={MainApp} />
+					<Route exact path="/test" component={Test} />
 				</Switch>
 			</Router>
 		</div>
