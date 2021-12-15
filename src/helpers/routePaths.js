@@ -66,6 +66,3 @@ export const defectTypesPath = "/defecttypes";
 export const feedbackClassificationsPath = "/feedbackclassifications";
 export const feedbackPrioritiesPath = "/feedbackpriorities";
 export const feedbackStatusesPath = "/feedbackstatuses";
-
-//Models List
-export const modelsPath = "/app/models";

@@ -76,7 +76,7 @@ const ModelLists = ({ getError }) => {
 
 	const allData = [
 		{ name: "pariskrit", modelName: "model1", modelTypeId: 345, type: "type1" },
-		{ name: "moktan", modelName: "model3", modelTypeId: 346, type: "type3" },
+		{ name: "abcde", modelName: "model3", modelTypeId: 346, type: "type3" },
 	];
 
 	const {
@@ -88,28 +88,25 @@ const ModelLists = ({ getError }) => {
 		setSearchQuery,
 	} = useSearch();
 
-	// const fetchData = useCallback(
-	// 	async (pNo, searchText) => {
-	// 		try {
-	// 			let result = await getUsersList(pNo, DefaultPageSize, searchText);
+	const fetchData = async () => {
+		try {
+			let result = await getUsersList();
 
-	// 			if (result.status) {
-	// 				result = result.data;
+			if (result.status) {
+				result = result.data;
 
-	// 				setAllData(result);
-	// 				// setDataCount(result.length);
-	// 				return true;
-	// 			} else {
-	// 				// Throwing error if failed
-	// 				throw new Error(`Error: Status ${result.status}`);
-	// 			}
-	// 		} catch (err) {
-	// 			console.log(err);
-	// 			return err;
-	// 		}
-	// 	},
-	// 	[setAllData]
-	// );
+				setAllData(result);
+				// setDataCount(result.length);
+				return true;
+			} else {
+				// Throwing error if failed
+				throw new Error(`Error: Status ${result.status}`);
+			}
+		} catch (err) {
+			console.log(err);
+			return err;
+		}
+	};
 
 	// useEffect(() => {
 	// 	fetchData(1)
