@@ -15,14 +15,11 @@ import "./App.scss";
 import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
 import Test from "pages/Test";
-<<<<<<< HEAD
-=======
 
 // import password forget,register reset from "pages/ForgotPassword", "pages/ResetPassword" and "pages/RegisterUser"
 import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "pages/ResetPassword/ResetPassword";
 import RegisterUserEmail from "pages/RegisterUser/RegisterUser";
->>>>>>> cdc89f23ee2f04e555f59b067c2546161448da72
 
 function App() {
 	return (
