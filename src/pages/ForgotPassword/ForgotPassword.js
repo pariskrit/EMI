@@ -168,7 +168,7 @@ const Login = () => {
 	// Handlers
 	const loginHandler = async (e, Email) => {
 		e.preventDefault();
-		// Attempting login
+		// Attempting Sending Email for Password reset
 		try {
 			var input = {
 				Email: Email,
@@ -182,7 +182,7 @@ const Login = () => {
 				if (response.status === 200) {
 					setShowNotications({
 						show: true,
-						message: "Email sucessfully sent",
+						message: "Email successfully sent",
 						severity: "success",
 					});
 					setErrors(defaultErrorSchema);
@@ -191,7 +191,7 @@ const Login = () => {
 					// show error notification
 					setShowNotications({
 						show: true,
-						message: "Invalid Email",
+						message: "Email not found.",
 						severity: "error",
 					});
 					setErrors(defaultErrorSchema);
@@ -204,11 +204,10 @@ const Login = () => {
 			// show error notification
 			setShowNotications({
 				show: true,
-				message: "Invalid Email",
-
+				message: err?.response?.data ?? "Email not found.",
 				severity: "error",
 			});
-
+			setErrors(defaultErrorSchema);
 			return false;
 		} finally {
 			setLoading(false);

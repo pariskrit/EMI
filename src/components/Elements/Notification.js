@@ -47,7 +47,7 @@ Notification.propTypes = {
 	anchorOrigin: PropTypes.object,
 	message: PropTypes.string,
 	show: PropTypes.bool,
-	handle: PropTypes.func.isRequired,
+	handleClose: PropTypes.func.isRequired,
 	severity: PropTypes.string,
 };
 
