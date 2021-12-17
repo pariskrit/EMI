@@ -16,19 +16,34 @@ import { generateErrorState, handleValidateObj } from "helpers/utils";
 import API from "helpers/api";
 import { Apis } from "services/api";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import {
+	useHistory,
+	useLocation,
+} from "react-router-dom/cjs/react-router-dom.min";
 import { showNotications } from "redux/notification/actions";
+import { useDispatch } from "react-redux";
 
 // Yup validation schema
-const schema = yup.object({
-	Email: yup
-		.string("This field must be a string")
-		.email("Invalid email address")
-		.required("This field is required"),
-});
+const schema = (password) =>
+	yup.object({
+		Password: yup
+			.string("This field must be a string")
+			.required("This field is required")
+			.min(8, "must be atleast 8 characters long")
+			.matches(
+				/^(?=.*\d)(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+				"must contain 1 uppercase letter and 1 numeric value"
+			),
+		ConfirmPassword: yup
+			.string("This field must be a string")
+			.required("This field is required")
+			.test("passwords-match", "Passwords must match", function (value, ctx) {
+				return password === value;
+			}),
+	});
 
 // Default state schemas
-const defaultErrorSchema = { Email: null };
+const defaultErrorSchema = { Password: null, ConfirmPassword: null };
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -152,51 +167,64 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
 	// Init hooks
 	const classes = useStyles();
+	const { search } = useLocation();
+	const history = useHistory();
 	const dispatch = useDispatch();
 
 	// Init state
-	const [Email, setEmail] = useState("");
+	const [Password, setPassword] = useState("");
+	const [ConfirmPassword, setConfirmPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 
 	// Handlers
-	const ForgotPasswordHandler = async (e, Email) => {
+	const ResetPasswordHandler = async (e, Email) => {
 		e.preventDefault();
-		// Attempting Sending Email for Password reset
+		// Attempting Sending new passowrd for Password reset
 		try {
 			var input = {
-				Email: Email,
+				Password,
+				ConfirmPassword,
 			};
-			const localChecker = await handleValidateObj(schema, input);
+			const localChecker = await handleValidateObj(schema(Password), input);
 
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				setLoading(true);
-				const response = await API.post(Apis.ForgotPasswrod, input);
+				// adding email and token to the payload
+				const query = new URLSearchParams(search);
+				const payload = {
+					Email: query.get("email"),
+					VerifyToken: query.get("token"),
+					Password: input.Password,
+				};
+				const response = await API.post(Apis.ResetPassword, payload);
 				if (response.status === 200) {
-					// show success notification
 					dispatch(
 						showNotications({
 							show: true,
-							message: "Email successfully sent",
+							message: "Password Reset Successful",
 							severity: "success",
 						})
 					);
-					setErrors(defaultErrorSchema);
-					setEmail("");
+					// push to login page upon successful password reset
+					history.push("/login");
 				} else {
 					// show error notification
 					dispatch(
 						showNotications({
 							show: true,
-							message: "Email not found.",
+							message: "Invalid Verification Code.",
 							severity: "error",
 						})
 					);
 					setErrors(defaultErrorSchema);
+					setPassword("");
+					setConfirmPassword("");
+					setLoading(false);
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
@@ -207,14 +235,15 @@ const ForgotPassword = () => {
 			dispatch(
 				showNotications({
 					show: true,
-					message: err?.response?.data ?? "Email not found.",
+					message: err?.response?.data ?? "Invalid Verification Code.",
 					severity: "error",
 				})
 			);
 			setErrors(defaultErrorSchema);
-			return false;
-		} finally {
+			setPassword("");
+			setConfirmPassword("");
 			setLoading(false);
+			return false;
 		}
 	};
 
@@ -249,23 +278,46 @@ const ForgotPassword = () => {
 										className={classes.form}
 										noValidate
 										onSubmit={(e) => {
-											ForgotPasswordHandler(e, Email);
+											ResetPasswordHandler(e, Password);
 										}}
 									>
 										<TextField
 											className={classes.labels}
-											error={errors.Email === null ? false : true}
-											helperText={errors.Email === null ? null : errors.Email}
+											error={errors.Password === null ? false : true}
+											helperText={
+												errors.Password === null ? null : errors.Password
+											}
 											variant="outlined"
 											margin="normal"
 											required
 											fullWidth
-											id="email"
-											value={Email}
-											label="Email"
-											name="Email"
-											autoComplete="email"
-											onChange={(e) => setEmail(e.target.value)}
+											id="password"
+											value={Password}
+											label="New password"
+											name="Password"
+											type="password"
+											autoComplete="new-password"
+											onChange={(e) => setPassword(e.target.value)}
+										/>
+										<TextField
+											className={classes.labels}
+											error={errors.ConfirmPassword === null ? false : true}
+											helperText={
+												errors.ConfirmPassword === null
+													? null
+													: errors.ConfirmPassword
+											}
+											variant="outlined"
+											margin="normal"
+											required
+											fullWidth
+											id="ConfirmPassword"
+											type="password"
+											value={ConfirmPassword}
+											label="Confirm new password"
+											name="ConfirmPassword"
+											autoComplete="confirm-password"
+											onChange={(e) => setConfirmPassword(e.target.value)}
 										/>
 
 										<div className={classes.submitContainer}>
@@ -276,11 +328,15 @@ const ForgotPassword = () => {
 												className={classes.submit}
 												type="submit"
 											>
-												Reset Password
+												Change Your Password
 											</Button>
 										</div>
 									</form>
-									<div style={{ marginTop: "20px" }}>
+									<div
+										style={{
+											marginTop: "20px",
+										}}
+									>
 										<Typography className={classes.footerText}>
 											Already have login and password?{" "}
 											<Link to="/login" className={classes.forgotPassword}>
@@ -304,4 +360,4 @@ const ForgotPassword = () => {
 	);
 };
 
-export default ForgotPassword;
+export default ResetPassword;

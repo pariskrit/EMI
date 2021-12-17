@@ -2,6 +2,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { authSlice } from "./auth/reducers";
 import { clientDetailSlice } from "./clientDetail/reducers";
 import { commonSlice } from "./common/reducers";
+import { notificationSlice } from "./notification/reducers";
 import { siteDetailSlice } from "./siteDetail/reducers";
 
 export default combineReducers({
@@ -9,4 +10,5 @@ export default combineReducers({
 	[clientDetailSlice.name]: clientDetailSlice.reducer,
 	[commonSlice.name]: commonSlice.reducer,
 	[siteDetailSlice.name]: siteDetailSlice.reducer,
+	[notificationSlice.name]: notificationSlice.reducer,
 });

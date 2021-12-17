@@ -6,6 +6,7 @@ import App from "./App";
 import "./index.css";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
+import Notification from "components/Elements/Notification";
 
 // Configuration object constructed.
 const config = {
@@ -22,6 +23,7 @@ ReactDOM.render(
 		<MsalProvider instance={publicClientApplication}>
 			<Provider store={store}>
 				<App />
+				<Notification />
 			</Provider>
 		</MsalProvider>
 	</React.StrictMode>,

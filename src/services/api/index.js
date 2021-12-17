@@ -43,6 +43,9 @@ const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
 //forgot password
 const BASE_API_PATH_FORGOT_PASSWORD = `${BASE_API_PATH}Users/ForgotPassword`;
 
+// reset password
+const BASE_API_PATH_RESET_PASSWORD = `${BASE_API_PATH}Users/ResetPassword`;
+
 //UserDetails
 const BASE_API_PATH_USERDETAILSNOTEPOST = `${BASE_API_PATH}clientusernotes`;
 const BASE_API_PATH_USERDETAILSNOTE = `${BASE_API_PATH_USERDETAILSNOTEPOST}?clientUserId=`;
@@ -53,6 +56,10 @@ const BASE_API_PATH_USERPROFILEPASSWORDCHANGE = `${BASE_API_PATH_USERPROFILE}/Ch
 export const Apis = {
 	// forgotPassword
 	ForgotPasswrod: `${BASE_API_PATH_FORGOT_PASSWORD}`,
+
+	// resetPassword
+	ResetPassword: `${BASE_API_PATH_RESET_PASSWORD}`,
+
 	//users list
 	UsersList: `${BASE_API_PATH_USERSLIST}`,
 
