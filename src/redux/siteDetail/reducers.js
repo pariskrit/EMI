@@ -11,11 +11,7 @@ export const siteDetailSlice = createSlice({
 	reducers: {
 		setSiteDetail: (state, { payload }) => {
 			state.siteDetails = payload.data;
-			state.crumbs = [
-				payload.data.clientName,
-				payload.data.regionName,
-				payload.data.name,
-			];
+			state.crumbs = payload.crumbs;
 		},
 		setCrumbs: (state, { payload }) => {
 			state.crumbs = payload;

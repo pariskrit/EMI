@@ -40,6 +40,15 @@ const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
 //Users
 const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
 
+// Register user email
+const BASE_API_PATH_REGISTER_USER_EMAIL = `${BASE_API_PATH}Users/RegisterEmail`;
+
+//forgot password
+const BASE_API_PATH_FORGOT_PASSWORD = `${BASE_API_PATH}Users/ForgotPassword`;
+
+// reset password
+const BASE_API_PATH_RESET_PASSWORD = `${BASE_API_PATH}Users/ResetPassword`;
+
 //UserDetails
 const BASE_API_PATH_USERDETAILSNOTEPOST = `${BASE_API_PATH}clientusernotes`;
 const BASE_API_PATH_USERDETAILSNOTE = `${BASE_API_PATH_USERDETAILSNOTEPOST}?clientUserId=`;
@@ -48,6 +57,15 @@ const BASE_API_PATH_USERPROFILE = `${BASE_API_PATH_USERSLIST}/me`;
 const BASE_API_PATH_USERPROFILEPASSWORDCHANGE = `${BASE_API_PATH_USERPROFILE}/ChangePassword`;
 
 export const Apis = {
+	// register email
+	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
+
+	// forgotPassword
+	ForgotPasswrod: `${BASE_API_PATH_FORGOT_PASSWORD}`,
+
+	// resetPassword
+	ResetPassword: `${BASE_API_PATH_RESET_PASSWORD}`,
+
 	//users list
 	UsersList: `${BASE_API_PATH_USERSLIST}`,
 

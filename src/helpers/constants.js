@@ -55,3 +55,10 @@ export const positionAccessTypes = {
 };
 
 export const DefaultPageSize = 12;
+
+export const NotificationAlerts = {
+	success: "#24BA78",
+	error: "#E31212",
+	info: "#307AD6",
+	warning: "#ED8738",
+};

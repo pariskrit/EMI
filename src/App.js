@@ -15,6 +15,14 @@ import "./App.scss";
 import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
 import Test from "pages/Test";
+<<<<<<< HEAD
+=======
+
+// import password forget,register reset from "pages/ForgotPassword", "pages/ResetPassword" and "pages/RegisterUser"
+import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "pages/ResetPassword/ResetPassword";
+import RegisterUserEmail from "pages/RegisterUser/RegisterUser";
+>>>>>>> cdc89f23ee2f04e555f59b067c2546161448da72
 
 function App() {
 	return (
@@ -22,19 +30,26 @@ function App() {
 			<ErrorDialog />
 			<Router>
 				<Switch>
-					{/* <Route path="/" exact>
-						<Home />
-					</Route> */}
-
-					{/* <Route path="/login" exact>
-						<Login />
-					</Route> */}
-
 					<Route path="/" exact>
 						<Redirect to="/login" />
 					</Route>
-
 					<ProtectedLogin path="/login" exact component={Login} />
+					<Route path="/forgot-password" exact>
+						<ForgotPassword />
+					</Route>
+					<Route path="/ResetPassword" exact>
+						<ResetPassword />
+					</Route>
+
+					<Route path="/forgot-password" exact>
+						<ForgotPassword />
+					</Route>
+					<Route path="/ResetPassword" exact>
+						<ResetPassword />
+					</Route>
+					<Route path="/Register" exact>
+						<RegisterUserEmail />
+					</Route>
 
 					<Route path="/launch" exact>
 						<Launch />

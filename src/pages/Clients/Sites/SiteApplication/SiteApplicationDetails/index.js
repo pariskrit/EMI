@@ -8,12 +8,14 @@ import { patchApplicationDetail } from "services/clients/sites/siteApplications/
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import { connect } from "react-redux";
 import { setNavCrumbs } from "redux/siteDetail/actions";
+import { clientsPath, siteDetailPath } from "helpers/routePaths";
 
 function SiteApplicationDetails({
 	appId,
 	state: { details, openConfirmationModal, isActive },
 	dispatch,
 	setCrumbs,
+	clientId,
 }) {
 	const [showLicenseTile, setShowLicenseTile] = useState(false);
 	const [siteAppDetails, setSiteAppDetails] = useState({});
@@ -25,19 +27,30 @@ function SiteApplicationDetails({
 
 	const fetchSiteDetails = async () => {
 		const siteResult = await getSiteDetails(details.data.siteID);
-		let crumbs = JSON.parse(localStorage.getItem("crumbs"));
+
 		localStorage.setItem(
 			"crumbs",
 			JSON.stringify({
-				...crumbs,
 				clientName: siteResult.data.clientName,
 				siteName: siteResult.data.name,
+				applicationName: details.data.application.name,
 			})
 		);
 		setCrumbs([
-			siteResult.data.clientName,
-			siteResult.data.name,
-			crumbs.applicationName,
+			{
+				id: 1,
+				name: siteResult.data.clientName,
+				url: clientsPath + `/${clientId}`,
+			},
+			{
+				id: 2,
+				name: siteResult.data.name,
+				url: `${clientsPath}/${clientId}/sites/${details.data.siteID}${siteDetailPath}`,
+			},
+			{
+				id: 3,
+				name: details.data.application.name,
+			},
 		]);
 		if (siteResult?.data?.licenseType === 3) {
 			setShowLicenseTile(true);

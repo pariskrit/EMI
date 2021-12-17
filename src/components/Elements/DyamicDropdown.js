@@ -145,7 +145,24 @@ function DyanamicDropdown(props) {
 	// search
 	const onFilter = (val) => {
 		setsearchText(val);
-		handleServierSideSearch(val);
+		if (isServerSide) {
+			// server side search
+			handleServierSideSearch(val);
+		} else {
+			// client side search
+			if (val !== "") {
+				const searchedList = dataSource.filter((item) =>
+					columns
+						.map((i) => i.name)
+						.some((col) => {
+							return item[col].match(new RegExp(val, "gi"));
+						})
+				);
+				setFilteredList(searchedList);
+			} else {
+				setFilteredList(dataSource);
+			}
+		}
 	};
 
 	// Handlers
@@ -189,6 +206,7 @@ function DyanamicDropdown(props) {
 		setCurrentTableSort(["name", "asc"]);
 		onChange({});
 		setsearchText("");
+		setFilteredList(dataSource);
 		onClear();
 		e.stopPropagation();
 	};
@@ -228,7 +246,7 @@ function DyanamicDropdown(props) {
 				</div>
 
 				<div className="inputbox flex justify-between">
-					<span className="flex">
+					<span className="flex" style={{ gap: "10px" }}>
 						{icon && icon}
 						{selectedValue && selectedValue[selectdValueToshow]
 							? selectedValue[selectdValueToshow]
