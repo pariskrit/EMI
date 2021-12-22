@@ -478,7 +478,7 @@ const RegisterEmail = () => {
 									/>
 								</div>
 								<p className={classes.btnText}>
-									<b>Sign Up With Google</b>
+									<b>Sign In With Google</b>
 								</p>
 							</div>
 						</div>
@@ -495,7 +495,7 @@ const RegisterEmail = () => {
 								/>
 							</div>
 							<p className={classes.btnText} style={{ color: "#fff" }}>
-								<b>Sign Up With Microsoft</b>
+								<b>Sign In With Microsoft</b>
 							</p>
 						</div>
 					</div>

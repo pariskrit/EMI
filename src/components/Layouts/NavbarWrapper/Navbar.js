@@ -32,10 +32,10 @@ import ColourConstants from "helpers/colourConstants";
 import {
 	applicationListPath,
 	clientsPath,
+	modelsPath,
 	usersPath,
 	userProfilePath,
 	applicationPortalPath,
-	modelPath,
 	servicesPath,
 	analyticsPath,
 	defectsPath,
@@ -328,7 +328,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		{
 			name: "Models",
 			icon: ModelIcon,
-			path: modelPath,
+			path: modelsPath,
 			access: access.modelAccess,
 		},
 		{

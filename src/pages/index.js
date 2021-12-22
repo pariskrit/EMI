@@ -7,13 +7,14 @@ import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
 import ApplicationPortal from "./ApplicationPortal";
+import ModelsPage from "./Models/Links";
 import {
 	analysisPath,
 	analyticsPath,
 	applicationPortalPath,
 	defectsPath,
 	feedbackPath,
-	modelPath,
+	modelsPath,
 	noticeboardPath,
 	servicesPath,
 } from "helpers/routePaths";
@@ -42,9 +43,9 @@ const MainApp = ({ location }) => {
 				<SiteAppPage />
 				<UsersPage />
 				<AccessRoute
-					path={modelPath}
+					path={modelsPath}
 					exact
-					component={(props) => <h1>Model Path</h1>}
+					component={ModelsPage}
 					access={access.modelAccess}
 				/>
 				<AccessRoute
