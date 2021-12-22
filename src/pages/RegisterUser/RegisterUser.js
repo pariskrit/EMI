@@ -318,6 +318,7 @@ const RegisterEmail = () => {
 	};
 
 	const responseGoogle = async (res) => {
+		setLoading(true);
 		try {
 			const respon = await dispatch(
 				loginSocialAccount({ token: res.tokenId }, "GOOGLE", "/Account/google")
@@ -325,11 +326,21 @@ const RegisterEmail = () => {
 
 			if (respon) {
 				redirectToPortalOrDefault(respon?.position?.siteAppID);
+
 				return true;
 			} else {
+				setLoading(false);
 				throw new Error(respon);
 			}
 		} catch (err) {
+			dispatch(
+				showNotications({
+					show: true,
+					message: err?.response?.detail ?? "Invalid Email Account.",
+					severity: "error",
+				})
+			);
+			setLoading(false);
 			console.error(err);
 			return false;
 		}
@@ -344,7 +355,7 @@ const RegisterEmail = () => {
 
 	const responseMicrosoft = async (data) => {
 		// some actions
-
+		setLoading(true);
 		try {
 			const respon = await dispatch(
 				loginSocialAccount(
@@ -357,9 +368,18 @@ const RegisterEmail = () => {
 			if (respon) {
 				redirectToPortalOrDefault(respon?.position?.siteAppID);
 			} else {
+				setLoading(false);
 				throw new Error(respon);
 			}
 		} catch (err) {
+			dispatch(
+				showNotications({
+					show: true,
+					message: err?.response?.detail ?? "Invalid Email Account.",
+					severity: "error",
+				})
+			);
+			setLoading(false);
 			console.error(err);
 		}
 	};
@@ -458,7 +478,7 @@ const RegisterEmail = () => {
 									/>
 								</div>
 								<p className={classes.btnText}>
-									<b>Sign Up With Google</b>
+									<b>Sign In With Google</b>
 								</p>
 							</div>
 						</div>
@@ -475,7 +495,7 @@ const RegisterEmail = () => {
 								/>
 							</div>
 							<p className={classes.btnText} style={{ color: "#fff" }}>
-								<b>Sign Up With Microsoft</b>
+								<b>Sign In With Microsoft</b>
 							</p>
 						</div>
 					</div>
