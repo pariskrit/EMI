@@ -54,7 +54,7 @@ const DeleteDialog = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			if (err.response.data.detail) {
+			if (err?.response?.data?.detail) {
 				getError(err.response.data.detail);
 			}
 			console.log(err);
