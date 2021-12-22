@@ -1,10 +1,11 @@
 import React from "react";
 import DropDown from "components/Elements/DyamicDropdown";
+import { handleSort } from "helpers/utils";
 
 export default {
 	title: "Components/DropDown",
 	component: DropDown,
-	parameters: { actions: { argTypesRegex: "^on.*" } },
+	// parameters: { actions: { argTypesRegex: "^on.*" } },
 };
 
 const Template = (args) => <DropDown {...args} />;
@@ -85,6 +86,8 @@ MultiColumn.args = {
 	label: "Select Item",
 	showHeader: true,
 	isSelected: false,
+	isServerSide: false,
+	handleSort: handleSort,
 
 	selectdValueToshow: "Department",
 };

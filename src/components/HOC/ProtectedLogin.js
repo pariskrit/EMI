@@ -16,7 +16,7 @@ const ProtectedLogin = ({ component: Component, ...rest }) => {
 						to={{
 							pathname: state?.from?.pathname
 								? state?.from?.pathname
-								: "/app/clients",
+								: "/app/me",
 							state: { from: props.location },
 						}}
 					/>

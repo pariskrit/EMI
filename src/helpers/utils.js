@@ -68,3 +68,10 @@ export const checkIsFileImageType = (fileName) => {
 	const imageTypes = ["gif", "jpeg", "png", "jpg"];
 	return imageTypes.includes(fileType);
 };
+
+export const changeDateFormat = (date) => {
+	const oldFormat = date.split("T");
+	const newDate = oldFormat[0].split("-");
+	const time = oldFormat[1].split(".");
+	return `${newDate[1]}/${newDate[2]}/${newDate[0]} ${time[0]}`;
+};

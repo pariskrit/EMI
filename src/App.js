@@ -16,25 +16,47 @@ import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
 import Test from "pages/Test";
 
+// import password forget,register reset from "pages/ForgotPassword", "pages/ResetPassword" and "pages/RegisterUser"
+import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "pages/ResetPassword/ResetPassword";
+import RegisterUserEmail from "pages/RegisterUser/RegisterUser";
+
 function App() {
 	return (
 		<div className="App">
 			<ErrorDialog />
 			<Router>
 				<Switch>
-					{/* <Route path="/" exact>
-						<Home />
-					</Route> */}
-
-					{/* <Route path="/login" exact>
-						<Login />
-					</Route> */}
-
 					<Route path="/" exact>
 						<Redirect to="/login" />
 					</Route>
-
 					<ProtectedLogin path="/login" exact component={Login} />
+					<Route path="/forgot-password" exact>
+						<ForgotPassword />
+					</Route>
+					<Route path="/ResetPassword" exact>
+						<ResetPassword />
+					</Route>
+
+					<Route path="/forgot-password" exact>
+						<ForgotPassword />
+					</Route>
+					<Route path="/ResetPassword" exact>
+						<ResetPassword />
+					</Route>
+					<Route path="/Register" exact>
+						<RegisterUserEmail />
+					</Route>
+
+					<Route path="/forgot-password" exact>
+						<ForgotPassword />
+					</Route>
+					<Route path="/ResetPassword" exact>
+						<ResetPassword />
+					</Route>
+					<Route path="/Register" exact>
+						<RegisterUserEmail />
+					</Route>
 
 					<Route path="/launch" exact>
 						<Launch />

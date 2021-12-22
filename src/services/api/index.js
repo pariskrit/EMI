@@ -40,6 +40,15 @@ const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
 //Users
 const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
 
+// Register user email
+const BASE_API_PATH_REGISTER_USER_EMAIL = `${BASE_API_PATH}Users/RegisterEmail`;
+
+//forgot password
+const BASE_API_PATH_FORGOT_PASSWORD = `${BASE_API_PATH}Users/ForgotPassword`;
+
+// reset password
+const BASE_API_PATH_RESET_PASSWORD = `${BASE_API_PATH}Users/ResetPassword`;
+
 //UserDetails
 const BASE_API_PATH_USERDETAILSNOTEPOST = `${BASE_API_PATH}clientusernotes`;
 const BASE_API_PATH_USERDETAILSNOTE = `${BASE_API_PATH_USERDETAILSNOTEPOST}?clientUserId=`;
@@ -47,7 +56,22 @@ const BASE_API_PATH_USERREFERENCE = `${BASE_API_PATH}clientuser`;
 const BASE_API_PATH_USERPROFILE = `${BASE_API_PATH_USERSLIST}/me`;
 const BASE_API_PATH_USERPROFILEPASSWORDCHANGE = `${BASE_API_PATH_USERPROFILE}/ChangePassword`;
 
+//Models
+const BASE_API_PATH_MODEL_LIST = `${BASE_API_PATH}models`;
+const BASE_API_PATH_DUPLICATE_MODEL = `${BASE_API_PATH_MODEL_LIST}/duplicate`;
+const BASE_API_PATH_MODEL_VERSIONS = `${BASE_API_PATH}modelversions`;
+const BASE_API_PATH_MODEL_IMPORTS = `${BASE_API_PATH}ModelImports`;
+
 export const Apis = {
+	// register email
+	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
+
+	// forgotPassword
+	ForgotPasswrod: `${BASE_API_PATH_FORGOT_PASSWORD}`,
+
+	// resetPassword
+	ResetPassword: `${BASE_API_PATH_RESET_PASSWORD}`,
+
 	//users list
 	UsersList: `${BASE_API_PATH_USERSLIST}`,
 
@@ -139,4 +163,10 @@ export const Apis = {
 
 	ApplicationPortal: `${BASE_API_PATH_APPLICATION_PORTAL}`,
 	ApplicationsAndSites: `${BASE_API_PATH_APPLICATIONS_AND_SITES}`,
+
+	//models
+	Models: `${BASE_API_PATH_MODEL_LIST}`,
+	DuplicateModal: `${BASE_API_PATH_DUPLICATE_MODEL}`,
+	ModelVersions: `${BASE_API_PATH_MODEL_VERSIONS}`,
+	ModelImports: `${BASE_API_PATH_MODEL_IMPORTS}`,
 };

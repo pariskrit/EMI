@@ -1,15 +1,19 @@
 import React from "react";
 import UserPage from "./UserPage";
 import UsersList from "../UsersList";
-import { Route } from "react-router-dom";
 import { usersPath } from "helpers/routePaths";
+import AccessRoute from "components/HOC/AccessRoute";
+import access from "helpers/access";
 
 export default function UsersPage() {
 	return (
 		<>
-			<Route path={usersPath} exact>
-				<UsersList />
-			</Route>
+			<AccessRoute
+				component={UsersList}
+				exact
+				path={usersPath}
+				access={access.userAccess}
+			/>
 			<UserPage />
 		</>
 	);

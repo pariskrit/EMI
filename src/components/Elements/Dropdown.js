@@ -14,6 +14,7 @@ function Dropdown(props) {
 		onChange,
 		placeholder,
 		label,
+		isError,
 		required,
 		disabled = false,
 	} = props;
@@ -78,7 +79,12 @@ function Dropdown(props) {
 					</Typography>
 				)}
 
-				<div className="inputbox flex justify-between" style={{ width }}>
+				<div
+					className={clsx("inputbox flex justify-between", [
+						isError && "error",
+					])}
+					style={{ width }}
+				>
 					<span>
 						{selectedValue && selectedValue.label
 							? selectedValue.label
@@ -146,6 +152,7 @@ Dropdown.defaultProps = {
 	placeholder: "Select Item",
 	label: "",
 	required: false,
+	isError: false,
 };
 
 Dropdown.propTypes = {
@@ -157,4 +164,5 @@ Dropdown.propTypes = {
 	hasLabel: PropTypes.bool,
 	label: PropTypes.string,
 	required: PropTypes.bool,
+	isError: PropTypes.bool,
 };

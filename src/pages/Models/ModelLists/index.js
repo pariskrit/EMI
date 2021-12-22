@@ -1,23 +1,31 @@
 import { handleSort } from "helpers/utils";
 import Button from "@material-ui/core/Button";
-import { useSearch } from "hooks/useSearch";
 import { CircularProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { getUsersList } from "services/users/usersList";
+import {
+	addModal,
+	duplicateModal,
+	getListOfModelVersions,
+	getModelImports,
+	getModelList,
+} from "services/models/modelList";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import ModelsListTable from "./ModelsListTable";
-
-// import AddUserDialog from "./AddUserDialog";
-// import ImportListDialog from "./ImportListDialog";
-// import DeleteDialog from "components/Elements/DeleteDialog";
-
-import { DefaultPageSize } from "helpers/constants";
+import DeleteDialog from "components/Elements/DeleteDialog";
+import { Apis } from "services/api";
+import CommonModal from "./CommonModal";
+import ModalAwaitingImports from "./ModalAwaitingImports";
+import VersionListTable from "./VersionListTable";
+import ImportFileDialouge from "./ImportFileDialog";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const AT = ActionButtonStyle();
 const AC = ContentStyle();
@@ -46,6 +54,7 @@ const useStyles = makeStyles({
 	},
 	importButton: {
 		background: "#ED8738",
+		width: "50%",
 	},
 	productButton: {
 		backgroundColor: ColourConstants.confirmButton,
@@ -62,71 +71,31 @@ const ModelLists = ({ getError }) => {
 	const classes = useStyles();
 
 	//Init State
-	const [haveData, setHaveData] = useState(true);
-
-	// const [dataCount, setDataCount] = useState(null);
-	const [modal, setModal] = useState({ import: false, add: false });
+	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	const [deleteID, setDeleteID] = useState(null);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [openVersionTableDialog, setOpenVersionTableDialog] = useState(false);
+	const [openAddNewModal, setOpenAddNewModal] = useState(false);
+	const [openDuplicateModal, setOpenDuplicateModal] = useState(false);
+	const [duplicateModalData, setDuplicateModalData] = useState({});
+	const [modelVersions, setModelVersions] = useState([]);
+	const [allData, setAllData] = useState([]);
+	const [filteredData, setFilteredData] = useState([]);
+	const [isVersionTableLoading, setVersionTableLoading] = useState(false);
+	const [openImportFile, setOpenImportFile] = useState(false);
+	const [modelImportData, setModelImportData] = useState([]);
 
-	const [page, setPage] = useState({ pageNo: 1, perPage: DefaultPageSize });
+	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
 
-	const searchRef = useRef("");
-
-	const allData = [
-		{ name: "pariskrit", modelName: "model1", modelTypeId: 345, type: "type1" },
-		{ name: "abcde", modelName: "model3", modelTypeId: 346, type: "type3" },
-	];
-
-	const {
-		// allData,
-		setAllData,
-		searchedData,
-		searchQuery,
-		setSearchData,
-		setSearchQuery,
-	} = useSearch();
-
-	const fetchData = async () => {
-		try {
-			let result = await getUsersList();
-
-			if (result.status) {
-				result = result.data;
-
-				setAllData(result);
-				// setDataCount(result.length);
-				return true;
-			} else {
-				// Throwing error if failed
-				throw new Error(`Error: Status ${result.status}`);
-			}
-		} catch (err) {
-			console.log(err);
-			return err;
-		}
-	};
-
-	// useEffect(() => {
-	// 	fetchData(1)
-	// 		.then(() => {
-	// 			setHaveData(true);
-	// 		})
-	// 		.catch((err) => console.log("ERROR : ", err));
-	// }, [fetchData]);
-
-	const mainData = searchQuery.length === 0 ? allData : searchedData;
-
-	//Handler
-	//Add
-	const handleAddData = (d) => {
-		const newData = [...allData];
-
-		newData.push(d);
-
-		setAllData(newData);
-	};
+	//display error popup
+	const displayError = (errorMessage, response) =>
+		dispatch(
+			showError(
+				response?.data?.detail || errorMessage || "Something went wrong"
+			)
+		);
 
 	//DELETE
 	const handleDeleteDialogOpen = (id) => {
@@ -138,80 +107,122 @@ const ModelLists = ({ getError }) => {
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
 	const handleRemoveData = (id) =>
-		setAllData([...allData.filter((d) => d.id !== id)]);
-
-	//Pagination
-	// const handlePage = async (p, prevData) => {
-	// 	try {
-	// 		const response = await getUsersList(
-	// 			p,
-	// 			DefaultPageSize,
-	// 			searchRef.current
-	// 		);
-	// 		if (response.status) {
-	// 			setPage({ pageNo: p, rowsPerPage: DefaultPageSize });
-	// 			setAllData([...prevData, ...response.data]);
-	// 			response.data = [...prevData, ...response.data];
-	// 			return response;
-	// 		} else {
-	// 			throw new Error(response);
-	// 		}
-	// 	} catch (err) {
-	// 		console.log(err);
-	// 		return err;
-	// 	}
-	// };
-
-	const importSuccess = () => {
-		// fetchData(1);
-	};
-
-	const debounce = (func, delay) => {
-		let timer;
-		return function () {
-			let self = this;
-			let args = arguments;
-			clearTimeout(timer);
-			timer = setTimeout(() => {
-				func.apply(self, args);
-			}, delay);
-		};
-	};
+		setFilteredData([...allData.filter((d) => d.id !== id)]);
 
 	//handle search
-	const handleSearch = useCallback(
-		debounce((value) => {
-			searchRef.current = value;
-			// fetchData(1, value);
-		}, 500),
-		[]
-	);
+	const handleSearch = (searchValue) => {
+		if (searchValue !== "") {
+			const searchedList = allData.filter((item) =>
+				["name", "modelName", "modelType"].some((col) => {
+					return item[col]?.match(new RegExp(searchValue, "gi"));
+				})
+			);
+
+			setFilteredData(searchedList);
+		} else {
+			setFilteredData(allData);
+		}
+	};
+
+	const onDuplicateModalOpen = (modalToDuplicate) => {
+		setDuplicateModalData(modalToDuplicate);
+		setOpenDuplicateModal(true);
+	};
+
+	const fetchModelList = async () => {
+		const response = await getModelList(position?.siteAppID || 24);
+
+		if (response.status) {
+			setAllData(response.data);
+			setFilteredData(response.data);
+		} else {
+			displayError(response?.data?.errors?.siteAppId[0], response);
+		}
+
+		setIsLoading(false);
+	};
+
+	const createModal = async (payload) => {
+		return await addModal(payload);
+	};
+
+	const onDuplicateModal = async () => {
+		return await duplicateModal({
+			modelId: duplicateModalData.id,
+			modelVersionId: duplicateModalData.devModelVersionID,
+		});
+	};
+
+	const onViewVersionTableOpen = async (id) => {
+		setOpenVersionTableDialog(true);
+		setVersionTableLoading(true);
+
+		const response = await getListOfModelVersions(id);
+
+		if (response.status) {
+			setModelVersions(response.data);
+		} else {
+			displayError(response?.data?.errors?.modelId[0], response);
+			setOpenVersionTableDialog(false);
+		}
+
+		setVersionTableLoading(false);
+	};
+
+	const fetchModelImports = useCallback(async () => {
+		const response = await getModelImports(position?.siteAppID || 24);
+		if (response.status) {
+			setModelImportData(response.data);
+		} else {
+			displayError(response?.data?.errors?.siteAppId[0], response);
+		}
+	}, []);
+
+	useEffect(() => {
+		Promise.all([fetchModelList(), fetchModelImports()]);
+	}, []);
 
 	return (
 		<div className="container">
-			{/* <ImportListDialog
-				open={modal.import}
-				handleClose={() => setModal((th) => ({ ...th, import: false }))}
-				importSuccess={importSuccess}
-				getError={getError}
+			<CommonModal
+				open={openAddNewModal}
+				closeHandler={() => setOpenAddNewModal(false)}
+				siteId={position?.siteAppID || 24}
+				data={null}
+				title="Add Model"
+				createProcessHandler={createModal}
 			/>
-
-			<AddUserDialog
-				open={modal.add}
-				handleClose={() => setModal((th) => ({ ...th, add: false }))}
-				handleAddData={handleAddData}
-				setSearchQuery={setSearchQuery}
-				getError={getError}
+			<CommonModal
+				open={openDuplicateModal}
+				closeHandler={() => setOpenDuplicateModal(false)}
+				siteId={position?.siteAppID || 24}
+				data={duplicateModalData}
+				title="Duplicate Model"
+				createProcessHandler={onDuplicateModal}
+				isDuplicate
 			/>
 
 			<DeleteDialog
-				entityName="User"
+				entityName="Model"
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteID}
-				deleteEndpoint="/api/users"
+				deleteEndpoint={Apis.Models}
 				handleRemoveData={handleRemoveData}
-			/> */}
+			/>
+			<VersionListTable
+				open={openVersionTableDialog}
+				isLoading={isVersionTableLoading}
+				closeHandler={() => setOpenVersionTableDialog(false)}
+				versions={modelVersions}
+			/>
+			<ImportFileDialouge
+				open={openImportFile}
+				handleClose={() => setOpenImportFile(false)}
+				importSuccess={fetchModelImports}
+				getError={getError}
+				siteAppID={24}
+			/>
 
 			<div className={classes.listActions}>
 				<div className={classes.headerContainer}>
@@ -226,25 +237,27 @@ const ModelLists = ({ getError }) => {
 							<strong>{`Model List (${allData.length})`}</strong>
 						)}
 					</Typography>
-					{haveData ? (
-						<div className={classes.buttonContainer}>
+
+					<div className={classes.buttonContainer}>
+						{isAdmin && (
 							<AT.GeneralButton
-								onClick={() => setModal((th) => ({ ...th, import: true }))}
+								onClick={() => setOpenImportFile(true)}
 								className={classes.importButton}
 							>
-								Import from list
+								Import from Existing
 							</AT.GeneralButton>
+						)}
 
-							<Button
-								variant="contained"
-								className={classes.productButton}
-								onClick={() => setModal((th) => ({ ...th, add: true }))}
-							>
-								Add New
-							</Button>
-						</div>
-					) : null}
+						<Button
+							variant="contained"
+							className={classes.productButton}
+							onClick={() => setOpenAddNewModal(true)}
+						>
+							Add New
+						</Button>
+					</div>
 				</div>
+				<ModalAwaitingImports siteAppId={1} modelImportData={modelImportData} />
 
 				<AC.SearchContainer>
 					<AC.SearchInner className="applicationSearchBtn">
@@ -262,23 +275,35 @@ const ModelLists = ({ getError }) => {
 					</AC.SearchInner>
 				</AC.SearchContainer>
 			</div>
-			{haveData ? (
+			{isLoading ? (
+				<CircularProgress />
+			) : (
 				<ModelsListTable
-					data={mainData}
-					headers={["Name", "Model", "Type", "Status"]}
-					columns={["name", "modelName", "modelTypeId", "type"]}
+					data={filteredData}
+					headers={[
+						"Name",
+						"Model",
+						"Type",
+						"Status",
+						"Serial Number Range",
+						"Latest Version",
+						"Active Version",
+					]}
+					columns={[
+						"name",
+						"modelName",
+						"modelType",
+						"status",
+						"serialNumberRange",
+						"devModelVersion",
+						"activeModelVersion",
+					]}
 					setData={setAllData}
 					handleSort={handleSort}
-					searchQuery={searchQuery}
-					searchedData={searchedData}
-					setSearchData={setSearchData}
 					handleDeleteDialogOpen={handleDeleteDialogOpen}
-					searchText={searchRef.current}
-					// onPageChange={handlePage}
-					page={page.pageNo}
+					handleDuplicateModalOpen={onDuplicateModalOpen}
+					handleViewVersionModalOpen={onViewVersionTableOpen}
 				/>
-			) : (
-				<CircularProgress />
 			)}
 		</div>
 	);
