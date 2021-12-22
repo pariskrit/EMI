@@ -99,6 +99,15 @@ const AddDialogStyle = () => {
 				marginBottom: "20px",
 			},
 		}),
+		FullWidthContainer: styled("div")({
+			width: "100%",
+			paddingRight: 15,
+			[media]: {
+				width: "100%",
+				paddingRight: 0,
+				marginBottom: "20px",
+			},
+		}),
 		NameLabel: styled(Typography)({
 			fontFamily: "Roboto Condensed",
 			fontSize: 14,
