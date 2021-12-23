@@ -10,9 +10,7 @@ import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
 import { makeStyles } from "@material-ui/core/styles";
 import TableStyle from "styles/application/TableStyle";
-
-import useInfiniteScroll from "hooks/useInfiniteScroll";
-import { modelsPath, usersPath } from "helpers/routePaths";
+import { modelsPath } from "helpers/routePaths";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
@@ -80,10 +78,7 @@ const UserTable = ({
 	setData,
 	columns,
 	headers,
-	searchText,
 	handleSort,
-	searchQuery = "",
-	onPageChange,
 	handleDeleteDialogOpen,
 	handleDuplicateModalOpen,
 	handleViewVersionModalOpen,

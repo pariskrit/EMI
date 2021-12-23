@@ -87,7 +87,9 @@ const ModelLists = ({ getError }) => {
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
 
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
+	const { position, isAdmin, application, customCaptions } = JSON.parse(
+		localStorage.getItem("me")
+	);
 
 	//display error popup
 	const displayError = (errorMessage, response) =>
@@ -280,25 +282,47 @@ const ModelLists = ({ getError }) => {
 			) : (
 				<ModelsListTable
 					data={filteredData}
-					headers={[
-						"Name",
-						"Model",
-						"Type",
-						"Status",
-						"Serial Number Range",
-						"Latest Version",
-						"Active Version",
-					]}
-					columns={[
-						"name",
-						"modelName",
-						"modelType",
-						"status",
-						"serialNumberRange",
-						"devModelVersion",
-						"activeModelVersion",
-					]}
-					setData={setAllData}
+					headers={
+						application?.showModel
+							? [
+									customCaptions?.make,
+									customCaptions?.model,
+									customCaptions?.modelType,
+									"Status",
+									"Serial Number Range",
+									"Latest Version",
+									"Active Version",
+							  ]
+							: [
+									customCaptions?.make,
+									customCaptions?.modelType,
+									"status",
+									"Serial Number Range",
+									"Latest Version",
+									"Active Version",
+							  ]
+					}
+					columns={
+						application?.showModel
+							? [
+									"name",
+									"modelName",
+									"modelType",
+									"status",
+									"serialNumberRange",
+									"devModelVersion",
+									"activeModelVersion",
+							  ]
+							: [
+									"name",
+									"modelType",
+									"status",
+									"serialNumberRange",
+									"devModelVersion",
+									"activeModelVersion",
+							  ]
+					}
+					setData={setFilteredData}
 					handleSort={handleSort}
 					handleDeleteDialogOpen={handleDeleteDialogOpen}
 					handleDuplicateModalOpen={onDuplicateModalOpen}

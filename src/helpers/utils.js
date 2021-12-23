@@ -7,7 +7,7 @@ export const handleSort = (
 	let sorted = [...currentState];
 
 	sorted.sort((a, b) =>
-		a[sortField].toString().localeCompare(b[sortField].toString())
+		a[sortField]?.toString().localeCompare(b[sortField]?.toString())
 	);
 
 	if (sortMethod === "desc") sorted = sorted.reverse();
