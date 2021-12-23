@@ -7,13 +7,13 @@ import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
 import ApplicationPortal from "./ApplicationPortal";
-import ModelsPage from "./Models/Links";
 import {
 	analysisPath,
 	analyticsPath,
 	applicationPortalPath,
 	defectsPath,
 	feedbackPath,
+	modelDetailsPath,
 	modelsPath,
 	noticeboardPath,
 	servicesPath,
@@ -25,6 +25,8 @@ import Defects from "./Defects";
 import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
+import ModelLists from "./Models/ModelLists";
+import ModelDetails from "./Models/ModelDetails";
 
 const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
@@ -45,7 +47,13 @@ const MainApp = ({ location }) => {
 				<AccessRoute
 					path={modelsPath}
 					exact
-					component={ModelsPage}
+					component={ModelLists}
+					access={access.modelAccess}
+				/>
+				<AccessRoute
+					path={modelDetailsPath}
+					exact
+					component={ModelDetails}
 					access={access.modelAccess}
 				/>
 				<AccessRoute
