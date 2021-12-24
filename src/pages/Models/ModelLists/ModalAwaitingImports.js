@@ -198,7 +198,9 @@ function ModalAwaitingImports({ siteAppId, modelImportData }) {
 															{
 																name: "Import",
 																handler: () => {
-																	history.push(`${modelsPath}/${row.id}`);
+																	history.push(
+																		`${modelsPath}/${row.id}/import`
+																	);
 																},
 																isDelete: false,
 															},
