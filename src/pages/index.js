@@ -14,8 +14,6 @@ import {
 	applicationPortalPath,
 	defectsPath,
 	feedbackPath,
-	modelDetailsPath,
-	modelsPath,
 	noticeboardPath,
 	servicesPath,
 } from "helpers/routePaths";
@@ -26,8 +24,6 @@ import Defects from "./Defects";
 import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
-import ModelLists from "./Models/ModelLists";
-import ModelDetails from "./Models/ModelDetails";
 
 const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
@@ -46,19 +42,6 @@ const MainApp = ({ location }) => {
 				<SiteAppPage />
 				<UsersPage />
 				<ModelsPage />
-
-				<AccessRoute
-					path={modelsPath}
-					exact
-					component={ModelLists}
-					access={access.modelAccess}
-				/>
-				<AccessRoute
-					path={modelDetailsPath}
-					exact
-					component={ModelDetails}
-					access={access.modelAccess}
-				/>
 
 				<AccessRoute
 					path={analyticsPath}
