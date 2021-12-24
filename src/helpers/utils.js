@@ -7,7 +7,7 @@ export const handleSort = (
 	let sorted = [...currentState];
 
 	sorted.sort((a, b) =>
-		a[sortField].toString().localeCompare(b[sortField].toString())
+		a[sortField]?.toString().localeCompare(b[sortField]?.toString())
 	);
 
 	if (sortMethod === "desc") sorted = sorted.reverse();
@@ -67,4 +67,11 @@ export const checkIsFileImageType = (fileName) => {
 	const fileType = splittedFile[splittedFile?.length - 1];
 	const imageTypes = ["gif", "jpeg", "png", "jpg"];
 	return imageTypes.includes(fileType);
+};
+
+export const changeDateFormat = (date) => {
+	const oldFormat = date.split("T");
+	const newDate = oldFormat[0].split("-");
+	const time = oldFormat[1].split(".");
+	return `${newDate[1]}/${newDate[2]}/${newDate[0]} ${time[0]}`;
 };

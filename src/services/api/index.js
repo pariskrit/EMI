@@ -56,6 +56,12 @@ const BASE_API_PATH_USERREFERENCE = `${BASE_API_PATH}clientuser`;
 const BASE_API_PATH_USERPROFILE = `${BASE_API_PATH_USERSLIST}/me`;
 const BASE_API_PATH_USERPROFILEPASSWORDCHANGE = `${BASE_API_PATH_USERPROFILE}/ChangePassword`;
 
+//Models
+const BASE_API_PATH_MODEL_LIST = `${BASE_API_PATH}models`;
+const BASE_API_PATH_DUPLICATE_MODEL = `${BASE_API_PATH_MODEL_LIST}/duplicate`;
+const BASE_API_PATH_MODEL_VERSIONS = `${BASE_API_PATH}modelversions`;
+const BASE_API_PATH_MODEL_IMPORTS = `${BASE_API_PATH}ModelImports`;
+
 export const Apis = {
 	// register email
 	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
@@ -157,4 +163,10 @@ export const Apis = {
 
 	ApplicationPortal: `${BASE_API_PATH_APPLICATION_PORTAL}`,
 	ApplicationsAndSites: `${BASE_API_PATH_APPLICATIONS_AND_SITES}`,
+
+	//models
+	Models: `${BASE_API_PATH_MODEL_LIST}`,
+	DuplicateModal: `${BASE_API_PATH_DUPLICATE_MODEL}`,
+	ModelVersions: `${BASE_API_PATH_MODEL_VERSIONS}`,
+	ModelImports: `${BASE_API_PATH_MODEL_IMPORTS}`,
 };
