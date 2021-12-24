@@ -100,7 +100,8 @@ const ModelMapHeader = ({
 		setLoading(true);
 		try {
 			const res = await onCompleteImport();
-			if (res.status === 200 || res.status === 201) history.push(modelsPath);
+			if (res.status === 200 || res.status === 201)
+				history.push(modelsPath + "/" + modelId);
 		} catch (err) {
 			setLoading(false);
 			if (err.response.data.detail !== undefined)
