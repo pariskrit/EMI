@@ -1,5 +1,5 @@
 export const getAPIResponse = (response) => {
-	const status = response.status === 200 || response.status === 201;
+	const status = response?.status === 200 || response?.status === 201;
 
 	return {
 		status,

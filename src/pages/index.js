@@ -6,6 +6,7 @@ import ClientPage from "pages/Clients/Links/ClientPage";
 import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
+import ModelsPage from "./Models/Links/ModelsPage";
 import ApplicationPortal from "./ApplicationPortal";
 import {
 	analysisPath,
@@ -13,7 +14,8 @@ import {
 	applicationPortalPath,
 	defectsPath,
 	feedbackPath,
-	modelPath,
+	modelDetailsPath,
+	modelsPath,
 	noticeboardPath,
 	servicesPath,
 } from "helpers/routePaths";
@@ -24,6 +26,8 @@ import Defects from "./Defects";
 import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
+import ModelLists from "./Models/ModelLists";
+import ModelDetails from "./Models/ModelDetails";
 
 const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
@@ -41,12 +45,21 @@ const MainApp = ({ location }) => {
 				<SitePage />
 				<SiteAppPage />
 				<UsersPage />
+				<ModelsPage />
+
 				<AccessRoute
-					path={modelPath}
+					path={modelsPath}
 					exact
-					component={(props) => <h1>Model Path</h1>}
+					component={ModelLists}
 					access={access.modelAccess}
 				/>
+				<AccessRoute
+					path={modelDetailsPath}
+					exact
+					component={ModelDetails}
+					access={access.modelAccess}
+				/>
+
 				<AccessRoute
 					path={analyticsPath}
 					exact

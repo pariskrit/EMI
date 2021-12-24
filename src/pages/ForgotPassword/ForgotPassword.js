@@ -15,8 +15,9 @@ import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import API from "helpers/api";
 import { Apis } from "services/api";
-import Notification from "components/Elements/Notification";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { showNotications } from "redux/notification/actions";
 
 // Yup validation schema
 const schema = yup.object({
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "column",
 		alignItems: "center",
 		borderRadius: "5px",
-		marginTop: "-50px",
+		//marginTop: "-50px",
 		width: "340px",
 	},
 	spinnerContainer: {
@@ -151,24 +152,20 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Login = () => {
+const ForgotPassword = () => {
 	// Init hooks
 	const classes = useStyles();
+	const dispatch = useDispatch();
 
 	// Init state
 	const [Email, setEmail] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [errors, setErrors] = useState(defaultErrorSchema);
-	const [showNotications, setShowNotications] = useState({
-		show: false,
-		message: "",
-		severity: "",
-	});
 
 	// Handlers
-	const loginHandler = async (e, Email) => {
+	const ForgotPasswordHandler = async (e, Email) => {
 		e.preventDefault();
-		// Attempting login
+		// Attempting Sending Email for Password reset
 		try {
 			var input = {
 				Email: Email,
@@ -180,20 +177,25 @@ const Login = () => {
 				setLoading(true);
 				const response = await API.post(Apis.ForgotPasswrod, input);
 				if (response.status === 200) {
-					setShowNotications({
-						show: true,
-						message: "Email sucessfully sent",
-						severity: "success",
-					});
+					// show success notification
+					dispatch(
+						showNotications({
+							show: true,
+							message: "Email successfully sent",
+							severity: "success",
+						})
+					);
 					setErrors(defaultErrorSchema);
 					setEmail("");
 				} else {
 					// show error notification
-					setShowNotications({
-						show: true,
-						message: "Invalid Email",
-						severity: "error",
-					});
+					dispatch(
+						showNotications({
+							show: true,
+							message: "Email not found.",
+							severity: "error",
+						})
+					);
 					setErrors(defaultErrorSchema);
 				}
 			} else {
@@ -202,25 +204,18 @@ const Login = () => {
 			}
 		} catch (err) {
 			// show error notification
-			setShowNotications({
-				show: true,
-				message: "Invalid Email",
-
-				severity: "error",
-			});
-
+			dispatch(
+				showNotications({
+					show: true,
+					message: err?.response?.data ?? "Email not found.",
+					severity: "error",
+				})
+			);
+			setErrors(defaultErrorSchema);
 			return false;
 		} finally {
 			setLoading(false);
 		}
-	};
-
-	// close Notification when clicked outside notification
-	const handleCloseNotification = (event, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
-		setShowNotications({ show: false, message: "" });
 	};
 
 	return (
@@ -254,7 +249,7 @@ const Login = () => {
 										className={classes.form}
 										noValidate
 										onSubmit={(e) => {
-											loginHandler(e, Email);
+											ForgotPasswordHandler(e, Email);
 										}}
 									>
 										<TextField
@@ -305,16 +300,8 @@ const Login = () => {
 					</div>
 				</Grid>
 			</Grid>
-			{showNotications.show && (
-				<Notification
-					message={showNotications.message}
-					handleClose={handleCloseNotification}
-					show={showNotications.show}
-					severity={showNotications.severity}
-				/>
-			)}
 		</>
 	);
 };
 
-export default Login;
+export default ForgotPassword;
