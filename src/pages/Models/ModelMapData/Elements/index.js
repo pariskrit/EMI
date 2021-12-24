@@ -54,7 +54,7 @@ const Elements = ({
 	getApi,
 	patchApi,
 	siteAppID,
-	mainData,
+	mainData = [],
 	setErrors,
 	errorName,
 	modelName,
@@ -76,9 +76,10 @@ const Elements = ({
 
 	const setErrorResolve = (datas, y) => {
 		// If input value is null i.e. deleted then subtract else add
-		const updatedData = mainData.map((x) =>
-			x.id === y.id ? { ...x, ...datas } : x
-		);
+
+		const updatedData = mainData.map((x) => {
+			return x.id === y.id ? { ...x, ...datas } : x;
+		});
 		const resolved = updatedData.filter(
 			(x) => x.newName !== null || x[elementID] !== null
 		).length;
@@ -116,7 +117,7 @@ const Elements = ({
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{mainData?.map((x) => (
+					{mainData.map((x) => (
 						<Row
 							key={x.id}
 							dropDown={dropDown.map((x) => ({ label: x.name, value: x.id }))}

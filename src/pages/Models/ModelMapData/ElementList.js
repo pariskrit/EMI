@@ -18,7 +18,7 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				setModelData={setModelData}
 				elementID="actionID"
 			/>
-			<Elements
+			{/* <Elements
 				name="Lubricant"
 				title="Lubricants"
 				errors={errors.lubricants}
@@ -73,7 +73,7 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				setErrors={setErrors}
 				setModelData={setModelData}
 				elementID="roleID"
-			/>
+			/> */}
 		</>
 	);
 };
