@@ -19,6 +19,7 @@ const DeleteDialog = ({
 	handleRemoveData,
 	isLogo = false,
 	getError,
+	pushSomeWhere = false,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -69,8 +70,10 @@ const DeleteDialog = ({
 		// Deleting status change
 		handleDeleteData().then(() => {
 			// Once deleted, closing dialog and updating state
-			closeHandler();
-			setIsUpdating(false);
+			if (!pushSomeWhere) {
+				closeHandler();
+				setIsUpdating(false);
+			}
 		});
 	};
 

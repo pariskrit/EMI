@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import UsersListContent from "./UsersListContent";
 
-const UsersList = ({ getError }) => {
-	return <UsersListContent getError={getError} />;
+const UsersList = ({ getError, ...rest }) => {
+	return <UsersListContent getError={getError} {...rest} />;
 };
 
 const mapDispatchToProps = (dispatch) => ({

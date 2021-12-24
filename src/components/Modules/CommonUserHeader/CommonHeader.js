@@ -1,11 +1,11 @@
+import React from "react";
 import {
-	createMuiTheme,
+	createTheme,
 	makeStyles,
 	ThemeProvider,
 } from "@material-ui/core/styles";
 import RestoreIcon from "@material-ui/icons/Restore";
 import NavDetails from "components/Elements/NavDetails";
-import React from "react";
 import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import Typography from "@material-ui/core/Typography";
@@ -17,7 +17,7 @@ import IOSSwitch from "components/Elements/IOSSwitch";
 
 const AT = ActionButtonStyle();
 
-const theme = createMuiTheme({
+const theme = createTheme({
 	overrides: {
 		// Accordion override is making the accordion title static vs. default dynamic
 		MuiAccordionSummary: {

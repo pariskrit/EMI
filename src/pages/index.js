@@ -6,6 +6,7 @@ import ClientPage from "pages/Clients/Links/ClientPage";
 import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
+import ModelsPage from "./Models/Links/ModelsPage";
 import ApplicationPortal from "./ApplicationPortal";
 import {
 	analysisPath,
@@ -44,6 +45,8 @@ const MainApp = ({ location }) => {
 				<SitePage />
 				<SiteAppPage />
 				<UsersPage />
+				<ModelsPage />
+
 				<AccessRoute
 					path={modelsPath}
 					exact
@@ -56,6 +59,7 @@ const MainApp = ({ location }) => {
 					component={ModelDetails}
 					access={access.modelAccess}
 				/>
+
 				<AccessRoute
 					path={analyticsPath}
 					exact

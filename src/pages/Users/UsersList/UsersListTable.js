@@ -88,6 +88,8 @@ const UserTable = ({
 	searchedData,
 	setSearchData,
 	handleDeleteDialogOpen,
+	position,
+	access,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -182,9 +184,13 @@ const UserTable = ({
 													);
 												}}
 											>
-												<AT.TableMenuButton>
-													<MenuIcon />
-												</AT.TableMenuButton>
+												{position === null ||
+												access === "F" ||
+												access === "E" ? (
+													<AT.TableMenuButton>
+														<MenuIcon />
+													</AT.TableMenuButton>
+												) : null}
 
 												<PopupMenu
 													index={index}
@@ -207,13 +213,23 @@ const UserTable = ({
 																history.push(`${usersPath}/${row.id}`);
 															},
 															isDelete: false,
+															access: "E",
 														},
 														{
 															name: "Delete",
 															handler: handleDeleteDialogOpen,
 															isDelete: true,
+															access: "F",
 														},
-													]}
+													].filter((x) => {
+														if (
+															position === null ||
+															access === "F" ||
+															access === x.access
+														)
+															return true;
+														else return false;
+													})}
 												/>
 											</AT.DotMenu>
 										) : null}
