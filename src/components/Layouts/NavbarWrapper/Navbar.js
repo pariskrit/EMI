@@ -378,7 +378,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		.filter((x) => {
 			// If position is null it is super admin
 
-			if (position === null || position?.[x.access] === "F") return true;
+			if (position === null || position?.[x.access] !== "N") return true;
 			else return false;
 		});
 

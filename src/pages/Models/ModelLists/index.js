@@ -4,7 +4,6 @@ import { CircularProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { getUsersList } from "services/users/usersList";
 import {
 	addModal,
 	duplicateModal,
@@ -13,7 +12,7 @@ import {
 	getModelList,
 } from "services/models/modelList";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -178,10 +177,12 @@ const ModelLists = ({ getError }) => {
 		} else {
 			displayError(response?.data?.errors?.siteAppId[0], response);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
