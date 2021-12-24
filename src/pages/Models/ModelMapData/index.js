@@ -166,7 +166,7 @@ const ModelMapData = ({ match, history, getError }) => {
 		return new Promise((resolve, reject) => {
 			API.post("/api/modelimports/" + modelId + "/import", {
 				key: modelData.data.documentKey,
-				import: true,
+				import: false,
 			})
 				.then((res) => {
 					resolve(res);
