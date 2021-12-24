@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core/styles";
 import NavDetails from "components/Elements/NavDetails";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import { modelPath } from "helpers/routePaths";
+import { modelsPath } from "helpers/routePaths";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -100,7 +100,7 @@ const ModelMapHeader = ({
 		setLoading(true);
 		try {
 			const res = await onCompleteImport();
-			if (res.status === 200 || res.status === 201) history.push(modelPath);
+			if (res.status === 200 || res.status === 201) history.push(modelsPath);
 		} catch (err) {
 			setLoading(false);
 			if (err.response.data.detail !== undefined)
@@ -110,7 +110,7 @@ const ModelMapHeader = ({
 	};
 
 	const deleteSuccess = () => {
-		history.push(modelPath);
+		history.push(modelsPath);
 	};
 
 	const handleDelete = () => {
@@ -133,7 +133,7 @@ const ModelMapHeader = ({
 					<NavDetails
 						status={null}
 						staticCrumbs={[
-							{ id: 1, name: "Models", url: modelPath },
+							{ id: 1, name: "Models", url: modelsPath },
 							{ id: 2, name },
 						]}
 						history={false}

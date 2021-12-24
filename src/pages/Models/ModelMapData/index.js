@@ -10,7 +10,7 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { handleSort } from "helpers/utils";
 import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
-import { modelPath } from "helpers/routePaths";
+import { modelsPath } from "helpers/routePaths";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -129,7 +129,7 @@ const ModelMapData = ({ match, history, getError }) => {
 				if (err.response.data.title !== undefined)
 					getError(err.response.data.title);
 
-				history.push(modelPath);
+				history.push(modelsPath);
 			});
 	};
 
