@@ -146,7 +146,7 @@ function ModalAwaitingImports({ siteAppId, modelImportData }) {
 							</AT.TableHead>
 							<TableBody>
 								{modelsToImport.map((row, index) => (
-									<TableRow key={index}>
+									<TableRow key={row.id}>
 										<TableCell
 											component="th"
 											scope="row"

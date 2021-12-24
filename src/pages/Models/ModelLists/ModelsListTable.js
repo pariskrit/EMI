@@ -110,7 +110,7 @@ const UserTable = ({
 					<TableRow>
 						{headers.map((header, i) => (
 							<TableCell
-								key={header}
+								key={i}
 								onClick={() => {
 									handleSortClick(columns[i]);
 								}}
@@ -135,7 +135,7 @@ const UserTable = ({
 				</AT.TableHead>
 				<TableBody className={classes.tableBody}>
 					{data.map((row, index) => (
-						<TableRow key={index}>
+						<TableRow key={row.id}>
 							{columns.map((col, i, arr) => (
 								<AT.DataCell key={col}>
 									<AT.CellContainer key={col}>
