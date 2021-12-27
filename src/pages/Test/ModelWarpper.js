@@ -30,6 +30,9 @@ const useStyles = makeStyles({
 		marginLeft: "auto",
 		[media]: {
 			marginLeft: "0px",
+			flexDirection: "column",
+			marginBottom: "10px",
+			gap: "10px",
 		},
 	},
 	wrapper: {
@@ -37,6 +40,7 @@ const useStyles = makeStyles({
 		[media]: {
 			marginTop: "10px",
 			justifyContent: "space-between",
+			flexDirection: "column",
 		},
 	},
 });

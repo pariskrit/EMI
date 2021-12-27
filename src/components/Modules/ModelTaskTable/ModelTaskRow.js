@@ -35,9 +35,9 @@ const ModelTaskRow = ({
 				{columns.map((col, i, arr) => (
 					<TableCell key={col} className={classes.dataCell}>
 						<AT.CellContainer key={col}>
-							<AT.TableBodyText
-								style={{ color: toggle ? "#FFFFFF" : "" }}
-							>{`${row[col]}`}</AT.TableBodyText>
+							<AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}>
+								{row[col]}
+							</AT.TableBodyText>
 
 							{arr.length === i + 1 ? (
 								<AT.DotMenu
@@ -86,7 +86,7 @@ const ModelTaskRow = ({
 			<TableRow>
 				<TableCell
 					style={{ paddingBottom: 0, paddingTop: 0, background: "#307AD7" }}
-					colSpan={11}
+					colSpan={12}
 				>
 					<Collapse in={toggle} timeout="auto" unmountOnExit>
 						<Component />

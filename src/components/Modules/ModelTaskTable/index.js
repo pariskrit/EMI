@@ -26,6 +26,9 @@ const useStyles = makeStyles({
 		borderBottomWidth: 1,
 		backgroundColor: ColourConstants.tableBackground,
 		fontWeight: "bold",
+		borderRightColor: "#979797",
+		borderRightStyle: "solid",
+		borderRightWidth: "1px",
 	},
 	selectedTableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
@@ -36,7 +39,8 @@ const useStyles = makeStyles({
 		color: "#FFFFFF",
 	},
 	nameRow: {
-		width: "40%",
+		width: "auto",
+		height: "10px",
 	},
 	clientsRow: {
 		width: "20%",
@@ -87,7 +91,7 @@ const ModelTaskTable = ({
 					<TableRow className={classes.tableHead}>
 						{headers.map((header, index) => (
 							<TableCell
-								key={header}
+								key={header.id}
 								onClick={() => {
 									handleSortClick(columns[index]);
 								}}
@@ -99,27 +103,29 @@ const ModelTaskTable = ({
 								})}
 							>
 								<AT.CellContainer className="flex justify-between">
-									{header}
-									<div className="arrow">
-										<AT.DescArrow
-											fill={
-												currentTableSort[0] === columns[index] &&
-												currentTableSort[1] === "asc"
-													? "#D2D2D9"
-													: "#F9F9FC"
-											}
-											className="arrowUp"
-										/>
-										<AT.DefaultArrow
-											fill={
-												currentTableSort[0] === columns[index] &&
-												currentTableSort[1] === "desc"
-													? "#D2D2D9"
-													: "#F9F9FC"
-											}
-											className="arrowDown"
-										/>
-									</div>
+									{header.name}
+									{header.sort && (
+										<div className="arrow">
+											<AT.DescArrow
+												fill={
+													currentTableSort[0] === columns[index] &&
+													currentTableSort[1] === "asc"
+														? "#D2D2D9"
+														: "#F9F9FC"
+												}
+												className="arrowUp"
+											/>
+											<AT.DefaultArrow
+												fill={
+													currentTableSort[0] === columns[index] &&
+													currentTableSort[1] === "desc"
+														? "#D2D2D9"
+														: "#F9F9FC"
+												}
+												className="arrowDown"
+											/>
+										</div>
+									)}
 								</AT.CellContainer>
 							</TableCell>
 						))}
@@ -148,9 +154,9 @@ const ModelTaskTable = ({
 						<TableRow>
 							{headers.map((head, i) => {
 								if (i === 0) {
-									return <TableCell key={head}>No Record Found</TableCell>;
+									return <TableCell key={head.id}>No Record Found</TableCell>;
 								} else {
-									return <TableCell key={head}></TableCell>;
+									return <TableCell key={head.id}></TableCell>;
 								}
 							})}
 						</TableRow>
