@@ -55,11 +55,10 @@ const Elements = ({
 	patchApi,
 	siteAppID,
 	mainData = [],
-	setErrors,
 	errorName,
 	modelName,
-	setModelData,
 	elementID,
+	onErrorResolve,
 }) => {
 	const classes = useStyles();
 	const [dropDown, setDropDown] = React.useState([]);
@@ -80,25 +79,8 @@ const Elements = ({
 		const updatedData = mainData.map((x) => {
 			return x.id === y.id ? { ...x, ...datas } : x;
 		});
-		const resolved = updatedData.filter(
-			(x) => x.newName !== null || x[elementID] !== null
-		).length;
 
-		setErrors((th) => ({
-			...th,
-			[errorName]: {
-				...th[errorName],
-				resolved,
-			},
-		}));
-
-		setModelData((th) => ({
-			...th,
-			data: {
-				...th.data,
-				[modelName]: updatedData,
-			},
-		}));
+		onErrorResolve(updatedData, modelName, errorName, elementID);
 	};
 
 	return (

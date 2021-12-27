@@ -377,8 +377,14 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		// Filter which sidebar navigation is accessible
 		.filter((x) => {
 			// If position is null it is super admin
-
-			if (position === null || position?.[x.access] !== "N") return true;
+			const access = position?.[x.access];
+			if (
+				position === null ||
+				access === "F" ||
+				access === "E" ||
+				access === "R"
+			)
+				return true;
 			else return false;
 		});
 

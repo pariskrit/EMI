@@ -2,6 +2,16 @@ import React from "react";
 import Elements from "./Elements";
 
 const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
+	const onErrorChange = (updatedData, modelName, errorName, elementID) => {
+		const resolved = updatedData.filter(
+			(x) => x.newName !== null || x[elementID] !== null
+		).length;
+		setModelData({
+			...modelData,
+			data: { ...modelData.data, [modelName]: updatedData },
+		});
+		setErrors({ ...errors, [errorName]: { ...errors[errorName], resolved } });
+	};
 	return (
 		<>
 			<Elements
@@ -14,9 +24,8 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				mainData={modelData.data.modelImportActions}
 				errorName="actions"
 				modelName="modelImportActions"
-				setErrors={setErrors}
-				setModelData={setModelData}
 				elementID="actionID"
+				onErrorResolve={onErrorChange}
 			/>
 			<Elements
 				name="Lubricant"
@@ -28,9 +37,8 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				mainData={modelData.data.modelImportLubricants}
 				errorName="lubricants"
 				modelName="modelImportLubricants"
-				setErrors={setErrors}
-				setModelData={setModelData}
 				elementID="lubricantID"
+				onErrorResolve={onErrorChange}
 			/>
 			<Elements
 				name="Operating Mode"
@@ -42,9 +50,8 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				mainData={modelData.data.modelImportOperatingModes}
 				errorName="operatingModes"
 				modelName="modelImportOperatingModes"
-				setErrors={setErrors}
-				setModelData={setModelData}
 				elementID="operatingModeID"
+				onErrorResolve={onErrorChange}
 			/>
 			<Elements
 				name="System"
@@ -56,9 +63,8 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				mainData={modelData.data.modelImportSystems}
 				errorName="systems"
 				modelName="modelImportSystems"
-				setErrors={setErrors}
-				setModelData={setModelData}
 				elementID="systemID"
+				onErrorResolve={onErrorChange}
 			/>
 			<Elements
 				name="Role"
@@ -70,9 +76,8 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				mainData={modelData.data.modelImportRoles}
 				errorName="roles"
 				modelName="modelImportRoles"
-				setErrors={setErrors}
-				setModelData={setModelData}
 				elementID="roleID"
+				onErrorResolve={onErrorChange}
 			/>
 		</>
 	);
