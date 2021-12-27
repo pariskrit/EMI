@@ -24,7 +24,6 @@ import Defects from "./Defects";
 import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
-import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 
 const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
@@ -43,20 +42,6 @@ const MainApp = ({ location }) => {
 				<SiteAppPage />
 				<UsersPage />
 				<ModelsPage />
-				<AccessRoute
-					path="/app/models/:id/asset"
-					exact
-					component={(props) => {
-						return (
-							<CommonApplicationTable
-								headers={["Name", "Age"]}
-								data={[]}
-								isLoading={false}
-							/>
-						);
-					}}
-					access={access.analyticsAccess}
-				/>
 
 				<AccessRoute
 					path={analyticsPath}
