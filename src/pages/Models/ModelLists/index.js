@@ -12,7 +12,7 @@ import {
 	getModelList,
 } from "services/models/modelList";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -86,7 +86,9 @@ const ModelLists = ({ getError }) => {
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
 
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
+	const { position, isAdmin, application, customCaptions } = JSON.parse(
+		localStorage.getItem("me")
+	);
 
 	//display error popup
 	const displayError = (errorMessage, response) =>
@@ -175,10 +177,12 @@ const ModelLists = ({ getError }) => {
 		} else {
 			displayError(response?.data?.errors?.siteAppId[0], response);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
@@ -279,25 +283,47 @@ const ModelLists = ({ getError }) => {
 			) : (
 				<ModelsListTable
 					data={filteredData}
-					headers={[
-						"Name",
-						"Model",
-						"Type",
-						"Status",
-						"Serial Number Range",
-						"Latest Version",
-						"Active Version",
-					]}
-					columns={[
-						"name",
-						"modelName",
-						"modelType",
-						"status",
-						"serialNumberRange",
-						"devModelVersion",
-						"activeModelVersion",
-					]}
-					setData={setAllData}
+					headers={
+						application?.showModel
+							? [
+									customCaptions?.make,
+									customCaptions?.model,
+									customCaptions?.modelType,
+									"Status",
+									"Serial Number Range",
+									"Latest Version",
+									"Active Version",
+							  ]
+							: [
+									customCaptions?.make,
+									customCaptions?.modelType,
+									"status",
+									"Serial Number Range",
+									"Latest Version",
+									"Active Version",
+							  ]
+					}
+					columns={
+						application?.showModel
+							? [
+									"name",
+									"modelName",
+									"modelType",
+									"status",
+									"serialNumberRange",
+									"devModelVersion",
+									"activeModelVersion",
+							  ]
+							: [
+									"name",
+									"modelType",
+									"status",
+									"serialNumberRange",
+									"devModelVersion",
+									"activeModelVersion",
+							  ]
+					}
+					setData={setFilteredData}
 					handleSort={handleSort}
 					handleDeleteDialogOpen={handleDeleteDialogOpen}
 					handleDuplicateModalOpen={onDuplicateModalOpen}

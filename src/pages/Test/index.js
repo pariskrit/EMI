@@ -46,6 +46,7 @@ function Test() {
 	const [page, setPage] = useState({ pageNo: 1, perPage: 10 });
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [openImportFile, setOpenImportFile] = useState(false);
+	const [ss, setss] = useState([]);
 
 	const handleAddDialogOpen = () => {
 		setOpenAddDialog(true);

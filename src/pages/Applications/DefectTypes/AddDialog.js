@@ -47,7 +47,6 @@ const AddDefectTypeDialog = ({
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 
-			console.log(localChecker);
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				// Creating new data

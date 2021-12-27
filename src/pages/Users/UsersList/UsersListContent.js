@@ -58,7 +58,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const UsersListContent = ({ getError }) => {
+const UsersListContent = ({ getError, access, position }) => {
 	const classes = useStyles();
 
 	//Init State
@@ -225,22 +225,24 @@ const UsersListContent = ({ getError }) => {
 						)}
 					</Typography>
 					{haveData ? (
-						<div className={classes.buttonContainer}>
-							<AT.GeneralButton
-								onClick={() => setModal((th) => ({ ...th, import: true }))}
-								className={classes.importButton}
-							>
-								Import from list
-							</AT.GeneralButton>
+						position === null || access === "F" ? (
+							<div className={classes.buttonContainer}>
+								<AT.GeneralButton
+									onClick={() => setModal((th) => ({ ...th, import: true }))}
+									className={classes.importButton}
+								>
+									Import from list
+								</AT.GeneralButton>
 
-							<Button
-								variant="contained"
-								className={classes.productButton}
-								onClick={() => setModal((th) => ({ ...th, add: true }))}
-							>
-								Add New
-							</Button>
-						</div>
+								<Button
+									variant="contained"
+									className={classes.productButton}
+									onClick={() => setModal((th) => ({ ...th, add: true }))}
+								>
+									Add New
+								</Button>
+							</div>
+						) : null
 					) : null}
 				</div>
 
@@ -262,24 +264,28 @@ const UsersListContent = ({ getError }) => {
 					</AC.SearchContainer>
 				) : null}
 			</div>
-			{haveData ? (
-				<UsersListTable
-					data={mainData}
-					headers={["First Name", "Surname", "Email Address", "Phone"]}
-					columns={["firstName", "lastName", "email", "phone"]}
-					setData={setAllData}
-					handleSort={handleSort}
-					searchQuery={searchQuery}
-					searchedData={searchedData}
-					setSearchData={setSearchData}
-					handleDeleteDialogOpen={handleDeleteDialogOpen}
-					searchText={searchRef.current}
-					onPageChange={handlePage}
-					page={page.pageNo}
-				/>
-			) : (
-				<CircularProgress />
-			)}
+			{position === null || access !== "N" ? (
+				haveData ? (
+					<UsersListTable
+						data={mainData}
+						headers={["First Name", "Surname", "Email Address", "Phone"]}
+						columns={["firstName", "lastName", "email", "phone"]}
+						setData={setAllData}
+						handleSort={handleSort}
+						searchQuery={searchQuery}
+						searchedData={searchedData}
+						setSearchData={setSearchData}
+						handleDeleteDialogOpen={handleDeleteDialogOpen}
+						searchText={searchRef.current}
+						onPageChange={handlePage}
+						page={page.pageNo}
+						position={position}
+						access={access}
+					/>
+				) : (
+					<CircularProgress />
+				)
+			) : null}
 		</div>
 	);
 };

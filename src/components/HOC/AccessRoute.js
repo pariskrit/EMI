@@ -9,10 +9,19 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) =>
-				position === null || position?.[access] === "F" ? (
-					<Component {...props} />
-				) : (
+				position === null ||
+				position?.[access] === "F" ||
+				position?.[access] === "E" ||
+				position?.[access] === "R" ? (
+					<Component
+						{...props}
+						position={position}
+						access={position?.[access]}
+					/>
+				) : history.length > 1 ? (
 					history.goBack()
+				) : (
+					history.push("/app/me")
 				)
 			}
 		/>

@@ -5,7 +5,6 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import NavDetails from "components/Elements/NavDetails";
-import SaveHistory from "components/Elements/SaveHistory";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import NavButtons from "components/Elements/NavButtons";
 import API from "helpers/api";

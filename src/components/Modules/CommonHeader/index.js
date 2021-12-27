@@ -1,5 +1,5 @@
 import {
-	createMuiTheme,
+	createTheme,
 	makeStyles,
 	ThemeProvider,
 } from "@material-ui/core/styles";
@@ -17,7 +17,7 @@ import IOSSwitch from "components/Elements/IOSSwitch";
 
 const AT = ActionButtonStyle();
 
-const theme = createMuiTheme({
+const theme = createTheme({
 	overrides: {
 		// Accordion override is making the accordion title static vs. default dynamic
 		MuiAccordionSummary: {

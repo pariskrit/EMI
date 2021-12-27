@@ -4,7 +4,6 @@ import ContentStyle from "styles/application/ContentStyle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import NavDetails from "components/Elements/NavDetails";
 import ActionButtons from "./ActionButtons";
-import SaveHistory from "components/Elements/SaveHistory";
 import NavButtons from "components/Elements/NavButtons";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import Grid from "@material-ui/core/Grid";

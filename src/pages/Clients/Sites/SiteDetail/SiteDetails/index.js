@@ -21,7 +21,6 @@ import "./siteDetails.scss";
 import { Facebook } from "react-spinners-css";
 import AccordionBox from "components/Layouts/AccordionBox";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
-import { clientsPath } from "helpers/routePaths";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
