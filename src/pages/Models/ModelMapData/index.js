@@ -99,8 +99,8 @@ const ModelMapData = ({ match, history, getError }) => {
 				const siteAppID = data.siteAppID;
 				Promise.all(
 					[
-						"/api/SiteLocations?siteAppId=" + siteAppID,
-						"/api/SiteDepartments?siteAppId=" + siteAppID,
+						"/api/SiteLocations?siteId=" + siteAppID,
+						"/api/SiteDepartments?siteId=" + siteAppID,
 						"/api/ModelStatuses?siteAppId=" + siteAppID,
 						"/api/ModelTypes?siteAppId=" + siteAppID,
 					].map((end) => API.get(end))
