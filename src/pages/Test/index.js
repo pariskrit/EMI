@@ -41,6 +41,7 @@ function Test() {
 	const [page, setPage] = useState({ pageNo: 1, perPage: 10 });
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [openImportFile, setOpenImportFile] = useState(false);
+	const [ss, setss] = useState([]);
 
 	const handleAddDialogOpen = () => {
 		setOpenAddDialog(true);
@@ -98,8 +99,15 @@ function Test() {
 		return newData;
 	};
 
+	const handleCheck = () => {
+		setss([...ss, "1"]);
+		setss([...ss, "2"]);
+	};
+	console.log(ss);
+
 	return (
 		<div style={{ margin: "30px auto" }}>
+			<button onClick={handleCheck}>Check button</button>
 			<AddNewModelDetail
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}

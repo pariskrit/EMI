@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const NavDetails = ({ staticCrumbs, crumbs, status }) => {
+const NavDetails = ({ staticCrumbs, crumbs, status, history }) => {
 	// Init hooks
 	const classes = useStyles();
 	const [isActive, setActive] = useState(false);
@@ -101,10 +102,20 @@ const NavDetails = ({ staticCrumbs, crumbs, status }) => {
 						Active
 					</div>
 				)}
-				<SaveHistory />
+				{history && <SaveHistory />}
 			</div>
 		</div>
 	);
+};
+
+NavDetails.defaultProps = {
+	history: true,
+};
+
+NavDetails.propTypes = {
+	history: PropTypes.bool,
+	crumbs: PropTypes.array,
+	staticCrumbs: PropTypes.array,
 };
 
 const mapStateToProps = ({ siteDetailData: { crumbs } }) => ({
