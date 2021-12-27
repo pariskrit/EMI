@@ -34,6 +34,19 @@ export const siteScreenNavigation = [
 	{ name: "Locations", url: siteLocationPath },
 ];
 
+export const modelScreenNavigation = [
+	{ name: "Details", url: "" },
+	{ name: "Equipment", url: "" },
+	{ name: "Stages", url: "" },
+	{ name: "Zones", url: "" },
+	{ name: "Intervals", url: "" },
+	{ name: "Roles", url: "" },
+	{ name: "Questions", url: "" },
+	{ name: "Tasks", url: "" },
+	{ name: "Service Layout", url: "" },
+	{ name: "Safety Alerts", url: "" },
+];
+
 export const defectStatusTypes = [
 	{ label: "Outstanding", value: "O" },
 	{ label: "Notification Raised", value: "N" },

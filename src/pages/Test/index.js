@@ -10,6 +10,11 @@ import AddNewModelDetail from "./AddNewModelDetail";
 import ModalAwaitingImports from "./ModalAwaitingImports";
 import API from "helpers/api";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
+import SiteWrapper from "components/Layouts/SiteWrapper";
+import { modelScreenNavigation } from "helpers/constants";
+import ModelWrapper from "./ModelWarpper";
+import { useHistory } from "react-router-dom";
+import Task from "./Task";
 // import ImportFileDialouge from "../Models/ModelLists/ImportFileDialog";
 
 const AT = ActionButtonStyle();
@@ -98,22 +103,11 @@ function Test() {
 		return newData;
 	};
 
+	const history = useHistory();
+
 	return (
 		<div style={{ margin: "30px auto" }}>
-			<AddNewModelDetail
-				open={openAddDialog}
-				closeHandler={handleAddDialogClose}
-				createProcessHandler={handleCreateProcess}
-				siteId={1}
-				title="Add Model"
-			/>
-			{/* <ImportFileDialouge
-				open={openImportFile}
-				handleClose={() => setOpenImportFile(false)}
-				// importSuccess={importSuccess}
-				// getError={getError}
-			/> */}
-			<div className={classes.headerContainer}>
+			{/* <div className={classes.headerContainer}>
 				<h2>Dynamic Dropdown component</h2>
 				<div>
 					<AT.GeneralButton
@@ -164,7 +158,19 @@ function Test() {
 						required={true}
 					/>
 				</>
-			)}
+			)} */}
+			<ModelWrapper
+				current="Tasks"
+				navigation={modelScreenNavigation}
+				onNavClick={(url) => history.push(url)}
+				showAdd
+				showSave
+				showPasteTask
+				// showChangeStatus
+				// showSaveChanges
+				ModelName="Caterpillar M12"
+				Component={<Task />}
+			/>
 		</div>
 	);
 }
