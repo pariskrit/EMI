@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	Table,
 	TableBody,
@@ -10,6 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/Layouts/AccordionBox";
 import Row from "./Row";
 import API from "helpers/api";
+import useDidMountEffect from "hooks/useDidMountEffect";
+import usePrevious from "hooks/usePrevious";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
@@ -62,6 +64,8 @@ const Elements = ({
 }) => {
 	const classes = useStyles();
 	const [dropDown, setDropDown] = React.useState([]);
+	const [updatedData, setUpdatedData] = React.useState(mainData);
+	const [selectedRow, setSelectedRow] = React.useState(mainData);
 
 	React.useEffect(() => {
 		if (siteAppID) {
@@ -75,14 +79,19 @@ const Elements = ({
 
 	const setErrorResolve = (datas, y) => {
 		// If input value is null i.e. deleted then subtract else add
-
-		const updatedData = mainData.map((x) => {
+		setSelectedRow(y.id);
+		const uData = updatedData.map((x) => {
 			return x.id === y.id ? { ...x, ...datas } : x;
 		});
-
-		onErrorResolve(updatedData, modelName, errorName, elementID);
+		setUpdatedData(uData);
 	};
-
+	const prevData = usePrevious(updatedData);
+	useDidMountEffect(() => {
+		const uData = prevData.map((x) => {
+			return x.id === selectedRow ? updatedData.find((y) => y.id === x.id) : x;
+		});
+		onErrorResolve(uData, modelName, errorName, elementID);
+	}, [updatedData, selectedRow]);
 	return (
 		<AccordionBox
 			accordionClass={classes.box}
