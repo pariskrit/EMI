@@ -25,6 +25,10 @@ function filterResolved(x, elementId) {
 	return x.newName !== null || x[elementId] !== null;
 }
 
+function setDropDownData(x, elementId) {
+	return x.value === elementId;
+}
+
 const ModelMapData = ({ match, history, getError }) => {
 	const classes = useStyles();
 	const {
@@ -99,8 +103,8 @@ const ModelMapData = ({ match, history, getError }) => {
 				const siteAppID = data.siteAppID;
 				Promise.all(
 					[
-						"/api/SiteLocations?siteId=" + siteAppID,
-						"/api/SiteDepartments?siteId=" + siteAppID,
+						"/api/SiteLocations?siteAppId=" + siteAppID,
+						"/api/SiteDepartments?siteAppId=" + siteAppID,
 						"/api/ModelStatuses?siteAppId=" + siteAppID,
 						"/api/ModelTypes?siteAppId=" + siteAppID,
 					].map((end) => API.get(end))
@@ -119,6 +123,36 @@ const ModelMapData = ({ match, history, getError }) => {
 									departments,
 									statuses,
 									types,
+								});
+								setDropDownValue({
+									location: locations
+										.map((y) => ({
+											label: y.name,
+											value: y.id,
+											id: y.siteAppID,
+										}))
+										.find((x) => setDropDownData(x, data.siteLocationID)),
+									department: departments
+										.map((y) => ({
+											label: y.name,
+											value: y.id,
+											id: y.siteAppID,
+										}))
+										.find((x) => setDropDownData(x, data.siteDepartmentID)),
+									status: statuses
+										.map((y) => ({
+											label: y.name,
+											value: y.id,
+											id: y.siteAppID,
+										}))
+										.find((x) => setDropDownData(x, data.siteStatusID)),
+									type: types
+										.map((y) => ({
+											label: y.name,
+											value: y.id,
+											id: y.siteAppID,
+										}))
+										.find((x) => setDropDownData(x, data.typeID)),
 								});
 							}
 						)

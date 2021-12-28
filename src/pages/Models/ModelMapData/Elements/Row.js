@@ -62,7 +62,6 @@ const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
 		setUpdating(true);
 		// API.patch(patchApi + "/" + x.id, [{ op: "replace", path, value }])
 		// 	.then((res) => {
-		// 		console.log(res.data);
 		// 		setErrorResolve(res.data);
 		// 		closeHandler();
 		// 	})
@@ -71,7 +70,7 @@ const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
 		// 	});
 
 		setTimeout(() => {
-			setErrorResolve({ newName: null, systemID: 48 });
+			setErrorResolve({ newName: null, [elementID]: 48 });
 			closeHandler();
 		}, 1000);
 	};

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Table,
 	TableBody,
@@ -63,11 +63,11 @@ const Elements = ({
 	onErrorResolve,
 }) => {
 	const classes = useStyles();
-	const [dropDown, setDropDown] = React.useState([]);
-	const [updatedData, setUpdatedData] = React.useState(mainData);
-	const [selectedRow, setSelectedRow] = React.useState(mainData);
+	const [dropDown, setDropDown] = useState([]);
+	const [updatedData, setUpdatedData] = useState(mainData);
+	const [selectedRow, setSelectedRow] = useState(mainData);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (siteAppID) {
 			API.get(getApi + `?siteAppId=${siteAppID}`).then((res) =>
 				setDropDown(res.data)
