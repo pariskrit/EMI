@@ -9,5 +9,8 @@ export default (value) => {
 		ref.current = value;
 	}, [value]); // Only re-run if value changes
 	// Return previous value (happens before update in useEffect above)
-	return ref.current;
+	const setPreviousValue = (val) => {
+		ref.current = val;
+	};
+	return [ref.current, setPreviousValue];
 };
