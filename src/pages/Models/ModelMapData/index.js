@@ -25,7 +25,7 @@ function filterResolved(x, elementId) {
 	return x.newName !== null || x[elementId] !== null;
 }
 
-function setDropDownData(x, elementId) {
+function setDropDownData(x, elementId = null) {
 	return x.value === elementId;
 }
 
@@ -139,17 +139,20 @@ const ModelMapData = ({ match, history, getError }) => {
 									statuses: stat,
 									types: typ,
 								});
+
 								setDropDownValue({
-									location: loc.find((x) =>
-										setDropDownData(x, data.siteLocationID)
-									),
-									department: dep.find((x) =>
-										setDropDownData(x, data.siteDepartmentID)
-									),
-									status: stat.find((x) =>
-										setDropDownData(x, data.siteStatusID)
-									),
-									type: typ.find((x) => setDropDownData(x, data.modelTypeID)),
+									location:
+										loc.find((x) => setDropDownData(x, data.siteLocationID)) ||
+										{},
+									department:
+										dep.find((x) =>
+											setDropDownData(x, data.siteDepartmentID)
+										) || {},
+									status:
+										stat.find((x) => setDropDownData(x, data.siteStatusID)) ||
+										{},
+									type:
+										typ.find((x) => setDropDownData(x, data.modelTypeID)) || {},
 								});
 							}
 						)
@@ -252,10 +255,7 @@ const ModelMapData = ({ match, history, getError }) => {
 								{ id: 1, name: "name" },
 								{ id: 2, name: "publish" },
 							]}
-							dataSource={dropDowns.statuses.map((x) => ({
-								...x,
-								publish: x.publish ? "Yes" : "No",
-							}))}
+							dataSource={dropDowns.statuses}
 							showHeader
 							selectedValue={dropDownValue.status}
 							handleSort={handleSort}
