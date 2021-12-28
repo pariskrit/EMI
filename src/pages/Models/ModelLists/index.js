@@ -107,9 +107,13 @@ const ModelLists = ({ getError }) => {
 
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
-	const handleRemoveData = (id) =>
-		setFilteredData([...allData.filter((d) => d.id !== id)]);
+	const handleRemoveData = (id) => {
+		const newData = [...allData.filter((d) => d.id !== id)];
 
+		setFilteredData(newData);
+		setAllData(newData);
+	};
+	console.log(filteredData, allData);
 	//handle search
 	const handleSearch = (searchValue) => {
 		if (searchValue !== "") {
