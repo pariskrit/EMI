@@ -200,7 +200,7 @@ const ModelMapData = ({ match, history, getError }) => {
 				})
 				.catch((err) => {
 					// If error response, the data need to be remapped
-					fetchData();
+
 					reject(err);
 				});
 		});
@@ -219,6 +219,7 @@ const ModelMapData = ({ match, history, getError }) => {
 				getError={getError}
 				history={history}
 				modelId={modelId}
+				fetchData={fetchData}
 			/>
 			<div className={classes.main}>
 				{dropDowns.loading ? (
