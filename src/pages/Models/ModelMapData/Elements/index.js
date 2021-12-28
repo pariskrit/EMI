@@ -63,9 +63,11 @@ const Elements = ({
 	onErrorResolve,
 }) => {
 	const classes = useStyles();
-	const [dropDown, setDropDown] = useState([]);
-	const [updatedData, setUpdatedData] = useState(mainData);
-	const [selectedRow, setSelectedRow] = useState(mainData);
+	const [dropDown, setDropDown] = React.useState([]);
+	const [updatedDetails, setUpdatedDetails] = React.useState({
+		data: mainData,
+		selectedRow: 0,
+	});
 
 	useEffect(() => {
 		if (siteAppID) {
@@ -76,22 +78,26 @@ const Elements = ({
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [siteAppID]);
+	const [prevData, setPreviousValue] = usePrevious(updatedDetails);
 
 	const setErrorResolve = (datas, y) => {
 		// If input value is null i.e. deleted then subtract else add
-		setSelectedRow(y.id);
-		const uData = updatedData.map((x) => {
+
+		const uData = updatedDetails.data.map((x) => {
 			return x.id === y.id ? { ...x, ...datas } : x;
 		});
-		setUpdatedData(uData);
+		setUpdatedDetails({ data: uData, selectedRow: y.id });
 	};
-	const prevData = usePrevious(updatedData);
 	useDidMountEffect(() => {
-		const uData = prevData.map((x) => {
-			return x.id === selectedRow ? updatedData.find((y) => y.id === x.id) : x;
+		const uData = prevData.data.map((x) => {
+			return x.id === updatedDetails.selectedRow
+				? updatedDetails.data.find((y) => y.id === x.id)
+				: x;
 		});
+		//	console.log(prevData.data, uData);
+		setPreviousValue({ data: uData, selectedRow: updatedDetails.selectedRow });
 		onErrorResolve(uData, modelName, errorName, elementID);
-	}, [updatedData, selectedRow]);
+	}, [updatedDetails]);
 	return (
 		<AccordionBox
 			accordionClass={classes.box}

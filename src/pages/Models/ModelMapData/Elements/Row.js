@@ -60,19 +60,14 @@ const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
 		const path = name || "newName";
 
 		setUpdating(true);
-		// API.patch(patchApi + "/" + x.id, [{ op: "replace", path, value }])
-		// 	.then((res) => {
-		// 		setErrorResolve(res.data);
-		// 		closeHandler();
-		// 	})
-		// 	.catch((err) => {
-		// 		return err.response;
-		// 	});
-
-		setTimeout(() => {
-			setErrorResolve({ newName: null, [elementID]: 48 });
-			closeHandler();
-		}, 1000);
+		API.patch(patchApi + "/" + x.id, [{ op: "replace", path, value }])
+			.then((res) => {
+				setErrorResolve(res.data);
+				closeHandler();
+			})
+			.catch((err) => {
+				return err.response;
+			});
 	};
 
 	const handleChange = (value) => {
