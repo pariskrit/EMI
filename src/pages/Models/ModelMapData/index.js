@@ -25,6 +25,18 @@ function filterResolved(x, elementId) {
 	return x.newName !== null || x[elementId] !== null;
 }
 
+function setDropDownData(x, elementId = null) {
+	return x.value === elementId;
+}
+
+function setDropDownList(lists) {
+	return lists.map((x) => ({
+		id: x.siteAppID,
+		label: x.name,
+		value: x.id,
+	}));
+}
+
 const ModelMapData = ({ match, history, getError }) => {
 	const classes = useStyles();
 	const {
@@ -113,12 +125,34 @@ const ModelMapData = ({ match, history, getError }) => {
 								{ data: statuses },
 								{ data: types }
 							) => {
+								const loc = setDropDownList(locations);
+								const dep = setDropDownList(departments);
+								const typ = setDropDownList(types);
+								const stat = statuses.map((x) => ({
+									...x,
+									publish: x.publish ? "Yes" : "No",
+								}));
 								setDropDown({
 									loading: false,
-									locations,
-									departments,
-									statuses,
-									types,
+									locations: loc,
+									departments: dep,
+									statuses: stat,
+									types: typ,
+								});
+
+								setDropDownValue({
+									location:
+										loc.find((x) => setDropDownData(x, data.siteLocationID)) ||
+										{},
+									department:
+										dep.find((x) =>
+											setDropDownData(x, data.siteDepartmentID)
+										) || {},
+									status:
+										stat.find((x) => setDropDownData(x, data.siteStatusID)) ||
+										{},
+									type:
+										typ.find((x) => setDropDownData(x, data.modelTypeID)) || {},
 								});
 							}
 						)
@@ -154,13 +188,6 @@ const ModelMapData = ({ match, history, getError }) => {
 		setDropDownValue((th) => ({ ...th, [name]: val }));
 	};
 
-	const dropDownList = (name) =>
-		dropDowns[name].map((x) => ({
-			id: x.siteAppID,
-			label: x.name,
-			value: x.id,
-		}));
-
 	// After Pressing Complete Button
 	const handleImport = () => {
 		return new Promise((resolve, reject) => {
@@ -173,7 +200,7 @@ const ModelMapData = ({ match, history, getError }) => {
 				})
 				.catch((err) => {
 					// If error response, the data need to be remapped
-					fetchData();
+
 					reject(err);
 				});
 		});
@@ -192,6 +219,7 @@ const ModelMapData = ({ match, history, getError }) => {
 				getError={getError}
 				history={history}
 				modelId={modelId}
+				fetchData={fetchData}
 			/>
 			<div className={classes.main}>
 				{dropDowns.loading ? (
@@ -201,18 +229,18 @@ const ModelMapData = ({ match, history, getError }) => {
 						<Dropdown
 							width="291px"
 							placeholder="Location"
-							options={dropDownList("locations")}
+							options={dropDowns.locations}
 							onChange={(val) =>
-								handleChange("location", val, "SiteLocationID")
+								handleChange("location", val, "siteLocationID")
 							}
 							selectedValue={dropDownValue.location}
 						/>
 						<Dropdown
 							width="291px"
 							placeholder="Department"
-							options={dropDownList("departments")}
+							options={dropDowns.departments}
 							onChange={(val) =>
-								handleChange("department", val, "SiteDepartmentID")
+								handleChange("department", val, "siteDepartmentID")
 							}
 							selectedValue={dropDownValue.department}
 						/>
@@ -228,10 +256,7 @@ const ModelMapData = ({ match, history, getError }) => {
 								{ id: 1, name: "name" },
 								{ id: 2, name: "publish" },
 							]}
-							dataSource={dropDowns.statuses.map((x) => ({
-								...x,
-								publish: x.publish ? "Yes" : "No",
-							}))}
+							dataSource={dropDowns.statuses}
 							showHeader
 							selectedValue={dropDownValue.status}
 							handleSort={handleSort}
@@ -241,8 +266,8 @@ const ModelMapData = ({ match, history, getError }) => {
 						<Dropdown
 							width="291px"
 							placeholder="Type"
-							options={dropDownList("types")}
-							onChange={(val) => handleChange("type", val, "ModelTypeID")}
+							options={dropDowns.types}
+							onChange={(val) => handleChange("type", val, "modelTypeID")}
 							selectedValue={dropDownValue.type}
 						/>
 					</div>
