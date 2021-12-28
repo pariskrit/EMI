@@ -94,7 +94,6 @@ const Elements = ({
 				? updatedDetails.data.find((y) => y.id === x.id)
 				: x;
 		});
-		//	console.log(prevData.data, uData);
 		setPreviousValue({ data: uData, selectedRow: updatedDetails.selectedRow });
 		onErrorResolve(uData, modelName, errorName, elementID);
 	}, [updatedDetails]);
