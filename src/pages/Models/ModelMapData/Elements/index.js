@@ -63,8 +63,8 @@ const Elements = ({
 	onErrorResolve,
 }) => {
 	const classes = useStyles();
-	const [dropDown, setDropDown] = React.useState([]);
-	const [updatedDetails, setUpdatedDetails] = React.useState({
+	const [dropDown, setDropDown] = useState([]);
+	const [updatedDetails, setUpdatedDetails] = useState({
 		data: mainData,
 		selectedRow: 0,
 	});
