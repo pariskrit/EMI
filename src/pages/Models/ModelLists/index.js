@@ -12,7 +12,7 @@ import {
 	getModelList,
 } from "services/models/modelList";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -86,7 +86,9 @@ const ModelLists = ({ getError }) => {
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
 
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
+	const { position, isAdmin, application, customCaptions } = JSON.parse(
+		localStorage.getItem("me")
+	);
 
 	//display error popup
 	const displayError = (errorMessage, response) =>
@@ -105,9 +107,13 @@ const ModelLists = ({ getError }) => {
 
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
-	const handleRemoveData = (id) =>
-		setFilteredData([...allData.filter((d) => d.id !== id)]);
+	const handleRemoveData = (id) => {
+		const newData = [...allData.filter((d) => d.id !== id)];
 
+		setFilteredData(newData);
+		setAllData(newData);
+	};
+	console.log(filteredData, allData);
 	//handle search
 	const handleSearch = (searchValue) => {
 		if (searchValue !== "") {
@@ -129,7 +135,7 @@ const ModelLists = ({ getError }) => {
 	};
 
 	const fetchModelList = async () => {
-		const response = await getModelList(position?.siteAppID || 24);
+		const response = await getModelList(position?.siteAppID);
 
 		if (response.status) {
 			setAllData(response.data);
@@ -169,16 +175,18 @@ const ModelLists = ({ getError }) => {
 	};
 
 	const fetchModelImports = useCallback(async () => {
-		const response = await getModelImports(position?.siteAppID || 24);
+		const response = await getModelImports(position?.siteAppID);
 		if (response.status) {
 			setModelImportData(response.data);
 		} else {
 			displayError(response?.data?.errors?.siteAppId[0], response);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
@@ -186,7 +194,7 @@ const ModelLists = ({ getError }) => {
 			<CommonModal
 				open={openAddNewModal}
 				closeHandler={() => setOpenAddNewModal(false)}
-				siteId={position?.siteAppID || 24}
+				siteId={position?.siteAppID}
 				data={null}
 				title="Add Model"
 				createProcessHandler={createModal}
@@ -194,7 +202,7 @@ const ModelLists = ({ getError }) => {
 			<CommonModal
 				open={openDuplicateModal}
 				closeHandler={() => setOpenDuplicateModal(false)}
-				siteId={position?.siteAppID || 24}
+				siteId={position?.siteAppID}
 				data={duplicateModalData}
 				title="Duplicate Model"
 				createProcessHandler={onDuplicateModal}
@@ -220,7 +228,7 @@ const ModelLists = ({ getError }) => {
 				handleClose={() => setOpenImportFile(false)}
 				importSuccess={fetchModelImports}
 				getError={getError}
-				siteAppID={24}
+				siteAppID={position?.siteAppID}
 			/>
 
 			<div className={classes.listActions}>
@@ -256,7 +264,7 @@ const ModelLists = ({ getError }) => {
 						</Button>
 					</div>
 				</div>
-				<ModalAwaitingImports siteAppId={1} modelImportData={modelImportData} />
+				<ModalAwaitingImports modelImportData={modelImportData} />
 
 				<AC.SearchContainer>
 					<AC.SearchInner className="applicationSearchBtn">
@@ -279,25 +287,47 @@ const ModelLists = ({ getError }) => {
 			) : (
 				<ModelsListTable
 					data={filteredData}
-					headers={[
-						"Name",
-						"Model",
-						"Type",
-						"Status",
-						"Serial Number Range",
-						"Latest Version",
-						"Active Version",
-					]}
-					columns={[
-						"name",
-						"modelName",
-						"modelType",
-						"status",
-						"serialNumberRange",
-						"devModelVersion",
-						"activeModelVersion",
-					]}
-					setData={setAllData}
+					headers={
+						application?.showModel
+							? [
+									customCaptions?.make,
+									customCaptions?.model,
+									customCaptions?.modelType,
+									"Status",
+									"Serial Number Range",
+									"Latest Version",
+									"Active Version",
+							  ]
+							: [
+									customCaptions?.make,
+									customCaptions?.modelType,
+									"status",
+									"Serial Number Range",
+									"Latest Version",
+									"Active Version",
+							  ]
+					}
+					columns={
+						application?.showModel
+							? [
+									"name",
+									"modelName",
+									"modelType",
+									"status",
+									"serialNumberRange",
+									"devModelVersion",
+									"activeModelVersion",
+							  ]
+							: [
+									"name",
+									"modelType",
+									"status",
+									"serialNumberRange",
+									"devModelVersion",
+									"activeModelVersion",
+							  ]
+					}
+					setData={setFilteredData}
 					handleSort={handleSort}
 					handleDeleteDialogOpen={handleDeleteDialogOpen}
 					handleDuplicateModalOpen={onDuplicateModalOpen}

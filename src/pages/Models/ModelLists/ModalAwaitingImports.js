@@ -70,7 +70,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function ModalAwaitingImports({ siteAppId, modelImportData }) {
+function ModalAwaitingImports({ modelImportData }) {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -146,7 +146,7 @@ function ModalAwaitingImports({ siteAppId, modelImportData }) {
 							</AT.TableHead>
 							<TableBody>
 								{modelsToImport.map((row, index) => (
-									<TableRow key={index}>
+									<TableRow key={row.id}>
 										<TableCell
 											component="th"
 											scope="row"
@@ -198,7 +198,9 @@ function ModalAwaitingImports({ siteAppId, modelImportData }) {
 															{
 																name: "Import",
 																handler: () => {
-																	history.push(`${modelsPath}/${row.id}`);
+																	history.push(
+																		`${modelsPath}/${row.id}/import`
+																	);
 																},
 																isDelete: false,
 															},

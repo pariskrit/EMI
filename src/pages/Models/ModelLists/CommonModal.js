@@ -84,7 +84,9 @@ function AddNewModelDetail({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [modelTypes, setModelTypes] = useState([]);
 	const [locations, setLocations] = useState([]);
-	const { application } = JSON.parse(localStorage.getItem("me"));
+	const { application, customCaptions } = JSON.parse(
+		localStorage.getItem("me")
+	);
 
 	const history = useHistory();
 
@@ -122,7 +124,11 @@ function AddNewModelDetail({
 
 	useEffect(() => {
 		if (data) {
-			setInput({ ...data, type: { label: data.modelType, value: 0 } });
+			setInput({
+				...data,
+				type: { label: data.modelType, value: 0 },
+				location: { label: data.locationName, value: 0 },
+			});
 		}
 	}, [data]);
 
@@ -261,7 +267,8 @@ function AddNewModelDetail({
 						{application?.showModel ? (
 							<ADD.LeftInputContainer>
 								<ADD.NameLabel>
-									Make<ADD.RequiredStar>*</ADD.RequiredStar>
+									{customCaptions?.make}
+									<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.NameLabel>
 								<ADD.NameInput
 									error={errors.name === null ? false : true}
@@ -275,7 +282,8 @@ function AddNewModelDetail({
 						) : (
 							<ADD.FullWidthContainer>
 								<ADD.NameLabel>
-									Make<ADD.RequiredStar>*</ADD.RequiredStar>
+									{customCaptions?.make}
+									<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.NameLabel>
 								<ADD.NameInput
 									error={errors.name === null ? false : true}
@@ -290,7 +298,7 @@ function AddNewModelDetail({
 
 						{application?.showModel && (
 							<ADD.RightInputContainer>
-								<ADD.NameLabel>Model</ADD.NameLabel>
+								<ADD.NameLabel>{customCaptions?.model}</ADD.NameLabel>
 								<ADD.NameInput
 									error={errors.model === null ? false : true}
 									helperText={errors.model === null ? null : errors.model}
@@ -306,7 +314,8 @@ function AddNewModelDetail({
 					<ADD.InputContainer>
 						<ADD.FullWidthContainer>
 							<ADD.NameLabel>
-								Type<ADD.RequiredStar>*</ADD.RequiredStar>
+								{customCaptions?.modelType}
+								<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ErrorInputFieldWrapper
 								errorMessage={errors.type === null ? null : errors.type}
@@ -341,36 +350,12 @@ function AddNewModelDetail({
 							/>
 						</ADD.FullWidthContainer>
 					</ADD.InputContainer>
-					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
-							<ADD.NameLabel>Model Template Type</ADD.NameLabel>
-							<RadioGroup
-								aria-label="ModelTemplateType"
-								name="ModelTemplateType"
-								value={input.modelTemplateType}
-								onChange={(e) =>
-									setInput({ ...input, modelTemplateType: e.target.value })
-								}
-								required
-							>
-								<FormControlLabel
-									value="F"
-									control={<Radio color="default" />}
-									label="Facility-Based"
-								/>
-								<FormControlLabel
-									value="A"
-									control={<Radio color="default" />}
-									label="Asset-Based"
-								/>
-							</RadioGroup>
-						</ADD.LeftInputContainer>
-					</ADD.InputContainer>
-					{/* {application?.allowFacilityBasedModels &&
+
+					{application?.allowFacilityBasedModels &&
 						application?.allowIndividualAssetModels && (
 							<ADD.InputContainer>
 								<ADD.LeftInputContainer>
-									<ADD.NameLabel>Model Template Type</ADD.NameLabel>
+									<ADD.NameLabel>{customCaptions?.modelTemplate}</ADD.NameLabel>
 									<RadioGroup
 										aria-label="ModelTemplateType"
 										name="ModelTemplateType"
@@ -393,7 +378,7 @@ function AddNewModelDetail({
 									</RadioGroup>
 								</ADD.LeftInputContainer>
 							</ADD.InputContainer>
-						)} */}
+						)}
 				</DialogContent>
 			</Dialog>
 		</div>
