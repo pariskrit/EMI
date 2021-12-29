@@ -18,6 +18,12 @@ const useStyles = makeStyles({
 	main: {
 		marginTop: 30,
 	},
+	loading: {
+		position: "absolute",
+		width: "100%",
+		left: 0,
+		top: 0,
+	},
 });
 
 // Either newName or elementID (actionID,lubricantID, etc) not null return true
@@ -218,17 +224,7 @@ const ModelMapData = ({ match, history, getError }) => {
 
 	return (
 		<div>
-			{dropDownLoading ? (
-				<LinearProgress
-					style={{
-						position: "absolute",
-						zIndex: 10,
-						width: "100%",
-						left: 0,
-						top: 0,
-					}}
-				/>
-			) : null}
+			{dropDownLoading ? <LinearProgress className={classes.loading} /> : null}
 			<ModelMapHeader
 				name={`${modelData.data.name} (${modelData.data.model})`}
 				onCompleteImport={handleImport}
