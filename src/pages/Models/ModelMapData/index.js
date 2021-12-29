@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ModelMapHeader from "./ModelMapHeader";
 import API from "helpers/api";
 import Dropdown from "components/Elements/Dropdown";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@material-ui/core";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { handleSort } from "helpers/utils";
 import ElementList from "./ElementList";
@@ -67,6 +67,8 @@ const ModelMapData = ({ match, history, getError }) => {
 		status: {},
 		type: {},
 	});
+
+	const [dropDownLoading, setDropDownLoading] = useState(false);
 
 	const fetchData = () => {
 		setModelData({ data: {}, loading: true });
@@ -173,6 +175,7 @@ const ModelMapData = ({ match, history, getError }) => {
 	}, []);
 
 	const handleChange = (name, val, typeId) => {
+		setDropDownLoading(true);
 		if (typeId) {
 			API.patch("/api/ModelImports/" + modelId, [
 				{ op: "replace", path: typeId, value: val.value },
@@ -182,8 +185,12 @@ const ModelMapData = ({ match, history, getError }) => {
 						...th,
 						...res.data,
 					}));
+					setDropDownLoading(false);
 				})
-				.catch((err) => console.log(err.response));
+				.catch((err) => {
+					console.log(err.response);
+					setDropDownLoading(false);
+				});
 		}
 		setDropDownValue((th) => ({ ...th, [name]: val }));
 	};
@@ -200,7 +207,6 @@ const ModelMapData = ({ match, history, getError }) => {
 				})
 				.catch((err) => {
 					// If error response, the data need to be remapped
-
 					reject(err);
 				});
 		});
@@ -212,6 +218,17 @@ const ModelMapData = ({ match, history, getError }) => {
 
 	return (
 		<div>
+			{dropDownLoading ? (
+				<LinearProgress
+					style={{
+						position: "absolute",
+						zIndex: 10,
+						width: "100%",
+						left: 0,
+						top: 0,
+					}}
+				/>
+			) : null}
 			<ModelMapHeader
 				name={`${modelData.data.name} (${modelData.data.model})`}
 				onCompleteImport={handleImport}
