@@ -21,6 +21,7 @@ function Dropdown(props) {
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
 	const [dropUpward, setDropUpward] = useState(true);
+	const [dropSideway, setDropSideway] = useState(true);
 
 	useEffect(() => {
 		setFilteredList(options);
@@ -62,6 +63,11 @@ function Dropdown(props) {
 				? false
 				: true
 		);
+		setDropSideway(
+			window.innerWidth - event.target.getBoundingClientRect().right < 150
+				? false
+				: true
+		);
 	};
 	return (
 		<div
@@ -100,6 +106,7 @@ function Dropdown(props) {
 						active: dropActive,
 						upward: dropUpward,
 						downward: !dropUpward,
+						rightSide: !dropSideway,
 					})}
 				>
 					<div className="search-box flex justify-between">
