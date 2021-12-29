@@ -88,6 +88,7 @@ const ModelMapHeader = ({
 	getError,
 	history,
 	modelId,
+	fetchData,
 }) => {
 	const classes = useStyles();
 	const [loading, setLoading] = React.useState(false);
@@ -104,6 +105,7 @@ const ModelMapHeader = ({
 				history.push(modelsPath + "/" + modelId);
 		} catch (err) {
 			setLoading(false);
+			fetchData();
 			if (err.response.data.detail !== undefined)
 				getError(err.response.data.detail);
 			else console.log(err.response);

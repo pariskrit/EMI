@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Table,
 	TableBody,
@@ -10,6 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/Layouts/AccordionBox";
 import Row from "./Row";
 import API from "helpers/api";
+import useDidMountEffect from "hooks/useDidMountEffect";
+import usePrevious from "hooks/usePrevious";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
@@ -55,16 +57,19 @@ const Elements = ({
 	patchApi,
 	siteAppID,
 	mainData = [],
-	setErrors,
 	errorName,
 	modelName,
-	setModelData,
 	elementID,
+	onErrorResolve,
 }) => {
 	const classes = useStyles();
-	const [dropDown, setDropDown] = React.useState([]);
+	const [dropDown, setDropDown] = useState([]);
+	const [updatedDetails, setUpdatedDetails] = useState({
+		data: mainData,
+		selectedRow: 0,
+	});
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (siteAppID) {
 			API.get(getApi + `?siteAppId=${siteAppID}`).then((res) =>
 				setDropDown(res.data)
@@ -73,34 +78,25 @@ const Elements = ({
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [siteAppID]);
+	const [prevData, setPreviousValue] = usePrevious(updatedDetails);
 
 	const setErrorResolve = (datas, y) => {
 		// If input value is null i.e. deleted then subtract else add
 
-		const updatedData = mainData.map((x) => {
+		const uData = updatedDetails.data.map((x) => {
 			return x.id === y.id ? { ...x, ...datas } : x;
 		});
-		const resolved = updatedData.filter(
-			(x) => x.newName !== null || x[elementID] !== null
-		).length;
-
-		setErrors((th) => ({
-			...th,
-			[errorName]: {
-				...th[errorName],
-				resolved,
-			},
-		}));
-
-		setModelData((th) => ({
-			...th,
-			data: {
-				...th.data,
-				[modelName]: updatedData,
-			},
-		}));
+		setUpdatedDetails({ data: uData, selectedRow: y.id });
 	};
-
+	useDidMountEffect(() => {
+		const uData = prevData.data.map((x) => {
+			return x.id === updatedDetails.selectedRow
+				? updatedDetails.data.find((y) => y.id === x.id)
+				: x;
+		});
+		setPreviousValue({ data: uData, selectedRow: updatedDetails.selectedRow });
+		onErrorResolve(uData, modelName, errorName, elementID);
+	}, [updatedDetails]);
 	return (
 		<AccordionBox
 			accordionClass={classes.box}

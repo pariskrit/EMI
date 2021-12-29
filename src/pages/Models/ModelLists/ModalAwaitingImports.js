@@ -70,7 +70,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function ModalAwaitingImports({ siteAppId, modelImportData }) {
+function ModalAwaitingImports({ modelImportData }) {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
