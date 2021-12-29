@@ -107,9 +107,13 @@ const ModelLists = ({ getError }) => {
 
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
-	const handleRemoveData = (id) =>
-		setFilteredData([...allData.filter((d) => d.id !== id)]);
+	const handleRemoveData = (id) => {
+		const newData = [...allData.filter((d) => d.id !== id)];
 
+		setFilteredData(newData);
+		setAllData(newData);
+	};
+	console.log(filteredData, allData);
 	//handle search
 	const handleSearch = (searchValue) => {
 		if (searchValue !== "") {
@@ -131,7 +135,7 @@ const ModelLists = ({ getError }) => {
 	};
 
 	const fetchModelList = async () => {
-		const response = await getModelList(position?.siteAppID || 24);
+		const response = await getModelList(position?.siteAppID);
 
 		if (response.status) {
 			setAllData(response.data);
@@ -171,7 +175,7 @@ const ModelLists = ({ getError }) => {
 	};
 
 	const fetchModelImports = useCallback(async () => {
-		const response = await getModelImports(position?.siteAppID || 24);
+		const response = await getModelImports(position?.siteAppID);
 		if (response.status) {
 			setModelImportData(response.data);
 		} else {
@@ -190,7 +194,7 @@ const ModelLists = ({ getError }) => {
 			<CommonModal
 				open={openAddNewModal}
 				closeHandler={() => setOpenAddNewModal(false)}
-				siteId={position?.siteAppID || 24}
+				siteId={position?.siteAppID}
 				data={null}
 				title="Add Model"
 				createProcessHandler={createModal}
@@ -198,7 +202,7 @@ const ModelLists = ({ getError }) => {
 			<CommonModal
 				open={openDuplicateModal}
 				closeHandler={() => setOpenDuplicateModal(false)}
-				siteId={position?.siteAppID || 24}
+				siteId={position?.siteAppID}
 				data={duplicateModalData}
 				title="Duplicate Model"
 				createProcessHandler={onDuplicateModal}
@@ -224,7 +228,7 @@ const ModelLists = ({ getError }) => {
 				handleClose={() => setOpenImportFile(false)}
 				importSuccess={fetchModelImports}
 				getError={getError}
-				siteAppID={24}
+				siteAppID={position?.siteAppID}
 			/>
 
 			<div className={classes.listActions}>
@@ -260,7 +264,7 @@ const ModelLists = ({ getError }) => {
 						</Button>
 					</div>
 				</div>
-				<ModalAwaitingImports siteAppId={1} modelImportData={modelImportData} />
+				<ModalAwaitingImports modelImportData={modelImportData} />
 
 				<AC.SearchContainer>
 					<AC.SearchInner className="applicationSearchBtn">

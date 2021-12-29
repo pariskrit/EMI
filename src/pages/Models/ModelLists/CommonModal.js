@@ -124,7 +124,11 @@ function AddNewModelDetail({
 
 	useEffect(() => {
 		if (data) {
-			setInput({ ...data, type: { label: data.modelType, value: 0 } });
+			setInput({
+				...data,
+				type: { label: data.modelType, value: 0 },
+				location: { label: data.locationName, value: 0 },
+			});
 		}
 	}, [data]);
 
