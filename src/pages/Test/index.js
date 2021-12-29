@@ -15,6 +15,7 @@ import { modelScreenNavigation } from "helpers/constants";
 import ModelWrapper from "./ModelWarpper";
 import { useHistory } from "react-router-dom";
 import Task from "./Task";
+import AddNewModelTask from "./AddNewModelTask";
 // import ImportFileDialouge from "../Models/ModelLists/ImportFileDialog";
 
 const AT = ActionButtonStyle();
@@ -38,76 +39,87 @@ const useStyles = makeStyles({
 });
 
 function Test() {
-	const classes = useStyles();
+	// const classes = useStyles();
 
-	const [data, setData] = useState([]);
-	const [selectItem, setSelectItem] = useState({});
-	const [loading, setLoading] = useState(false);
-	const [page, setPage] = useState({ pageNo: 1, perPage: 10 });
-	const [openAddDialog, setOpenAddDialog] = useState(false);
-	const [openImportFile, setOpenImportFile] = useState(false);
-	const [ss, setss] = useState([]);
+	// const [data, setData] = useState([]);
+	// const [selectItem, setSelectItem] = useState({});
+	// const [loading, setLoading] = useState(false);
+	// const [page, setPage] = useState({ pageNo: 1, perPage: 10 });
+	// const [openAddDialog, setOpenAddDialog] = useState(false);
+	// const [openImportFile, setOpenImportFile] = useState(false);
+	// const [ss, setss] = useState([]);
 
-	const handleAddDialogOpen = () => {
-		setOpenAddDialog(true);
-	};
+	// const handleAddDialogOpen = () => {
+	// 	setOpenAddDialog(true);
+	// };
 
-	const handleAddDialogClose = () => {
-		setOpenAddDialog(false);
-	};
+	// const handleAddDialogClose = () => {
+	// 	setOpenAddDialog(false);
+	// };
 
-	useEffect(() => {
-		const fetchData = async (pageNumber, perPageNumber) => {
-			setLoading(true);
-			const result = await getUsersList(pageNumber, perPageNumber);
-			setData(result.data);
-			setLoading(false);
-		};
-		fetchData(page.pageNo, page.perPage);
-	}, []);
+	// useEffect(() => {
+	// 	const fetchData = async (pageNumber, perPageNumber) => {
+	// 		setLoading(true);
+	// 		const result = await getUsersList(pageNumber, perPageNumber);
+	// 		setData(result.data);
+	// 		setLoading(false);
+	// 	};
+	// 	fetchData(page.pageNo, page.perPage);
+	// }, []);
 
-	const onChange = (item) => {
-		setSelectItem(item);
-	};
+	// const onChange = (item) => {
+	// 	setSelectItem(item);
+	// };
 
-	//Pagination
-	const onPageChange = async (p, prevData) => {
-		try {
-			const response = await getUsersList(p, page.perPage);
-			if (response.status) {
-				setPage({ pageNo: p, perPage: 10 });
-				setData([...prevData, ...response.data]);
-			} else {
-				throw new Error(response);
-			}
-		} catch (err) {
-			console.log(err);
-			return err;
-		}
-	};
+	// //Pagination
+	// const onPageChange = async (p, prevData) => {
+	// 	try {
+	// 		const response = await getUsersList(p, page.perPage);
+	// 		if (response.status) {
+	// 			setPage({ pageNo: p, perPage: 10 });
+	// 			setData([...prevData, ...response.data]);
+	// 		} else {
+	// 			throw new Error(response);
+	// 		}
+	// 	} catch (err) {
+	// 		console.log(err);
+	// 		return err;
+	// 	}
+	// };
 
-	const handleServerSideSort = async (sortField, setOrder) => {
-		const fetchData = async (pageNumber, perPageNumber) => {
-			// setLoading(true);
-			const result = await getUsersList(pageNumber, perPageNumber);
-			setData(result.data);
-			// setLoading(false);
-		};
-		fetchData(page.pageNo, 3);
-	};
+	// const handleServerSideSort = async (sortField, setOrder) => {
+	// 	const fetchData = async (pageNumber, perPageNumber) => {
+	// 		// setLoading(true);
+	// 		const result = await getUsersList(pageNumber, perPageNumber);
+	// 		setData(result.data);
+	// 		// setLoading(false);
+	// 	};
+	// 	fetchData(page.pageNo, 3);
+	// };
 
-	const handleServierSideSearch = async (searchTxt) => {
-		console.log(searchTxt);
-	};
-	const handleCreateProcess = async (payload) => {
-		const newData = await API.post("/api/Models", payload);
-		return newData;
-	};
+	// const handleServierSideSearch = async (searchTxt) => {
+	// 	console.log(searchTxt);
+	// };
+	// const handleCreateProcess = async (payload) => {
+	// 	const newData = await API.post("/api/Models", payload);
+	// 	return newData;
+	// };
 
+	const [openAddNewModal, setOpenAddNewModal] = useState(false);
 	const history = useHistory();
+
+	const { position } = JSON.parse(localStorage.getItem("me"));
 
 	return (
 		<div style={{ margin: "30px auto" }}>
+			<AddNewModelTask
+				open={openAddNewModal}
+				closeHandler={() => setOpenAddNewModal(false)}
+				siteId={position?.siteAppID}
+				data={null}
+				title="Add Model Task"
+				// createProcessHandler={createModal}
+			/>
 			{/* <div className={classes.headerContainer}>
 				<h2>Dynamic Dropdown component</h2>
 				<div>
@@ -164,8 +176,11 @@ function Test() {
 				current="Tasks"
 				navigation={modelScreenNavigation}
 				onNavClick={(url) => history.push(url)}
+				onClickAdd={() => {
+					setOpenAddNewModal(true);
+				}}
 				showAdd
-				showSave
+				// showSave
 				showPasteTask
 				// showChangeStatus
 				// showSaveChanges

@@ -173,7 +173,7 @@ ModelTaskTable.defaultProps = {
 
 ModelTaskTable.propTypes = {
 	data: PropTypes.array.isRequired,
-	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+	headers: PropTypes.arrayOf(PropTypes.object).isRequired,
 	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
 	handleEdit: PropTypes.func.isRequired,
 	handleDelete: PropTypes.func.isRequired,

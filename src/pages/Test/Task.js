@@ -1,19 +1,48 @@
+import React, { useEffect } from "react";
 import ModelTaskTable from "components/Modules/ModelTaskTable";
 import SettingsIcon from "@material-ui/icons/Settings";
 import WarningIcon from "@material-ui/icons/Warning";
-import React from "react";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import ImageIcon from "@material-ui/icons/Image";
+import BuildIcon from "@material-ui/icons/Build";
+import API from "helpers/api";
 
 function Task() {
+	const fetchData = async (modelVersionId) => {
+		try {
+			const response = await API.get(
+				"/api/ModelVersionTasks?modelVersionId=" + modelVersionId
+			);
+			console.log(response.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchData(38);
+	}, []);
 	return (
 		<div>
 			<h2>Tasks(266)</h2>
 			<p>Task assigned to this assest model.</p>
 			<ModelTaskTable
+				handleEdit={() => {}}
+				handleDelete={() => {}}
 				headers={[
+					{ id: 16, name: <ImageIcon />, sort: false },
+					{ id: 15, name: <BuildIcon />, sort: false },
 					{ id: 1, name: <SettingsIcon />, sort: false },
+					{ id: 17, name: <NoteAddIcon />, sort: false },
 					{
 						id: 13,
 						name: <WarningIcon style={{ color: "red" }} />,
+						sort: false,
+					},
+					{
+						id: 14,
+						name: <ErrorOutlineIcon style={{ color: "red" }} />,
 						sort: false,
 					},
 					{ id: 2, name: "Action", sort: true },
@@ -29,8 +58,12 @@ function Task() {
 					{ id: 12, name: "Zones", sort: true },
 				]}
 				columns={[
+					"imageIcon",
+					"buildIcon",
 					"settingIcon",
+					"noteIcon",
 					"warningIcon",
+					"ErrorIcon",
 					"Action",
 					"Name",
 					"Operating Mode",
@@ -62,6 +95,10 @@ function Task() {
 					},
 					{
 						id: 2,
+						imageIcon: <ImageIcon />,
+						noteIcon: <NoteAddIcon />,
+						buildIcon: <BuildIcon />,
+						ErrorIcon: <ErrorOutlineIcon style={{ color: "red" }} />,
 						settingIcon: "",
 						Action: "Fill",
 						Name: "Transmission Oil",
