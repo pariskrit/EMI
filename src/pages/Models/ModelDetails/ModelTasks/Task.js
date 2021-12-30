@@ -59,6 +59,7 @@ function Task() {
 			<ModelTaskTable
 				handleEdit={() => {}}
 				handleDelete={() => {}}
+				setData={() => {}}
 				headers={[
 					{ id: 16, name: <ImageIcon />, sort: false },
 					{ id: 15, name: <BuildIcon />, sort: false },
