@@ -56,17 +56,16 @@ function Dropdown(props) {
 		setFilteredList(filteredSearchList);
 	};
 	const handleDrpdwnClick = (event) => {
+		let el = event.target.closest(".dropbox");
 		setDropActive(true);
 		onFilter("");
 		setDropUpward(
-			window.innerHeight - event.target.getBoundingClientRect().bottom < 120
+			window.innerHeight - el.getBoundingClientRect().bottom < 120
 				? false
 				: true
 		);
 		setDropSideway(
-			window.innerWidth - event.target.getBoundingClientRect().right < 150
-				? false
-				: true
+			window.innerWidth - el.getBoundingClientRect().right < 150 ? false : true
 		);
 	};
 	return (
