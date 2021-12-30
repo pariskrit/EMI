@@ -23,16 +23,15 @@ function ModelTasks() {
 				// createProcessHandler={createModal}
 			/>
 			<ModelWrapper
-				current="Tasks"
+				current={`Tasks(${5})`}
 				navigation={modelScreenNavigation({
-					equipment: 2,
+					assests: 2,
 					stages: 3,
 					zones: 5,
 					intervals: 0,
 					roles: 2,
 					questions: 4,
 					tasks: 5,
-					safteyAlerts: 2,
 				})}
 				onNavClick={(url) => history.push(`${modelsPath}/24${url}`)}
 				onClickAdd={() => {

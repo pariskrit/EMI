@@ -33,7 +33,11 @@ const ModelTaskRow = ({
 				}}
 			>
 				{columns.map((col, i, arr) => (
-					<TableCell key={col} className={classes.dataCell}>
+					<TableCell
+						key={col}
+						className={classes.dataCell}
+						style={{ padding: "7px 10px" }}
+					>
 						<AT.CellContainer key={col}>
 							<AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}>
 								{row[col]}

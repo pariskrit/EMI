@@ -41,6 +41,7 @@ const useStyles = makeStyles({
 	nameRow: {
 		width: "auto",
 		height: "10px",
+		lineHeight: "1rem",
 	},
 	clientsRow: {
 		width: "20%",

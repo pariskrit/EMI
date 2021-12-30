@@ -1,10 +1,9 @@
 import {
+	modelAssest,
 	modelDetailsPath,
-	modelEquipment,
 	modelIntervals,
 	modelQuestions,
 	modelRoles,
-	modelSafteyAlerts,
 	modelServiceLayout,
 	modelStages,
 	modelTask,
@@ -21,6 +20,5 @@ export const routeList = [
 	{ id: 6, component: ModelTasks, path: modelDetailsPath + modelQuestions },
 	{ id: 7, component: ModelTasks, path: modelDetailsPath + modelTask },
 	{ id: 8, component: ModelTasks, path: modelDetailsPath + modelServiceLayout },
-	{ id: 9, component: ModelTasks, path: modelDetailsPath + modelEquipment },
-	{ id: 10, component: ModelTasks, path: modelDetailsPath + modelSafteyAlerts },
+	{ id: 9, component: ModelTasks, path: modelDetailsPath + modelAssest },
 ];
