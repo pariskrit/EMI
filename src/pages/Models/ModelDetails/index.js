@@ -1,11 +1,7 @@
 import React from "react";
 
-function ModelDetails() {
-	return (
-		<div>
-			<h1>This is ModelDetails</h1>
-		</div>
-	);
+function ModelDetails(props) {
+	return <div>{props.children}</div>;
 }
 
 export default ModelDetails;

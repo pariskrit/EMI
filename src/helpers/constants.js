@@ -3,6 +3,16 @@ import {
 	siteAssetPath,
 	siteDepartmentPath,
 	siteLocationPath,
+	modelDetail,
+	modelEquipment,
+	modelStages,
+	modelZones,
+	modelIntervals,
+	modelRoles,
+	modelQuestions,
+	modelTask,
+	modelServiceLayout,
+	modelSafteyAlerts,
 } from "helpers/routePaths";
 
 export const BASE_API_PATH = "/api/";
@@ -34,17 +44,26 @@ export const siteScreenNavigation = [
 	{ name: "Locations", url: siteLocationPath },
 ];
 
-export const modelScreenNavigation = [
-	{ name: "Details", url: "" },
-	{ name: "Equipment", url: "" },
-	{ name: "Stages", url: "" },
-	{ name: "Zones", url: "" },
-	{ name: "Intervals", url: "" },
-	{ name: "Roles", url: "" },
-	{ name: "Questions", url: "" },
-	{ name: "Tasks", url: "" },
-	{ name: "Service Layout", url: "" },
-	{ name: "Safety Alerts", url: "" },
+export const modelScreenNavigation = ({
+	equipment,
+	stages,
+	zones,
+	intervals,
+	roles,
+	questions,
+	tasks,
+	safteyAlerts,
+}) => [
+	{ name: "Details", url: modelDetail },
+	{ name: `Equipment(${equipment})`, url: modelEquipment },
+	{ name: `Stages(${stages})`, url: modelStages },
+	{ name: `Zones(${zones})`, url: modelZones },
+	{ name: `Intervals(${intervals})`, url: modelIntervals },
+	{ name: `Roles(${roles})`, url: modelRoles },
+	{ name: `Questions(${questions})`, url: modelQuestions },
+	{ name: `Tasks(${tasks})`, url: modelTask },
+	{ name: "Service Layout", url: modelServiceLayout },
+	{ name: `Safety Alerts(${safteyAlerts})`, url: modelSafteyAlerts },
 ];
 
 export const defectStatusTypes = [

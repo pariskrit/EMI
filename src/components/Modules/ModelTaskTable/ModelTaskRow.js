@@ -71,6 +71,26 @@ const ModelTaskRow = ({
 												isDelete: false,
 											},
 											{
+												name: "Duplicate",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
+												name: "Copy",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
+												name: "Copy Task Questions",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
+												name: "Switch To Service Layout",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
 												name: "Delete",
 												handler: handleDelete,
 												isDelete: true,
@@ -86,7 +106,7 @@ const ModelTaskRow = ({
 			<TableRow>
 				<TableCell
 					style={{ paddingBottom: 0, paddingTop: 0, background: "#307AD7" }}
-					colSpan={12}
+					colSpan={18}
 				>
 					<Collapse in={toggle} timeout="auto" unmountOnExit>
 						<Component />
