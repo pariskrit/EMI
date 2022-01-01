@@ -12,7 +12,8 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 				position === null ||
 				position?.[access] === "F" ||
 				position?.[access] === "E" ||
-				position?.[access] === "R" ? (
+				position?.[access] === "R" ||
+				position.siteAppID ? (
 					<Component
 						{...props}
 						position={position}

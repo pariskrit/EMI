@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { useGoogleLogin } from "react-google-login";
-import { clientsPath } from "helpers/routePaths";
+import { clientsPath, userProfilePath } from "helpers/routePaths";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
@@ -337,7 +337,9 @@ const Login = ({
 	const successRedirect = () => {
 		// Update below to change redirect location
 		// if Previous location available redirect to previous location
-		history.push(state?.from?.pathname ? state?.from?.pathname : clientsPath);
+		history.push(
+			state?.from?.pathname ? state?.from?.pathname : userProfilePath
+		);
 		return true;
 	};
 
