@@ -102,6 +102,7 @@ function DyanamicDropdown(props) {
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
 	const [dropUpward, setDropUpward] = useState(true);
+	const [dropSideway, setDropSideway] = useState(true);
 	const [searchtext, setsearchText] = useState("");
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dropdownlistner, setdropdownlistner] = useState(window);
@@ -199,6 +200,11 @@ function DyanamicDropdown(props) {
 				? false
 				: true
 		);
+		setDropSideway(
+			window.innerWidth - event.target.getBoundingClientRect().right < 150
+				? false
+				: true
+		);
 	};
 
 	// clear and reset dropdown content
@@ -262,6 +268,7 @@ function DyanamicDropdown(props) {
 						active: dropActive,
 						upward: dropUpward,
 						downward: !dropUpward,
+						rightSide: !dropSideway,
 					})}
 				>
 					<div className="search-box flex justify-between">
