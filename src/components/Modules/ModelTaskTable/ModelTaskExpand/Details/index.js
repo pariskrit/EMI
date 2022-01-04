@@ -14,6 +14,7 @@ import {
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import AccordionBox from "components/Layouts/AccordionBox";
+import ClientNotes from "pages/Clients/ClientDetailScreen/Notes/ClientNotes";
 
 const schema = yup.object({
 	firstName: yup
@@ -238,7 +239,7 @@ const TaskDetails = ({
 				</ADD.InputContainer>
 				<ADD.InputContainer>
 					<ADD.LeftInputContainer>
-						<ADD.NameLabel>Opeating Mode</ADD.NameLabel>
+						<ADD.NameLabel>Operating Mode</ADD.NameLabel>
 						<DyanamicDropdown
 							isServerSide={false}
 							width="100%"
@@ -296,15 +297,7 @@ const TaskDetails = ({
 					</ADD.RightInputContainer>
 				</ADD.InputContainer>
 				<ADD.InputContainer>
-					<AccordionBox title="Notes(2)">
-						<h1>hello from herere</h1>
-						<h1>hello from herere</h1>
-						<h1>hello from herere</h1>
-						<h1>hello from herere</h1>
-						<h1>hello from herere</h1>
-						<h1>hello from herere</h1>
-						<h1>hello from herere</h1>
-					</AccordionBox>
+					<ClientNotes clientId={1} getError={getError} />
 				</ADD.InputContainer>
 			</div>
 		</DialogContent>
