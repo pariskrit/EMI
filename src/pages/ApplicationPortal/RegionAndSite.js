@@ -11,7 +11,6 @@ import {
 	clientsPath,
 	siteAppDetailPath,
 } from "helpers/routePaths";
-import api from "helpers/api";
 
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
@@ -70,8 +69,7 @@ function RegionAndSite({ region, sites, clientId }) {
 	const classes = useStyles();
 
 	const handleSiteAppClick = async (id) => {
-		const res = await api.get(`/api/Users/LoginToSiteApp/${id}`);
-		localStorage.setItem("me", JSON.stringify(res.data));
+		localStorage.setItem("siteAppId", id);
 	};
 	return (
 		<Accordion className={classes.accordionParent}>

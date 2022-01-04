@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	error: { status: false, message: "" },
+	loading: false,
 };
 
 export const commonSlice = createSlice({
@@ -13,6 +14,9 @@ export const commonSlice = createSlice({
 		},
 		removeError: (state) => {
 			state.error = { status: false, message: "" };
+		},
+		setLoading: (state, { payload }) => {
+			state.loading = payload.loading;
 		},
 	},
 });
