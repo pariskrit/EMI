@@ -379,7 +379,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 			// If position is null it is super admin
 			const access = position?.[x.access];
 
-			//if superadmin, don't show models navigation
+			//if user does not have siteAppId, don't show models navigation
 			if (x.name === "Models" && position === null) {
 				return false;
 			}
