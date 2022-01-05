@@ -196,8 +196,7 @@ const ModelLists = ({ getError, isMounted, history }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const access = position?.modelAccess;
-	if (position === null || access !== "F" || access !== "E" || access !== "R") {
+	if (position === null) {
 		history.goBack();
 	}
 

@@ -1,8 +1,7 @@
 import React from "react";
 function ModelDetails({ history }) {
 	const { position } = JSON.parse(localStorage.getItem("me"));
-	const access = position?.modelAccess;
-	if (position === null || access !== "F" || access !== "E" || access !== "R") {
+	if (position === null) {
 		history.goBack();
 	}
 	return (

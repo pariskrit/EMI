@@ -12,6 +12,7 @@ import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
 import withMount from "components/HOC/withMount";
+import { getModelMapData, importModelMapData } from "services/models/modelMap";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -80,8 +81,8 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const fetchData = async () => {
 		setModelData({ data: {}, loading: true });
 		try {
-			const res = await API.get("/api/ModelImports/" + modelId);
-			if (res.status === 200) {
+			const res = await getModelMapData(modelId);
+			if (res.status) {
 				const { data } = res;
 				if (!isMounted.aborted) {
 					setModelData({ data: data, loading: false });
@@ -180,13 +181,12 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				}
 			} else {
 				// response status
-				throw new Error(res);
+				if (res.data.title !== undefined) getError(res.data.title);
+
+				history.push(modelsPath);
 			}
 		} catch (err) {
-			if (err.response.data.title !== undefined)
-				getError(err.response.data.title);
-
-			history.push(modelsPath);
+			return;
 		}
 	};
 
@@ -209,7 +209,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 					setDropDownLoading(false);
 				})
 				.catch((err) => {
-					console.log(err.response);
 					setDropDownLoading(false);
 				});
 		}
@@ -217,7 +216,20 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 	};
 
 	// After Pressing Complete Button
-	const handleImport = () => {
+	const handleImport = async () => {
+		// try {
+		// 	const res = await importModelMapData(modelId, {
+		// 		key: modelData.data.documentKey,
+		// 		import: false,
+		// 	});
+		// 	if (res.status) {
+		// 		return res;
+		// 	} else {
+		// 		throw new Error(res);
+		// 	}
+		// } catch (err) {
+		// 	return err;
+		// }
 		return new Promise((resolve, reject) => {
 			API.post("/api/modelimports/" + modelId + "/import", {
 				key: modelData.data.documentKey,
@@ -233,12 +245,11 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 		});
 	};
 
-	const { position } = JSON.parse(localStorage.getItem("me"));
-	const access = position?.modelAccess;
-	if (position === null || access !== "F" || access !== "E" || access !== "R") {
-		history.goBack();
-	}
-
+	// const { position } = JSON.parse(localStorage.getItem("me"));
+	// const access = position?.modelAccess;
+	// if (position === null) {
+	// 	history.goBack();
+	// }
 	if (modelData.loading) {
 		return <CircularProgress />;
 	}
