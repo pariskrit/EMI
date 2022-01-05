@@ -116,7 +116,6 @@ const ModelLists = ({ getError, isMounted }) => {
 		setFilteredData(newData);
 		setAllData(newData);
 	};
-	console.log(filteredData, allData);
 	//handle search
 	const handleSearch = (searchValue) => {
 		if (searchValue !== "") {
