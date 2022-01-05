@@ -20,6 +20,7 @@ const TableStyle = () => {
 			borderStyle: "solid",
 			fontFamily: "Roboto Condensed",
 			fontSize: 14,
+			overflowX: "auto",
 			borderColor: ColourConstants.tableBorder,
 			borderWidth: 1,
 			borderRadius: 0,

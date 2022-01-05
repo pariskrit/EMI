@@ -6,8 +6,20 @@ import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as BlueMenuIcon } from "assets/icons/3dot-icon.svg";
 import { ReactComponent as WhiteMenuIcon } from "assets/icons/3dot-white-icon.svg";
 import ModelTaskExpand from "./ModelTaskExpand";
+import { Tooltip } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 const AT = TableStyle();
+
+const HtmlTooltip = withStyles((theme) => ({
+	tooltip: {
+		backgroundColor: "#f5f5f9",
+		color: "rgba(0, 0, 0, 0.87)",
+		maxWidth: 220,
+		fontSize: theme.typography.pxToRem(12),
+		border: "1px solid #dadde9",
+	},
+}))(Tooltip);
 
 const ModelTaskRow = ({
 	classes,
@@ -23,6 +35,7 @@ const ModelTaskRow = ({
 	component: Component,
 }) => {
 	const [toggle, setToggle] = useState(false);
+	const toolTipColumn = ["Intervals", "Zones", "Stages"];
 	return (
 		<>
 			<TableRow
@@ -33,11 +46,27 @@ const ModelTaskRow = ({
 				}}
 			>
 				{columns.map((col, i, arr) => (
-					<TableCell key={col} className={classes.dataCell}>
+					<TableCell
+						key={col}
+						className={classes.dataCell}
+						style={{ padding: "7px 10px", maxWidth: "200px" }}
+					>
 						<AT.CellContainer key={col}>
-							<AT.TableBodyText
-								style={{ color: toggle ? "#FFFFFF" : "" }}
-							>{`${row[col]}`}</AT.TableBodyText>
+							{/* <AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}> */}
+							{toolTipColumn.includes(col) ? (
+								<HtmlTooltip title={row[col]}>
+									<p
+										className="max-two-line"
+										style={{ color: toggle ? "#FFFFFF" : "" }}
+									>
+										{" "}
+										{row[col]}
+									</p>
+								</HtmlTooltip>
+							) : (
+								row[col]
+							)}
+							{/* </AT.TableBodyText> */}
 
 							{arr.length === i + 1 ? (
 								<AT.DotMenu
@@ -71,6 +100,26 @@ const ModelTaskRow = ({
 												isDelete: false,
 											},
 											{
+												name: "Duplicate",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
+												name: "Copy",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
+												name: "Copy Task Questions",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
+												name: "Switch To Service Layout",
+												handler: handleEdit,
+												isDelete: false,
+											},
+											{
 												name: "Delete",
 												handler: handleDelete,
 												isDelete: true,
@@ -86,7 +135,7 @@ const ModelTaskRow = ({
 			<TableRow>
 				<TableCell
 					style={{ paddingBottom: 0, paddingTop: 0, background: "#307AD7" }}
-					colSpan={11}
+					colSpan={18}
 				>
 					<Collapse in={toggle} timeout="auto" unmountOnExit>
 						<Component />
