@@ -1,9 +1,7 @@
 import React from "react";
+import useModelAccess from "../useModelAccess";
 function ModelDetails({ history }) {
-	const { position } = JSON.parse(localStorage.getItem("me"));
-	if (position === null) {
-		history.goBack();
-	}
+	useModelAccess();
 	return (
 		<div>
 			<h1>This is ModelDetails</h1>
