@@ -9,7 +9,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import TableStyle from "styles/application/TableStyle";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 
+import EMICheckbox from "./EMICheckbox";
+
+const ADD = AddDialogStyle();
 const AT = TableStyle();
 
 const media = "@media (max-width: 414px)";
@@ -98,6 +102,9 @@ function DyanamicDropdown(props) {
 		onClear,
 		handleServierSideSearch,
 		icon,
+		hasCheckBoxList,
+		checklistChangeHandler,
+		rolesChecklist,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -254,7 +261,9 @@ function DyanamicDropdown(props) {
 				<div className="inputbox flex justify-between">
 					<span className="flex" style={{ gap: "10px" }}>
 						{icon && icon}
-						{selectedValue && selectedValue[selectdValueToshow]
+						{hasCheckBoxList
+							? selectedValue
+							: selectedValue && selectedValue[selectdValueToshow]
 							? selectedValue[selectdValueToshow]
 							: placeholder}
 					</span>
@@ -330,35 +339,60 @@ function DyanamicDropdown(props) {
 						)}
 						<div className="dynamic-drop-list">
 							{filteredList.length > 0 ? (
-								filteredList?.map((list) => (
-									<div
-										className={
-											"list-item flex " +
-											(list.id === selectedValue.id ? "selected" : "")
-										}
-										key={list.id}
-										onClick={() => {
-											onChange(list);
-											setDropActive(false);
-										}}
-									>
-										{columns.map((col, i) => (
-											<span
-												style={{
-													flexGrow: "1",
-													minWidth: col.minWidth || "150px",
-												}}
-												className={clsx(classes.droplistitem, {
-													[classes.firstdroplistItem]: i === 0,
-												})}
-												key={i}
-											>
-												{i === 0 && <CheckIcon className="check mr-sm" />}
-												{list[col.name]}
-											</span>
-										))}
-									</div>
-								))
+								<>
+									{hasCheckBoxList
+										? filteredList?.map((list) => (
+												<div className="checklist-item flex">
+													{columns.map((col) => (
+														<ADD.CheckboxLabel>
+															<EMICheckbox
+																state={
+																	rolesChecklist.filter((r) => r.id === list.id)
+																		.length === 1
+																}
+																changeHandler={() => {
+																	checklistChangeHandler(
+																		list.id,
+																		list[col.name]
+																	);
+																	setDropActive(false);
+																}}
+															/>
+															{list[col.name]}
+														</ADD.CheckboxLabel>
+													))}
+												</div>
+										  ))
+										: filteredList?.map((list) => (
+												<div
+													className={
+														"list-item flex " +
+														(list.id === selectedValue.id ? "selected" : "")
+													}
+													key={list.id}
+													onClick={() => {
+														onChange(list);
+														setDropActive(false);
+													}}
+												>
+													{columns.map((col, i) => (
+														<span
+															style={{
+																flexGrow: "1",
+																minWidth: col.minWidth || "150px",
+															}}
+															className={clsx(classes.droplistitem, {
+																[classes.firstdroplistItem]: i === 0,
+															})}
+															key={i}
+														>
+															{i === 0 && <CheckIcon className="check mr-sm" />}
+															{list[col.name]}
+														</span>
+													))}
+												</div>
+										  ))}
+								</>
 							) : (
 								<span className="no-record">No records found</span>
 							)}

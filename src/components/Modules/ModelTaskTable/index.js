@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 		color: "#FFFFFF",
 	},
 	nameRow: {
-		width: "auto",
+		width: "200px",
 		height: "10px",
 		lineHeight: "1rem",
 	},
@@ -96,6 +96,7 @@ const ModelTaskTable = ({
 								onClick={() => {
 									handleSortClick(columns[index]);
 								}}
+								style={{ width: header?.width || "auto" }}
 								className={clsx(classes.nameRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === columns[index],

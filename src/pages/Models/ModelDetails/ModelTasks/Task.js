@@ -82,7 +82,7 @@ function Task() {
 					{ id: 6, name: "Roles", sort: true },
 					{ id: 7, name: "Est Mins", sort: true },
 					{ id: 9, name: "Order Added", sort: true },
-					{ id: 10, name: "Intervals", sort: true },
+					{ id: 10, name: "Intervals", sort: true, width: "100px" },
 					{ id: 11, name: "Stages", sort: true },
 					{ id: 12, name: "Zones", sort: true },
 				]}
@@ -135,7 +135,7 @@ function Task() {
 						Role: "manager",
 						"Est Mins": 12,
 						"Order Added": 2,
-						Intervals: "300hr,300hr,300hr,300hr,300hr,300hr",
+						Intervals: "300hr,300hr,,",
 						Stages: "Service",
 						Zones: "Zone 1",
 					},

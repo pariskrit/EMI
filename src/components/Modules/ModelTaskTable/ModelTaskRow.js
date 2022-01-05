@@ -6,8 +6,20 @@ import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as BlueMenuIcon } from "assets/icons/3dot-icon.svg";
 import { ReactComponent as WhiteMenuIcon } from "assets/icons/3dot-white-icon.svg";
 import ModelTaskExpand from "./ModelTaskExpand";
+import { Tooltip } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 const AT = TableStyle();
+
+const HtmlTooltip = withStyles((theme) => ({
+	tooltip: {
+		backgroundColor: "#f5f5f9",
+		color: "rgba(0, 0, 0, 0.87)",
+		maxWidth: 220,
+		fontSize: theme.typography.pxToRem(12),
+		border: "1px solid #dadde9",
+	},
+}))(Tooltip);
 
 const ModelTaskRow = ({
 	classes,
@@ -23,6 +35,7 @@ const ModelTaskRow = ({
 	component: Component,
 }) => {
 	const [toggle, setToggle] = useState(false);
+	const toolTipColumn = ["Intervals", "Zones", "Stages"];
 	return (
 		<>
 			<TableRow
@@ -40,7 +53,13 @@ const ModelTaskRow = ({
 					>
 						<AT.CellContainer key={col}>
 							<AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}>
-								{row[col]}
+								{toolTipColumn.includes(col) ? (
+									<HtmlTooltip title={row[col]}>
+										<p className="max-two-line"> {row[col]}</p>
+									</HtmlTooltip>
+								) : (
+									row[col]
+								)}
 							</AT.TableBodyText>
 
 							{arr.length === i + 1 ? (

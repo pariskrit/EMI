@@ -13,8 +13,7 @@ import {
 } from "helpers/utils";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
-import AccordionBox from "components/Layouts/AccordionBox";
-import ClientNotes from "pages/Clients/ClientDetailScreen/Notes/ClientNotes";
+import TaskDetailNotes from "./Notes/TaskDetailNotes";
 
 const schema = yup.object({
 	firstName: yup
@@ -33,6 +32,7 @@ const schema = yup.object({
 });
 
 const ADD = AddDialogStyle();
+
 const defaultData = { firstName: "", lastName: "", email: "", password: "" };
 const defaultError = {
 	firstName: null,
@@ -87,6 +87,7 @@ const TaskDetails = ({
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
+	const [rolesChecklist, setRoleCheckList] = useState([]);
 
 	const closeOverride = () => {
 		handleClose();
@@ -169,6 +170,14 @@ const TaskDetails = ({
 		}
 	};
 
+	const checklistChangeHandler = (id, roleName) => {
+		if (rolesChecklist.find((role) => role.id === id)) {
+			setRoleCheckList([...rolesChecklist.filter((role) => role.id !== id)]);
+		} else {
+			setRoleCheckList([...rolesChecklist, { id, roleName }]);
+		}
+	};
+
 	return (
 		<DialogContent className={classes.dialogContent}>
 			<div>
@@ -195,14 +204,22 @@ const TaskDetails = ({
 							isServerSide={false}
 							width="100%"
 							placeholder="Select Roles"
-							dataHeader={[{ id: 1, name: "Roless" }]}
-							columns={[{ id: 1, name: "Roless" }]}
-							dataSource={[]}
+							dataHeader={[{ id: 1, name: "Roles" }]}
+							columns={[{ id: 1, name: "Roles" }]}
+							dataSource={[
+								{ id: 1, Roles: "tester" },
+								{ id: 3, Roles: "CEO" },
+								{ id: 2, Roles: "supervisor" },
+							]}
 							showHeader
 							// selectedValue={dropDownValue.status}
 							handleSort={handleSort}
 							// onChange={(val) => handleChange("status", val)}
-							selectdValueToshow="Roless"
+							selectedValue={rolesChecklist.map((r) => r.roleName).join(",")}
+							rolesChecklist={rolesChecklist}
+							selectdValueToshow="Roles"
+							hasCheckBoxList={true}
+							checklistChangeHandler={checklistChangeHandler}
 						/>
 					</ADD.RightInputContainer>
 				</ADD.InputContainer>
@@ -228,7 +245,6 @@ const TaskDetails = ({
 							placeholder="Select System"
 							dataHeader={[{ id: 1, name: "System" }]}
 							columns={[{ id: 1, name: "System" }]}
-							dataSource={[]}
 							showHeader
 							// selectedValue={dropDownValue.status}
 							handleSort={handleSort}
@@ -297,7 +313,7 @@ const TaskDetails = ({
 					</ADD.RightInputContainer>
 				</ADD.InputContainer>
 				<ADD.InputContainer>
-					<ClientNotes clientId={1} getError={getError} />
+					<TaskDetailNotes />
 				</ADD.InputContainer>
 			</div>
 		</DialogContent>
