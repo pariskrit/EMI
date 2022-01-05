@@ -215,7 +215,7 @@ const TaskDetails = ({
 							// selectedValue={dropDownValue.status}
 							handleSort={handleSort}
 							// onChange={(val) => handleChange("status", val)}
-							selectedValue={rolesChecklist.map((r) => r.roleName).join(",")}
+							selectedValue={rolesChecklist.map((r) => r.roleName).join(", ")}
 							rolesChecklist={rolesChecklist}
 							selectdValueToshow="Roles"
 							hasCheckBoxList={true}
