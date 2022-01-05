@@ -139,7 +139,7 @@ const ModelLists = ({ getError, isMounted }) => {
 
 	const fetchModelList = async () => {
 		const response = await getModelList(position?.siteAppID || 24);
-		if (isMounted) {
+		if (!isMounted.aborted) {
 			if (response.status) {
 				setAllData(response.data);
 				setFilteredData(response.data);
@@ -180,7 +180,7 @@ const ModelLists = ({ getError, isMounted }) => {
 
 	const fetchModelImports = useCallback(async () => {
 		const response = await getModelImports(position?.siteAppID || 24);
-		if (isMounted) {
+		if (!isMounted.aborted) {
 			if (response.status) {
 				setModelImportData(response.data);
 			} else {

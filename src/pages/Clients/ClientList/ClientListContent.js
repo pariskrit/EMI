@@ -60,7 +60,7 @@ const ClientListContent = ({ isMounted }) => {
 	useEffect(() => {
 		fetchData()
 			.then(() => {
-				if (isMounted) setHaveData(true);
+				if (!isMounted.aborted) setHaveData(true);
 			})
 			.catch((err) => console.log("ERROR: ", err));
 		// eslint-disable-next-line
@@ -72,7 +72,7 @@ const ClientListContent = ({ isMounted }) => {
 		try {
 			// Fetching clients from backend
 			let result = await API.get("/api/Clients");
-			if (isMounted) {
+			if (!isMounted.aborted) {
 				if (result.status === 200) {
 					// Getting buffer
 					result = result.data;
