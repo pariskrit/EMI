@@ -49,18 +49,24 @@ const ModelTaskRow = ({
 					<TableCell
 						key={col}
 						className={classes.dataCell}
-						style={{ padding: "7px 10px" }}
+						style={{ padding: "7px 10px", maxWidth: "200px" }}
 					>
 						<AT.CellContainer key={col}>
-							<AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}>
-								{toolTipColumn.includes(col) ? (
-									<HtmlTooltip title={row[col]}>
-										<p className="max-two-line"> {row[col]}</p>
-									</HtmlTooltip>
-								) : (
-									row[col]
-								)}
-							</AT.TableBodyText>
+							{/* <AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}> */}
+							{toolTipColumn.includes(col) ? (
+								<HtmlTooltip title={row[col]}>
+									<p
+										className="max-two-line"
+										style={{ color: toggle ? "#FFFFFF" : "" }}
+									>
+										{" "}
+										{row[col]}
+									</p>
+								</HtmlTooltip>
+							) : (
+								row[col]
+							)}
+							{/* </AT.TableBodyText> */}
 
 							{arr.length === i + 1 ? (
 								<AT.DotMenu

@@ -116,7 +116,8 @@ function Task() {
 						Role: "manager",
 						"Est Mins": 12,
 						"Order Added": 2,
-						Intervals: "300hr",
+						Intervals:
+							"300hr,300hr,,300hr,300hr,,300hr,300hr,,300hr,300hr,,300hr,300hr,,300hr,300hr,,300hr,300hr,,300hr,300hr,,",
 						Stages: "Service",
 						Zones: "Zone 1",
 					},
