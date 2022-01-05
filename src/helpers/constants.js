@@ -3,6 +3,15 @@ import {
 	siteAssetPath,
 	siteDepartmentPath,
 	siteLocationPath,
+	modelDetail,
+	modelStages,
+	modelZones,
+	modelIntervals,
+	modelRoles,
+	modelQuestions,
+	modelTask,
+	modelServiceLayout,
+	modelAssest,
 } from "helpers/routePaths";
 
 export const BASE_API_PATH = "/api/";
@@ -32,6 +41,26 @@ export const siteScreenNavigation = [
 	{ name: "Assets", url: siteAssetPath },
 	{ name: "Departments", url: siteDepartmentPath },
 	{ name: "Locations", url: siteLocationPath },
+];
+
+export const modelScreenNavigation = ({
+	assests,
+	stages,
+	zones,
+	intervals,
+	roles,
+	questions,
+	tasks,
+}) => [
+	{ name: "Details", url: modelDetail },
+	{ name: `Assests(${assests})`, url: modelAssest },
+	{ name: `Stages(${stages})`, url: modelStages },
+	{ name: `Zones(${zones})`, url: modelZones },
+	{ name: `Intervals(${intervals})`, url: modelIntervals },
+	{ name: `Roles(${roles})`, url: modelRoles },
+	{ name: `Questions(${questions})`, url: modelQuestions },
+	{ name: `Tasks(${tasks})`, url: modelTask },
+	{ name: "Service Layout", url: modelServiceLayout },
 ];
 
 export const defectStatusTypes = [

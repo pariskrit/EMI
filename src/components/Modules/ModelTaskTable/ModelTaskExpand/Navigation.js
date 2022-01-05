@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	curveButton: {
 		borderRadius: 0,
+		padding: 6,
 		borderWidth: 1,
 		borderColor: ColourConstants.navButtonOnHover,
 		fontWeight: "bold",

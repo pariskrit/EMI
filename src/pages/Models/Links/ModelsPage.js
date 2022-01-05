@@ -1,10 +1,10 @@
 import React from "react";
 import AccessRoute from "components/HOC/AccessRoute";
-import { modelsPath, modelDetailsPath } from "helpers/routePaths";
+import { modelsPath } from "helpers/routePaths";
 import access from "helpers/access";
 import ModelMapData from "../ModelMapData";
 import ModelLists from "../ModelLists";
-import ModelDetails from "../ModelDetails";
+import ModelDetailsPage from "../ModelDetails/Links/modelDetailsPage";
 import Models from "..";
 
 const ModelsPage = () => {
@@ -22,12 +22,13 @@ const ModelsPage = () => {
 				component={ModelLists}
 				access={access.modelAccess}
 			/>
-			<AccessRoute
+			{/* <AccessRoute
 				path={modelDetailsPath}
 				exact
-				component={ModelDetails}
+				component={ModelDetailsPage}
 				access={access.modelAccess}
-			/>
+			/> */}
+			<ModelDetailsPage />
 		</Models>
 	);
 };
