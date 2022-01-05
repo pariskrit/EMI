@@ -17,6 +17,7 @@ import { handleSort } from "helpers/utils";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import { applicationPath } from "helpers/routePaths";
+import withMount from "components/HOC/withMount";
 // Init styled components
 const AC = ContentStyle();
 
@@ -43,7 +44,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const ApplicationListContent = () => {
+const ApplicationListContent = ({ isMounted }) => {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -65,31 +66,34 @@ const ApplicationListContent = () => {
 		try {
 			// Fetching applications from backend
 			let result = await API.get("/api/Applications");
+			if (!isMounted.aborted) {
+				if (result.status === 200) {
+					// Getting buffer
+					result = result.data;
 
-			// Rendering applications if success
-			if (result.status === 200) {
-				// Getting buffer
-				result = result.data;
+					// Updating state
+					result.forEach((d, index) => {
+						// TODO: BELOW NEEDS TO COME FROM BACKEND WHEN ClIENTS EXISTS
+						// The foreach can be removed when clients exists in response
+						d.clients = Math.trunc(Math.random() * 100);
 
-				// Updating state
-				result.forEach((d, index) => {
-					// TODO: BELOW NEEDS TO COME FROM BACKEND WHEN ClIENTS EXISTS
-					// The foreach can be removed when clients exists in response
-					d.clients = Math.trunc(Math.random() * 100);
+						result[index] = d;
+					});
 
-					result[index] = d;
-				});
+					// Setter happens in sort
+					handleSort(result, setData, "name", "asc");
 
-				// Setter happens in sort
-				handleSort(result, setData, "name", "asc");
+					setDataCount(result.length);
 
-				setDataCount(result.length);
-
-				return true;
+					return true;
+				} else {
+					// Throwing error if failed
+					throw new Error(`Error: Status ${result.status}`);
+				}
 			} else {
-				// Throwing error if failed
-				throw new Error(`Error: Status ${result.status}`);
+				return;
 			}
+			// Rendering applications if success
 		} catch (err) {
 			// TODO: Real error handling when this has been decided on
 			// (are we throwing alerts or pushing to home?)
@@ -292,7 +296,7 @@ const ApplicationListContent = () => {
 	useEffect(() => {
 		fetchData()
 			.then(() => {
-				setHaveData(true);
+				if (!isMounted.aborted) setHaveData(true);
 			})
 			.catch((err) => console.log("ERROR: ", err));
 		// eslint-disable-next-line
@@ -394,4 +398,4 @@ const ApplicationListContent = () => {
 	);
 };
 
-export default ApplicationListContent;
+export default withMount(ApplicationListContent);

@@ -105,9 +105,10 @@ const ModelMapHeader = ({
 				history.push(modelsPath + "/" + modelId);
 		} catch (err) {
 			setLoading(false);
+			console.log(err.response);
 			fetchData();
-			if (err.response.data.detail !== undefined)
-				getError(err.response.data.detail);
+			if (err?.response?.data?.detail !== undefined)
+				getError(err?.response?.data?.detail);
 			else console.log(err.response);
 		}
 	};

@@ -120,6 +120,7 @@ function AddNewModelDetail({
 			};
 			getFormData();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open, siteId]);
 
 	useEffect(() => {

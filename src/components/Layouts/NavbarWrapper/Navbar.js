@@ -298,6 +298,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 						return true;
 					}
 				}
+				setLoading(false);
 
 				history.push("/login");
 			} else {
@@ -306,11 +307,10 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		} catch (err) {
 			console.log(err);
 		}
-		setLoading(false);
 	};
 
 	// }
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
+	const { position, isAdmin } = JSON.parse(localStorage.getItem("me")) || {};
 	const navOptions = [
 		{
 			name: "Clients",
@@ -383,7 +383,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 				return false;
 			}
 			if (
-				position === null ||
+				isAdmin === true ||
 				access === "F" ||
 				access === "E" ||
 				access === "R"

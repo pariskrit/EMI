@@ -59,6 +59,7 @@ function Test() {
 			setLoading(false);
 		};
 		fetchData(page.pageNo, page.perPage);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const onChange = (item) => {

@@ -11,6 +11,7 @@ import { handleSort } from "helpers/utils";
 import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
+import withMount from "components/HOC/withMount";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -43,7 +44,7 @@ function setDropDownList(lists) {
 	}));
 }
 
-const ModelMapData = ({ match, history, getError }) => {
+const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const classes = useStyles();
 	const {
 		params: { modelId },
@@ -76,103 +77,117 @@ const ModelMapData = ({ match, history, getError }) => {
 
 	const [dropDownLoading, setDropDownLoading] = useState(false);
 
-	const fetchData = () => {
+	const fetchData = async () => {
 		setModelData({ data: {}, loading: true });
-		API.get("/api/ModelImports/" + modelId)
-			.then((res) => {
+		try {
+			const res = await API.get("/api/ModelImports/" + modelId);
+			if (res.status === 200) {
 				const { data } = res;
-				setModelData({ data: data, loading: false });
-				setErrors({
-					actions: {
-						total: data.modelImportActions.length,
-						resolved: data.modelImportActions.filter((x) =>
-							filterResolved(x, "actionID")
-						).length,
-					},
-					lubricants: {
-						total: data.modelImportLubricants.length,
-						resolved: data.modelImportLubricants.filter((x) =>
-							filterResolved(x, "lubricantID")
-						).length,
-					},
-					operatingModes: {
-						total: data.modelImportOperatingModes.length,
-						resolved: data.modelImportOperatingModes.filter((x) =>
-							filterResolved(x, "operatingModeID")
-						).length,
-					},
-					roles: {
-						total: data.modelImportRoles.length,
-						resolved: data.modelImportRoles.filter((x) =>
-							filterResolved(x, "roleID")
-						).length,
-					},
-					systems: {
-						total: data.modelImportSystems.length,
-						resolved: data.modelImportSystems.filter((x) =>
-							filterResolved(x, "systemID")
-						).length,
-					},
-				});
-				setDropDown((th) => ({ ...th, loading: true }));
+				if (!isMounted.aborted) {
+					setModelData({ data: data, loading: false });
+					setErrors({
+						actions: {
+							total: data.modelImportActions.length,
+							resolved: data.modelImportActions.filter((x) =>
+								filterResolved(x, "actionID")
+							).length,
+						},
+						lubricants: {
+							total: data.modelImportLubricants.length,
+							resolved: data.modelImportLubricants.filter((x) =>
+								filterResolved(x, "lubricantID")
+							).length,
+						},
+						operatingModes: {
+							total: data.modelImportOperatingModes.length,
+							resolved: data.modelImportOperatingModes.filter((x) =>
+								filterResolved(x, "operatingModeID")
+							).length,
+						},
+						roles: {
+							total: data.modelImportRoles.length,
+							resolved: data.modelImportRoles.filter((x) =>
+								filterResolved(x, "roleID")
+							).length,
+						},
+						systems: {
+							total: data.modelImportSystems.length,
+							resolved: data.modelImportSystems.filter((x) =>
+								filterResolved(x, "systemID")
+							).length,
+						},
+					});
+					setDropDown((th) => ({ ...th, loading: true }));
 
-				const siteAppID = data.siteAppID;
-				Promise.all(
-					[
-						"/api/SiteLocations?siteAppId=" + siteAppID,
-						"/api/SiteDepartments?siteAppId=" + siteAppID,
-						"/api/ModelStatuses?siteAppId=" + siteAppID,
-						"/api/ModelTypes?siteAppId=" + siteAppID,
-					].map((end) => API.get(end))
-				)
-					.then(
-						axios.spread(
-							(
-								{ data: locations },
-								{ data: departments },
-								{ data: statuses },
-								{ data: types }
-							) => {
-								const loc = setDropDownList(locations);
-								const dep = setDropDownList(departments);
-								const typ = setDropDownList(types);
-								const stat = statuses.map((x) => ({
-									...x,
-									publish: x.publish ? "Yes" : "No",
-								}));
-								setDropDown({
-									loading: false,
-									locations: loc,
-									departments: dep,
-									statuses: stat,
-									types: typ,
-								});
-
-								setDropDownValue({
-									location:
-										loc.find((x) => setDropDownData(x, data.siteLocationID)) ||
-										{},
-									department:
-										dep.find((x) =>
-											setDropDownData(x, data.siteDepartmentID)
-										) || {},
-									status:
-										stat.find((x) => setDropDownData(x, data.siteStatusID)) ||
-										{},
-									type:
-										typ.find((x) => setDropDownData(x, data.modelTypeID)) || {},
-								});
-							}
-						)
+					const siteAppID = data.siteAppID;
+					Promise.all(
+						[
+							"/api/SiteLocations?siteAppId=" + siteAppID,
+							"/api/SiteDepartments?siteAppId=" + siteAppID,
+							"/api/ModelStatuses?siteAppId=" + siteAppID,
+							"/api/ModelTypes?siteAppId=" + siteAppID,
+						].map((end) => API.get(end))
 					)
-					.catch((err) => console.log(err.response));
-			})
-			.catch((err) => {
-				if (err.response.data.title !== undefined)
-					getError(err.response.data.title);
+						.then(
+							axios.spread(
+								(
+									{ data: locations },
+									{ data: departments },
+									{ data: statuses },
+									{ data: types }
+								) => {
+									const loc = setDropDownList(locations);
+									const dep = setDropDownList(departments);
+									const typ = setDropDownList(types);
+									const stat = statuses.map((x) => ({
+										...x,
+										publish: x.publish ? "Yes" : "No",
+									}));
+									if (!isMounted.aborted) {
+										setDropDown({
+											loading: false,
+											locations: loc,
+											departments: dep,
+											statuses: stat,
+											types: typ,
+										});
 
-				history.push(modelsPath);
-			});
+										setDropDownValue({
+											location:
+												loc.find((x) =>
+													setDropDownData(x, data.siteLocationID)
+												) || {},
+											department:
+												dep.find((x) =>
+													setDropDownData(x, data.siteDepartmentID)
+												) || {},
+											status:
+												stat.find((x) =>
+													setDropDownData(x, data.siteStatusID)
+												) || {},
+											type:
+												typ.find((x) => setDropDownData(x, data.modelTypeID)) ||
+												{},
+										});
+									}
+								}
+							)
+						)
+						.catch((err) => console.log(err.response));
+				} else {
+					// isMounted
+					return;
+				}
+			} else {
+				// response status
+				throw new Error(res);
+			}
+		} catch (err) {
+			if (err.response.data.title !== undefined)
+				getError(err.response.data.title);
+
+			history.push(modelsPath);
+		}
 	};
 
 	useEffect(() => {
@@ -217,6 +232,12 @@ const ModelMapData = ({ match, history, getError }) => {
 				});
 		});
 	};
+
+	const { position } = JSON.parse(localStorage.getItem("me"));
+	const access = position?.modelAccess;
+	if (position === null || access !== "F" || access !== "E" || access !== "R") {
+		history.goBack();
+	}
 
 	if (modelData.loading) {
 		return <CircularProgress />;
@@ -301,4 +322,4 @@ const mapDispatchToProps = (dispatch) => ({
 	getError: (msg) => dispatch(showError(msg)),
 });
 
-export default connect(null, mapDispatchToProps)(ModelMapData);
+export default connect(null, mapDispatchToProps)(withMount(ModelMapData));

@@ -4,12 +4,12 @@ import { Route, useHistory } from "react-router";
 
 const AccessRoute = ({ component: Component, access, ...rest }) => {
 	const history = useHistory();
-	const { position } = JSON.parse(localStorage.getItem("me"));
+	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				position === null ||
+				isAdmin === true ||
 				position?.[access] === "F" ||
 				position?.[access] === "E" ||
 				position?.[access] === "R" ||

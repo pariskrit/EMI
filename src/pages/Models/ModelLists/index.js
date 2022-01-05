@@ -12,7 +12,7 @@ import {
 	getModelList,
 } from "services/models/modelList";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -25,6 +25,7 @@ import VersionListTable from "./VersionListTable";
 import ImportFileDialouge from "./ImportFileDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import withMount from "components/HOC/withMount";
 
 const AT = ActionButtonStyle();
 const AC = ContentStyle();
@@ -66,7 +67,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const ModelLists = ({ getError }) => {
+const ModelLists = ({ getError, isMounted, history }) => {
 	const classes = useStyles();
 
 	//Init State
@@ -135,16 +136,17 @@ const ModelLists = ({ getError }) => {
 	};
 
 	const fetchModelList = async () => {
-		const response = await getModelList(position?.siteAppID);
+		const response = await getModelList(position?.siteAppID || 24);
+		if (!isMounted.aborted) {
+			if (response.status) {
+				setAllData(response.data);
+				setFilteredData(response.data);
+			} else {
+				displayError(response?.data?.errors?.siteAppId[0], response);
+			}
 
-		if (response.status) {
-			setAllData(response.data);
-			setFilteredData(response.data);
-		} else {
-			displayError(response?.data?.errors?.siteAppId[0], response);
+			setIsLoading(false);
 		}
-
-		setIsLoading(false);
 	};
 
 	const createModal = async (payload) => {
@@ -175,12 +177,17 @@ const ModelLists = ({ getError }) => {
 	};
 
 	const fetchModelImports = useCallback(async () => {
-		const response = await getModelImports(position?.siteAppID);
-		if (response.status) {
-			setModelImportData(response.data);
+		const response = await getModelImports(position?.siteAppID || 24);
+		if (!isMounted.aborted) {
+			if (response.status) {
+				setModelImportData(response.data);
+			} else {
+				displayError(response?.data?.errors?.siteAppId[0], response);
+			}
 		} else {
-			displayError(response?.data?.errors?.siteAppId[0], response);
+			return;
 		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -188,6 +195,11 @@ const ModelLists = ({ getError }) => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	const access = position?.modelAccess;
+	if (position === null || access !== "F" || access !== "E" || access !== "R") {
+		history.goBack();
+	}
 
 	return (
 		<div className="container">
@@ -338,4 +350,4 @@ const ModelLists = ({ getError }) => {
 	);
 };
 
-export default ModelLists;
+export default withMount(ModelLists);

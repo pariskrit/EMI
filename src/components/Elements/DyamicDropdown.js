@@ -132,6 +132,7 @@ function DyanamicDropdown(props) {
 				scrollRef.current = false;
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dropActive]);
 
 	const { hasMore, loading, gotoTop, handleScroll } = useInfiniteScroll(

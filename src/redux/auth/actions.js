@@ -19,7 +19,7 @@ export const loginUser = (input) => async (dispatch) => {
 				resolve(res);
 			})
 			.catch((err) => {
-				dispatch(userFailure(err.response.data.detail));
+				dispatch(userFailure(err?.response?.data?.detail));
 				reject(err);
 			});
 	});
