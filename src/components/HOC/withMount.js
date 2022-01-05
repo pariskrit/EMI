@@ -10,7 +10,7 @@ function withMount(Component) {
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
-		return <Component {...props} isMounted={status} />;
+		return <Component {...props} isMounted={!status.aborted} />;
 	};
 }
 export default withMount;

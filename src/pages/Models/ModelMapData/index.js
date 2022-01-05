@@ -86,7 +86,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 			const res = await getModelMapData(modelId);
 			if (res.status) {
 				const { data } = res;
-				if (!isMounted.aborted) {
+				if (isMounted) {
 					setModelData({ data: data, loading: false });
 					setErrors({
 						actions: {
@@ -146,7 +146,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 										...x,
 										publish: x.publish ? "Yes" : "No",
 									}));
-									if (!isMounted.aborted) {
+									if (isMounted) {
 										setDropDown({
 											loading: false,
 											locations: loc,

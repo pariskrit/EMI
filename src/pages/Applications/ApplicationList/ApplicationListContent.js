@@ -66,7 +66,7 @@ const ApplicationListContent = ({ isMounted }) => {
 		try {
 			// Fetching applications from backend
 			let result = await API.get("/api/Applications");
-			if (!isMounted.aborted) {
+			if (isMounted) {
 				if (result.status === 200) {
 					// Getting buffer
 					result = result.data;
@@ -296,7 +296,7 @@ const ApplicationListContent = ({ isMounted }) => {
 	useEffect(() => {
 		fetchData()
 			.then(() => {
-				if (!isMounted.aborted) setHaveData(true);
+				if (isMounted) setHaveData(true);
 			})
 			.catch((err) => console.log("ERROR: ", err));
 		// eslint-disable-next-line
