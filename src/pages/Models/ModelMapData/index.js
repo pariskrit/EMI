@@ -183,7 +183,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				}
 			} else {
 				// response status
-				if (res.data.title !== undefined) getError(res.data.title);
+				if (res?.data?.title !== undefined) getError(res.data.title);
 
 				history.push(modelsPath);
 			}
