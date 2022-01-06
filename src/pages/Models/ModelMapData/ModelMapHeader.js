@@ -13,6 +13,8 @@ import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { importModelMapData } from "services/models/modelMap";
 
+const { isAdmin } = JSON.parse(localStorage.getItem("me"));
+
 const successColor = "#24BA78";
 const errorColor = "#E21313";
 
@@ -166,12 +168,14 @@ const ModelMapHeader = ({
 						>
 							Delete
 						</AT.GeneralButton>
-						<AT.GeneralButton
-							onClick={handleImport}
-							disabled={total !== resolved || loading}
-						>
-							{loading ? "Completing ...." : "Complete"}
-						</AT.GeneralButton>
+						{isAdmin === true && (
+							<AT.GeneralButton
+								onClick={handleImport}
+								disabled={total !== resolved || loading}
+							>
+								{loading ? "Completing ...." : "Complete"}
+							</AT.GeneralButton>
+						)}
 					</div>
 				</div>
 			</div>
