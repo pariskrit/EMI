@@ -12,7 +12,8 @@ import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
 import withMount from "components/HOC/withMount";
-import { getModelMapData, importModelMapData } from "services/models/modelMap";
+import { getModelMapData } from "services/models/modelMap";
+import useModelAccess from "../useModelAccess";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -47,6 +48,7 @@ function setDropDownList(lists) {
 
 const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const classes = useStyles();
+	useModelAccess();
 	const {
 		params: { modelId },
 	} = match;
@@ -181,7 +183,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				}
 			} else {
 				// response status
-				if (res.data.title !== undefined) getError(res.data.title);
+				if (res?.data?.title !== undefined) getError(res.data.title);
 
 				history.push(modelsPath);
 			}
@@ -215,41 +217,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 		setDropDownValue((th) => ({ ...th, [name]: val }));
 	};
 
-	// After Pressing Complete Button
-	const handleImport = async () => {
-		// try {
-		// 	const res = await importModelMapData(modelId, {
-		// 		key: modelData.data.documentKey,
-		// 		import: false,
-		// 	});
-		// 	if (res.status) {
-		// 		return res;
-		// 	} else {
-		// 		throw new Error(res);
-		// 	}
-		// } catch (err) {
-		// 	return err;
-		// }
-		return new Promise((resolve, reject) => {
-			API.post("/api/modelimports/" + modelId + "/import", {
-				key: modelData.data.documentKey,
-				import: false,
-			})
-				.then((res) => {
-					resolve(res);
-				})
-				.catch((err) => {
-					// If error response, the data need to be remapped
-					reject(err);
-				});
-		});
-	};
-
-	// const { position } = JSON.parse(localStorage.getItem("me"));
-	// const access = position?.modelAccess;
-	// if (position === null) {
-	// 	history.goBack();
-	// }
 	if (modelData.loading) {
 		return <CircularProgress />;
 	}
@@ -259,7 +226,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 			{dropDownLoading ? <LinearProgress className={classes.loading} /> : null}
 			<ModelMapHeader
 				name={`${modelData.data.name} (${modelData.data.model})`}
-				onCompleteImport={handleImport}
 				errors={errors}
 				getError={getError}
 				history={history}

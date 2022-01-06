@@ -26,6 +26,7 @@ import ImportFileDialouge from "./ImportFileDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import withMount from "components/HOC/withMount";
+import useModelAccess from "../useModelAccess";
 
 const AT = ActionButtonStyle();
 const AC = ContentStyle();
@@ -67,8 +68,9 @@ const useStyles = makeStyles({
 	},
 });
 
-const ModelLists = ({ getError, isMounted, history }) => {
+const ModelLists = ({ getError, isMounted }) => {
 	const classes = useStyles();
+	useModelAccess();
 
 	//Init State
 	const [isLoading, setIsLoading] = useState(true);
@@ -114,7 +116,6 @@ const ModelLists = ({ getError, isMounted, history }) => {
 		setFilteredData(newData);
 		setAllData(newData);
 	};
-	console.log(filteredData, allData);
 	//handle search
 	const handleSearch = (searchValue) => {
 		if (searchValue !== "") {
@@ -195,10 +196,6 @@ const ModelLists = ({ getError, isMounted, history }) => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	if (position === null) {
-		history.goBack();
-	}
 
 	return (
 		<div className="container">

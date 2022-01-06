@@ -18,6 +18,7 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 						{...props}
 						position={position}
 						access={position?.[access]}
+						history={history}
 					/>
 				) : history.length > 1 ? (
 					history.goBack()

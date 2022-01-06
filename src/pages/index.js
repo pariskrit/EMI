@@ -24,7 +24,6 @@ import Defects from "./Defects";
 import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
-import ModelAsset from "./Models/ModelAsset";
 
 const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
@@ -43,18 +42,6 @@ const MainApp = ({ location }) => {
 				<SiteAppPage />
 				<UsersPage />
 				<ModelsPage />
-				<AccessRoute
-					path={"/app/models/:id/asset"}
-					exact
-					component={ModelAsset}
-					access={access.modelAccess}
-				/>
-				<AccessRoute
-					path={"/app/models"}
-					exact
-					component={(props) => <h1>Model Path</h1>}
-					access={access.modelAccess}
-				/>
 
 				<AccessRoute
 					path={analyticsPath}
