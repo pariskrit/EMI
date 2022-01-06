@@ -12,9 +12,9 @@ const getModelMapData = async (id) => {
 	}
 };
 
-const importModelMapData = async (id, data) => {
+const importModelMapData = async (id) => {
 	try {
-		let response = await API.post(`${Apis.ModelImports}/${id}/import`, data);
+		let response = await API.post(`${Apis.ModelImports}/${id}/import`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

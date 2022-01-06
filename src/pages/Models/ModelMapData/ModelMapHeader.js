@@ -89,7 +89,6 @@ const ModelMapHeader = ({
 	history,
 	modelId,
 	fetchData,
-	documentKey,
 }) => {
 	const classes = useStyles();
 	const [loading, setLoading] = React.useState(false);
@@ -101,10 +100,7 @@ const ModelMapHeader = ({
 	const handleImport = async () => {
 		setLoading(true);
 		try {
-			const res = await importModelMapData(modelId, {
-				key: documentKey,
-				import: false,
-			});
+			const res = await importModelMapData(modelId);
 			if (res.status) {
 				history.push(modelsPath + "/" + modelId);
 			} else {

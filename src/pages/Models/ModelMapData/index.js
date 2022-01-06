@@ -231,7 +231,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				history={history}
 				modelId={modelId}
 				fetchData={fetchData}
-				documentKey={modelData.data.documentKey}
 			/>
 			<div className={classes.main}>
 				{dropDowns.loading ? (
