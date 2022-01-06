@@ -44,13 +44,6 @@ const MainApp = ({ location }) => {
 				<ModelsPage />
 
 				<AccessRoute
-					path={"/app/models"}
-					exact
-					component={(props) => <h1>Model Path</h1>}
-					access={access.modelAccess}
-				/>
-
-				<AccessRoute
 					path={analyticsPath}
 					exact
 					component={(props) => <h1>Analytics Path</h1>}
