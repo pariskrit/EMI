@@ -103,7 +103,7 @@ const ModelMapHeader = ({
 		try {
 			const res = await importModelMapData(modelId);
 			if (res.status) {
-				history.push(modelsPath + "/" + modelId);
+				history.push(modelsPath + "/" + res.data.modelId);
 			} else {
 				if (res?.data?.detail) getError(res?.data?.detail);
 				setLoading(false);
