@@ -12,8 +12,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { importModelMapData } from "services/models/modelMap";
-
-const { isAdmin } = JSON.parse(localStorage.getItem("me"));
+import AccessWrapper from "components/Modules/AccessWrapper";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
@@ -168,14 +167,14 @@ const ModelMapHeader = ({
 						>
 							Delete
 						</AT.GeneralButton>
-						{isAdmin === true && (
+						<AccessWrapper>
 							<AT.GeneralButton
 								onClick={handleImport}
 								disabled={total !== resolved || loading}
 							>
 								{loading ? "Completing ...." : "Complete"}
 							</AT.GeneralButton>
-						)}
+						</AccessWrapper>
 					</div>
 				</div>
 			</div>
