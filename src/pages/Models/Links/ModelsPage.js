@@ -21,6 +21,12 @@ const ModelsPage = () => {
 				component={ModelLists}
 				access={access.modelAccess}
 			/>
+			<AccessRoute
+				path={modelsPath + "/:modelId"}
+				exact
+				component={() => <h1>Model Detail Page</h1>}
+				access={access.modelAccess}
+			/>
 		</Models>
 	);
 };
