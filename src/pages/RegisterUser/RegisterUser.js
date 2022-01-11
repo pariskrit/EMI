@@ -283,6 +283,7 @@ const RegisterEmail = () => {
 						})
 					);
 					// push to login page upon successful Email registration
+					localStorage.clear();
 					redirectLogin();
 				} else {
 					// show error notification
