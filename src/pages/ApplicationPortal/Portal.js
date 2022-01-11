@@ -37,6 +37,7 @@ function Portal() {
 	const onInputChange = (client) => {
 		setSelectedClient(client);
 		fetchApplicationsAndSites(client.id);
+		localStorage.setItem("isAdmin", client.isAdmin);
 	};
 
 	const fetchListOfClients = async () => {
@@ -48,6 +49,7 @@ function Portal() {
 					id: client.id,
 					label: client.name,
 					value: index,
+					isAdmin: client.isAdmin,
 				})),
 			]);
 		}
