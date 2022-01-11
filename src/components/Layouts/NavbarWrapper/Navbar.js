@@ -317,79 +317,87 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			icon: ClientIcon,
 			path: clientsPath,
 			access: "",
+			position: null,
 		},
 		{
 			name: "Applications",
 			icon: ApplicationIcon,
 			path: applicationListPath,
 			access: "",
+			position: null,
 		},
 		{
 			name: "Models",
 			icon: ModelIcon,
 			path: modelsPath,
 			access: access.modelAccess,
+			position: "",
 		},
 		{
 			name: "Users",
 			icon: UserIcon,
 			path: usersPath,
 			access: access.userAccess,
+			position: null,
 		},
 		{
 			name: "Analytics",
 			icon: AnalyticsIcon,
 			path: analyticsPath,
 			access: access.analyticsAccess,
+			position: null,
 		},
 		{
 			name: "Services",
 			icon: ModelIcon,
 			path: servicesPath,
 			access: access.serviceAccess,
+			position: "",
 		},
 		{
 			name: "Defects",
 			icon: ModelIcon,
 			path: defectsPath,
 			access: access.defectAccess,
+			position: "",
 		},
 		{
 			name: "Analysis",
 			icon: ModelIcon,
 			path: analysisPath,
 			access: access.analysisAccess,
+			position: "",
 		},
 		{
 			name: "Feedback",
 			icon: ModelIcon,
 			path: feedbackPath,
 			access: access.feedbackAccess,
+			position: "",
 		},
 		{
 			name: "Noticeboards",
 			icon: ModelIcon,
 			path: noticeboardPath,
 			access: access.noticeboardAccess,
+			position: "",
 		},
 	]
 		// Filter which sidebar navigation is accessible
 		.filter((x) => {
-			// If position is null it is super admin
+			// // If position is null it is super admin
 			const access = position?.[x.access];
 
-			//if user does not have siteAppId, don't show models navigation
-			if (x.name === "Models" && position === null) {
-				return false;
+			if (position === null) {
+				if (x.position === null) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				if (access === "F" || access === "E" || access === "R") return true;
+				else return false;
 			}
-			if (
-				isAdmin === true ||
-				access === "F" ||
-				access === "E" ||
-				access === "R"
-			)
-				return true;
-			else return false;
 		});
 
 	return (
