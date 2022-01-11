@@ -8,6 +8,7 @@ import { showError } from "redux/common/actions";
 import AccessRoute from "components/HOC/AccessRoute";
 import access from "helpers/access";
 import { Route } from "react-router-dom";
+import roles from "helpers/roles";
 
 const routes = [
 	{
@@ -55,6 +56,7 @@ const UserPage = ({ getError }) => {
 				component={(props) => (
 					<SingleComponent {...props} {...detail} getError={getError} />
 				)}
+				user={roles.clientAdmin}
 			/>
 		</div>
 	);

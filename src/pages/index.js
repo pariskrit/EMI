@@ -79,6 +79,12 @@ const MainApp = ({ location }) => {
 					component={Noticeboards}
 					access={access.noticeboardAccess}
 				/>
+				<AccessRoute
+					path={"/app/settings"}
+					exact
+					component={() => <h1>Settings</h1>}
+					access={access.noticeboardAccess}
+				/>
 			</NavbarWrapper>
 		</Switch>
 	);

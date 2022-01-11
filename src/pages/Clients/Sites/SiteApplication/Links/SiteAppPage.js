@@ -38,6 +38,7 @@ import DefectStatuses from "../DefectStatuses";
 import DefectRiskRatings from "../DefectRiskRatings";
 import UserPositions from "../UserPositions";
 import AccessRoute from "components/HOC/AccessRoute";
+import roles from "helpers/roles";
 
 const routes = [
 	{
@@ -318,6 +319,7 @@ const SiteAppPage = () => {
 						key={route.id}
 						path={siteAppPath + route.path}
 						exact
+						user={roles.clientAdmin}
 					/>
 				))}
 			</SiteApplication>

@@ -5,12 +5,23 @@ import ClientList from "pages/Clients/ClientList/ClientList";
 import Client from "..";
 import ClientDetails from "../ClientDetailScreen/ClientDetails";
 import AccessRoute from "components/HOC/AccessRoute";
+import roles from "helpers/roles";
 
 export default function ClientPage() {
 	return (
 		<Client>
-			<AccessRoute path={clientsPath} exact component={ClientList} />
-			<AccessRoute path={clientDetailPath} exact component={ClientDetails} />
+			<AccessRoute
+				path={clientsPath}
+				exact
+				component={ClientList}
+				user={roles.superAdmin}
+			/>
+			<AccessRoute
+				path={clientDetailPath}
+				exact
+				component={ClientDetails}
+				user={roles.superAdmin}
+			/>
 		</Client>
 	);
 }
