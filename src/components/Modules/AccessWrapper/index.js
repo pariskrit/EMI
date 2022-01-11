@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const AccessWrapper = ({ children, access }) => {
-	const { position } = JSON.parse(localStorage.getItem("me"));
+	const me = JSON.parse(localStorage.getItem("me"));
 
-	if (position === null || access.includes(position?.name))
+	if (me?.isAdmin === true || access.includes(me?.position?.name))
 		return <div>{children}</div>;
 
 	return null;

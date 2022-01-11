@@ -68,13 +68,9 @@ const useStyles = makeStyles((theme) => ({
 function RegionAndSite({ region, sites, clientId }) {
 	const classes = useStyles();
 
-	// useEffect(() => {
-	// 	const storage = JSON.parse(localStorage.getItem("crumbs"));
-	// 	localStorage.setItem(
-	// 		"crumbs",
-	// 		JSON.stringify({ ...storage, siteNamme:sites.name })
-	// 	);
-	// }, []);
+	const handleSiteAppClick = async (id) => {
+		localStorage.setItem("siteAppId", id);
+	};
 	return (
 		<Accordion className={classes.accordionParent}>
 			<AccordionSummary
@@ -111,6 +107,7 @@ function RegionAndSite({ region, sites, clientId }) {
 							to={`${clientsPath}/${clientId}/sites/${
 								site.id
 							}${applicationPath}/${site.siteAppID + siteAppDetailPath}`}
+							onClick={() => handleSiteAppClick(site.siteAppID)}
 						>
 							{site.name}
 						</Link>

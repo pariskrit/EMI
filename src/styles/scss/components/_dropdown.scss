@@ -104,6 +104,11 @@ $dropdown-errorcolor: #f44336;
 			max-height: 400px;
 			border-top: 1px solid $border-color;
 
+			.checklist-item {
+				padding: 15px;
+				border-bottom: 1px solid $border-color;
+			}
+
 			.list-item {
 				padding: 15px 0;
 				cursor: pointer;
@@ -156,6 +161,7 @@ $dropdown-errorcolor: #f44336;
 			&::-webkit-scrollbar-thumb:hover {
 				background: #555;
 			}
+
 			.list-item {
 				padding: 15px;
 				cursor: pointer;

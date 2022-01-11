@@ -248,9 +248,15 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		backgroundColor: "black",
 	},
+
+	loader: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+	},
 }));
 
-function Navbar({ userLogOut, isApplicationPortal = false }) {
+function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -292,6 +298,7 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 						return true;
 					}
 				}
+				setLoading(false);
 
 				history.push("/login");
 			} else {
@@ -300,18 +307,10 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 		} catch (err) {
 			console.log(err);
 		}
-		setLoading(false);
 	};
 
-	// function signOutMicrosoftHandler() {
-	// 	const accountId = localStorage.getItem("homeAccoundId");
-	// 	const logoutRequest = {
-	// 		account: instance.getAccountByHomeId(accountId),
-	// 		postLogoutRedirectUri: "http://localhost:3000/login",
-	// 	};
-	// 	instance.logoutRedirect(logoutRequest);
 	// }
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
+	const { position, isAdmin } = JSON.parse(localStorage.getItem("me")) || {};
 	const navOptions = [
 		{
 			name: "Clients",
@@ -379,12 +378,12 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 			// If position is null it is super admin
 			const access = position?.[x.access];
 
-			//if superadmin, don't show models navigation
+			//if user does not have siteAppId, don't show models navigation
 			if (x.name === "Models" && position === null) {
 				return false;
 			}
 			if (
-				position === null ||
+				isAdmin === true ||
 				access === "F" ||
 				access === "E" ||
 				access === "R"
@@ -418,100 +417,111 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 							<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
 						</div>
 					)}
-					{isApplicationPortal ? (
-						<List className={classes.lists}>
-							<Link to="/portal" className={classes.navLink}>
-								<div
-									className={`${classes.navListContainer} mobNavListContainer`}
-								>
-									<ListItem button className={classes.currentItemBackground}>
-										<ListItemIcon className={classes.navIconContainer}>
-											<Home
-												className={classes.navIconCurrent}
-												alt={`Home icon`}
-											/>
-										</ListItemIcon>
-										<ListItemText
-											classes={{
-												primary: classes.listItemTextPrimaryCurrent,
-											}}
-											primary="Application Portal"
-										/>
-									</ListItem>
-								</div>
-							</Link>
-							{isAdmin ? (
-								<Link to={clientsPath} className={classes.navLink}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-									>
-										<ListItem button className={null}>
-											<ListItemIcon className={classes.navIconContainer}>
-												<SettingsIcon
-													className={classes.homeIcon}
-													alt={`Home icon`}
-												/>
-											</ListItemIcon>
-											<ListItemText
-												classes={{
-													primary: classes.listItemTextPrimary,
-												}}
-												primary="Admin Mode"
-											/>
-										</ListItem>
-									</div>
-								</Link>
-							) : null}
-						</List>
+					{isLoading ? (
+						<div className={classes.loader}>
+							<CircularProgress />
+						</div>
 					) : (
-						<List className={classes.lists}>
-							{navOptions.map((item) => {
-								// Storing SVG
-								let NavIcon = item.icon;
-
-								return (
-									<Link
-										to={item.path}
-										className={classes.navLink}
-										key={item.name}
-									>
+						<>
+							{isApplicationPortal ? (
+								<List className={classes.lists}>
+									<Link to="/portal" className={classes.navLink}>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
-											key={item.name}
 										>
 											<ListItem
 												button
-												className={
-													item.name.toLowerCase() === activeLink
-														? classes.currentItemBackground
-														: null
-												}
+												className={classes.currentItemBackground}
 											>
 												<ListItemIcon className={classes.navIconContainer}>
-													<NavIcon
-														className={
-															item.name.toLowerCase() === activeLink
-																? classes.navIconCurrent
-																: classes.navIcon
-														}
-														alt={`${item.name} icon`}
+													<Home
+														className={classes.navIconCurrent}
+														alt={`Home icon`}
 													/>
 												</ListItemIcon>
 												<ListItemText
 													classes={{
-														primary:
-															item.name.toLowerCase() === activeLink
-																? classes.listItemTextPrimaryCurrent
-																: classes.listItemTextPrimary,
+														primary: classes.listItemTextPrimaryCurrent,
 													}}
-													primary={item.name}
+													primary="Application Portal"
 												/>
 											</ListItem>
 										</div>
 									</Link>
-								);
-							})}
-						</List>
+									{isAdmin ? (
+										<Link to={clientsPath} className={classes.navLink}>
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+											>
+												<ListItem button className={null}>
+													<ListItemIcon className={classes.navIconContainer}>
+														<SettingsIcon
+															className={classes.homeIcon}
+															alt={`Home icon`}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														classes={{
+															primary: classes.listItemTextPrimary,
+														}}
+														primary="Admin Mode"
+													/>
+												</ListItem>
+											</div>
+										</Link>
+									) : null}
+								</List>
+							) : (
+								<List className={classes.lists}>
+									{navOptions.map((item) => {
+										// Storing SVG
+										let NavIcon = item.icon;
+
+										return (
+											<Link
+												to={item.path}
+												className={classes.navLink}
+												key={item.name}
+											>
+												<div
+													className={`${classes.navListContainer} mobNavListContainer`}
+													key={item.name}
+												>
+													<ListItem
+														button
+														className={
+															item.name.toLowerCase() === activeLink
+																? classes.currentItemBackground
+																: null
+														}
+													>
+														<ListItemIcon className={classes.navIconContainer}>
+															<NavIcon
+																className={
+																	item.name.toLowerCase() === activeLink
+																		? classes.navIconCurrent
+																		: classes.navIcon
+																}
+																alt={`${item.name} icon`}
+															/>
+														</ListItemIcon>
+														<ListItemText
+															classes={{
+																primary:
+																	item.name.toLowerCase() === activeLink
+																		? classes.listItemTextPrimaryCurrent
+																		: classes.listItemTextPrimary,
+															}}
+															primary={item.name}
+														/>
+													</ListItem>
+												</div>
+											</Link>
+										);
+									})}
+								</List>
+							)}
+						</>
 					)}
 
 					<div
@@ -735,34 +745,6 @@ function Navbar({ userLogOut, isApplicationPortal = false }) {
 							</div>
 						</div>
 					</div>
-					{/* <div className={`${classes.navListContainer} mobNavListContainer`}>
-						<ListItem key="userProfileIcon">
-							<ListItemIcon className={classes.navIconContainer}>
-								<UserProfileIcon
-									alt="user profile icon"
-									className={classes.navIcon}
-								/>
-							</ListItemIcon>
-						</ListItem>
-					</div>
-					<div className={`${classes.navListContainer} mobNavListContainer`}>
-						<ListItem key="logoutIcon" button={true} onClick={handleLogout}>
-							<ListItemIcon className={classes.navIconContainer}>
-								{loading ? (
-									<CircularProgress />
-								) : (
-									<LogoutIcon alt="Logout Button" className={classes.navIcon} />
-								)}
-							</ListItemIcon>
-							<ListItemText
-								classes={{
-									primary: classes.listItemTextPrimary,
-									secondary: classes.listItemTextSecondary,
-								}}
-								primary="Logout"
-							/>
-						</ListItem>
-					</div> */}
 					)
 				</BottomNavigation>
 			</div>

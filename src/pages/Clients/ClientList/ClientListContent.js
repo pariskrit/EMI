@@ -15,6 +15,7 @@ import { handleSort } from "helpers/utils";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
+import withMount from "components/HOC/withMount";
 // Init styled components
 const AC = ContentStyle();
 
@@ -41,7 +42,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const ClientListContent = () => {
+const ClientListContent = ({ isMounted }) => {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -55,6 +56,15 @@ const ClientListContent = () => {
 	const [selectedID, setSelectedID] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchedData] = useState([]);
+	// Fetching data on pageload
+	useEffect(() => {
+		fetchData()
+			.then(() => {
+				if (!isMounted.aborted) setHaveData(true);
+			})
+			.catch((err) => console.log("ERROR: ", err));
+		// eslint-disable-next-line
+	}, []);
 
 	// Handlers
 	const fetchData = async () => {
@@ -62,31 +72,32 @@ const ClientListContent = () => {
 		try {
 			// Fetching clients from backend
 			let result = await API.get("/api/Clients");
+			if (!isMounted.aborted) {
+				if (result.status === 200) {
+					// Getting buffer
+					result = result.data;
 
-			// Rendering clients if success
-			if (result.status === 200) {
-				// Getting buffer
-				result = result.data;
+					// Updating state
+					result.forEach((d, index) => {
+						// TODO: BELOW NEEDS TO COME FROM BACKEND WHEN ClIENTS EXISTS
+						// The foreach can be removed when clients exists in response
+						d.clients = Math.trunc(Math.random() * 100);
 
-				// Updating state
-				result.forEach((d, index) => {
-					// TODO: BELOW NEEDS TO COME FROM BACKEND WHEN ClIENTS EXISTS
-					// The foreach can be removed when clients exists in response
-					d.clients = Math.trunc(Math.random() * 100);
+						result[index] = d;
+					});
 
-					result[index] = d;
-				});
+					// Setter happens in sort
+					handleSort(result, setData, "name", "asc");
 
-				// Setter happens in sort
-				handleSort(result, setData, "name", "asc");
+					setDataCount(result.length);
 
-				setDataCount(result.length);
-
-				return true;
-			} else {
-				// Throwing error if failed
-				throw new Error(`Error: Status ${result.status}`);
+					return true;
+				} else {
+					// Throwing error if failed
+					throw new Error(`Error: Status ${result.status}`);
+				}
 			}
+			// Rendering clients if success
 		} catch (err) {
 			// TODO: Real error handling when this has been decided on
 			// (are we throwing alerts or pushing to home?)
@@ -211,16 +222,6 @@ const ClientListContent = () => {
 		setSearchedData(results);
 	};
 
-	// Fetching data on pageload
-	useEffect(() => {
-		fetchData()
-			.then(() => {
-				setHaveData(true);
-			})
-			.catch((err) => console.log("ERROR: ", err));
-		// eslint-disable-next-line
-	}, []);
-
 	// Search sorting side effect
 	useEffect(() => {
 		// Performing search
@@ -310,4 +311,4 @@ const ClientListContent = () => {
 	);
 };
 
-export default ClientListContent;
+export default withMount(ClientListContent);

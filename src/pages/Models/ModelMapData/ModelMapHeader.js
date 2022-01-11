@@ -11,6 +11,8 @@ import { modelsPath } from "helpers/routePaths";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import { importModelMapData } from "services/models/modelMap";
+import AccessWrapper from "components/Modules/AccessWrapper";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
@@ -82,7 +84,6 @@ const useStyles = makeStyles({
 	},
 });
 const ModelMapHeader = ({
-	onCompleteImport,
 	name,
 	errors,
 	getError,
@@ -100,15 +101,16 @@ const ModelMapHeader = ({
 	const handleImport = async () => {
 		setLoading(true);
 		try {
-			const res = await onCompleteImport();
-			if (res.status === 200 || res.status === 201)
-				history.push(modelsPath + "/" + modelId);
-		} catch (err) {
-			setLoading(false);
-			fetchData();
-			if (err.response.data.detail !== undefined)
-				getError(err.response.data.detail);
-			else console.log(err.response);
+			const res = await importModelMapData(modelId);
+			if (res.status) {
+				history.push(modelsPath + "/" + res.data.modelId);
+			} else {
+				if (res?.data?.detail) getError(res?.data?.detail);
+				setLoading(false);
+				fetchData();
+			}
+		} catch (e) {
+			return;
 		}
 	};
 
@@ -165,12 +167,14 @@ const ModelMapHeader = ({
 						>
 							Delete
 						</AT.GeneralButton>
-						<AT.GeneralButton
-							onClick={handleImport}
-							disabled={total !== resolved || loading}
-						>
-							{loading ? "Completing ...." : "Complete"}
-						</AT.GeneralButton>
+						<AccessWrapper>
+							<AT.GeneralButton
+								onClick={handleImport}
+								disabled={total !== resolved || loading}
+							>
+								{loading ? "Completing ...." : "Complete"}
+							</AT.GeneralButton>
+						</AccessWrapper>
 					</div>
 				</div>
 			</div>
