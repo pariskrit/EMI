@@ -25,9 +25,9 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 			<Route
 				{...rest}
 				render={(props) =>
-					position[access] === "F" ||
-					position[access] === "E" ||
-					position[access] === "R" ? (
+					position?.[access] === "F" ||
+					position?.[access] === "E" ||
+					position?.[access] === "R" ? (
 						<Component
 							{...props}
 							position={position}

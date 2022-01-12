@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	drawerOpen: {
-		// backgroundColor: ColourConstants.navDrawer,
+		backgroundColor: ColourConstants.navDrawer,
 		width: drawerWidth,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
 		overflow: "hidden",
 	},
 	drawerClose: {
-		// backgroundColor: ColourConstants.navDrawer,
+		backgroundColor: ColourConstants.navDrawer,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -312,8 +312,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
-	const { position, isAdmin, application } =
-		JSON.parse(localStorage.getItem("me")) || {};
+	const { position, isAdmin } = JSON.parse(localStorage.getItem("me")) || {};
 	const navOptions = [
 		{
 			name: "Clients",
@@ -422,8 +421,12 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			<div className="drawerDesktop">
 				<Drawer
 					variant="permanent"
+					className={clsx(classes.drawer, {
+						[classes.drawerOpen]: open,
+						[classes.drawerClose]: !open,
+					})}
 					classes={{
-						paper: clsx(classes.drawer, {
+						paper: clsx({
 							[classes.drawerOpen]: open,
 							[classes.drawerClose]: !open,
 						}),
