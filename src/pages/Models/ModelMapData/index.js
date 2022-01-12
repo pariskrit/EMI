@@ -6,8 +6,8 @@ import ModelMapHeader from "./ModelMapHeader";
 import API from "helpers/api";
 import Dropdown from "components/Elements/Dropdown";
 import { CircularProgress, LinearProgress } from "@material-ui/core";
-import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import { handleSort } from "helpers/utils";
+// import DyanamicDropdown from "components/Elements/DyamicDropdown";
+// import { handleSort } from "helpers/utils";
 import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
@@ -256,7 +256,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 							selectedValue={dropDownValue.department}
 						/>
 
-						<DyanamicDropdown
+						{/* <DyanamicDropdown
 							isServerSide={false}
 							placeholder="Status"
 							dataHeader={[
@@ -273,7 +273,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 							handleSort={handleSort}
 							onChange={(val) => handleChange("status", val)}
 							selectdValueToshow="name"
-						/>
+						/> */}
 						<Dropdown
 							width="291px"
 							placeholder="Type"
