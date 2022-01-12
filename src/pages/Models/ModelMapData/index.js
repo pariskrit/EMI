@@ -199,22 +199,25 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 
 	const handleChange = (name, val, typeId) => {
 		setDropDownLoading(true);
-		if (typeId) {
-			API.patch("/api/ModelImports/" + modelId, [
-				{ op: "replace", path: typeId, value: val.value },
-			])
-				.then((res) => {
-					setModelData((th) => ({
-						...th,
-						...res.data,
-					}));
-					setDropDownLoading(false);
-				})
-				.catch((err) => {
-					setDropDownLoading(false);
-				});
-		}
+
+		API.patch("/api/ModelImports/" + modelId, [
+			{ op: "replace", path: typeId, value: val.value },
+		])
+			.then((res) => {
+				setModelData((th) => ({
+					...th,
+					...res.data,
+				}));
+				setDropDownLoading(false);
+			})
+			.catch((err) => {
+				setDropDownLoading(false);
+			});
 		setDropDownValue((th) => ({ ...th, [name]: val }));
+	};
+
+	const handleBlur = (e) => {
+		const { name, value } = e.target;
 	};
 
 	if (modelData.loading) {
@@ -232,6 +235,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				modelId={modelId}
 				fetchData={fetchData}
 			/>
+			<div style={{ display: "flex" }}>{/* Text Fields Add Here */}</div>
 			<div className={classes.main}>
 				{dropDowns.loading ? (
 					<CircularProgress />
