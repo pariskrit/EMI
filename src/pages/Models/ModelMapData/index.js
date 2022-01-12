@@ -53,7 +53,7 @@ function setDropDownList(lists) {
 
 const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const classes = useStyles();
-	// useModelAccess();
+	useModelAccess();
 	const {
 		params: { modelId },
 	} = match;
