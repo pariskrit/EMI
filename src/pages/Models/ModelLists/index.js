@@ -70,7 +70,7 @@ const useStyles = makeStyles({
 
 const ModelLists = ({ getError, isMounted }) => {
 	const classes = useStyles();
-	useModelAccess();
+	// useModelAccess();
 
 	//Init State
 	const [isLoading, setIsLoading] = useState(true);
