@@ -95,7 +95,6 @@ const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
 				addComplete={patchData}
 				addNew={addNew}
 				isUpdating={isUpdating}
-				defaultName={x.name}
 			/>
 			<TableRow>
 				<TableCell>{x.name}</TableCell>
@@ -122,7 +121,7 @@ const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
 					) : (
 						<CurveButton
 							style={{ float: "left", background: "#307AD6" }}
-							onClick={() => setAddNew({ open: true, text: x.newName })}
+							onClick={() => setAddNew({ open: true, text: x.name })}
 						>
 							Add New
 						</CurveButton>
