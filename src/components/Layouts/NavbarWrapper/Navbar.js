@@ -54,6 +54,9 @@ import "./style.scss";
 const drawerWidth = 240;
 const minDrawerWidth = 62;
 
+const { position, isAdmin, application } =
+	JSON.parse(localStorage.getItem("me")) || {};
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
@@ -69,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
 	lists: {
 		overflowX: "hidden",
 		overflowY: "auto",
-		//height: "56%",
 		flex: "1",
 		"&::-webkit-scrollbar": {
 			width: 5,
@@ -84,7 +86,10 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	drawerOpen: {
-		backgroundColor: ColourConstants.navDrawer,
+		backgroundColor:
+			application === null
+				? ColourConstants.navDrawer
+				: `#${application?.color}`,
 		width: drawerWidth,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
@@ -93,7 +98,10 @@ const useStyles = makeStyles((theme) => ({
 		overflow: "hidden",
 	},
 	drawerClose: {
-		backgroundColor: ColourConstants.navDrawer,
+		backgroundColor:
+			application === null
+				? ColourConstants.navDrawer
+				: `#${application?.color}`,
 		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
@@ -159,7 +167,10 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "center",
 	},
 	currentItemBackground: {
-		backgroundColor: ColourConstants.navCurrentItem,
+		backgroundColor:
+			application === null
+				? ColourConstants.navCurrentItem
+				: `#${application?.color}`,
 	},
 	navIconContainer: {
 		display: "flex",
@@ -312,7 +323,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me")) || {};
+
 	const navOptions = [
 		{
 			name: "Clients",
@@ -434,11 +445,21 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 				>
 					{!open ? (
 						<div className={classes.miniLogoContainer}>
-							<img src={MiniLogo} alt="Logo" className={classes.miniLogo} />
+							<img
+								src={
+									application === null ? MiniLogo : application?.smallLogoURL
+								}
+								alt="Logo"
+								className={classes.miniLogo}
+							/>
 						</div>
 					) : (
 						<div className={classes.largeLogoContainer}>
-							<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
+							<img
+								src={application === null ? LargeLogo : application?.logoURL}
+								alt="logo"
+								className={classes.largeLogo}
+							/>
 						</div>
 					)}
 					{isLoading ? (
