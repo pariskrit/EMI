@@ -82,5 +82,5 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 		</>
 	);
 };
-
-export default ElementList;
+// React memo is used as this component is delaying onChange in text change
+export default React.memo(ElementList);

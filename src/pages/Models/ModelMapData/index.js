@@ -91,7 +91,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 
 	const [dropDownLoading, setDropDownLoading] = useState(false);
 
-	const fetchData = async () => {
+	const fetchData = React.useCallback(async () => {
 		setModelData({ data: {}, loading: true });
 		try {
 			const res = await getModelMapData(modelId);
@@ -207,7 +207,8 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 		} catch (err) {
 			return;
 		}
-	};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		fetchData();
@@ -221,8 +222,8 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 			.then((res) => {
 				if (!isMounted.aborted) {
 					setModelData((th) => ({
-						...th,
-						...res.data,
+						loading: false,
+						data: { ...th.data, ...res.data },
 					}));
 					setDropDownLoading(false);
 				}
@@ -237,15 +238,17 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 		setDropDownValue((th) => ({ ...th, [name]: val }));
 	};
 
-	const handleTextChange = (e) => {
+	const handleTextChange = React.useCallback((e) => {
 		const { name, value } = e.target;
 		setTextValue((th) => ({ ...th, [name]: value }));
-	};
+	}, []);
 
 	const handleBlur = (e) => {
 		const { name, value } = e.target;
-		patchData(name, value);
-		setModelData((th) => ({ ...th, [name]: value }));
+		if (modelData.data[name] !== value) {
+			patchData(name, value);
+		}
+		return;
 	};
 
 	if (modelData.loading) {
