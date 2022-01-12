@@ -91,7 +91,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 
 	const [dropDownLoading, setDropDownLoading] = useState(false);
 
-	const fetchData = React.useCallback(async () => {
+	const fetchData = async () => {
 		setModelData({ data: {}, loading: true });
 		try {
 			const res = await getModelMapData(modelId);
@@ -207,8 +207,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 		} catch (err) {
 			return;
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	};
 
 	useEffect(() => {
 		fetchData();
