@@ -17,8 +17,8 @@ import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
 import withMount from "components/HOC/withMount";
 import { getModelMapData } from "services/models/modelMap";
-import useModelAccess from "../useModelAccess";
 import ColourConstants from "helpers/colourConstants";
+import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -61,11 +61,10 @@ function setDropDownList(lists) {
 
 const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const classes = useStyles();
-	useModelAccess();
 	const {
 		params: { modelId },
 	} = match;
-
+	useSuperAdminExclude();
 	const [modelData, setModelData] = useState(modalInitial);
 
 	const [dropDowns, setDropDown] = useState({
