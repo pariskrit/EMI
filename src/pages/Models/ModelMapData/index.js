@@ -10,6 +10,7 @@ import {
 	LinearProgress,
 	Grid,
 	TextField,
+	Typography,
 } from "@material-ui/core";
 import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
@@ -17,6 +18,7 @@ import { modelsPath } from "helpers/routePaths";
 import withMount from "components/HOC/withMount";
 import { getModelMapData } from "services/models/modelMap";
 import useModelAccess from "../useModelAccess";
+import ColourConstants from "helpers/colourConstants";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -29,6 +31,14 @@ const useStyles = makeStyles({
 		width: "100%",
 		left: 0,
 		top: 0,
+	},
+	labeling: {
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		fontWeight: "bold",
+		color: ColourConstants.commonText,
+		paddingBottom: 5,
+		width: "100%",
 	},
 });
 
@@ -261,6 +271,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 					<>
 						<Grid container spacing={2}>
 							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Name</Typography>
 								<TextField
 									name="name"
 									onChange={handleTextChange}
@@ -271,6 +282,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Model</Typography>
 								<TextField
 									name="model"
 									onChange={handleTextChange}
@@ -281,6 +293,9 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>
+									Serial Number Range
+								</Typography>
 								<TextField
 									name="serialNumberRange"
 									onChange={handleTextChange}
@@ -293,9 +308,10 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 						</Grid>
 						<Grid container spacing={2}>
 							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Location</Typography>
 								<Dropdown
 									width="100%"
-									placeholder="Location"
+									placeholder="Please Select"
 									options={dropDowns.locations}
 									onChange={(val) =>
 										handleChange("location", val, "siteLocationID")
@@ -304,9 +320,10 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Department</Typography>
 								<Dropdown
 									width="100%"
-									placeholder="Department"
+									placeholder="Please Select"
 									options={dropDowns.departments}
 									onChange={(val) =>
 										handleChange("department", val, "siteDepartmentID")
@@ -316,9 +333,10 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 							</Grid>
 
 							<Grid item md={4} xs={12}>
+								<Typography className={classes.labeling}>Type</Typography>
 								<Dropdown
 									width="100%"
-									placeholder="Type"
+									placeholder="Please Select"
 									options={dropDowns.types}
 									onChange={(val) => handleChange("type", val, "modelTypeID")}
 									selectedValue={dropDownValue.type}
