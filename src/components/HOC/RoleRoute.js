@@ -5,12 +5,11 @@ import { Route, useHistory } from "react-router";
 const RoleRoute = ({ component: Component, roles, ...rest }) => {
 	const { role } = JSON.parse(localStorage.getItem("me"));
 	const history = useHistory();
-	const access = roles.includes(role);
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				access ? (
+				roles.includes(role) ? (
 					<Component {...props} history={history} role={role} />
 				) : history.length > 1 ? (
 					history.goBack()
