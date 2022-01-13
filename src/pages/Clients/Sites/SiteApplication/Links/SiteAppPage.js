@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import roles from "helpers/roles";
 import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 import SiteApplicationContext from "contexts/SiteApplicationContext";
 import differentAPIs from "helpers/differentAPIs";
@@ -38,6 +38,7 @@ import UserRoles from "../UserRoles";
 import DefectStatuses from "../DefectStatuses";
 import DefectRiskRatings from "../DefectRiskRatings";
 import UserPositions from "../UserPositions";
+import RoleRoute from "components/HOC/RoleRoute";
 
 const routes = [
 	{
@@ -313,11 +314,12 @@ const SiteAppPage = () => {
 		<SiteApplicationContext>
 			<SiteApplication>
 				{routes.map((route) => (
-					<Route
+					<RoleRoute
 						component={(props) => <SingleComponent {...route} {...props} />}
 						key={route.id}
 						path={siteAppPath + route.path}
 						exact
+						roles={[roles.clientAdmin, roles.siteUser]}
 					/>
 				))}
 			</SiteApplication>

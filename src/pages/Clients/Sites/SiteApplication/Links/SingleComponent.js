@@ -7,7 +7,6 @@ import { getDefaultCustomCaptions } from "services/clients/sites/siteApplication
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ContentStyle from "styles/application/ContentStyle";
 import { clientsPath, siteDetailPath } from "helpers/routePaths";
-import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 
 const AC = ContentStyle();
 
@@ -18,7 +17,6 @@ const SingleComponent = (route) => {
 			params: { clientId, id, appId },
 		},
 	} = route;
-	useSuperAdminExclude();
 
 	const [state, dispatch] = useContext(SiteContext);
 	const [loading, setLoading] = useState(true);
