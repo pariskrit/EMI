@@ -22,6 +22,7 @@ export const loginWithSiteAppId = (id) => async (dispatch) => {
 	dispatch(dataSuccess({ data }));
 
 	dispatch(setLoading({ loading: false }));
+	return res;
 };
 
 export const hideError = () => (dispatch) => dispatch(removeError());
