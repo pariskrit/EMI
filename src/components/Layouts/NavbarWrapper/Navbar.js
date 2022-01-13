@@ -324,6 +324,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			else return false;
 		}
 	});
+	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 
 	return (
 		<>
@@ -352,7 +353,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 							</div>
 						) : (
 							<div className={classes.largeLogoContainer}>
-								<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
+								<img src={lgLogo} alt="logo" className={classes.largeLogo} />
 							</div>
 						)}
 
