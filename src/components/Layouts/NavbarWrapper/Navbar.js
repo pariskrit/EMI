@@ -46,6 +46,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		firstName,
 		lastName,
 		application,
+		multiSiteUser,
 	} = JSON.parse(localStorage.getItem("me")) || {};
 
 	const colorBackground =
@@ -492,7 +493,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 										/>
 									</ListItem>
 								</div>
-								{position !== null && !isApplicationPortal ? (
+								{multiSiteUser && !isApplicationPortal ? (
 									<Link to={applicationPortalPath} className={classes.navLink}>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
