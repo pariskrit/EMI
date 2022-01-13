@@ -40,8 +40,17 @@ const drawerWidth = 240;
 const minDrawerWidth = 62;
 
 function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
-	const { position, isAdmin, regionName, siteName, firstName, lastName } =
-		JSON.parse(localStorage.getItem("me")) || {};
+	const {
+		position,
+		isAdmin,
+		regionName,
+		siteName,
+		firstName,
+		lastName,
+		application,
+	} = JSON.parse(localStorage.getItem("me")) || {};
+	const colorBackground =
+		application === null ? ColourConstants.navDrawer : "#" + application?.color;
 	const useStyles = makeStyles((theme) => ({
 		root: {
 			display: "flex",
@@ -72,7 +81,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			},
 		},
 		drawerOpen: {
-			backgroundColor: ColourConstants.navDrawer,
+			backgroundColor: colorBackground,
 			width: drawerWidth,
 			transition: theme.transitions.create("width", {
 				easing: theme.transitions.easing.sharp,
@@ -81,7 +90,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			overflow: "hidden",
 		},
 		drawerClose: {
-			backgroundColor: ColourConstants.navDrawer,
+			backgroundColor: colorBackground,
 			transition: theme.transitions.create("width", {
 				easing: theme.transitions.easing.sharp,
 				duration: theme.transitions.duration.leavingScreen,
