@@ -1,0 +1,32 @@
+.button {
+	color: #ffffff;
+	border: none;
+	border-radius: 5px;
+	font-family: "Roboto Condensed";
+	background-color: #23bb79;
+	font-weight: 800;
+	font-size: 13.5px;
+	margin-right: 10px;
+	width: 150px;
+	height: 37px;
+	transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+		box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+		border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.button:hover {
+	cursor: pointer;
+	text-decoration: none;
+	background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.button_with_icon {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.icon {
+	width: 30px !important;
+	height: 30px !important;
+}
