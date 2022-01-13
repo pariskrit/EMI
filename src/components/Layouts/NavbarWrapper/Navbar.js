@@ -30,8 +30,6 @@ import {
 	userProfilePath,
 	applicationPortalPath,
 } from "helpers/routePaths";
-import { connect } from "react-redux";
-import { logOutUser } from "redux/auth/actions";
 import navList from "./navList";
 import "./style.scss";
 
@@ -39,12 +37,7 @@ import "./style.scss";
 const drawerWidth = 240;
 const minDrawerWidth = 62;
 
-function Navbar({
-	userLogOut,
-	isApplicationPortal = false,
-	isLoading,
-	userDetail,
-}) {
+function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	const {
 		position,
 		isAdmin,
@@ -695,12 +688,4 @@ function Navbar({
 	);
 }
 
-const mapStateToProps = (state) => ({
-	userDetail: state.authData.userDetail,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-	userLogOut: (token) => dispatch(logOutUser(token)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Navbar));
+export default React.memo(Navbar);
