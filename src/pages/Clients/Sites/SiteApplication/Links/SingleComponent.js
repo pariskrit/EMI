@@ -9,6 +9,7 @@ import ContentStyle from "styles/application/ContentStyle";
 import { clientsPath, siteDetailPath } from "helpers/routePaths";
 import { useDispatch } from "react-redux";
 import { loginWithSiteAppId } from "redux/common/actions";
+import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 
 const AC = ContentStyle();
 
@@ -19,6 +20,7 @@ const SingleComponent = (route) => {
 			params: { clientId, id, appId },
 		},
 	} = route;
+	useSuperAdminExclude();
 
 	const [state, dispatch] = useContext(SiteContext);
 	const [loading, setLoading] = useState(true);

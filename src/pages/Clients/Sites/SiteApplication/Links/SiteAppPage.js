@@ -1,3 +1,5 @@
+import React from "react";
+import { Route } from "react-router-dom";
 import SingleColumnTableCommonComponent from "components/Modules/SingleColumnTableCommonComponent";
 import SiteApplicationContext from "contexts/SiteApplicationContext";
 import differentAPIs from "helpers/differentAPIs";
@@ -26,7 +28,6 @@ import {
 	siteAppDefectRiskRatingsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
-import React from "react";
 import SiteApplication from "..";
 import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
 import SiteApplicationDetails from "../SiteApplicationDetails";
@@ -37,7 +38,6 @@ import UserRoles from "../UserRoles";
 import DefectStatuses from "../DefectStatuses";
 import DefectRiskRatings from "../DefectRiskRatings";
 import UserPositions from "../UserPositions";
-import AccessRoute from "components/HOC/AccessRoute";
 
 const routes = [
 	{
@@ -313,7 +313,7 @@ const SiteAppPage = () => {
 		<SiteApplicationContext>
 			<SiteApplication>
 				{routes.map((route) => (
-					<AccessRoute
+					<Route
 						component={(props) => <SingleComponent {...route} {...props} />}
 						key={route.id}
 						path={siteAppPath + route.path}

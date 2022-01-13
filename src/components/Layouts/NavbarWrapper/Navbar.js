@@ -312,7 +312,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me")) || {};
+	const { position, isAdmin, regionName, siteName, firstName, lastName } =
+		JSON.parse(localStorage.getItem("me")) || {};
 	const navOptions = [
 		{
 			name: "Clients",
@@ -583,8 +584,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 											primary: classes.listItemTextPrimary,
 											secondary: classes.listItemTextSecondary,
 										}}
-										primary="Russell Harland"
-										secondary="Site: Ahafo - Ghana"
+										primary={`${firstName} ${lastName}`}
+										secondary={`Site: ${regionName} ${siteName}`}
 									/>
 								</ListItem>
 							</div>
