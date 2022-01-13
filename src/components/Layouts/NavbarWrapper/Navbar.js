@@ -15,39 +15,24 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
 import MiniLogo from "assets/EMI-symbol.png";
-import { ReactComponent as AnalyticsIcon } from "assets/icons/analyticsIcon.svg";
-import { ReactComponent as ApplicationIcon } from "assets/icons/applicationsIcon.svg";
+
 // Importing icons
-import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as CloseIcon } from "assets/icons/close-panel.svg";
-import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
-import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as Home } from "assets/icons/home.svg";
 import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import ColourConstants from "helpers/colourConstants";
 import {
-	applicationListPath,
 	clientsPath,
-	modelsPath,
-	usersPath,
 	userProfilePath,
 	applicationPortalPath,
-	servicesPath,
-	analyticsPath,
-	defectsPath,
-	defectExportPath,
-	feedbackPath,
-	analysisPath,
-	noticeboardPath,
-	settingPath,
 } from "helpers/routePaths";
 import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
-import access from "helpers/access";
+import navList from "./navList";
 import "./style.scss";
 
 // Size constants
@@ -314,108 +299,23 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	// }
 	const { position, isAdmin, regionName, siteName, firstName, lastName } =
 		JSON.parse(localStorage.getItem("me")) || {};
-	const navOptions = [
-		{
-			name: "Clients",
-			icon: ClientIcon,
-			path: clientsPath,
-			access: "",
-			position: null,
-		},
-		{
-			name: "Applications",
-			icon: ApplicationIcon,
-			path: applicationListPath,
-			access: "",
-			position: null,
-		},
-		{
-			name: "Models",
-			icon: ModelIcon,
-			path: modelsPath,
-			access: access.modelAccess,
-			position: "",
-		},
-		{
-			name: "Users",
-			icon: UserIcon,
-			path: usersPath,
-			access: access.userAccess,
-			position: null,
-		},
-		{
-			name: "Analytics",
-			icon: AnalyticsIcon,
-			path: analyticsPath,
-			access: access.analyticsAccess,
-			position: null,
-		},
-		{
-			name: "Services",
-			icon: ModelIcon,
-			path: servicesPath,
-			access: access.serviceAccess,
-			position: "",
-		},
-		{
-			name: "Defects",
-			icon: ModelIcon,
-			path: defectsPath,
-			access: access.defectAccess,
-			position: "",
-		},
-		{
-			name: "Defect Export",
-			icon: ModelIcon,
-			path: defectExportPath,
-			access: access.defectExportAccess,
-			position: "",
-		},
-		{
-			name: "Analysis",
-			icon: ModelIcon,
-			path: analysisPath,
-			access: access.analysisAccess,
-			position: "",
-		},
-		{
-			name: "Feedback",
-			icon: ModelIcon,
-			path: feedbackPath,
-			access: access.feedbackAccess,
-			position: "",
-		},
-		{
-			name: "Noticeboards",
-			icon: ModelIcon,
-			path: noticeboardPath,
-			access: access.noticeboardAccess,
-			position: "",
-		},
-		{
-			name: "Setting",
-			icon: ModelIcon,
-			path: settingPath,
-			access: access.settingsAccess,
-			position: "",
-		},
-	]
-		// Filter which sidebar navigation is accessible
-		.filter((x) => {
-			// // If position is null it is super admin
-			const access = position?.[x.access];
 
-			if (position === null) {
-				if (x.position === null) {
-					return true;
-				} else {
-					return false;
-				}
+	// Filter which sidebar navigation is accessible
+	const navOptions = navList.filter((x) => {
+		// // If position is null it is super admin
+		const access = position?.[x.access];
+
+		if (position === null) {
+			if (x.position === null) {
+				return true;
 			} else {
-				if (access === "F" || access === "E" || access === "R") return true;
-				else return false;
+				return false;
 			}
-		});
+		} else {
+			if (access === "F" || access === "E" || access === "R") return true;
+			else return false;
+		}
+	});
 
 	return (
 		<>
