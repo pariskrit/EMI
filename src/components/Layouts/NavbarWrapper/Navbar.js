@@ -34,7 +34,6 @@ import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
 import navList from "./navList";
 import "./style.scss";
-import { useEffect } from "react";
 
 // Size constants
 const drawerWidth = 240;
@@ -46,15 +45,6 @@ function Navbar({
 	isLoading,
 	userDetail,
 }) {
-	const [storage, setStorage] = useState({});
-
-	useEffect(() => {
-		if (Object.values(userDetail).length > 0) {
-			setStorage(userDetail);
-		} else {
-			setStorage(JSON.parse(localStorage.getItem("me")) || {});
-		}
-	}, [userDetail]);
 	const {
 		position,
 		isAdmin,
@@ -63,7 +53,8 @@ function Navbar({
 		firstName,
 		lastName,
 		application,
-	} = storage;
+	} = JSON.parse(localStorage.getItem("me")) || {};
+
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
 	const useStyles = makeStyles((theme) => ({
