@@ -15,6 +15,7 @@ export const loginWithSiteAppId = (id) => async (dispatch) => {
 		...res.data,
 		isAdmin: localStorage.getItem("isAdmin") === "true",
 	};
+	localStorage.setItem("token", res.data.jwtToken);
 	localStorage.setItem("me", JSON.stringify(data));
 	localStorage.removeItem("siteAppId");
 	localStorage.removeItem("isAdmin");
