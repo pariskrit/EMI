@@ -328,248 +328,251 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	return (
 		<>
 			<div className="drawerDesktop">
-				<Drawer
-					variant="permanent"
-					className={clsx(classes.drawer, {
-						[classes.drawerOpen]: open,
-						[classes.drawerClose]: !open,
-					})}
-					classes={{
-						paper: clsx({
+				{isLoading ? (
+					<div className={classes.loader}>
+						<CircularProgress />
+					</div>
+				) : (
+					<Drawer
+						variant="permanent"
+						className={clsx(classes.drawer, {
 							[classes.drawerOpen]: open,
 							[classes.drawerClose]: !open,
-						}),
-					}}
-				>
-					{!open ? (
-						<div className={classes.miniLogoContainer}>
-							<img src={MiniLogo} alt="Logo" className={classes.miniLogo} />
-						</div>
-					) : (
-						<div className={classes.largeLogoContainer}>
-							<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
-						</div>
-					)}
-					{isLoading ? (
-						<div className={classes.loader}>
-							<CircularProgress />
-						</div>
-					) : (
-						<>
-							{isApplicationPortal ? (
-								<List className={classes.lists}>
-									<Link to="/portal" className={classes.navLink}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<ListItem
-												button
-												className={classes.currentItemBackground}
-											>
-												<ListItemIcon className={classes.navIconContainer}>
-													<Home
-														className={classes.navIconCurrent}
-														alt={`Home icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{
-														primary: classes.listItemTextPrimaryCurrent,
-													}}
-													primary="Application Portal"
-												/>
-											</ListItem>
-										</div>
-									</Link>
-									{isAdmin ? (
-										<Link to={clientsPath} className={classes.navLink}>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-											>
-												<ListItem button className={null}>
-													<ListItemIcon className={classes.navIconContainer}>
-														<SettingsIcon
-															className={classes.homeIcon}
-															alt={`Home icon`}
-														/>
-													</ListItemIcon>
-													<ListItemText
-														classes={{
-															primary: classes.listItemTextPrimary,
-														}}
-														primary="Admin Mode"
-													/>
-												</ListItem>
-											</div>
-										</Link>
-									) : null}
-								</List>
-							) : (
-								<List className={classes.lists}>
-									{navOptions.map((item) => {
-										// Storing SVG
-										let NavIcon = item.icon;
-
-										return (
-											<Link
-												to={item.path}
-												className={classes.navLink}
-												key={item.name}
-											>
-												<div
-													className={`${classes.navListContainer} mobNavListContainer`}
-													key={item.name}
-												>
-													<ListItem
-														button
-														className={
-															item.name.toLowerCase() === activeLink
-																? classes.currentItemBackground
-																: null
-														}
-													>
-														<ListItemIcon className={classes.navIconContainer}>
-															<NavIcon
-																className={
-																	item.name.toLowerCase() === activeLink
-																		? classes.navIconCurrent
-																		: classes.navIcon
-																}
-																alt={`${item.name} icon`}
-															/>
-														</ListItemIcon>
-														<ListItemText
-															classes={{
-																primary:
-																	item.name.toLowerCase() === activeLink
-																		? classes.listItemTextPrimaryCurrent
-																		: classes.listItemTextPrimary,
-															}}
-															primary={item.name}
-														/>
-													</ListItem>
-												</div>
-											</Link>
-										);
-									})}
-								</List>
-							)}
-						</>
-					)}
-
-					<div
-						className={clsx(classes.footerClose, {
-							[classes.footerOpen]: open,
-							[classes.footerClose]: !open,
 						})}
+						classes={{
+							paper: clsx({
+								[classes.drawerOpen]: open,
+								[classes.drawerClose]: !open,
+							}),
+						}}
 					>
-						<List>
-							<Divider
-								className={clsx(classes.null, {
-									[classes.expandedProfileDivider]: open,
-									[classes.miniProfileDivider]: !open,
-								})}
-							/>
-							<div
-								className={`${classes.navListContainer} mobNavListContainer`}
-							>
-								<ListItem
-									button={true}
-									key="userProfileIcon"
-									onClick={() => history.push(userProfilePath)}
-									className={
-										"me" === activeLink ? classes.currentItemBackground : null
-									}
-								>
-									<ListItemIcon className={classes.navIconContainer}>
-										<UserProfileIcon
-											alt="user profile icon"
-											className={classes.navIcon}
-										/>
-									</ListItemIcon>
-									<ListItemText
-										classes={{
-											primary: classes.listItemTextPrimary,
-											secondary: classes.listItemTextSecondary,
-										}}
-										primary={`${firstName} ${lastName}`}
-										secondary={`Site: ${regionName} - ${siteName}`}
-									/>
-								</ListItem>
+						{!open ? (
+							<div className={classes.miniLogoContainer}>
+								<img src={MiniLogo} alt="Logo" className={classes.miniLogo} />
 							</div>
-							{position !== null && !isApplicationPortal ? (
-								<Link to={applicationPortalPath} className={classes.navLink}>
+						) : (
+							<div className={classes.largeLogoContainer}>
+								<img src={LargeLogo} alt="logo" className={classes.largeLogo} />
+							</div>
+						)}
+
+						{isApplicationPortal ? (
+							<List className={classes.lists}>
+								<Link to="/portal" className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
 									>
-										<ListItem
-											button
-											className={
-												"portal" === activeLink
-													? classes.currentItemBackground
-													: null
-											}
-										>
+										<ListItem button className={classes.currentItemBackground}>
 											<ListItemIcon className={classes.navIconContainer}>
-												<Home className={classes.navIcon} alt={`Home icon`} />
+												<Home
+													className={classes.navIconCurrent}
+													alt={`Home icon`}
+												/>
 											</ListItemIcon>
 											<ListItemText
 												classes={{
-													primary: classes.listItemTextPrimary,
-													secondary: classes.listItemTextSecondary,
+													primary: classes.listItemTextPrimaryCurrent,
 												}}
 												primary="Application Portal"
 											/>
 										</ListItem>
 									</div>
 								</Link>
-							) : null}
+								{isAdmin ? (
+									<Link to={clientsPath} className={classes.navLink}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<ListItem button className={null}>
+												<ListItemIcon className={classes.navIconContainer}>
+													<SettingsIcon
+														className={classes.homeIcon}
+														alt={`Home icon`}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													classes={{
+														primary: classes.listItemTextPrimary,
+													}}
+													primary="Admin Mode"
+												/>
+											</ListItem>
+										</div>
+									</Link>
+								) : null}
+							</List>
+						) : (
+							<List className={classes.lists}>
+								{navOptions.map((item) => {
+									// Storing SVG
+									let NavIcon = item.icon;
 
-							<div>
-								<ListItem key="logoutIcon" button={true} onClick={handleLogout}>
-									<ListItemIcon className={classes.navIconContainer}>
-										{loading ? (
-											<CircularProgress size="30px" />
-										) : (
-											<LogoutIcon
-												alt="Logout Button"
+									return (
+										<Link
+											to={item.path}
+											className={classes.navLink}
+											key={item.name}
+										>
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+												key={item.name}
+											>
+												<ListItem
+													button
+													className={
+														item.name.toLowerCase() === activeLink
+															? classes.currentItemBackground
+															: null
+													}
+												>
+													<ListItemIcon className={classes.navIconContainer}>
+														<NavIcon
+															className={
+																item.name.toLowerCase() === activeLink
+																	? classes.navIconCurrent
+																	: classes.navIcon
+															}
+															alt={`${item.name} icon`}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														classes={{
+															primary:
+																item.name.toLowerCase() === activeLink
+																	? classes.listItemTextPrimaryCurrent
+																	: classes.listItemTextPrimary,
+														}}
+														primary={item.name}
+													/>
+												</ListItem>
+											</div>
+										</Link>
+									);
+								})}
+							</List>
+						)}
+
+						<div
+							className={clsx(classes.footerClose, {
+								[classes.footerOpen]: open,
+								[classes.footerClose]: !open,
+							})}
+						>
+							<List>
+								<Divider
+									className={clsx(classes.null, {
+										[classes.expandedProfileDivider]: open,
+										[classes.miniProfileDivider]: !open,
+									})}
+								/>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+								>
+									<ListItem
+										button={true}
+										key="userProfileIcon"
+										onClick={() => history.push(userProfilePath)}
+										className={
+											"me" === activeLink ? classes.currentItemBackground : null
+										}
+									>
+										<ListItemIcon className={classes.navIconContainer}>
+											<UserProfileIcon
+												alt="user profile icon"
 												className={classes.navIcon}
 											/>
-										)}
-									</ListItemIcon>
-									<ListItemText
-										classes={{
-											primary: classes.listItemTextPrimary,
-											secondary: classes.listItemTextSecondary,
-										}}
-										primary="Logout"
-									/>
-								</ListItem>
-							</div>
-							<div
-								className={`${classes.navListContainer} mobNavListContainer`}
-							>
-								<ListItem
-									button={true}
-									key="navbarExpandButton"
-									onClick={handleDrawerChange}
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimary,
+												secondary: classes.listItemTextSecondary,
+											}}
+											primary={`${firstName} ${lastName}`}
+											secondary={`Site: ${regionName} - ${siteName}`}
+										/>
+									</ListItem>
+								</div>
+								{position !== null && !isApplicationPortal ? (
+									<Link to={applicationPortalPath} className={classes.navLink}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
+										>
+											<ListItem
+												button
+												className={
+													"portal" === activeLink
+														? classes.currentItemBackground
+														: null
+												}
+											>
+												<ListItemIcon className={classes.navIconContainer}>
+													<Home className={classes.navIcon} alt={`Home icon`} />
+												</ListItemIcon>
+												<ListItemText
+													classes={{
+														primary: classes.listItemTextPrimary,
+														secondary: classes.listItemTextSecondary,
+													}}
+													primary="Application Portal"
+												/>
+											</ListItem>
+										</div>
+									</Link>
+								) : null}
+
+								<div>
+									<ListItem
+										key="logoutIcon"
+										button={true}
+										onClick={handleLogout}
+									>
+										<ListItemIcon className={classes.navIconContainer}>
+											{loading ? (
+												<CircularProgress size="30px" />
+											) : (
+												<LogoutIcon
+													alt="Logout Button"
+													className={classes.navIcon}
+												/>
+											)}
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimary,
+												secondary: classes.listItemTextSecondary,
+											}}
+											primary="Logout"
+										/>
+									</ListItem>
+								</div>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
 								>
-									<ListItemIcon className={classes.navIconContainer}>
-										{open ? (
-											<CloseIcon alt="close icon" className={classes.navIcon} />
-										) : (
-											<OpenIcon alt="open icon" className={classes.navIcon} />
-										)}
-									</ListItemIcon>
-									<ListItemText
-										classes={{ primary: classes.listItemTextPrimary }}
-										primary="Close Panel"
-									/>
-								</ListItem>
-							</div>
-						</List>
-					</div>
-				</Drawer>
+									<ListItem
+										button={true}
+										key="navbarExpandButton"
+										onClick={handleDrawerChange}
+									>
+										<ListItemIcon className={classes.navIconContainer}>
+											{open ? (
+												<CloseIcon
+													alt="close icon"
+													className={classes.navIcon}
+												/>
+											) : (
+												<OpenIcon alt="open icon" className={classes.navIcon} />
+											)}
+										</ListItemIcon>
+										<ListItemText
+											classes={{ primary: classes.listItemTextPrimary }}
+											primary="Close Panel"
+										/>
+									</ListItem>
+								</div>
+							</List>
+						</div>
+					</Drawer>
+				)}
 			</div>
 
 			{/* Appbar */}
