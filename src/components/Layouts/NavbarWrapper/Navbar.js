@@ -34,12 +34,27 @@ import { connect } from "react-redux";
 import { logOutUser } from "redux/auth/actions";
 import navList from "./navList";
 import "./style.scss";
+import { useEffect } from "react";
 
 // Size constants
 const drawerWidth = 240;
 const minDrawerWidth = 62;
 
-function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
+function Navbar({
+	userLogOut,
+	isApplicationPortal = false,
+	isLoading,
+	userDetail,
+}) {
+	const [storage, setStorage] = useState({});
+
+	useEffect(() => {
+		if (Object.values(userDetail).length > 0) {
+			setStorage(userDetail);
+		} else {
+			setStorage(JSON.parse(localStorage.getItem("me")) || {});
+		}
+	}, [userDetail]);
 	const {
 		position,
 		isAdmin,
@@ -48,7 +63,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		firstName,
 		lastName,
 		application,
-	} = JSON.parse(localStorage.getItem("me")) || {};
+	} = storage;
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
 	const useStyles = makeStyles((theme) => ({
@@ -689,8 +704,12 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	);
 }
 
+const mapStateToProps = (state) => ({
+	userDetail: state.authData.userDetail,
+});
+
 const mapDispatchToProps = (dispatch) => ({
 	userLogOut: (token) => dispatch(logOutUser(token)),
 });
 
-export default connect(null, mapDispatchToProps)(React.memo(Navbar));
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Navbar));
