@@ -11,8 +11,6 @@ import {
 	Grid,
 	TextField,
 } from "@material-ui/core";
-// import DyanamicDropdown from "components/Elements/DyamicDropdown";
-// import { handleSort } from "helpers/utils";
 import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
@@ -79,7 +77,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const [dropDownValue, setDropDownValue] = useState({
 		location: {},
 		department: {},
-		status: {},
 		type: {},
 	});
 
@@ -144,7 +141,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 						[
 							"/api/SiteLocations?siteAppId=" + siteAppID,
 							"/api/SiteDepartments?siteAppId=" + siteAppID,
-							"/api/ModelStatuses?siteAppId=" + siteAppID,
 							"/api/ModelTypes?siteAppId=" + siteAppID,
 						].map((end) => API.get(end))
 					)
@@ -153,22 +149,17 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 								(
 									{ data: locations },
 									{ data: departments },
-									{ data: statuses },
 									{ data: types }
 								) => {
 									const loc = setDropDownList(locations);
 									const dep = setDropDownList(departments);
 									const typ = setDropDownList(types);
-									const stat = statuses.map((x) => ({
-										...x,
-										publish: x.publish ? "Yes" : "No",
-									}));
+
 									if (!isMounted.aborted) {
 										setDropDown({
 											loading: false,
 											locations: loc,
 											departments: dep,
-											statuses: stat,
 											types: typ,
 										});
 
@@ -181,10 +172,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 												dep.find((x) =>
 													setDropDownData(x, data.siteDepartmentID)
 												) || {},
-											status:
-												stat.find((x) =>
-													setDropDownData(x, data.siteStatusID)
-												) || {},
+
 											type:
 												typ.find((x) => setDropDownData(x, data.modelTypeID)) ||
 												{},
@@ -327,24 +315,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 								/>
 							</Grid>
 
-							{/* <DyanamicDropdown
-							isServerSide={false}
-							placeholder="Status"
-							dataHeader={[
-								{ id: 1, name: "Name" },
-								{ id: 2, name: "Publish" },
-							]}
-							columns={[
-								{ id: 1, name: "name" },
-								{ id: 2, name: "publish" },
-							]}
-							dataSource={dropDowns.statuses}
-							showHeader
-							selectedValue={dropDownValue.status}
-							handleSort={handleSort}
-							onChange={(val) => handleChange("status", val)}
-							selectdValueToshow="name"
-						/> */}
 							<Grid item md={4} xs={12}>
 								<Dropdown
 									width="100%"
