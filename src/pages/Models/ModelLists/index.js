@@ -26,7 +26,7 @@ import ImportFileDialouge from "./ImportFileDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import withMount from "components/HOC/withMount";
-import useModelAccess from "../useModelAccess";
+import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 
 const AT = ActionButtonStyle();
 const AC = ContentStyle();
@@ -70,8 +70,7 @@ const useStyles = makeStyles({
 
 const ModelLists = ({ getError, isMounted }) => {
 	const classes = useStyles();
-	// useModelAccess();
-
+	useSuperAdminExclude();
 	//Init State
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();

@@ -39,211 +39,212 @@ import "./style.scss";
 const drawerWidth = 240;
 const minDrawerWidth = 62;
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: "flex",
-	},
-	hide: {
-		display: "none",
-	},
-	drawer: {
-		width: drawerWidth,
-		flexShrink: 0,
-		whiteSpace: "nowrap",
-	},
-	lists: {
-		overflowX: "hidden",
-		overflowY: "auto",
-		//height: "56%",
-		flex: "1",
-		"&::-webkit-scrollbar": {
-			width: 5,
-			height: 5,
-		},
-		"&::-webkit-scrollbar-track": {
-			background: "#e2b466",
-		},
-		"&::-webkit-scrollbar-thumb": {
-			background: "#734d0f45",
-			borderRadius: 12,
-		},
-	},
-	drawerOpen: {
-		backgroundColor: ColourConstants.navDrawer,
-		width: drawerWidth,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-		overflow: "hidden",
-	},
-	drawerClose: {
-		backgroundColor: ColourConstants.navDrawer,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-		overflowX: "hidden",
-		width: minDrawerWidth,
-		[theme.breakpoints.up("sm")]: {
-			width: minDrawerWidth,
-		},
-	},
-	miniLogoContainer: {
-		display: "flex",
-		justifyContent: "center",
-		marginBottom: 43,
-	},
-	miniLogo: {
-		marginTop: 30,
-		height: "33px",
-		width: "auto",
-	},
-	miniLogoMobile: {
-		height: "33px",
-		width: "auto",
-	},
-	largeLogoContainer: {
-		display: "flex",
-		justifyContent: "center",
-		marginBottom: 16,
-	},
-	largeLogo: {
-		marginTop: 30,
-		height: 60,
-		// Note: width should be auto if using a different sized logo
-		width: 140,
-	},
-	toolbar: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "flex-end",
-		padding: theme.spacing(0, 1),
-		// necessary for content to be below app bar
-		...theme.mixins.toolbar,
-	},
-	navLink: {
-		textDecoration: "none",
-	},
-	listItemTextPrimary: {
-		fontSize: "16px",
-		fontWeight: "bold",
-		color: "#000000",
-	},
-	listItemTextPrimaryCurrent: {
-		fontSize: "16px",
-		fontWeight: "bold",
-		color: "#FFFFFF",
-	},
-	listItemTextSecondary: {
-		fontSize: "13px",
-		color: "#000000",
-	},
-	navListContainer: {
-		display: "flex",
-		justifyContent: "center",
-	},
-	currentItemBackground: {
-		backgroundColor: ColourConstants.navCurrentItem,
-	},
-	navIconContainer: {
-		display: "flex",
-		justifyContent: "center",
-		paddingRight: 25,
-	},
-	navIcon: {
-		transform: "scale(0.8)",
-	},
-	navIconCurrent: {
-		transform: "scale(0.8)",
-		fill: "#FFFFFF",
-	},
-	miniProfileDivider: {
-		color: "#FFFFFF",
-		width: minDrawerWidth,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	},
-	expandedProfileDivider: {
-		color: "#FFFFFF",
-		width: drawerWidth,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-	},
-	content: {
-		flexGrow: 1,
-		padding: theme.spacing(3),
-	},
-	footerClose: {
-		bottom: 0,
-		textAlign: "center",
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-		overflowX: "hidden",
-		width: theme.spacing(7) + 1,
-		[theme.breakpoints.up("sm")]: {
-			width: minDrawerWidth,
-		},
-	},
-	footerOpen: {
-		width: drawerWidth,
-		bottom: 0,
-		textAlign: "center",
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	},
-
-	bottomNavigationContainer: {
-		position: "fixed",
-		width: "100vw",
-		bottom: 0,
-		left: 0,
-		zIndex: 50,
-	},
-
-	// always show category
-
-	line: {
-		height: "100%",
-		width: "2px",
-		backgroundColor: "#925e16",
-		zIndex: 10,
-	},
-
-	logoutIcon: {
-		transform: "scale(0.35)",
-		fill: "#FFFFFF",
-		marginTop: "-15px",
-	},
-
-	innerBottomNav: {
-		width: "80vw",
-		overflowX: "scroll",
-		overflowY: "hidden",
-		display: "flex",
-	},
-
-	alwaysShow: {
-		display: "flex",
-		backgroundColor: "black",
-	},
-
-	loader: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-}));
-
 function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
+	const { position, isAdmin, regionName, siteName, firstName, lastName } =
+		JSON.parse(localStorage.getItem("me")) || {};
+	const useStyles = makeStyles((theme) => ({
+		root: {
+			display: "flex",
+		},
+		hide: {
+			display: "none",
+		},
+		drawer: {
+			width: drawerWidth,
+			flexShrink: 0,
+			whiteSpace: "nowrap",
+		},
+		lists: {
+			overflowX: "hidden",
+			overflowY: "auto",
+			//height: "56%",
+			flex: "1",
+			"&::-webkit-scrollbar": {
+				width: 5,
+				height: 5,
+			},
+			"&::-webkit-scrollbar-track": {
+				background: "#e2b466",
+			},
+			"&::-webkit-scrollbar-thumb": {
+				background: "#734d0f45",
+				borderRadius: 12,
+			},
+		},
+		drawerOpen: {
+			backgroundColor: ColourConstants.navDrawer,
+			width: drawerWidth,
+			transition: theme.transitions.create("width", {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.enteringScreen,
+			}),
+			overflow: "hidden",
+		},
+		drawerClose: {
+			backgroundColor: ColourConstants.navDrawer,
+			transition: theme.transitions.create("width", {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.leavingScreen,
+			}),
+			overflowX: "hidden",
+			width: minDrawerWidth,
+			[theme.breakpoints.up("sm")]: {
+				width: minDrawerWidth,
+			},
+		},
+		miniLogoContainer: {
+			display: "flex",
+			justifyContent: "center",
+			marginBottom: 43,
+		},
+		miniLogo: {
+			marginTop: 30,
+			height: "33px",
+			width: "auto",
+		},
+		miniLogoMobile: {
+			height: "33px",
+			width: "auto",
+		},
+		largeLogoContainer: {
+			display: "flex",
+			justifyContent: "center",
+			marginBottom: 16,
+		},
+		largeLogo: {
+			marginTop: 30,
+			height: 60,
+			// Note: width should be auto if using a different sized logo
+			width: 140,
+		},
+		toolbar: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "flex-end",
+			padding: theme.spacing(0, 1),
+			// necessary for content to be below app bar
+			...theme.mixins.toolbar,
+		},
+		navLink: {
+			textDecoration: "none",
+		},
+		listItemTextPrimary: {
+			fontSize: "16px",
+			fontWeight: "bold",
+			color: "#000000",
+		},
+		listItemTextPrimaryCurrent: {
+			fontSize: "16px",
+			fontWeight: "bold",
+			color: "#FFFFFF",
+		},
+		listItemTextSecondary: {
+			fontSize: "13px",
+			color: "#000000",
+		},
+		navListContainer: {
+			display: "flex",
+			justifyContent: "center",
+		},
+		currentItemBackground: {
+			backgroundColor: ColourConstants.navCurrentItem,
+		},
+		navIconContainer: {
+			display: "flex",
+			justifyContent: "center",
+			paddingRight: 25,
+		},
+		navIcon: {
+			transform: "scale(0.8)",
+		},
+		navIconCurrent: {
+			transform: "scale(0.8)",
+			fill: "#FFFFFF",
+		},
+		miniProfileDivider: {
+			color: "#FFFFFF",
+			width: minDrawerWidth,
+			transition: theme.transitions.create("width", {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.enteringScreen,
+			}),
+		},
+		expandedProfileDivider: {
+			color: "#FFFFFF",
+			width: drawerWidth,
+			transition: theme.transitions.create("width", {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.leavingScreen,
+			}),
+		},
+		content: {
+			flexGrow: 1,
+			padding: theme.spacing(3),
+		},
+		footerClose: {
+			bottom: 0,
+			textAlign: "center",
+			transition: theme.transitions.create("width", {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.leavingScreen,
+			}),
+			overflowX: "hidden",
+			width: theme.spacing(7) + 1,
+			[theme.breakpoints.up("sm")]: {
+				width: minDrawerWidth,
+			},
+		},
+		footerOpen: {
+			width: drawerWidth,
+			bottom: 0,
+			textAlign: "center",
+			transition: theme.transitions.create("width", {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.enteringScreen,
+			}),
+		},
+
+		bottomNavigationContainer: {
+			position: "fixed",
+			width: "100vw",
+			bottom: 0,
+			left: 0,
+			zIndex: 50,
+		},
+
+		// always show category
+
+		line: {
+			height: "100%",
+			width: "2px",
+			backgroundColor: "#925e16",
+			zIndex: 10,
+		},
+
+		logoutIcon: {
+			transform: "scale(0.35)",
+			fill: "#FFFFFF",
+			marginTop: "-15px",
+		},
+
+		innerBottomNav: {
+			width: "80vw",
+			overflowX: "scroll",
+			overflowY: "hidden",
+			display: "flex",
+		},
+
+		alwaysShow: {
+			display: "flex",
+			backgroundColor: "black",
+		},
+
+		loader: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center",
+		},
+	}));
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
@@ -297,8 +298,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
-	const { position, isAdmin, regionName, siteName, firstName, lastName } =
-		JSON.parse(localStorage.getItem("me")) || {};
 
 	// Filter which sidebar navigation is accessible
 	const navOptions = navList.filter((x) => {
