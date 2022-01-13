@@ -1,13 +1,11 @@
 import { handleSort } from "helpers/utils";
 import UsersListTable from "./UsersListTable";
-import Button from "@material-ui/core/Button";
 import { useUserSearch } from "hooks/useUserSearch";
-import { CircularProgress } from "@material-ui/core";
+import { Avatar, CircularProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { getUsersList } from "services/users/usersList";
-import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
@@ -18,8 +16,8 @@ import ImportListDialog from "./ImportListDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
+import GeneralButton from "components/Elements/GeneralButton";
 
-const AT = ActionButtonStyle();
 const AC = ContentStyle();
 
 const media = "@media(max-width: 414px)";
@@ -227,20 +225,18 @@ const UsersListContent = ({ getError, access, position }) => {
 					{haveData ? (
 						position === null || access === "F" ? (
 							<div className={classes.buttonContainer}>
-								<AT.GeneralButton
+								<GeneralButton
 									onClick={() => setModal((th) => ({ ...th, import: true }))}
-									className={classes.importButton}
+									style={{ backgroundColor: "#ed8738" }}
 								>
-									Import from list
-								</AT.GeneralButton>
-
-								<Button
-									variant="contained"
-									className={classes.productButton}
+									IMPORT FROM LIST
+								</GeneralButton>
+								<GeneralButton
 									onClick={() => setModal((th) => ({ ...th, add: true }))}
+									style={{ backgroundColor: "#23bb79" }}
 								>
-									Add New
-								</Button>
+									ADD NEW
+								</GeneralButton>
 							</div>
 						) : null
 					) : null}
