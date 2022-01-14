@@ -26,6 +26,7 @@ import ImportFileDialouge from "./ImportFileDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import withMount from "components/HOC/withMount";
+import GeneralButton from "components/Elements/GeneralButton";
 import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 
 const AT = ActionButtonStyle();
@@ -254,21 +255,19 @@ const ModelLists = ({ getError, isMounted }) => {
 
 					<div className={classes.buttonContainer}>
 						{isAdmin && (
-							<AT.GeneralButton
+							<GeneralButton
+								style={{ backgroundColor: "#ed8738" }}
 								onClick={() => setOpenImportFile(true)}
-								className={classes.importButton}
 							>
-								Import from Existing
-							</AT.GeneralButton>
+								IMPORT FROM EXISTING
+							</GeneralButton>
 						)}
-
-						<Button
-							variant="contained"
-							className={classes.productButton}
+						<GeneralButton
+							style={{ backgroundColor: "#23bb79" }}
 							onClick={() => setOpenAddNewModal(true)}
 						>
-							Add New
-						</Button>
+							ADD NEW
+						</GeneralButton>
 					</div>
 				</div>
 				<ModalAwaitingImports modelImportData={modelImportData} />
@@ -308,7 +307,7 @@ const ModelLists = ({ getError, isMounted }) => {
 							: [
 									customCaptions?.make,
 									customCaptions?.modelType,
-									"status",
+									"Status",
 									"Serial Number Range",
 									"Latest Version",
 									"Active Version",
