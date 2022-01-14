@@ -491,7 +491,11 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 												secondary: classes.listItemTextSecondary,
 											}}
 											primary={`${firstName} ${lastName}`}
-											secondary={`Site: ${regionName} - ${siteName}`}
+											secondary={
+												regionName && siteName
+													? `Site: ${regionName} - ${siteName}`
+													: ""
+											}
 										/>
 									</ListItem>
 								</div>
