@@ -251,6 +251,8 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 		return <CircularProgress />;
 	}
 
+	const disableInput = access === "F" || access === "E";
+
 	return (
 		<div>
 			{dropDownLoading ? <LinearProgress className={classes.loading} /> : null}
@@ -279,6 +281,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 									fullWidth
 									variant="outlined"
 									value={textValue.name}
+									disabled={!disableInput}
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
@@ -290,6 +293,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 									fullWidth
 									variant="outlined"
 									value={textValue.model}
+									disabled={!disableInput}
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
@@ -303,6 +307,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 									fullWidth
 									variant="outlined"
 									value={textValue.serialNumberRange}
+									disabled={!disableInput}
 								/>
 							</Grid>
 						</Grid>
@@ -317,6 +322,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 										handleChange("location", val, "siteLocationID")
 									}
 									selectedValue={dropDownValue.location}
+									disabled={!disableInput}
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
@@ -329,6 +335,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 										handleChange("department", val, "siteDepartmentID")
 									}
 									selectedValue={dropDownValue.department}
+									disabled={!disableInput}
 								/>
 							</Grid>
 
@@ -340,6 +347,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 									options={dropDowns.types}
 									onChange={(val) => handleChange("type", val, "modelTypeID")}
 									selectedValue={dropDownValue.type}
+									disabled={!disableInput}
 								/>
 							</Grid>
 						</Grid>
