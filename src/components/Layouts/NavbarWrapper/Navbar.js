@@ -122,9 +122,11 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		},
 		largeLogo: {
 			marginTop: 30,
-			height: 60,
+			maxHeight: 60,
 			// Note: width should be auto if using a different sized logo
-			width: 140,
+			width: "auto",
+			maxWidth: 240,
+			marginLeft: 35,
 		},
 		toolbar: {
 			display: "flex",
@@ -489,7 +491,11 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 												secondary: classes.listItemTextSecondary,
 											}}
 											primary={`${firstName} ${lastName}`}
-											secondary={`Site: ${regionName} - ${siteName}`}
+											secondary={
+												regionName && siteName
+													? `Site: ${regionName} - ${siteName}`
+													: ""
+											}
 										/>
 									</ListItem>
 								</div>

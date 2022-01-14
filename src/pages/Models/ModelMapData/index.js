@@ -59,7 +59,7 @@ function setDropDownList(lists) {
 	}));
 }
 
-const ModelMapData = ({ match, history, getError, isMounted }) => {
+const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 	const classes = useStyles();
 	const {
 		params: { modelId },
@@ -230,14 +230,16 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 	};
 
 	const handleChange = (name, val, typeId) => {
-		patchData(typeId, val.value);
-		setDropDownValue((th) => ({ ...th, [name]: val }));
+		if (dropDownValue[name].value !== val.value) {
+			patchData(typeId, val.value);
+			setDropDownValue((th) => ({ ...th, [name]: val }));
+		}
 	};
 
-	const handleTextChange = React.useCallback((e) => {
+	const handleTextChange = (e) => {
 		const { name, value } = e.target;
 		setTextValue((th) => ({ ...th, [name]: value }));
-	}, []);
+	};
 
 	const handleBlur = (e) => {
 		const { name, value } = e.target;
@@ -251,6 +253,8 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 		return <CircularProgress />;
 	}
 
+	const disableInput = access === "F" || access === "E";
+
 	return (
 		<div>
 			{dropDownLoading ? <LinearProgress className={classes.loading} /> : null}
@@ -261,6 +265,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				history={history}
 				modelId={modelId}
 				fetchData={fetchData}
+				access={access}
 			/>
 
 			<div className={classes.main}>
@@ -278,6 +283,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 									fullWidth
 									variant="outlined"
 									value={textValue.name}
+									disabled={!disableInput}
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
@@ -289,6 +295,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 									fullWidth
 									variant="outlined"
 									value={textValue.model}
+									disabled={!disableInput}
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
@@ -302,6 +309,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 									fullWidth
 									variant="outlined"
 									value={textValue.serialNumberRange}
+									disabled={!disableInput}
 								/>
 							</Grid>
 						</Grid>
@@ -316,6 +324,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 										handleChange("location", val, "siteLocationID")
 									}
 									selectedValue={dropDownValue.location}
+									disabled={!disableInput}
 								/>
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
@@ -328,6 +337,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 										handleChange("department", val, "siteDepartmentID")
 									}
 									selectedValue={dropDownValue.department}
+									disabled={!disableInput}
 								/>
 							</Grid>
 
@@ -339,6 +349,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 									options={dropDowns.types}
 									onChange={(val) => handleChange("type", val, "modelTypeID")}
 									selectedValue={dropDownValue.type}
+									disabled={!disableInput}
 								/>
 							</Grid>
 						</Grid>

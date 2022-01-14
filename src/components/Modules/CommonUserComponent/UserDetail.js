@@ -5,7 +5,7 @@ import AccordionBox from "components/Layouts/AccordionBox";
 import { Grid, TextField, Typography } from "@material-ui/core";
 
 import Roles from "helpers/roles";
-import AccessWrapper from "components/Modules/AccessWrapper";
+import RoleWrapper from "../RoleWrapper";
 
 const media = "@media(max-width: 414px)";
 
@@ -223,7 +223,7 @@ const UserDetail = ({
 					</Grid>
 
 					<Grid item sm={6}>
-						<AccessWrapper access={[Roles.user, Roles.admin]}>
+						<RoleWrapper access={[Roles.siteUser, Roles.clientAdmin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
 								name="externalRef"
@@ -247,7 +247,7 @@ const UserDetail = ({
 									) : null,
 								}}
 							/>
-						</AccessWrapper>
+						</RoleWrapper>
 					</Grid>
 				</Grid>
 			</div>
@@ -363,7 +363,7 @@ const UserDetail = ({
 					</Grid>
 
 					<Grid item xs={12}>
-						<AccessWrapper access={[Roles.user, Roles.admin]}>
+						<RoleWrapper access={[Roles.user, Roles.admin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
 								name="externalRef"
@@ -387,7 +387,7 @@ const UserDetail = ({
 									) : null,
 								}}
 							/>
-						</AccessWrapper>
+						</RoleWrapper>
 					</Grid>
 				</Grid>
 			</div>

@@ -1,20 +1,20 @@
 import React from "react";
+import PropTypes from "prop-types";
+function RoleWrapper({ children, roles }) {
+	const me = JSON.parse(localStorage.getItem("me"));
 
-const RoleWrapper = ({ children, accessRoles }) => {
-	const { position } = JSON.parse(localStorage.getItem("me"));
+	if (roles.includes(me.role)) return <>{children}</>;
 
-	console.log(position, accessRoles);
+	return null;
+}
 
-	let access;
-	if (position === null) {
-		access = accessRoles?.includes("superAdmin");
-	} else {
-		access = accessRoles?.includes(position);
-	}
+RoleWrapper.defaultProps = {
+	roles: [],
+};
 
-	if (!access) return <></>;
-
-	return <div>{children}</div>;
+RoleWrapper.propTypes = {
+	children: PropTypes.any.isRequired,
+	roles: PropTypes.array,
 };
 
 export default RoleWrapper;
