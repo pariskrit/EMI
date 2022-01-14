@@ -230,8 +230,10 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 	};
 
 	const handleChange = (name, val, typeId) => {
-		patchData(typeId, val.value);
-		setDropDownValue((th) => ({ ...th, [name]: val }));
+		if (dropDownValue[name].value !== val.value) {
+			patchData(typeId, val.value);
+			setDropDownValue((th) => ({ ...th, [name]: val }));
+		}
 	};
 
 	const handleTextChange = (e) => {
