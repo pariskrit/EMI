@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function AccessWrapper({ children, access }) {
-	if (access === "F") return <div>{children}</div>;
+	if (access === "F") return <>{children}</>;
 
 	return null;
 }

@@ -59,7 +59,7 @@ function setDropDownList(lists) {
 	}));
 }
 
-const ModelMapData = ({ match, history, getError, isMounted }) => {
+const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 	const classes = useStyles();
 	const {
 		params: { modelId },
@@ -261,6 +261,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				history={history}
 				modelId={modelId}
 				fetchData={fetchData}
+				access={access}
 			/>
 
 			<div className={classes.main}>
