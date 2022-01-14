@@ -237,7 +237,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 	const handleTextChange = (e) => {
 		const { name, value } = e.target;
 		setTextValue((th) => ({ ...th, [name]: value }));
-	},;
+	};
 
 	const handleBlur = (e) => {
 		const { name, value } = e.target;
