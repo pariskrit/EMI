@@ -13,6 +13,7 @@ import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { importModelMapData } from "services/models/modelMap";
 import AccessWrapper from "components/Modules/AccessWrapper";
+import role from "helpers/roles";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
@@ -167,7 +168,7 @@ const ModelMapHeader = ({
 						>
 							Delete
 						</AT.GeneralButton>
-						<AccessWrapper>
+						<AccessWrapper access={[role.superAdmin]}>
 							<AT.GeneralButton
 								onClick={handleImport}
 								disabled={total !== resolved || loading}

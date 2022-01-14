@@ -91,7 +91,7 @@ const UserDetails = ({
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<AccessWrapper accessRoles={[Roles.user, Roles.admin]}>
+						<AccessWrapper accessRoles={[Roles.siteUser, Roles.clientAdmin]}>
 							<UserNotes
 								id={+id}
 								notes={notes}

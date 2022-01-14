@@ -4,8 +4,7 @@ import PropTypes from "prop-types";
 const AccessWrapper = ({ children, access }) => {
 	const me = JSON.parse(localStorage.getItem("me"));
 
-	if (me?.position === null || access.includes(me?.position?.name))
-		return <div>{children}</div>;
+	if (access.includes(me.role)) return <div>{children}</div>;
 
 	return null;
 };
