@@ -234,10 +234,10 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 		setDropDownValue((th) => ({ ...th, [name]: val }));
 	};
 
-	const handleTextChange = React.useCallback((e) => {
+	const handleTextChange = (e) => {
 		const { name, value } = e.target;
 		setTextValue((th) => ({ ...th, [name]: value }));
-	}, []);
+	},;
 
 	const handleBlur = (e) => {
 		const { name, value } = e.target;
