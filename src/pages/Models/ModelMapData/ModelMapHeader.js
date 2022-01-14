@@ -168,7 +168,7 @@ const ModelMapHeader = ({
 						>
 							Delete
 						</AT.GeneralButton>
-						<AccessWrapper access={[role.superAdmin]}>
+						<AccessWrapper access={[role.clientAdmin]}>
 							<AT.GeneralButton
 								onClick={handleImport}
 								disabled={total !== resolved || loading}
