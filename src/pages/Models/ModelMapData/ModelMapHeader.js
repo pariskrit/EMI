@@ -12,8 +12,8 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { importModelMapData } from "services/models/modelMap";
-import AccessWrapper from "components/Modules/AccessWrapper";
 import role from "helpers/roles";
+import RoleWrapper from "components/Modules/RoleWrapper";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
@@ -168,14 +168,14 @@ const ModelMapHeader = ({
 						>
 							Delete
 						</AT.GeneralButton>
-						<AccessWrapper access={[role.clientAdmin]}>
+						<RoleWrapper access={[role.clientAdmin]}>
 							<AT.GeneralButton
 								onClick={handleImport}
 								disabled={total !== resolved || loading}
 							>
 								{loading ? "Completing ...." : "Complete"}
 							</AT.GeneralButton>
-						</AccessWrapper>
+						</RoleWrapper>
 					</div>
 				</div>
 			</div>

@@ -3,7 +3,7 @@ import CommonHeader from "./CommonHeader";
 import NavButtons from "components/Elements/NavButtons";
 
 import Roles from "helpers/roles";
-import AccessWrapper from "components/Modules/AccessWrapper";
+import RoleWrapper from "../RoleWrapper";
 
 const CommonUserHeader = ({
 	status,
@@ -49,9 +49,9 @@ const CommonUserHeader = ({
 					onPasswordReset,
 				}}
 			/>
-			<AccessWrapper access={[Roles.siteUser, Roles.clientAdmin]}>
+			<RoleWrapper access={[Roles.siteUser, Roles.clientAdmin]}>
 				<NavButtons navigation={navigation} current={current} />
-			</AccessWrapper>
+			</RoleWrapper>
 		</>
 	);
 };

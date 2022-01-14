@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const AccessWrapper = ({ children, access }) => {
-	const me = JSON.parse(localStorage.getItem("me"));
-
-	if (access.includes(me.role)) return <div>{children}</div>;
+function AccessWrapper({ children, access }) {
+	if (access === "F") return <div>{children}</div>;
 
 	return null;
-};
+}
 
 AccessWrapper.defaultProps = {
-	access: [],
+	access: "N",
 };
 
 AccessWrapper.propTypes = {
