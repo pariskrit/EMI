@@ -13,7 +13,7 @@ AccessWrapper.defaultProps = {
 
 AccessWrapper.propTypes = {
 	children: PropTypes.any.isRequired,
-	access: PropTypes.array,
+	access: PropTypes.string,
 };
 
 export default AccessWrapper;
