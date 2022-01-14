@@ -6,11 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { Link } from "react-router-dom";
-import {
-	applicationPath,
-	clientsPath,
-	siteAppDetailPath,
-} from "helpers/routePaths";
+import { modelsPath } from "helpers/routePaths";
 
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
@@ -104,9 +100,7 @@ function RegionAndSite({ region, sites, clientId }) {
 						<Link
 							className={classes.siteLink}
 							target="_blank"
-							to={`${clientsPath}/${clientId}/sites/${
-								site.id
-							}${applicationPath}/${site.siteAppID + siteAppDetailPath}`}
+							to={modelsPath}
 							onClick={() => handleSiteAppClick(site.siteAppID)}
 						>
 							{site.name}
