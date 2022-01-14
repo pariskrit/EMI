@@ -7,8 +7,6 @@ import { getDefaultCustomCaptions } from "services/clients/sites/siteApplication
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ContentStyle from "styles/application/ContentStyle";
 import { clientsPath, siteDetailPath } from "helpers/routePaths";
-import { useDispatch } from "react-redux";
-import { loginWithSiteAppId } from "redux/common/actions";
 
 const AC = ContentStyle();
 
@@ -32,9 +30,7 @@ const SingleComponent = (route) => {
 	);
 
 	const openAddModal = () => dispatch({ type: "ADD_TOGGLE" });
-	const reduxDispatch = useDispatch();
 	let crumbs = JSON.parse(localStorage.getItem("crumbs"));
-	const siteAppId = localStorage.getItem("siteAppId");
 
 	const openConfirmationModal = () =>
 		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: true });
@@ -101,16 +97,7 @@ const SingleComponent = (route) => {
 	};
 
 	useEffect(() => {
-		if (siteAppId) {
-			try {
-				reduxDispatch(loginWithSiteAppId(siteAppId));
-			} catch (err) {
-				console.log(err);
-			}
-		}
-
 		fetchData();
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

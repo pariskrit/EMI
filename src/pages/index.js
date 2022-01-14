@@ -12,10 +12,12 @@ import {
 	analysisPath,
 	analyticsPath,
 	applicationPortalPath,
+	defectExportPath,
 	defectsPath,
 	feedbackPath,
 	noticeboardPath,
 	servicesPath,
+	settingPath,
 } from "helpers/routePaths";
 import AccessRoute from "components/HOC/AccessRoute";
 import Services from "./Services";
@@ -62,6 +64,12 @@ const MainApp = ({ location }) => {
 					access={access.defectAccess}
 				/>
 				<AccessRoute
+					path={defectExportPath}
+					exact
+					component={() => <h1>Defect Export</h1>}
+					access={access.defectExportAccess}
+				/>
+				<AccessRoute
 					path={analysisPath}
 					exact
 					component={Analysis}
@@ -78,6 +86,12 @@ const MainApp = ({ location }) => {
 					exact
 					component={Noticeboards}
 					access={access.noticeboardAccess}
+				/>
+				<AccessRoute
+					path={settingPath}
+					exact
+					component={() => <h1>Settings</h1>}
+					access={access.settingsAccess}
 				/>
 			</NavbarWrapper>
 		</Switch>

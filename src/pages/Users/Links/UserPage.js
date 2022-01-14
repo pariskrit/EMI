@@ -1,13 +1,11 @@
 import React from "react";
+import { Route } from "react-router-dom";
 import SingleComponent from "./SingleComponent";
 import { userDetailPath, userProfilePath } from "helpers/routePaths";
 import CommonUserComponent from "components/Modules/CommonUserComponent";
 import differentUserAPIs from "helpers/differentUserAPIs";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
-import AccessRoute from "components/HOC/AccessRoute";
-import access from "helpers/access";
-import { Route } from "react-router-dom";
 
 const routes = [
 	{
@@ -48,8 +46,7 @@ const UserPage = ({ getError }) => {
 					<SingleComponent {...props} {...profile} getError={getError} />
 				)}
 			/>
-			<AccessRoute
-				access={access.userAccess}
+			<Route
 				path={detail.path}
 				exact
 				component={(props) => (

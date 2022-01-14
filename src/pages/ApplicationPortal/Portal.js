@@ -7,6 +7,7 @@ import {
 	getClientList,
 } from "services/applicationportal";
 import { CircularProgress } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Portal() {
 	const styles = useStyles();
+	const history = useHistory();
 	const [listOfClients, setListOfClients] = useState([]);
 	const [selectedClient, setSelectedClient] = useState({});
 	const [isLoading, setLoading] = useState({
@@ -37,6 +39,7 @@ function Portal() {
 	const onInputChange = (client) => {
 		setSelectedClient(client);
 		fetchApplicationsAndSites(client.id);
+		localStorage.setItem("isAdmin", client.isAdmin);
 	};
 
 	const fetchListOfClients = async () => {
@@ -48,6 +51,7 @@ function Portal() {
 					id: client.id,
 					label: client.name,
 					value: index,
+					isAdmin: client.isAdmin,
 				})),
 			]);
 		}
@@ -74,60 +78,69 @@ function Portal() {
 			</div>
 		);
 	}
-
-	return (
-		<div>
-			<Grid container spacing={2} className={styles.header} alignItems="center">
-				<Grid item xs={12}>
-					<Typography variant="h6" component="h1" gutterBottom>
-						<strong>Application Portal</strong>
-					</Typography>
-				</Grid>
-				<Grid item xs={12}>
-					<div className={styles.siteContainer}>
-						<Typography variant="subtitle2">Clients</Typography>
-						<div style={{ width: "100px" }}>
-							<Dropdown
-								options={listOfClients}
-								placeholder="Select Client"
-								onChange={onInputChange}
-								selectedValue={selectedClient}
-							/>
-						</div>
-					</div>
-				</Grid>
-			</Grid>
-
-			<Grid container spacing={5}>
-				{isLoading.showText ? (
-					<Grid item xs={9}>
-						<Typography
-							variant="subtitle1"
-							gutterBottom
-							component="div"
-							className={styles.para}
-						>
-							Select a client to view the applications
+	const { position, multiSiteUser } = JSON.parse(localStorage.getItem("me"));
+	if (position === null || multiSiteUser === true) {
+		return (
+			<div>
+				<Grid
+					container
+					spacing={2}
+					className={styles.header}
+					alignItems="center"
+				>
+					<Grid item xs={12}>
+						<Typography variant="h6" component="h1" gutterBottom>
+							<strong>Application Portal</strong>
 						</Typography>
 					</Grid>
-				) : null}
-
-				{isLoading.applications ? (
-					<Grid item xs={9} className={styles.para}>
-						<CircularProgress />
+					<Grid item xs={12}>
+						<div className={styles.siteContainer}>
+							<Typography variant="subtitle2">Clients</Typography>
+							<div style={{ width: "100px" }}>
+								<Dropdown
+									options={listOfClients}
+									placeholder="Select Client"
+									onChange={onInputChange}
+									selectedValue={selectedClient}
+								/>
+							</div>
+						</div>
 					</Grid>
-				) : (
-					applicationList.map((application) => (
-						<SingleApplication
-							data={application}
-							key={application.id}
-							clientId={clientId}
-						/>
-					))
-				)}
-			</Grid>
-		</div>
-	);
+				</Grid>
+
+				<Grid container spacing={5}>
+					{isLoading.showText ? (
+						<Grid item xs={9}>
+							<Typography
+								variant="subtitle1"
+								gutterBottom
+								component="div"
+								className={styles.para}
+							>
+								Select a client to view the applications
+							</Typography>
+						</Grid>
+					) : null}
+
+					{isLoading.applications ? (
+						<Grid item xs={9} className={styles.para}>
+							<CircularProgress />
+						</Grid>
+					) : (
+						applicationList.map((application) => (
+							<SingleApplication
+								data={application}
+								key={application.id}
+								clientId={clientId}
+							/>
+						))
+					)}
+				</Grid>
+			</div>
+		);
+	} else {
+		history.length > 1 ? history.goBack() : history.push("/app/me");
+	}
 }
 
 export default Portal;

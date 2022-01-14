@@ -4,20 +4,19 @@ import { Route, useHistory } from "react-router";
 
 const AccessRoute = ({ component: Component, access, ...rest }) => {
 	const history = useHistory();
-	const { position, isAdmin } = JSON.parse(localStorage.getItem("me"));
+	const { position } = JSON.parse(localStorage.getItem("me"));
+
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				isAdmin === true ||
 				position?.[access] === "F" ||
 				position?.[access] === "E" ||
-				position?.[access] === "R" ||
-				position.siteAppID ? (
+				position?.[access] === "R" ? (
 					<Component
 						{...props}
 						position={position}
-						access={position?.[access]}
+						access={position[access]}
 						history={history}
 					/>
 				) : history.length > 1 ? (
@@ -29,7 +28,6 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 		/>
 	);
 };
-
 AccessRoute.defaultProps = {
 	access: "",
 };

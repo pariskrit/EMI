@@ -38,22 +38,6 @@ function App() {
 						<ResetPassword />
 					</Route>
 
-					<Route path="/forgot-password" exact>
-						<ForgotPassword />
-					</Route>
-					<Route path="/ResetPassword" exact>
-						<ResetPassword />
-					</Route>
-					<Route path="/Register" exact>
-						<RegisterUserEmail />
-					</Route>
-
-					<Route path="/forgot-password" exact>
-						<ForgotPassword />
-					</Route>
-					<Route path="/ResetPassword" exact>
-						<ResetPassword />
-					</Route>
 					<Route path="/Register" exact>
 						<RegisterUserEmail />
 					</Route>

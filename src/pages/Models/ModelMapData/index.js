@@ -5,15 +5,20 @@ import { makeStyles } from "@material-ui/core/styles";
 import ModelMapHeader from "./ModelMapHeader";
 import API from "helpers/api";
 import Dropdown from "components/Elements/Dropdown";
-import { CircularProgress, LinearProgress } from "@material-ui/core";
-import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import { handleSort } from "helpers/utils";
+import {
+	CircularProgress,
+	LinearProgress,
+	Grid,
+	TextField,
+	Typography,
+} from "@material-ui/core";
 import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
 import withMount from "components/HOC/withMount";
 import { getModelMapData } from "services/models/modelMap";
-import useModelAccess from "../useModelAccess";
+import ColourConstants from "helpers/colourConstants";
+import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -26,6 +31,14 @@ const useStyles = makeStyles({
 		width: "100%",
 		left: 0,
 		top: 0,
+	},
+	labeling: {
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		fontWeight: "bold",
+		color: ColourConstants.commonText,
+		paddingBottom: 5,
+		width: "100%",
 	},
 });
 
@@ -48,11 +61,10 @@ function setDropDownList(lists) {
 
 const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const classes = useStyles();
-	useModelAccess();
 	const {
 		params: { modelId },
 	} = match;
-
+	useSuperAdminExclude();
 	const [modelData, setModelData] = useState(modalInitial);
 
 	const [dropDowns, setDropDown] = useState({
@@ -74,8 +86,13 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 	const [dropDownValue, setDropDownValue] = useState({
 		location: {},
 		department: {},
-		status: {},
 		type: {},
+	});
+
+	const [textValue, setTextValue] = useState({
+		name: "",
+		model: "",
+		serialNumberRange: "",
 	});
 
 	const [dropDownLoading, setDropDownLoading] = useState(false);
@@ -86,8 +103,14 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 			const res = await getModelMapData(modelId);
 			if (res.status) {
 				const { data } = res;
+
 				if (!isMounted.aborted) {
 					setModelData({ data: data, loading: false });
+					setTextValue({
+						name: data.name,
+						model: data.model,
+						serialNumberRange: data.serialNumberRange,
+					});
 					setErrors({
 						actions: {
 							total: data.modelImportActions.length,
@@ -127,7 +150,6 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 						[
 							"/api/SiteLocations?siteAppId=" + siteAppID,
 							"/api/SiteDepartments?siteAppId=" + siteAppID,
-							"/api/ModelStatuses?siteAppId=" + siteAppID,
 							"/api/ModelTypes?siteAppId=" + siteAppID,
 						].map((end) => API.get(end))
 					)
@@ -136,22 +158,17 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 								(
 									{ data: locations },
 									{ data: departments },
-									{ data: statuses },
 									{ data: types }
 								) => {
 									const loc = setDropDownList(locations);
 									const dep = setDropDownList(departments);
 									const typ = setDropDownList(types);
-									const stat = statuses.map((x) => ({
-										...x,
-										publish: x.publish ? "Yes" : "No",
-									}));
+
 									if (!isMounted.aborted) {
 										setDropDown({
 											loading: false,
 											locations: loc,
 											departments: dep,
-											statuses: stat,
 											types: typ,
 										});
 
@@ -164,10 +181,7 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 												dep.find((x) =>
 													setDropDownData(x, data.siteDepartmentID)
 												) || {},
-											status:
-												stat.find((x) =>
-													setDropDownData(x, data.siteStatusID)
-												) || {},
+
 											type:
 												typ.find((x) => setDropDownData(x, data.modelTypeID)) ||
 												{},
@@ -197,24 +211,40 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const handleChange = (name, val, typeId) => {
+	const patchData = (path, value) => {
 		setDropDownLoading(true);
-		if (typeId) {
-			API.patch("/api/ModelImports/" + modelId, [
-				{ op: "replace", path: typeId, value: val.value },
-			])
-				.then((res) => {
+
+		API.patch("/api/ModelImports/" + modelId, [{ op: "replace", path, value }])
+			.then((res) => {
+				if (!isMounted.aborted) {
 					setModelData((th) => ({
-						...th,
-						...res.data,
+						loading: false,
+						data: { ...th.data, ...res.data },
 					}));
 					setDropDownLoading(false);
-				})
-				.catch((err) => {
-					setDropDownLoading(false);
-				});
-		}
+				}
+			})
+			.catch((err) => {
+				setDropDownLoading(false);
+			});
+	};
+
+	const handleChange = (name, val, typeId) => {
+		patchData(typeId, val.value);
 		setDropDownValue((th) => ({ ...th, [name]: val }));
+	};
+
+	const handleTextChange = React.useCallback((e) => {
+		const { name, value } = e.target;
+		setTextValue((th) => ({ ...th, [name]: value }));
+	}, []);
+
+	const handleBlur = (e) => {
+		const { name, value } = e.target;
+		if (modelData.data[name] !== value) {
+			patchData(name, value);
+		}
+		return;
 	};
 
 	if (modelData.loading) {
@@ -232,56 +262,87 @@ const ModelMapData = ({ match, history, getError, isMounted }) => {
 				modelId={modelId}
 				fetchData={fetchData}
 			/>
+
 			<div className={classes.main}>
 				{dropDowns.loading ? (
 					<CircularProgress />
 				) : (
-					<div style={{ display: "flex", gap: 6, flex: "25%" }}>
-						<Dropdown
-							width="291px"
-							placeholder="Location"
-							options={dropDowns.locations}
-							onChange={(val) =>
-								handleChange("location", val, "siteLocationID")
-							}
-							selectedValue={dropDownValue.location}
-						/>
-						<Dropdown
-							width="291px"
-							placeholder="Department"
-							options={dropDowns.departments}
-							onChange={(val) =>
-								handleChange("department", val, "siteDepartmentID")
-							}
-							selectedValue={dropDownValue.department}
-						/>
+					<>
+						<Grid container spacing={2}>
+							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Name</Typography>
+								<TextField
+									name="name"
+									onChange={handleTextChange}
+									onBlur={handleBlur}
+									fullWidth
+									variant="outlined"
+									value={textValue.name}
+								/>
+							</Grid>
+							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Model</Typography>
+								<TextField
+									name="model"
+									onChange={handleTextChange}
+									onBlur={handleBlur}
+									fullWidth
+									variant="outlined"
+									value={textValue.model}
+								/>
+							</Grid>
+							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>
+									Serial Number Range
+								</Typography>
+								<TextField
+									name="serialNumberRange"
+									onChange={handleTextChange}
+									onBlur={handleBlur}
+									fullWidth
+									variant="outlined"
+									value={textValue.serialNumberRange}
+								/>
+							</Grid>
+						</Grid>
+						<Grid container spacing={2}>
+							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Location</Typography>
+								<Dropdown
+									width="100%"
+									placeholder="Please Select"
+									options={dropDowns.locations}
+									onChange={(val) =>
+										handleChange("location", val, "siteLocationID")
+									}
+									selectedValue={dropDownValue.location}
+								/>
+							</Grid>
+							<Grid item md={4} sm={6} xs={12}>
+								<Typography className={classes.labeling}>Department</Typography>
+								<Dropdown
+									width="100%"
+									placeholder="Please Select"
+									options={dropDowns.departments}
+									onChange={(val) =>
+										handleChange("department", val, "siteDepartmentID")
+									}
+									selectedValue={dropDownValue.department}
+								/>
+							</Grid>
 
-						<DyanamicDropdown
-							isServerSide={false}
-							placeholder="Status"
-							dataHeader={[
-								{ id: 1, name: "Name" },
-								{ id: 2, name: "Publish" },
-							]}
-							columns={[
-								{ id: 1, name: "name" },
-								{ id: 2, name: "publish" },
-							]}
-							dataSource={dropDowns.statuses}
-							showHeader
-							selectedValue={dropDownValue.status}
-							handleSort={handleSort}
-							onChange={(val) => handleChange("status", val)}
-							selectdValueToshow="name"
-						/>
-						<Dropdown
-							width="291px"
-							placeholder="Type"
-							options={dropDowns.types}
-							onChange={(val) => handleChange("type", val, "modelTypeID")}
-							selectedValue={dropDownValue.type}
-						/>
-					</div>
+							<Grid item md={4} xs={12}>
+								<Typography className={classes.labeling}>Type</Typography>
+								<Dropdown
+									width="100%"
+									placeholder="Please Select"
+									options={dropDowns.types}
+									onChange={(val) => handleChange("type", val, "modelTypeID")}
+									selectedValue={dropDownValue.type}
+								/>
+							</Grid>
+						</Grid>
+					</>
 				)}
 
 				<ElementList

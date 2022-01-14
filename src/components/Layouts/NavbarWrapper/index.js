@@ -3,7 +3,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import "./style.scss";
 import Navbar from "components/Layouts/NavbarWrapper/Navbar";
 import { CssBaseline } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { connect } from "react-redux";
+import { useEffect } from "react";
+import { loginWithSiteAppId } from "redux/common/actions";
+import { logOutUser } from "redux/auth/actions";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -16,19 +19,46 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /* Adds Navbar component  */
-function NavbarWrapper({ isApplicationPortal, children }) {
+function NavbarWrapper({
+	isApplicationPortal,
+	children,
+	userLogOut,
+	loading,
+	loginSiteApp,
+}) {
 	// Init hooks
 	const classes = useStyles();
-	const loading = useSelector((state) => state.commonData.loading);
+
+	const siteAppId = localStorage.getItem("siteAppId");
+
+	useEffect(() => {
+		// Is called with clicking site application from Application Portal where siteAppId is set
+		if (siteAppId) {
+			loginSiteApp(siteAppId);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [siteAppId]);
 
 	return (
 		<div className={classes.root}>
 			<CssBaseline />
-			<Navbar isApplicationPortal={isApplicationPortal} isLoading={loading} />
-
-			<main className={classes.content}>{children}</main>
+			<Navbar
+				isApplicationPortal={isApplicationPortal}
+				isLoading={loading}
+				userLogOut={userLogOut}
+			/>
+			{!siteAppId && <main className={classes.content}>{children}</main>}
 		</div>
 	);
 }
 
-export default NavbarWrapper;
+const mapStateToProps = (state) => ({
+	loading: state.commonData.loading,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	userLogOut: () => dispatch(logOutUser()),
+	loginSiteApp: (id) => dispatch(loginWithSiteAppId(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavbarWrapper);

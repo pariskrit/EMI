@@ -121,7 +121,7 @@ const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
 					) : (
 						<CurveButton
 							style={{ float: "left", background: "#307AD6" }}
-							onClick={() => setAddNew({ open: true, text: "" })}
+							onClick={() => setAddNew({ open: true, text: x.name })}
 						>
 							Add New
 						</CurveButton>
