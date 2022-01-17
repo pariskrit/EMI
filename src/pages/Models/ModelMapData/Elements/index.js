@@ -61,6 +61,7 @@ const Elements = ({
 	modelName,
 	elementID,
 	onErrorResolve,
+	disableInput,
 }) => {
 	const classes = useStyles();
 	const [dropDown, setDropDown] = useState([]);
@@ -121,6 +122,7 @@ const Elements = ({
 							patchApi={patchApi}
 							setErrorResolve={(data) => setErrorResolve(data, x)}
 							elementID={elementID}
+							disableInput={disableInput}
 						/>
 					))}
 				</TableBody>
