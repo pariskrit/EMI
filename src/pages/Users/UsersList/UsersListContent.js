@@ -1,7 +1,7 @@
 import { handleSort } from "helpers/utils";
 import UsersListTable from "./UsersListTable";
 import { useUserSearch } from "hooks/useUserSearch";
-import { Avatar, CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
