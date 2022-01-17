@@ -17,6 +17,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
 import GeneralButton from "components/Elements/GeneralButton";
+import mainAccess from "helpers/access";
 
 const AC = ContentStyle();
 
@@ -56,8 +57,10 @@ const useStyles = makeStyles({
 	},
 });
 
-const UsersListContent = ({ getError, access, position }) => {
+const UsersListContent = ({ getError }) => {
 	const classes = useStyles();
+	const { position } = JSON.parse(localStorage.getItem("me"));
+	const access = position?.[mainAccess.userAccess];
 
 	//Init State
 	const [haveData, setHaveData] = useState(false);
@@ -223,22 +226,24 @@ const UsersListContent = ({ getError, access, position }) => {
 						)}
 					</Typography>
 					{haveData ? (
-						position === null || access === "F" ? (
-							<div className={classes.buttonContainer}>
-								<GeneralButton
-									onClick={() => setModal((th) => ({ ...th, import: true }))}
-									style={{ backgroundColor: "#ed8738" }}
-								>
-									IMPORT FROM LIST
-								</GeneralButton>
-								<GeneralButton
-									onClick={() => setModal((th) => ({ ...th, add: true }))}
-									style={{ backgroundColor: "#23bb79" }}
-								>
-									ADD NEW
-								</GeneralButton>
-							</div>
-						) : null
+						<>
+							{position === null || access === "F" ? (
+								<div className={classes.buttonContainer}>
+									<GeneralButton
+										onClick={() => setModal((th) => ({ ...th, import: true }))}
+										style={{ backgroundColor: "#ed8738" }}
+									>
+										IMPORT FROM LIST
+									</GeneralButton>
+									<GeneralButton
+										onClick={() => setModal((th) => ({ ...th, add: true }))}
+										style={{ backgroundColor: "#23bb79" }}
+									>
+										ADD NEW
+									</GeneralButton>
+								</div>
+							) : null}
+						</>
 					) : null}
 				</div>
 
