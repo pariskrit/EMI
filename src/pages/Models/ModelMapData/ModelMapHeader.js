@@ -12,6 +12,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { importModelMapData } from "services/models/modelMap";
+import access from "helpers/access";
 import role from "helpers/roles";
 import RoleWrapper from "components/Modules/RoleWrapper";
 import AccessWrapper from "components/Modules/AccessWrapper";
@@ -164,7 +165,7 @@ const ModelMapHeader = ({
 								Errors Resolved {resolved}/{total}
 							</span>
 						)}
-						<AccessWrapper access={access}>
+						<AccessWrapper access={access.modelAccess} accessList={["F"]}>
 							<AT.GeneralButton
 								onClick={handleDelete}
 								className={classes.importButton}
