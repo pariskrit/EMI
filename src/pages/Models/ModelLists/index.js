@@ -254,7 +254,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					</Typography>
 
 					<div className={classes.buttonContainer}>
-						{isAdmin && access === "F" && (
+						{position === null && (
 							<GeneralButton
 								style={{ backgroundColor: "#ed8738" }}
 								onClick={() => setOpenImportFile(true)}
