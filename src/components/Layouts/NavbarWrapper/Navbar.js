@@ -125,7 +125,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			maxHeight: 60,
 			// Note: width should be auto if using a different sized logo
 			width: "auto",
-			maxWidth: 240,
+			maxWidth: 210,
 			marginLeft: 35,
 		},
 		toolbar: {
