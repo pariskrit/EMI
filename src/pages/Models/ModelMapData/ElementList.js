@@ -1,7 +1,13 @@
 import React from "react";
 import Elements from "./Elements";
 
-const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
+const ElementList = ({
+	errors,
+	modelData,
+	setModelData,
+	setErrors,
+	disableInput,
+}) => {
 	const onErrorChange = (updatedData, modelName, errorName, elementID) => {
 		const resolved = updatedData.filter(
 			(x) => x.newName !== null || x[elementID] !== null
@@ -26,6 +32,7 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				modelName="modelImportActions"
 				elementID="actionID"
 				onErrorResolve={onErrorChange}
+				disableInput={disableInput}
 			/>
 			<Elements
 				name="Lubricant"
@@ -39,6 +46,7 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				modelName="modelImportLubricants"
 				elementID="lubricantID"
 				onErrorResolve={onErrorChange}
+				disableInput={disableInput}
 			/>
 			<Elements
 				name="Operating Mode"
@@ -52,6 +60,7 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				modelName="modelImportOperatingModes"
 				elementID="operatingModeID"
 				onErrorResolve={onErrorChange}
+				disableInput={disableInput}
 			/>
 			<Elements
 				name="System"
@@ -65,6 +74,7 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				modelName="modelImportSystems"
 				elementID="systemID"
 				onErrorResolve={onErrorChange}
+				disableInput={disableInput}
 			/>
 			<Elements
 				name="Role"
@@ -78,6 +88,7 @@ const ElementList = ({ errors, modelData, setModelData, setErrors }) => {
 				modelName="modelImportRoles"
 				elementID="roleID"
 				onErrorResolve={onErrorChange}
+				disableInput={disableInput}
 			/>
 		</>
 	);
