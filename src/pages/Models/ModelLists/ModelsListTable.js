@@ -76,6 +76,7 @@ const useStyles = makeStyles({
 const UserTable = ({
 	data,
 	setData,
+	access,
 	columns,
 	headers,
 	handleSort,
@@ -141,7 +142,7 @@ const UserTable = ({
 									<AT.CellContainer key={col}>
 										<AT.TableBodyText>{row[col]}</AT.TableBodyText>
 
-										{arr.length === i + 1 ? (
+										{arr.length === i + 1 && access !== "R" ? (
 											<AT.DotMenu
 												onClick={(e) => {
 													setAnchorEl(
