@@ -1,16 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
+import access from "helpers/access";
 
 function AccessWrapper({ children, access, accessList }) {
 	const { position } = JSON.parse(localStorage.getItem("me"));
-	if (accessList.includes(position[access]) === "F") return <>{children}</>;
+	if (position[access] === "F") return <>{children}</>;
+	if (accessList.includes(position[access])) return <>{children}</>;
 
 	return null;
 }
 
 AccessWrapper.defaultProps = {
-	access: "modelAccess",
-	accessList: ["R"],
+	access: access.modelAccess,
+	accessList: ["E", "R"],
 };
 
 AccessWrapper.propTypes = {
