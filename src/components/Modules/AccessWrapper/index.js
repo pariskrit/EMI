@@ -7,7 +7,7 @@ function AccessWrapper({ children, access, accessList }) {
 }
 
 AccessWrapper.defaultProps = {
-	access: "F",
+	access: "N",
 	accessList: ["F"],
 };
 

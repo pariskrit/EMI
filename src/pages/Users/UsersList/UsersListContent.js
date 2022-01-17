@@ -227,7 +227,7 @@ const UsersListContent = ({ getError }) => {
 					</Typography>
 					{haveData ? (
 						<>
-							{position === null || access === "F" ? (
+							{position === null ? (
 								<div className={classes.buttonContainer}>
 									<GeneralButton
 										onClick={() => setModal((th) => ({ ...th, import: true }))}
