@@ -43,7 +43,14 @@ const useStyles = makeStyles({
 	},
 });
 
-const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
+const Row = ({
+	dropDown,
+	x,
+	setErrorResolve,
+	patchApi,
+	elementID,
+	disableInput,
+}) => {
 	const { success, error, resolveStyle, textBox, deleteIcon } = useStyles();
 	const [selectedValue, setSelectedValue] = useState({});
 	const [addNew, setAddNew] = useState({ open: false, text: "" });
@@ -106,17 +113,19 @@ const Row = ({ dropDown, x, setErrorResolve, patchApi, elementID }) => {
 						label=""
 						required={true}
 						width="100%"
-						disabled={x.newName !== null}
+						disabled={x.newName !== null || disableInput}
 					/>
 				</TableCell>
 				<TableCell>
 					{x.newName !== null ? (
 						<span className={textBox}>
 							<span>{x.newName}</span>
-							<DeleteIcon
-								className={deleteIcon}
-								onClick={() => setDeleteConfirm(true)}
-							/>
+							{!disableInput && (
+								<DeleteIcon
+									className={deleteIcon}
+									onClick={() => setDeleteConfirm(true)}
+								/>
+							)}
 						</span>
 					) : (
 						<CurveButton
