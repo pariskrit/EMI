@@ -4,15 +4,15 @@ import access from "helpers/access";
 
 function AccessWrapper({ children, access, accessList }) {
 	const { position } = JSON.parse(localStorage.getItem("me"));
-	if (position[access] === "F") return <>{children}</>;
-	if (accessList.includes(position[access])) return <>{children}</>;
+	if (accessList.includes(position[access]) || position[access] === "F")
+		return <>{children}</>;
 
 	return null;
 }
 
 AccessWrapper.defaultProps = {
 	access: access.modelAccess,
-	accessList: ["E", "R"],
+	accessList: ["F"],
 };
 
 AccessWrapper.propTypes = {
