@@ -7,6 +7,7 @@ const ElementList = ({
 	setModelData,
 	setErrors,
 	disableInput,
+	access,
 }) => {
 	const onErrorChange = (updatedData, modelName, errorName, elementID) => {
 		const resolved = updatedData.filter(
@@ -33,6 +34,7 @@ const ElementList = ({
 				elementID="actionID"
 				onErrorResolve={onErrorChange}
 				disableInput={disableInput}
+				access={access}
 			/>
 			<Elements
 				name="Lubricant"
@@ -47,6 +49,7 @@ const ElementList = ({
 				elementID="lubricantID"
 				onErrorResolve={onErrorChange}
 				disableInput={disableInput}
+				access={access}
 			/>
 			<Elements
 				name="Operating Mode"
@@ -61,6 +64,7 @@ const ElementList = ({
 				elementID="operatingModeID"
 				onErrorResolve={onErrorChange}
 				disableInput={disableInput}
+				access={access}
 			/>
 			<Elements
 				name="System"
@@ -75,6 +79,7 @@ const ElementList = ({
 				elementID="systemID"
 				onErrorResolve={onErrorChange}
 				disableInput={disableInput}
+				access={access}
 			/>
 			<Elements
 				name="Role"
@@ -89,6 +94,7 @@ const ElementList = ({
 				elementID="roleID"
 				onErrorResolve={onErrorChange}
 				disableInput={disableInput}
+				access={access}
 			/>
 		</>
 	);

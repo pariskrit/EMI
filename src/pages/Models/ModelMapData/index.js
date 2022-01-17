@@ -362,6 +362,7 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 					setModelData={setModelData}
 					setErrors={setErrors}
 					disableInput={disableInput}
+					access={access}
 				/>
 			</div>
 		</div>
