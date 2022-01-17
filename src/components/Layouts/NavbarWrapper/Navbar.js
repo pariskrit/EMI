@@ -289,6 +289,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			// Successful response after revoke token
 			if (logOut.status === 200) {
 				localStorage.clear();
+				sessionStorage.clear();
 				// if loginType !==undefined
 				if (loginType) {
 					if (loginType === "GOOGLE") {
