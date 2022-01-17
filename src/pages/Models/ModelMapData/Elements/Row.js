@@ -11,6 +11,7 @@ import API from "helpers/api";
 import AddDialog from "./AddDialog";
 import ColourConstants from "helpers/colourConstants";
 import DeleteDialog from "./DeleteDialog";
+import AccessWrapper from "components/Modules/AccessWrapper";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
@@ -50,6 +51,7 @@ const Row = ({
 	patchApi,
 	elementID,
 	disableInput,
+	access,
 }) => {
 	const { success, error, resolveStyle, textBox, deleteIcon } = useStyles();
 	const [selectedValue, setSelectedValue] = useState({});
@@ -128,12 +130,14 @@ const Row = ({
 							)}
 						</span>
 					) : (
-						<CurveButton
-							style={{ float: "left", background: "#307AD6" }}
-							onClick={() => setAddNew({ open: true, text: x.name })}
-						>
-							Add New
-						</CurveButton>
+						<AccessWrapper access={access} accessList={["E"]}>
+							<CurveButton
+								style={{ float: "left", background: "#307AD6" }}
+								onClick={() => setAddNew({ open: true, text: x.name })}
+							>
+								Add New
+							</CurveButton>
+						</AccessWrapper>
 					)}
 				</TableCell>
 

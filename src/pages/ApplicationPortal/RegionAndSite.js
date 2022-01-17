@@ -66,6 +66,7 @@ function RegionAndSite({ region, sites, clientId }) {
 
 	const handleSiteAppClick = async (id) => {
 		localStorage.setItem("siteAppId", id);
+		localStorage.setItem("isAdmin", sessionStorage.getItem("isAdmin"));
 	};
 	return (
 		<Accordion className={classes.accordionParent}>
