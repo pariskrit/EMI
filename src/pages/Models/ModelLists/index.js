@@ -69,7 +69,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const ModelLists = ({ getError, isMounted }) => {
+const ModelLists = ({ getError, isMounted, access }) => {
 	const classes = useStyles();
 	useSuperAdminExclude();
 	//Init State
@@ -196,7 +196,7 @@ const ModelLists = ({ getError, isMounted }) => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
+	console.log(access);
 	return (
 		<div className="container">
 			<CommonModal
@@ -254,7 +254,7 @@ const ModelLists = ({ getError, isMounted }) => {
 					</Typography>
 
 					<div className={classes.buttonContainer}>
-						{isAdmin && (
+						{isAdmin && access === "F" && (
 							<GeneralButton
 								style={{ backgroundColor: "#ed8738" }}
 								onClick={() => setOpenImportFile(true)}
@@ -262,12 +262,14 @@ const ModelLists = ({ getError, isMounted }) => {
 								IMPORT FROM EXISTING
 							</GeneralButton>
 						)}
-						<GeneralButton
-							style={{ backgroundColor: "#23bb79" }}
-							onClick={() => setOpenAddNewModal(true)}
-						>
-							ADD NEW
-						</GeneralButton>
+						{access === "F" && (
+							<GeneralButton
+								style={{ backgroundColor: "#23bb79" }}
+								onClick={() => setOpenAddNewModal(true)}
+							>
+								ADD NEW
+							</GeneralButton>
+						)}
 					</div>
 				</div>
 				<ModalAwaitingImports modelImportData={modelImportData} />
@@ -293,6 +295,7 @@ const ModelLists = ({ getError, isMounted }) => {
 			) : (
 				<ModelsListTable
 					data={filteredData}
+					access={access}
 					headers={
 						application?.showModel
 							? [
