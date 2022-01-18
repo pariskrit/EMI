@@ -164,7 +164,7 @@ const ModelMapHeader = ({
 								Errors Resolved {resolved}/{total}
 							</span>
 						)}
-						<AccessWrapper access={access} accessList={["F"]}>
+						<AccessWrapper access={access}>
 							<AT.GeneralButton
 								onClick={handleDelete}
 								className={classes.importButton}
@@ -172,7 +172,7 @@ const ModelMapHeader = ({
 								Delete
 							</AT.GeneralButton>
 						</AccessWrapper>
-						<RoleWrapper access={[role.clientAdmin]}>
+						<RoleWrapper roles={[role.clientAdmin]}>
 							<AT.GeneralButton
 								onClick={handleImport}
 								disabled={total !== resolved || loading}
