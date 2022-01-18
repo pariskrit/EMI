@@ -25,11 +25,7 @@ import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import ColourConstants from "helpers/colourConstants";
-import {
-	clientsPath,
-	userProfilePath,
-	applicationPortalPath,
-} from "helpers/routePaths";
+import { userProfilePath, applicationPortalPath } from "helpers/routePaths";
 import navList from "./navList";
 import "./style.scss";
 
