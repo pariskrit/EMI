@@ -1,7 +1,6 @@
 import React from "react";
 import CommonHeader from "./CommonHeader";
 import NavButtons from "components/Elements/NavButtons";
-
 import Roles from "helpers/roles";
 import RoleWrapper from "../RoleWrapper";
 
@@ -49,7 +48,7 @@ const CommonUserHeader = ({
 					onPasswordReset,
 				}}
 			/>
-			<RoleWrapper access={[Roles.siteUser, Roles.clientAdmin]}>
+			<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
 				<NavButtons navigation={navigation} current={current} />
 			</RoleWrapper>
 		</>
