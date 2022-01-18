@@ -363,7 +363,7 @@ const UserDetail = ({
 					</Grid>
 
 					<Grid item xs={12}>
-						<RoleWrapper access={[Roles.user, Roles.admin]}>
+						<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
 								name="externalRef"
