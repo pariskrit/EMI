@@ -49,7 +49,7 @@ const CommonUserHeader = ({
 					onPasswordReset,
 				}}
 			/>
-			<RoleWrapper access={[Roles.siteUser, Roles.clientAdmin]}>
+			<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
 				<NavButtons navigation={navigation} current={current} />
 			</RoleWrapper>
 		</>
