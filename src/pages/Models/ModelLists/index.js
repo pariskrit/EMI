@@ -1,5 +1,4 @@
 import { handleSort } from "helpers/utils";
-import Button from "@material-ui/core/Button";
 import { CircularProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,7 +10,6 @@ import {
 	getModelImports,
 	getModelList,
 } from "services/models/modelList";
-import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import React, { useState, useCallback, useEffect } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
@@ -28,8 +26,9 @@ import { showError } from "redux/common/actions";
 import withMount from "components/HOC/withMount";
 import GeneralButton from "components/Elements/GeneralButton";
 import useSuperAdminExclude from "hooks/useSuperAdminExclude";
+import RoleWrapper from "components/Modules/RoleWrapper";
+import AccessWrapper from "components/Modules/AccessWrapper";
 
-const AT = ActionButtonStyle();
 const AC = ContentStyle();
 
 const media = "@media(max-width: 414px)";
@@ -89,7 +88,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
 
-	const { position, isAdmin, application, customCaptions } = JSON.parse(
+	const { position, application, customCaptions } = JSON.parse(
 		localStorage.getItem("me")
 	);
 
@@ -196,7 +195,6 @@ const ModelLists = ({ getError, isMounted, access }) => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	console.log(access);
 	return (
 		<div className="container">
 			<CommonModal
@@ -254,22 +252,25 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					</Typography>
 
 					<div className={classes.buttonContainer}>
-						{isAdmin && access === "F" && (
-							<GeneralButton
-								style={{ backgroundColor: "#ed8738" }}
-								onClick={() => setOpenImportFile(true)}
-							>
-								IMPORT FROM EXISTING
-							</GeneralButton>
-						)}
-						{access === "F" && (
+						<AccessWrapper access={access} accessList={["F", "E"]}>
+							<RoleWrapper roles={["ClientAdmin"]}>
+								<GeneralButton
+									style={{ backgroundColor: "#ed8738" }}
+									onClick={() => setOpenImportFile(true)}
+								>
+									IMPORT FROM EXISTING
+								</GeneralButton>
+							</RoleWrapper>
+						</AccessWrapper>
+
+						<AccessWrapper access={access} accessList={["F", "E"]}>
 							<GeneralButton
 								style={{ backgroundColor: "#23bb79" }}
 								onClick={() => setOpenAddNewModal(true)}
 							>
 								ADD NEW
 							</GeneralButton>
-						)}
+						</AccessWrapper>
 					</div>
 				</div>
 				<ModalAwaitingImports modelImportData={modelImportData} />
