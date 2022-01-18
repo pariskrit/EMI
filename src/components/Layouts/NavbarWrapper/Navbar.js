@@ -383,7 +383,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 									</div>
 								</Link>
 								{isAdmin ? (
-									<Link to={clientsPath} className={classes.navLink}>
+									<Link to={navOptions[0].path} className={classes.navLink}>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
 										>
