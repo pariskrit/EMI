@@ -27,6 +27,7 @@ import withMount from "components/HOC/withMount";
 import GeneralButton from "components/Elements/GeneralButton";
 import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 import RoleWrapper from "components/Modules/RoleWrapper";
+import AccessWrapper from "components/Modules/AccessWrapper";
 
 const AC = ContentStyle();
 
@@ -251,23 +252,25 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					</Typography>
 
 					<div className={classes.buttonContainer}>
-						<RoleWrapper roles={["ClientAdmin"]}>
-							<GeneralButton
-								style={{ backgroundColor: "#ed8738" }}
-								onClick={() => setOpenImportFile(true)}
-							>
-								IMPORT FROM EXISTING
-							</GeneralButton>
-						</RoleWrapper>
+						<AccessWrapper access={access} accessList={["F", "E"]}>
+							<RoleWrapper roles={["ClientAdmin"]}>
+								<GeneralButton
+									style={{ backgroundColor: "#ed8738" }}
+									onClick={() => setOpenImportFile(true)}
+								>
+									IMPORT FROM EXISTING
+								</GeneralButton>
+							</RoleWrapper>
+						</AccessWrapper>
 
-						{access === "F" ? (
+						<AccessWrapper access={access} accessList={["F", "E"]}>
 							<GeneralButton
 								style={{ backgroundColor: "#23bb79" }}
 								onClick={() => setOpenAddNewModal(true)}
 							>
 								ADD NEW
 							</GeneralButton>
-						) : null}
+						</AccessWrapper>
 					</div>
 				</div>
 				<ModalAwaitingImports modelImportData={modelImportData} />
