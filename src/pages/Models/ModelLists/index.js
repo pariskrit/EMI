@@ -194,7 +194,6 @@ const ModelLists = ({ getError, isMounted, access }) => {
 		Promise.all([fetchModelList(), fetchModelImports()]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	console.log(access);
 	return (
 		<div className="container">
 			<CommonModal
@@ -252,7 +251,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					</Typography>
 
 					<div className={classes.buttonContainer}>
-						<RoleWrapper roles={["clientAdmin"]}>
+						<RoleWrapper roles={["ClientAdmin"]}>
 							<GeneralButton
 								style={{ backgroundColor: "#ed8738" }}
 								onClick={() => setOpenImportFile(true)}
@@ -261,14 +260,14 @@ const ModelLists = ({ getError, isMounted, access }) => {
 							</GeneralButton>
 						</RoleWrapper>
 
-						<RoleWrapper roles={["clientAdmin"]}>
+						{access === "F" ? (
 							<GeneralButton
 								style={{ backgroundColor: "#23bb79" }}
 								onClick={() => setOpenAddNewModal(true)}
 							>
 								ADD NEW
 							</GeneralButton>
-						</RoleWrapper>
+						) : null}
 					</div>
 				</div>
 				<ModalAwaitingImports modelImportData={modelImportData} />
