@@ -1,5 +1,5 @@
 import API from "helpers/api";
-import { setLocalStorage } from "helpers/utils";
+import { setStorage } from "helpers/storage";
 import { authSlice } from "./reducers";
 
 const {
@@ -14,7 +14,7 @@ export const loginUser = (input) => async (dispatch) => {
 	return new Promise((resolve, reject) => {
 		API.post("/api/Users/Login", input)
 			.then((res) => {
-				setLocalStorage(res.data);
+				setStorage(res.data);
 				dispatch(dataSuccess({ data: res.data }));
 				resolve(res);
 			})
@@ -32,8 +32,9 @@ export const loginSocialAccount = (input, loginType, url) => async (
 	return new Promise((resolve, reject) => {
 		API.post(url, input)
 			.then((res) => {
-				setLocalStorage(res.data);
+				setStorage(res.data);
 				localStorage.setItem("loginType", loginType);
+				sessionStorage.setItem("loginType", loginType);
 				dispatch(dataSuccess({ data: res.data }));
 				resolve(res);
 			})
@@ -48,7 +49,9 @@ export const getUserDetail = () => async (dispatch) => {
 	dispatch(userRequest());
 	API.get("/api/Users/me")
 		.then((res) => {
-			const loginType = localStorage.getItem("loginType");
+			const loginType =
+				sessionStorage.getItem("loginType") ||
+				localStorage.getItem("loginType");
 			dispatch(dataSuccess({ data: { ...res.data, loginType } }));
 		})
 		.catch((err) => {

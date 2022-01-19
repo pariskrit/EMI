@@ -5,11 +5,12 @@ const ProtectedLogin = ({ component: Component, ...rest }) => {
 	const {
 		location: { state },
 	} = rest;
+	const me = sessionStorage.getItem("me") || localStorage.getItem("me");
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				!localStorage.getItem("me") ? (
+				!me ? (
 					<Component {...props} />
 				) : (
 					<Redirect

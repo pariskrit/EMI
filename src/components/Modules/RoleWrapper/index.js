@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 function RoleWrapper({ children, roles }) {
-	const me = JSON.parse(localStorage.getItem("me"));
+	const me =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	if (roles.includes(me.role)) return <>{children}</>;
 	return null;

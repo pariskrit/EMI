@@ -1,5 +1,3 @@
-import roles from "helpers/roles";
-
 export const handleSort = (
 	currentState,
 	stateSetter,
@@ -76,19 +74,4 @@ export const changeDateFormat = (date) => {
 	const newDate = oldFormat[0].split("-");
 	const time = oldFormat[1].split(".");
 	return `${newDate[1]}/${newDate[2]}/${newDate[0]} ${time[0]}`;
-};
-
-export const setLocalStorage = (res) => {
-	localStorage.setItem("token", res.jwtToken);
-	let response = res;
-	if (response.position === null && response.isAdmin === true) {
-		response["role"] = roles.superAdmin;
-	}
-	if (response.position !== null && response.isAdmin === true) {
-		response["role"] = roles.clientAdmin;
-	}
-	if (response.position !== null && response.isAdmin === false) {
-		response["role"] = roles.siteUser;
-	}
-	localStorage.setItem("me", JSON.stringify(response));
 };

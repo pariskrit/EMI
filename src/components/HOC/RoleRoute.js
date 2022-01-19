@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import { Route, useHistory } from "react-router";
 
 const RoleRoute = ({ component: Component, roles, ...rest }) => {
-	const { role } = JSON.parse(localStorage.getItem("me"));
+	const { role } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 	const history = useHistory();
 	return (
 		<Route

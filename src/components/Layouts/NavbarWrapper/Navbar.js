@@ -44,7 +44,23 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		application,
 		multiSiteUser,
 		role,
-	} = JSON.parse(localStorage.getItem("me")) || {};
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me")) ||
+		{};
+
+	React.useEffect(() => {
+		const storageSession = JSON.parse(sessionStorage.getItem("me"));
+		const storageLocal = JSON.parse(localStorage.getItem("me"));
+		if (!storageSession) {
+			sessionStorage.setItem("me", localStorage.getItem("me"));
+			sessionStorage.setItem("token", storageLocal.jwtToken);
+		}
+		if (!storageLocal) {
+			localStorage.setItem("me", sessionStorage.getItem("me"));
+			localStorage.setItem("token", storageSession.jwtToken);
+		}
+	}, []);
 
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
@@ -277,10 +293,12 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	const handleLogout = async () => {
-		const loginType = localStorage.getItem("loginType");
+		const loginType =
+			sessionStorage.getItem("loginType") || localStorage.getItem("loginType");
 
 		setLoading(true);
-		const token = localStorage.getItem("token");
+		const token =
+			sessionStorage.getItem("token") || localStorage.getItem("token");
 		try {
 			const logOut = await userLogOut(token);
 
