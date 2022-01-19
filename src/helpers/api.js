@@ -11,13 +11,9 @@ const instance = axios.create({
 });
 
 // Setting auth (if JWT present)
-if (
-	localStorage.getItem("token") !== null ||
-	localStorage.getItem("token") !== undefined
-) {
-	instance.defaults.headers.common[
-		"Authorization"
-	] = `bearer ${localStorage.getItem("token")}`;
+const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+if (token !== null || token !== undefined) {
+	instance.defaults.headers.common["Authorization"] = `bearer ${token}`;
 }
 
 instance.interceptors.response.use(
@@ -35,10 +31,6 @@ instance.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
-		// if (error.response.status === 401 || error.response.status === 403) {
-		// 	localStorage.clear();
-		// 	window.location = "/login";
-		// }
 		// Storing original request
 		const originalRequest = error.config;
 
@@ -89,21 +81,12 @@ instance.interceptors.response.use(
 				return instance(originalRequest);
 			} catch (err) {
 				// Returning error if present
+				sessionStorage.clear();
 				localStorage.clear();
 				window.location = "/login";
 				return Promise.reject(err);
 			}
 		}
-
-		// const url = error.config.url;
-		// if (
-		// 	url !== "/Account/google" ||
-		// 	url !== "/Account/microsoft" ||
-		// 	url !== "/api/Users/Login"
-		// ) {
-		// 	localStorage.clear();
-		// 	window.location = "/login";
-		// }
 
 		// Returning with error if this is the second instance OR not 401
 		return Promise.reject(error);
