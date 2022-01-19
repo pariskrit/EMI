@@ -50,9 +50,15 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		{};
 
 	React.useEffect(() => {
-		const storage = JSON.parse(sessionStorage.getItem("me"));
-		if (!storage) {
+		const storageSession = JSON.parse(sessionStorage.getItem("me"));
+		const storageLocal = JSON.parse(localStorage.getItem("me"));
+		if (!storageSession) {
 			sessionStorage.setItem("me", localStorage.getItem("me"));
+			sessionStorage.setItem("token", storageLocal.jwtToken);
+		}
+		if (!storageLocal) {
+			localStorage.setItem("me", sessionStorage.getItem("me"));
+			localStorage.setItem("token", storageSession.jwtToken);
 		}
 	}, []);
 
