@@ -1,13 +1,14 @@
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import SingleApplication from "./SingleApplication";
-import Dropdown from "components/Elements/Dropdown";
 import {
 	getApplicationsAndSites,
 	getClientList,
 } from "services/applicationportal";
 import { CircularProgress } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import SingleApplication from "./SingleApplication";
+import Dropdown from "components/Elements/Dropdown";
+import GeneralButton from "components/Elements/GeneralButton";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -99,13 +100,24 @@ function Portal() {
 					<Grid item xs={12}>
 						<div className={styles.siteContainer}>
 							<Typography variant="subtitle2">Clients</Typography>
-							<div style={{ width: "100px" }}>
+							<div style={{ width: "100px", display: "flex", gap: 12 }}>
 								<Dropdown
 									options={listOfClients}
 									placeholder="Select Client"
 									onChange={onInputChange}
 									selectedValue={selectedClient}
 								/>
+								{selectedClient.isAdmin ? (
+									<GeneralButton
+										style={{
+											padding: "0px 22px",
+											fontSize: "14.5px",
+											height: 55,
+										}}
+									>
+										Client Admin Mode
+									</GeneralButton>
+								) : null}
 							</div>
 						</div>
 					</Grid>
