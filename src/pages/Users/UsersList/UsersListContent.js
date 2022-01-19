@@ -18,6 +18,8 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import { DefaultPageSize } from "helpers/constants";
 import GeneralButton from "components/Elements/GeneralButton";
 import mainAccess from "helpers/access";
+import RoleWrapper from "components/Modules/RoleWrapper";
+import role from "helpers/roles";
 
 const AC = ContentStyle();
 
@@ -59,7 +61,9 @@ const useStyles = makeStyles({
 
 const UsersListContent = ({ getError }) => {
 	const classes = useStyles();
-	const { position } = JSON.parse(localStorage.getItem("me"));
+	const { position } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 	const access = position?.[mainAccess.userAccess];
 
 	//Init State
@@ -226,24 +230,22 @@ const UsersListContent = ({ getError }) => {
 						)}
 					</Typography>
 					{haveData ? (
-						<>
-							{position === null ? (
-								<div className={classes.buttonContainer}>
-									<GeneralButton
-										onClick={() => setModal((th) => ({ ...th, import: true }))}
-										style={{ backgroundColor: "#ed8738" }}
-									>
-										IMPORT FROM LIST
-									</GeneralButton>
-									<GeneralButton
-										onClick={() => setModal((th) => ({ ...th, add: true }))}
-										style={{ backgroundColor: "#23bb79" }}
-									>
-										ADD NEW
-									</GeneralButton>
-								</div>
-							) : null}
-						</>
+						<RoleWrapper roles={[role.superAdmin]}>
+							<div className={classes.buttonContainer}>
+								<GeneralButton
+									onClick={() => setModal((th) => ({ ...th, import: true }))}
+									style={{ backgroundColor: "#ed8738" }}
+								>
+									IMPORT FROM LIST
+								</GeneralButton>
+								<GeneralButton
+									onClick={() => setModal((th) => ({ ...th, add: true }))}
+									style={{ backgroundColor: "#23bb79" }}
+								>
+									ADD NEW
+								</GeneralButton>
+							</div>
+						</RoleWrapper>
 					) : null}
 				</div>
 
