@@ -251,6 +251,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			display: "flex",
 			alignItems: "center",
 			justifyContent: "center",
+			padding: "20px",
 		},
 	}));
 	// Init hooks
