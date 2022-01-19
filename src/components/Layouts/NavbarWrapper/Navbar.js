@@ -453,6 +453,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 										</Link>
 									) : null}
 								</List>
+
+								{/* If previous route is not login donot display */}
 								{history.location.state?.from !== loginPath && (
 									<List>
 										<ListItem
