@@ -33,6 +33,7 @@ import {
 } from "helpers/routePaths";
 import navList from "./navList";
 import "./style.scss";
+import roles from "helpers/roles";
 
 // Size constants
 const drawerWidth = 240;
@@ -336,12 +337,13 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		// // If position is null it is super admin
 		const access = position?.[x.access];
 
-		if (position === null) {
+		if (role === roles.superAdmin) {
 			if (x.position === null) {
 				return true;
 			} else {
 				return false;
 			}
+			// } else if (role === roles.clientAdmin) {
 		} else {
 			if (access === "F" || access === "E" || access === "R") return true;
 			else return false;
