@@ -1,5 +1,5 @@
 import API from "helpers/api";
-import { setStorage } from "helpers/utils";
+import { setStorage } from "helpers/storage";
 import { authSlice } from "./reducers";
 
 const {

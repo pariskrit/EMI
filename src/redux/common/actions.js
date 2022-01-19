@@ -1,7 +1,7 @@
 import instance from "helpers/api";
 import { commonSlice } from "./reducers";
 import { authSlice } from "../auth/reducers.js";
-import { setStorage } from "helpers/utils";
+import { setStorage } from "helpers/storage";
 
 const { setError, removeError, setLoading } = commonSlice.actions;
 const { dataSuccess } = authSlice.actions;
