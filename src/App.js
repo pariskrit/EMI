@@ -20,6 +20,7 @@ import Test from "pages/Test";
 import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "pages/ResetPassword/ResetPassword";
 import RegisterUserEmail from "pages/RegisterUser/RegisterUser";
+import { loginPath } from "helpers/routePaths";
 
 function App() {
 	return (
@@ -28,9 +29,9 @@ function App() {
 			<Router>
 				<Switch>
 					<Route path="/" exact>
-						<Redirect to="/login" />
+						<Redirect to={loginPath} />
 					</Route>
-					<ProtectedLogin path="/login" exact component={Login} />
+					<ProtectedLogin path={loginPath} exact component={Login} />
 					<Route path="/forgot-password" exact>
 						<ForgotPassword />
 					</Route>

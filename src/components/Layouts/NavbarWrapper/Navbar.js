@@ -14,6 +14,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MiniLogo from "assets/EMI-symbol.png";
 
 // Importing icons
@@ -25,7 +26,11 @@ import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import ColourConstants from "helpers/colourConstants";
-import { userProfilePath, applicationPortalPath } from "helpers/routePaths";
+import {
+	userProfilePath,
+	applicationPortalPath,
+	loginPath,
+} from "helpers/routePaths";
 import navList from "./navList";
 import "./style.scss";
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
@@ -326,7 +331,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 				}
 				setLoading(false);
 
-				history.push("/login");
+				history.push(loginPath);
 			} else {
 				throw new Error(logOut);
 			}
@@ -387,50 +392,100 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 						)}
 
 						{isApplicationPortal ? (
-							<List className={classes.lists}>
-								<Link to="/portal" className={classes.navLink}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-									>
-										<ListItem button className={classes.currentItemBackground}>
-											<ListItemIcon className={classes.navIconContainer}>
-												<Home
-													className={classes.navIconCurrent}
-													alt={`Home icon`}
-												/>
-											</ListItemIcon>
-											<ListItemText
-												classes={{
-													primary: classes.listItemTextPrimaryCurrent,
-												}}
-												primary="Application Portal"
-											/>
-										</ListItem>
-									</div>
-								</Link>
-								{isAdmin ? (
-									<Link to={navOptions[0].path} className={classes.navLink}>
+							<>
+								<List className={classes.lists}>
+									<Link to="/portal" className={classes.navLink}>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
 										>
-											<ListItem button className={null}>
+											<ListItem
+												button
+												className={classes.currentItemBackground}
+											>
 												<ListItemIcon className={classes.navIconContainer}>
-													<SettingsIcon
-														className={classes.homeIcon}
+													<Home
+														className={classes.navIconCurrent}
 														alt={`Home icon`}
 													/>
 												</ListItemIcon>
 												<ListItemText
 													classes={{
-														primary: classes.listItemTextPrimary,
+														primary: classes.listItemTextPrimaryCurrent,
 													}}
-													primary="Admin Mode"
+													primary="Application Portal"
 												/>
 											</ListItem>
 										</div>
 									</Link>
-								) : null}
-							</List>
+									{isAdmin ? (
+										<Link to={navOptions[0].path} className={classes.navLink}>
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+											>
+												<ListItem button className={null}>
+													<ListItemIcon className={classes.navIconContainer}>
+														<SettingsIcon
+															className={classes.homeIcon}
+															alt={`Home icon`}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														classes={{
+															primary: classes.listItemTextPrimary,
+														}}
+														primary="Admin Mode"
+													/>
+												</ListItem>
+											</div>
+										</Link>
+									) : null}
+
+									{/* For SiteAppUser */}
+									{isAdmin === false && multiSiteUser === true ? (
+										<Link to={navOptions[0].path} className={classes.navLink}>
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+											>
+												<ListItem button className={null}>
+													<ListItemIcon className={classes.navIconContainer}>
+														<SettingsIcon
+															className={classes.homeIcon}
+															alt={`Home icon`}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														classes={{
+															primary: classes.listItemTextPrimary,
+														}}
+														primary="Site App"
+													/>
+												</ListItem>
+											</div>
+										</Link>
+									) : null}
+								</List>
+
+								{/* If previous route is not login donot display */}
+								{history.location.state?.from !== loginPath && (
+									<List>
+										<ListItem
+											button
+											style={{ position: "relative", height: "100%" }}
+											onClick={() => history.goBack()}
+										>
+											<ListItemIcon className={classes.navIconContainer}>
+												<ArrowBackIcon />
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimary,
+												}}
+												primary="Go Back"
+											/>
+										</ListItem>
+									</List>
+								)}
+							</>
 						) : (
 							<List className={classes.lists}>
 								{navOptions.map((item) => {
