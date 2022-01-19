@@ -79,7 +79,9 @@ function Portal() {
 			</div>
 		);
 	}
-	const { position, multiSiteUser } = JSON.parse(localStorage.getItem("me"));
+	const { position, multiSiteUser } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 	if (position === null || multiSiteUser === true) {
 		return (
 			<div>
