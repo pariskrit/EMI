@@ -1,3 +1,5 @@
+export const loginPath = "/login";
+
 // Client Details
 export const clientsPath = "/app/clients";
 export const clientDetailPath = clientsPath + "/:id";

@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { useGoogleLogin } from "react-google-login";
-import { userProfilePath } from "helpers/routePaths";
+import { loginPath, userProfilePath } from "helpers/routePaths";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
@@ -343,7 +343,8 @@ const Login = ({
 		return true;
 	};
 
-	const redirectToPortal = () => history.push("/app/portal");
+	const redirectToPortal = () =>
+		history.push({ pathname: "/app/portal", state: { from: loginPath } });
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
