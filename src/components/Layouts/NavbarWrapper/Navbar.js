@@ -44,7 +44,17 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		application,
 		multiSiteUser,
 		role,
-	} = JSON.parse(localStorage.getItem("me")) || {};
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me")) ||
+		{};
+
+	React.useEffect(() => {
+		const storage = JSON.parse(sessionStorage.getItem("me"));
+		if (!storage) {
+			sessionStorage.setItem("me", localStorage.getItem("me"));
+		}
+	}, []);
 
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
@@ -276,10 +286,12 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	const handleLogout = async () => {
-		const loginType = localStorage.getItem("loginType");
+		const loginType =
+			sessionStorage.getItem("loginType") || localStorage.getItem("loginType");
 
 		setLoading(true);
-		const token = localStorage.getItem("token");
+		const token =
+			sessionStorage.getItem("token") || localStorage.getItem("token");
 		try {
 			const logOut = await userLogOut(token);
 

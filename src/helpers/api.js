@@ -60,7 +60,9 @@ instance.interceptors.response.use(
 						credentials: "include",
 						method: "POST",
 						headers: {
-							Authorization: `bearer ${localStorage.getItem("token")}`,
+							Authorization: `bearer ${
+								sessionStorage.getItem("token") || localStorage.getItem("token")
+							}`,
 							"Content-Type": "application/json",
 						},
 					}
@@ -77,11 +79,12 @@ instance.interceptors.response.use(
 
 				// Updating refresh token in localStorage
 				localStorage.setItem("token", refreshToken.jwtToken);
+				sessionStorage.setItem("token", refreshToken.jwtToken);
 
 				// Updating instance token
-				instance.defaults.headers.common[
-					"Authorization"
-				] = `bearer ${localStorage.getItem("token")}`;
+				instance.defaults.headers.common["Authorization"] = `bearer ${
+					sessionStorage.getItem("token") || localStorage.getItem("token")
+				}`;
 
 				return instance(originalRequest);
 			} catch (err) {

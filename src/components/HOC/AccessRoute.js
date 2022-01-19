@@ -4,7 +4,9 @@ import { Route, useHistory } from "react-router";
 
 const AccessRoute = ({ component: Component, access, ...rest }) => {
 	const history = useHistory();
-	const { position } = JSON.parse(localStorage.getItem("me"));
+	const { position } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	return (
 		<Route

@@ -1,7 +1,7 @@
 import instance from "helpers/api";
 import { commonSlice } from "./reducers";
 import { authSlice } from "../auth/reducers.js";
-import { setLocalStorage } from "helpers/utils";
+import { setStorage } from "helpers/utils";
 
 const { setError, removeError, setLoading } = commonSlice.actions;
 const { dataSuccess } = authSlice.actions;
@@ -17,7 +17,7 @@ export const loginWithSiteAppId = (id) => async (dispatch) => {
 		...res.data,
 		isAdmin: localStorage.getItem("isAdmin") === "true",
 	};
-	setLocalStorage(data);
+	setStorage(data);
 	localStorage.removeItem("siteAppId");
 	localStorage.removeItem("isAdmin");
 	dispatch(dataSuccess({ data }));

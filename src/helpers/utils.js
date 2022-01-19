@@ -78,8 +78,9 @@ export const changeDateFormat = (date) => {
 	return `${newDate[1]}/${newDate[2]}/${newDate[0]} ${time[0]}`;
 };
 
-export const setLocalStorage = (res) => {
+export const setStorage = (res) => {
 	localStorage.setItem("token", res.jwtToken);
+	sessionStorage.setItem("token", res.jwtToken);
 	let response = res;
 	if (response.position === null && response.isAdmin === true) {
 		response["role"] = roles.superAdmin;
@@ -91,4 +92,5 @@ export const setLocalStorage = (res) => {
 		response["role"] = roles.siteUser;
 	}
 	localStorage.setItem("me", JSON.stringify(response));
+	sessionStorage.setItem("me", JSON.stringify(response));
 };
