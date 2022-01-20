@@ -365,12 +365,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 						return false;
 					}
 				} else {
-					if (x.roles.includes(roles.clientAdmin)) {
-						return true;
-					} else {
-						if (access === "F" || access === "E" || access === "R") return true;
-						else return false;
-					}
+					if (access === "F" || access === "E" || access === "R") return true;
+					else return false;
 				}
 				// If the user is Site Application User
 			} else {
@@ -380,7 +376,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		})
 		.map((x) => {
 			if (x.name === "Client Setting") {
-				return { ...x, name: clientAdminMode?.label };
+				return { ...x, name: clientAdminMode?.label || "" };
 			}
 			return x;
 		});
@@ -582,7 +578,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 										/>
 									</ListItem>
 								</div>
-								{(multiSiteUser || role === "SuperAdmin") &&
+								{(multiSiteUser || position === null) &&
 								!isApplicationPortal ? (
 									<Link to={applicationPortalPath} className={classes.navLink}>
 										<div
