@@ -29,7 +29,6 @@ import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
 import ClientSetting from "./ClientSetting";
-import RoleRoute from "components/HOC/RoleRoute";
 import AccessRoleRoute from "components/HOC/AccessRoleRoute";
 
 const MainApp = ({ location }) => {
@@ -57,7 +56,9 @@ const MainApp = ({ location }) => {
 					roles={[role.clientAdmin]}
 				/>
 
-				<AccessRoute
+				<AccessRoleRoute
+					type={localStorage.getItem("clientAdminMode") ? "role" : "access"}
+					roles={[role.clientAdmin, role.superAdmin]}
 					path={analyticsPath}
 					exact
 					component={(props) => <h1>Analytics Path</h1>}

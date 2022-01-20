@@ -11,7 +11,6 @@ import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
 import { clientSettingPath } from "helpers/routePaths";
 import roles from "helpers/roles";
-import { setStorage } from "helpers/storage";
 
 const useStyles = makeStyles((theme) => ({
 	header: {

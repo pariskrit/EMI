@@ -4,7 +4,7 @@ import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import access from "helpers/access";
-import role from "helpers/roles";
+import roles from "helpers/roles";
 import {
 	applicationListPath,
 	clientsPath,
@@ -20,10 +20,9 @@ import {
 	settingPath,
 	clientSettingPath,
 } from "helpers/routePaths";
-import roles from "helpers/roles";
 const clientName =
 	JSON.parse(localStorage.getItem("clientAdminMode"))?.label ||
-	JSON.parse(localStorage.getItem("me"))?.firstName;
+	JSON.parse(localStorage.getItem("me"))?.name;
 
 const navList = [
 	{
