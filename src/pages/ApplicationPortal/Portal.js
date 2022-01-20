@@ -101,11 +101,8 @@ function Portal() {
 		);
 	}
 
-	const { position, multiSiteUser } =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+	
 
-	if (position === null || multiSiteUser === true) {
 		return (
 			<div>
 				<Grid
@@ -176,9 +173,7 @@ function Portal() {
 				</Grid>
 			</div>
 		);
-	} else {
-		history.length > 1 ? history.goBack() : history.push("/app/me");
-	}
+	} 
 }
 
 export default Portal;
