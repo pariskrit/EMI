@@ -341,41 +341,50 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
+	const clientAdminMode = JSON.parse(localStorage.getItem("clientAdminMode"));
 
 	// Filter which sidebar navigation is accessible
-	const navOptions = navList.filter((x) => {
-		// // If position is null it is super admin
-		const access = position?.[x.access];
-		// If the user is SuperAdmin
-		if (role === roles.superAdmin) {
-			if (x.roles.includes(roles.superAdmin)) {
-				return true;
-			} else {
-				return false;
-			}
-			// If the user is Client Administrator
-		} else if (role === roles.clientAdmin) {
-			// If Switched as Client Admin Mode ignore position access
-			if (localStorage.getItem("clientAdminMode")) {
-				if (x.roles.includes(roles.clientAdmin)) {
+	const navOptions = navList
+		.filter((x) => {
+			// // If position is null it is super admin
+			const access = position?.[x.access];
+			// If the user is SuperAdmin
+			if (role === roles.superAdmin) {
+				if (x.roles.includes(roles.superAdmin)) {
 					return true;
 				} else {
 					return false;
 				}
-			} else {
-				if (x.roles.includes(roles.clientAdmin)) {
-					return true;
+				// If the user is Client Administrator
+			} else if (role === roles.clientAdmin) {
+				// If Switched as Client Admin Mode ignore position access
+				if (localStorage.getItem("clientAdminMode")) {
+					if (x.roles.includes(roles.clientAdmin)) {
+						return true;
+					} else {
+						return false;
+					}
 				} else {
-					if (access === "F" || access === "E" || access === "R") return true;
-					else return false;
+					if (x.roles.includes(roles.clientAdmin)) {
+						return true;
+					} else {
+						if (access === "F" || access === "E" || access === "R") return true;
+						else return false;
+					}
 				}
+				// If the user is Site Application User
+			} else {
+				if (access === "F" || access === "E" || access === "R") return true;
+				else return false;
 			}
-			// If the user is Site Application User
-		} else {
-			if (access === "F" || access === "E" || access === "R") return true;
-			else return false;
-		}
-	});
+		})
+		.map((x) => {
+			if (x.name === "Client Setting") {
+				return { ...x, name: clientAdminMode?.label };
+			}
+			return x;
+		});
+
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 
 	return (
