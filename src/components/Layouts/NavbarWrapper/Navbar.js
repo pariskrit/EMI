@@ -33,6 +33,7 @@ import {
 } from "helpers/routePaths";
 import navList from "./navList";
 import "./style.scss";
+import { LightenDarkenColor } from "helpers/lightenDarkenColor";
 
 // Size constants
 const drawerWidth = 240;
@@ -91,10 +92,16 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 				height: 5,
 			},
 			"&::-webkit-scrollbar-track": {
-				background: "#e2b466",
+				background:
+					application === null
+						? "#e2b466"
+						: LightenDarkenColor(application?.color, -60),
 			},
 			"&::-webkit-scrollbar-thumb": {
-				background: "#734d0f45",
+				background:
+					application === null
+						? "#734d0f45"
+						: LightenDarkenColor(application?.color, 25),
 				borderRadius: 12,
 			},
 		},
@@ -176,7 +183,10 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			justifyContent: "center",
 		},
 		currentItemBackground: {
-			backgroundColor: ColourConstants.navCurrentItem,
+			backgroundColor:
+				application === null
+					? ColourConstants.navCurrentItem
+					: LightenDarkenColor(application?.color, -20),
 		},
 		navIconContainer: {
 			display: "flex",
