@@ -144,7 +144,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		largeLogoContainer: {
 			display: "flex",
 			justifyContent: "center",
-			marginBottom: 16,
+			marginBottom: 43,
 		},
 		largeLogo: {
 			marginTop: 30,
