@@ -124,10 +124,10 @@ function Portal() {
 							{selectedClient.isAdmin ? (
 								<GeneralButton
 									style={{
-										padding: "0px 22px",
+										padding: "6px 22px",
 										fontSize: "14.5px",
-										height: 55,
-										width: "20%",
+										//height: 55,
+										width: "180px",
 									}}
 									onClick={setClientAdminMode}
 								>
