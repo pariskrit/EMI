@@ -13,8 +13,8 @@ export const loginUser = (input) => async (dispatch) => {
 	dispatch(userRequest());
 	return new Promise((resolve, reject) => {
 		API.post("/api/Users/Login", input)
-			.then((res) => {
-				setStorage(res.data);
+			.then(async (res) => {
+				await setStorage(res.data);
 				dispatch(dataSuccess({ data: res.data }));
 				resolve(res);
 			})
