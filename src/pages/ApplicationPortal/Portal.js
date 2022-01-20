@@ -86,7 +86,13 @@ function Portal() {
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));
 
-				const data = { ...me, role: roles.clientAdmin };
+				const data = {
+					...me,
+					role: roles.clientAdmin,
+					application: null,
+					customCaptions: null,
+					position: null,
+				};
 				await setMeStorage(data);
 				res(true);
 			});
