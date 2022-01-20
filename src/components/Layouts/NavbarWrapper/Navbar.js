@@ -33,11 +33,8 @@ import {
 } from "helpers/routePaths";
 import navList from "./navList";
 import "./style.scss";
-<<<<<<< HEAD
 import roles from "helpers/roles";
-=======
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
->>>>>>> 01a57bd9317e4ddc6c8facbaa6aca05e1a1c1211
 
 // Size constants
 const drawerWidth = 240;
