@@ -1,7 +1,15 @@
 import roles from "helpers/roles";
 
+export function setMeStorage(data) {
+	return new Promise((res) => {
+		localStorage.setItem("me", JSON.stringify(data));
+		sessionStorage.setItem("me", JSON.stringify(data));
+		res(true);
+	});
+}
+
 export function setStorage(res) {
-	return new Promise((resolve) => {
+	return new Promise(async (resolve) => {
 		localStorage.setItem("token", res.jwtToken);
 		sessionStorage.setItem("token", res.jwtToken);
 		let response = res;
@@ -14,8 +22,8 @@ export function setStorage(res) {
 		if (response.position !== null && response.isAdmin === false) {
 			response["role"] = roles.siteUser;
 		}
-		localStorage.setItem("me", JSON.stringify(response));
-		sessionStorage.setItem("me", JSON.stringify(response));
+		await setMeStorage(response);
+
 		resolve(true);
 	});
 }

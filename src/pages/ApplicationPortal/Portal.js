@@ -11,6 +11,7 @@ import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
 import { clientSettingPath } from "helpers/routePaths";
 import roles from "helpers/roles";
+import { setMeStorage } from "helpers/storage";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -82,9 +83,9 @@ function Portal() {
 				const me =
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));
+
 				const data = { ...me, role: roles.clientAdmin };
-				localStorage.setItem("me", JSON.stringify(data));
-				sessionStorage.setItem("me", JSON.stringify(data));
+				await setMeStorage(data);
 				res(true);
 			});
 		}

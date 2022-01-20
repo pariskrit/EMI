@@ -22,7 +22,7 @@ import {
 } from "helpers/routePaths";
 const clientName =
 	JSON.parse(localStorage.getItem("clientAdminMode"))?.label ||
-	JSON.parse(localStorage.getItem("me"))?.name;
+	JSON.parse(localStorage.getItem("me"))?.firstName;
 
 const navList = [
 	{
