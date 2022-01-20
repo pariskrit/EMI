@@ -95,7 +95,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 				background:
 					application === null
 						? "#e2b466"
-						: LightenDarkenColor(application?.color, -60),
+						: LightenDarkenColor(application?.color, -20),
 			},
 			"&::-webkit-scrollbar-thumb": {
 				background:
