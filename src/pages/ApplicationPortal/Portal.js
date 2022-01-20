@@ -9,6 +9,9 @@ import { useHistory } from "react-router-dom";
 import SingleApplication from "./SingleApplication";
 import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
+import { clientSettingPath } from "helpers/routePaths";
+import roles from "helpers/roles";
+import { setStorage } from "helpers/storage";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -73,6 +76,23 @@ function Portal() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const setClientAdminMode = async () => {
+		function setClientStorage() {
+			return new Promise(async (res) => {
+				localStorage.setItem("clientAdminMode", JSON.stringify(selectedClient));
+				const me =
+					JSON.parse(sessionStorage.getItem("me")) ||
+					JSON.parse(localStorage.getItem("me"));
+				const data = { ...me, role: roles.clientAdmin };
+				localStorage.setItem("me", JSON.stringify(data));
+				sessionStorage.setItem("me", JSON.stringify(data));
+				res(true);
+			});
+		}
+		await setClientStorage();
+		history.push(clientSettingPath);
+	};
+
 	if (isLoading.initial) {
 		return (
 			<div className="container">
@@ -80,9 +100,11 @@ function Portal() {
 			</div>
 		);
 	}
+
 	const { position, multiSiteUser } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
+
 	if (position === null || multiSiteUser === true) {
 		return (
 			<div>
@@ -114,6 +136,7 @@ function Portal() {
 											fontSize: "14.5px",
 											height: 55,
 										}}
+										onClick={setClientAdminMode}
 									>
 										Client Admin Mode
 									</GeneralButton>

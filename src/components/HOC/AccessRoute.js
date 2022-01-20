@@ -4,7 +4,7 @@ import { Route, useHistory } from "react-router";
 
 const AccessRoute = ({ component: Component, access, ...rest }) => {
 	const history = useHistory();
-	const { position } =
+	const { position, role } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
@@ -20,6 +20,7 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 						position={position}
 						access={position[access]}
 						history={history}
+						role={role}
 					/>
 				) : history.length > 1 ? (
 					history.goBack()

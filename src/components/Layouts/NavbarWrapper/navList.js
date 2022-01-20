@@ -4,6 +4,7 @@ import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import access from "helpers/access";
+import role from "helpers/roles";
 import {
 	applicationListPath,
 	clientsPath,
@@ -17,7 +18,12 @@ import {
 	analysisPath,
 	noticeboardPath,
 	settingPath,
+	clientSettingPath,
 } from "helpers/routePaths";
+import roles from "helpers/roles";
+const clientName =
+	JSON.parse(localStorage.getItem("clientAdminMode"))?.label ||
+	JSON.parse(localStorage.getItem("me"))?.firstName;
 
 const navList = [
 	{
@@ -25,84 +31,91 @@ const navList = [
 		icon: ClientIcon,
 		path: clientsPath,
 		access: "",
-		position: null,
+		roles: [roles.superAdmin],
 	},
 	{
 		name: "Applications",
 		icon: ApplicationIcon,
 		path: applicationListPath,
 		access: "",
-		position: null,
+		roles: [roles.superAdmin],
+	},
+	{
+		name: `${clientName}`,
+		icon: ClientIcon,
+		path: clientSettingPath,
+		access: "",
+		roles: [roles.clientAdmin],
 	},
 	{
 		name: "Models",
 		icon: ModelIcon,
 		path: modelsPath,
 		access: access.modelAccess,
-		position: "",
+		roles: "",
 	},
 	{
 		name: "Users",
 		icon: UserIcon,
 		path: usersPath,
 		access: access.userAccess,
-		position: null,
+		roles: [roles.superAdmin, roles.clientAdmin],
 	},
 	{
 		name: "Analytics",
 		icon: AnalyticsIcon,
 		path: analyticsPath,
 		access: access.analyticsAccess,
-		position: null,
+		roles: [roles.superAdmin, roles.clientAdmin],
 	},
 	{
 		name: "Services",
 		icon: ModelIcon,
 		path: servicesPath,
 		access: access.serviceAccess,
-		position: "",
+		roles: "",
 	},
 	{
 		name: "Defects",
 		icon: ModelIcon,
 		path: defectsPath,
 		access: access.defectAccess,
-		position: "",
+		roles: "",
 	},
 	{
 		name: "Defect Export",
 		icon: ModelIcon,
 		path: defectExportPath,
 		access: access.defectExportAccess,
-		position: "",
+		roles: "",
 	},
 	{
 		name: "Analysis",
 		icon: ModelIcon,
 		path: analysisPath,
 		access: access.analysisAccess,
-		position: "",
+		roles: "",
 	},
 	{
 		name: "Feedback",
 		icon: ModelIcon,
 		path: feedbackPath,
 		access: access.feedbackAccess,
-		position: "",
+		roles: "",
 	},
 	{
 		name: "Noticeboards",
 		icon: ModelIcon,
 		path: noticeboardPath,
 		access: access.noticeboardAccess,
-		position: "",
+		roles: "",
 	},
 	{
 		name: "Setting",
 		icon: ModelIcon,
 		path: settingPath,
 		access: access.settingsAccess,
-		position: "",
+		roles: "",
 	},
 ];
 export default navList;

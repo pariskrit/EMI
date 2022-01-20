@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Route, useHistory } from "react-router";
 
-const RoleRoute = ({ component: Component, roles, ...rest }) => {
-	const { role } =
+const RoleRoute = ({ component: Component, roles, access, ...rest }) => {
+	const { role, position } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const history = useHistory();
@@ -12,7 +12,12 @@ const RoleRoute = ({ component: Component, roles, ...rest }) => {
 			{...rest}
 			render={(props) =>
 				roles.includes(role) ? (
-					<Component {...props} history={history} role={role} />
+					<Component
+						{...props}
+						history={history}
+						role={role}
+						access={position?.[access]}
+					/>
 				) : history.length > 1 ? (
 					history.goBack()
 				) : (
@@ -25,6 +30,7 @@ const RoleRoute = ({ component: Component, roles, ...rest }) => {
 
 RoleRoute.defaultProps = {
 	roles: [],
+	access: "",
 };
 RoleRoute.propTypes = {
 	roles: PropTypes.arrayOf(PropTypes.string),
