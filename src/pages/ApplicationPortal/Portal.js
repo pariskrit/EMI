@@ -86,6 +86,7 @@ function Portal() {
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));
 
+				// Reset to client admin mode
 				const data = {
 					...me,
 					role: roles.clientAdmin,
