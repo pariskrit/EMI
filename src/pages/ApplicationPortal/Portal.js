@@ -112,7 +112,7 @@ function Portal() {
 				<Grid item xs={12}>
 					<div className={styles.siteContainer}>
 						<Typography variant="subtitle2">Clients</Typography>
-						<div style={{ width: "100px", display: "flex", gap: 12 }}>
+						<div style={{ width: "100%", display: "flex", gap: 12 }}>
 							<Dropdown
 								options={listOfClients}
 								placeholder="Select Client"
@@ -125,6 +125,7 @@ function Portal() {
 										padding: "0px 22px",
 										fontSize: "14.5px",
 										height: 55,
+										width: "20%",
 									}}
 									onClick={setClientAdminMode}
 								>
