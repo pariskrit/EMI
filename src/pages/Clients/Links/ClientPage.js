@@ -5,6 +5,7 @@ import Client from "..";
 import ClientDetails from "../ClientDetailScreen/ClientDetails";
 import RoleRoute from "components/HOC/RoleRoute";
 import roles from "helpers/roles";
+import AccessRoleRoute from "components/HOC/AccessRoleRoute";
 
 export default function ClientPage() {
 	return (
@@ -20,6 +21,13 @@ export default function ClientPage() {
 				exact
 				component={ClientDetails}
 				roles={[roles.superAdmin]}
+			/>
+			<AccessRoleRoute
+				type={"role"}
+				path={"/app/client/:id"}
+				exact
+				component={ClientDetails}
+				roles={[roles.clientAdmin]}
 			/>
 		</Client>
 	);

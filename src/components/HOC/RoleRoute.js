@@ -2,7 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Route, useHistory } from "react-router";
 
-const RoleRoute = ({ component: Component, roles, access, ...rest }) => {
+const RoleRoute = ({
+	component: Component,
+	roles,
+	access,
+	condition,
+	...rest
+}) => {
 	const { role, position } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -11,7 +17,7 @@ const RoleRoute = ({ component: Component, roles, access, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) =>
-				roles.includes(role) ? (
+				roles.includes(role) || condition ? (
 					<Component
 						{...props}
 						history={history}
@@ -31,10 +37,12 @@ const RoleRoute = ({ component: Component, roles, access, ...rest }) => {
 RoleRoute.defaultProps = {
 	roles: [],
 	access: "",
+	condition: false,
 };
 RoleRoute.propTypes = {
 	roles: PropTypes.arrayOf(PropTypes.string),
 	component: PropTypes.elementType.isRequired,
+	condition: PropTypes.bool,
 };
 
 export default RoleRoute;
