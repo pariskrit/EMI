@@ -358,7 +358,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 				// If the user is Client Administrator
 			} else if (role === roles.clientAdmin) {
 				// If Switched as Client Admin Mode ignore position access
-				if (localStorage.getItem("clientAdminMode")) {
+				if (clientAdminMode) {
 					if (x.roles.includes(roles.clientAdmin)) {
 						return true;
 					} else {
