@@ -9,6 +9,9 @@ import { useHistory } from "react-router-dom";
 import SingleApplication from "./SingleApplication";
 import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
+import { clientSettingPath } from "helpers/routePaths";
+import roles from "helpers/roles";
+import { setMeStorage } from "helpers/storage";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -73,6 +76,23 @@ function Portal() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const setClientAdminMode = async () => {
+		function setClientStorage() {
+			return new Promise(async (res) => {
+				localStorage.setItem("clientAdminMode", JSON.stringify(selectedClient));
+				const me =
+					JSON.parse(sessionStorage.getItem("me")) ||
+					JSON.parse(localStorage.getItem("me"));
+
+				const data = { ...me, role: roles.clientAdmin };
+				await setMeStorage(data);
+				res(true);
+			});
+		}
+		await setClientStorage();
+		history.push(clientSettingPath);
+	};
+
 	if (isLoading.initial) {
 		return (
 			<div className="container">
@@ -80,82 +100,73 @@ function Portal() {
 			</div>
 		);
 	}
-	const { position, multiSiteUser } =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
-	if (position === null || multiSiteUser === true) {
-		return (
-			<div>
-				<Grid
-					container
-					spacing={2}
-					className={styles.header}
-					alignItems="center"
-				>
-					<Grid item xs={12}>
-						<Typography variant="h6" component="h1" gutterBottom>
-							<strong>Application Portal</strong>
+
+	return (
+		<div>
+			<Grid container spacing={2} className={styles.header} alignItems="center">
+				<Grid item xs={12}>
+					<Typography variant="h6" component="h1" gutterBottom>
+						<strong>Application Portal</strong>
+					</Typography>
+				</Grid>
+				<Grid item xs={12}>
+					<div className={styles.siteContainer}>
+						<Typography variant="subtitle2">Clients</Typography>
+						<div style={{ width: "100%", display: "flex", gap: 12 }}>
+							<Dropdown
+								options={listOfClients}
+								placeholder="Select Client"
+								onChange={onInputChange}
+								selectedValue={selectedClient}
+							/>
+							{selectedClient.isAdmin ? (
+								<GeneralButton
+									style={{
+										padding: "0px 22px",
+										fontSize: "14.5px",
+										height: 55,
+										width: "20%",
+									}}
+									onClick={setClientAdminMode}
+								>
+									Client Admin Mode
+								</GeneralButton>
+							) : null}
+						</div>
+					</div>
+				</Grid>
+			</Grid>
+
+			<Grid container spacing={5}>
+				{isLoading.showText ? (
+					<Grid item xs={9}>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+							className={styles.para}
+						>
+							Select a client to view the applications
 						</Typography>
 					</Grid>
-					<Grid item xs={12}>
-						<div className={styles.siteContainer}>
-							<Typography variant="subtitle2">Clients</Typography>
-							<div style={{ width: "100px", display: "flex", gap: 12 }}>
-								<Dropdown
-									options={listOfClients}
-									placeholder="Select Client"
-									onChange={onInputChange}
-									selectedValue={selectedClient}
-								/>
-								{selectedClient.isAdmin ? (
-									<GeneralButton
-										style={{
-											padding: "0px 22px",
-											fontSize: "14.5px",
-											height: 55,
-										}}
-									>
-										Client Admin Mode
-									</GeneralButton>
-								) : null}
-							</div>
-						</div>
+				) : null}
+
+				{isLoading.applications ? (
+					<Grid item xs={9} className={styles.para}>
+						<CircularProgress />
 					</Grid>
-				</Grid>
-
-				<Grid container spacing={5}>
-					{isLoading.showText ? (
-						<Grid item xs={9}>
-							<Typography
-								variant="subtitle1"
-								gutterBottom
-								component="div"
-								className={styles.para}
-							>
-								Select a client to view the applications
-							</Typography>
-						</Grid>
-					) : null}
-
-					{isLoading.applications ? (
-						<Grid item xs={9} className={styles.para}>
-							<CircularProgress />
-						</Grid>
-					) : (
-						applicationList.map((application) => (
-							<SingleApplication
-								data={application}
-								key={application.id}
-								clientId={clientId}
-							/>
-						))
-					)}
-				</Grid>
-			</div>
-		);
-	} else {
-		history.length > 1 ? history.goBack() : history.push("/app/me");
-	}
+				) : (
+					applicationList.map((application) => (
+						<SingleApplication
+							data={application}
+							key={application.id}
+							clientId={clientId}
+						/>
+					))
+				)}
+			</Grid>
+		</div>
+	);
 }
 
 export default Portal;

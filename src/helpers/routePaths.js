@@ -4,6 +4,9 @@ export const loginPath = "/login";
 export const clientsPath = "/app/clients";
 export const clientDetailPath = clientsPath + "/:id";
 
+//Client Setting
+export const clientSettingPath = "/app/clientSetting";
+
 //Users List
 export const usersPath = "/app/users";
 export const userDetailPath = usersPath + "/:id";

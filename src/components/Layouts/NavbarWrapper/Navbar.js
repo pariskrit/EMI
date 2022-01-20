@@ -14,7 +14,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MiniLogo from "assets/EMI-symbol.png";
 
 // Importing icons
@@ -342,24 +341,50 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
+	const clientAdminMode = JSON.parse(localStorage.getItem("clientAdminMode"));
 
 	// Filter which sidebar navigation is accessible
-	const navOptions = navList.filter((x) => {
-		// // If position is null it is super admin
-		const access = position?.[x.access];
-
-		if (role === roles.superAdmin) {
-			if (x.position === null) {
-				return true;
+	const navOptions = navList
+		.filter((x) => {
+			// // If position is null it is super admin
+			const access = position?.[x.access];
+			// If the user is SuperAdmin
+			if (role === roles.superAdmin) {
+				if (x.roles.includes(roles.superAdmin)) {
+					return true;
+				} else {
+					return false;
+				}
+				// If the user is Client Administrator
+			} else if (role === roles.clientAdmin) {
+				// If Switched as Client Admin Mode ignore position access
+				if (clientAdminMode) {
+					if (x.roles.includes(roles.clientAdmin)) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					if (x.roles.includes(roles.clientAdmin)) {
+						return true;
+					} else {
+						if (access === "F" || access === "E" || access === "R") return true;
+						else return false;
+					}
+				}
+				// If the user is Site Application User
 			} else {
-				return false;
+				if (access === "F" || access === "E" || access === "R") return true;
+				else return false;
 			}
-			// } else if (role === roles.clientAdmin) {
-		} else {
-			if (access === "F" || access === "E" || access === "R") return true;
-			else return false;
-		}
-	});
+		})
+		.map((x) => {
+			if (x.name === "Client Setting") {
+				return { ...x, name: clientAdminMode?.label };
+			}
+			return x;
+		});
+
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 
 	return (
@@ -394,100 +419,74 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 						)}
 
 						{isApplicationPortal ? (
-							<>
-								<List className={classes.lists}>
-									<Link to="/portal" className={classes.navLink}>
+							<List className={classes.lists}>
+								<Link to="/portal" className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={classes.currentItemBackground}>
+											<ListItemIcon className={classes.navIconContainer}>
+												<Home
+													className={classes.navIconCurrent}
+													alt={`Home icon`}
+												/>
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimaryCurrent,
+												}}
+												primary="Application Portal"
+											/>
+										</ListItem>
+									</div>
+								</Link>
+								{isAdmin ? (
+									<Link to={navOptions[0].path} className={classes.navLink}>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
 										>
-											<ListItem
-												button
-												className={classes.currentItemBackground}
-											>
+											<ListItem button className={null}>
 												<ListItemIcon className={classes.navIconContainer}>
-													<Home
-														className={classes.navIconCurrent}
+													<SettingsIcon
+														className={classes.homeIcon}
 														alt={`Home icon`}
 													/>
 												</ListItemIcon>
 												<ListItemText
 													classes={{
-														primary: classes.listItemTextPrimaryCurrent,
+														primary: classes.listItemTextPrimary,
 													}}
-													primary="Application Portal"
+													primary="Admin Mode"
 												/>
 											</ListItem>
 										</div>
 									</Link>
-									{isAdmin ? (
-										<Link to={navOptions[0].path} className={classes.navLink}>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-											>
-												<ListItem button className={null}>
-													<ListItemIcon className={classes.navIconContainer}>
-														<SettingsIcon
-															className={classes.homeIcon}
-															alt={`Home icon`}
-														/>
-													</ListItemIcon>
-													<ListItemText
-														classes={{
-															primary: classes.listItemTextPrimary,
-														}}
-														primary="Admin Mode"
-													/>
-												</ListItem>
-											</div>
-										</Link>
-									) : null}
+								) : null}
 
-									{/* For SiteAppUser */}
-									{isAdmin === false && multiSiteUser === true ? (
-										<Link to={navOptions[0].path} className={classes.navLink}>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-											>
-												<ListItem button className={null}>
-													<ListItemIcon className={classes.navIconContainer}>
-														<SettingsIcon
-															className={classes.homeIcon}
-															alt={`Home icon`}
-														/>
-													</ListItemIcon>
-													<ListItemText
-														classes={{
-															primary: classes.listItemTextPrimary,
-														}}
-														primary="Site App"
-													/>
-												</ListItem>
-											</div>
-										</Link>
-									) : null}
-								</List>
-
-								{/* If previous route is not login donot display */}
-								{history.location.state?.from !== loginPath && (
-									<List>
-										<ListItem
-											button
-											style={{ position: "relative", height: "100%" }}
-											onClick={() => history.goBack()}
+								{/* For SiteAppUser */}
+								{isAdmin === false && multiSiteUser === true ? (
+									<Link to={navOptions[0].path} className={classes.navLink}>
+										<div
+											className={`${classes.navListContainer} mobNavListContainer`}
 										>
-											<ListItemIcon className={classes.navIconContainer}>
-												<ArrowBackIcon />
-											</ListItemIcon>
-											<ListItemText
-												classes={{
-													primary: classes.listItemTextPrimary,
-												}}
-												primary="Go Back"
-											/>
-										</ListItem>
-									</List>
-								)}
-							</>
+											<ListItem button className={null}>
+												<ListItemIcon className={classes.navIconContainer}>
+													<SettingsIcon
+														className={classes.homeIcon}
+														alt={`Home icon`}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													classes={{
+														primary: classes.listItemTextPrimary,
+													}}
+													primary="Site App"
+												/>
+											</ListItem>
+										</div>
+									</Link>
+								) : null}
+							</List>
 						) : (
 							<List className={classes.lists}>
 								{navOptions.map((item) => {
