@@ -9,14 +9,16 @@ const AccessRoleRoute = ({ type, ...rest }) => {
 	const { role } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
+
+	// Check whether the user is superAdmin, clientAdmin or SiteUser
 	const typeOfAccess =
-		role === roles.superAdmin
+		role === roles.superAdmin // If superAdmin, type is access
 			? "role"
-			: role === roles.clientAdmin
+			: role === roles.clientAdmin // If clientAdmin depends where it is from clientAdmin mode or not
 			? sessionStorage.getItem("clientAdminMode")
 				? "role"
 				: "access"
-			: type;
+			: type; // If siteUser, type is received from props which selects route
 
 	switch (typeOfAccess) {
 		case "role":
