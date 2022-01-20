@@ -23,6 +23,7 @@ import {
 
 const navList = [
 	{
+		activeName: "Clients",
 		name: "Clients",
 		icon: ClientIcon,
 		path: clientsPath,
@@ -30,6 +31,7 @@ const navList = [
 		roles: [roles.superAdmin],
 	},
 	{
+		activeName: "Applications",
 		name: "Applications",
 		icon: ApplicationIcon,
 		path: applicationListPath,
@@ -37,6 +39,7 @@ const navList = [
 		roles: [roles.superAdmin],
 	},
 	{
+		activeName: "Client",
 		name: "Client Setting",
 		icon: ClientIcon,
 		path: clientSettingPath,
@@ -44,6 +47,7 @@ const navList = [
 		roles: [roles.clientAdmin],
 	},
 	{
+		activeName: "Models",
 		name: "Models",
 		icon: ModelIcon,
 		path: modelsPath,
@@ -51,6 +55,7 @@ const navList = [
 		roles: "",
 	},
 	{
+		activeName: "Users",
 		name: "Users",
 		icon: UserIcon,
 		path: usersPath,
@@ -58,6 +63,7 @@ const navList = [
 		roles: [roles.superAdmin, roles.clientAdmin],
 	},
 	{
+		activeName: "Analytics",
 		name: "Analytics",
 		icon: AnalyticsIcon,
 		path: analyticsPath,
@@ -65,6 +71,7 @@ const navList = [
 		roles: [roles.superAdmin, roles.clientAdmin],
 	},
 	{
+		activeName: "Services",
 		name: "Services",
 		icon: ModelIcon,
 		path: servicesPath,
@@ -72,6 +79,7 @@ const navList = [
 		roles: "",
 	},
 	{
+		activeName: "Defects",
 		name: "Defects",
 		icon: ModelIcon,
 		path: defectsPath,
@@ -79,6 +87,7 @@ const navList = [
 		roles: "",
 	},
 	{
+		activeName: "DefectExport",
 		name: "Defect Export",
 		icon: ModelIcon,
 		path: defectExportPath,
@@ -86,6 +95,7 @@ const navList = [
 		roles: "",
 	},
 	{
+		activeName: "Analysis",
 		name: "Analysis",
 		icon: ModelIcon,
 		path: analysisPath,
@@ -93,6 +103,7 @@ const navList = [
 		roles: "",
 	},
 	{
+		activeName: "Feedback",
 		name: "Feedback",
 		icon: ModelIcon,
 		path: feedbackPath,
@@ -100,6 +111,7 @@ const navList = [
 		roles: "",
 	},
 	{
+		activeName: "Noticeboards",
 		name: "Noticeboards",
 		icon: ModelIcon,
 		path: noticeboardPath,
@@ -107,6 +119,7 @@ const navList = [
 		roles: "",
 	},
 	{
+		activeName: "Setting",
 		name: "Setting",
 		icon: ModelIcon,
 		path: settingPath,

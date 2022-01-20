@@ -9,7 +9,6 @@ import { useHistory } from "react-router-dom";
 import SingleApplication from "./SingleApplication";
 import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
-import { clientSettingPath } from "helpers/routePaths";
 import roles from "helpers/roles";
 import { setMeStorage } from "helpers/storage";
 
@@ -79,7 +78,10 @@ function Portal() {
 	const setClientAdminMode = async () => {
 		function setClientStorage() {
 			return new Promise(async (res) => {
-				localStorage.setItem("clientAdminMode", JSON.stringify(selectedClient));
+				sessionStorage.setItem(
+					"clientAdminMode",
+					JSON.stringify(selectedClient)
+				);
 				const me =
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));
@@ -90,7 +92,7 @@ function Portal() {
 			});
 		}
 		await setClientStorage();
-		history.push(clientSettingPath);
+		history.push(`/app/client/${selectedClient.id}`);
 	};
 
 	if (isLoading.initial) {

@@ -12,7 +12,6 @@ import {
 	analysisPath,
 	analyticsPath,
 	applicationPortalPath,
-	clientSettingPath,
 	defectExportPath,
 	defectsPath,
 	feedbackPath,
@@ -28,7 +27,6 @@ import Defects from "./Defects";
 import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
-import ClientSetting from "./ClientSetting";
 import AccessRoleRoute from "components/HOC/AccessRoleRoute";
 
 const MainApp = ({ location }) => {
@@ -48,16 +46,9 @@ const MainApp = ({ location }) => {
 				<SiteAppPage />
 				<UsersPage />
 				<ModelsPage />
-				<AccessRoleRoute
-					type={"role"}
-					path={clientSettingPath}
-					exact
-					component={ClientSetting}
-					roles={[role.clientAdmin]}
-				/>
 
 				<AccessRoleRoute
-					type={localStorage.getItem("clientAdminMode") ? "role" : "access"}
+					type={"access"}
 					roles={[role.clientAdmin, role.superAdmin]}
 					path={analyticsPath}
 					exact

@@ -341,7 +341,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
-	const clientAdminMode = JSON.parse(localStorage.getItem("clientAdminMode"));
+	const clientAdminMode = JSON.parse(sessionStorage.getItem("clientAdminMode"));
 
 	// Filter which sidebar navigation is accessible
 	const navOptions = navList
@@ -365,12 +365,8 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 						return false;
 					}
 				} else {
-					if (x.roles.includes(roles.clientAdmin)) {
-						return true;
-					} else {
-						if (access === "F" || access === "E" || access === "R") return true;
-						else return false;
-					}
+					if (access === "F" || access === "E" || access === "R") return true;
+					else return false;
 				}
 				// If the user is Site Application User
 			} else {
@@ -380,7 +376,11 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		})
 		.map((x) => {
 			if (x.name === "Client Setting") {
-				return { ...x, name: clientAdminMode?.label };
+				return {
+					...x,
+					name: clientAdminMode?.label,
+					path: `/app/client/${clientAdminMode?.id}`,
+				};
 			}
 			return x;
 		});
@@ -456,7 +456,11 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 													classes={{
 														primary: classes.listItemTextPrimary,
 													}}
-													primary="Admin Mode"
+													primary={
+														sessionStorage.getItem("siteAppMode")
+															? "Site App"
+															: "Admin Mode"
+													}
 												/>
 											</ListItem>
 										</div>
@@ -506,7 +510,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 												<ListItem
 													button
 													className={
-														item.name.toLowerCase() === activeLink
+														item.activeName.toLowerCase() === activeLink
 															? classes.currentItemBackground
 															: null
 													}
@@ -514,7 +518,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 													<ListItemIcon className={classes.navIconContainer}>
 														<NavIcon
 															className={
-																item.name.toLowerCase() === activeLink
+																item.activeName.toLowerCase() === activeLink
 																	? classes.navIconCurrent
 																	: classes.navIcon
 															}
@@ -524,7 +528,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 													<ListItemText
 														classes={{
 															primary:
-																item.name.toLowerCase() === activeLink
+																item.activeName.toLowerCase() === activeLink
 																	? classes.listItemTextPrimaryCurrent
 																	: classes.listItemTextPrimary,
 														}}
@@ -582,7 +586,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 										/>
 									</ListItem>
 								</div>
-								{(multiSiteUser || role === "SuperAdmin") &&
+								{(multiSiteUser || position === null) &&
 								!isApplicationPortal ? (
 									<Link to={applicationPortalPath} className={classes.navLink}>
 										<div
