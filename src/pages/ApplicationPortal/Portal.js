@@ -82,6 +82,7 @@ function Portal() {
 					"clientAdminMode",
 					JSON.stringify(selectedClient)
 				);
+				sessionStorage.setItem("siteAppMode", false);
 				const me =
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));
@@ -133,12 +134,12 @@ function Portal() {
 									style={{
 										padding: "6px 22px",
 										fontSize: "14.5px",
-										//height: 55,
+										//height: 40,
 										width: "180px",
 									}}
 									onClick={setClientAdminMode}
 								>
-									Client Admin Mode
+									CLIENT ADMIN MODE
 								</GeneralButton>
 							) : null}
 						</div>

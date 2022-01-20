@@ -85,7 +85,7 @@ function AddNewModelDetail({
 	const [modelTypes, setModelTypes] = useState([]);
 	const [locations, setLocations] = useState([]);
 	const { application, customCaptions } = JSON.parse(
-		localStorage.getItem("me")
+		sessionStorage.getItem("me")
 	);
 
 	const history = useHistory();

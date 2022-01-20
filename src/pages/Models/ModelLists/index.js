@@ -90,7 +90,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const [modelImportData, setModelImportData] = useState([]);
 
 	const { position, application, customCaptions } = JSON.parse(
-		localStorage.getItem("me")
+		sessionStorage.getItem("me")
 	);
 
 	//display error popup

@@ -457,8 +457,12 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 														primary: classes.listItemTextPrimary,
 													}}
 													primary={
-														sessionStorage.getItem("siteAppMode")
+														JSON.parse(sessionStorage.getItem("siteAppMode"))
 															? "Site App"
+															: JSON.parse(
+																	sessionStorage.getItem("clientAdminMode")
+															  )
+															? "Client Admin Mode"
 															: "Admin Mode"
 													}
 												/>
