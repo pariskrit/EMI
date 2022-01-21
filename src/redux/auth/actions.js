@@ -15,6 +15,8 @@ export const loginUser = (input) => async (dispatch) => {
 		API.post("/api/Users/Login", input)
 			.then(async (res) => {
 				await setStorage(res.data);
+				localStorage.setItem("originalLogin", JSON.stringify(res.data));
+				sessionStorage.setItem("originalLogin", JSON.stringify(res.data));
 				dispatch(dataSuccess({ data: res.data }));
 				resolve(res);
 			})
@@ -35,6 +37,8 @@ export const loginSocialAccount = (input, loginType, url) => async (
 				setStorage(res.data);
 				localStorage.setItem("loginType", loginType);
 				sessionStorage.setItem("loginType", loginType);
+				localStorage.setItem("originalLogin", JSON.stringify(res.data));
+				sessionStorage.setItem("originalLogin", JSON.stringify(res.data));
 				dispatch(dataSuccess({ data: res.data }));
 				resolve(res);
 			})
@@ -52,6 +56,7 @@ export const getUserDetail = () => async (dispatch) => {
 			const loginType =
 				sessionStorage.getItem("loginType") ||
 				localStorage.getItem("loginType");
+
 			dispatch(dataSuccess({ data: { ...res.data, loginType } }));
 		})
 		.catch((err) => {
