@@ -89,9 +89,9 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
 
-	const { position, application, customCaptions } = JSON.parse(
-		sessionStorage.getItem("me")
-	);
+	const { position, application, customCaptions } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	//display error popup
 	const displayError = (errorMessage, response) =>
