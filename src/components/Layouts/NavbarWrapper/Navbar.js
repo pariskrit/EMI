@@ -397,15 +397,18 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		JSON.parse(localStorage.getItem("originalLogin"));
 
 	const redirectToOriginalMode = async () => {
-		const setOriginalData = () =>
-			new Promise((res) => {
+		async function setOriginalData() {
+			return new Promise((res) => {
 				sessionStorage.setItem("me", JSON.stringify(loginUser));
 				localStorage.setItem("me", JSON.stringify(loginUser));
 				res(true);
 			});
+		}
+
 		let a = await setOriginalData();
-		if (a) history.push(navOptions[0].path);
-		else return;
+		if (a) {
+			history.push(navOptions[0].path);
+		}
 	};
 
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
