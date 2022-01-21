@@ -11,13 +11,13 @@ const {
 
 export const loginUser = (input) => async (dispatch) => {
 	dispatch(userRequest());
-	return new Promise((resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
 		API.post("/api/Users/Login", input)
 			.then(async (res) => {
-				await setStorage(res.data);
-				localStorage.setItem("originalLogin", JSON.stringify(res.data));
-				sessionStorage.setItem("originalLogin", JSON.stringify(res.data));
-				dispatch(dataSuccess({ data: res.data }));
+				const d = await setStorage(res.data);
+				localStorage.setItem("originalLogin", JSON.stringify(d));
+				sessionStorage.setItem("originalLogin", JSON.stringify(d));
+				dispatch(dataSuccess({ data: d }));
 				resolve(res);
 			})
 			.catch((err) => {
@@ -33,13 +33,13 @@ export const loginSocialAccount = (input, loginType, url) => async (
 	dispatch(userRequest());
 	return new Promise((resolve, reject) => {
 		API.post(url, input)
-			.then((res) => {
-				setStorage(res.data);
+			.then(async (res) => {
+				const d = await setStorage(res.data);
 				localStorage.setItem("loginType", loginType);
 				sessionStorage.setItem("loginType", loginType);
-				localStorage.setItem("originalLogin", JSON.stringify(res.data));
-				sessionStorage.setItem("originalLogin", JSON.stringify(res.data));
-				dispatch(dataSuccess({ data: res.data }));
+				localStorage.setItem("originalLogin", JSON.stringify(d));
+				sessionStorage.setItem("originalLogin", JSON.stringify(d));
+				dispatch(dataSuccess({ data: d }));
 				resolve(res);
 			})
 			.catch((err) => {

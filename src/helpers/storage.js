@@ -24,6 +24,6 @@ export function setStorage(res) {
 		}
 		await setMeStorage(response);
 
-		resolve(true);
+		resolve(response);
 	});
 }
