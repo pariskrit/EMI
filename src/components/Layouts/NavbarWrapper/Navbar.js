@@ -34,12 +34,19 @@ import navList from "./navList";
 import "./style.scss";
 import roles from "helpers/roles";
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
+import useDidMountEffect from "hooks/useDidMountEffect";
 
 // Size constants
 const drawerWidth = 240;
 const minDrawerWidth = 62;
 
-function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
+function Navbar({
+	userLogOut,
+	isApplicationPortal = false,
+	isLoading,
+	userDetail,
+	setUserDetail,
+}) {
 	const {
 		position,
 		regionName,
@@ -50,9 +57,14 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		multiSiteUser,
 		role,
 	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me")) ||
-		{};
+		Object.values(userDetail).length > 0
+			? userDetail ||
+			  JSON.parse(sessionStorage.getItem("me")) ||
+			  JSON.parse(localStorage.getItem("me")) ||
+			  {}
+			: JSON.parse(sessionStorage.getItem("me")) ||
+			  JSON.parse(localStorage.getItem("me")) ||
+			  {};
 
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
@@ -396,19 +408,20 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		JSON.parse(sessionStorage.getItem("originalLogin")) ||
 		JSON.parse(localStorage.getItem("originalLogin"));
 
-	const redirectToOriginalMode = async () => {
-		async function setOriginalData() {
-			return new Promise((res) => {
-				sessionStorage.setItem("me", JSON.stringify(loginUser));
-				localStorage.setItem("me", JSON.stringify(loginUser));
-				res(true);
-			});
-		}
+	const pushToLogin = () => {
+		history.push(navOptions[0].path);
+	};
 
-		let a = await setOriginalData();
-		if (a) {
-			history.push(navOptions[0].path);
-		}
+	useDidMountEffect(() => {
+		// It detects the changes in the userDetail state of redux and call push
+		pushToLogin();
+	}, [userDetail]);
+
+	const redirectToOriginalMode = async () => {
+		sessionStorage.setItem("me", JSON.stringify(loginUser));
+		localStorage.setItem("me", JSON.stringify(loginUser));
+		// Cause change in redux state
+		setUserDetail(loginUser);
 	};
 
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
@@ -482,9 +495,9 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 												primary: classes.listItemTextPrimary,
 											}}
 											primary={
-												loginUser.role === roles.superAdmin
+												loginUser?.role === roles.superAdmin
 													? "Admin Mode"
-													: loginUser.role === roles.clientAdmin
+													: loginUser?.role === roles.clientAdmin
 													? "Client Admin Mode"
 													: "Site App Mode"
 											}

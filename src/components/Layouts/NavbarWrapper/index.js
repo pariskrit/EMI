@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { useEffect } from "react";
 import { loginWithSiteAppId } from "redux/common/actions";
 import { logOutUser } from "redux/auth/actions";
+import { authSlice } from "redux/auth/reducers";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -25,6 +26,8 @@ function NavbarWrapper({
 	userLogOut,
 	loading,
 	loginSiteApp,
+	setUserDetail,
+	userDetail,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -46,6 +49,8 @@ function NavbarWrapper({
 				isApplicationPortal={isApplicationPortal}
 				isLoading={loading}
 				userLogOut={userLogOut}
+				userDetail={userDetail}
+				setUserDetail={setUserDetail}
 			/>
 			{!siteAppId && <main className={classes.content}>{children}</main>}
 		</div>
@@ -54,11 +59,13 @@ function NavbarWrapper({
 
 const mapStateToProps = (state) => ({
 	loading: state.commonData.loading,
+	userDetail: state.authData.userDetail,
 });
 
 const mapDispatchToProps = (dispatch) => ({
 	userLogOut: () => dispatch(logOutUser()),
 	loginSiteApp: (id) => dispatch(loginWithSiteAppId(id)),
+	setUserDetail: (data) => dispatch(authSlice.actions.dataSuccess({ data })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavbarWrapper);
