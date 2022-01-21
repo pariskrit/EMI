@@ -58,10 +58,7 @@ function Navbar({
 		role,
 	} =
 		Object.values(userDetail).length > 0
-			? userDetail ||
-			  JSON.parse(sessionStorage.getItem("me")) ||
-			  JSON.parse(localStorage.getItem("me")) ||
-			  {}
+			? userDetail
 			: JSON.parse(sessionStorage.getItem("me")) ||
 			  JSON.parse(localStorage.getItem("me")) ||
 			  {};
