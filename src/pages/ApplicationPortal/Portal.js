@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import {
 	getApplicationsAndSites,
 	getClientList,
@@ -12,7 +11,6 @@ import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
 import roles from "helpers/roles";
 import { setMeStorage } from "helpers/storage";
-import { authSlice } from "redux/auth/reducers";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -28,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Portal({ setUserDetail }) {
+function Portal() {
 	const styles = useStyles();
 	const history = useHistory();
 	const [listOfClients, setListOfClients] = useState([]);
@@ -97,7 +95,6 @@ function Portal({ setUserDetail }) {
 					position: null,
 				};
 				await setMeStorage(data);
-				setUserDetail(data);
 				res(true);
 			});
 		}
@@ -181,8 +178,4 @@ function Portal({ setUserDetail }) {
 	);
 }
 
-const mapDispatchToProps = (dispatch) => ({
-	setUserDetail: (data) => dispatch(authSlice.actions.dataSuccess({ data })),
-});
-
-export default connect(null, mapDispatchToProps)(Portal);
+export default Portal;

@@ -4,7 +4,7 @@ export function setMeStorage(data) {
 	return new Promise((res) => {
 		localStorage.setItem("me", JSON.stringify(data));
 		sessionStorage.setItem("me", JSON.stringify(data));
-		res(true);
+		res(data);
 	});
 }
 

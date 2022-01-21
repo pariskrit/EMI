@@ -402,11 +402,10 @@ function Navbar({
 					name: clientAdminMode?.label,
 					path: `/app/client/${clientAdminMode?.id}`,
 				};
+			} else {
+				return x;
 			}
-			return x;
 		});
-	console.clear();
-	console.log(navList);
 
 	const loginUser =
 		JSON.parse(sessionStorage.getItem("originalLogin")) ||
