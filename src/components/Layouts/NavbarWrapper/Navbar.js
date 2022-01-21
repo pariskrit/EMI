@@ -75,17 +75,18 @@ function Navbar({
 			localStorage.setItem("originalLogin", JSON.stringify(sessionOrign));
 		}
 		if (!storageSession) {
-			sessionStorage.setItem("me", JSON.stringify(localStorage.getItem("me")));
+			sessionStorage.setItem("me", localStorage.getItem("me"));
 			sessionStorage.setItem("token", storageLocal.jwtToken);
 		}
 		if (!storageLocal) {
-			localStorage.setItem("me", JSON.stringify(sessionStorage.getItem("me")));
+			localStorage.setItem("me", sessionStorage.getItem("me"));
 			localStorage.setItem("token", storageSession.jwtToken);
 		}
 	}, []);
 
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
+
 	const useStyles = makeStyles((theme) => ({
 		root: {
 			display: "flex",
