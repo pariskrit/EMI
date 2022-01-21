@@ -53,7 +53,7 @@ const ClientDetails = ({
 						{ id: 2, name: clientDetail.name },
 					].filter((x) => {
 						if (x.id === 1) {
-							if (sessionStorage.getItem("clientAdminMode")) {
+							if (localStorage.getItem("clientAdminMode")) {
 								return false;
 							} else {
 								return true;
