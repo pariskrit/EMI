@@ -15,7 +15,8 @@ const AccessRoleRoute = ({ type, ...rest }) => {
 		role === roles.superAdmin // If superAdmin, type is role
 			? "role"
 			: role === roles.clientAdmin // If clientAdmin, depends where it is from clientAdmin mode or not
-			? sessionStorage.getItem("clientAdminMode")
+			? sessionStorage.getItem("clientAdminMode") ||
+			  localStorage.getItem("clientAdminMode")
 				? "role" // If from clientAdmin mode, type is role
 				: "access" // If directly logged in, type is access
 			: type; // If siteUser, type is received from props which selects route

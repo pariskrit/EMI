@@ -2,6 +2,7 @@ import instance from "helpers/api";
 import { commonSlice } from "./reducers";
 import { authSlice } from "../auth/reducers.js";
 import { setStorage } from "helpers/storage";
+import roles from "helpers/roles";
 
 const { setError, removeError, setLoading } = commonSlice.actions;
 const { dataSuccess } = authSlice.actions;
@@ -17,7 +18,10 @@ export const loginWithSiteAppId = (id) => async (dispatch) => {
 		...res.data,
 		isAdmin: localStorage.getItem("isAdmin") === "true",
 	};
-	await setStorage(data);
+	const response = await setStorage(data);
+	if (response.role === roles.clientAdmin) {
+		localStorage.removeItem("clientAdminMode");
+	}
 	localStorage.removeItem("siteAppId");
 	localStorage.removeItem("isAdmin");
 	dispatch(dataSuccess({ data }));
