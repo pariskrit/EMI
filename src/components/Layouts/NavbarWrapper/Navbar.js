@@ -66,13 +66,13 @@ function Navbar({
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
 		const storageLocal = JSON.parse(localStorage.getItem("me"));
-		const sessionOrign = JSON.parse(sessionStorage.getItem("originalLogin"));
-		const localOrign = JSON.parse(localStorage.getItem("originalLogin"));
+		const sessionOrign = sessionStorage.getItem("originalLogin");
+		const localOrign = localStorage.getItem("originalLogin");
 		if (!sessionOrign) {
-			sessionStorage.setItem("originalLogin", JSON.stringify(localOrign));
+			sessionStorage.setItem("originalLogin", localOrign);
 		}
 		if (!localOrign) {
-			localStorage.setItem("originalLogin", JSON.stringify(sessionOrign));
+			localStorage.setItem("originalLogin", sessionOrign);
 		}
 		if (!storageSession) {
 			sessionStorage.setItem("me", localStorage.getItem("me"));
