@@ -84,9 +84,9 @@ function AddNewModelDetail({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [modelTypes, setModelTypes] = useState([]);
 	const [locations, setLocations] = useState([]);
-	const { application, customCaptions } = JSON.parse(
-		sessionStorage.getItem("me")
-	);
+	const { application, customCaptions } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	const history = useHistory();
 
