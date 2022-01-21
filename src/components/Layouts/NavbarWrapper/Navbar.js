@@ -361,7 +361,14 @@ function Navbar({
 	};
 
 	// }
-	const clientAdminMode = JSON.parse(sessionStorage.getItem("clientAdminMode"));
+	let clientAdminMode;
+	if (role === roles.clientAdmin) {
+		clientAdminMode =
+			JSON.parse(sessionStorage.getItem("clientAdminMode")) ||
+			JSON.parse(localStorage.getItem("clientAdminMode"));
+	} else {
+		clientAdminMode = null;
+	}
 
 	// Filter which sidebar navigation is accessible
 
@@ -423,6 +430,9 @@ function Navbar({
 	const redirectToOriginalMode = async () => {
 		sessionStorage.setItem("me", JSON.stringify(loginUser));
 		localStorage.setItem("me", JSON.stringify(loginUser));
+		localStorage.removeItem("clientAdminMode");
+		sessionStorage.removeItem("clientAdminMode");
+
 		// Cause change in redux state
 		setUserDetail(loginUser);
 	};

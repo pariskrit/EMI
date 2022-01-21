@@ -76,12 +76,13 @@ function Portal() {
 	}, []);
 
 	const setClientAdminMode = async () => {
-		function setClientStorage() {
+		async function setClientStorage() {
 			return new Promise(async (res) => {
 				sessionStorage.setItem(
 					"clientAdminMode",
 					JSON.stringify(selectedClient)
 				);
+				localStorage.setItem("clientAdminMode", JSON.stringify(selectedClient));
 				const me =
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));
@@ -92,7 +93,7 @@ function Portal() {
 					role: roles.clientAdmin,
 					application: null,
 					customCaptions: null,
-					position: null,
+					position: {},
 				};
 				await setMeStorage(data);
 				res(true);
