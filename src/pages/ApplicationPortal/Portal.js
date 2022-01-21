@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import {
 	getApplicationsAndSites,
 	getClientList,
@@ -12,6 +11,7 @@ import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
 import roles from "helpers/roles";
 import { setMeStorage } from "helpers/storage";
+import { connect } from "react-redux";
 import { authSlice } from "redux/auth/reducers";
 
 const useStyles = makeStyles((theme) => ({
@@ -78,12 +78,13 @@ function Portal({ setUserDetail }) {
 	}, []);
 
 	const setClientAdminMode = async () => {
-		function setClientStorage() {
+		async function setClientStorage() {
 			return new Promise(async (res) => {
 				sessionStorage.setItem(
 					"clientAdminMode",
 					JSON.stringify(selectedClient)
 				);
+				localStorage.setItem("clientAdminMode", JSON.stringify(selectedClient));
 				const me =
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));
@@ -94,7 +95,6 @@ function Portal({ setUserDetail }) {
 					role: roles.clientAdmin,
 					application: null,
 					customCaptions: null,
-					position: null,
 				};
 				await setMeStorage(data);
 				setUserDetail(data);
@@ -180,7 +180,6 @@ function Portal({ setUserDetail }) {
 		</div>
 	);
 }
-
 const mapDispatchToProps = (dispatch) => ({
 	setUserDetail: (data) => dispatch(authSlice.actions.dataSuccess({ data })),
 });

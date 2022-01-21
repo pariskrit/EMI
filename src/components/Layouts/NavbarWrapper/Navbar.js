@@ -77,11 +77,14 @@ function Navbar({
 		if (!storageSession) {
 			sessionStorage.setItem("me", localStorage.getItem("me"));
 			sessionStorage.setItem("token", storageLocal.jwtToken);
+			// setUserDetail(JSON.parse(localStorage.getItem("me")));
 		}
 		if (!storageLocal) {
 			localStorage.setItem("me", sessionStorage.getItem("me"));
 			localStorage.setItem("token", storageSession.jwtToken);
+			// setUserDetail(JSON.parse(sessionStorage.getItem("me")));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const colorBackground =
@@ -358,9 +361,17 @@ function Navbar({
 	};
 
 	// }
-	const clientAdminMode = JSON.parse(sessionStorage.getItem("clientAdminMode"));
+	let clientAdminMode;
+	if (role === roles.clientAdmin) {
+		clientAdminMode =
+			JSON.parse(sessionStorage.getItem("clientAdminMode")) ||
+			JSON.parse(localStorage.getItem("clientAdminMode"));
+	} else {
+		clientAdminMode = null;
+	}
 
 	// Filter which sidebar navigation is accessible
+
 	const navOptions = navList
 		.filter((x) => {
 			// // If position is null it is super admin
@@ -398,8 +409,9 @@ function Navbar({
 					name: clientAdminMode?.label,
 					path: `/app/client/${clientAdminMode?.id}`,
 				};
+			} else {
+				return x;
 			}
-			return x;
 		});
 
 	const loginUser =
@@ -418,6 +430,9 @@ function Navbar({
 	const redirectToOriginalMode = async () => {
 		sessionStorage.setItem("me", JSON.stringify(loginUser));
 		localStorage.setItem("me", JSON.stringify(loginUser));
+		localStorage.removeItem("clientAdminMode");
+		sessionStorage.removeItem("clientAdminMode");
+
 		// Cause change in redux state
 		setUserDetail(loginUser);
 	};
