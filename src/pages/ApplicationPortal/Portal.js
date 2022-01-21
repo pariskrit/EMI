@@ -82,7 +82,6 @@ function Portal() {
 					"clientAdminMode",
 					JSON.stringify(selectedClient)
 				);
-				sessionStorage.setItem("siteAppMode", false);
 				const me =
 					JSON.parse(sessionStorage.getItem("me")) ||
 					JSON.parse(localStorage.getItem("me"));

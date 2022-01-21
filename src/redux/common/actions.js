@@ -20,7 +20,6 @@ export const loginWithSiteAppId = (id) => async (dispatch) => {
 	await setStorage(data);
 	localStorage.removeItem("siteAppId");
 	localStorage.removeItem("isAdmin");
-	sessionStorage.setItem("siteAppMode", true);
 	dispatch(dataSuccess({ data }));
 
 	dispatch(setLoading({ loading: false }));

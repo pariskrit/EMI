@@ -386,6 +386,9 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		});
 
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
+	const loginUser =
+		JSON.parse(sessionStorage.getItem("originalLogin")) ||
+		JSON.parse(localStorage.getItem("originalLogin"));
 
 	return (
 		<>
@@ -420,7 +423,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 
 						{isApplicationPortal ? (
 							<List className={classes.lists}>
-								<Link to="/portal" className={classes.navLink}>
+								<Link to="/app/portal" className={classes.navLink}>
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
 									>
@@ -440,60 +443,32 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 										</ListItem>
 									</div>
 								</Link>
-								{isAdmin ? (
-									<Link to={navOptions[0].path} className={classes.navLink}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<ListItem button className={null}>
-												<ListItemIcon className={classes.navIconContainer}>
-													<SettingsIcon
-														className={classes.homeIcon}
-														alt={`Home icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{
-														primary: classes.listItemTextPrimary,
-													}}
-													primary={
-														JSON.parse(sessionStorage.getItem("siteAppMode"))
-															? "Site App"
-															: JSON.parse(
-																	sessionStorage.getItem("clientAdminMode")
-															  )
-															? "Client Admin Mode"
-															: "Admin Mode"
-													}
+								<Link to={navOptions[0].path} className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={null}>
+											<ListItemIcon className={classes.navIconContainer}>
+												<SettingsIcon
+													className={classes.homeIcon}
+													alt={`Home icon`}
 												/>
-											</ListItem>
-										</div>
-									</Link>
-								) : null}
-
-								{/* For SiteAppUser */}
-								{isAdmin === false && multiSiteUser === true ? (
-									<Link to={navOptions[0].path} className={classes.navLink}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<ListItem button className={null}>
-												<ListItemIcon className={classes.navIconContainer}>
-													<SettingsIcon
-														className={classes.homeIcon}
-														alt={`Home icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{
-														primary: classes.listItemTextPrimary,
-													}}
-													primary="Site App"
-												/>
-											</ListItem>
-										</div>
-									</Link>
-								) : null}
+											</ListItemIcon>
+											<ListItemText
+												classes={{
+													primary: classes.listItemTextPrimary,
+												}}
+												primary={
+													loginUser.role === roles.superAdmin
+														? "Admin Mode"
+														: loginUser.role === roles.clientAdmin
+														? "Client Admin Mode"
+														: "Site App Mode"
+												}
+											/>
+										</ListItem>
+									</div>
+								</Link>
 							</List>
 						) : (
 							<List className={classes.lists}>
