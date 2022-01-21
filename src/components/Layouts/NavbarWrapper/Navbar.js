@@ -42,7 +42,6 @@ const minDrawerWidth = 62;
 function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	const {
 		position,
-		isAdmin,
 		regionName,
 		siteName,
 		firstName,
@@ -58,12 +57,20 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
 		const storageLocal = JSON.parse(localStorage.getItem("me"));
+		const sessionOrign = JSON.parse(sessionStorage.getItem("originalLogin"));
+		const localOrign = JSON.parse(localStorage.getItem("originalLogin"));
+		if (!sessionOrign) {
+			sessionStorage.setItem("originalLogin", JSON.stringify(localOrign));
+		}
+		if (!localOrign) {
+			localStorage.setItem("originalLogin", JSON.stringify(sessionOrign));
+		}
 		if (!storageSession) {
-			sessionStorage.setItem("me", localStorage.getItem("me"));
+			sessionStorage.setItem("me", JSON.stringify(localStorage.getItem("me")));
 			sessionStorage.setItem("token", storageLocal.jwtToken);
 		}
 		if (!storageLocal) {
-			localStorage.setItem("me", sessionStorage.getItem("me"));
+			localStorage.setItem("me", JSON.stringify(sessionStorage.getItem("me")));
 			localStorage.setItem("token", storageSession.jwtToken);
 		}
 	}, []);
@@ -385,10 +392,23 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			return x;
 		});
 
-	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 	const loginUser =
 		JSON.parse(sessionStorage.getItem("originalLogin")) ||
 		JSON.parse(localStorage.getItem("originalLogin"));
+
+	const redirectToOriginalMode = async () => {
+		const setOriginalData = () =>
+			new Promise((res) => {
+				sessionStorage.setItem("me", JSON.stringify(loginUser));
+				localStorage.setItem("me", JSON.stringify(loginUser));
+				res(true);
+			});
+		let a = await setOriginalData();
+		if (a) history.push(navOptions[0].path);
+		else return;
+	};
+
+	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 
 	return (
 		<>
@@ -443,32 +463,31 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 										</ListItem>
 									</div>
 								</Link>
-								<Link to={navOptions[0].path} className={classes.navLink}>
-									<div
-										className={`${classes.navListContainer} mobNavListContainer`}
-									>
-										<ListItem button className={null}>
-											<ListItemIcon className={classes.navIconContainer}>
-												<SettingsIcon
-													className={classes.homeIcon}
-													alt={`Home icon`}
-												/>
-											</ListItemIcon>
-											<ListItemText
-												classes={{
-													primary: classes.listItemTextPrimary,
-												}}
-												primary={
-													loginUser.role === roles.superAdmin
-														? "Admin Mode"
-														: loginUser.role === roles.clientAdmin
-														? "Client Admin Mode"
-														: "Site App Mode"
-												}
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+									onClick={redirectToOriginalMode}
+								>
+									<ListItem button className={null}>
+										<ListItemIcon className={classes.navIconContainer}>
+											<SettingsIcon
+												className={classes.homeIcon}
+												alt={`Home icon`}
 											/>
-										</ListItem>
-									</div>
-								</Link>
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimary,
+											}}
+											primary={
+												loginUser.role === roles.superAdmin
+													? "Admin Mode"
+													: loginUser.role === roles.clientAdmin
+													? "Client Admin Mode"
+													: "Site App Mode"
+											}
+										/>
+									</ListItem>
+								</div>
 							</List>
 						) : (
 							<List className={classes.lists}>
