@@ -77,11 +77,14 @@ function Navbar({
 		if (!storageSession) {
 			sessionStorage.setItem("me", localStorage.getItem("me"));
 			sessionStorage.setItem("token", storageLocal.jwtToken);
+			// setUserDetail(JSON.parse(localStorage.getItem("me")));
 		}
 		if (!storageLocal) {
 			localStorage.setItem("me", sessionStorage.getItem("me"));
 			localStorage.setItem("token", storageSession.jwtToken);
+			// setUserDetail(JSON.parse(sessionStorage.getItem("me")));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const colorBackground =
@@ -361,6 +364,7 @@ function Navbar({
 	const clientAdminMode = JSON.parse(sessionStorage.getItem("clientAdminMode"));
 
 	// Filter which sidebar navigation is accessible
+
 	const navOptions = navList
 		.filter((x) => {
 			// // If position is null it is super admin
@@ -401,6 +405,8 @@ function Navbar({
 			}
 			return x;
 		});
+	console.clear();
+	console.log(navList);
 
 	const loginUser =
 		JSON.parse(sessionStorage.getItem("originalLogin")) ||
