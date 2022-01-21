@@ -66,26 +66,27 @@ function Navbar({
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
 		const storageLocal = JSON.parse(localStorage.getItem("me"));
-		const sessionOrign = JSON.parse(sessionStorage.getItem("originalLogin"));
-		const localOrign = JSON.parse(localStorage.getItem("originalLogin"));
+		const sessionOrign = sessionStorage.getItem("originalLogin");
+		const localOrign = localStorage.getItem("originalLogin");
 		if (!sessionOrign) {
-			sessionStorage.setItem("originalLogin", JSON.stringify(localOrign));
+			sessionStorage.setItem("originalLogin", localOrign);
 		}
 		if (!localOrign) {
-			localStorage.setItem("originalLogin", JSON.stringify(sessionOrign));
+			localStorage.setItem("originalLogin", sessionOrign);
 		}
 		if (!storageSession) {
-			sessionStorage.setItem("me", JSON.stringify(localStorage.getItem("me")));
+			sessionStorage.setItem("me", localStorage.getItem("me"));
 			sessionStorage.setItem("token", storageLocal.jwtToken);
 		}
 		if (!storageLocal) {
-			localStorage.setItem("me", JSON.stringify(sessionStorage.getItem("me")));
+			localStorage.setItem("me", sessionStorage.getItem("me"));
 			localStorage.setItem("token", storageSession.jwtToken);
 		}
 	}, []);
 
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
+
 	const useStyles = makeStyles((theme) => ({
 		root: {
 			display: "flex",
