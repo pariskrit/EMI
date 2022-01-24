@@ -69,6 +69,7 @@ const DragAndDropTable = ({
 	columns,
 	handleEdit,
 	handleDelete,
+	disableDnd,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -95,7 +96,11 @@ const DragAndDropTable = ({
 							))}
 						</TableRow>
 					</AT.TableHead>
-					<Droppable droppableId="droppable-1" isCombineEnabled>
+					<Droppable
+						droppableId="droppable-1"
+						isCombineEnabled
+						isDropDisabled={disableDnd}
+					>
 						{(pp) => (
 							<TableBody
 								className={classes.tableBody}
@@ -120,16 +125,20 @@ const DragAndDropTable = ({
 															<AT.TableBodyText>
 																{i === 0 ? (
 																	<span
-																		{...provider.dragHandleProps}
-																		ref={provider.innerRef}
 																		style={{
 																			display: "flex",
 																			flexDirection: "space-around",
+																			alignItems: "center",
 																		}}
 																	>
-																		<span>
-																			<DragIndicatorIcon />
-																		</span>{" "}
+																		{!disableDnd && (
+																			<span
+																				{...provider.dragHandleProps}
+																				ref={provider.innerRef}
+																			>
+																				<DragIndicatorIcon />
+																			</span>
+																		)}
 																		{row[col]}
 																	</span>
 																) : (
@@ -195,6 +204,10 @@ const DragAndDropTable = ({
 			</DragDropContext>
 		</AT.TableContainer>
 	);
+};
+
+DragAndDropTable.defaultProps = {
+	disableDnd: false,
 };
 
 DragAndDropTable.propTypes = {
