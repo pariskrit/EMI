@@ -1,13 +1,12 @@
 import React, { useLayoutEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import "./style.scss";
 import Navbar from "components/Layouts/NavbarWrapper/Navbar";
 import { CssBaseline } from "@material-ui/core";
 import { connect } from "react-redux";
-// import { useEffect } from "react";
 import { loginWithSiteAppId } from "redux/common/actions";
 import { logOutUser } from "redux/auth/actions";
 import { authSlice } from "redux/auth/reducers";
+import "./style.scss";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
