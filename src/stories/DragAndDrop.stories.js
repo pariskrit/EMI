@@ -30,6 +30,4 @@ DragDrop.args = {
 	headers: ["First Name", "Last Name", "Email", "Phone"],
 	columns: ["firstName", "lastName", "email", "phone"],
 	handleDragEnd: (e) => console.log(e),
-	handleDelete: (e) => console.log(e),
-	handleEdit: (e) => console.log(e),
 };
