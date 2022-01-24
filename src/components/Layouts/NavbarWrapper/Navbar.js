@@ -35,6 +35,7 @@ import "./style.scss";
 import roles from "helpers/roles";
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
 import useDidMountEffect from "hooks/useDidMountEffect";
+import SkeletonNav from "./SkeletonNav";
 
 // Size constants
 const drawerWidth = 240;
@@ -297,13 +298,6 @@ function Navbar({
 			display: "flex",
 			backgroundColor: "black",
 		},
-
-		loader: {
-			display: "flex",
-			alignItems: "center",
-			justifyContent: "center",
-			padding: "20px",
-		},
 	}));
 	// Init hooks
 	const classes = useStyles();
@@ -443,9 +437,7 @@ function Navbar({
 		<>
 			<div className="drawerDesktop">
 				{isLoading ? (
-					<div className={classes.loader}>
-						<CircularProgress />
-					</div>
+					<SkeletonNav />
 				) : (
 					<Drawer
 						variant="permanent"
