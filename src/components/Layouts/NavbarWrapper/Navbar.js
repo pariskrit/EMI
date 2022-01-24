@@ -35,7 +35,7 @@ import "./style.scss";
 import roles from "helpers/roles";
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
 import useDidMountEffect from "hooks/useDidMountEffect";
-import SkeletonNav from "./SkeletonNav";
+import SkeletonNav from "../SkeletonNav";
 
 // Size constants
 const drawerWidth = 240;
