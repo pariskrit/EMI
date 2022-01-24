@@ -70,6 +70,7 @@ const DragAndDropTable = ({
 	handleEdit,
 	handleDelete,
 	disableDnd,
+	menuData,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -174,18 +175,7 @@ const DragAndDropTable = ({
 																			setAnchorEl(null);
 																			setSelectedData(null);
 																		}}
-																		menuData={[
-																			{
-																				name: "Edit",
-																				handler: handleEdit,
-																				isDelete: false,
-																			},
-																			{
-																				name: "Delete",
-																				handler: handleDelete,
-																				isDelete: true,
-																			},
-																		]}
+																		menuData={menuData}
 																	/>
 																</AT.DotMenu>
 															) : null}
@@ -208,6 +198,18 @@ const DragAndDropTable = ({
 
 DragAndDropTable.defaultProps = {
 	disableDnd: false,
+	menuData: [
+		{
+			name: "Edit",
+			handler: () => {},
+			isDelete: false,
+		},
+		{
+			name: "Delete",
+			handler: () => {},
+			isDelete: true,
+		},
+	],
 };
 
 DragAndDropTable.propTypes = {
