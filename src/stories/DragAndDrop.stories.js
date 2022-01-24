@@ -14,15 +14,15 @@ DragDrop.args = {
 	data: [
 		{
 			id: 1,
-			firstName: "Rujal",
-			lastName: "Sapkota",
+			firstName: "Mathew",
+			lastName: "Oven",
 			email: "rr@gmail.com",
 			phone: "34885",
 		},
 		{
 			id: 2,
-			firstName: "TTtasd",
-			lastName: "Sapkota",
+			firstName: "Charlie",
+			lastName: "Chaplin",
 			email: "ssr@gmail.com",
 			phone: "646546",
 		},
