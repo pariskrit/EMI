@@ -67,8 +67,6 @@ const DragAndDropTable = ({
 	handleDragEnd,
 	headers,
 	columns,
-	handleEdit,
-	handleDelete,
 	disableDnd,
 	menuData,
 }) => {
