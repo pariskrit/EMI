@@ -119,7 +119,7 @@ const DragAndDropTable = ({
 												ref={provider.innerRef}
 											>
 												{columns.map((col, i, arr) => (
-													<AT.DataCell key={col}>
+													<AT.DataCell key={col} className={classes.nameRow}>
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
 																{i === 0 ? (
