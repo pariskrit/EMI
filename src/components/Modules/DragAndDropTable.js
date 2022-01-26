@@ -79,7 +79,23 @@ const DragAndDropTable = ({
 
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>
-			<DragDropContext onDragEnd={handleDragEnd}>
+			<DragDropContext
+				onDragEnd={(dragProps) => {
+					document
+						.querySelectorAll(
+							`[data-rbd-draggable-id="${dragProps.draggableId}"]`
+						)[0]
+						.classList.remove("no-border");
+					handleDragEnd(dragProps);
+				}}
+				onDragStart={(dragProps) => {
+					document
+						.querySelectorAll(
+							`[data-rbd-draggable-id="${dragProps.draggableId}"]`
+						)[0]
+						.classList.add("no-border");
+				}}
+			>
 				<Table aria-label="Table">
 					<AT.TableHead>
 						<TableRow className={classes.tableHead}>
@@ -123,7 +139,7 @@ const DragAndDropTable = ({
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
 																{i === 0 ? (
-																	<span
+																	<div
 																		style={{
 																			display: "flex",
 																			flexDirection: "space-around",
@@ -134,12 +150,15 @@ const DragAndDropTable = ({
 																			<span
 																				{...provider.dragHandleProps}
 																				ref={provider.innerRef}
+																				className="flex"
 																			>
 																				<DragIndicatorIcon />
 																			</span>
 																		)}
-																		{row[col]}
-																	</span>
+																		<span style={{ "margin-top": "2.5px" }}>
+																			{row[col]}
+																		</span>
+																	</div>
 																) : (
 																	row[col]
 																)}

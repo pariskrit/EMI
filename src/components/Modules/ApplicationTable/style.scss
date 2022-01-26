@@ -1,3 +1,10 @@
 .MuiTableCell-root {
-	border-bottom: 1px solid !important;
+	border-bottom: 0 !important;
+}
+.MuiTableRow-root:not(:last-child) {
+	border-bottom: 1px solid #c5c5c5;
+}
+
+.no-border {
+	border: 0 !important;
 }

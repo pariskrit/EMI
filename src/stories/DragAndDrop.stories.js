@@ -19,6 +19,27 @@ storiesOf("components/DragAndDropTable", module).add("controlled", () => {
 				email: "ssr@gmail.com",
 				phone: "646546",
 			},
+			{
+				id: 3,
+				firstName: "David",
+				lastName: "Ulvang",
+				email: "ssr@gmail.com",
+				phone: "646546",
+			},
+			{
+				id: 4,
+				firstName: "Rick",
+				lastName: "Lamaron",
+				email: "ssr@gmail.com",
+				phone: "646546",
+			},
+			{
+				id: 5,
+				firstName: "Julie",
+				lastName: "Seziel",
+				email: "ssr@gmail.com",
+				phone: "646546",
+			},
 		]);
 		return <div>{children(data, setData)}</div>;
 	}
