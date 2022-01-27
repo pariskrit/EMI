@@ -152,6 +152,7 @@ const DragAndDropTable = ({
 																			display: "flex",
 																			flexDirection: "space-around",
 																			alignItems: "center",
+																			gap: 10,
 																		}}
 																	>
 																		{!disableDnd && (
@@ -186,9 +187,11 @@ const DragAndDropTable = ({
 																				);
 																			}}
 																		>
-																			<AT.TableMenuButton>
-																				<MenuIcon />
-																			</AT.TableMenuButton>
+                                      {menuData.length > 0 && (
+                                        <AT.TableMenuButton>
+                                          <MenuIcon />
+                                        </AT.TableMenuButton>
+                                      )}
 
 																			<PopupMenu
 																				index={index}
@@ -226,12 +229,12 @@ DragAndDropTable.defaultProps = {
 	menuData: [
 		{
 			name: "Edit",
-			handler: () => {},
+			handler: (id) => console.log(id),
 			isDelete: false,
 		},
 		{
 			name: "Delete",
-			handler: () => {},
+			handler: (id) => console.log(id),
 			isDelete: true,
 		},
 	],
@@ -239,10 +242,10 @@ DragAndDropTable.defaultProps = {
 
 DragAndDropTable.propTypes = {
 	data: PropTypes.array.isRequired,
-	handleDelete: PropTypes.func,
-	handleEdit: PropTypes.func,
 	handleDragEnd: PropTypes.func.isRequired,
 	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+	disableDnd: PropTypes.bool,
+	menuData: PropTypes.array,
 	columns: PropTypes.arrayOf(PropTypes.object).isRequired,
 	isModelEditable: PropTypes.bool,
 };

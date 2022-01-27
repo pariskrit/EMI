@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 
 const AddDialogStyle = () => {
 	const media = "@media (max-width: 414px)";
+	const mediumScreen = "@media (max-width: 768px)";
 
 	return {
 		ActionContainer: styled("div")({
@@ -62,6 +63,9 @@ const AddDialogStyle = () => {
 			display: "flex",
 			marginBottom: 20,
 			[media]: {
+				flexDirection: "column",
+			},
+			[mediumScreen]: {
 				flexDirection: "column",
 			},
 		}),

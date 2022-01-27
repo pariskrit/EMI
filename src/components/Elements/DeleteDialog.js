@@ -58,7 +58,6 @@ const DeleteDialog = ({
 			if (err?.response?.data?.detail) {
 				getError(err.response.data.detail);
 			}
-			console.log(err);
 
 			return false;
 		}
