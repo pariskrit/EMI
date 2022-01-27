@@ -6,10 +6,10 @@ import ModelDetailNavigation from "constants/navigation/modelDetailNavigation";
 const SingleComponent = (route) => {
 	const [state, dispatch] = React.useContext(ModelContext);
 	const {
-		params: { id },
-	} = route.match;
-
-	const access = route.access;
+		match: {
+			params: { id },
+		},
+	} = route;
 
 	const navigation = ModelDetailNavigation(id);
 
@@ -26,20 +26,17 @@ const SingleComponent = (route) => {
 	const openChangeStatusModel = () =>
 		dispatch({ type: "TOGGLE_CHANGE_STATUS", payload: true });
 
-	const addAccess = access === "F";
-	const showAdd = [route.showAdd, addAccess].every((x) => x === true);
-
 	return (
 		<div>
 			<ModelWrapper
 				ModelName={route.name}
 				current={route.name}
 				navigation={navigation}
-				applicationName=""
-				showAdd={showAdd}
+				applicationName="Stage"
+				showAdd={route.showAdd}
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
-				showPasteTask={route.showSaveTask}
+				showPasteTask={route.showPasteTask}
 				showChangeStatus={route.showChangeStatus}
 				showSaveChanges={route.showSaveChanges}
 				onClickSave={openSaveModel}
@@ -48,14 +45,7 @@ const SingleComponent = (route) => {
 				onClickShowChangeStatus={openChangeStatusModel}
 				onClick={(path) => route.history.push(path)}
 			/>
-			{
-				<route.component
-					state={state}
-					dispatch={dispatch}
-					modelId={id}
-					access={access}
-				/>
-			}
+			{<route.component state={state} dispatch={dispatch} modelId={id} />}
 		</div>
 	);
 };
