@@ -26,6 +26,10 @@ function Zones({ modelId, state, dispatch }) {
 	const [zoneToEdit, setZoneToEdit] = useState(null);
 	const [zoneToEditData, setZoneToEditData] = useState(null);
 
+	const { customCaptions } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+
 	const fetchModelZoneList = async (showLoading) => {
 		if (showLoading) setLoading(true);
 		try {
@@ -192,7 +196,7 @@ function Zones({ modelId, state, dispatch }) {
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}
 				data={null}
-				title="Add Model Zone"
+				title={`Add Model ${customCaptions?.zone}`}
 				createProcessHandler={createModalZone}
 				ModelVersionID={modelId}
 				fetchModelZoneList={() => fetchModelZoneList(false)}
@@ -201,13 +205,13 @@ function Zones({ modelId, state, dispatch }) {
 				open={openAddNewZone}
 				closeHandler={() => setOpenAddNewZone(false)}
 				data={zoneToEdit}
-				title="Edit Model Zone"
+				title={`Edit Model ${customCaptions?.zone}`}
 				createProcessHandler={editModelZone}
 				zoneId={zoneToEditData?.id}
 				fetchModelZoneList={() => fetchModelZoneList(false)}
 			/>
 			<DeleteDialog
-				entityName="Model Zone"
+				entityName={`Model ${customCaptions?.zone}`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelZones}
@@ -219,9 +223,9 @@ function Zones({ modelId, state, dispatch }) {
 			) : (
 				<>
 					<DetailsPanel
-						header={"Zones"}
+						header={customCaptions?.zonePlural}
 						dataCount={zoneList.length}
-						description="Zones assigned in this asset model"
+						description={`${customCaptions?.zonePlural} assigned in this asset model`}
 					/>
 					<DragAndDropTable
 						data={zoneList}
