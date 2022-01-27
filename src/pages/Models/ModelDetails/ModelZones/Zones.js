@@ -162,7 +162,7 @@ function Zones({ modelId, state, dispatch }) {
 				entityName="Model Zone"
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
-				deleteEndpoint={Apis.modelZones}
+				deleteEndpoint={Apis.ModelZones}
 				deleteID={selectedID}
 				handleRemoveData={handleRemoveData}
 			/>
