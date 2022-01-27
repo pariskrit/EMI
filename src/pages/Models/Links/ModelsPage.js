@@ -5,6 +5,7 @@ import access from "helpers/access";
 import ModelMapData from "../ModelMapData";
 import ModelLists from "../ModelLists";
 import Models from "..";
+import ModelDetailPage from "../ModelDetails/Links/ModelDetailPage";
 
 const ModelsPage = () => {
 	return (
@@ -21,12 +22,7 @@ const ModelsPage = () => {
 				component={ModelLists}
 				access={access.modelAccess}
 			/>
-			<AccessRoute
-				path={modelsPath + "/:modelId"}
-				exact
-				component={() => <h1>Model Detail Page</h1>}
-				access={access.modelAccess}
-			/>
+			<ModelDetailPage />
 		</Models>
 	);
 };

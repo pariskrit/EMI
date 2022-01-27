@@ -29,6 +29,9 @@ const useStyles = makeStyles({
 		borderBottomWidth: 1,
 		backgroundColor: ColourConstants.tableBackground,
 		fontWeight: "bold",
+		borderRightColor: "#979797",
+		borderRightStyle: "solid",
+		borderRightWidth: "1px",
 	},
 	selectedTableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
@@ -69,6 +72,7 @@ const DragAndDropTable = ({
 	columns,
 	disableDnd,
 	menuData,
+	isModelEditable,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -164,38 +168,40 @@ const DragAndDropTable = ({
 																)}
 															</AT.TableBodyText>
 
-															{arr.length === i + 1 ? (
-																<AT.DotMenu
-																	onClick={(e) => {
-																		setAnchorEl(
-																			anchorEl === e.currentTarget
-																				? null
-																				: e.currentTarget
-																		);
-																		setSelectedData(
-																			anchorEl === e.currentTarget
-																				? null
-																				: index
-																		);
-																	}}
-																>
-																	<AT.TableMenuButton>
-																		<MenuIcon />
-																	</AT.TableMenuButton>
+															{arr.length === i + 1
+																? isModelEditable && (
+																		<AT.DotMenu
+																			onClick={(e) => {
+																				setAnchorEl(
+																					anchorEl === e.currentTarget
+																						? null
+																						: e.currentTarget
+																				);
+																				setSelectedData(
+																					anchorEl === e.currentTarget
+																						? null
+																						: index
+																				);
+																			}}
+																		>
+																			<AT.TableMenuButton>
+																				<MenuIcon />
+																			</AT.TableMenuButton>
 
-																	<PopupMenu
-																		index={index}
-																		selectedData={selectedData}
-																		anchorEl={anchorEl}
-																		id={row.id}
-																		clickAwayHandler={() => {
-																			setAnchorEl(null);
-																			setSelectedData(null);
-																		}}
-																		menuData={menuData}
-																	/>
-																</AT.DotMenu>
-															) : null}
+																			<PopupMenu
+																				index={index}
+																				selectedData={selectedData}
+																				anchorEl={anchorEl}
+																				id={row.id}
+																				clickAwayHandler={() => {
+																					setAnchorEl(null);
+																					setSelectedData(null);
+																				}}
+																				menuData={menuData}
+																			/>
+																		</AT.DotMenu>
+																  )
+																: null}
 														</AT.CellContainer>
 													</AT.DataCell>
 												))}
@@ -235,7 +241,8 @@ DragAndDropTable.propTypes = {
 	handleEdit: PropTypes.func,
 	handleDragEnd: PropTypes.func.isRequired,
 	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
-	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+	columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+	isModelEditable: PropTypes.bool,
 };
 
 export default DragAndDropTable;
