@@ -6,8 +6,10 @@ import ModelDetailNavigation from "constants/navigation/modelDetailNavigation";
 const SingleComponent = (route) => {
 	const [state, dispatch] = React.useContext(ModelContext);
 	const {
-		params: { id },
-	} = route.match;
+		match: {
+			params: { id },
+		},
+	} = route;
 
 	const navigation = ModelDetailNavigation(id);
 
@@ -30,18 +32,18 @@ const SingleComponent = (route) => {
 				ModelName={route.name}
 				current={route.name}
 				navigation={navigation}
-				applicationName=""
+				applicationName="Stage"
 				showAdd={route.showAdd}
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
-				showPasteTask={route.showSaveTask}
+				showPasteTask={route.showPasteTask}
 				showChangeStatus={route.showChangeStatus}
 				showSaveChanges={route.showSaveChanges}
 				onClickSave={openSaveModel}
 				onCLickedSaveChanges={openClickSaveChanges}
 				onClickPasteTask={openPasteTaskModel}
 				onClickShowChangeStatus={openChangeStatusModel}
-				onNavClick={(path) => route.history.push(path)}
+				onClick={(path) => route.history.push(path)}
 			/>
 			{<route.component state={state} dispatch={dispatch} modelId={id} />}
 		</div>
