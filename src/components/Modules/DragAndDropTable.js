@@ -139,11 +139,15 @@ const DragAndDropTable = ({
 												ref={provider.innerRef}
 											>
 												{columns.map((col, i, arr) => (
-													<AT.DataCell key={col} className={classes.nameRow}>
+													<AT.DataCell
+														key={col.id}
+														className={classes.nameRow}
+														style={col?.style}
+													>
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
 																{i === 0 ? (
-																	<div
+																	<span
 																		style={{
 																			display: "flex",
 																			flexDirection: "space-around",
@@ -159,12 +163,12 @@ const DragAndDropTable = ({
 																				<DragIndicatorIcon />
 																			</span>
 																		)}
-																		<span style={{ "margin-top": "2.5px" }}>
-																			{row[col]}
+																		<span style={{ marginTop: "2.5px" }}>
+																			{row[col.name]}
 																		</span>
-																	</div>
+																	</span>
 																) : (
-																	row[col]
+																	row[col.name]
 																)}
 															</AT.TableBodyText>
 
