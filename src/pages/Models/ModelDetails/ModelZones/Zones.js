@@ -38,7 +38,20 @@ function Zones({ modelId, state, dispatch }) {
 					response[0].data.map((d) => ({
 						...d,
 						imageURL: (
-							<img src={d?.imageURL} alt="img" style={{ width: "100px" }} />
+							<div
+								className="image-wrapper"
+								style={{ width: "100px", height: "70px" }}
+							>
+								<img
+									src={d?.imageURL}
+									alt="img"
+									style={{
+										width: "100px",
+										height: "100%",
+										objectFit: "contain",
+									}}
+								/>
+							</div>
 						),
 					}))
 				);
@@ -46,7 +59,20 @@ function Zones({ modelId, state, dispatch }) {
 					response[0].data.map((d) => ({
 						...d,
 						imageURL: (
-							<img src={d?.imageURL} alt="img" style={{ width: "100px" }} />
+							<div
+								className="image-wrapper"
+								style={{ width: "100px", height: "70px" }}
+							>
+								<img
+									src={d?.imageURL}
+									alt="img"
+									style={{
+										width: "100px",
+										height: "100%",
+										objectFit: "contain",
+									}}
+								/>
+							</div>
 						),
 					}))
 				);
