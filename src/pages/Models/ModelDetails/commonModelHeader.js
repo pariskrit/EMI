@@ -61,7 +61,7 @@ const ModelWrapper = ({
 	onCLickedSaveChanges,
 	onClickPasteTask,
 	onClickShowChangeStatus,
-	onClick,
+	onNavClick,
 }) => {
 	const classes = useStyles();
 
@@ -126,7 +126,7 @@ const ModelWrapper = ({
 				navigation={navigation}
 				applicationName={applicationName}
 				current={current}
-				onClick={onClick}
+				onClick={onNavClick}
 			/>
 		</div>
 	);
