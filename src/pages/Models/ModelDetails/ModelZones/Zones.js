@@ -26,8 +26,8 @@ function Zones({ modelId, state, dispatch }) {
 	const [zoneToEdit, setZoneToEdit] = useState(null);
 	const [zoneToEditData, setZoneToEditData] = useState(null);
 
-	const fetchModelZoneList = async () => {
-		setLoading(true);
+	const fetchModelZoneList = async (showLoading) => {
+		if (showLoading) setLoading(true);
 		try {
 			const response = await Promise.all([
 				getModelZonesList(modelId),
@@ -84,13 +84,13 @@ function Zones({ modelId, state, dispatch }) {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			setLoading(false);
+			if (showLoading) setLoading(false);
 		}
 	};
 
 	useEffect(() => {
 		// fectch model zone list
-		fetchModelZoneList();
+		fetchModelZoneList(true);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -173,7 +173,7 @@ function Zones({ modelId, state, dispatch }) {
 				title="Add Model Zone"
 				createProcessHandler={createModalZone}
 				ModelVersionID={modelId}
-				fetchModelZoneList={fetchModelZoneList}
+				fetchModelZoneList={() => fetchModelZoneList(false)}
 			/>
 			<AddNewModelZone
 				open={openAddNewZone}
@@ -182,7 +182,7 @@ function Zones({ modelId, state, dispatch }) {
 				title="Edit Model Zone"
 				createProcessHandler={editModelZone}
 				zoneId={zoneToEditData?.id}
-				fetchModelZoneList={fetchModelZoneList}
+				fetchModelZoneList={() => fetchModelZoneList(false)}
 			/>
 			<DeleteDialog
 				entityName="Model Zone"
