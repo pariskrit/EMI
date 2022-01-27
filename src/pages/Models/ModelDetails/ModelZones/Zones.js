@@ -70,6 +70,21 @@ function Zones({ modelId, state, dispatch }) {
 	}, []);
 
 	// handle dragging of zone
+	const setPositionForPayload = (e, listLength) => {
+		const { destination } = e;
+		if (destination.index === listLength - 1) {
+			return originalZoneList[destination.index]?.pos + 1;
+		}
+		if (destination.index === 0) {
+			return originalZoneList[destination.index]?.pos - 1;
+		}
+		return (
+			(+originalZoneList[destination.index]?.pos +
+				+originalZoneList[e.destination.index + 1]?.pos) /
+			2
+		);
+	};
+
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
 			return;
@@ -85,10 +100,7 @@ function Zones({ modelId, state, dispatch }) {
 				{
 					path: "pos",
 					op: "replace",
-					value:
-						e.destination.index > e.source.index
-							? +originalZoneList[e.destination.index]?.pos + 1
-							: +originalZoneList[e.destination.index]?.pos - 1,
+					value: setPositionForPayload(e, originalZoneList.length),
 				},
 			];
 			const response = await patchModelVersionZones(e.draggableId, payloadBody);
@@ -178,7 +190,10 @@ function Zones({ modelId, state, dispatch }) {
 					<DragAndDropTable
 						data={zoneList}
 						headers={["Name", "Image"]}
-						columns={["name", "imageURL"]}
+						columns={[
+							{ id: 1, name: "name", style: {} },
+							{ id: 2, name: "imageURL", style: {} },
+						]}
 						handleDragEnd={handleDragEnd}
 						isModelEditable={isModelEditable}
 						disableDnd={!isModelEditable}
