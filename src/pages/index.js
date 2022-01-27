@@ -22,10 +22,12 @@ import {
 import AccessRoute from "components/HOC/AccessRoute";
 import Services from "./Services";
 import access from "helpers/access";
+import role from "helpers/roles";
 import Defects from "./Defects";
 import Analysis from "./Analysis";
 import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
+import AccessRoleRoute from "components/HOC/AccessRoleRoute";
 
 const MainApp = ({ location }) => {
 	if (!location.pathname.split("/").includes("app")) {
@@ -45,7 +47,9 @@ const MainApp = ({ location }) => {
 				<UsersPage />
 				<ModelsPage />
 
-				<AccessRoute
+				<AccessRoleRoute
+					type={"access"}
+					roles={[role.clientAdmin, role.superAdmin]}
 					path={analyticsPath}
 					exact
 					component={(props) => <h1>Analytics Path</h1>}

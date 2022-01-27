@@ -5,6 +5,15 @@
 	}
 }
 
+.large-application-dailog {
+	.MuiDialog-paper,
+	.MuiDialogContent-root {
+		overflow-y: unset;
+		max-width: 100%;
+		width: 100%;
+	}
+}
+
 .table-container {
 	width: 100%;
 	overflow: auto;

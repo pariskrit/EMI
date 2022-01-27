@@ -11,11 +11,13 @@ const {
 
 export const loginUser = (input) => async (dispatch) => {
 	dispatch(userRequest());
-	return new Promise((resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
 		API.post("/api/Users/Login", input)
-			.then((res) => {
-				setStorage(res.data);
-				dispatch(dataSuccess({ data: res.data }));
+			.then(async (res) => {
+				const d = await setStorage(res.data);
+				localStorage.setItem("originalLogin", JSON.stringify(d));
+				sessionStorage.setItem("originalLogin", JSON.stringify(d));
+				dispatch(dataSuccess({ data: d }));
 				resolve(res);
 			})
 			.catch((err) => {
@@ -31,11 +33,13 @@ export const loginSocialAccount = (input, loginType, url) => async (
 	dispatch(userRequest());
 	return new Promise((resolve, reject) => {
 		API.post(url, input)
-			.then((res) => {
-				setStorage(res.data);
+			.then(async (res) => {
+				const d = await setStorage(res.data);
 				localStorage.setItem("loginType", loginType);
 				sessionStorage.setItem("loginType", loginType);
-				dispatch(dataSuccess({ data: res.data }));
+				localStorage.setItem("originalLogin", JSON.stringify(d));
+				sessionStorage.setItem("originalLogin", JSON.stringify(d));
+				dispatch(dataSuccess({ data: d }));
 				resolve(res);
 			})
 			.catch((err) => {
@@ -52,6 +56,7 @@ export const getUserDetail = () => async (dispatch) => {
 			const loginType =
 				sessionStorage.getItem("loginType") ||
 				localStorage.getItem("loginType");
+
 			dispatch(dataSuccess({ data: { ...res.data, loginType } }));
 		})
 		.catch((err) => {

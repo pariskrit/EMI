@@ -267,7 +267,8 @@ const UsersListContent = ({ getError }) => {
 					</AC.SearchContainer>
 				) : null}
 			</div>
-			{position === null || access !== "N" ? (
+			{
+				// position === null || access !== "N" ? (
 				haveData ? (
 					<UsersListTable
 						data={mainData}
@@ -288,7 +289,8 @@ const UsersListContent = ({ getError }) => {
 				) : (
 					<CircularProgress />
 				)
-			) : null}
+				// ) : null
+			}
 		</div>
 	);
 };

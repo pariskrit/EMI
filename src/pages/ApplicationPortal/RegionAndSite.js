@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function RegionAndSite({ region, sites, clientId }) {
+function RegionAndSite({ region, sites }) {
 	const classes = useStyles();
 
 	const handleSiteAppClick = async (id) => {

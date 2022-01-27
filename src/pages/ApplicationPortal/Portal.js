@@ -1,13 +1,18 @@
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import SingleApplication from "./SingleApplication";
-import Dropdown from "components/Elements/Dropdown";
 import {
 	getApplicationsAndSites,
 	getClientList,
 } from "services/applicationportal";
 import { CircularProgress } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import SingleApplication from "./SingleApplication";
+import Dropdown from "components/Elements/Dropdown";
+import GeneralButton from "components/Elements/GeneralButton";
+import roles from "helpers/roles";
+import { setMeStorage } from "helpers/storage";
+import { connect } from "react-redux";
+import { authSlice } from "redux/auth/reducers";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -23,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Portal() {
+function Portal({ setUserDetail }) {
 	const styles = useStyles();
 	const history = useHistory();
 	const [listOfClients, setListOfClients] = useState([]);
@@ -72,6 +77,34 @@ function Portal() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const setClientAdminMode = async () => {
+		async function setClientStorage() {
+			return new Promise(async (res) => {
+				sessionStorage.setItem(
+					"clientAdminMode",
+					JSON.stringify(selectedClient)
+				);
+				localStorage.setItem("clientAdminMode", JSON.stringify(selectedClient));
+				const me =
+					JSON.parse(sessionStorage.getItem("me")) ||
+					JSON.parse(localStorage.getItem("me"));
+
+				// Reset to client admin mode
+				const data = {
+					...me,
+					role: roles.clientAdmin,
+					application: null,
+					customCaptions: null,
+				};
+				await setMeStorage(data);
+				setUserDetail(data);
+				res(true);
+			});
+		}
+		await setClientStorage();
+		history.push(`/app/client/${selectedClient.id}`);
+	};
+
 	if (isLoading.initial) {
 		return (
 			<div className="container">
@@ -79,69 +112,76 @@ function Portal() {
 			</div>
 		);
 	}
-	const { position, multiSiteUser } = JSON.parse(localStorage.getItem("me"));
-	if (position === null || multiSiteUser === true) {
-		return (
-			<div>
-				<Grid
-					container
-					spacing={2}
-					className={styles.header}
-					alignItems="center"
-				>
-					<Grid item xs={12}>
-						<Typography variant="h6" component="h1" gutterBottom>
-							<strong>Application Portal</strong>
+
+	return (
+		<div>
+			<Grid container spacing={2} className={styles.header} alignItems="center">
+				<Grid item xs={12}>
+					<Typography variant="h6" component="h1" gutterBottom>
+						<strong>Application Portal</strong>
+					</Typography>
+				</Grid>
+				<Grid item xs={12}>
+					<div className={styles.siteContainer}>
+						<Typography variant="subtitle2">Clients</Typography>
+						<div style={{ width: "100%", display: "flex", gap: 12 }}>
+							<Dropdown
+								options={listOfClients}
+								placeholder="Select Client"
+								onChange={onInputChange}
+								selectedValue={selectedClient}
+							/>
+							{selectedClient.isAdmin ? (
+								<GeneralButton
+									style={{
+										padding: "6px 22px",
+										fontSize: "14.5px",
+										//height: 40,
+										width: "180px",
+									}}
+									onClick={setClientAdminMode}
+								>
+									CLIENT ADMIN MODE
+								</GeneralButton>
+							) : null}
+						</div>
+					</div>
+				</Grid>
+			</Grid>
+
+			<Grid container spacing={5}>
+				{isLoading.showText ? (
+					<Grid item xs={9}>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+							className={styles.para}
+						>
+							Select a client to view the applications
 						</Typography>
 					</Grid>
-					<Grid item xs={12}>
-						<div className={styles.siteContainer}>
-							<Typography variant="subtitle2">Clients</Typography>
-							<div style={{ width: "100px" }}>
-								<Dropdown
-									options={listOfClients}
-									placeholder="Select Client"
-									onChange={onInputChange}
-									selectedValue={selectedClient}
-								/>
-							</div>
-						</div>
+				) : null}
+
+				{isLoading.applications ? (
+					<Grid item xs={9} className={styles.para}>
+						<CircularProgress />
 					</Grid>
-				</Grid>
-
-				<Grid container spacing={5}>
-					{isLoading.showText ? (
-						<Grid item xs={9}>
-							<Typography
-								variant="subtitle1"
-								gutterBottom
-								component="div"
-								className={styles.para}
-							>
-								Select a client to view the applications
-							</Typography>
-						</Grid>
-					) : null}
-
-					{isLoading.applications ? (
-						<Grid item xs={9} className={styles.para}>
-							<CircularProgress />
-						</Grid>
-					) : (
-						applicationList.map((application) => (
-							<SingleApplication
-								data={application}
-								key={application.id}
-								clientId={clientId}
-							/>
-						))
-					)}
-				</Grid>
-			</div>
-		);
-	} else {
-		history.length > 1 ? history.goBack() : history.push("/app/me");
-	}
+				) : (
+					applicationList.map((application) => (
+						<SingleApplication
+							data={application}
+							key={application.id}
+							clientId={clientId}
+						/>
+					))
+				)}
+			</Grid>
+		</div>
+	);
 }
+const mapDispatchToProps = (dispatch) => ({
+	setUserDetail: (data) => dispatch(authSlice.actions.dataSuccess({ data })),
+});
 
-export default Portal;
+export default connect(null, mapDispatchToProps)(Portal);

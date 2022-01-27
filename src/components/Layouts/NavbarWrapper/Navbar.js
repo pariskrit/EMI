@@ -14,7 +14,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MiniLogo from "assets/EMI-symbol.png";
 
 // Importing icons
@@ -33,16 +32,24 @@ import {
 } from "helpers/routePaths";
 import navList from "./navList";
 import "./style.scss";
+import roles from "helpers/roles";
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
+import useDidMountEffect from "hooks/useDidMountEffect";
+import SkeletonNav from "../SkeletonNav";
 
 // Size constants
 const drawerWidth = 240;
 const minDrawerWidth = 62;
 
-function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
+function Navbar({
+	userLogOut,
+	isApplicationPortal = false,
+	isLoading,
+	userDetail,
+	setUserDetail,
+}) {
 	const {
 		position,
-		isAdmin,
 		regionName,
 		siteName,
 		firstName,
@@ -51,25 +58,39 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		multiSiteUser,
 		role,
 	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me")) ||
-		{};
+		Object.values(userDetail).length > 0
+			? userDetail
+			: JSON.parse(sessionStorage.getItem("me")) ||
+			  JSON.parse(localStorage.getItem("me")) ||
+			  {};
 
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
 		const storageLocal = JSON.parse(localStorage.getItem("me"));
+		const sessionOrign = sessionStorage.getItem("originalLogin");
+		const localOrign = localStorage.getItem("originalLogin");
+		if (!sessionOrign) {
+			sessionStorage.setItem("originalLogin", localOrign);
+		}
+		if (!localOrign) {
+			localStorage.setItem("originalLogin", sessionOrign);
+		}
 		if (!storageSession) {
 			sessionStorage.setItem("me", localStorage.getItem("me"));
 			sessionStorage.setItem("token", storageLocal.jwtToken);
+			// setUserDetail(JSON.parse(localStorage.getItem("me")));
 		}
 		if (!storageLocal) {
 			localStorage.setItem("me", sessionStorage.getItem("me"));
 			localStorage.setItem("token", storageSession.jwtToken);
+			// setUserDetail(JSON.parse(sessionStorage.getItem("me")));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
+
 	const useStyles = makeStyles((theme) => ({
 		root: {
 			display: "flex",
@@ -143,7 +164,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 		largeLogoContainer: {
 			display: "flex",
 			justifyContent: "center",
-			marginBottom: 16,
+			marginBottom: 43,
 		},
 		largeLogo: {
 			marginTop: 30,
@@ -277,13 +298,6 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 			display: "flex",
 			backgroundColor: "black",
 		},
-
-		loader: {
-			display: "flex",
-			alignItems: "center",
-			justifyContent: "center",
-			padding: "20px",
-		},
 	}));
 	// Init hooks
 	const classes = useStyles();
@@ -341,32 +355,89 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 	};
 
 	// }
+	let clientAdminMode;
+	if (role === roles.clientAdmin) {
+		clientAdminMode =
+			JSON.parse(sessionStorage.getItem("clientAdminMode")) ||
+			JSON.parse(localStorage.getItem("clientAdminMode"));
+	} else {
+		clientAdminMode = null;
+	}
 
 	// Filter which sidebar navigation is accessible
-	const navOptions = navList.filter((x) => {
-		// // If position is null it is super admin
-		const access = position?.[x.access];
 
-		if (position === null) {
-			if (x.position === null) {
-				return true;
+	const navOptions = navList
+		.filter((x) => {
+			// // If position is null it is super admin
+			const access = position?.[x.access];
+			// If the user is SuperAdmin
+			if (role === roles.superAdmin) {
+				if (x.roles.includes(roles.superAdmin)) {
+					return true;
+				} else {
+					return false;
+				}
+				// If the user is Client Administrator
+			} else if (role === roles.clientAdmin) {
+				// If Switched as Client Admin Mode ignore position access
+				if (clientAdminMode) {
+					if (x.roles.includes(roles.clientAdmin)) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					if (access === "F" || access === "E" || access === "R") return true;
+					else return false;
+				}
+				// If the user is Site Application User
 			} else {
-				return false;
+				if (access === "F" || access === "E" || access === "R") return true;
+				else return false;
 			}
-		} else {
-			if (access === "F" || access === "E" || access === "R") return true;
-			else return false;
-		}
-	});
+		})
+		.map((x) => {
+			if (x.name === "Client Setting") {
+				return {
+					...x,
+					name: clientAdminMode?.label,
+					path: `/app/client/${clientAdminMode?.id}`,
+				};
+			} else {
+				return x;
+			}
+		});
+
+	const loginUser =
+		JSON.parse(sessionStorage.getItem("originalLogin")) ||
+		JSON.parse(localStorage.getItem("originalLogin"));
+
+	const pushToLogin = () => {
+		history.push(navOptions[0].path);
+	};
+
+	useDidMountEffect(() => {
+		// It detects the changes in the userDetail state of redux and call push
+		pushToLogin();
+	}, [userDetail]);
+
+	const redirectToOriginalMode = async () => {
+		sessionStorage.setItem("me", JSON.stringify(loginUser));
+		localStorage.setItem("me", JSON.stringify(loginUser));
+		localStorage.removeItem("clientAdminMode");
+		sessionStorage.removeItem("clientAdminMode");
+
+		// Cause change in redux state
+		setUserDetail(loginUser);
+	};
+
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 
 	return (
 		<>
 			<div className="drawerDesktop">
 				{isLoading ? (
-					<div className={classes.loader}>
-						<CircularProgress />
-					</div>
+					<SkeletonNav />
 				) : (
 					<Drawer
 						variant="permanent"
@@ -392,100 +463,53 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 						)}
 
 						{isApplicationPortal ? (
-							<>
-								<List className={classes.lists}>
-									<Link to="/portal" className={classes.navLink}>
-										<div
-											className={`${classes.navListContainer} mobNavListContainer`}
-										>
-											<ListItem
-												button
-												className={classes.currentItemBackground}
-											>
-												<ListItemIcon className={classes.navIconContainer}>
-													<Home
-														className={classes.navIconCurrent}
-														alt={`Home icon`}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													classes={{
-														primary: classes.listItemTextPrimaryCurrent,
-													}}
-													primary="Application Portal"
-												/>
-											</ListItem>
-										</div>
-									</Link>
-									{isAdmin ? (
-										<Link to={navOptions[0].path} className={classes.navLink}>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-											>
-												<ListItem button className={null}>
-													<ListItemIcon className={classes.navIconContainer}>
-														<SettingsIcon
-															className={classes.homeIcon}
-															alt={`Home icon`}
-														/>
-													</ListItemIcon>
-													<ListItemText
-														classes={{
-															primary: classes.listItemTextPrimary,
-														}}
-														primary="Admin Mode"
-													/>
-												</ListItem>
-											</div>
-										</Link>
-									) : null}
-
-									{/* For SiteAppUser */}
-									{isAdmin === false && multiSiteUser === true ? (
-										<Link to={navOptions[0].path} className={classes.navLink}>
-											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
-											>
-												<ListItem button className={null}>
-													<ListItemIcon className={classes.navIconContainer}>
-														<SettingsIcon
-															className={classes.homeIcon}
-															alt={`Home icon`}
-														/>
-													</ListItemIcon>
-													<ListItemText
-														classes={{
-															primary: classes.listItemTextPrimary,
-														}}
-														primary="Site App"
-													/>
-												</ListItem>
-											</div>
-										</Link>
-									) : null}
-								</List>
-
-								{/* If previous route is not login donot display */}
-								{history.location.state?.from !== loginPath && (
-									<List>
-										<ListItem
-											button
-											style={{ position: "relative", height: "100%" }}
-											onClick={() => history.goBack()}
-										>
+							<List className={classes.lists}>
+								<Link to="/app/portal" className={classes.navLink}>
+									<div
+										className={`${classes.navListContainer} mobNavListContainer`}
+									>
+										<ListItem button className={classes.currentItemBackground}>
 											<ListItemIcon className={classes.navIconContainer}>
-												<ArrowBackIcon />
+												<Home
+													className={classes.navIconCurrent}
+													alt={`Home icon`}
+												/>
 											</ListItemIcon>
 											<ListItemText
 												classes={{
-													primary: classes.listItemTextPrimary,
+													primary: classes.listItemTextPrimaryCurrent,
 												}}
-												primary="Go Back"
+												primary="Application Portal"
 											/>
 										</ListItem>
-									</List>
-								)}
-							</>
+									</div>
+								</Link>
+								<div
+									className={`${classes.navListContainer} mobNavListContainer`}
+									onClick={redirectToOriginalMode}
+								>
+									<ListItem button className={null}>
+										<ListItemIcon className={classes.navIconContainer}>
+											<SettingsIcon
+												className={classes.homeIcon}
+												alt={`Home icon`}
+											/>
+										</ListItemIcon>
+										<ListItemText
+											classes={{
+												primary: classes.listItemTextPrimary,
+											}}
+											primary={
+												loginUser?.role === roles.superAdmin
+													? "Admin Mode"
+													: loginUser?.role === roles.clientAdmin
+													? "Client Admin Mode"
+													: "Site App Mode"
+											}
+										/>
+									</ListItem>
+								</div>
+							</List>
 						) : (
 							<List className={classes.lists}>
 								{navOptions.map((item) => {
@@ -505,7 +529,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 												<ListItem
 													button
 													className={
-														item.name.toLowerCase() === activeLink
+														item.activeName.toLowerCase() === activeLink
 															? classes.currentItemBackground
 															: null
 													}
@@ -513,7 +537,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 													<ListItemIcon className={classes.navIconContainer}>
 														<NavIcon
 															className={
-																item.name.toLowerCase() === activeLink
+																item.activeName.toLowerCase() === activeLink
 																	? classes.navIconCurrent
 																	: classes.navIcon
 															}
@@ -523,7 +547,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 													<ListItemText
 														classes={{
 															primary:
-																item.name.toLowerCase() === activeLink
+																item.activeName.toLowerCase() === activeLink
 																	? classes.listItemTextPrimaryCurrent
 																	: classes.listItemTextPrimary,
 														}}
@@ -581,7 +605,7 @@ function Navbar({ userLogOut, isApplicationPortal = false, isLoading }) {
 										/>
 									</ListItem>
 								</div>
-								{(multiSiteUser || role === "SuperAdmin") &&
+								{(multiSiteUser || position === null) &&
 								!isApplicationPortal ? (
 									<Link to={applicationPortalPath} className={classes.navLink}>
 										<div

@@ -51,7 +51,17 @@ const ClientDetails = ({
 					staticCrumbs={[
 						{ id: 1, name: "Clients", url: clientsPath },
 						{ id: 2, name: clientDetail.name },
-					]}
+					].filter((x) => {
+						if (x.id === 1) {
+							if (localStorage.getItem("clientAdminMode")) {
+								return false;
+							} else {
+								return true;
+							}
+						} else {
+							return true;
+						}
+					})}
 					status={true}
 					lastSaved=""
 				/>

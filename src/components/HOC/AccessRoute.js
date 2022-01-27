@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Route, useHistory } from "react-router";
 
-const AccessRoute = ({ component: Component, access, ...rest }) => {
+const AccessRoute = ({ component: Component, access, condition, ...rest }) => {
 	const history = useHistory();
-	const { position } =
+	const { position, role } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
@@ -14,12 +14,14 @@ const AccessRoute = ({ component: Component, access, ...rest }) => {
 			render={(props) =>
 				position?.[access] === "F" ||
 				position?.[access] === "E" ||
-				position?.[access] === "R" ? (
+				position?.[access] === "R" ||
+				condition ? (
 					<Component
 						{...props}
 						position={position}
 						access={position[access]}
 						history={history}
+						role={role}
 					/>
 				) : history.length > 1 ? (
 					history.goBack()
