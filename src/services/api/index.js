@@ -170,5 +170,5 @@ export const Apis = {
 	DuplicateModal: `${BASE_API_PATH_DUPLICATE_MODEL}`,
 	ModelVersions: `${BASE_API_PATH_MODEL_VERSIONS}`,
 	ModelImports: `${BASE_API_PATH_MODEL_IMPORTS}`,
-	modelZones: `${BASE_API_PATH_MODEL_ZONES}`,
+	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
 };

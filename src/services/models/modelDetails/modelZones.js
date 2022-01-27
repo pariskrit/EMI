@@ -6,7 +6,7 @@ import { getAPIResponse } from "helpers/getApiResponse";
 const getModelZonesList = async (modelVersionId) => {
 	try {
 		let response = await API.get(
-			`${Apis.modelZones}?modelVersionId=${modelVersionId}`
+			`${Apis.ModelZones}?modelVersionId=${modelVersionId}`
 		);
 		return getAPIResponse(response);
 	} catch (error) {
@@ -16,7 +16,7 @@ const getModelZonesList = async (modelVersionId) => {
 
 const addNewModelZone = async (payload) => {
 	try {
-		let response = await API.post(`${Apis.modelZones}`, payload);
+		let response = await API.post(`${Apis.ModelZones}`, payload);
 		return getAPIResponse(response);
 	} catch (error) {
 		return getAPIResponse(error?.response);
@@ -26,7 +26,7 @@ const addNewModelZone = async (payload) => {
 const uploadZoneImage = async (zoneId, payload) => {
 	try {
 		let response = await API.post(
-			`${Apis.modelZones}/${zoneId}/uploadImage`,
+			`${Apis.ModelZones}/${zoneId}/uploadImage`,
 			payload
 		);
 		return getAPIResponse(response);
@@ -38,7 +38,7 @@ const uploadZoneImage = async (zoneId, payload) => {
 const patchModelVersionZones = async (modelVersionZoneId, payload) => {
 	try {
 		let response = await API.patch(
-			`${Apis.modelZones}/${modelVersionZoneId}`,
+			`${Apis.ModelZones}/${modelVersionZoneId}`,
 			payload
 		);
 		return getAPIResponse(response);
