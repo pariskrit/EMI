@@ -226,7 +226,10 @@ function Zones({ modelId, state, dispatch }) {
 					<DragAndDropTable
 						data={zoneList}
 						headers={["Name", "Image"]}
-						columns={["name", "imageURL"]}
+						columns={[
+							{ id: 1, name: "name", style: { width: "50vw" } },
+							{ id: 2, name: "imageURL", style: { width: "50vw" } },
+						]}
 						handleDragEnd={handleDragEnd}
 						isModelEditable={isModelEditable}
 						disableDnd={!isModelEditable}

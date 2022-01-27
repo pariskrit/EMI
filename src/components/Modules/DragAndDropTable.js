@@ -139,7 +139,11 @@ const DragAndDropTable = ({
 												ref={provider.innerRef}
 											>
 												{columns.map((col, i, arr) => (
-													<AT.DataCell key={col} className={classes.nameRow}>
+													<AT.DataCell
+														key={col.id}
+														className={classes.nameRow}
+														style={col?.style}
+													>
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
 																{i === 0 ? (
@@ -159,12 +163,10 @@ const DragAndDropTable = ({
 																				<DragIndicatorIcon />
 																			</span>
 																		)}
-																		<span style={{ marginTop: "2px" }}>
-																			{row[col]}
-																		</span>
+																		<span>{row[col.name]}</span>
 																	</span>
 																) : (
-																	row[col]
+																	row[col.name]
 																)}
 															</AT.TableBodyText>
 
@@ -241,7 +243,7 @@ DragAndDropTable.propTypes = {
 	handleEdit: PropTypes.func,
 	handleDragEnd: PropTypes.func.isRequired,
 	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
-	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+	columns: PropTypes.arrayOf(PropTypes.object).isRequired,
 	isModelEditable: PropTypes.bool,
 };
 
