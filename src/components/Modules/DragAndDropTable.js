@@ -159,7 +159,7 @@ const DragAndDropTable = ({
 																				<DragIndicatorIcon />
 																			</span>
 																		)}
-																		<span style={{ "margin-top": "2px" }}>
+																		<span style={{ marginTop: "2px" }}>
 																			{row[col]}
 																		</span>
 																	</div>
