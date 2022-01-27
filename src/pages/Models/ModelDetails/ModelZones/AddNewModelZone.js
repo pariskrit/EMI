@@ -104,8 +104,13 @@ function AddNewModelTask({
 	}, [data]);
 
 	//display error popup
-	const displayError = (response) =>
-		dispatch(showError(response?.data?.detail || "Something went wrong"));
+	const displayError = (response, responseMessage) => {
+		dispatch(
+			showError(
+				response?.data?.detail || responseMessage || "Something went wrong"
+			)
+		);
+	};
 
 	const closeOverride = () => {
 		// Clearing input state and errors
@@ -143,7 +148,7 @@ function AddNewModelTask({
 					setIsUpdating(false);
 					await fetchModelZoneList();
 				} else {
-					displayError(newData?.data);
+					displayError(newData, newData?.data?.detail);
 
 					setIsUpdating(false);
 				}
@@ -155,10 +160,9 @@ function AddNewModelTask({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
-			displayError(err?.response?.data);
+			displayError(err, err?.response?.detail);
 		}
 	};
 
