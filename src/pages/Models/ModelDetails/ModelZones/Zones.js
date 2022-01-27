@@ -38,7 +38,7 @@ function Zones({ modelId, state, dispatch }) {
 					response[0].data.map((d) => ({
 						...d,
 						imageURL: (
-							<div
+							<span
 								className="image-wrapper"
 								style={{ width: "100px", height: "70px" }}
 							>
@@ -51,7 +51,7 @@ function Zones({ modelId, state, dispatch }) {
 										objectFit: "contain",
 									}}
 								/>
-							</div>
+							</span>
 						),
 					}))
 				);
@@ -97,16 +97,24 @@ function Zones({ modelId, state, dispatch }) {
 
 	// handle dragging of zone
 	const setPositionForPayload = (e, listLength) => {
-		const { destination } = e;
+		const { destination, source } = e;
 		if (destination.index === listLength - 1) {
 			return originalZoneList[destination.index]?.pos + 1;
 		}
 		if (destination.index === 0) {
 			return originalZoneList[destination.index]?.pos - 1;
 		}
+
+		if (destination.index > source.index) {
+			return (
+				(+originalZoneList[destination.index]?.pos +
+					+originalZoneList[e.destination.index + 1]?.pos) /
+				2
+			);
+		}
 		return (
 			(+originalZoneList[destination.index]?.pos +
-				+originalZoneList[e.destination.index + 1]?.pos) /
+				+originalZoneList[e.destination.index - 1]?.pos) /
 			2
 		);
 	};
@@ -115,6 +123,8 @@ function Zones({ modelId, state, dispatch }) {
 		if (!e.destination) {
 			return;
 		}
+
+		if (e.destination.index === e.source.index) return;
 
 		const result = [...zoneList];
 		const [removed] = result.splice(e.source.index, 1);

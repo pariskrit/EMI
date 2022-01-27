@@ -143,7 +143,7 @@ const DragAndDropTable = ({
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
 																{i === 0 ? (
-																	<div
+																	<span
 																		style={{
 																			display: "flex",
 																			flexDirection: "space-around",
@@ -162,7 +162,7 @@ const DragAndDropTable = ({
 																		<span style={{ marginTop: "2px" }}>
 																			{row[col]}
 																		</span>
-																	</div>
+																	</span>
 																) : (
 																	row[col]
 																)}
@@ -241,7 +241,7 @@ DragAndDropTable.propTypes = {
 	handleEdit: PropTypes.func,
 	handleDragEnd: PropTypes.func.isRequired,
 	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
-	columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
 	isModelEditable: PropTypes.bool,
 };
 
