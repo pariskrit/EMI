@@ -146,7 +146,11 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				<DragAndDropTable
 					data={data}
 					headers={["Name", "Image", "HasZones"]}
-					columns={["name", "image", "hasZones"]}
+					columns={[
+						{ id: 1, name: "name", style: {} },
+						{ id: 2, name: "image", style: {} },
+						{ id: 3, name: "hasZones", style: {} },
+					]}
 					handleDragEnd={handleDragEnd}
 					menuData={[
 						{
