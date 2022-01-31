@@ -187,11 +187,11 @@ const DragAndDropTable = ({
 																				);
 																			}}
 																		>
-                                      {menuData.length > 0 && (
-                                        <AT.TableMenuButton>
-                                          <MenuIcon />
-                                        </AT.TableMenuButton>
-                                      )}
+																			{menuData.length > 0 && (
+																				<AT.TableMenuButton>
+																					<MenuIcon />
+																				</AT.TableMenuButton>
+																			)}
 
 																			<PopupMenu
 																				index={index}
