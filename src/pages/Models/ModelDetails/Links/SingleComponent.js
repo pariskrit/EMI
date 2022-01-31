@@ -48,7 +48,7 @@ const SingleComponent = (route) => {
 				onCLickedSaveChanges={openClickSaveChanges}
 				onClickPasteTask={openPasteTaskModel}
 				onClickShowChangeStatus={openChangeStatusModel}
-				onNavClick={}={(path) => route.history.push(path)}
+				onNavClick={(path) => route.history.push(path)}
 			/>
 			{
 				<route.component
