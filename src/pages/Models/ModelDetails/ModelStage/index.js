@@ -7,6 +7,7 @@ import { editModelStatus, getModelStatus } from "services/models/modelStages";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import TabelRowImage from "components/Elements/TabelRowImage";
 
 const modelState = { id: null, open: false };
 
@@ -26,7 +27,10 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				const mainData = res.data.map((response) => ({
 					...response,
 					image: (
-						<img src={response.imageURL} alt="" style={{ width: "20%" }} />
+						<TabelRowImage
+							imageURL={response.imageURL}
+							imageWrapperHeight="50px"
+						/>
 					),
 					hasZones: response.hasZones === true ? "Yes" : "",
 				}));
@@ -170,9 +174,9 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 					data={data}
 					headers={["Name", "Image", "HasZones"]}
 					columns={[
-						{ id: 1, name: "name", style: {} },
-						{ id: 2, name: "image", style: {} },
-						{ id: 3, name: "hasZones", style: {} },
+						{ id: 1, name: "name", style: { width: "40vw" } },
+						{ id: 2, name: "image", style: { width: "40vw" } },
+						{ id: 3, name: "hasZones", style: { width: "20vw" } },
 					]}
 					handleDragEnd={handleDragEnd}
 					menuData={[

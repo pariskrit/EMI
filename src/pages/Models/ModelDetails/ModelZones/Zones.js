@@ -11,6 +11,7 @@ import {
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { Apis } from "services/api";
 import AddNewModelZone from "./AddNewModelZone";
+import TabelRowImage from "components/Elements/TabelRowImage";
 
 function Zones({ modelId, state, dispatch }) {
 	// init states
@@ -41,43 +42,13 @@ function Zones({ modelId, state, dispatch }) {
 				setZonesList(
 					response[0].data.map((d) => ({
 						...d,
-						imageURL: (
-							<span
-								className="image-wrapper"
-								style={{ width: "100px", height: "70px" }}
-							>
-								<img
-									src={d?.imageURL}
-									alt="img"
-									style={{
-										width: "100px",
-										height: "100%",
-										objectFit: "contain",
-									}}
-								/>
-							</span>
-						),
+						imageURL: <TabelRowImage imageURL={d?.imageURL} />,
 					}))
 				);
 				setOriginalZoneList(
 					response[0].data.map((d) => ({
 						...d,
-						imageURL: (
-							<div
-								className="image-wrapper"
-								style={{ width: "100px", height: "70px" }}
-							>
-								<img
-									src={d?.imageURL}
-									alt="img"
-									style={{
-										width: "100px",
-										height: "100%",
-										objectFit: "contain",
-									}}
-								/>
-							</div>
-						),
+						imageURL: <TabelRowImage imageURL={d?.imageURL} />,
 					}))
 				);
 				setZone(response[0].data);
