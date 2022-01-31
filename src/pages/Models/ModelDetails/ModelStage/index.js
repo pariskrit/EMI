@@ -11,9 +11,13 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 const modelState = { id: null, open: false };
 
 const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
-	const [data, setData] = useState([]);
-	const [originalStageList, setOriginalStageList] = useState([]);
+	const {
+		customCaptions: { stage, stagePlural },
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
+	const [data, setData] = useState([]);
 	const [stageId, setStageId] = useState(null);
 	const [deleteModel, setDeleteModel] = useState(modelState);
 	const [loading, setLoading] = useState(false);
@@ -32,7 +36,6 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				}));
 				setLoading(false);
 				setData(mainData);
-				setOriginalStageList(mainData);
 			} else {
 				setLoading(false);
 				getError(res.data.detail);
@@ -80,34 +83,11 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 		}
 	};
 
-	// handle dragging of zone
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalStageList[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalStageList[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalStageList[destination.index]?.pos +
-					+originalStageList[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalStageList[destination.index]?.pos +
-				+originalStageList[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
-
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
 			return;
 		}
+		const originalStages = [...data];
 		const result = [...data];
 		const [removed] = result.splice(e.source.index, 1);
 		result.splice(e.destination.index, 0, removed);
@@ -118,14 +98,17 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalStageList.length),
+					value:
+						e.destination.index > e.source.index
+							? +originalStages[e.destination.index]?.pos + 1
+							: +originalStages[e.destination.index]?.pos - 1,
 				},
 			];
 			const response = await editModelStatus(e.draggableId, payloadBody);
 			if (response.status) {
-				setOriginalStageList(data);
+				return true;
 			} else {
-				setData(originalStageList);
+				setData(originalStages);
 			}
 		} catch (error) {
 			return;
@@ -148,10 +131,11 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				getError={getError}
 				modelVersionID={modelId}
 				handleAddEditComplete={handleComplete}
+				title={stage}
 			/>
 			<DeleteDialog
 				open={deleteModel.open}
-				entityName="Model Stage"
+				entityName={`Model ${stage}`}
 				deleteID={deleteModel.id}
 				deleteEndpoint={`/api/modelversionstages`}
 				handleRemoveData={handleRemoveData}
@@ -160,7 +144,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 			<div style={{ display: "flex", flexDirection: "column" }}>
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<DetailsPanel
-						header={"Model Stage"}
+						header={`Model ${stagePlural}`}
 						dataCount={data.length}
 						description="Stages managed to this asset model"
 					/>
@@ -170,9 +154,9 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 					data={data}
 					headers={["Name", "Image", "HasZones"]}
 					columns={[
-						{ id: 1, name: "name", style: {} },
-						{ id: 2, name: "image", style: {} },
-						{ id: 3, name: "hasZones", style: {} },
+						{ id: 1, name: "name", style: { width: "50vw" } },
+						{ id: 2, name: "image", style: { width: "50vw" } },
+						{ id: 3, name: "hasZones", style: { width: "50vw" } },
 					]}
 					handleDragEnd={handleDragEnd}
 					menuData={[

@@ -86,6 +86,7 @@ const AddEditModel = ({
 	getError,
 	modelVersionID,
 	handleAddEditComplete,
+	title,
 }) => {
 	const classes = useStyles();
 	const [input, setInput] = useState(initialInput);
@@ -212,7 +213,9 @@ const AddEditModel = ({
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					<ADD.HeaderText>{detailData ? "Edit" : "Add"} Stage</ADD.HeaderText>
+					<ADD.HeaderText>
+						{detailData ? "Edit" : "Add"} {title}
+					</ADD.HeaderText>
 				</DialogTitle>
 
 				<ADD.ButtonContainer>
