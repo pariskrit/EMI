@@ -12,6 +12,8 @@ const modelState = { id: null, open: false };
 
 const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const [data, setData] = useState([]);
+	const [originalStageList, setOriginalStageList] = useState([]);
+
 	const [stageId, setStageId] = useState(null);
 	const [deleteModel, setDeleteModel] = useState(modelState);
 	const [loading, setLoading] = useState(false);
@@ -30,6 +32,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				}));
 				setLoading(false);
 				setData(mainData);
+				setOriginalStageList(mainData);
 			} else {
 				setLoading(false);
 				getError(res.data.detail);
@@ -77,11 +80,34 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 		}
 	};
 
+	// handle dragging of zone
+	const setPositionForPayload = (e, listLength) => {
+		const { destination, source } = e;
+		if (destination.index === listLength - 1) {
+			return originalStageList[destination.index]?.pos + 1;
+		}
+		if (destination.index === 0) {
+			return originalStageList[destination.index]?.pos - 1;
+		}
+
+		if (destination.index > source.index) {
+			return (
+				(+originalStageList[destination.index]?.pos +
+					+originalStageList[e.destination.index + 1]?.pos) /
+				2
+			);
+		}
+		return (
+			(+originalStageList[destination.index]?.pos +
+				+originalStageList[e.destination.index - 1]?.pos) /
+			2
+		);
+	};
+
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
 			return;
 		}
-		const originalStages = [...data];
 		const result = [...data];
 		const [removed] = result.splice(e.source.index, 1);
 		result.splice(e.destination.index, 0, removed);
@@ -92,17 +118,14 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value:
-						e.destination.index > e.source.index
-							? +originalStages[e.destination.index]?.pos + 1
-							: +originalStages[e.destination.index]?.pos - 1,
+					value: setPositionForPayload(e, originalStageList.length),
 				},
 			];
 			const response = await editModelStatus(e.draggableId, payloadBody);
 			if (response.status) {
-				return true;
+				setOriginalStageList(data);
 			} else {
-				setData(originalStages);
+				setData(originalStageList);
 			}
 		} catch (error) {
 			return;
@@ -146,7 +169,11 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				<DragAndDropTable
 					data={data}
 					headers={["Name", "Image", "HasZones"]}
-					columns={["name", "image", "hasZones"]}
+					columns={[
+						{ id: 1, name: "name", style: {} },
+						{ id: 2, name: "image", style: {} },
+						{ id: 3, name: "hasZones", style: {} },
+					]}
 					handleDragEnd={handleDragEnd}
 					menuData={[
 						{
