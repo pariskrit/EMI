@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
 	Dialog,
 	DialogTitle,
-	Divider,
 	FormGroup,
 	FormControlLabel,
 	Typography,
@@ -43,10 +42,7 @@ const defaultErrorSchema = { name: null, image: null };
 const useStyles = makeStyles({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
-	dividerStyle: {
-		width: "100%",
-		backgroundColor: ColourConstants.divider,
-	},
+
 	mainImage: {
 		border: "1px solid",
 		padding: 12,
@@ -268,7 +264,6 @@ const AddEditModel = ({
 						style={{ borderColor: errors.image === null ? null : "red" }}
 					>
 						<ADD.NameLabel>Image</ADD.NameLabel>
-						<Divider className={classes.dividerStyle} />
 						<div className={classes.image}>
 							<ImageUpload
 								onDrop={(e) => {
@@ -294,7 +289,6 @@ const AddEditModel = ({
 						<p style={{ color: "red" }}>
 							{errors.image === null ? null : errors.image}
 						</p>
-						<Divider className={classes.dividerStyle} />
 					</div>
 				</ADD.InputContainer>
 			</ADD.DialogContent>
