@@ -155,9 +155,10 @@ const AddEditModel = ({
 					let imageRes = await uploadImage(detailData.id, formData);
 					handleAddEditComplete(imageRes);
 					setLoading(false);
+				} else {
+					handleAddEditComplete({ ...detailData, ...res.data });
+					setLoading(false);
 				}
-				handleAddEditComplete({ ...detailData, ...res.data });
-				setLoading(false);
 
 				closeOverride();
 			} else {
