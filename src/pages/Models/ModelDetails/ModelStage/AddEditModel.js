@@ -44,7 +44,6 @@ const useStyles = makeStyles({
 	paper: { minWidth: "90%" },
 
 	mainImage: {
-		border: "1px solid",
 		padding: 12,
 		borderRadius: 5,
 		width: "100%",
@@ -54,8 +53,9 @@ const useStyles = makeStyles({
 		display: "flex",
 		flexDirection: "column",
 		gap: 10,
+		justifyContent: "center",
 	},
-	image: { display: "flex", alignItems: "center", padding: 11, gap: 10 },
+	image: { display: "flex", alignItems: "center", gap: 10 },
 
 	deleteIcon: {
 		transform: "scale(0.7)",
