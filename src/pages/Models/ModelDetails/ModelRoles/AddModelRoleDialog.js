@@ -172,7 +172,7 @@ function AddNewModelRole({
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								Delete
+								Cancel
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">
