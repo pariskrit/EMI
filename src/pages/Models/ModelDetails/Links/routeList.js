@@ -1,6 +1,12 @@
+import {
+	modelAssest,
+	modelRoles,
+	modelZones,
+	modelStages,
+} from "helpers/routePaths";
 import ModelStage from "../ModelStage";
-import { modelAssest, modelZones, modelStages } from "helpers/routePaths";
 import Test from "pages/Test";
+import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
 
 const routeList = [
@@ -25,7 +31,7 @@ const routeList = [
 		showPasteTask: false,
 		showAdd: true,
 	},
-  {
+	{
 		id: 4,
 		name: "Stages",
 		path: modelStages,
@@ -35,6 +41,17 @@ const routeList = [
 		showChangeStatus: false,
 		showSaveChanges: false,
 		showPasteTask: false,
+	},
+	{
+		id: 5,
+		name: "Roles",
+		path: modelRoles,
+		component: Roles,
+		showSave: false,
+		showChangeStatus: false,
+		showSaveChanges: false,
+		showPasteTask: false,
+		showAdd: true,
 	},
 ];
 
