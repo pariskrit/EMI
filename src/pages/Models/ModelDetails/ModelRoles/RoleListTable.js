@@ -42,14 +42,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function RoleListTable({
-	data,
-	setData,
-	headers,
-	columns,
-	handleDeteleDialogOpen,
-	handleEditDialogOpen,
-}) {
+function RoleListTable({ data, setData, headers, columns, menuData }) {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -141,10 +134,11 @@ function RoleListTable({
 														);
 													}}
 												>
-													<AT.TableMenuButton>
-														<MenuIcon />
-													</AT.TableMenuButton>
-
+													{menuData.length > 0 && (
+														<AT.TableMenuButton>
+															<MenuIcon />
+														</AT.TableMenuButton>
+													)}
 													<PopupMenu
 														index={index}
 														selectedData={selectedData}
@@ -154,18 +148,7 @@ function RoleListTable({
 															setAnchorEl(null);
 															setSelectedData(null);
 														}}
-														menuData={[
-															{
-																name: "Edit",
-																handler: () => handleEditDialogOpen(row),
-																isDelete: false,
-															},
-															{
-																name: "Delete",
-																handler: () => handleDeteleDialogOpen(row.id),
-																isDelete: true,
-															},
-														]}
+														menuData={menuData}
 													/>
 												</AT.DotMenu>
 											) : null}
