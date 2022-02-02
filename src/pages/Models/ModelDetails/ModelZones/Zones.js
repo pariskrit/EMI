@@ -13,7 +13,7 @@ import { Apis } from "services/api";
 import AddNewModelZone from "./AddNewModelZone";
 import TabelRowImage from "components/Elements/TabelRowImage";
 
-function Zones({ modelId, state, dispatch }) {
+function Zones({ modelId, state, dispatch, access }) {
 	// init states
 	const [zoneList, setZonesList] = useState([]);
 	const [originalZoneList, setOriginalZoneList] = useState([]);
@@ -219,7 +219,14 @@ function Zones({ modelId, state, dispatch }) {
 								handler: showDeleteZonePopUp,
 								isDelete: true,
 							},
-						]}
+						].filter((x) => {
+							if (access === "F") return true;
+							if (access === "E") {
+								if (x.name === "Edit") return true;
+								else return false;
+							}
+							return false;
+						})}
 					/>
 				</>
 			)}

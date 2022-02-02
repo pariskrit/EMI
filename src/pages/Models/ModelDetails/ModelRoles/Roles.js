@@ -17,7 +17,7 @@ import { useDispatch } from "react-redux";
 
 const AC = ContentStyle();
 
-function Roles({ modelId, state, dispatch }) {
+function Roles({ modelId, state, dispatch, access }) {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -78,6 +78,7 @@ function Roles({ modelId, state, dispatch }) {
 
 	//open edit dialogue
 	const handleEditDialogOpen = (roleToEdit) => {
+		roleToEdit = filteredData?.find((x) => x.id === roleToEdit);
 		setRoleToEditData({
 			name: roleToEdit?.name,
 			roleID: roleToEdit?.mappedRoleID,
@@ -172,8 +173,25 @@ function Roles({ modelId, state, dispatch }) {
 						]}
 						data={filteredData}
 						setData={setFilteredData}
-						handleDeteleDialogOpen={handleDeteleDialogOpen}
-						handleEditDialogOpen={handleEditDialogOpen}
+						menuData={[
+							{
+								name: "Edit",
+								handler: handleEditDialogOpen,
+								isDelete: false,
+							},
+							{
+								name: "Delete",
+								handler: handleDeteleDialogOpen,
+								isDelete: true,
+							},
+						].filter((x) => {
+							if (access === "F") return true;
+							if (access === "E") {
+								if (x.name === "Edit") return true;
+								else return false;
+							}
+							return false;
+						})}
 					/>
 				</>
 			)}
