@@ -61,7 +61,11 @@ const BASE_API_PATH_MODEL_LIST = `${BASE_API_PATH}models`;
 const BASE_API_PATH_DUPLICATE_MODEL = `${BASE_API_PATH_MODEL_LIST}/duplicate`;
 const BASE_API_PATH_MODEL_VERSIONS = `${BASE_API_PATH}modelversions`;
 const BASE_API_PATH_MODEL_IMPORTS = `${BASE_API_PATH}ModelImports`;
+const BASE_API_PATH_MODEL_ROLES = `${BASE_API_PATH}ModelVersionRoles`;
 const BASE_API_PATH_MODEL_ZONES = `${BASE_API_PATH}ModelVersionZones`;
+
+// Model Stages
+const BASE_API_PATH_MODEL_STAGES = `${BASE_API_PATH}modelversionstages`;
 
 export const Apis = {
 	// register email
@@ -170,5 +174,9 @@ export const Apis = {
 	DuplicateModal: `${BASE_API_PATH_DUPLICATE_MODEL}`,
 	ModelVersions: `${BASE_API_PATH_MODEL_VERSIONS}`,
 	ModelImports: `${BASE_API_PATH_MODEL_IMPORTS}`,
+	ModelRoles: `${BASE_API_PATH_MODEL_ROLES}`,
 	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
+
+	// Model stages
+	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
 };

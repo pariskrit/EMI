@@ -11,6 +11,8 @@ const SingleComponent = (route) => {
 		},
 	} = route;
 
+	const access = route.access;
+
 	const navigation = ModelDetailNavigation(id);
 
 	const openAddModel = () => dispatch({ type: "TOGGLE_ADD", payload: true });
@@ -26,6 +28,9 @@ const SingleComponent = (route) => {
 	const openChangeStatusModel = () =>
 		dispatch({ type: "TOGGLE_CHANGE_STATUS", payload: true });
 
+	const addAccess = access === "F";
+	const showAdd = [route.showAdd, addAccess].every((x) => x === true);
+
 	return (
 		<div>
 			<ModelWrapper
@@ -33,7 +38,7 @@ const SingleComponent = (route) => {
 				current={route.name}
 				navigation={navigation}
 				applicationName="Stage"
-				showAdd={route.showAdd}
+				showAdd={showAdd}
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
 				showPasteTask={route.showPasteTask}
@@ -45,7 +50,14 @@ const SingleComponent = (route) => {
 				onClickShowChangeStatus={openChangeStatusModel}
 				onNavClick={(path) => route.history.push(path)}
 			/>
-			{<route.component state={state} dispatch={dispatch} modelId={id} />}
+			{
+				<route.component
+					state={state}
+					dispatch={dispatch}
+					modelId={id}
+					access={access}
+				/>
+			}
 		</div>
 	);
 };

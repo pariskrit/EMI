@@ -139,7 +139,11 @@ const DragAndDropTable = ({
 												ref={provider.innerRef}
 											>
 												{columns.map((col, i, arr) => (
-													<AT.DataCell key={col} className={classes.nameRow}>
+													<AT.DataCell
+														key={col.id}
+														className={classes.nameRow}
+														style={col?.style}
+													>
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
 																{i === 0 ? (
@@ -148,6 +152,7 @@ const DragAndDropTable = ({
 																			display: "flex",
 																			flexDirection: "space-around",
 																			alignItems: "center",
+																			gap: 10,
 																		}}
 																	>
 																		{!disableDnd && (
@@ -159,12 +164,10 @@ const DragAndDropTable = ({
 																				<DragIndicatorIcon />
 																			</span>
 																		)}
-																		<span style={{ marginTop: "2px" }}>
-																			{row[col]}
-																		</span>
+																		<span>{row[col.name]}</span>
 																	</span>
 																) : (
-																	row[col]
+																	row[col.name]
 																)}
 															</AT.TableBodyText>
 
@@ -184,9 +187,11 @@ const DragAndDropTable = ({
 																				);
 																			}}
 																		>
-																			<AT.TableMenuButton>
-																				<MenuIcon />
-																			</AT.TableMenuButton>
+																			{menuData.length > 0 && (
+																				<AT.TableMenuButton>
+																					<MenuIcon />
+																				</AT.TableMenuButton>
+																			)}
 
 																			<PopupMenu
 																				index={index}
@@ -224,12 +229,12 @@ DragAndDropTable.defaultProps = {
 	menuData: [
 		{
 			name: "Edit",
-			handler: () => {},
+			handler: (id) => console.log(id),
 			isDelete: false,
 		},
 		{
 			name: "Delete",
-			handler: () => {},
+			handler: (id) => console.log(id),
 			isDelete: true,
 		},
 	],
@@ -237,11 +242,11 @@ DragAndDropTable.defaultProps = {
 
 DragAndDropTable.propTypes = {
 	data: PropTypes.array.isRequired,
-	handleDelete: PropTypes.func,
-	handleEdit: PropTypes.func,
 	handleDragEnd: PropTypes.func.isRequired,
 	headers: PropTypes.arrayOf(PropTypes.string).isRequired,
-	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+	disableDnd: PropTypes.bool,
+	menuData: PropTypes.array,
+	columns: PropTypes.arrayOf(PropTypes.object).isRequired,
 	isModelEditable: PropTypes.bool,
 };
 
