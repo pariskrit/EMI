@@ -13,7 +13,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 
 const AC = ContentStyle();
 
-const ModelAsset = ({ state, dispatch, modelId, getError }) => {
+const ModelAsset = ({ state, dispatch, modelId, getError, access }) => {
 	const {
 		customCaptions: { asset, assetPlural },
 	} =
@@ -63,6 +63,16 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 		setSearchedData(d);
 	};
 
+	const handleAddComplete = (responseData) => {
+		const main = data;
+		console.log(responseData);
+		main.push({
+			...responseData,
+			status: responseData.isActive ? "Active" : "Inactive",
+		});
+		setData(main);
+	};
+
 	const handleClose = () => {
 		dispatch({ type: "TOGGLE_ADD", payload: false });
 	};
@@ -95,9 +105,9 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 				open={state.showAdd}
 				handleClose={handleClose}
 				modelId={modelId}
-				fetchModelAsset={fetchModelAsset}
 				getError={getError}
 				title={asset}
+				handleAddComplete={handleAddComplete}
 			/>
 			<DeleteDialog
 				open={deleteAsset.open}
@@ -149,7 +159,10 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 								handler: handleDelete,
 								isDelete: true,
 							},
-						]}
+						].filter((x) => {
+							if (access === "F") return true;
+							else return false;
+						})}
 					/>
 					{/* <TablePagination
 						title="Asset"
