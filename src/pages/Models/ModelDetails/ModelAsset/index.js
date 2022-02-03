@@ -13,7 +13,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 
 const AC = ContentStyle();
 
-const ModelAsset = ({ state, dispatch, modelId, getError }) => {
+const ModelAsset = ({ state, dispatch, modelId, getError, access }) => {
 	const {
 		customCaptions: { asset, assetPlural },
 	} =
@@ -159,7 +159,10 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 								handler: handleDelete,
 								isDelete: true,
 							},
-						]}
+						].filter((x) => {
+							if (access === "F") return true;
+							else return false;
+						})}
 					/>
 					{/* <TablePagination
 						title="Asset"
