@@ -8,7 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import ColourConstants from "../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 
 const media = "@media (max-width: 414px)";
 

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from "@material-ui/core/styles";
-import TableStyle from "../../../styles/application/TableStyle";
+import TableStyle from "styles/application/TableStyle";
 import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
 
 import { Facebook } from "react-spinners-css";
 
 // Icon Import
-import { ReactComponent as CaptionIcon } from "../../../assets/icons/custom-caption.svg";
+import { ReactComponent as CaptionIcon } from "assets/icons/custom-caption.svg";
 
 // Init styled components
 const AT = TableStyle();

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
-import ActionButtonStyle from "../../../styles/application/ActionButtonStyle";
-import API from "../../../helpers/api";
+import ActionButtonStyle from "styles/application/ActionButtonStyle";
+import API from "helpers/api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Button from "@material-ui/core/Button";
 import DuplicateApplicationDialog from "./DuplicateApplicationDialog";
-import ColourConstants from "../../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 
 const AAB = ActionButtonStyle();
 
@@ -230,7 +230,7 @@ const ActionButtons = ({
 	};
 
 	return (
-		<AAB.ButtonContainer className='actionButtonContainer'>
+		<AAB.ButtonContainer className="actionButtonContainer">
 			<DuplicateApplicationDialog
 				open={openDuplicateDialog}
 				closeHandler={handleDuplicateDialogClose}
@@ -300,7 +300,7 @@ const ActionButtons = ({
 				<Button
 					disableElevation
 					variant="contained"
-					className='actionSpinnerBtn'
+					className="actionSpinnerBtn"
 				>
 					<CircularProgress size={23} />
 				</Button>
@@ -309,7 +309,7 @@ const ActionButtons = ({
 					disableElevation
 					variant="contained"
 					onClick={handleSave}
-					className= 'actionButtonsBtn'
+					className="actionButtonsBtn"
 				>
 					Save
 				</AAB.GeneralButton>

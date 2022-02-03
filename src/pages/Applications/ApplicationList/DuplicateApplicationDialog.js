@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import DuplicateDialogStyle from "../../../styles/application/DuplicateDialogStyle";
+import DuplicateDialogStyle from "styles/application/DuplicateDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
-import './applicationtable.css'
+import "./applicationtable.css";
 
 // Init styled components
 const ADD = DuplicateDialogStyle();
@@ -30,7 +30,12 @@ const useStyles = makeStyles({
 	},
 });
 
-const DuplicateApplicationDialog = ({ id, open, closeHandler, duplicateHandler }) => {
+const DuplicateApplicationDialog = ({
+	id,
+	open,
+	closeHandler,
+	duplicateHandler,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -94,7 +99,11 @@ const DuplicateApplicationDialog = ({ id, open, closeHandler, duplicateHandler }
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText className='modalText'>Duplicate Application</ADD.HeaderText>}
+						{
+							<ADD.HeaderText className="modalText">
+								Duplicate Application
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">

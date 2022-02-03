@@ -7,7 +7,7 @@ import {
 	withStyles,
 	Typography,
 } from "@material-ui/core";
-import ColourConstants from "../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 
 const useStyles = makeStyles((theme) => ({
 	activeStatusSwitchText: {

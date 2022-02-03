@@ -182,9 +182,11 @@ const CommonApplicationTable = ({
 																);
 															}}
 														>
-															<AT.TableMenuButton>
-																<MenuIcon />
-															</AT.TableMenuButton>
+															{menuData && (
+																<AT.TableMenuButton>
+																	<MenuIcon />
+																</AT.TableMenuButton>
+															)}
 
 															<PopupMenu
 																index={index}
@@ -237,8 +239,6 @@ CommonApplicationTable.defaultProps = {
 	columns: ["name"],
 	headers: ["Name"],
 	defaultID: null,
-	onEdit: (id) => console.log("Edit", id),
-	onDelete: (id) => console.log("Delete", id),
 };
 
 CommonApplicationTable.propTypes = {
@@ -246,8 +246,6 @@ CommonApplicationTable.propTypes = {
 	defaultID: PropTypes.number,
 	columns: PropTypes.array,
 	headers: PropTypes.array,
-	onEdit: PropTypes.func,
-	onDelete: PropTypes.func,
 };
 
 export default CommonApplicationTable;

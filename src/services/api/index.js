@@ -63,6 +63,7 @@ const BASE_API_PATH_MODEL_VERSIONS = `${BASE_API_PATH}modelversions`;
 const BASE_API_PATH_MODEL_IMPORTS = `${BASE_API_PATH}ModelImports`;
 const BASE_API_PATH_MODEL_ROLES = `${BASE_API_PATH}ModelVersionRoles`;
 const BASE_API_PATH_MODEL_ZONES = `${BASE_API_PATH}ModelVersionZones`;
+const BASE_API_PATH_MODEL_ASSETS = `${BASE_API_PATH}ModelAssets`;
 
 // Model Stages
 const BASE_API_PATH_MODEL_STAGES = `${BASE_API_PATH}modelversionstages`;
@@ -174,9 +175,9 @@ export const Apis = {
 	DuplicateModal: `${BASE_API_PATH_DUPLICATE_MODEL}`,
 	ModelVersions: `${BASE_API_PATH_MODEL_VERSIONS}`,
 	ModelImports: `${BASE_API_PATH_MODEL_IMPORTS}`,
+
+	ModelAssets: `${BASE_API_PATH_MODEL_ASSETS}`,
 	ModelRoles: `${BASE_API_PATH_MODEL_ROLES}`,
 	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
-
-	// Model stages
 	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
 };

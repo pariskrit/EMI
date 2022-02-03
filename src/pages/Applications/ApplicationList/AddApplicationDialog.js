@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import AddDialogStyle from "../../../styles/application/AddDialogStyle";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
 const ADD = AddDialogStyle();

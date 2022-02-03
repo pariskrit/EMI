@@ -7,6 +7,7 @@ import { editModelStatus, getModelStatus } from "services/models/modelStages";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import withMount from "components/HOC/withMount";
 import TabelRowImage from "components/Elements/TabelRowImage";
 
 const modelState = { id: null, open: false };
@@ -217,4 +218,4 @@ const mapDispatchToProps = (dispatch) => ({
 	getError: (msg) => dispatch(showError(msg)),
 });
 
-export default connect(null, mapDispatchToProps)(ModelStage);
+export default connect(null, mapDispatchToProps)(withMount(ModelStage));

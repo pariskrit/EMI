@@ -1,5 +1,5 @@
 import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import Typography from "@material-ui/core/Typography";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";

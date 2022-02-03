@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import ColourConstants from "../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import dayjs from "dayjs";
 
 const media = "@media (max-width: 414px)";

@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -56,30 +56,31 @@ const PopupMenu = ({
 			<ClickAwayListener onClickAway={clickAwayHandler}>
 				<PopperPaper>
 					<List component="nav" aria-label="menu list">
-						{menuData.map((item, i) => (
-							<React.Fragment key={i}>
-								<ListItem
-									button
-									onClick={() => {
-										item.handler(id);
-									}}
-								>
-									<ListItemText
-										primary={
-											item.isDelete ? (
-												<DeleteLink>{item.name}</DeleteLink>
-											) : (
-												<LinkText>{item.name}</LinkText>
-											)
-										}
-									/>
-								</ListItem>
+						{menuData &&
+							menuData.map((item, i) => (
+								<React.Fragment key={i}>
+									<ListItem
+										button
+										onClick={() => {
+											item.handler(id);
+										}}
+									>
+										<ListItemText
+											primary={
+												item.isDelete ? (
+													<DeleteLink>{item.name}</DeleteLink>
+												) : (
+													<LinkText>{item.name}</LinkText>
+												)
+											}
+										/>
+									</ListItem>
 
-								{menuData.length === i + 1 ? null : (
-									<Divider variant="middle" />
-								)}
-							</React.Fragment>
-						))}
+									{menuData.length === i + 1 ? null : (
+										<Divider variant="middle" />
+									)}
+								</React.Fragment>
+							))}
 					</List>
 				</PopperPaper>
 			</ClickAwayListener>

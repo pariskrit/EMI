@@ -12,7 +12,7 @@ const useStyles = makeStyles({
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "center",
-		background: "#F9F9FC",
+		background: "#d2d2d9",
 		padding: "0 10px",
 		fontFamily: "Roboto Condensed",
 		fontSize: "14px",
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 const TablePagination = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
-	const { page, rowsPerPage, onPageChange, count } = props;
+	const { page, rowsPerPage, onPageChange, count, title } = props;
 	const handleFirstPageButtonClick = () => {
 		onPageChange(1);
 	};
@@ -41,7 +41,7 @@ const TablePagination = (props) => {
 	return (
 		<div className={classes.main}>
 			<div>
-				Asset{" "}
+				{title}{" "}
 				<b>
 					{page}-{rowsPerPage}
 				</b>{" "}
@@ -94,12 +94,14 @@ TablePagination.defaultProps = {
 	rowsPerPage: 12,
 	onPageChange: () => {},
 	count: 100,
+	title: "Default",
 };
 
 TablePagination.propTypes = {
 	page: PropTypes.number,
 	rowsPerPage: PropTypes.number,
 	onPageChange: PropTypes.func,
+	title: PropTypes.string,
 };
 
 export default TablePagination;

@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import ColourEditDialog from "./ColourEditDialog";
-import ColourConstants from "../../../helpers/colourConstants";
+import ColourConstants from "helpers/colourConstants";
 import AccordionBox from "components/Layouts/AccordionBox";
 
 const useStyles = makeStyles((theme) => ({

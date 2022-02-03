@@ -1,3 +1,4 @@
+import ModelAsset from "../ModelAsset";
 import {
 	modelAssest,
 	modelRoles,
@@ -14,11 +15,12 @@ const routeList = [
 		id: 3,
 		name: "Asset",
 		path: modelAssest,
-		component: Test,
+		component: ModelAsset,
 		showSave: false,
 		showChangeStatus: false,
 		showSaveChanges: false,
 		showPasteTask: false,
+		showAdd: true,
 	},
 	{
 		id: 2,
