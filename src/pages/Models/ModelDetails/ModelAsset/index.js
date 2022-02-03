@@ -8,7 +8,7 @@ import { getModelAsset } from "services/models/modelDetails/modelAsset";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import AddModel from "./AddModel";
-import TablePagination from "components/Elements/TablePagination";
+// import TablePagination from "components/Elements/TablePagination";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 const AC = ContentStyle();
@@ -24,7 +24,7 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 	const [searchedData, setSearchedData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [page, setPage] = useState({ pageNumber: 1, rowPerPage: 5 });
+	// const [page, setPage] = useState({ pageNumber: 1, rowPerPage: 5 });
 	const [deleteAsset, setDelete] = useState({ open: false, id: null });
 
 	const fetchModelAsset = async () => {
@@ -78,12 +78,12 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 	};
 
 	const mainData = searchQuery === "" ? data : searchedData;
-	const { pageNumber, rowPerPage } = page;
+	// const { pageNumber, rowPerPage } = page;
 
-	const paginatedData = mainData.slice(
-		(pageNumber - 1) * rowPerPage,
-		rowPerPage * pageNumber
-	);
+	// const paginatedData = mainData.slice(
+	// 	(pageNumber - 1) * rowPerPage,
+	// 	rowPerPage * pageNumber
+	// );
 
 	if (loading) {
 		return <CircularProgress />;
@@ -132,7 +132,7 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 				</div>
 				<div>
 					<CommonApplicationTable
-						data={paginatedData}
+						data={mainData}
 						setData={setData}
 						searchedData={searchedData}
 						searchQuery={searchQuery}
@@ -151,7 +151,7 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 							},
 						]}
 					/>
-					<TablePagination
+					{/* <TablePagination
 						title="Asset"
 						page={page.pageNumber}
 						rowsPerPage={page.rowPerPage}
@@ -159,7 +159,7 @@ const ModelAsset = ({ state, dispatch, modelId, getError }) => {
 							setPage((th) => ({ ...th, pageNumber: p }));
 						}}
 						count={data.length}
-					/>
+					/> */}
 				</div>
 			</div>
 		</>
