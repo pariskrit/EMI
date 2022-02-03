@@ -54,6 +54,7 @@ const AddModel = ({
 		else {
 			setAsset([]);
 			setPage({ pageNo: 1, pageSize: 10 });
+			setInput({ asset: {}, status: false });
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
