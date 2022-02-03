@@ -21,9 +21,9 @@ const AddModel = ({
 	open,
 	handleClose,
 	modelId,
-	fetchModelAsset,
 	getError,
 	title,
+	handleAddComplete,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [assets, setAsset] = useState([]);
@@ -51,11 +51,7 @@ const AddModel = ({
 
 	useEffect(() => {
 		if (open) fetchAssets();
-		else {
-			setAsset([]);
-			setPage({ pageNo: 1, pageSize: 10 });
-			setInput({ asset: {}, status: false });
-		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 
@@ -73,7 +69,13 @@ const AddModel = ({
 			let result = await postModelAsset(data);
 			if (result.status) {
 				setLoading(false);
-				fetchModelAsset();
+				const assetData = assets.find((x) => x.id === asset.id);
+				handleAddComplete({
+					description: assetData.description,
+					id: result.data,
+					isActive: status,
+					name: assetData.name,
+				});
 				closeOverride();
 			} else {
 				setLoading(false);
@@ -89,6 +91,9 @@ const AddModel = ({
 
 	const closeOverride = () => {
 		handleClose();
+		setAsset([]);
+		setPage({ pageNo: 1, pageSize: 10 });
+		setInput({ asset: {}, status: false });
 	};
 
 	const pageChange = (p, prevData) => {
