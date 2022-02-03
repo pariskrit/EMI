@@ -182,7 +182,7 @@ const CommonApplicationTable = ({
 																);
 															}}
 														>
-															{menuData && (
+															{menuData.length > 0 && (
 																<AT.TableMenuButton>
 																	<MenuIcon />
 																</AT.TableMenuButton>
