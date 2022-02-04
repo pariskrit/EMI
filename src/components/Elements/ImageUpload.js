@@ -6,8 +6,17 @@ import Link from "@material-ui/core/Link";
 import { ReactComponent as UploadIcon } from "assets/icons/uploadIcon.svg";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
+import { CircularProgress, Divider } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
+	assetParentContainer: {
+		border: "none",
+		width: "100%",
+	},
+	dividerStyle: {
+		width: "100%",
+		backgroundColor: ColourConstants.divider,
+	},
 	dragContainer: {
 		padding: 25,
 		borderStyle: "dashed",
@@ -15,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
 		borderWidth: 2,
 		borderRadius: "11px",
 		width: "100%",
+	},
+	imageAndLink: {
+		display: "flex",
+		alignItems: "center",
+		flex: "1",
 	},
 	dragTextContainer: {
 		display: "flex",
@@ -44,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 		width: "120px",
 		height: "120px",
 		objectFit: "contain",
+		marginRight: "12px",
 	},
 	imageContainerMain: {
 		display: "flex",
@@ -59,24 +74,56 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ImageUpload = ({ onDrop, imageUrl, imageName, removeImage }) => {
+const ImageUpload = ({
+	onDrop,
+	imageUrl,
+	imageName,
+	removeImage,
+	isUploading = false,
+	isReadOnly = false,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+	if (isUploading) {
+		return (
+			<div className={classes.dragContainer}>
+				<div className={classes.spinnerContainer}>
+					<CircularProgress />
+				</div>
+			</div>
+		);
+	}
+
 	return (
-		<div {...getRootProps()} className={classes.dragContainer}>
+		<div
+			{...getRootProps()}
+			className={
+				imageUrl ? classes.assetParentContainer : classes.dragContainer
+			}
+		>
+			{imageUrl && <Divider className={classes.dividerStyle} />}
+
 			{imageUrl ? (
 				<div className={classes.imageContainerMain}>
-					<img
-						src={imageUrl}
-						alt="url of file"
-						className={classes.imageContainer}
-					/>
-					<Link>{imageName}</Link>
+					<div className={classes.imageAndLink}>
+						<img
+							src={imageUrl}
+							alt="url of file"
+							className={classes.imageContainer}
+						/>
+						<Link className="new-link">{imageName}</Link>
+					</div>
+
 					<div style={{ width: "50px", border: "none" }}>
-						<DeleteIcon className={classes.deleteIcon} onClick={removeImage} />
+						{isReadOnly ? null : (
+							<DeleteIcon
+								className={classes.deleteIcon}
+								onClick={removeImage}
+							/>
+						)}
 					</div>
 				</div>
 			) : (
@@ -100,6 +147,7 @@ const ImageUpload = ({ onDrop, imageUrl, imageName, removeImage }) => {
 					)}
 				</>
 			)}
+			{imageUrl && <Divider className={classes.dividerStyle} />}
 		</div>
 	);
 };

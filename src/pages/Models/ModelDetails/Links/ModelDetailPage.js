@@ -1,25 +1,27 @@
 import React from "react";
 import ModelDetailContext from "contexts/ModelDetailContext";
 import ModelDetails from "..";
-import AccessRoute from "components/HOC/AccessRoute";
 import routeList from "./routeList";
 import SingleComponent from "./SingleComponent";
-import access from "helpers/access";
 import { modelDetailsPath } from "helpers/routePaths";
+import { Route, Switch } from "react-router-dom";
 
-const ModelDetailPage = () => {
+const ModelDetailPage = ({ access }) => {
 	return (
 		<ModelDetailContext>
 			<ModelDetails>
-				{routeList.map((route) => (
-					<AccessRoute
-						key={route.id}
-						component={(props) => <SingleComponent {...route} {...props} />}
-						access={access.modelAccess}
-						exact
-						path={modelDetailsPath + route.path}
-					/>
-				))}
+				<Switch>
+					{routeList.map((route) => (
+						<Route
+							key={route.id}
+							render={(props) => (
+								<SingleComponent {...route} {...props} access={access} />
+							)}
+							exact
+							path={modelDetailsPath + route.path}
+						/>
+					))}
+				</Switch>
 			</ModelDetails>
 		</ModelDetailContext>
 	);

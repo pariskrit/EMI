@@ -309,6 +309,12 @@
 	overflow-wrap: break-word;
 }
 
+.new-link {
+	text-decoration: underline !important;
+	color: #307ad7 !important;
+	cursor: pointer;
+}
+
 .link-color {
 	color: #2b89ea;
 }

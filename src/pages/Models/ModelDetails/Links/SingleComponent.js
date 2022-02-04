@@ -3,15 +3,13 @@ import { ModelContext } from "contexts/ModelDetailContext";
 import ModelWrapper from "../commonModelHeader";
 import ModelDetailNavigation from "constants/navigation/modelDetailNavigation";
 
-const SingleComponent = (route) => {
+const SingleComponent = ({ access, ...route }) => {
 	const [state, dispatch] = React.useContext(ModelContext);
 	const {
 		match: {
 			params: { id },
 		},
 	} = route;
-
-	const access = route.access;
 
 	const navigation = ModelDetailNavigation(id);
 
@@ -42,7 +40,9 @@ const SingleComponent = (route) => {
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
 				showPasteTask={route.showPasteTask}
-				showChangeStatus={route.showChangeStatus}
+				showChangeStatus={
+					access === "E" || access === "F" ? route.showChangeStatus : false
+				}
 				showSaveChanges={route.showSaveChanges}
 				onClickSave={openSaveModel}
 				onCLickedSaveChanges={openClickSaveChanges}

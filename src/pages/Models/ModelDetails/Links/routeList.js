@@ -1,3 +1,4 @@
+import ModelDetailContent from "../ModelDetail/ModelDetailContent";
 import ModelAsset from "../ModelAsset";
 import {
 	modelAssest,
@@ -6,11 +7,20 @@ import {
 	modelStages,
 } from "helpers/routePaths";
 import ModelStage from "../ModelStage";
-import Test from "pages/Test";
 import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
 
 const routeList = [
+	{
+		id: 1,
+		name: "Details",
+		path: "",
+		component: ModelDetailContent,
+		showSave: false,
+		showChangeStatus: true,
+		showSaveChanges: false,
+		showPasteTask: false,
+	},
 	{
 		id: 3,
 		name: "Asset",

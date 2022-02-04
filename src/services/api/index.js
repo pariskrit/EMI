@@ -68,6 +68,11 @@ const BASE_API_PATH_MODEL_ASSETS = `${BASE_API_PATH}ModelAssets`;
 // Model Stages
 const BASE_API_PATH_MODEL_STAGES = `${BASE_API_PATH}modelversionstages`;
 
+//ModelDetails
+const BASE_API_PATH_MODEL_DEPARTMENTS = `${BASE_API_PATH}ModelDepartments`;
+const BASE_API_PATH_MODEL_NOTES = `${BASE_API_PATH}ModelNotes`;
+const BASE_API_PATH_MODEL_DOCUMENTS = `${BASE_API_PATH}ModelDocuments`;
+
 export const Apis = {
 	// register email
 	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
@@ -175,7 +180,9 @@ export const Apis = {
 	DuplicateModal: `${BASE_API_PATH_DUPLICATE_MODEL}`,
 	ModelVersions: `${BASE_API_PATH_MODEL_VERSIONS}`,
 	ModelImports: `${BASE_API_PATH_MODEL_IMPORTS}`,
-
+	ModelDepartments: `${BASE_API_PATH_MODEL_DEPARTMENTS}`,
+	ModelNotes: `${BASE_API_PATH_MODEL_NOTES}`,
+	ModelDocuments: `${BASE_API_PATH_MODEL_DOCUMENTS}`,
 	ModelAssets: `${BASE_API_PATH_MODEL_ASSETS}`,
 	ModelRoles: `${BASE_API_PATH_MODEL_ROLES}`,
 	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
