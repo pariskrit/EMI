@@ -22,6 +22,7 @@ function DropdownContainer({
 	onChange,
 	selectedInputData,
 	className = null,
+	isReadOnly,
 }) {
 	const classes = useStyles();
 
@@ -36,6 +37,7 @@ function DropdownContainer({
 				selectedValue={selectedInputData}
 				onChange={(value) => onChange(name, value)}
 				width="100%"
+				isReadOnly={isReadOnly}
 			/>
 		</div>
 	);

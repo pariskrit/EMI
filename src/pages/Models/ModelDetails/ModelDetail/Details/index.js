@@ -122,6 +122,7 @@ function Details({ classes, data, customCaptions, isReadOnly }) {
 							options={input.value}
 							onChange={onDropdownInputChange}
 							selectedInputData={selectedDropdownInput[input.name]}
+							isReadOnly={isReadOnly}
 						/>
 					) : (
 						<TextFieldContainer
