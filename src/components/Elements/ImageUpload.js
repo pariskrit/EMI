@@ -128,7 +128,7 @@ const ImageUpload = ({
 				</div>
 			) : (
 				<>
-					<input {...getInputProps()} />
+					{isReadOnly ? null : <input {...getInputProps()} />}
 					{isDragActive ? (
 						<div className={classes.dragTextContainer}>
 							<Typography className={classes.dropText}>
