@@ -48,7 +48,9 @@ function Details({ classes, data, customCaptions, isReadOnly }) {
 		]);
 
 		if (!response.status) {
-			dispatch(showError("Error: Could not update input"));
+			dispatch(
+				showError(response.data.detail || "Error: Could not update input")
+			);
 		}
 
 		setApiStatus({ ...apiStatus, [inputName]: "idle" });

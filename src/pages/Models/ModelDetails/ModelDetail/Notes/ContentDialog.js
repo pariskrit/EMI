@@ -18,6 +18,9 @@ const useStyles = makeStyles({
 		display: "flex",
 		flexDirection: "column",
 	},
+	inputText: {
+		color: "#000000de",
+	},
 });
 
 function ContentDialog({ open, onClose, note }) {
@@ -36,7 +39,17 @@ function ContentDialog({ open, onClose, note }) {
 					</DialogTitle>
 				</ADD.ActionContainer>
 				<DialogContent className={classes.dialogContent}>
-					<TextField label="Note" value={note} fullWidth multiline />
+					<TextField
+						value={note}
+						variant="outlined"
+						fullWidth
+						InputProps={{
+							classes: {
+								input: classes.inputText,
+							},
+						}}
+						disabled
+					/>
 				</DialogContent>
 			</div>
 		</Dialog>
