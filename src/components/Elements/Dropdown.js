@@ -17,6 +17,7 @@ function Dropdown(props) {
 		isError,
 		required,
 		disabled = false,
+		isReadOnly = false,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -75,7 +76,7 @@ function Dropdown(props) {
 		>
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
-				onClick={(event) => handleDrpdwnClick(event)}
+				onClick={isReadOnly ? null : (event) => handleDrpdwnClick(event)}
 			>
 				{label.length > 0 && (
 					<Typography className="label">

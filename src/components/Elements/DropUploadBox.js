@@ -48,6 +48,7 @@ const DropUpload = ({
 	uploadReturn,
 	apiPath,
 	isImageUploaded = false,
+	isDocumentUploaded = false,
 	filesUploading,
 	setFilesUploading,
 	getError,
@@ -83,6 +84,17 @@ const DropUpload = ({
 				if (!isFileSizeLessThan1Mb) {
 					setFilesUploading(false);
 					getError("Please upload image of size less than 1mb!");
+
+					return;
+				}
+			}
+
+			if (isDocumentUploaded) {
+				const isFileSizeLessThan6Mb = acceptedFiles[0].size < 6000000;
+
+				if (!isFileSizeLessThan6Mb) {
+					setFilesUploading(false);
+					getError("Please upload image of size less than 6mb!");
 
 					return;
 				}

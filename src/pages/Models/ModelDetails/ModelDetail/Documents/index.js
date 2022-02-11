@@ -108,6 +108,8 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 								apiPath={`${Apis.Models}/${modelId}/uploadDocument`}
 								filesUploading={filesUploading}
 								setFilesUploading={setFilesUploading}
+								isDocumentUploaded
+								getError={(message) => dispatch(showError(message))}
 							/>
 						</div>
 					)}
