@@ -48,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "column",
 		width: "100%",
 	},
+	documentError: {
+		color: "#E21313",
+		margin: "8px 0",
+	},
 }));
 
 function ModelDetailContent({ modelId, state, dispatch, access }) {

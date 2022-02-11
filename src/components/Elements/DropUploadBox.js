@@ -94,7 +94,7 @@ const DropUpload = ({
 
 				if (!isFileSizeLessThan6Mb) {
 					setFilesUploading(false);
-					getError("Please upload image of size less than 6mb!");
+					getError("Please upload document of size less than 6mb!");
 
 					return;
 				}
