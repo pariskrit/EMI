@@ -28,12 +28,14 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 		id: null,
 	});
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [documentError, setDocumentError] = useState("");
 	const dispatch = useDispatch();
 
 	const onDocumentUpload = async (key, url) => {
 		const response = await uploadDocument({ modelId, documentKey: key });
 		if (response.status) {
 			const documents = await getModelDocuments(modelId);
+			setDocumentError("");
 			setListOfDocuments(documents.data);
 		} else {
 			dispatch(showError("Could not upload document"));
@@ -109,8 +111,9 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 								filesUploading={filesUploading}
 								setFilesUploading={setFilesUploading}
 								isDocumentUploaded
-								getError={(message) => dispatch(showError(message))}
+								getError={setDocumentError}
 							/>
+							<p className={classes.documentError}>{documentError}</p>
 						</div>
 					)}
 				</div>
