@@ -5,10 +5,12 @@ import {
 	modelRoles,
 	modelZones,
 	modelStages,
+	modelTask,
 } from "helpers/routePaths";
 import ModelStage from "../ModelStage";
 import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
+import Task from "../ModelTasks/Task";
 
 const routeList = [
 	{
@@ -64,6 +66,18 @@ const routeList = [
 		showSaveChanges: false,
 		showPasteTask: false,
 		showAdd: true,
+	},
+	{
+		id: 8,
+		name: "Tasks",
+		path: modelTask,
+		component: Task,
+		showSave: false,
+		showChangeStatus: false,
+		showSaveChanges: false,
+		showPasteTask: true,
+		showAdd: true,
+		isPasteTaskDisabled: true,
 	},
 ];
 

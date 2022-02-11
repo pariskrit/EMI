@@ -1,7 +1,7 @@
 import Typography from "@material-ui/core/Typography";
 import CheckIcon from "@material-ui/icons/Check";
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
@@ -119,12 +119,29 @@ function DyanamicDropdown(props) {
 		setFilteredList(dataSource);
 	}, [dataSource]);
 
+	const handleOutsideClick = useCallback(
+		(event) => {
+			let specifiedElement = document.getElementsByClassName(
+				"dropdown-expand active"
+			)[0];
+			let dropbox = document.getElementsByClassName("dropbox active")[0];
+			let isClickInside =
+				specifiedElement?.contains(event.target) ||
+				dropbox?.contains(event.target);
+			if (!isClickInside) {
+				setFilteredList(dataSource);
+				setDropActive(false);
+			}
+		},
+		[dataSource]
+	);
+
 	useEffect(() => {
 		window.addEventListener("click", handleOutsideClick);
 		return () => {
 			window.removeEventListener("click", handleOutsideClick);
 		};
-	}, []);
+	}, [handleOutsideClick]);
 
 	// scroll event of dropdown when mapped to DOM
 	useEffect(() => {
@@ -188,19 +205,6 @@ function DyanamicDropdown(props) {
 		setCurrentTableSort([field, newMethod]);
 	};
 
-	const handleOutsideClick = (event) => {
-		let specifiedElement = document.getElementsByClassName(
-			"dropdown-expand active"
-		)[0];
-		let dropbox = document.getElementsByClassName("dropbox active")[0];
-		let isClickInside =
-			specifiedElement?.contains(event.target) ||
-			dropbox?.contains(event.target);
-		if (!isClickInside) {
-			setDropActive(false);
-		}
-	};
-
 	const handleDrpdwnClick = (event) => {
 		setDropActive(true);
 		setDropUpward(
@@ -224,7 +228,6 @@ function DyanamicDropdown(props) {
 		onClear();
 		e.stopPropagation();
 	};
-
 	return (
 		<div
 			className="dropdown"
@@ -264,6 +267,8 @@ function DyanamicDropdown(props) {
 						{icon && icon}
 						{hasCheckBoxList
 							? selectedValue
+								? selectedValue
+								: placeholder
 							: selectedValue && selectedValue[selectdValueToshow]
 							? selectedValue[selectdValueToshow]
 							: placeholder}
@@ -343,9 +348,9 @@ function DyanamicDropdown(props) {
 								<>
 									{hasCheckBoxList
 										? filteredList?.map((list) => (
-												<div className="checklist-item flex">
+												<div className="checklist-item flex" key={list?.id}>
 													{columns.map((col) => (
-														<ADD.CheckboxLabel>
+														<ADD.CheckboxLabel key={col?.id}>
 															<EMICheckbox
 																state={
 																	rolesChecklist.filter((r) => r.id === list.id)
@@ -452,7 +457,7 @@ DyanamicDropdown.defaultProps = {
 DyanamicDropdown.propTypes = {
 	width: PropTypes.string,
 	dataSource: PropTypes.array,
-	selectedValue: PropTypes.object,
+	selectedValue: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 	onChange: PropTypes.func,
 	disabled: PropTypes.bool,
 	placeholder: PropTypes.string,

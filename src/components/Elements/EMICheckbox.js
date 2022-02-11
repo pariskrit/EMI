@@ -9,6 +9,7 @@ import CheckboxOn from "assets/icons/checkbox-on-with-tick.svg";
 const useStyles = makeStyles((theme) => ({
 	emiCheckbox: {
 		transform: "scale(0.9)",
+		padding: "9px 9px 9px 0",
 	},
 }));
 

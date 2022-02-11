@@ -128,7 +128,7 @@ function Dropdown(props) {
 								<div
 									className={
 										"list-item flex " +
-										(list.value === selectedValue.value ? "selected" : "")
+										(list.value === selectedValue?.value ? "selected" : "")
 									}
 									key={list.value}
 									onClick={() => {

@@ -49,6 +49,7 @@ const SingleComponent = ({ access, ...route }) => {
 				onClickPasteTask={openPasteTaskModel}
 				onClickShowChangeStatus={openChangeStatusModel}
 				onNavClick={(path) => route.history.push(path)}
+				isPasteTaskDisabled={state.isPasteTaskDisabled}
 			/>
 			{
 				<route.component
