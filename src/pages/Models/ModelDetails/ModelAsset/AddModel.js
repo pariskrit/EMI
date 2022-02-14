@@ -29,10 +29,10 @@ const AddModel = ({
 	const [assets, setAsset] = useState([]);
 	const [input, setInput] = useState({ asset: {}, status: false });
 	const [page, setPage] = useState({ pageNo: 1, pageSize: 10 });
+	const [count, setCount] = useState(0);
+	const { position, siteID } = JSON.parse(sessionStorage.getItem("me"));
 
 	const fetchAssets = async (pNo = 1, prevData = []) => {
-		const { position } = JSON.parse(sessionStorage.getItem("me"));
-		setLoading(true);
 		let pageSearchField =
 			pNo !== null ? `&&pageNumber=${pNo}&&pageSize=${page.pageSize}` : "";
 
@@ -42,16 +42,32 @@ const AddModel = ({
 			);
 			if (result.status) {
 				setAsset([...prevData, ...result.data]);
-				setLoading(false);
 			}
 		} catch (e) {
 			return;
 		}
 	};
 
-	useEffect(() => {
-		if (open) fetchAssets();
+	const fetchAssetCount = async () => {
+		try {
+			let result = await instance.get(`/api/SiteAssets/Count?siteId=${siteID}`);
+			if (result.status) {
+				console.log(result);
+				setCount(result.data);
+			}
+		} catch (e) {
+			return;
+		}
+	};
 
+	const fetchAssetData = async () => {
+		setLoading(true);
+		await Promise.all([fetchAssets(), fetchAssetCount()]);
+		setLoading(false);
+	};
+
+	useEffect(() => {
+		if (open) fetchAssetData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 
@@ -152,6 +168,7 @@ const AddModel = ({
 							{ name: "description", id: 2 },
 						]}
 						selectdValueToshow="name"
+						count={count}
 					/>
 
 					<FormGroup>
