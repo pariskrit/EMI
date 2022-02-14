@@ -53,24 +53,22 @@ const ModelTaskRow = ({
 	const history = useHistory();
 
 	const onHandleTableExpand = async (tg, rowId) => {
-		if (access === "F" || access === "E") {
-			setToggle(tg);
-			if (tg) {
-				setLoading(true);
-				try {
-					const response = await getSingleModelTask(rowId);
-					if (response.status) {
-						setSingleTask(response.data[0]);
-					} else {
-						dispatch(
-							showError(response?.data?.title || "something went wrong")
-						);
-					}
-				} catch (error) {
-					dispatch(showError(error?.response?.data || "something went wrong"));
-				} finally {
-					setLoading(false);
+		setToggle(tg);
+
+		// call single task detail api only if expand is true
+		if (tg) {
+			setLoading(true);
+			try {
+				const response = await getSingleModelTask(rowId);
+				if (response.status) {
+					setSingleTask(response.data[0]);
+				} else {
+					dispatch(showError(response?.data?.title || "something went wrong"));
 				}
+			} catch (error) {
+				dispatch(showError(error?.response?.data || "something went wrong"));
+			} finally {
+				setLoading(false);
 			}
 		}
 	};

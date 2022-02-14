@@ -56,6 +56,7 @@ function Task({ modelId, state, dispatch, access }) {
 	const [perPage] = useState(10);
 	const [pageNumber, setPageNumber] = useState(1);
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
+	const [isSearching, setIsSearching] = useState(false);
 
 	const [enablePasteTask, setPasteTask] = useState(false);
 
@@ -196,9 +197,11 @@ function Task({ modelId, state, dispatch, access }) {
 	]);
 
 	const handleSearch = useCallback(
-		debounce((value) => {
-			if (value) fetchData(modelId, false, value, 1, 30);
-			else fetchData(modelId, false, "", pageNumber, perPage);
+		debounce(async (value) => {
+			setIsSearching(true);
+			if (value) await fetchData(modelId, false, value, 1, 30);
+			else await fetchData(modelId, false, "", pageNumber, perPage);
+			setIsSearching(false);
 		}, 500),
 		[]
 	);
@@ -237,7 +240,8 @@ function Task({ modelId, state, dispatch, access }) {
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div>
-			{isPasting && <LinearProgress className={classes.loading} />}
+			{isPasting ||
+				(isSearching && <LinearProgress className={classes.loading} />)}
 			<AddNewModelTask
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}
