@@ -78,13 +78,14 @@ function Task({ modelId, state, dispatch, access }) {
 			showLoading = true,
 			search = "",
 			pageNumber = 1,
-			pageSize = 10
+			pageSize = 10,
+			callCount = true
 		) => {
 			showLoading && setLoading(true);
 			try {
 				const response = await Promise.all([
 					getModelTasksList(modelVersionId, search, pageNumber, pageSize),
-					getLengthOfModelTasks(modelId),
+					callCount ? getLengthOfModelTasks(modelId) : null,
 				]);
 				if (response[0].status) {
 					setTaskList(
@@ -126,12 +127,14 @@ function Task({ modelId, state, dispatch, access }) {
 					);
 				}
 
-				if (response[1].status) {
-					setTotalTaskCount(response[1].data);
-				} else {
-					reduxDispatch(
-						showError(response[1]?.data?.title || "something went wrong")
-					);
+				if (callCount) {
+					if (response[1].status) {
+						setTotalTaskCount(response[1].data);
+					} else {
+						reduxDispatch(
+							showError(response[1]?.data?.title || "something went wrong")
+						);
+					}
 				}
 			} catch (error) {
 				reduxDispatch(
@@ -199,8 +202,8 @@ function Task({ modelId, state, dispatch, access }) {
 	const handleSearch = useCallback(
 		debounce(async (value) => {
 			setIsSearching(true);
-			if (value) await fetchData(modelId, false, value, 1, 100);
-			else await fetchData(modelId, false, "", pageNumber, perPage);
+			if (value) await fetchData(modelId, false, value, 1, 100, false);
+			else await fetchData(modelId, false, "", pageNumber, perPage, false);
 			setIsSearching(false);
 		}, 700),
 		[]
@@ -234,7 +237,7 @@ function Task({ modelId, state, dispatch, access }) {
 
 	const handlePageChange = async (page) => {
 		setPageNumber(page);
-		await fetchData(modelId, true, "", page, perPage);
+		await fetchData(modelId, true, "", page, perPage, false);
 	};
 
 	if (isLoading) return <CircularProgress />;
