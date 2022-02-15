@@ -48,7 +48,7 @@ const ModelTaskRow = ({
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
 
-	const toolTipColumn = ["intervals", "zones", "stages"];
+	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
 
 	const history = useHistory();
 
@@ -198,6 +198,7 @@ const ModelTaskRow = ({
 							customCaptions={customCaptions}
 							taskInfo={singleTask}
 							taskLoading={loading}
+							access={access}
 						/>
 					</Collapse>
 				</TableCell>

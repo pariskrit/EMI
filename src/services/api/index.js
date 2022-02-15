@@ -74,6 +74,12 @@ const BASE_API_PATH_MODEL_DEPARTMENTS = `${BASE_API_PATH}ModelDepartments`;
 const BASE_API_PATH_MODEL_NOTES = `${BASE_API_PATH}ModelNotes`;
 const BASE_API_PATH_MODEL_DOCUMENTS = `${BASE_API_PATH}ModelDocuments`;
 
+// Model Task Notes
+const BASE_API_PATH_MODEL_TASK_NOTES = `${BASE_API_PATH}ModelTaskNotes`;
+
+// Model Task RolesContent
+const BASE_API_PATH_MODEL_VERSION_TASK_ROLES = `${BASE_API_PATH}ModelVersionTaskRoles`;
+
 export const Apis = {
 	// register email
 	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
@@ -189,4 +195,6 @@ export const Apis = {
 	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
 	ModelTasks: `${BASE_API_PATH_MODEL_TASKS}`,
 	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
+	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,
+	ModelVersionTaskRoles: `${BASE_API_PATH_MODEL_VERSION_TASK_ROLES}`,
 };

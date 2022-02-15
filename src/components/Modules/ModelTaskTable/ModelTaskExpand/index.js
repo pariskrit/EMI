@@ -27,7 +27,7 @@ export const useStyles = makeStyles({
 	component: { width: "95%", margin: "auto" },
 });
 
-const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading }) => {
+const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading, access }) => {
 	const classes = useStyles();
 	const [current, setCurrent] = useState("Details");
 
@@ -56,7 +56,9 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading }) => {
 						onClick={(d) => setCurrent(d)}
 					/>
 					<div className={classes.component}>
-						{current === "Details" && <Details />}
+						{current === "Details" && (
+							<Details taskInfo={taskInfo} access={access} />
+						)}
 						{current ===
 							`${customCaptions?.intervalPlural} (${taskInfo?.intervalCount})` && (
 							<Intervals />

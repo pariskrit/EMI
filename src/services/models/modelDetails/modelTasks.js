@@ -69,6 +69,15 @@ const pasteModelTask = async (taskId, payload) => {
 	}
 };
 
+const patchModelTask = async (taskId, payload) => {
+	try {
+		let response = await API.patch(`${Apis.ModelTasks}/${taskId}`, payload);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
 export {
 	getModelTasksList,
 	addModelTask,
@@ -76,4 +85,5 @@ export {
 	getSingleModelTask,
 	getLengthOfModelTasks,
 	pasteModelTask,
+	patchModelTask,
 };

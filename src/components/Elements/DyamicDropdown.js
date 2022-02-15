@@ -105,6 +105,7 @@ function DyanamicDropdown(props) {
 		hasCheckBoxList,
 		checklistChangeHandler,
 		rolesChecklist,
+		isReadOnly,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -206,6 +207,7 @@ function DyanamicDropdown(props) {
 	};
 
 	const handleDrpdwnClick = (event) => {
+		if (isReadOnly) return;
 		setDropActive(true);
 		setDropUpward(
 			window.innerHeight - event.target.getBoundingClientRect().bottom < 120
@@ -221,6 +223,7 @@ function DyanamicDropdown(props) {
 
 	// clear and reset dropdown content
 	const handleClear = (e) => {
+		if (isReadOnly) return;
 		setCurrentTableSort(["name", "asc"]);
 		onChange({});
 		setsearchText("");
@@ -448,6 +451,7 @@ DyanamicDropdown.defaultProps = {
 	showClear: false,
 	isServerSide: false,
 	selectdValueToshow: "",
+	isReadOnly: false,
 	onClear: () => {},
 	handleServierSideSearch: () => {},
 	handleServerSideSort: () => {},
@@ -468,6 +472,7 @@ DyanamicDropdown.propTypes = {
 	required: PropTypes.bool,
 	showHeader: PropTypes.bool,
 	columns: PropTypes.array,
+	isReadOnly: PropTypes.bool,
 	showClear: PropTypes.bool,
 	icon: PropTypes.node,
 	isServerSide: PropTypes.bool,
