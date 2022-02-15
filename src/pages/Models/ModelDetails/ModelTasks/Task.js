@@ -199,7 +199,7 @@ function Task({ modelId, state, dispatch, access }) {
 	const handleSearch = useCallback(
 		debounce(async (value) => {
 			setIsSearching(true);
-			if (value) await fetchData(modelId, false, value, 1, 30);
+			if (value) await fetchData(modelId, false, value, 1, 100);
 			else await fetchData(modelId, false, "", pageNumber, perPage);
 			setIsSearching(false);
 		}, 700),
@@ -268,7 +268,7 @@ function Task({ modelId, state, dispatch, access }) {
 			<div className="detailsContainer" style={{ alignItems: "center" }}>
 				<DetailsPanel
 					header={customCaptions?.taskPlural}
-					dataCount={totalTaskCount}
+					dataCount={searchTxt === "" ? totalTaskCount : taskList.length}
 					description={`${customCaptions?.task} assigned in this asset model`}
 				/>
 				<SearchField
