@@ -32,6 +32,7 @@ const useStyles = makeStyles({
 		display: "flex",
 		flexDirection: "column",
 		gap: "12px",
+		overflowY: "unset",
 	},
 	createButton: {
 		[media]: {
@@ -205,45 +206,44 @@ const TaskDetails = ({ taskInfo, access }) => {
 	const dropdownHandleChange = async (value, name, actualName) => {
 		setLocalTaskInfo({
 			...localTaskInfo,
-			[name]: value.id,
+			[name]: value?.id || null,
 			[actualName]: value?.name,
 		});
-		if (value?.id) {
-			setUpdating((prev) => ({ ...prev, [name]: true }));
 
-			try {
-				const response = await patchModelTask(taskInfo?.id, [
-					{
-						op: "replace",
-						path: name,
-						value: value.id,
-					},
-				]);
-				if (response.status) {
-					taskInfo[name] = value.id;
-					taskInfo[actualName] = value.name;
-				} else {
-					reduxDispatch(
-						showError(
-							response?.data?.title ||
-								response?.data ||
-								"Could not update task detail"
-						)
-					);
-					setLocalTaskInfo(taskInfo);
-				}
-			} catch (error) {
-				setLocalTaskInfo(taskInfo);
+		setUpdating((prev) => ({ ...prev, [name]: true }));
+
+		try {
+			const response = await patchModelTask(taskInfo?.id, [
+				{
+					op: "replace",
+					path: name,
+					value: value?.id || null,
+				},
+			]);
+			if (response.status) {
+				taskInfo[name] = value?.id || null;
+				taskInfo[actualName] = value.name;
+			} else {
 				reduxDispatch(
 					showError(
-						error?.response?.data ||
-							error?.response ||
+						response?.data?.title ||
+							response?.data ||
 							"Could not update task detail"
 					)
 				);
-			} finally {
-				setUpdating((prev) => ({ ...prev, [name]: false }));
+				setLocalTaskInfo(taskInfo);
 			}
+		} catch (error) {
+			setLocalTaskInfo(taskInfo);
+			reduxDispatch(
+				showError(
+					error?.response?.data ||
+						error?.response ||
+						"Could not update task detail"
+				)
+			);
+		} finally {
+			setUpdating((prev) => ({ ...prev, [name]: false }));
 		}
 	};
 	const handleOnChange = (value, name) => {

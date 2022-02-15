@@ -14,7 +14,7 @@ const HtmlTooltip = withStyles((theme) => ({
 	},
 }))(Tooltip);
 
-const NoteRow = ({ row, classes, onDeleteNote, disabled }) => {
+const NoteRow = ({ row, classes, onDeleteNote, disabled, onViewNote }) => {
 	return (
 		<TableRow>
 			<TableCell>{row?.name}</TableCell>
@@ -23,6 +23,11 @@ const NoteRow = ({ row, classes, onDeleteNote, disabled }) => {
 				<HtmlTooltip title={row.note}>
 					<p className="max-two-line">{row.note}</p>
 				</HtmlTooltip>
+			</TableCell>
+			<TableCell>
+				<p className="new-link" onClick={() => onViewNote(row?.note)}>
+					View
+				</p>
 			</TableCell>
 			<TableCell style={{ width: "50px" }}>
 				{disabled ? null : (

@@ -20,6 +20,7 @@ import {
 } from "services/models/modelDetails/modelTaskNotes";
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
+import NoteContent from "./NoteContent";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -64,8 +65,10 @@ const ModelTaskNotes = ({ taskGroupId, modelId, customCaptions, disabled }) => {
 	const [modal, setModal] = useState({
 		addModal: false,
 		deleteModal: false,
+		viewNoteModal: false,
 	});
 	const [noteId, setNoteId] = useState(null);
+	const [noteToView, setNoteToView] = useState(null);
 	const [data, setData] = useState([]);
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -115,11 +118,21 @@ const ModelTaskNotes = ({ taskGroupId, modelId, customCaptions, disabled }) => {
 		const filteredData = [...data].filter((x) => x.id !== id);
 		setData(filteredData);
 	};
-	const { addModal, deleteModal } = modal;
+
+	const handleViewNote = (note) => {
+		setNoteToView(note);
+		setModal((th) => ({ ...th, viewNoteModal: true }));
+	};
+	const { addModal, deleteModal, viewNoteModal } = modal;
 
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div className={classes.noteContainer}>
+			<NoteContent
+				note={noteToView}
+				open={viewNoteModal}
+				onClose={() => setModal((th) => ({ ...th, viewNoteModal: false }))}
+			/>
 			<AddNoteDialog
 				open={addModal}
 				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
@@ -149,6 +162,7 @@ const ModelTaskNotes = ({ taskGroupId, modelId, customCaptions, disabled }) => {
 							<TableCell>Date</TableCell>
 							<TableCell style={{ width: "60%" }}>Note</TableCell>
 							<TableCell></TableCell>
+							<TableCell></TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -162,6 +176,7 @@ const ModelTaskNotes = ({ taskGroupId, modelId, customCaptions, disabled }) => {
 										classes={classes}
 										onDeleteNote={() => handleDeleteNote(row.id)}
 										disabled={disabled}
+										onViewNote={handleViewNote}
 									/>
 								))
 						) : (
