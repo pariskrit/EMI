@@ -205,7 +205,7 @@ function Task({ modelId, state, dispatch, access }) {
 			if (value) await fetchData(modelId, false, value, 1, 100, false);
 			else await fetchData(modelId, false, "", pageNumber, perPage, false);
 			setIsSearching(false);
-		}, 700),
+		}, 1500),
 		[]
 	);
 
