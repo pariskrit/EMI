@@ -318,3 +318,12 @@
 .link-color {
 	color: #2b89ea;
 }
+
+.black-filter {
+	filter: brightness(0.6) contrast(3.4) hue-rotate(217deg) saturate(9.9);
+}
+
+.white-filter {
+	filter: brightness(0.6) contrast(3.4) hue-rotate(217deg) saturate(9.9)
+		invert(1);
+}
