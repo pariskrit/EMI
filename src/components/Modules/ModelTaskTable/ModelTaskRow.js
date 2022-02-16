@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-expressions */
+import React, { useEffect, useState } from "react";
 import TableRow from "@material-ui/core/TableRow";
 import { Collapse, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
@@ -13,6 +14,8 @@ import ModelTaskExpand from "./ModelTaskExpand";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getSingleModelTask } from "services/models/modelDetails/modelTasks";
+import useDidMountEffect from "hooks/useDidMountEffect";
+import ErrorIcon from "@material-ui/icons/Error";
 
 const AT = TableStyle();
 
@@ -73,6 +76,23 @@ const ModelTaskRow = ({
 		}
 	};
 
+	useDidMountEffect(() => {
+		if (toggle) {
+			document
+				.querySelectorAll(`#taskExpandable${row.id}  > td > div > img`)
+				?.forEach((i) => {
+					i.classList.add("white-filter");
+				});
+		} else {
+			// eslint-disable-next-line no-unused-expressions
+			document
+				.querySelectorAll(`#taskExpandable${row.id}  > td > div > img`)
+				?.forEach((i) => {
+					i.classList.remove("white-filter");
+				});
+		}
+	}, [toggle]);
+
 	return (
 		<>
 			<TableRow
@@ -106,6 +126,12 @@ const ModelTaskRow = ({
 										{row[col]}
 									</p>
 								</HtmlTooltip>
+							) : col === "errors" ? (
+								row[col] === "" ? (
+									""
+								) : (
+									<ErrorIcon style={{ color: toggle ? "#FFFFFF" : "red" }} />
+								)
 							) : (
 								row[col]
 							)}

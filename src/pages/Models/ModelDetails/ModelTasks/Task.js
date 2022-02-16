@@ -108,11 +108,7 @@ function Task({ modelId, state, dispatch, access }) {
 							) : (
 								""
 							),
-							errors: t?.hasErrors ? (
-								<ErrorIcon style={{ color: "red" }} />
-							) : (
-								""
-							),
+							errors: t?.hasErrors ? t?.hasErrors : "",
 							intervals: t?.intervals
 								?.map((interval) => interval?.name)
 								?.join(", "),
