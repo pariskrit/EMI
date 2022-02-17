@@ -61,7 +61,7 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.intervalPlural} (${taskInfo?.intervalCount})` && (
-							<Intervals />
+							<Intervals taskId={taskInfo.id} access={access} />
 						)}
 						{current ===
 							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})` && (
