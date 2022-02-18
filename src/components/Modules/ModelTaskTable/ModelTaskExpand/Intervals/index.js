@@ -6,10 +6,13 @@ import {
 	getModelVersionTaskIntervals,
 } from "services/models/modelDetails/modelTaskIntervals";
 import IntervalTable from "./Table";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const Intervals = ({ taskId, access }) => {
 	const [intervals, setIntervals] = useState([]);
 	const [isLoading, setIsloading] = useState(true);
+	const dispatch = useDispatch();
 
 	const handleIntervalCheckbox = async (
 		checked,
@@ -41,7 +44,7 @@ const Intervals = ({ taskId, access }) => {
 
 		if (!response.status) {
 			setIntervals(tempIntervals);
-			console.log("error");
+			dispatch(showError("Could not update"));
 		}
 	};
 

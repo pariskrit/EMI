@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import TableStyle from "styles/application/TableStyle";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import clsx from "clsx";
 import EMICheckbox from "components/Elements/EMICheckbox";
-import { ModelContext } from "contexts/ModelDetailContext";
 
 const AT = TableStyle();
 
@@ -39,17 +38,12 @@ const useStyles = makeStyles({
 		borderColor: ColourConstants.tableBorder,
 		borderWidth: 1,
 		borderRadius: 0,
+		margin: "20px 0",
 	},
 });
 
 function IntervalTable({ data = [], handleIntervalCheckbox }) {
 	const classes = useStyles();
-
-	const [modelState] = useContext(ModelContext);
-
-	const {
-		modelDetail: { modelType },
-	} = modelState;
 
 	return (
 		<div>
