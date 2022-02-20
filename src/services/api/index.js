@@ -78,6 +78,9 @@ const BASE_API_PATH_MODEL_DOCUMENTS = `${BASE_API_PATH}ModelDocuments`;
 // Model Task Notes
 const BASE_API_PATH_MODEL_TASK_NOTES = `${BASE_API_PATH}ModelTaskNotes`;
 
+// Model Task Parts
+const BASE_API_PATH_MODEL_TASK_PARTS = `${BASE_API_PATH}ModelVersionTaskParts`;
+
 // Model Task zones
 const BASE_API_PATH_MODEL_TASK_ZONES = `${BASE_API_PATH}ModelVersionTaskZones`;
 
@@ -203,4 +206,5 @@ export const Apis = {
 	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,
 	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
 	ModelVersionTaskRoles: `${BASE_API_PATH_MODEL_VERSION_TASK_ROLES}`,
+	ModelVersionTaskParts: `${BASE_API_PATH_MODEL_TASK_PARTS}`,
 };

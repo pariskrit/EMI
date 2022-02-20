@@ -27,9 +27,16 @@ export const useStyles = makeStyles({
 	component: { width: "95%", margin: "auto" },
 });
 
-const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading, access }) => {
+const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 	const classes = useStyles();
 	const [current, setCurrent] = useState("Details");
+
+	const {
+		application: { showParts },
+		customCaptions,
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	return (
 		<div className={classes.main}>
@@ -44,7 +51,9 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading, access }) => {
 							`${customCaptions?.intervalPlural} (${taskInfo?.intervalCount})`,
 							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})`,
 							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})`,
-							`${customCaptions?.partPlural} (${taskInfo?.partCount})`,
+							...(showParts
+								? [`${customCaptions?.partPlural} (${taskInfo?.partCount})`]
+								: []),
 							`${customCaptions?.lubricant}`,
 							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})`,
 							`Permits (${taskInfo?.permitCount})`,
@@ -73,7 +82,7 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.partPlural} (${taskInfo?.partCount})` && (
-							<Parts />
+							<Parts taskInfo={taskInfo} access={access} />
 						)}
 						{current === `${customCaptions?.lubricant}` && <Lubricant />}
 						{current ===
