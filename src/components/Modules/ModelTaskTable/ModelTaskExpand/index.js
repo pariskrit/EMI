@@ -69,7 +69,7 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})` && (
-							<Zones />
+							<Zones taskInfo={taskInfo} access={access} />
 						)}
 						{current ===
 							`${customCaptions?.partPlural} (${taskInfo?.partCount})` && (

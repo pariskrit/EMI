@@ -105,6 +105,7 @@ function DyanamicDropdown(props) {
 		hasCheckBoxList,
 		checklistChangeHandler,
 		rolesChecklist,
+		count,
 		isReadOnly,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
@@ -162,7 +163,7 @@ function DyanamicDropdown(props) {
 
 	const { hasMore, loading, gotoTop, handleScroll } = useInfiniteScroll(
 		dataSource,
-		17,
+		count,
 		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
 		page,
 		searchtext,
