@@ -198,7 +198,10 @@ $dropdown-errorcolor: #f44336;
 			bottom: 15px;
 		}
 		&.rightSide {
-			left: -300px;
+			left: -30px;
+		}
+		&.leftSide {
+			right: 30px;
 		}
 
 		@media screen and (max-width: 414px) {

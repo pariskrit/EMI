@@ -84,7 +84,9 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 							`${customCaptions?.partPlural} (${taskInfo?.partCount})` && (
 							<Parts taskInfo={taskInfo} access={access} />
 						)}
-						{current === `${customCaptions?.lubricant}` && <Lubricant />}
+						{current === `${customCaptions?.lubricant}` && (
+							<Lubricant taskInfo={taskInfo} access={access} />
+						)}
 						{current ===
 							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})` && (
 							<Tools />
