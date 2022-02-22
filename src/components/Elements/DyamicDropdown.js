@@ -62,6 +62,7 @@ const useStyles = makeStyles({
 	},
 	clear: {
 		cursor: "pointer",
+		marginLeft: "auto",
 	},
 	droplistitem: {
 		// maxWidth: "250px",
@@ -249,12 +250,11 @@ function DyanamicDropdown(props) {
 						alignItems: "center",
 					}}
 				>
-					{label.length > 0 && (
-						<Typography className="label">
-							{label}
-							{required && <span className="required">*</span>}
-						</Typography>
-					)}
+					<Typography className="label">
+						{label}
+						{required && <span className="required">*</span>}
+					</Typography>
+
 					{showClear && (
 						<Typography
 							className={clsx("label", classes.clear)}
