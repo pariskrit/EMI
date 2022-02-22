@@ -235,7 +235,9 @@ function DyanamicDropdown(props) {
 	return (
 		<div
 			className="dropdown"
-			style={disabled ? { pointerEvents: "none", opacity: "0.4" } : {}}
+			style={
+				disabled ? { pointerEvents: "none", opacity: "0.4" } : { width: width }
+			}
 		>
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
@@ -288,6 +290,7 @@ function DyanamicDropdown(props) {
 						upward: dropUpward,
 						downward: !dropUpward,
 						rightSide: !dropSideway,
+						leftSide: dropSideway,
 					})}
 				>
 					<div className="search-box flex justify-between">
