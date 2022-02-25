@@ -1,8 +1,7 @@
+import React, { useCallback, useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
 import { ModelContext } from "contexts/ModelDetailContext";
-import React, { useCallback, useContext, useState } from "react";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { getModelDetails } from "services/models/modelDetails/details";
 
 function ModelDetails(props) {
