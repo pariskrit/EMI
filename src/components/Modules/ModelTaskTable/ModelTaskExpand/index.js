@@ -89,7 +89,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})` && (
-							<Tools />
+							<Tools taskInfo={taskInfo} access={access} />
 						)}
 						{current === `Permits (${taskInfo?.permitCount})` && <Permits />}
 						{current === `${customCaptions?.workbook}` && <WorkBook />}
