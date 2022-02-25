@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { getModelDetails } from "services/models/modelDetails/details";
 
 function ModelDetails(props) {
+	// eslint-disable-next-line no-unused-vars
 	const [_, dispatch] = useContext(ModelContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const { id } = useParams();
