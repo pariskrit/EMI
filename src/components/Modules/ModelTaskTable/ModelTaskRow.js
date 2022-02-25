@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-expressions */
+import React, { useEffect, useState } from "react";
 import TableRow from "@material-ui/core/TableRow";
 import { Collapse, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
@@ -13,6 +14,8 @@ import ModelTaskExpand from "./ModelTaskExpand";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getSingleModelTask } from "services/models/modelDetails/modelTasks";
+import useDidMountEffect from "hooks/useDidMountEffect";
+import ErrorIcon from "@material-ui/icons/Error";
 
 const AT = TableStyle();
 
@@ -48,32 +51,47 @@ const ModelTaskRow = ({
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
 
-	const toolTipColumn = ["intervals", "zones", "stages"];
+	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
 
 	const history = useHistory();
 
 	const onHandleTableExpand = async (tg, rowId) => {
-		if (access === "F" || access === "E") {
-			setToggle(tg);
-			if (tg) {
-				setLoading(true);
-				try {
-					const response = await getSingleModelTask(rowId);
-					if (response.status) {
-						setSingleTask(response.data[0]);
-					} else {
-						dispatch(
-							showError(response?.data?.title || "something went wrong")
-						);
-					}
-				} catch (error) {
-					dispatch(showError(error?.response?.data || "something went wrong"));
-				} finally {
-					setLoading(false);
+		setToggle(tg);
+
+		// call single task detail api only if expand is true
+		if (tg) {
+			setLoading(true);
+			try {
+				const response = await getSingleModelTask(rowId);
+				if (response.status) {
+					setSingleTask(response.data[0]);
+				} else {
+					dispatch(showError(response?.data?.title || "something went wrong"));
 				}
+			} catch (error) {
+				dispatch(showError(error?.response?.data || "something went wrong"));
+			} finally {
+				setLoading(false);
 			}
 		}
 	};
+
+	useDidMountEffect(() => {
+		if (toggle) {
+			document
+				.querySelectorAll(`#taskExpandable${row.id}  > td > div > img`)
+				?.forEach((i) => {
+					i.classList.add("white-filter");
+				});
+		} else {
+			// eslint-disable-next-line no-unused-expressions
+			document
+				.querySelectorAll(`#taskExpandable${row.id}  > td > div > img`)
+				?.forEach((i) => {
+					i.classList.remove("white-filter");
+				});
+		}
+	}, [toggle]);
 
 	return (
 		<>
@@ -108,6 +126,12 @@ const ModelTaskRow = ({
 										{row[col]}
 									</p>
 								</HtmlTooltip>
+							) : col === "errors" ? (
+								row[col] === "" ? (
+									""
+								) : (
+									<ErrorIcon style={{ color: toggle ? "#FFFFFF" : "red" }} />
+								)
 							) : (
 								row[col]
 							)}
@@ -200,6 +224,7 @@ const ModelTaskRow = ({
 							customCaptions={customCaptions}
 							taskInfo={singleTask}
 							taskLoading={loading}
+							access={access}
 						/>
 					</Collapse>
 				</TableCell>

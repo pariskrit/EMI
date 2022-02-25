@@ -62,6 +62,7 @@ const useStyles = makeStyles({
 	},
 	clear: {
 		cursor: "pointer",
+		marginLeft: "auto",
 	},
 	droplistitem: {
 		// maxWidth: "250px",
@@ -105,6 +106,8 @@ function DyanamicDropdown(props) {
 		hasCheckBoxList,
 		checklistChangeHandler,
 		rolesChecklist,
+		count,
+		isReadOnly,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -161,7 +164,7 @@ function DyanamicDropdown(props) {
 
 	const { hasMore, loading, gotoTop, handleScroll } = useInfiniteScroll(
 		dataSource,
-		17,
+		count,
 		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
 		page,
 		searchtext,
@@ -206,6 +209,7 @@ function DyanamicDropdown(props) {
 	};
 
 	const handleDrpdwnClick = (event) => {
+		if (isReadOnly) return;
 		setDropActive(true);
 		setDropUpward(
 			window.innerHeight - event.target.getBoundingClientRect().bottom < 120
@@ -221,6 +225,7 @@ function DyanamicDropdown(props) {
 
 	// clear and reset dropdown content
 	const handleClear = (e) => {
+		if (isReadOnly) return;
 		setCurrentTableSort(["name", "asc"]);
 		onChange({});
 		setsearchText("");
@@ -231,7 +236,9 @@ function DyanamicDropdown(props) {
 	return (
 		<div
 			className="dropdown"
-			style={disabled ? { pointerEvents: "none", opacity: "0.4" } : {}}
+			style={
+				disabled ? { pointerEvents: "none", opacity: "0.4" } : { width: width }
+			}
 		>
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
@@ -245,12 +252,11 @@ function DyanamicDropdown(props) {
 						alignItems: "center",
 					}}
 				>
-					{label.length > 0 && (
-						<Typography className="label">
-							{label}
-							{required && <span className="required">*</span>}
-						</Typography>
-					)}
+					<Typography className="label">
+						{label}
+						{required && <span className="required">*</span>}
+					</Typography>
+
 					{showClear && (
 						<Typography
 							className={clsx("label", classes.clear)}
@@ -284,6 +290,7 @@ function DyanamicDropdown(props) {
 						upward: dropUpward,
 						downward: !dropUpward,
 						rightSide: !dropSideway,
+						leftSide: dropSideway,
 					})}
 				>
 					<div className="search-box flex justify-between">
@@ -448,6 +455,7 @@ DyanamicDropdown.defaultProps = {
 	showClear: false,
 	isServerSide: false,
 	selectdValueToshow: "",
+	isReadOnly: false,
 	onClear: () => {},
 	handleServierSideSearch: () => {},
 	handleServerSideSort: () => {},
@@ -468,6 +476,7 @@ DyanamicDropdown.propTypes = {
 	required: PropTypes.bool,
 	showHeader: PropTypes.bool,
 	columns: PropTypes.array,
+	isReadOnly: PropTypes.bool,
 	showClear: PropTypes.bool,
 	icon: PropTypes.node,
 	isServerSide: PropTypes.bool,

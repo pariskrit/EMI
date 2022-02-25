@@ -65,6 +65,7 @@ const BASE_API_PATH_MODEL_ROLES = `${BASE_API_PATH}ModelVersionRoles`;
 const BASE_API_PATH_MODEL_ZONES = `${BASE_API_PATH}ModelVersionZones`;
 const BASE_API_PATH_MODEL_TASKS = `${BASE_API_PATH}ModelVersionTasks`;
 const BASE_API_PATH_MODEL_ASSETS = `${BASE_API_PATH}ModelAssets`;
+const BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL = `${BASE_API_PATH}ModelVersionTaskIntervals`;
 
 // Model Stages
 const BASE_API_PATH_MODEL_STAGES = `${BASE_API_PATH}modelversionstages`;
@@ -73,6 +74,18 @@ const BASE_API_PATH_MODEL_STAGES = `${BASE_API_PATH}modelversionstages`;
 const BASE_API_PATH_MODEL_DEPARTMENTS = `${BASE_API_PATH}ModelDepartments`;
 const BASE_API_PATH_MODEL_NOTES = `${BASE_API_PATH}ModelNotes`;
 const BASE_API_PATH_MODEL_DOCUMENTS = `${BASE_API_PATH}ModelDocuments`;
+
+// Model Task Notes
+const BASE_API_PATH_MODEL_TASK_NOTES = `${BASE_API_PATH}ModelTaskNotes`;
+
+// Model Task Parts
+const BASE_API_PATH_MODEL_TASK_PARTS = `${BASE_API_PATH}ModelVersionTaskParts`;
+
+// Model Task zones
+const BASE_API_PATH_MODEL_TASK_ZONES = `${BASE_API_PATH}ModelVersionTaskZones`;
+
+// Model Task RolesContent
+const BASE_API_PATH_MODEL_VERSION_TASK_ROLES = `${BASE_API_PATH}ModelVersionTaskRoles`;
 
 export const Apis = {
 	// register email
@@ -189,4 +202,9 @@ export const Apis = {
 	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
 	ModelTasks: `${BASE_API_PATH_MODEL_TASKS}`,
 	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
+	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,
+	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,
+	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
+	ModelVersionTaskRoles: `${BASE_API_PATH_MODEL_VERSION_TASK_ROLES}`,
+	ModelVersionTaskParts: `${BASE_API_PATH_MODEL_TASK_PARTS}`,
 };

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const EMICheckbox = ({ state, changeHandler }) => {
+const EMICheckbox = ({ state, changeHandler, name, disabled }) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -21,9 +21,11 @@ const EMICheckbox = ({ state, changeHandler }) => {
 		<Checkbox
 			className={classes.emiCheckbox}
 			checked={state}
+			name={name}
 			onChange={changeHandler}
 			icon={<img src={CheckboxOff} alt="unticked checkbox" />}
 			checkedIcon={<img src={CheckboxOn} alt="ticked checkbox" />}
+			disabled={disabled}
 		/>
 	);
 };

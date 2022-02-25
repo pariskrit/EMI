@@ -27,9 +27,16 @@ export const useStyles = makeStyles({
 	component: { width: "95%", margin: "auto" },
 });
 
-const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading }) => {
+const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 	const classes = useStyles();
 	const [current, setCurrent] = useState("Details");
+
+	const {
+		application: { showParts },
+		customCaptions,
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	return (
 		<div className={classes.main}>
@@ -44,7 +51,9 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading }) => {
 							`${customCaptions?.intervalPlural} (${taskInfo?.intervalCount})`,
 							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})`,
 							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})`,
-							`${customCaptions?.partPlural} (${taskInfo?.partCount})`,
+							...(showParts
+								? [`${customCaptions?.partPlural} (${taskInfo?.partCount})`]
+								: []),
 							`${customCaptions?.lubricant}`,
 							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})`,
 							`Permits (${taskInfo?.permitCount})`,
@@ -56,10 +65,12 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading }) => {
 						onClick={(d) => setCurrent(d)}
 					/>
 					<div className={classes.component}>
-						{current === "Details" && <Details />}
+						{current === "Details" && (
+							<Details taskInfo={taskInfo} access={access} />
+						)}
 						{current ===
 							`${customCaptions?.intervalPlural} (${taskInfo?.intervalCount})` && (
-							<Intervals />
+							<Intervals taskId={taskInfo.id} access={access} />
 						)}
 						{current ===
 							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})` && (
@@ -67,13 +78,15 @@ const ModelTaskExpand = ({ customCaptions, taskInfo, taskLoading }) => {
 						)}
 						{current ===
 							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})` && (
-							<Zones />
+							<Zones taskInfo={taskInfo} access={access} />
 						)}
 						{current ===
 							`${customCaptions?.partPlural} (${taskInfo?.partCount})` && (
-							<Parts />
+							<Parts taskInfo={taskInfo} access={access} />
 						)}
-						{current === `${customCaptions?.lubricant}` && <Lubricant />}
+						{current === `${customCaptions?.lubricant}` && (
+							<Lubricant taskInfo={taskInfo} access={access} />
+						)}
 						{current ===
 							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})` && (
 							<Tools />

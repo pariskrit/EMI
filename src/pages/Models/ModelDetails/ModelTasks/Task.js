@@ -56,6 +56,7 @@ function Task({ modelId, state, dispatch, access }) {
 	const [perPage] = useState(10);
 	const [pageNumber, setPageNumber] = useState(1);
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
+	const [isSearching, setIsSearching] = useState(false);
 
 	const [enablePasteTask, setPasteTask] = useState(false);
 
@@ -77,13 +78,14 @@ function Task({ modelId, state, dispatch, access }) {
 			showLoading = true,
 			search = "",
 			pageNumber = 1,
-			pageSize = 10
+			pageSize = 10,
+			callCount = true
 		) => {
 			showLoading && setLoading(true);
 			try {
 				const response = await Promise.all([
 					getModelTasksList(modelVersionId, search, pageNumber, pageSize),
-					getLengthOfModelTasks(modelId),
+					callCount ? getLengthOfModelTasks(modelId) : null,
 				]);
 				if (response[0].status) {
 					setTaskList(
@@ -106,11 +108,7 @@ function Task({ modelId, state, dispatch, access }) {
 							) : (
 								""
 							),
-							errors: t?.hasErrors ? (
-								<ErrorIcon style={{ color: "red" }} />
-							) : (
-								""
-							),
+							errors: t?.hasErrors ? t?.hasErrors : "",
 							intervals: t?.intervals
 								?.map((interval) => interval?.name)
 								?.join(", "),
@@ -125,12 +123,14 @@ function Task({ modelId, state, dispatch, access }) {
 					);
 				}
 
-				if (response[1].status) {
-					setTotalTaskCount(response[1].data);
-				} else {
-					reduxDispatch(
-						showError(response[1]?.data?.title || "something went wrong")
-					);
+				if (callCount) {
+					if (response[1].status) {
+						setTotalTaskCount(response[1].data);
+					} else {
+						reduxDispatch(
+							showError(response[1]?.data?.title || "something went wrong")
+						);
+					}
 				}
 			} catch (error) {
 				reduxDispatch(
@@ -196,10 +196,12 @@ function Task({ modelId, state, dispatch, access }) {
 	]);
 
 	const handleSearch = useCallback(
-		debounce((value) => {
-			if (value) fetchData(modelId, false, value, 1, 30);
-			else fetchData(modelId, false, "", pageNumber, perPage);
-		}, 500),
+		debounce(async (value) => {
+			setIsSearching(true);
+			if (value) await fetchData(modelId, false, value, 1, 100, false);
+			else await fetchData(modelId, false, "", pageNumber, perPage, false);
+			setIsSearching(false);
+		}, 1500),
 		[]
 	);
 
@@ -231,13 +233,14 @@ function Task({ modelId, state, dispatch, access }) {
 
 	const handlePageChange = async (page) => {
 		setPageNumber(page);
-		await fetchData(modelId, true, "", page, perPage);
+		await fetchData(modelId, true, "", page, perPage, false);
 	};
 
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div>
-			{isPasting && <LinearProgress className={classes.loading} />}
+			{isPasting ||
+				(isSearching && <LinearProgress className={classes.loading} />)}
 			<AddNewModelTask
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}
@@ -264,7 +267,7 @@ function Task({ modelId, state, dispatch, access }) {
 			<div className="detailsContainer" style={{ alignItems: "center" }}>
 				<DetailsPanel
 					header={customCaptions?.taskPlural}
-					dataCount={totalTaskCount}
+					dataCount={searchTxt === "" ? totalTaskCount : taskList.length}
 					description={`${customCaptions?.task} assigned in this asset model`}
 				/>
 				<SearchField

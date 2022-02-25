@@ -8,6 +8,8 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
 
@@ -31,8 +33,9 @@ const useStyles = makeStyles({
 	},
 });
 
-const AddNoteDialog = ({ open, handleClose, createHandler }) => {
+const AddNoteDialog = ({ open, handleClose, createHandler, fetchNotes }) => {
 	const classes = useStyles();
+	const dispatch = useDispatch();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -51,12 +54,14 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 			const localChecker = await handleValidateObj(schema, input);
 			if (!localChecker.some((el) => el.valid === false)) {
 				const newData = await createHandler(input.note);
-				if (newData.success) {
+				if (newData.status) {
 					setIsUpdating(false);
 					closeOverride();
+					fetchNotes();
 				} else {
 					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
+					dispatch(showError(newData?.data?.title || "something went wrong"));
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
@@ -64,10 +69,9 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 				setIsUpdating(false);
 			}
 		} catch (err) {
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(err?.response?.data || "something went wrong"));
 		}
 	};
 

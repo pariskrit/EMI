@@ -11,7 +11,7 @@ $dropdown-errorcolor: #f44336;
 	.label {
 		font-family: Roboto Condensed;
 		font-weight: bold;
-		font-size: 17px;
+		font-size: 14px;
 		color: $dropdown-fontcolor;
 		margin-bottom: 0.35em;
 	}
@@ -198,7 +198,10 @@ $dropdown-errorcolor: #f44336;
 			bottom: 15px;
 		}
 		&.rightSide {
-			left: -300px;
+			left: -30px;
+		}
+		&.leftSide {
+			right: 30px;
 		}
 
 		@media screen and (max-width: 414px) {

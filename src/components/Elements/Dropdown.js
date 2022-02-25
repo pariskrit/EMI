@@ -60,8 +60,9 @@ function Dropdown(props) {
 		let el = event.target.closest(".dropbox");
 		setDropActive(true);
 		onFilter("");
+
 		setDropUpward(
-			window.innerHeight - el.getBoundingClientRect().bottom < 120
+			window.innerHeight - el.getBoundingClientRect().bottom < 300
 				? false
 				: true
 		);

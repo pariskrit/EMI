@@ -318,3 +318,11 @@
 .link-color {
 	color: #2b89ea;
 }
+
+.black-filter {
+	filter: brightness(0) invert(0);
+}
+
+.white-filter {
+	filter: brightness(0) invert(1);
+}

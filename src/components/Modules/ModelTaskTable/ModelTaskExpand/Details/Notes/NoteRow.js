@@ -14,18 +14,25 @@ const HtmlTooltip = withStyles((theme) => ({
 	},
 }))(Tooltip);
 
-const NoteRow = ({ row, classes, onDeleteNote }) => {
+const NoteRow = ({ row, classes, onDeleteNote, disabled, onViewNote }) => {
 	return (
 		<TableRow>
-			<TableCell>{row.user}</TableCell>
+			<TableCell>{row?.name}</TableCell>
 			<TableCell>{changeDate(row.date)}</TableCell>
 			<TableCell className="note-field" style={{ whiteSpace: "unset" }}>
 				<HtmlTooltip title={row.note}>
 					<p className="max-two-line">{row.note}</p>
 				</HtmlTooltip>
 			</TableCell>
+			<TableCell>
+				<p className="new-link" onClick={() => onViewNote(row?.note)}>
+					View
+				</p>
+			</TableCell>
 			<TableCell style={{ width: "50px" }}>
-				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteNote} />
+				{disabled ? null : (
+					<DeleteIcon className={classes.deleteIcon} onClick={onDeleteNote} />
+				)}
 			</TableCell>
 		</TableRow>
 	);

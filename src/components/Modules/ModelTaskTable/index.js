@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -21,6 +20,15 @@ const AT = TableStyle();
 const MAX_LOGO_HEIGHT = 47;
 
 const useStyles = makeStyles({
+	table: {
+		borderStyle: "solid",
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		overflowX: "auto",
+		borderColor: ColourConstants.tableBorder,
+		borderWidth: 1,
+		borderRadius: 0,
+	},
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -127,91 +135,89 @@ const ModelTaskTable = ({
 				isDuplicate={true}
 				customCaptions={customCaptions}
 			/>
-			<AT.TableContainer component={Paper} elevation={0}>
-				<Table aria-label="Table">
-					<AT.TableHead>
-						<TableRow className={classes.tableHead}>
-							{headers.map((header, index) => (
-								<TableCell
-									key={header.id}
-									onClick={() => {
-										header?.isSort && handleSortClick(columns[index]);
-									}}
-									style={{ width: header?.width || "auto" }}
-									className={clsx(classes.nameRow, {
-										[classes.selectedTableHeadRow]:
-											currentTableSort[0] === columns[index],
-										[classes.tableHeadRow]:
-											currentTableSort[0] !== columns[index],
-									})}
-								>
-									<AT.CellContainer className="flex justify-between">
-										{header.name}
-										{header.isSort && (
-											<div className="arrow">
-												<AT.DescArrow
-													fill={
-														currentTableSort[0] === columns[index] &&
-														currentTableSort[1] === "asc"
-															? "#D2D2D9"
-															: "#F9F9FC"
-													}
-													className="arrowUp"
-												/>
-												<AT.DefaultArrow
-													fill={
-														currentTableSort[0] === columns[index] &&
-														currentTableSort[1] === "desc"
-															? "#D2D2D9"
-															: "#F9F9FC"
-													}
-													className="arrowDown"
-												/>
-											</div>
-										)}
-									</AT.CellContainer>
-								</TableCell>
-							))}
-						</TableRow>
-					</AT.TableHead>
-					<TableBody>
-						{data.length !== 0 ? (
-							data.map((row, index) => (
-								<ModelTaskRow
-									key={row.id}
-									row={row}
-									index={index}
-									setAnchorEl={setAnchorEl}
-									anchorEl={anchorEl}
-									selectedData={selectedData}
-									setSelectedData={setSelectedData}
-									handleEdit={handleEdit}
-									handleDelete={handleDelete}
-									handleDuplicate={handleDuplicate}
-									handleCopy={handleCopy}
-									handleCopyTaskQuestion={handleCopyTaskQuestion}
-									classes={classes}
-									columns={columns}
-									data={data}
-									modelId={modelId}
-									customCaptions={customCaptions}
-									access={access}
-								/>
-							))
-						) : (
-							<TableRow>
-								{headers.map((head, i) => {
-									if (i === 0) {
-										return <TableCell key={head.id}>No Record Found</TableCell>;
-									} else {
-										return <TableCell key={head.id}></TableCell>;
-									}
+			<Table aria-label="Table" className={classes.table}>
+				<AT.TableHead>
+					<TableRow className={classes.tableHead}>
+						{headers.map((header, index) => (
+							<TableCell
+								key={header.id}
+								onClick={() => {
+									header?.isSort && handleSortClick(columns[index]);
+								}}
+								style={{ width: header?.width || "auto" }}
+								className={clsx(classes.nameRow, {
+									[classes.selectedTableHeadRow]:
+										currentTableSort[0] === columns[index],
+									[classes.tableHeadRow]:
+										currentTableSort[0] !== columns[index],
 								})}
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</AT.TableContainer>
+							>
+								<AT.CellContainer className="flex justify-between">
+									{header.name}
+									{header.isSort && (
+										<div className="arrow">
+											<AT.DescArrow
+												fill={
+													currentTableSort[0] === columns[index] &&
+													currentTableSort[1] === "asc"
+														? "#D2D2D9"
+														: "#F9F9FC"
+												}
+												className="arrowUp"
+											/>
+											<AT.DefaultArrow
+												fill={
+													currentTableSort[0] === columns[index] &&
+													currentTableSort[1] === "desc"
+														? "#D2D2D9"
+														: "#F9F9FC"
+												}
+												className="arrowDown"
+											/>
+										</div>
+									)}
+								</AT.CellContainer>
+							</TableCell>
+						))}
+					</TableRow>
+				</AT.TableHead>
+				<TableBody>
+					{data.length !== 0 ? (
+						data.map((row, index) => (
+							<ModelTaskRow
+								key={row.id}
+								row={row}
+								index={index}
+								setAnchorEl={setAnchorEl}
+								anchorEl={anchorEl}
+								selectedData={selectedData}
+								setSelectedData={setSelectedData}
+								handleEdit={handleEdit}
+								handleDelete={handleDelete}
+								handleDuplicate={handleDuplicate}
+								handleCopy={handleCopy}
+								handleCopyTaskQuestion={handleCopyTaskQuestion}
+								classes={classes}
+								columns={columns}
+								data={data}
+								modelId={modelId}
+								customCaptions={customCaptions}
+								access={access}
+							/>
+						))
+					) : (
+						<TableRow>
+							{headers.map((head, i) => {
+								if (i === 0) {
+									return <TableCell key={head.id}>No Record Found</TableCell>;
+								} else {
+									return <TableCell key={head.id}></TableCell>;
+								}
+							})}
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
 		</>
 	);
 };
