@@ -11,7 +11,7 @@ const SingleComponent = ({ access, ...route }) => {
 		},
 	} = route;
 
-	const navigation = ModelDetailNavigation(id);
+	const navigation = ModelDetailNavigation(id, state.modelDetail);
 
 	const openAddModel = () => dispatch({ type: "TOGGLE_ADD", payload: true });
 
