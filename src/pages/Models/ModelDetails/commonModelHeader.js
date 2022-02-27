@@ -63,6 +63,7 @@ const ModelWrapper = ({
 	onClickShowChangeStatus,
 	onNavClick,
 	isPasteTaskDisabled,
+	modelType,
 }) => {
 	const classes = useStyles();
 
