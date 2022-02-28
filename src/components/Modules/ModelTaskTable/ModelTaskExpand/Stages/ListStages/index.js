@@ -30,38 +30,36 @@ function ListStages({
 	}
 
 	return (
-		<AT.TableContainer component={Paper} elevation={0}>
-			<Table aria-label="Table">
-				<AT.TableHead>
-					<TableRow className={classes.tableHead}>
-						{headers.map((header) => (
-							<TableCell key={header} className={classes.tableHeadRow}>
-								<AT.CellContainer className="flex justify-between">
-									{header}
-								</AT.CellContainer>
-							</TableCell>
-						))}
-					</TableRow>
-				</AT.TableHead>
-				<TableBody>
-					{data.length === 0 && "No Records Found"}
-					{data.map((x) => (
-						<Row
-							x={x}
-							key={x.modelVersionStageID}
-							assets={assets}
-							count={count}
-							postStage={postStage}
-							deleteStage={deleteStage}
-							patchStage={patchStage}
-							pageChange={pageChange}
-							modelType={modelType}
-							modelAccess={modelAccess}
-						/>
+		<Table aria-label="Table" className={classes.table}>
+			<AT.TableHead>
+				<TableRow className={classes.tableHead}>
+					{headers.map((header) => (
+						<TableCell key={header} className={classes.tableHeadRow}>
+							<AT.CellContainer className="flex justify-between">
+								{header}
+							</AT.CellContainer>
+						</TableCell>
 					))}
-				</TableBody>
-			</Table>
-		</AT.TableContainer>
+				</TableRow>
+			</AT.TableHead>
+			<TableBody>
+				{data.length === 0 && "No Records Found"}
+				{data.map((x) => (
+					<Row
+						x={x}
+						key={x.modelVersionStageID}
+						assets={assets}
+						count={count}
+						postStage={postStage}
+						deleteStage={deleteStage}
+						patchStage={patchStage}
+						pageChange={pageChange}
+						modelType={modelType}
+						modelAccess={modelAccess}
+					/>
+				))}
+			</TableBody>
+		</Table>
 	);
 }
 

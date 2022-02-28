@@ -133,6 +133,7 @@ function Row({
 						width="100%"
 						selectedValue={state.selectedAsset}
 						onChange={onAssetChange}
+						showClear
 						dataSource={assets}
 						selectdValueToshow="name"
 						count={count}

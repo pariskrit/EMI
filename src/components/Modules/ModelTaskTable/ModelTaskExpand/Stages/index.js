@@ -29,6 +29,15 @@ const useStyles = makeStyles({
 		borderRightStyle: "solid",
 		borderRightWidth: "1px",
 	},
+	table: {
+		borderStyle: "solid",
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		overflowX: "auto",
+		borderColor: ColourConstants.tableBorder,
+		borderWidth: 1,
+		borderRadius: 0,
+	},
 });
 
 const Stages = ({ taskInfo, getError, isMounted }) => {
@@ -118,7 +127,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 	const handlePatch = async (id, asset) => {
 		try {
 			let result = await patchStages(id, [
-				{ op: "replace", path: "siteAssetID", value: asset.id },
+				{ op: "replace", path: "siteAssetID", value: asset.id || null },
 			]);
 			if (!isMounted.isAborted) {
 				if (result.status) {
