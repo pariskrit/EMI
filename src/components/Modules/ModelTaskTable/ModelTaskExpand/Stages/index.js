@@ -45,7 +45,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		loading: false,
 		data: [],
 		assets: [],
-		count: 0,
+		assetCount: 0,
+		stageCount: taskInfo.stageCount,
 	});
 
 	const setState = (state) => setStages((th) => ({ ...th, ...state }));
@@ -57,7 +58,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 
 	const fetchTaskStages = async () => {
 		try {
-			let result = await getStages(taskInfo.taskId);
+			let result = await getStages(taskInfo.id);
 			if (result.status) {
 				if (!isMounted.aborted) setState({ data: result.data });
 			} else {
@@ -88,7 +89,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		try {
 			let result = await getSiteAssetsCount(me?.siteID);
 			if (result.status) {
-				if (!isMounted.aborted) setState({ count: result.data });
+				if (!isMounted.aborted) setState({ assetCount: result.data });
 			} else {
 				errorResponse(result);
 			}
@@ -147,7 +148,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 	};
 
 	const handlePost = async (data) => {
-		data["ModelVersionTaskID"] = taskInfo.taskId;
+		data["ModelVersionTaskID"] = taskInfo.id;
 		try {
 			let res = await postStages(data);
 			if (!isMounted.aborted) {
@@ -160,7 +161,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							  }
 							: x
 					);
-					setState({ data: updated });
+					setState({ data: updated, stageCount: stages.stageCount + 1 });
 					return { success: true };
 				} else {
 					// Post is for selected so if error, then selected will be deselected
@@ -187,7 +188,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							  }
 							: x
 					);
-					setState({ data: updated });
+					setState({ data: updated, stageCount: stages.stageCount - 1 });
 					return { success: true };
 				} else {
 					// Delete is for deselected so if error, then deselected will be selected
@@ -205,17 +206,18 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 
 	return (
 		<div className={classes.stages}>
-			<h1>Stages ({taskInfo.stageCount})</h1>
+			<h1>Stages ({stages.stageCount})</h1>
 			<ListStages
 				classes={classes}
 				data={stages.data}
 				assets={stages.assets}
-				count={stages.count}
+				count={stages.assetCount}
 				patchStage={handlePatch}
 				postStage={handlePost}
 				deleteStage={handleDelete}
 				modelType={modelType}
 				pageChange={fetchAssets}
+				modelAccess={me?.position?.modelAccess}
 			/>
 		</div>
 	);

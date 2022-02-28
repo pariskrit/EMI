@@ -15,6 +15,7 @@ function Row({
 	patchStage,
 	pageChange,
 	modelType,
+	modelAccess,
 }) {
 	const [state, setStates] = useState({
 		selectedAsset: {
@@ -105,6 +106,7 @@ function Row({
 							<EMICheckbox
 								state={state.selected}
 								changeHandler={handleSelected}
+								disabled={modelAccess === "R"}
 							/>
 						}
 						label={""}
@@ -136,7 +138,7 @@ function Row({
 						count={count}
 						onPageChange={handleAssetDropPage}
 						page={state.page}
-						disabled={!state.selected}
+						disabled={!state.selected || modelAccess === "R"}
 					/>
 				</AT.DataCell>
 			)}

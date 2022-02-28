@@ -21,6 +21,7 @@ function ListStages({
 	patchStage,
 	pageChange,
 	modelType,
+	modelAccess,
 }) {
 	let headers = ["Selected", "Name"];
 	// If modelType is facility based model (F), then asset header column is shown
@@ -55,6 +56,7 @@ function ListStages({
 							patchStage={patchStage}
 							pageChange={pageChange}
 							modelType={modelType}
+							modelAccess={modelAccess}
 						/>
 					))}
 				</TableBody>
