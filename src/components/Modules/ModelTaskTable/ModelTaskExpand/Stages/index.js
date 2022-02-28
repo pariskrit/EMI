@@ -31,14 +31,14 @@ const useStyles = makeStyles({
 	},
 });
 
-const Stages = ({ taskId, getError, isMounted }) => {
+const Stages = ({ taskInfo, getError, isMounted }) => {
 	const me =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const classes = useStyles();
 	const [
 		{
-			modelDetail: { modelType, stageCount },
+			modelDetail: { modelType },
 		},
 	] = useContext(ModelContext);
 	const [stages, setStages] = useState({
@@ -57,7 +57,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 
 	const fetchTaskStages = async () => {
 		try {
-			let result = await getStages(taskId);
+			let result = await getStages(taskInfo.taskId);
 			if (result.status) {
 				if (!isMounted.aborted) setState({ data: result.data });
 			} else {
@@ -147,7 +147,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 	};
 
 	const handlePost = async (data) => {
-		data["ModelVersionTaskID"] = taskId;
+		data["ModelVersionTaskID"] = taskInfo.taskId;
 		try {
 			let res = await postStages(data);
 			if (!isMounted.aborted) {
@@ -205,7 +205,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 
 	return (
 		<div className={classes.stages}>
-			<h1>Stages ({stageCount})</h1>
+			<h1>Stages ({taskInfo.stageCount})</h1>
 			<ListStages
 				classes={classes}
 				data={stages.data}
