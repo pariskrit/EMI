@@ -64,6 +64,8 @@ const BASE_API_PATH_MODEL_IMPORTS = `${BASE_API_PATH}ModelImports`;
 const BASE_API_PATH_MODEL_ROLES = `${BASE_API_PATH}ModelVersionRoles`;
 const BASE_API_PATH_MODEL_ZONES = `${BASE_API_PATH}ModelVersionZones`;
 const BASE_API_PATH_MODEL_TASKS = `${BASE_API_PATH}ModelVersionTasks`;
+
+const BASE_API_PATH_MODEL_TASKS_STAGES = `${BASE_API_PATH}ModelVersionTaskStages`;
 const BASE_API_PATH_MODEL_ASSETS = `${BASE_API_PATH}ModelAssets`;
 const BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL = `${BASE_API_PATH}ModelVersionTaskIntervals`;
 
@@ -86,6 +88,12 @@ const BASE_API_PATH_MODEL_TASK_ZONES = `${BASE_API_PATH}ModelVersionTaskZones`;
 
 // Model Task RolesContent
 const BASE_API_PATH_MODEL_VERSION_TASK_ROLES = `${BASE_API_PATH}ModelVersionTaskRoles`;
+
+// Model Task Tools
+const BASE_API_PATH_MODEL_TASK_TOOLS = `${BASE_API_PATH}ModelVersionTaskTools`;
+
+// Model Task Permits
+const BASE_API_PATH_MODEL_TASK_PERMITS = `${BASE_API_PATH}ModelVersionTaskPermits`;
 
 export const Apis = {
 	// register email
@@ -201,10 +209,13 @@ export const Apis = {
 	ModelRoles: `${BASE_API_PATH_MODEL_ROLES}`,
 	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
 	ModelTasks: `${BASE_API_PATH_MODEL_TASKS}`,
+	ModelTaskStages: `${BASE_API_PATH_MODEL_TASKS_STAGES}`,
 	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
 	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,
 	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,
 	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
 	ModelVersionTaskRoles: `${BASE_API_PATH_MODEL_VERSION_TASK_ROLES}`,
 	ModelVersionTaskParts: `${BASE_API_PATH_MODEL_TASK_PARTS}`,
+	ModelVersionTaskTools: `${BASE_API_PATH_MODEL_TASK_TOOLS}`,
+	ModelVersionTaskPermits: `${BASE_API_PATH_MODEL_TASK_PERMITS}`,
 };

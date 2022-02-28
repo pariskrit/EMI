@@ -13,7 +13,14 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 
 const AC = ContentStyle();
 
-const ModelAsset = ({ state, dispatch, modelId, getError, access }) => {
+const ModelAsset = ({
+	state,
+	dispatch,
+	modelId,
+	getError,
+	access,
+	history,
+}) => {
 	const {
 		customCaptions: { asset, assetPlural },
 	} =
@@ -97,6 +104,10 @@ const ModelAsset = ({ state, dispatch, modelId, getError, access }) => {
 
 	if (loading) {
 		return <CircularProgress />;
+	}
+
+	if (state.modelDetail.modelType === "F") {
+		history.goBack();
 	}
 
 	return (

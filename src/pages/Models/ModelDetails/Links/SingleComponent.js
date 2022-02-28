@@ -12,6 +12,9 @@ const SingleComponent = ({ access, ...route }) => {
 	} = route;
 
 	const navigation = ModelDetailNavigation(id, state.modelDetail);
+	if (state.modelDetail.modelType === "F") {
+		navigation.splice(1, 1);
+	}
 
 	const openAddModel = () => dispatch({ type: "TOGGLE_ADD", payload: true });
 
@@ -57,6 +60,7 @@ const SingleComponent = ({ access, ...route }) => {
 					dispatch={dispatch}
 					modelId={id}
 					access={access}
+					history={route.history}
 				/>
 			}
 		</div>

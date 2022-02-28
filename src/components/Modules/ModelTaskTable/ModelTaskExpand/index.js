@@ -74,7 +74,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})` && (
-							<Stages />
+							<Stages taskId={taskInfo.id} />
 						)}
 						{current ===
 							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})` && (
@@ -89,9 +89,11 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})` && (
-							<Tools />
+							<Tools taskInfo={taskInfo} access={access} />
 						)}
-						{current === `Permits (${taskInfo?.permitCount})` && <Permits />}
+						{current === `Permits (${taskInfo?.permitCount})` && (
+							<Permits taskInfo={taskInfo} access={access} />
+						)}
 						{current === `${customCaptions?.workbook}` && <WorkBook />}
 						{current === `Images (${taskInfo?.imageCount})` && <Images />}
 						{current ===
