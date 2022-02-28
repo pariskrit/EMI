@@ -128,12 +128,12 @@ function Row({
 						]}
 						columns={[
 							{ id: 1, name: "name" },
-							{ id: 2, name: "Description" },
+							{ id: 2, name: "description" },
 						]}
-						width="100%"
 						selectedValue={state.selectedAsset}
 						onChange={onAssetChange}
 						showClear
+						showHeader
 						dataSource={assets}
 						selectdValueToshow="name"
 						count={count}

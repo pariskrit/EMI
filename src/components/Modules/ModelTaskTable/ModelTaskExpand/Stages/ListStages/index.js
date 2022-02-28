@@ -1,11 +1,5 @@
 import React from "react";
-import {
-	Paper,
-	Table,
-	TableCell,
-	TableBody,
-	TableRow,
-} from "@material-ui/core";
+import { Table, TableCell, TableBody, TableRow } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import Row from "./Row";
 
