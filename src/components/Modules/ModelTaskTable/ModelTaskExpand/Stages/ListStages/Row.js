@@ -1,10 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { TableRow, FormGroup, FormControlLabel } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
 
 const AT = TableStyle();
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
 
 function Row({
 	x,
@@ -97,6 +109,17 @@ function Row({
 		}
 	};
 
+	const handleServierSideSearch = useCallback(
+		debounce(async (searchTxt) => {
+			if (searchTxt) {
+				pageChange({ pNo: state.page, pSize: 10, search: searchTxt }, assets);
+			} else {
+				handleAssetDropPage(1, assets);
+			}
+		}, 500),
+		[]
+	);
+
 	return (
 		<TableRow>
 			<AT.DataCell style={{ width: "5%" }}>
@@ -128,18 +151,19 @@ function Row({
 						]}
 						columns={[
 							{ id: 1, name: "name" },
-							{ id: 2, name: "Description" },
+							{ id: 2, name: "description" },
 						]}
-						width="100%"
 						selectedValue={state.selectedAsset}
 						onChange={onAssetChange}
 						showClear
+						showHeader
 						dataSource={assets}
 						selectdValueToshow="name"
 						count={count}
 						onPageChange={handleAssetDropPage}
 						page={state.page}
 						disabled={!state.selected || modelAccess === "R"}
+						handleServierSideSearch={handleServierSideSearch}
 					/>
 				</AT.DataCell>
 			)}
