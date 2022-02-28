@@ -29,9 +29,18 @@ const useStyles = makeStyles({
 		borderRightStyle: "solid",
 		borderRightWidth: "1px",
 	},
+	table: {
+		borderStyle: "solid",
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		overflowX: "auto",
+		borderColor: ColourConstants.tableBorder,
+		borderWidth: 1,
+		borderRadius: 0,
+	},
 });
 
-const Stages = ({ taskId, getError, isMounted }) => {
+const Stages = ({ taskInfo, getError, isMounted }) => {
 	const me =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -45,7 +54,8 @@ const Stages = ({ taskId, getError, isMounted }) => {
 		loading: false,
 		data: [],
 		assets: [],
-		count: 0,
+		assetCount: 0,
+		stageCount: taskInfo.stageCount,
 	});
 
 	const setState = (state) => setStages((th) => ({ ...th, ...state }));
@@ -57,7 +67,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 
 	const fetchTaskStages = async () => {
 		try {
-			let result = await getStages(taskId);
+			let result = await getStages(taskInfo.id);
 			if (result.status) {
 				if (!isMounted.aborted) setState({ data: result.data });
 			} else {
@@ -88,7 +98,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 		try {
 			let result = await getSiteAssetsCount(me?.siteID);
 			if (result.status) {
-				if (!isMounted.aborted) setState({ count: result.data });
+				if (!isMounted.aborted) setState({ assetCount: result.data });
 			} else {
 				errorResponse(result);
 			}
@@ -117,7 +127,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 	const handlePatch = async (id, asset) => {
 		try {
 			let result = await patchStages(id, [
-				{ op: "replace", path: "siteAssetID", value: asset.id },
+				{ op: "replace", path: "siteAssetID", value: asset.id || null },
 			]);
 			if (!isMounted.isAborted) {
 				if (result.status) {
@@ -147,7 +157,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 	};
 
 	const handlePost = async (data) => {
-		data["ModelVersionTaskID"] = taskId;
+		data["ModelVersionTaskID"] = taskInfo.id;
 		try {
 			let res = await postStages(data);
 			if (!isMounted.aborted) {
@@ -160,7 +170,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 							  }
 							: x
 					);
-					setState({ data: updated });
+					setState({ data: updated, stageCount: stages.stageCount + 1 });
 					return { success: true };
 				} else {
 					// Post is for selected so if error, then selected will be deselected
@@ -187,7 +197,7 @@ const Stages = ({ taskId, getError, isMounted }) => {
 							  }
 							: x
 					);
-					setState({ data: updated });
+					setState({ data: updated, stageCount: stages.stageCount - 1 });
 					return { success: true };
 				} else {
 					// Delete is for deselected so if error, then deselected will be selected
@@ -205,17 +215,18 @@ const Stages = ({ taskId, getError, isMounted }) => {
 
 	return (
 		<div className={classes.stages}>
-			<h1>Stages</h1>
+			<h1>Stages ({stages.stageCount})</h1>
 			<ListStages
 				classes={classes}
 				data={stages.data}
 				assets={stages.assets}
-				count={stages.assets}
+				count={stages.assetCount}
 				patchStage={handlePatch}
 				postStage={handlePost}
 				deleteStage={handleDelete}
 				modelType={modelType}
 				pageChange={fetchAssets}
+				modelAccess={me?.position?.modelAccess}
 			/>
 		</div>
 	);

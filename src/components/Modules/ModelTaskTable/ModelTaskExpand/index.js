@@ -74,7 +74,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})` && (
-							<Stages taskId={taskInfo.id} />
+							<Stages taskInfo={taskInfo} />
 						)}
 						{current ===
 							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})` && (

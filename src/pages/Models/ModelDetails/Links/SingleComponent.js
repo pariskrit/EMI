@@ -11,7 +11,7 @@ const SingleComponent = ({ access, ...route }) => {
 		},
 	} = route;
 
-	const navigation = ModelDetailNavigation(id);
+	const navigation = ModelDetailNavigation(id, state.modelDetail);
 	if (state.modelDetail.modelType === "F") {
 		navigation.splice(1, 1);
 	}
