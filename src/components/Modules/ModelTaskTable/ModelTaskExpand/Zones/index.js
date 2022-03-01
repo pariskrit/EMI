@@ -207,7 +207,7 @@ const Zones = ({ taskInfo, access }) => {
 			<div className="detailsContainer" style={{ alignItems: "center" }}>
 				<DetailsPanel
 					header={customCaptions?.zonePlural}
-					dataCount={zones.length}
+					dataCount={zones.filter((z) => Boolean(z.id)).length}
 				/>
 			</div>
 			<TaskZoneListTable
