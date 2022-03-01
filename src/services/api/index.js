@@ -86,6 +86,9 @@ const BASE_API_PATH_MODEL_TASK_PARTS = `${BASE_API_PATH}ModelVersionTaskParts`;
 // Model Task zones
 const BASE_API_PATH_MODEL_TASK_ZONES = `${BASE_API_PATH}ModelVersionTaskZones`;
 
+//Model Task Images
+const BASE_API_PATH_MODEL_TASK_IMAGES = `${BASE_API_PATH}ModelVersionTaskImages`;
+
 // Model Task RolesContent
 const BASE_API_PATH_MODEL_VERSION_TASK_ROLES = `${BASE_API_PATH}ModelVersionTaskRoles`;
 
@@ -216,6 +219,7 @@ export const Apis = {
 	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
 	ModelVersionTaskRoles: `${BASE_API_PATH_MODEL_VERSION_TASK_ROLES}`,
 	ModelVersionTaskParts: `${BASE_API_PATH_MODEL_TASK_PARTS}`,
+	ModelVersionTaskImages: `${BASE_API_PATH_MODEL_TASK_IMAGES}`,
 	ModelVersionTaskTools: `${BASE_API_PATH_MODEL_TASK_TOOLS}`,
 	ModelVersionTaskPermits: `${BASE_API_PATH_MODEL_TASK_PERMITS}`,
 };

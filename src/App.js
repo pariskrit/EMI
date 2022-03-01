@@ -7,20 +7,17 @@ import {
 	Redirect,
 } from "react-router-dom";
 import MainApp from "pages";
-// import Home from "pages/Home/Home";
 import Launch from "pages/Launch/Launch";
 import Login from "pages/Login/Login";
-import "./App.scss";
-// import ApplicationPortal from "pages/ApplicationPortal";
 import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
-import Test from "pages/Test";
-
+// import Test from "pages/Test";
 // import password forget,register reset from "pages/ForgotPassword", "pages/ResetPassword" and "pages/RegisterUser"
 import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "pages/ResetPassword/ResetPassword";
 import RegisterUserEmail from "pages/RegisterUser/RegisterUser";
 import { loginPath } from "helpers/routePaths";
+import "./App.scss";
 
 function App() {
 	return (
@@ -47,7 +44,7 @@ function App() {
 						<Launch />
 					</Route>
 					<ProtectedRoute path="/app" component={MainApp} />
-					<Route exact path="/test" component={Test} />
+					{/* <Route exact path="/test" component={Test} /> */}
 				</Switch>
 			</Router>
 		</div>
