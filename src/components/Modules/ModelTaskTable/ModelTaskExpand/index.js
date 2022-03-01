@@ -94,7 +94,9 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						{current === `Permits (${taskInfo?.permitCount})` && (
 							<Permits taskInfo={taskInfo} access={access} />
 						)}
-						{current === `${customCaptions?.workbook}` && <WorkBook />}
+						{current === `${customCaptions?.workbook}` && (
+							<WorkBook taskInfo={taskInfo} access={access} />
+						)}
 						{current === `Images (${taskInfo?.imageCount})` && <Images />}
 						{current ===
 							`${customCaptions?.questionPlural} (${taskInfo?.questionCount})` && (

@@ -91,3 +91,47 @@ export const NotificationAlerts = {
 	info: "#307AD6",
 	warning: "#ED8738",
 };
+
+export const workbookFields = (customCaptions) => [
+	{ id: "1", name: "purpose", label: `${customCaptions.purpose}` },
+	{ id: "2", name: "procedure", label: `${customCaptions.procedure}` },
+	{
+		id: "3",
+		name: "possibleHazards",
+		label: `${customCaptions.possibleHazardsPlural}`,
+	},
+	{
+		id: "4",
+		name: "additionalPPE",
+		label: `${customCaptions.additionalPPE}`,
+	},
+	{
+		id: "5",
+		name: "specification",
+		label: `${customCaptions.specification}`,
+	},
+	{
+		id: "6",
+		name: "contaminationControl",
+		label: `${customCaptions.contaminationControlsPlural}`,
+	},
+	{
+		id: "7",
+		name: "otherInformation",
+		label: `${customCaptions.otherInformation}`,
+	},
+	{
+		id: "8",
+		name: "correctiveActions",
+		label: `${customCaptions.correctiveActionsPlural}`,
+	},
+	{
+		id: "9",
+		name: "isolations",
+		label: `${customCaptions.isolationsPlural}`,
+	},
+	{ id: "10", name: "controls", label: `${customCaptions.controlsPlural}` },
+	{ id: "11", name: "customField1", label: `${customCaptions.customField1}` },
+	{ id: "12", name: "customField2", label: `${customCaptions.customField2}` },
+	{ id: "13", name: "customField3", label: `${customCaptions.customField3}` },
+];
