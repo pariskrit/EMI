@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-	Dialog,
-	DialogTitle,
-	LinearProgress,
-	makeStyles,
-} from "@material-ui/core";
+import { Dialog, DialogTitle, LinearProgress } from "@material-ui/core";
 import * as yup from "yup";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
@@ -29,10 +24,6 @@ const schema = yup.object({
 
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
-	paper: { minWidth: "90%", height: 250 },
-});
-
 const defaultInput = {
 	description: "",
 	image: null,
@@ -56,8 +47,6 @@ const AddEditModel = ({
 	handleComplete,
 	errorResponse,
 }) => {
-	const classes = useStyles();
-
 	const [input, setInput] = useState(defaultInput);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
@@ -150,11 +139,12 @@ const AddEditModel = ({
 
 	return (
 		<Dialog
-			classes={{ paper: classes.paper }}
 			open={open}
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
+			className="application-dialog"
+			fullWidth
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -175,7 +165,7 @@ const AddEditModel = ({
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
 				<ADD.InputContainer>
-					<ADD.LeftInputContainer>
+					<ADD.LeftInputContainer style={{ width: "100%" }}>
 						<ADD.NameLabel>
 							Image<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
@@ -193,6 +183,7 @@ const AddEditModel = ({
 									imageURL: URL.createObjectURL(e[0]),
 								});
 							}}
+							isReadOnly={imageDetail ? true : false}
 						/>
 						<p style={{ color: "red" }}>
 							{errors.imageURL === null ? null : errors.imageURL}
@@ -210,13 +201,14 @@ const AddEditModel = ({
 									errors.description === null ? null : errors.description
 								}
 								variant="outlined"
-								size="small"
+								size="medium"
 								value={input.description}
 								autoFocus
 								onKeyDown={handleEnterPress}
 								onChange={(e) => {
 									setInput({ ...input, description: e.target.value });
 								}}
+								fullWidth
 							/>
 						</ADD.RightInputContainer>
 					) : null}
