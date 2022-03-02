@@ -1,15 +1,16 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom";
 import ModelDetailContext from "contexts/ModelDetailContext";
 import ModelDetails from "..";
 import routeList from "./routeList";
 import SingleComponent from "./SingleComponent";
 import { modelDetailsPath } from "helpers/routePaths";
-import { Route, Switch } from "react-router-dom";
 
 const ModelDetailPage = ({ access }) => {
 	const { customCaptions } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
+
 	return (
 		<ModelDetailContext>
 			<ModelDetails>
