@@ -187,8 +187,8 @@ const Images = ({ taskId, getError }) => {
 					handleDragEnd={handleDragEnd}
 					headers={["Image", "Description"]}
 					columns={[
-						{ id: 1, name: "image", style: { width: "50%" } },
-						{ id: 2, name: "description", style: { width: "50%" } },
+						{ id: 1, name: "image", style: { width: "50vw" } },
+						{ id: 2, name: "description", style: { width: "50vw" } },
 					]}
 					isModelEditable
 					menuData={[
