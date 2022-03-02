@@ -175,28 +175,7 @@ const AddEditModel = ({
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
 				<ADD.InputContainer>
-					{imageDetail ? (
-						<ADD.LeftInputContainer>
-							<ADD.NameLabel>
-								Description<ADD.RequiredStar>*</ADD.RequiredStar>
-							</ADD.NameLabel>
-							<ADD.NameInput
-								error={errors.description === null ? false : true}
-								helperText={
-									errors.description === null ? null : errors.description
-								}
-								variant="outlined"
-								size="small"
-								value={input.description}
-								autoFocus
-								onKeyDown={handleEnterPress}
-								onChange={(e) => {
-									setInput({ ...input, description: e.target.value });
-								}}
-							/>
-						</ADD.LeftInputContainer>
-					) : null}
-					<ADD.RightInputContainer>
+					<ADD.LeftInputContainer>
 						<ADD.NameLabel>
 							Image<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
@@ -219,7 +198,28 @@ const AddEditModel = ({
 							{errors.imageURL === null ? null : errors.imageURL}
 							{errors.image === null ? null : errors.image}
 						</p>
-					</ADD.RightInputContainer>
+					</ADD.LeftInputContainer>
+					{imageDetail ? (
+						<ADD.RightInputContainer>
+							<ADD.NameLabel>
+								Description<ADD.RequiredStar>*</ADD.RequiredStar>
+							</ADD.NameLabel>
+							<ADD.NameInput
+								error={errors.description === null ? false : true}
+								helperText={
+									errors.description === null ? null : errors.description
+								}
+								variant="outlined"
+								size="small"
+								value={input.description}
+								autoFocus
+								onKeyDown={handleEnterPress}
+								onChange={(e) => {
+									setInput({ ...input, description: e.target.value });
+								}}
+							/>
+						</ADD.RightInputContainer>
+					) : null}
 				</ADD.InputContainer>
 			</ADD.DialogContent>
 		</Dialog>

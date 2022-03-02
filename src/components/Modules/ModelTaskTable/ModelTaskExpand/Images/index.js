@@ -185,10 +185,10 @@ const Images = ({ taskId, getError }) => {
 				<DragAndDropTable
 					data={images.data}
 					handleDragEnd={handleDragEnd}
-					headers={["Description", "Image"]}
+					headers={["Image", "Description"]}
 					columns={[
-						{ id: 1, name: "description", style: { width: "50%" } },
-						{ id: 2, name: "image", style: { width: "50%" } },
+						{ id: 1, name: "image", style: { width: "50%" } },
+						{ id: 2, name: "description", style: { width: "50%" } },
 					]}
 					isModelEditable
 					menuData={[
