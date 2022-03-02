@@ -3,7 +3,7 @@ import { ModelContext } from "contexts/ModelDetailContext";
 import ModelWrapper from "../commonModelHeader";
 import ModelDetailNavigation from "constants/navigation/modelDetailNavigation";
 
-const SingleComponent = ({ access, ...route }) => {
+const SingleComponent = ({ access, customCaptions, ...route }) => {
 	const [state, dispatch] = React.useContext(ModelContext);
 	const {
 		match: {
@@ -11,7 +11,11 @@ const SingleComponent = ({ access, ...route }) => {
 		},
 	} = route;
 
-	const navigation = ModelDetailNavigation(id, state.modelDetail);
+	const navigation = ModelDetailNavigation(
+		id,
+		state.modelDetail,
+		customCaptions
+	);
 	if (state.modelDetail.modelType === "F") {
 		navigation.splice(1, 1);
 	}

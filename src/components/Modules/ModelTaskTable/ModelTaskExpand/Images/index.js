@@ -42,7 +42,13 @@ const Images = ({ taskId, getError }) => {
 		return {
 			...x,
 			description: x.description === null ? "" : x.description,
-			image: <TabelRowImage imageURL={x.imageURL} />,
+			image: (
+				<TabelRowImage
+					imageURL={x.imageURL}
+					imageHeight={100}
+					imageWidth={100}
+				/>
+			),
 		};
 	}
 
@@ -185,10 +191,10 @@ const Images = ({ taskId, getError }) => {
 				<DragAndDropTable
 					data={images.data}
 					handleDragEnd={handleDragEnd}
-					headers={["Description", "Image"]}
+					headers={["Image", "Description"]}
 					columns={[
-						{ id: 1, name: "description", style: { width: "50%" } },
-						{ id: 2, name: "image", style: { width: "50%" } },
+						{ id: 1, name: "image", style: { width: "50vw" } },
+						{ id: 2, name: "description", style: { width: "50vw" } },
 					]}
 					isModelEditable
 					menuData={[

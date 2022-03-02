@@ -12,7 +12,7 @@ import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
 import Task from "../ModelTasks/Task";
 
-const routeList = [
+const routeList = (detail, customCaptions) => [
 	{
 		id: 1,
 		name: "Details",
@@ -25,7 +25,7 @@ const routeList = [
 	},
 	{
 		id: 3,
-		name: "Asset",
+		name: `${customCaptions.asset} (${detail.assetCount})`,
 		path: modelAssest,
 		component: ModelAsset,
 		showSave: false,
@@ -36,7 +36,7 @@ const routeList = [
 	},
 	{
 		id: 2,
-		name: "Zones",
+		name: `${customCaptions.zonePlural} (${detail.zoneCount})`,
 		path: modelZones,
 		component: Zones,
 		showSave: false,
@@ -47,7 +47,7 @@ const routeList = [
 	},
 	{
 		id: 4,
-		name: "Stages",
+		name: `${customCaptions.stagePlural} (${detail.stageCount})`,
 		path: modelStages,
 		component: ModelStage,
 		showAdd: true,
@@ -58,7 +58,7 @@ const routeList = [
 	},
 	{
 		id: 5,
-		name: "Roles",
+		name: `${customCaptions.rolePlural} (${detail.roleCount})`,
 		path: modelRoles,
 		component: Roles,
 		showSave: false,
@@ -69,7 +69,7 @@ const routeList = [
 	},
 	{
 		id: 8,
-		name: "Tasks",
+		name: `${customCaptions.taskPlural} (${detail.taskCount})`,
 		path: modelTask,
 		component: Task,
 		showSave: false,

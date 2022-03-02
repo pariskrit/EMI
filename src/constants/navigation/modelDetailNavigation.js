@@ -14,7 +14,7 @@ import {
  * NOTE: This is currently a helper. In production, this data may come from either the API
  * or can be hard coded. Probably not approproate as a helper function
  */
-const ModelDetailNavigation = (id, detail) => {
+const ModelDetailNavigation = (id, detail, customCaptions) => {
 	// Setting navigation links with correct Model Detail ID
 	const links = `${modelsPath}/${id}`;
 	const navigation = [
@@ -23,31 +23,31 @@ const ModelDetailNavigation = (id, detail) => {
 			url: links,
 		},
 		{
-			name: `Asset (${detail.assetCount})`,
+			name: `${customCaptions.asset} (${detail.assetCount})`,
 			url: links + modelAssest,
 		},
 		{
-			name: `Stages (${detail.stageCount})`,
+			name: `${customCaptions.stagePlural} (${detail.stageCount})`,
 			url: links + modelStages,
 		},
 		{
-			name: `Zones (${detail.zoneCount})`,
+			name: `${customCaptions.zonePlural} (${detail.zoneCount})`,
 			url: links + modelZones,
 		},
 		{
-			name: `Intervals (${detail.intervalCount})`,
+			name: `${customCaptions.intervalPlural} (${detail.intervalCount})`,
 			url: links + modelIntervals,
 		},
 		{
-			name: `Roles (${detail.roleCount})`,
+			name: `${customCaptions.rolePlural} (${detail.roleCount})`,
 			url: links + modelRoles,
 		},
 		{
-			name: `Questions (${detail.questionCount})`,
+			name: `${customCaptions.questionPlural} (${detail.questionCount})`,
 			url: links + modelQuestions,
 		},
 		{
-			name: `Tasks (${detail.taskCount})`,
+			name: `${customCaptions.taskPlural} (${detail.taskCount})`,
 			url: links + modelTask,
 		},
 		{
