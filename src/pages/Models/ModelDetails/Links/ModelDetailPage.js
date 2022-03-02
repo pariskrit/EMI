@@ -7,21 +7,31 @@ import { modelDetailsPath } from "helpers/routePaths";
 import { Route, Switch } from "react-router-dom";
 
 const ModelDetailPage = ({ access }) => {
+	const { customCaptions } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 	return (
 		<ModelDetailContext>
 			<ModelDetails>
-				<Switch>
-					{routeList.map((route) => (
-						<Route
-							key={route.id}
-							render={(props) => (
-								<SingleComponent {...route} {...props} access={access} />
-							)}
-							exact
-							path={modelDetailsPath + route.path}
-						/>
-					))}
-				</Switch>
+				{(modelDetail) => (
+					<Switch>
+						{routeList(modelDetail, customCaptions).map((route) => (
+							<Route
+								key={route.id}
+								render={(props) => (
+									<SingleComponent
+										{...route}
+										{...props}
+										access={access}
+										customCaptions={customCaptions}
+									/>
+								)}
+								exact
+								path={modelDetailsPath + route.path}
+							/>
+						))}
+					</Switch>
+				)}
 			</ModelDetails>
 		</ModelDetailContext>
 	);

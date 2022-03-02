@@ -6,7 +6,7 @@ import { getModelDetails } from "services/models/modelDetails/details";
 
 function ModelDetails(props) {
 	// eslint-disable-next-line no-unused-vars
-	const [_, dispatch] = useContext(ModelContext);
+	const [state, dispatch] = useContext(ModelContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const { id } = useParams();
 
@@ -23,7 +23,7 @@ function ModelDetails(props) {
 	if (isLoading) {
 		return <CircularProgress />;
 	}
-	return <>{props.children}</>;
+	return <>{props.children(state.modelDetail)}</>;
 }
 
 export default ModelDetails;
