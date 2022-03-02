@@ -42,7 +42,13 @@ const Images = ({ taskId, getError }) => {
 		return {
 			...x,
 			description: x.description === null ? "" : x.description,
-			image: <TabelRowImage imageURL={x.imageURL} />,
+			image: (
+				<TabelRowImage
+					imageURL={x.imageURL}
+					imageHeight={100}
+					imageWidth={100}
+				/>
+			),
 		};
 	}
 
