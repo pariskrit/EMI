@@ -11,6 +11,7 @@ import GeneralButton from "components/Elements/GeneralButton";
 import AddEditModel from "./AddEditModel";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import TabelRowImage from "components/Elements/TabelRowImage";
+import DetailsPanel from "components/Elements/DetailsPanel";
 
 const useStyles = makeStyles({
 	images: {
@@ -192,7 +193,7 @@ const Images = ({ taskInfo, getError }) => {
 			/>
 			<div className={classes.images}>
 				<div className={classes.header}>
-					<h1>Images ({images.count})</h1>
+					<DetailsPanel header={`Images`} dataCount={images.count} />
 					<GeneralButton onClick={() => setState({ open: true })}>
 						Add Image
 					</GeneralButton>
