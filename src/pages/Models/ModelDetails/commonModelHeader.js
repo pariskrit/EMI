@@ -3,10 +3,11 @@ import RestoreIcon from "@material-ui/icons/Restore";
 import NavDetails from "components/Elements/NavDetails";
 import NavButtons from "components/Elements/NavButtons";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useContext } from "react";
 import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import { modelsPath } from "helpers/routePaths";
+import { ModelContext } from "contexts/ModelDetailContext";
 const AT = ActionButtonStyle();
 
 const media = "@media (max-width: 414px)";
@@ -67,6 +68,8 @@ const ModelWrapper = ({
 }) => {
 	const classes = useStyles();
 
+	const [modelDetail] = useContext(ModelContext);
+
 	return (
 		<div className="container">
 			<div className={"topContainerCustomCaptions"}>
@@ -75,7 +78,7 @@ const ModelWrapper = ({
 					lastSaved={lastSaved}
 					staticCrumbs={[
 						{ id: 1, name: "Models", url: modelsPath },
-						{ id: 2, name: ModelName },
+						{ id: 2, name: modelDetail?.modelDetail?.name },
 					]}
 				/>
 				<div

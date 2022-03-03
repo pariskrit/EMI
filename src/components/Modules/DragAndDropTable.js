@@ -41,9 +41,6 @@ const useStyles = makeStyles({
 		fontWeight: "bold",
 		color: "#FFFFFF",
 	},
-	nameRow: {
-		width: "40%",
-	},
 	clientsRow: {
 		width: "20%",
 	},
@@ -104,10 +101,7 @@ const DragAndDropTable = ({
 					<AT.TableHead>
 						<TableRow className={classes.tableHead}>
 							{headers.map((header) => (
-								<TableCell
-									key={header}
-									className={clsx(classes.tableHeadRow, classes.nameRow)}
-								>
+								<TableCell key={header} className={clsx(classes.tableHeadRow)}>
 									<AT.CellContainer className="flex justify-between">
 										{header}
 									</AT.CellContainer>
@@ -139,11 +133,7 @@ const DragAndDropTable = ({
 												ref={provider.innerRef}
 											>
 												{columns.map((col, i, arr) => (
-													<AT.DataCell
-														key={col.id}
-														className={classes.nameRow}
-														style={col?.style}
-													>
+													<AT.DataCell key={col.id} style={col?.style}>
 														<AT.CellContainer key={col}>
 															<AT.TableBodyText>
 																{i === 0 ? (
@@ -155,18 +145,14 @@ const DragAndDropTable = ({
 																			gap: 10,
 																		}}
 																	>
-																		{!disableDnd && (
-																			<span
-																				{...provider.dragHandleProps}
-																				ref={provider.innerRef}
-																				className="flex"
-																			>
-																				<DragIndicatorIcon />
-																			</span>
-																		)}
-																		<span style={{ marginTop: "2.5px" }}>
-																			{row[col.name]}
+																		<span
+																			{...provider.dragHandleProps}
+																			ref={provider.innerRef}
+																			className="flex"
+																		>
+																			<DragIndicatorIcon />
 																		</span>
+																		<span>{row[col.name]}</span>
 																	</span>
 																) : (
 																	row[col.name]
