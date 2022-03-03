@@ -98,7 +98,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 							<WorkBook taskInfo={taskInfo} access={access} />
 						)}
 						{current === `Images (${taskInfo?.imageCount})` && (
-							<Images taskId={taskInfo.id} />
+							<Images taskInfo={taskInfo} />
 						)}
 						{current ===
 							`${customCaptions?.questionPlural} (${taskInfo?.questionCount})` && (
