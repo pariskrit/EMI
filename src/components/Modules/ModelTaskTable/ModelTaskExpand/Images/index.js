@@ -141,15 +141,16 @@ const Images = ({ taskInfo, getError }) => {
 		setState({ open: true, imageId: id });
 	};
 
-	const handleAddEditComplete = (description) => {
+	const handleAddEditComplete = (data) => {
 		if (images.imageId) {
 			const updatedData = images.data.map((x) =>
-				x.id === images.imageId ? { ...x, description } : x
+				x.id === images.imageId ? { ...x, description: data } : x
 			);
 			setImage({ data: updatedData });
 		} else {
-			fetchTaskImages();
-			setState({ count: images.count + 1 });
+			const mainData = [...images.data];
+			mainData.push(data);
+			setState({ count: images.count + 1, data: mainData });
 		}
 	};
 
