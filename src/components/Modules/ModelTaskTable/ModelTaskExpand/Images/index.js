@@ -45,8 +45,8 @@ const Images = ({ taskId, getError }) => {
 			image: (
 				<TabelRowImage
 					imageURL={x.imageURL}
-					imageHeight={100}
-					imageWidth={100}
+					imageHeight={"100px"}
+					imageWidth={"100px"}
 				/>
 			),
 		};

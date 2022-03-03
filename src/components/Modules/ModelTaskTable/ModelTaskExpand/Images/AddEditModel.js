@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogTitle, LinearProgress } from "@material-ui/core";
+import {
+	Dialog,
+	DialogTitle,
+	LinearProgress,
+	makeStyles,
+} from "@material-ui/core";
 import * as yup from "yup";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
@@ -24,6 +29,11 @@ const schema = yup.object({
 
 const ADD = AddDialogStyle();
 
+const useStyles = makeStyles({
+	imageEdit: { width: "60%", margin: "auto" },
+	image: { width: "100%" },
+});
+
 const defaultInput = {
 	description: "",
 	image: null,
@@ -47,6 +57,7 @@ const AddEditModel = ({
 	handleComplete,
 	errorResponse,
 }) => {
+	const classes = useStyles();
 	const [input, setInput] = useState(defaultInput);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
@@ -144,6 +155,8 @@ const AddEditModel = ({
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
+			maxWidth="md"
+			fullWidth
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -164,7 +177,9 @@ const AddEditModel = ({
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
 				<ADD.InputContainer>
-					<ADD.LeftInputContainer style={{ width: "100%", maxWidth: 310 }}>
+					<ADD.LeftInputContainer
+						className={imageDetail ? classes.imageEdit : classes.image}
+					>
 						<ADD.NameLabel>
 							Image<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
