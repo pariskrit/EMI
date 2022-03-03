@@ -149,7 +149,7 @@ const Images = ({ taskInfo, getError }) => {
 			setImage({ data: updatedData });
 		} else {
 			const mainData = [...images.data];
-			mainData.push(data);
+			mainData.push(apiResponse(data));
 			setState({ count: images.count + 1, data: mainData });
 		}
 	};
