@@ -105,7 +105,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 							<Questions />
 						)}
 						{current === `Attachments (${taskInfo?.documentCount})` && (
-							<Attachments />
+							<Attachments taskInfo={taskInfo} access={access} />
 						)}
 					</div>
 				</>

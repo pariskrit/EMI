@@ -98,6 +98,9 @@ const BASE_API_PATH_MODEL_TASK_TOOLS = `${BASE_API_PATH}ModelVersionTaskTools`;
 // Model Task Permits
 const BASE_API_PATH_MODEL_TASK_PERMITS = `${BASE_API_PATH}ModelVersionTaskPermits`;
 
+// Model Task Attachments
+const BASE_API_PATH_MODEL_TASK_ATTACHMENTS = `${BASE_API_PATH}ModelVersionTaskDocuments`;
+
 export const Apis = {
 	// register email
 	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
@@ -222,4 +225,5 @@ export const Apis = {
 	ModelVersionTaskImages: `${BASE_API_PATH_MODEL_TASK_IMAGES}`,
 	ModelVersionTaskTools: `${BASE_API_PATH_MODEL_TASK_TOOLS}`,
 	ModelVersionTaskPermits: `${BASE_API_PATH_MODEL_TASK_PERMITS}`,
+	ModelVersionTaskAttachments: `${BASE_API_PATH_MODEL_TASK_ATTACHMENTS}`,
 };
