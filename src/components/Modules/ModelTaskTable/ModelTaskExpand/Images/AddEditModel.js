@@ -144,8 +144,6 @@ const AddEditModel = ({
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
-			className="application-dialog"
-			fullWidth
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -166,7 +164,7 @@ const AddEditModel = ({
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
 				<ADD.InputContainer>
-					<ADD.LeftInputContainer style={{ width: "65%", maxWidth: 350 }}>
+					<ADD.LeftInputContainer style={{ width: "100%", maxWidth: 310 }}>
 						<ADD.NameLabel>
 							Image<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
