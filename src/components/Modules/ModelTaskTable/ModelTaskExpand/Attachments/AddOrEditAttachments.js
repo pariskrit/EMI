@@ -102,8 +102,8 @@ function AddOrEditAttachment({
 			if (!localChecker.some((el) => el.valid === false)) {
 				const newData = await createProcessHandler(input);
 				if (newData.status) {
+					await fetchData();
 					setIsUpdating(false);
-					fetchData();
 					closeOverride();
 				} else {
 					setIsUpdating(false);
