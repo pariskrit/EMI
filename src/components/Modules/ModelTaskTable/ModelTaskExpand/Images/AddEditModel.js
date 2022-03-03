@@ -88,7 +88,8 @@ const AddEditModel = ({
 
 	const handleEdit = async () => {
 		// If the input is same as of selected editData (imageDetail)
-		if (input.description === imageDetail.description) return;
+		if (input.description === imageDetail.description) closeOverride();
+
 		setLoading(true);
 		try {
 			const patchData = [
@@ -97,7 +98,7 @@ const AddEditModel = ({
 			let result = await updateImage(imageDetail.id, patchData);
 			setLoading(false);
 			if (result.status) {
-				handleComplete();
+				handleComplete(input.description);
 				closeOverride();
 			} else {
 				errorResponse(result);
@@ -165,7 +166,7 @@ const AddEditModel = ({
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
 				<ADD.InputContainer>
-					<ADD.LeftInputContainer style={{ width: "100%" }}>
+					<ADD.LeftInputContainer style={{ width: "65%", maxWidth: 350 }}>
 						<ADD.NameLabel>
 							Image<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
@@ -192,9 +193,7 @@ const AddEditModel = ({
 					</ADD.LeftInputContainer>
 					{imageDetail ? (
 						<ADD.RightInputContainer>
-							<ADD.NameLabel>
-								Description<ADD.RequiredStar>*</ADD.RequiredStar>
-							</ADD.NameLabel>
+							<ADD.NameLabel>Description</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.description === null ? false : true}
 								helperText={
