@@ -16,6 +16,7 @@ import { showError } from "redux/common/actions";
 import ListStages from "./ListStages";
 import withMount from "components/HOC/withMount";
 import { ModelContext } from "contexts/ModelDetailContext";
+import DetailsPanel from "components/Elements/DetailsPanel";
 
 const useStyles = makeStyles({
 	stages: { display: "flex", flexDirection: "column", marginBottom: 12 },
@@ -215,7 +216,10 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 
 	return (
 		<div className={classes.stages}>
-			<h1>Stages ({stages.stageCount})</h1>
+			<DetailsPanel
+				header={me.customCaptions.stagePlural}
+				dataCount={stages.stageCount}
+			/>
 			<ListStages
 				classes={classes}
 				data={stages.data}
