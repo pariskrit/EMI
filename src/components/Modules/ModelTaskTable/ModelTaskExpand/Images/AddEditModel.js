@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogTitle, LinearProgress } from "@material-ui/core";
+import {
+	Dialog,
+	DialogTitle,
+	LinearProgress,
+	makeStyles,
+} from "@material-ui/core";
 import * as yup from "yup";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
@@ -24,6 +29,11 @@ const schema = yup.object({
 
 const ADD = AddDialogStyle();
 
+const useStyles = makeStyles({
+	imageEdit: { width: "60%", margin: "auto" },
+	image: { width: "100%" },
+});
+
 const defaultInput = {
 	description: "",
 	image: null,
@@ -47,6 +57,7 @@ const AddEditModel = ({
 	handleComplete,
 	errorResponse,
 }) => {
+	const classes = useStyles();
 	const [input, setInput] = useState(defaultInput);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
@@ -88,7 +99,8 @@ const AddEditModel = ({
 
 	const handleEdit = async () => {
 		// If the input is same as of selected editData (imageDetail)
-		if (input.description === imageDetail.description) return;
+		if (input.description === imageDetail.description) closeOverride();
+
 		setLoading(true);
 		try {
 			const patchData = [
@@ -97,7 +109,7 @@ const AddEditModel = ({
 			let result = await updateImage(imageDetail.id, patchData);
 			setLoading(false);
 			if (result.status) {
-				handleComplete();
+				handleComplete(input.description);
 				closeOverride();
 			} else {
 				errorResponse(result);
@@ -143,7 +155,7 @@ const AddEditModel = ({
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
-			className="application-dialog"
+			maxWidth="md"
 			fullWidth
 		>
 			{loading ? <LinearProgress /> : null}
@@ -165,7 +177,9 @@ const AddEditModel = ({
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
 				<ADD.InputContainer>
-					<ADD.LeftInputContainer style={{ width: "100%" }}>
+					<ADD.LeftInputContainer
+						className={imageDetail ? classes.imageEdit : classes.image}
+					>
 						<ADD.NameLabel>
 							Image<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
@@ -192,9 +206,7 @@ const AddEditModel = ({
 					</ADD.LeftInputContainer>
 					{imageDetail ? (
 						<ADD.RightInputContainer>
-							<ADD.NameLabel>
-								Description<ADD.RequiredStar>*</ADD.RequiredStar>
-							</ADD.NameLabel>
+							<ADD.NameLabel>Description</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.description === null ? false : true}
 								helperText={

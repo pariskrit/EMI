@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const Images = ({ taskId, getError }) => {
+const Images = ({ taskInfo, getError }) => {
 	const classes = useStyles();
 	const [images, setImage] = useState({
 		data: [],
@@ -34,6 +34,7 @@ const Images = ({ taskId, getError }) => {
 		imageId: null,
 		delete: false,
 		originalData: [],
+		count: taskInfo.imageCount,
 	});
 
 	const setState = (da) => setImage((th) => ({ ...th, ...da }));
@@ -45,8 +46,8 @@ const Images = ({ taskId, getError }) => {
 			image: (
 				<TabelRowImage
 					imageURL={x.imageURL}
-					imageHeight={100}
-					imageWidth={100}
+					imageHeight={"100px"}
+					imageWidth={"100px"}
 				/>
 			),
 		};
@@ -60,7 +61,7 @@ const Images = ({ taskId, getError }) => {
 	const fetchTaskImages = async () => {
 		setState({ loading: true });
 		try {
-			let result = await getImages(taskId);
+			let result = await getImages(taskInfo.id);
 			setState({ loading: false });
 			if (result.status) {
 				const responseData = result.data.map((x) => apiResponse(x));
@@ -139,8 +140,16 @@ const Images = ({ taskId, getError }) => {
 		setState({ open: true, imageId: id });
 	};
 
-	const handleAddEditComplete = () => {
-		fetchTaskImages();
+	const handleAddEditComplete = (description) => {
+		if (images.imageId) {
+			const updatedData = images.data.map((x) =>
+				x.id === images.imageId ? { ...x, description } : x
+			);
+			setImage({ data: updatedData });
+		} else {
+			fetchTaskImages();
+			setState({ count: images.count + 1 });
+		}
 	};
 
 	const handleDelete = (id) => {
@@ -149,7 +158,7 @@ const Images = ({ taskId, getError }) => {
 
 	const handleRemoveData = (id) => {
 		const filteredData = images.data.filter((x) => x.id !== id);
-		setState({ data: filteredData });
+		setState({ data: filteredData, count: images.count - 1 });
 	};
 
 	const handleDeleteDialogClose = () => {
@@ -167,7 +176,7 @@ const Images = ({ taskId, getError }) => {
 					open={images.open}
 					handleClose={handleClose}
 					title="Image"
-					taskId={taskId}
+					taskId={taskInfo.id}
 					imageDetail={images.data.find((x) => x.id === images.imageId)}
 					handleComplete={handleAddEditComplete}
 					errorResponse={errorResponse}
@@ -183,7 +192,7 @@ const Images = ({ taskId, getError }) => {
 			/>
 			<div className={classes.images}>
 				<div className={classes.header}>
-					<h1>Images</h1>
+					<h1>Images ({images.count})</h1>
 					<GeneralButton onClick={() => setState({ open: true })}>
 						Add Image
 					</GeneralButton>
