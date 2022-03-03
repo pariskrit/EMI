@@ -81,7 +81,7 @@ const AddEditModel = ({
 		try {
 			let res = await uploadTaskImage(taskId, formData);
 			if (res.status) {
-				handleComplete();
+				handleComplete(res.data);
 				closeOverride();
 			} else {
 				errorResponse(res);
