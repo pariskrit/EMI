@@ -42,6 +42,9 @@ const useStyles = makeStyles({
 	inputText: {
 		fontSize: 14,
 	},
+	inputInfo: {
+		marginLeft: "20px",
+	},
 });
 
 // Default state schemas
@@ -195,7 +198,17 @@ function AddOrEditAttachment({
 					</ADD.FullWidthContainer>
 
 					<ADD.FullWidthContainer>
-						<ADD.NameLabel>Document</ADD.NameLabel>
+						<ADD.NameLabel>
+							Document
+							{input.link !== "" && (
+								<ADD.RequiredStar>
+									{" "}
+									<span className={classes.inputInfo}>
+										disabled when link is provided
+									</span>
+								</ADD.RequiredStar>
+							)}
+						</ADD.NameLabel>
 						<ErrorInputFieldWrapper
 							errorMessage={errors.file === null ? null : errors.file}
 						>
@@ -208,7 +221,17 @@ function AddOrEditAttachment({
 						</ErrorInputFieldWrapper>
 					</ADD.FullWidthContainer>
 					<ADD.FullWidthContainer>
-						<ADD.NameLabel>Link</ADD.NameLabel>
+						<ADD.NameLabel>
+							Link
+							{input.file !== null && (
+								<ADD.RequiredStar>
+									{" "}
+									<span className={classes.inputInfo}>
+										disabled when document is provided
+									</span>
+								</ADD.RequiredStar>
+							)}
+						</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.link === null ? false : true}
 							helperText={errors.link === null ? null : errors.link}

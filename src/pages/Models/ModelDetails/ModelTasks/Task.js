@@ -239,8 +239,9 @@ function Task({ modelId, state, dispatch, access }) {
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div>
-			{isPasting ||
-				(isSearching && <LinearProgress className={classes.loading} />)}
+			{isPasting || isSearching ? (
+				<LinearProgress className={classes.loading} />
+			) : null}
 			<AddNewModelTask
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}
