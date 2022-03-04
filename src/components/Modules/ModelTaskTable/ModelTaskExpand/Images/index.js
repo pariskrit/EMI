@@ -27,6 +27,11 @@ const useStyles = makeStyles({
 });
 
 const Images = ({ taskInfo, getError }) => {
+	const me =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+	const access = me?.position?.modelAccess;
+
 	const classes = useStyles();
 	const [images, setImage] = useState({
 		data: [],
@@ -195,9 +200,11 @@ const Images = ({ taskInfo, getError }) => {
 			<div className={classes.images}>
 				<div className={classes.header}>
 					<DetailsPanel header={`Images`} dataCount={images.count} />
-					<GeneralButton onClick={() => setState({ open: true })}>
-						Add Image
-					</GeneralButton>
+					{access === "F" ? (
+						<GeneralButton onClick={() => setState({ open: true })}>
+							Add Image
+						</GeneralButton>
+					) : null}
 				</div>
 				<DragAndDropTable
 					data={images.data}
@@ -208,6 +215,7 @@ const Images = ({ taskInfo, getError }) => {
 						{ id: 2, name: "description", style: { width: "50vw" } },
 					]}
 					isModelEditable
+					disableDnd={access === "R"}
 					menuData={[
 						{
 							name: "Edit",
@@ -219,7 +227,14 @@ const Images = ({ taskInfo, getError }) => {
 							handler: handleDelete,
 							isDelete: true,
 						},
-					]}
+					].filter((x) => {
+						if (access === "F") return true;
+						if (access === "E") {
+							if (x.name === "Edit") return true;
+							else return false;
+						}
+						return false;
+					})}
 				/>
 			</div>
 		</>
