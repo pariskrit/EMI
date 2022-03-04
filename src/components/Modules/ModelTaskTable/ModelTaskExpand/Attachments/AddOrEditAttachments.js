@@ -43,7 +43,7 @@ const useStyles = makeStyles({
 		fontSize: 14,
 	},
 	inputInfo: {
-		marginLeft: "20px",
+		marginLeft: "7px",
 	},
 });
 
@@ -204,7 +204,7 @@ function AddOrEditAttachment({
 								<ADD.RequiredStar>
 									{" "}
 									<span className={classes.inputInfo}>
-										disabled when link is provided
+										Please remove link to add document
 									</span>
 								</ADD.RequiredStar>
 							)}
@@ -227,7 +227,7 @@ function AddOrEditAttachment({
 								<ADD.RequiredStar>
 									{" "}
 									<span className={classes.inputInfo}>
-										disabled when document is provided
+										Please remove document to add link
 									</span>
 								</ADD.RequiredStar>
 							)}
