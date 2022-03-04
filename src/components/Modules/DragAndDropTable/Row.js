@@ -10,7 +10,6 @@ const AT = TableStyle();
 const Row = ({
 	index,
 	provider,
-	disableDnd,
 	row,
 	columns,
 	setAnchorEl,
@@ -20,7 +19,12 @@ const Row = ({
 	menuData,
 	isModelEditable,
 }) => (
-	<TableRow key={index} {...provider.draggableProps} ref={provider.innerRef}>
+	<TableRow
+		key={index}
+		{...provider.draggableProps}
+		ref={provider.innerRef}
+		style={{ height: 60 }}
+	>
 		{columns.map((col, i, arr) => (
 			<AT.DataCell key={col.id} style={col?.style}>
 				<AT.CellContainer key={col}>
@@ -34,15 +38,14 @@ const Row = ({
 									gap: 10,
 								}}
 							>
-								{!disableDnd && (
-									<span
-										{...provider.dragHandleProps}
-										ref={provider.innerRef}
-										className="flex"
-									>
-										<DragIndicatorIcon />
-									</span>
-								)}
+								<span
+									{...provider.dragHandleProps}
+									ref={provider.innerRef}
+									className="flex"
+								>
+									<DragIndicatorIcon />
+								</span>
+
 								<span style={{ marginTop: "2.5px" }}>{row[col.name]}</span>
 							</span>
 						) : (

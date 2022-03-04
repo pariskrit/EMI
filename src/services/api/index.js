@@ -226,7 +226,6 @@ export const Apis = {
 	ModelTasks: `${BASE_API_PATH_MODEL_TASKS}`,
 
 	ModelTaskStages: `${BASE_API_PATH_MODEL_TASKS_STAGES}`,
-	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
 	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,
 	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,
 	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,

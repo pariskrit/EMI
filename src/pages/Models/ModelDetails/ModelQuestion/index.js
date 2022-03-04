@@ -4,9 +4,10 @@ import {
 	getModelQuestions,
 	patchModelQuestions,
 	duplicateModelQuestions,
+	pasteModelQuestions,
 } from "services/models/modelDetails/modelQuestions";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import { showError } from "redux/common/actions";
 import {
@@ -17,7 +18,22 @@ import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
-import PasteModel from "./PasteModel";
+
+const viewPortHeight = 390;
+const rowHeight = 35; // px
+const bufferData = 2;
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
 
 const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 	const {
@@ -36,6 +52,7 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 	const [questionId, setQuestionId] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [duplicating, setDuplicating] = useState(false);
+	const [scrollTop, setScrollTop] = useState(0);
 
 	// HANDLING OPERATIONS
 	function apiResponse(x) {
@@ -112,6 +129,40 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		if (state.showPasteTask) {
+			const handlePaste = async () => {
+				setDuplicating(true);
+				try {
+					const questionText = await navigator.clipboard.readText();
+					const question = JSON.parse(questionText);
+
+					let result = await pasteModelQuestions(modelId, {
+						modelVersionQuestionID: question.id,
+					});
+
+					if (result.status) {
+						if (!isMounted.aborted)
+							setData((th) => [...th, { ...question, id: result.data }]);
+					} else {
+						if (result.data.detail) getError(result.data.detail);
+						else getError("Something went wrong");
+					}
+				} catch (e) {
+					return;
+				} finally {
+					if (!isMounted.aborted) {
+						dispatch({ type: "DISABLE_PASTE_TASK", payload: true });
+						setDuplicating(false);
+					}
+				}
+			};
+			handlePaste();
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [state.showPasteTask]);
 
 	// handle dragging of questions
 	const setPositionForPayload = (e, listLength) => {
@@ -202,7 +253,7 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 	const handleCopy = (id) => {
 		const copiedData = data.find((x) => x.id === id);
 		navigator.clipboard.writeText(JSON.stringify(copiedData));
-		setQuestionId(id);
+		dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
 	};
 
 	// Handle Delete Question
@@ -231,23 +282,27 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 		setData(d);
 	};
 
+	const updateTable = React.useCallback(
+		debounce((e) => setScrollTop(e.target.scrollTop), 200),
+		[]
+	);
+
+	const indexStart = Math.max(
+		Math.floor(scrollTop / rowHeight) - bufferData,
+		0
+	);
+
+	const indexEnd = Math.min(
+		Math.ceil((scrollTop + viewPortHeight) / rowHeight - 1) + bufferData,
+		data.length - 1
+	);
+
 	if (loading) {
 		return <CircularProgress />;
 	}
 
 	return (
 		<>
-			<PasteModel
-				open={state.showPasteTask}
-				handleClose={() => {
-					dispatch({ type: "TOGGLE_PASTE_TASK", payload: false });
-					setQuestionId(null);
-				}}
-				questionId={questionId}
-				modelId={modelId}
-				title={question}
-				handlePasteComplete={() => fetchData()}
-			/>
 			<AddEditModel
 				open={state.showAdd}
 				handleClose={() => {
@@ -278,20 +333,29 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 						description="Questions managed to this question model"
 					/>
 				</div>
-				{duplicating ? (
-					<CircularProgress style={{ height: 30, width: 30, margin: 5 }} />
-				) : null}
+				{duplicating ? <LinearProgress /> : null}
 
-				<QuestionTable
-					data={data}
-					handleDragEnd={handleDragEnd}
-					handleEdit={handleEdit}
-					handleDuplicate={handleDuplicate}
-					handleCopy={handleCopy}
-					handleDelete={handleDelete}
-				/>
-				<div ref={ref} />
+				<div
+					onScroll={(e) => {
+						e.persist();
+						updateTable(e);
+					}}
+					style={{ height: viewPortHeight, overflowX: "auto" }}
+				>
+					<div>
+						<QuestionTable
+							data={[...data].slice(indexStart, indexEnd + 1)}
+							handleDragEnd={handleDragEnd}
+							handleEdit={handleEdit}
+							handleDuplicate={handleDuplicate}
+							handleCopy={handleCopy}
+							handleDelete={handleDelete}
+						/>
+					</div>
+					<div ref={ref} />
+				</div>
 			</div>
+			<div ref={ref} />
 		</>
 	);
 };
