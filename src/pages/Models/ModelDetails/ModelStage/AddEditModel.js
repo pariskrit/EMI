@@ -15,10 +15,10 @@ import ColourConstants from "helpers/colourConstants";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { useEffect } from "react";
 import {
-	editModelStatus,
-	postModelStatus,
-	uploadModelStatusImage,
-} from "services/models/modelStages";
+	editModelStage,
+	postModelStage,
+	uploadModelStageImage,
+} from "services/models/modelDetails/modelStages";
 import ImageUpload from "components/Elements/ImageUpload";
 
 const ADD = AddDialogStyle();
@@ -111,7 +111,7 @@ const AddEditModel = ({
 
 	const uploadImage = async (stageId, data) => {
 		try {
-			let res = await uploadModelStatusImage(stageId, data);
+			let res = await uploadModelStageImage(stageId, data);
 			return res.data;
 		} catch (e) {
 			return;
@@ -123,7 +123,7 @@ const AddEditModel = ({
 		setLoading(true);
 
 		try {
-			let res = await postModelStatus({ name, hasZones, modelVersionID });
+			let res = await postModelStage({ name, hasZones, modelVersionID });
 			if (res.status) {
 				const formData = new FormData();
 				formData.append("file", input.image);
@@ -144,7 +144,7 @@ const AddEditModel = ({
 		setLoading(true);
 
 		try {
-			let res = await editModelStatus(detailData.id, [
+			let res = await editModelStage(detailData.id, [
 				{ op: "replace", path: "name", value: input.name },
 				{ op: "replace", path: "hasZones", value: input.hasZones },
 			]);

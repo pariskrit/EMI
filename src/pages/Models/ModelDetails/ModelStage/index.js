@@ -3,7 +3,10 @@ import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import AddEditModel from "./AddEditModel";
-import { editModelStatus, getModelStatus } from "services/models/modelStages";
+import {
+	editModelStage,
+	getModelStage,
+} from "services/models/modelDetails/modelStages";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -28,7 +31,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const fetchData = async () => {
 		setLoading(true);
 		try {
-			let res = await getModelStatus(modelId);
+			let res = await getModelStage(modelId);
 			if (res.status) {
 				const mainData = res.data.map((response) => ({
 					...response,
@@ -133,7 +136,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 					value: setPositionForPayload(e, originalStageList.length),
 				},
 			];
-			const response = await editModelStatus(e.draggableId, payloadBody);
+			const response = await editModelStage(e.draggableId, payloadBody);
 			if (response.status) {
 				setOriginalStageList(result);
 			} else {

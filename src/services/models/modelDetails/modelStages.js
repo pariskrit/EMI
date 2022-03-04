@@ -2,7 +2,7 @@ import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
-const getModelStatus = async (id) => {
+const getModelStage = async (id) => {
 	try {
 		let response = await API.get(`${Apis.ModelStages}?modelVersionId=${id}`);
 		return getAPIResponse(response);
@@ -11,7 +11,7 @@ const getModelStatus = async (id) => {
 	}
 };
 
-const postModelStatus = async (data) => {
+const postModelStage = async (data) => {
 	try {
 		let response = await API.post(`${Apis.ModelStages}`, data);
 		return getAPIResponse(response);
@@ -20,7 +20,7 @@ const postModelStatus = async (data) => {
 	}
 };
 
-const editModelStatus = async (id, data) => {
+const editModelStage = async (id, data) => {
 	try {
 		let response = await API.patch(`${Apis.ModelStages}/${id}`, data);
 		return getAPIResponse(response);
@@ -29,7 +29,7 @@ const editModelStatus = async (id, data) => {
 	}
 };
 
-const uploadModelStatusImage = async (id, data) => {
+const uploadModelStageImage = async (id, data) => {
 	try {
 		let response = await API.post(
 			`${Apis.ModelStages}/${id}/uploadImage`,
@@ -41,9 +41,4 @@ const uploadModelStatusImage = async (id, data) => {
 	}
 };
 
-export {
-	getModelStatus,
-	postModelStatus,
-	editModelStatus,
-	uploadModelStatusImage,
-};
+export { getModelStage, postModelStage, editModelStage, uploadModelStageImage };

@@ -63,6 +63,9 @@ const BASE_API_PATH_MODEL_VERSIONS = `${BASE_API_PATH}modelversions`;
 const BASE_API_PATH_MODEL_IMPORTS = `${BASE_API_PATH}ModelImports`;
 const BASE_API_PATH_MODEL_ROLES = `${BASE_API_PATH}ModelVersionRoles`;
 const BASE_API_PATH_MODEL_ZONES = `${BASE_API_PATH}ModelVersionZones`;
+const BASE_API_PATH_MODEL_QUESTIONS = `${BASE_API_PATH}ModelVersionQuestions`;
+const BASE_API_PATH_MODEL_QUESTION_ROLE = `${BASE_API_PATH}ModelVersionQuestionRoles`;
+const BASE_API_PATH_MODEL_QUESTION_OPTION = `${BASE_API_PATH}ModelVersionQuestionOptions`;
 const BASE_API_PATH_MODEL_TASKS = `${BASE_API_PATH}ModelVersionTasks`;
 
 const BASE_API_PATH_MODEL_TASKS_STAGES = `${BASE_API_PATH}ModelVersionTaskStages`;
@@ -208,13 +211,20 @@ export const Apis = {
 	DuplicateModal: `${BASE_API_PATH_DUPLICATE_MODEL}`,
 	ModelVersions: `${BASE_API_PATH_MODEL_VERSIONS}`,
 	ModelImports: `${BASE_API_PATH_MODEL_IMPORTS}`,
+
+	// Model Details
+	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
+	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
+	ModelQuestions: `${BASE_API_PATH_MODEL_QUESTIONS}`,
+	ModelQuestionRole: `${BASE_API_PATH_MODEL_QUESTION_ROLE}`,
+	ModelQuestionOption: `${BASE_API_PATH_MODEL_QUESTION_OPTION}`,
+	ModelAssets: `${BASE_API_PATH_MODEL_ASSETS}`,
+	ModelRoles: `${BASE_API_PATH_MODEL_ROLES}`,
 	ModelDepartments: `${BASE_API_PATH_MODEL_DEPARTMENTS}`,
 	ModelNotes: `${BASE_API_PATH_MODEL_NOTES}`,
 	ModelDocuments: `${BASE_API_PATH_MODEL_DOCUMENTS}`,
-	ModelAssets: `${BASE_API_PATH_MODEL_ASSETS}`,
-	ModelRoles: `${BASE_API_PATH_MODEL_ROLES}`,
-	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
 	ModelTasks: `${BASE_API_PATH_MODEL_TASKS}`,
+
 	ModelTaskStages: `${BASE_API_PATH_MODEL_TASKS_STAGES}`,
 	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
 	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,

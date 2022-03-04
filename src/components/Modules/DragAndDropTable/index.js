@@ -8,13 +8,11 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
 
 // Icon imports
-import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import Row from "./Row";
 
 // Init styled components
 const AT = TableStyle();
@@ -127,78 +125,19 @@ const DragAndDropTable = ({
 										index={index}
 									>
 										{(provider) => (
-											<TableRow
-												key={index}
-												{...provider.draggableProps}
-												ref={provider.innerRef}
-											>
-												{columns.map((col, i, arr) => (
-													<AT.DataCell key={col.id} style={col?.style}>
-														<AT.CellContainer key={col}>
-															<AT.TableBodyText>
-																{i === 0 ? (
-																	<span
-																		style={{
-																			display: "flex",
-																			flexDirection: "space-around",
-																			alignItems: "center",
-																			gap: 10,
-																		}}
-																	>
-																		<span
-																			{...provider.dragHandleProps}
-																			ref={provider.innerRef}
-																			className="flex"
-																		>
-																			<DragIndicatorIcon />
-																		</span>
-																		<span>{row[col.name]}</span>
-																	</span>
-																) : (
-																	row[col.name]
-																)}
-															</AT.TableBodyText>
-
-															{arr.length === i + 1
-																? isModelEditable && (
-																		<AT.DotMenu
-																			onClick={(e) => {
-																				setAnchorEl(
-																					anchorEl === e.currentTarget
-																						? null
-																						: e.currentTarget
-																				);
-																				setSelectedData(
-																					anchorEl === e.currentTarget
-																						? null
-																						: index
-																				);
-																			}}
-																		>
-																			{menuData.length > 0 && (
-																				<AT.TableMenuButton>
-																					<MenuIcon />
-																				</AT.TableMenuButton>
-																			)}
-
-																			<PopupMenu
-																				index={index}
-																				selectedData={selectedData}
-																				anchorEl={anchorEl}
-																				id={row.id}
-																				clickAwayHandler={() => {
-																					setAnchorEl(null);
-																					setSelectedData(null);
-																				}}
-																				menuData={menuData}
-																			/>
-																		</AT.DotMenu>
-																  )
-																: null}
-														</AT.CellContainer>
-													</AT.DataCell>
-												))}
-											</TableRow>
+											<Row
+												index={index}
+												provider={provider}
+												disableDnd={disableDnd}
+												row={row}
+												columns={columns}
+												setAnchorEl={setAnchorEl}
+												setSelectedData={setSelectedData}
+												selectedData={selectedData}
+												anchorEl={anchorEl}
+												menuData={menuData}
+												isModelEditable
+											/>
 										)}
 									</Draggable>
 								))}

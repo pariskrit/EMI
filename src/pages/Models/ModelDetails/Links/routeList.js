@@ -1,15 +1,17 @@
 import ModelDetailContent from "../ModelDetail/ModelDetailContent";
-import ModelAsset from "../ModelAsset";
 import {
 	modelAssest,
 	modelRoles,
 	modelZones,
 	modelStages,
+	modelQuestions,
 	modelTask,
 } from "helpers/routePaths";
+import ModelAsset from "../ModelAsset";
 import ModelStage from "../ModelStage";
 import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
+import ModelQuestion from "../ModelQuestion";
 import Task from "../ModelTasks/Task";
 
 const routeList = (detail, customCaptions) => [
@@ -58,6 +60,17 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 5,
+    name: `${customCaptions.questionPlural} (${detail.questionCount})`,		
+    path: modelQuestions,
+		component: ModelQuestion,
+		showAdd: true,
+		showSave: false,
+		showChangeStatus: false,
+		showSaveChanges: false,
+		showPasteTask: true,
+	},
+	{
+		id: 6,
 		name: `${customCaptions.rolePlural} (${detail.roleCount})`,
 		path: modelRoles,
 		component: Roles,
