@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
+import clsx from "clsx";
 import {
 	getModelQuestions,
 	patchModelQuestions,
@@ -18,6 +19,7 @@ import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
+import useLazyLoad from "hooks/useLazyLoad";
 
 const ModelQuestion = ({
 	state,
@@ -33,7 +35,7 @@ const ModelQuestion = ({
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
-	const ref = useRef(null);
+	const triggerRef = useRef(null);
 
 	// INITIAL STATES
 	const [data, setData] = useState([]);
@@ -226,7 +228,7 @@ const ModelQuestion = ({
 				setDuplicating(false);
 				const finalData = { ...duplicatedData, id: result.data };
 				setData((th) => [...th, finalData]);
-				ref.current.scrollIntoView({
+				triggerRef.current.scrollIntoView({
 					behavior: "smooth",
 					block: "end",
 					inline: "nearest",
@@ -272,6 +274,21 @@ const ModelQuestion = ({
 		setData(d);
 	};
 
+	const onGrabData = (currentPage) =>
+		new Promise((res) => {
+			const NUM_PER_PAGE = 10;
+			const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
+			setTimeout(() => {
+				const slicedData = data.slice(
+					((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
+					NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
+				);
+				res(slicedData);
+			}, 500);
+		});
+
+	const { lazyData, lazyLoading } = useLazyLoad({ triggerRef, onGrabData });
+
 	if (loading) {
 		return <CircularProgress />;
 	}
@@ -311,7 +328,7 @@ const ModelQuestion = ({
 				{duplicating ? <LinearProgress /> : null}
 
 				<QuestionTable
-					data={data}
+					data={lazyData}
 					handleDragEnd={handleDragEnd}
 					isModelEditable
 					menuData={[
@@ -345,7 +362,9 @@ const ModelQuestion = ({
 					})}
 				/>
 
-				<div ref={ref} />
+				<div ref={triggerRef} className={clsx({ visible: lazyLoading })}>
+					<CircularProgress style={{ height: 22, width: 22 }} />
+				</div>
 			</div>
 		</>
 	);
