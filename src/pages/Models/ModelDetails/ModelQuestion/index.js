@@ -19,23 +19,14 @@ import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
 
-const viewPortHeight = 390;
-const rowHeight = 35; // px
-const bufferData = 2;
-
-const debounce = (func, delay) => {
-	let timer;
-	return function () {
-		let self = this;
-		let args = arguments;
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			func.apply(self, args);
-		}, delay);
-	};
-};
-
-const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
+const ModelQuestion = ({
+	state,
+	dispatch,
+	modelId,
+	getError,
+	isMounted,
+	access,
+}) => {
 	const {
 		customCaptions: { question, questionPlural },
 	} =
@@ -52,7 +43,6 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 	const [questionId, setQuestionId] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [duplicating, setDuplicating] = useState(false);
-	const [scrollTop, setScrollTop] = useState(0);
 
 	// HANDLING OPERATIONS
 	function apiResponse(x) {
@@ -282,21 +272,6 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 		setData(d);
 	};
 
-	const updateTable = React.useCallback(
-		debounce((e) => setScrollTop(e.target.scrollTop), 200),
-		[]
-	);
-
-	const indexStart = Math.max(
-		Math.floor(scrollTop / rowHeight) - bufferData,
-		0
-	);
-
-	const indexEnd = Math.min(
-		Math.ceil((scrollTop + viewPortHeight) / rowHeight - 1) + bufferData,
-		data.length - 1
-	);
-
 	if (loading) {
 		return <CircularProgress />;
 	}
@@ -335,25 +310,46 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 				</div>
 				{duplicating ? <LinearProgress /> : null}
 
-				<div
-					onScroll={(e) => {
-						e.persist();
-						updateTable(e);
-					}}
-					style={{ height: viewPortHeight, overflowX: "auto" }}
-				>
-					<div>
-						<QuestionTable
-							data={[...data].slice(indexStart, indexEnd + 1)}
-							handleDragEnd={handleDragEnd}
-							handleEdit={handleEdit}
-							handleDuplicate={handleDuplicate}
-							handleCopy={handleCopy}
-							handleDelete={handleDelete}
-						/>
-					</div>
-					<div ref={ref} />
-				</div>
+				<QuestionTable
+					data={data}
+					handleDragEnd={handleDragEnd}
+					handleEdit={handleEdit}
+					handleDuplicate={handleDuplicate}
+					handleCopy={handleCopy}
+					handleDelete={handleDelete}
+					isModelEditable
+					menuData={[
+						{
+							name: "Edit",
+							handler: handleEdit,
+							isDelete: false,
+						},
+						{
+							name: "Duplicate",
+							handler: handleDuplicate,
+							isDelete: false,
+						},
+						{
+							name: "Copy",
+							handler: handleCopy,
+							isDelete: false,
+						},
+						{
+							name: "Delete",
+							handler: handleDelete,
+							isDelete: true,
+						},
+					].filter((x) => {
+						if (access === "F") return true;
+						if (access === "E") {
+							if (x.name === "Edit") return true;
+							else return false;
+						}
+						return false;
+					})}
+				/>
+
+				<div ref={ref} />
 			</div>
 		</>
 	);

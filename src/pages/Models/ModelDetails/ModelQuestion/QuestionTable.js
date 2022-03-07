@@ -1,14 +1,7 @@
 import React from "react";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 
-const QuestionTable = ({
-	data,
-	handleDragEnd,
-	handleEdit,
-	handleDuplicate,
-	handleCopy,
-	handleDelete,
-}) => (
+const QuestionTable = ({ data, handleDragEnd, menuData }) => (
 	<DragAndDropTable
 		data={data}
 		isModelEditable
@@ -29,28 +22,7 @@ const QuestionTable = ({
 			{ id: 6, name: "additional", style: { width: "20%" } },
 		]}
 		handleDragEnd={handleDragEnd}
-		menuData={[
-			{
-				name: "Edit",
-				handler: handleEdit,
-				isDelete: false,
-			},
-			{
-				name: "Duplicate",
-				handler: handleDuplicate,
-				isDelete: false,
-			},
-			{
-				name: "Copy",
-				handler: handleCopy,
-				isDelete: false,
-			},
-			{
-				name: "Delete",
-				handler: handleDelete,
-				isDelete: true,
-			},
-		]}
+		menuData={menuData}
 	/>
 );
 export default QuestionTable;
