@@ -355,7 +355,6 @@ const ModelQuestion = ({ state, dispatch, modelId, getError, isMounted }) => {
 					<div ref={ref} />
 				</div>
 			</div>
-			<div ref={ref} />
 		</>
 	);
 };
