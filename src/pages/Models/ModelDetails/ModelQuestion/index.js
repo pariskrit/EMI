@@ -313,10 +313,6 @@ const ModelQuestion = ({
 				<QuestionTable
 					data={data}
 					handleDragEnd={handleDragEnd}
-					handleEdit={handleEdit}
-					handleDuplicate={handleDuplicate}
-					handleCopy={handleCopy}
-					handleDelete={handleDelete}
 					isModelEditable
 					menuData={[
 						{
