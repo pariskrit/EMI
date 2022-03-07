@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import clsx from "clsx";
 import {
 	getModelQuestions,
 	patchModelQuestions,
@@ -284,10 +283,10 @@ const ModelQuestion = ({
 					NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
 				);
 				res(slicedData);
-			}, 500);
+			}, 100);
 		});
 
-	const { lazyData, lazyLoading } = useLazyLoad({ triggerRef, onGrabData });
+	const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
 
 	if (loading) {
 		return <CircularProgress />;
@@ -362,9 +361,7 @@ const ModelQuestion = ({
 					})}
 				/>
 
-				<div ref={triggerRef} className={clsx({ visible: lazyLoading })}>
-					<CircularProgress style={{ height: 22, width: 22 }} />
-				</div>
+				<div ref={triggerRef} />
 			</div>
 		</>
 	);
