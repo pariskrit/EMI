@@ -69,6 +69,7 @@ const useLazyLoad = ({ triggerRef, onGrabData, options }) => {
 			const container = triggerRef.current;
 			const observer = new IntersectionObserver(onIntersect, options);
 
+			// It will look for the pointer whether it is visible in screen or not
 			observer.observe(container);
 
 			return () => {
