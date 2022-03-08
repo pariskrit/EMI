@@ -8,7 +8,6 @@ import {
 	CircularProgress,
 	LinearProgress,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dropdown from "components/Elements/Dropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -37,10 +36,6 @@ import CurveButton from "components/Elements/CurveButton";
 import roles from "helpers/roles";
 
 const ADD = AddDialogStyle();
-
-const useStyles = makeStyles({
-	paper: { minWidth: "90%", minHeight: "500px" },
-});
 
 const defaultError = {
 	caption: null,
@@ -78,8 +73,6 @@ const AddEditModel = ({
 	handleAddEditComplete,
 	handleOptions,
 }) => {
-	const classes = useStyles();
-
 	// DEFINE STATES
 	const [input, setInput] = useState(initialInput);
 	const [errors, setErrors] = useState(defaultError);
@@ -445,12 +438,12 @@ const AddEditModel = ({
 
 	return (
 		<Dialog
-			classes={{ paper: classes.paper }}
 			open={open}
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 			style={{ minHeight: 500 }}
+			className="large-application-dailog"
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
