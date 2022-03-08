@@ -10,7 +10,6 @@ const AT = TableStyle();
 const Row = ({
 	index,
 	provider,
-	disableDnd,
 	row,
 	columns,
 	setAnchorEl,
@@ -34,15 +33,14 @@ const Row = ({
 									gap: 10,
 								}}
 							>
-								{!disableDnd && (
-									<span
-										{...provider.dragHandleProps}
-										ref={provider.innerRef}
-										className="flex"
-									>
-										<DragIndicatorIcon />
-									</span>
-								)}
+								<span
+									{...provider.dragHandleProps}
+									ref={provider.innerRef}
+									className="flex"
+								>
+									<DragIndicatorIcon />
+								</span>
+
 								<span style={{ marginTop: "2.5px" }}>{row[col.name]}</span>
 							</span>
 						) : (

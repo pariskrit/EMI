@@ -128,7 +128,6 @@ const DragAndDropTable = ({
 											<Row
 												index={index}
 												provider={provider}
-												disableDnd={disableDnd}
 												row={row}
 												columns={columns}
 												setAnchorEl={setAnchorEl}
@@ -136,7 +135,7 @@ const DragAndDropTable = ({
 												selectedData={selectedData}
 												anchorEl={anchorEl}
 												menuData={menuData}
-												isModelEditable
+												isModelEditable={isModelEditable}
 											/>
 										)}
 									</Draggable>
