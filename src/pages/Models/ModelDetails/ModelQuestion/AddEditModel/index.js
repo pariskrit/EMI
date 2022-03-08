@@ -420,7 +420,6 @@ const AddEditModel = ({
 		}
 		opt.splice(index, 0, text);
 		setInput((th) => ({ ...th, options: opt }));
-		return true;
 	};
 
 	const closeOverride = () => {
@@ -628,7 +627,7 @@ const AddEditModel = ({
 				input.type === "O" ||
 				input.type === "C" ? (
 					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
+						<ADD.LeftInputContainer style={{ width: "100%" }}>
 							<ADD.NameLabel>
 								{input.type === "N"
 									? "Decimal Places"
@@ -675,15 +674,17 @@ const AddEditModel = ({
 										{isAdd ? (
 											<NewOption addNewOption={handleAddOption} />
 										) : null}
-										{input.options.map((x, i) => (
-											<Options
-												key={i}
-												id={i}
-												x={x}
-												handleRemoveOption={handleRemoveOption}
-												handleUpdateOption={handleUpdateOption}
-											/>
-										))}
+										<div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+											{input.options.map((x, i) => (
+												<Options
+													key={i}
+													id={i}
+													x={x}
+													handleRemoveOption={handleRemoveOption}
+													handleUpdateOption={handleUpdateOption}
+												/>
+											))}
+										</div>
 									</ErrorInputFieldWrapper>
 									<CurveButton
 										style={{ float: "left" }}

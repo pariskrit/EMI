@@ -39,7 +39,7 @@ const Options = ({ x, id, handleRemoveOption, handleUpdateOption }) => {
 	};
 
 	return (
-		<>
+		<div style={{ flex: "48%" }}>
 			{isEdit ? (
 				<AS.SubcatContainer>
 					<AS.NameInput
@@ -63,7 +63,7 @@ const Options = ({ x, id, handleRemoveOption, handleUpdateOption }) => {
 					</AS.SubcatContainer>
 				</>
 			)}
-		</>
+		</div>
 	);
 };
 export default Options;
