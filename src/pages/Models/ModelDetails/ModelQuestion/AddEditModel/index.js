@@ -150,7 +150,7 @@ const AddEditModel = ({
 		}
 	};
 
-	const handleTiming = async (val) => {
+	const handleTiming = (val) => {
 		const value = val.value;
 		setInput((th) => ({ ...th, timing: value }));
 		fetchStageOrZone(val.value);
