@@ -359,6 +359,7 @@ const ModelQuestion = ({
 						}
 						return false;
 					})}
+					disableDnd={access !== "F"}
 				/>
 
 				<div ref={triggerRef} />
