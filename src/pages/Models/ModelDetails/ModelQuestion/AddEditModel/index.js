@@ -106,6 +106,8 @@ const AddEditModel = ({
 				options,
 			} = questionDetail;
 
+			fetchStageOrZone(timing);
+
 			setInput({
 				caption,
 				type,
@@ -119,12 +121,12 @@ const AddEditModel = ({
 				options: options.map((x) => x.name),
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionDetail]);
 
 	// HANDLE FUNCTIONS
-	const handleTiming = async (val) => {
-		const value = val.value;
-		setInput((th) => ({ ...th, timing: value }));
+
+	const fetchStageOrZone = async (value) => {
 		setStageZoneOptions({ loading: true, options: [] });
 		try {
 			let result;
@@ -146,6 +148,12 @@ const AddEditModel = ({
 		} catch (e) {
 			return;
 		}
+	};
+
+	const handleTiming = async (val) => {
+		const value = val.value;
+		setInput((th) => ({ ...th, timing: value }));
+		fetchStageOrZone(val.value);
 	};
 
 	const handlePost = async (data) => {
