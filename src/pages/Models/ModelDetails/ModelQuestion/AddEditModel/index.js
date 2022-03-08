@@ -417,8 +417,9 @@ const AddEditModel = ({
 					x.id === id ? { id, name: text } : x
 				),
 			});
+			return true;
 		}
-		opt.splice(index, 0, text);
+		opt[index] = text;
 		setInput((th) => ({ ...th, options: opt }));
 	};
 
