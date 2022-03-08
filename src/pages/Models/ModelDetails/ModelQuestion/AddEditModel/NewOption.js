@@ -16,7 +16,6 @@ const NewOption = ({ addNewOption }) => {
 			return false;
 		}
 		await addNewOption(text);
-		setText("");
 	};
 
 	const onKeyPress = (e) => {
