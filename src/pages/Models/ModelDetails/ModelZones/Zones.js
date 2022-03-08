@@ -207,7 +207,7 @@ function Zones({ modelId, state, dispatch, access }) {
 						]}
 						handleDragEnd={handleDragEnd}
 						isModelEditable={isModelEditable}
-						disableDnd={!isModelEditable}
+						disableDnd={!isModelEditable || access === "R"}
 						menuData={[
 							{
 								name: "Edit",
