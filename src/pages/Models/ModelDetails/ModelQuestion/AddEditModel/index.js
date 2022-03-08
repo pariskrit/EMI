@@ -474,7 +474,7 @@ const AddEditModel = ({
 							error={errors.caption === null ? false : true}
 							helperText={errors.caption === null ? null : errors.caption}
 							variant="outlined"
-							size="small"
+							size="medium"
 							value={input.caption}
 							autoFocus
 							onKeyDown={handleEnterPress}

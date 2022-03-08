@@ -93,6 +93,8 @@ const ModelQuestion = ({
 				else {
 					if (result.data.title) {
 						getError(result.data.title);
+					} else {
+						getError("Something went wrong");
 					}
 				}
 			}
