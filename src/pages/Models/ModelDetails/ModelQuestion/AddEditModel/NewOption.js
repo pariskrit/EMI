@@ -26,7 +26,7 @@ const NewOption = ({ addNewOption }) => {
 	};
 
 	return (
-		<AT.SubcatContainer>
+		<AT.SubcatContainer style={{ width: "48%" }}>
 			<AT.NameInput
 				onChange={handleChange}
 				onKeyDown={onKeyPress}
