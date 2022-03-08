@@ -328,14 +328,14 @@ const AddEditModel = ({
 		try {
 			let result = await postModelQuestionOption(data);
 			if (result.status) {
-				setLoader((th) => ({ ...th, option: false }));
 				return result.data;
 			} else {
-				setLoader((th) => ({ ...th, option: true }));
 				getError(result.data);
 			}
 		} catch (e) {
 			return;
+		} finally {
+			setLoader((th) => ({ ...th, option: false }));
 		}
 	};
 
