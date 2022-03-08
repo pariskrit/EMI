@@ -19,12 +19,7 @@ const Row = ({
 	menuData,
 	isModelEditable,
 }) => (
-	<TableRow
-		key={index}
-		{...provider.draggableProps}
-		ref={provider.innerRef}
-		style={{ height: 60 }}
-	>
+	<TableRow key={index} {...provider.draggableProps} ref={provider.innerRef}>
 		{columns.map((col, i, arr) => (
 			<AT.DataCell key={col.id} style={col?.style}>
 				<AT.CellContainer key={col}>
