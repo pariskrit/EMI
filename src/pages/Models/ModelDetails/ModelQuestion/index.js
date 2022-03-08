@@ -18,7 +18,7 @@ import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
-import useLazyLoad from "hooks/useLazyLoad";
+// import useLazyLoad from "hooks/useLazyLoad";
 
 const ModelQuestion = ({
 	state,
@@ -273,20 +273,20 @@ const ModelQuestion = ({
 		setData(d);
 	};
 
-	const onGrabData = (currentPage) =>
-		new Promise((res) => {
-			const NUM_PER_PAGE = 10;
-			const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
-			setTimeout(() => {
-				const slicedData = data.slice(
-					((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
-					NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
-				);
-				res(slicedData);
-			}, 100);
-		});
+	// const onGrabData = (currentPage) =>
+	// 	new Promise((res) => {
+	// 		const NUM_PER_PAGE = 10;
+	// 		const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
+	// 		setTimeout(() => {
+	// 			const slicedData = data.slice(
+	// 				((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
+	// 				NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
+	// 			);
+	// 			res(slicedData);
+	// 		}, 100);
+	// 	});
 
-	const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
+	// const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
 
 	if (loading) {
 		return <CircularProgress />;
@@ -327,9 +327,9 @@ const ModelQuestion = ({
 				{duplicating ? <LinearProgress /> : null}
 
 				<QuestionTable
-					data={lazyData}
+					data={data}
 					handleDragEnd={handleDragEnd}
-					isModelEditable
+					isModelEditable={access === "F" || access === "E"}
 					menuData={[
 						{
 							name: "Edit",
@@ -359,7 +359,6 @@ const ModelQuestion = ({
 						}
 						return false;
 					})}
-					disableDnd={access !== "F"}
 				/>
 
 				<div ref={triggerRef} />
