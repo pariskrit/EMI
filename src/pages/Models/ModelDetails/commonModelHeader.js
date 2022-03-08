@@ -64,9 +64,14 @@ const ModelWrapper = ({
 	onClickShowChangeStatus,
 	onNavClick,
 	isPasteTaskDisabled,
-	modelType,
+	customCaptions,
 }) => {
 	const classes = useStyles();
+	let name;
+
+	if (ModelName === customCaptions.questionPlural) {
+		name = customCaptions.question;
+	}
 
 	const [modelDetail] = useContext(ModelContext);
 
@@ -99,7 +104,7 @@ const ModelWrapper = ({
 								className={classes.importButton}
 								disabled={isPasteTaskDisabled}
 							>
-								Paste Task
+								Paste {name}
 							</AT.GeneralButton>
 						)}
 						{showChangeStatus && (

@@ -8,7 +8,6 @@ import {
 	CircularProgress,
 	LinearProgress,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dropdown from "components/Elements/Dropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -37,10 +36,6 @@ import CurveButton from "components/Elements/CurveButton";
 import roles from "helpers/roles";
 
 const ADD = AddDialogStyle();
-
-const useStyles = makeStyles({
-	paper: { minWidth: "90%", minHeight: "500px" },
-});
 
 const defaultError = {
 	caption: null,
@@ -78,8 +73,6 @@ const AddEditModel = ({
 	handleAddEditComplete,
 	handleOptions,
 }) => {
-	const classes = useStyles();
-
 	// DEFINE STATES
 	const [input, setInput] = useState(initialInput);
 	const [errors, setErrors] = useState(defaultError);
@@ -106,6 +99,8 @@ const AddEditModel = ({
 				options,
 			} = questionDetail;
 
+			fetchStageOrZone(timing);
+
 			setInput({
 				caption,
 				type,
@@ -119,12 +114,12 @@ const AddEditModel = ({
 				options: options.map((x) => x.name),
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionDetail]);
 
 	// HANDLE FUNCTIONS
-	const handleTiming = async (val) => {
-		const value = val.value;
-		setInput((th) => ({ ...th, timing: value }));
+
+	const fetchStageOrZone = async (value) => {
 		setStageZoneOptions({ loading: true, options: [] });
 		try {
 			let result;
@@ -146,6 +141,12 @@ const AddEditModel = ({
 		} catch (e) {
 			return;
 		}
+	};
+
+	const handleTiming = (val) => {
+		const value = val.value;
+		setInput((th) => ({ ...th, timing: value }));
+		fetchStageOrZone(val.value);
 	};
 
 	const handlePost = async (data) => {
@@ -437,12 +438,12 @@ const AddEditModel = ({
 
 	return (
 		<Dialog
-			classes={{ paper: classes.paper }}
 			open={open}
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 			style={{ minHeight: 500 }}
+			className="large-application-dailog"
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -473,7 +474,7 @@ const AddEditModel = ({
 							error={errors.caption === null ? false : true}
 							helperText={errors.caption === null ? null : errors.caption}
 							variant="outlined"
-							size="small"
+							size="medium"
 							value={input.caption}
 							autoFocus
 							onKeyDown={handleEnterPress}

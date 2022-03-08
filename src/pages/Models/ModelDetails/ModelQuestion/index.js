@@ -14,11 +14,12 @@ import {
 	questionTimingOptions,
 	questionTypeOptions,
 } from "constants/modelDetail";
+import { modelServiceLayout, modelsPath } from "helpers/routePaths";
 import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
-import useLazyLoad from "hooks/useLazyLoad";
+// import useLazyLoad from "hooks/useLazyLoad";
 
 const ModelQuestion = ({
 	state,
@@ -27,6 +28,7 @@ const ModelQuestion = ({
 	getError,
 	isMounted,
 	access,
+	history,
 }) => {
 	const {
 		customCaptions: { question, questionPlural },
@@ -91,6 +93,8 @@ const ModelQuestion = ({
 				else {
 					if (result.data.title) {
 						getError(result.data.title);
+					} else {
+						getError("Something went wrong");
 					}
 				}
 			}
@@ -273,20 +277,26 @@ const ModelQuestion = ({
 		setData(d);
 	};
 
-	const onGrabData = (currentPage) =>
-		new Promise((res) => {
-			const NUM_PER_PAGE = 10;
-			const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
-			setTimeout(() => {
-				const slicedData = data.slice(
-					((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
-					NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
-				);
-				res(slicedData);
-			}, 100);
+	const handleSwitchToServiceLayout = (id) => {
+		history.push(`${modelsPath}/${modelId}${modelServiceLayout}`, {
+			state: { ModelVersionQuestionID: id },
 		});
+	};
 
-	const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
+	// const onGrabData = (currentPage) =>
+	// 	new Promise((res) => {
+	// 		const NUM_PER_PAGE = 10;
+	// 		const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
+	// 		setTimeout(() => {
+	// 			const slicedData = data.slice(
+	// 				((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
+	// 				NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
+	// 			);
+	// 			res(slicedData);
+	// 		}, 100);
+	// 	});
+
+	// const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
 
 	if (loading) {
 		return <CircularProgress />;
@@ -327,9 +337,9 @@ const ModelQuestion = ({
 				{duplicating ? <LinearProgress /> : null}
 
 				<QuestionTable
-					data={lazyData}
+					data={data}
 					handleDragEnd={handleDragEnd}
-					isModelEditable
+					isModelEditable={access === "F" || access === "E"}
 					menuData={[
 						{
 							name: "Edit",
@@ -347,6 +357,11 @@ const ModelQuestion = ({
 							isDelete: false,
 						},
 						{
+							name: "Switch To Service Layout",
+							handler: handleSwitchToServiceLayout,
+							isDelete: false,
+						},
+						{
 							name: "Delete",
 							handler: handleDelete,
 							isDelete: true,
@@ -359,7 +374,6 @@ const ModelQuestion = ({
 						}
 						return false;
 					})}
-					disableDnd={access !== "F"}
 				/>
 
 				<div ref={triggerRef} />

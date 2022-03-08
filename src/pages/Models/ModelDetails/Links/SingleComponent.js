@@ -34,19 +34,21 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 		dispatch({ type: "TOGGLE_CHANGE_STATUS", payload: true });
 
 	const addAccess = access === "F";
+	const pasteAccess = access === "F";
 	const showAdd = [route.showAdd, addAccess].every((x) => x === true);
+	const showPaste = [route.showPasteTask, pasteAccess].every((x) => x === true);
 
 	return (
 		<div>
 			<ModelWrapper
-				ModelName={route.name}
+				ModelName={route.ModelName}
 				current={route.name}
 				navigation={navigation}
 				applicationName="Stage"
 				showAdd={showAdd}
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
-				showPasteTask={route.showPasteTask}
+				showPasteTask={showPaste}
 				showChangeStatus={
 					access === "E" || access === "F" ? route.showChangeStatus : false
 				}
@@ -57,6 +59,7 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 				onClickShowChangeStatus={openChangeStatusModel}
 				onNavClick={(path) => route.history.push(path)}
 				isPasteTaskDisabled={state.isPasteTaskDisabled}
+				customCaptions={customCaptions}
 			/>
 			{
 				<route.component

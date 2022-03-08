@@ -25,7 +25,7 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				lazyLoading: false,
-				lazyData: [...action.payload.lazyData],
+				lazyData: [...state.lazyData, ...action.payload.lazyData],
 				currentPage: state.currentPage + 1,
 			};
 		}

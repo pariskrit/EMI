@@ -1,10 +1,10 @@
 import React from "react";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 
-const QuestionTable = ({ data, handleDragEnd, menuData, disableDnd }) => (
+const QuestionTable = ({ data, handleDragEnd, menuData, isModelEditable }) => (
 	<DragAndDropTable
 		data={data}
-		isModelEditable
+		isModelEditable={isModelEditable}
 		headers={[
 			"Caption",
 			"Type",
@@ -23,7 +23,6 @@ const QuestionTable = ({ data, handleDragEnd, menuData, disableDnd }) => (
 		]}
 		handleDragEnd={handleDragEnd}
 		menuData={menuData}
-		disableDnd={disableDnd}
 	/>
 );
 export default QuestionTable;
