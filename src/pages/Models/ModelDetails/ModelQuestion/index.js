@@ -14,6 +14,7 @@ import {
 	questionTimingOptions,
 	questionTypeOptions,
 } from "constants/modelDetail";
+import { modelServiceLayout, modelsPath } from "helpers/routePaths";
 import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
@@ -27,6 +28,7 @@ const ModelQuestion = ({
 	getError,
 	isMounted,
 	access,
+	history,
 }) => {
 	const {
 		customCaptions: { question, questionPlural },
@@ -273,6 +275,12 @@ const ModelQuestion = ({
 		setData(d);
 	};
 
+	const handleSwitchToServiceLayout = (id) => {
+		history.push(`${modelsPath}/${modelId}${modelServiceLayout}`, {
+			state: { ModelVersionQuestionID: id },
+		});
+	};
+
 	// const onGrabData = (currentPage) =>
 	// 	new Promise((res) => {
 	// 		const NUM_PER_PAGE = 10;
@@ -344,6 +352,11 @@ const ModelQuestion = ({
 						{
 							name: "Copy",
 							handler: handleCopy,
+							isDelete: false,
+						},
+						{
+							name: "Switch To Service Layout",
+							handler: handleSwitchToServiceLayout,
 							isDelete: false,
 						},
 						{
