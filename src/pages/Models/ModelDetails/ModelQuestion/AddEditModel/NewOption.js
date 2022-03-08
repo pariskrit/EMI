@@ -11,11 +11,11 @@ const NewOption = ({ addNewOption }) => {
 		setText(value);
 	};
 
-	const handleSave = async () => {
+	const handleSave = () => {
 		if (text === "" || text === null) {
 			return false;
 		}
-		await addNewOption(text);
+		addNewOption(text);
 	};
 
 	const onKeyPress = (e) => {
