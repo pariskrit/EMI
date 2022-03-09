@@ -3,7 +3,7 @@ import SubcatStyle from "styles/application/SubcatStyle";
 
 const AT = SubcatStyle();
 
-const NewOption = ({ addNewOption }) => {
+const NewOption = ({ addNewOption, setIsAdd }) => {
 	const [text, setText] = React.useState("");
 
 	const handleChange = (e) => {
@@ -27,9 +27,13 @@ const NewOption = ({ addNewOption }) => {
 	return (
 		<AT.SubcatContainer style={{ width: "48%" }}>
 			<AT.NameInput
+				autoFocus
 				onChange={handleChange}
 				onKeyDown={onKeyPress}
-				onBlur={handleSave}
+				onBlur={() => {
+					if (text === "" || text === null) setIsAdd(false);
+					else addNewOption(text);
+				}}
 				value={text}
 			/>
 		</AT.SubcatContainer>
