@@ -673,7 +673,10 @@ const AddEditModel = ({
 									<ErrorInputFieldWrapper errorMessage={errors.options}>
 										{loader.option ? <LinearProgress /> : null}
 										{isAdd ? (
-											<NewOption addNewOption={handleAddOption} />
+											<NewOption
+												addNewOption={handleAddOption}
+												setIsAdd={setIsAdd}
+											/>
 										) : null}
 										<div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
 											{input.options.map((x, i) => (
