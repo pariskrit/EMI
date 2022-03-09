@@ -212,7 +212,7 @@ function DyanamicDropdown(props) {
 		if (isReadOnly) return;
 		setDropActive(true);
 		setDropUpward(
-			window.innerHeight - event.target.getBoundingClientRect().bottom < 120
+			window.innerHeight - event.target.getBoundingClientRect().bottom < 300
 				? false
 				: true
 		);
