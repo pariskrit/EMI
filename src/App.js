@@ -11,8 +11,6 @@ import Launch from "pages/Launch/Launch";
 import Login from "pages/Login/Login";
 import ProtectedRoute from "components/HOC/ProtectedRoute";
 import ProtectedLogin from "components/HOC/ProtectedLogin";
-// import Test from "pages/Test";
-// import password forget,register reset from "pages/ForgotPassword", "pages/ResetPassword" and "pages/RegisterUser"
 import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "pages/ResetPassword/ResetPassword";
 import RegisterUserEmail from "pages/RegisterUser/RegisterUser";
@@ -44,7 +42,6 @@ function App() {
 						<Launch />
 					</Route>
 					<ProtectedRoute path="/app" component={MainApp} />
-					{/* <Route exact path="/test" component={Test} /> */}
 				</Switch>
 			</Router>
 		</div>

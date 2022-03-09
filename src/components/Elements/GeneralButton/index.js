@@ -9,6 +9,7 @@ function GeneralButton({
 	showIconLeft = true,
 	showIconRight = false,
 	children,
+	disabled,
 }) {
 	let buttonChildren = children;
 
@@ -31,7 +32,12 @@ function GeneralButton({
 	}
 
 	return (
-		<button onClick={onClick} className={`button ${className}`} style={style}>
+		<button
+			onClick={onClick}
+			className={`button ${className}`}
+			style={style}
+			disabled={disabled}
+		>
 			{buttonChildren}
 		</button>
 	);

@@ -20,6 +20,7 @@ export const useStyles = makeStyles({
 	main: {
 		background: "#FFFFFF",
 		marginBottom: 22,
+		paddingBottom: 12,
 		display: "flex",
 		flexDirection: "column",
 		minHeight: "150px",
@@ -102,7 +103,14 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						)}
 						{current ===
 							`${customCaptions?.questionPlural} (${taskInfo?.questionCount})` && (
-							<Questions />
+							<Questions
+								captions={{
+									plural: customCaptions?.questionPlural,
+									singular: customCaptions?.question,
+								}}
+								taskInfo={taskInfo}
+								access={access}
+							/>
 						)}
 						{current === `Attachments (${taskInfo?.documentCount})` && (
 							<Attachments taskInfo={taskInfo} access={access} />

@@ -67,6 +67,8 @@ const BASE_API_PATH_MODEL_QUESTIONS = `${BASE_API_PATH}ModelVersionQuestions`;
 const BASE_API_PATH_MODEL_QUESTION_ROLE = `${BASE_API_PATH}ModelVersionQuestionRoles`;
 const BASE_API_PATH_MODEL_QUESTION_OPTION = `${BASE_API_PATH}ModelVersionQuestionOptions`;
 const BASE_API_PATH_MODEL_TASKS = `${BASE_API_PATH}ModelVersionTasks`;
+const BASE_API_PATH_MODEL_TASKS_QUESTIONS = `${BASE_API_PATH}ModelVersionTaskQuestions`;
+const BASE_API_PATH_MODEL_TASKS_QUESTION_OPTIONS = `${BASE_API_PATH}ModelVersionTaskQuestionOptions`;
 
 const BASE_API_PATH_MODEL_TASKS_STAGES = `${BASE_API_PATH}ModelVersionTaskStages`;
 const BASE_API_PATH_MODEL_ASSETS = `${BASE_API_PATH}ModelAssets`;
@@ -224,6 +226,8 @@ export const Apis = {
 	ModelNotes: `${BASE_API_PATH_MODEL_NOTES}`,
 	ModelDocuments: `${BASE_API_PATH_MODEL_DOCUMENTS}`,
 	ModelTasks: `${BASE_API_PATH_MODEL_TASKS}`,
+	ModelTaskQuestions: `${BASE_API_PATH_MODEL_TASKS_QUESTIONS}`,
+	ModelTaskQuestionOptions: `${BASE_API_PATH_MODEL_TASKS_QUESTION_OPTIONS}`,
 
 	ModelTaskStages: `${BASE_API_PATH_MODEL_TASKS_STAGES}`,
 	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,

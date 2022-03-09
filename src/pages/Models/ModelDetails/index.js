@@ -5,7 +5,6 @@ import { ModelContext } from "contexts/ModelDetailContext";
 import { getModelDetails } from "services/models/modelDetails/details";
 
 function ModelDetails(props) {
-	// eslint-disable-next-line no-unused-vars
 	const [state, dispatch] = useContext(ModelContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const { id } = useParams();
