@@ -204,13 +204,15 @@ const ModelQuestion = ({
 				},
 			];
 			const response = await patchModelQuestions(e.draggableId, payloadBody);
-			if (response.status) {
-				setOriginalQuestionList(data);
-			} else {
-				setData(originalQuestionList);
+			if (!isMounted.aborted) {
+				if (response.status) {
+					setOriginalQuestionList(data);
+				} else {
+					setData(originalQuestionList);
+				}
 			}
 		} catch (error) {
-			setData(originalQuestionList);
+			if (!isMounted.aborted) setData(originalQuestionList);
 		}
 	};
 
@@ -228,13 +230,15 @@ const ModelQuestion = ({
 		try {
 			let result = await duplicateModelQuestions(id);
 			if (result.status) {
-				const finalData = { ...duplicatedData, id: result.data };
-				setData((th) => [...th, finalData]);
-				triggerRef.current.scrollIntoView({
-					behavior: "smooth",
-					block: "end",
-					inline: "nearest",
-				});
+				if (!isMounted.aborted) {
+					const finalData = { ...duplicatedData, id: result.data };
+					setData((th) => [...th, finalData]);
+					triggerRef.current.scrollIntoView({
+						behavior: "smooth",
+						block: "end",
+						inline: "nearest",
+					});
+				}
 			} else {
 				if (result.data.detail) getError(result.data.detail);
 				else getError("Error Duplicating");
@@ -242,7 +246,7 @@ const ModelQuestion = ({
 		} catch (e) {
 			return;
 		} finally {
-			setDuplicating(false);
+			if (!isMounted.aborted) setDuplicating(false);
 		}
 	};
 
@@ -270,7 +274,7 @@ const ModelQuestion = ({
 	};
 
 	const handleAddEditComplete = () => {
-		fetchData();
+		fetchQuestions();
 	};
 
 	const handleOptions = (responseData) => {
