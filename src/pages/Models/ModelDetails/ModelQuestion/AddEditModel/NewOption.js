@@ -11,12 +11,11 @@ const NewOption = ({ addNewOption }) => {
 		setText(value);
 	};
 
-	const handleSave = async () => {
+	const handleSave = () => {
 		if (text === "" || text === null) {
 			return false;
 		}
-		await addNewOption(text);
-		setText("");
+		addNewOption(text);
 	};
 
 	const onKeyPress = (e) => {
@@ -26,7 +25,7 @@ const NewOption = ({ addNewOption }) => {
 	};
 
 	return (
-		<AT.SubcatContainer>
+		<AT.SubcatContainer style={{ width: "48%" }}>
 			<AT.NameInput
 				onChange={handleChange}
 				onKeyDown={onKeyPress}

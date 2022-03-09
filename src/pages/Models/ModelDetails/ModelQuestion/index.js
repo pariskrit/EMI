@@ -228,7 +228,6 @@ const ModelQuestion = ({
 		try {
 			let result = await duplicateModelQuestions(id);
 			if (result.status) {
-				setDuplicating(false);
 				const finalData = { ...duplicatedData, id: result.data };
 				setData((th) => [...th, finalData]);
 				triggerRef.current.scrollIntoView({
@@ -242,6 +241,8 @@ const ModelQuestion = ({
 			}
 		} catch (e) {
 			return;
+		} finally {
+			setDuplicating(false);
 		}
 	};
 

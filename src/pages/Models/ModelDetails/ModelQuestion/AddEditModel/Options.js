@@ -21,13 +21,9 @@ const Options = ({ x, id, handleRemoveOption, handleUpdateOption }) => {
 		// Returning if name unchanged or empty
 		if (x === text || text === "") {
 			setIsEdit(false);
-			return false;
 		} else {
 			await handleUpdateOption(id, text);
-
 			setIsEdit(false);
-
-			return true;
 		}
 	};
 
@@ -39,7 +35,7 @@ const Options = ({ x, id, handleRemoveOption, handleUpdateOption }) => {
 	};
 
 	return (
-		<>
+		<div style={{ width: "48%" }}>
 			{isEdit ? (
 				<AS.SubcatContainer>
 					<AS.NameInput
@@ -63,7 +59,7 @@ const Options = ({ x, id, handleRemoveOption, handleUpdateOption }) => {
 					</AS.SubcatContainer>
 				</>
 			)}
-		</>
+		</div>
 	);
 };
 export default Options;
