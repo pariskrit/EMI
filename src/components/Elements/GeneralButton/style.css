@@ -30,3 +30,16 @@
 	width: 30px !important;
 	height: 30px !important;
 }
+
+.disabled-button {
+	color: rgba(0, 0, 0, 0.26);
+	cursor: default;
+	pointer-events: none;
+	background: #ed8738;
+	width: 150px;
+	height: 37px;
+	font-size: 13.5px;
+	font-family: Roboto Condensed;
+	font-weight: bold;
+	margin-right: 10px;
+}
