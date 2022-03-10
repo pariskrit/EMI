@@ -16,10 +16,11 @@ import {
 	uploadModelTaskAttachmentDocument,
 } from "services/models/modelDetails/modelTaskAttachments";
 import ColourConstants from "helpers/colourConstants";
+import withMount from "components/HOC/withMount";
 
 const AT = ActionButtonStyle();
 
-const Attachments = ({ taskInfo, access }) => {
+const Attachments = ({ taskInfo, access, isMounted }) => {
 	const [permits, setPermits] = useState([]);
 	const [originalPermits, setOriginalPermits] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
@@ -32,42 +33,44 @@ const Attachments = ({ taskInfo, access }) => {
 	const dispatch = useDispatch();
 
 	const fetchAttachments = async (showLoading = true) => {
-		showLoading && setLoading(true);
+		!isMounted.aborted && showLoading && setLoading(true);
 		try {
 			const response = await getModelTaskAttachments(taskInfo.id);
 			if (response.status) {
-				setPermits(
-					response?.data?.map((a) => ({
-						...a,
-						name: (
-							<Link
-								style={{ color: ColourConstants.activeLink }}
-								href={a?.documentURL || a?.link}
-								download={a?.name}
-								target="_blank"
-								rel="noopener"
-							>
-								{a?.name}
-							</Link>
-						),
-					}))
-				);
-				setOriginalPermits(
-					response?.data?.map((a) => ({
-						...a,
-						name: (
-							<Link
-								style={{ color: ColourConstants.activeLink }}
-								href={a?.documentURL || a?.link}
-								download={a?.name}
-								target="_blank"
-								rel="noopener"
-							>
-								{a?.name}
-							</Link>
-						),
-					}))
-				);
+				if (!isMounted.aborted) {
+					setPermits(
+						response?.data?.map((a) => ({
+							...a,
+							name: (
+								<Link
+									style={{ color: ColourConstants.activeLink }}
+									href={a?.documentURL || a?.link}
+									download={a?.name}
+									target="_blank"
+									rel="noopener"
+								>
+									{a?.name}
+								</Link>
+							),
+						}))
+					);
+					setOriginalPermits(
+						response?.data?.map((a) => ({
+							...a,
+							name: (
+								<Link
+									style={{ color: ColourConstants.activeLink }}
+									href={a?.documentURL || a?.link}
+									download={a?.name}
+									target="_blank"
+									rel="noopener"
+								>
+									{a?.name}
+								</Link>
+							),
+						}))
+					);
+				}
 			} else {
 				dispatch(
 					showError(
@@ -86,7 +89,7 @@ const Attachments = ({ taskInfo, access }) => {
 				)
 			);
 		} finally {
-			showLoading && setLoading(false);
+			!isMounted.aborted && showLoading && setLoading(false);
 		}
 	};
 
@@ -337,4 +340,4 @@ const Attachments = ({ taskInfo, access }) => {
 	);
 };
 
-export default Attachments;
+export default withMount(Attachments);

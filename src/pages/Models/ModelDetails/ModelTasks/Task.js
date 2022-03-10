@@ -22,6 +22,7 @@ import { Apis } from "services/api";
 import SearchField from "components/Elements/SearchField/SearchField";
 import TablePagination from "components/Elements/TablePagination";
 import { makeStyles } from "@material-ui/core/styles";
+import withMount from "components/HOC/withMount";
 
 const useStyles = makeStyles({
 	loading: {
@@ -44,7 +45,7 @@ const debounce = (func, delay) => {
 	};
 };
 
-function Task({ modelId, state, dispatch, access }) {
+function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [isLoading, setLoading] = useState(false);
 	const [taskList, setTaskList] = useState([]);
 
@@ -81,42 +82,44 @@ function Task({ modelId, state, dispatch, access }) {
 			pageSize = 10,
 			callCount = true
 		) => {
-			showLoading && setLoading(true);
+			!isMounted.aborted && showLoading && setLoading(true);
 			try {
 				const response = await Promise.all([
 					getModelTasksList(modelVersionId, search, pageNumber, pageSize),
 					callCount ? getLengthOfModelTasks(modelId) : null,
 				]);
 				if (response[0].status) {
-					setTaskList(
-						response[0].data.map((t) => ({
-							...t,
-							hasTaskImages: t?.hasTaskImages ? (
-								<img src={HasImages} alt="" />
-							) : (
-								""
-							),
-							hasTools: t?.hasTools ? <img src={HasTools} alt="" /> : "",
-							hasParts: t?.hasParts ? <img src={HasParts} alt="" /> : "",
-							hasDocuments: t?.hasDocuments ? (
-								<img src={HasDocuments} alt="" />
-							) : (
-								""
-							),
-							safetyCritical: t?.safetyCritical ? (
-								<img src={SafteryCritical} alt="" />
-							) : (
-								""
-							),
-							errors: t?.hasErrors ? t?.hasErrors : "",
-							intervals: t?.intervals
-								?.map((interval) => interval?.name)
-								?.join(", "),
-							zones: t?.zones?.map((zone) => zone?.name)?.join(", "),
-							roles: t?.roles?.map((role) => role?.name)?.join(", "),
-							stages: t?.stages?.map((stage) => stage?.name)?.join(", "),
-						}))
-					);
+					if (!isMounted.aborted) {
+						setTaskList(
+							response[0].data.map((t) => ({
+								...t,
+								hasTaskImages: t?.hasTaskImages ? (
+									<img src={HasImages} alt="" />
+								) : (
+									""
+								),
+								hasTools: t?.hasTools ? <img src={HasTools} alt="" /> : "",
+								hasParts: t?.hasParts ? <img src={HasParts} alt="" /> : "",
+								hasDocuments: t?.hasDocuments ? (
+									<img src={HasDocuments} alt="" />
+								) : (
+									""
+								),
+								safetyCritical: t?.safetyCritical ? (
+									<img src={SafteryCritical} alt="" />
+								) : (
+									""
+								),
+								errors: t?.hasErrors ? t?.hasErrors : "",
+								intervals: t?.intervals
+									?.map((interval) => interval?.name)
+									?.join(", "),
+								zones: t?.zones?.map((zone) => zone?.name)?.join(", "),
+								roles: t?.roles?.map((role) => role?.name)?.join(", "),
+								stages: t?.stages?.map((stage) => stage?.name)?.join(", "),
+							}))
+						);
+					}
 				} else {
 					reduxDispatch(
 						showError(response[0]?.data?.title || "something went wrong")
@@ -125,7 +128,9 @@ function Task({ modelId, state, dispatch, access }) {
 
 				if (callCount) {
 					if (response[1].status) {
-						setTotalTaskCount(response[1].data);
+						if (!isMounted.aborted) {
+							setTotalTaskCount(response[1].data);
+						}
 					} else {
 						reduxDispatch(
 							showError(response[1]?.data?.title || "something went wrong")
@@ -137,9 +142,10 @@ function Task({ modelId, state, dispatch, access }) {
 					showError(error?.response?.data || "something went wrong")
 				);
 			} finally {
-				showLoading && setLoading(false);
+				!isMounted.aborted && showLoading && setLoading(false);
 			}
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[reduxDispatch, modelId]
 	);
 
@@ -430,4 +436,4 @@ const dymanicTableHeader = (operatingModeShown, customCaptions) => {
 	};
 };
 
-export default Task;
+export default withMount(Task);
