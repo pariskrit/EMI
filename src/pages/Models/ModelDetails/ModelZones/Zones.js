@@ -12,8 +12,9 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import { Apis } from "services/api";
 import AddNewModelZone from "./AddNewModelZone";
 import TabelRowImage from "components/Elements/TabelRowImage";
+import withMount from "components/HOC/withMount";
 
-function Zones({ modelId, state, dispatch, access }) {
+function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
 	const [zoneList, setZonesList] = useState([]);
 	const [originalZoneList, setOriginalZoneList] = useState([]);
@@ -32,34 +33,38 @@ function Zones({ modelId, state, dispatch, access }) {
 		JSON.parse(localStorage.getItem("me"));
 
 	const fetchModelZoneList = async (showLoading) => {
-		if (showLoading) setLoading(true);
+		if (showLoading && !isMounted.aborted) setLoading(true);
 		try {
 			const response = await Promise.all([
 				getModelZonesList(modelId),
 				EditableModelVersionCheck(modelId),
 			]);
 			if (response[0].status) {
-				setZonesList(
-					response[0].data.map((d) => ({
-						...d,
-						imageURL: <TabelRowImage imageURL={d?.imageURL} />,
-					}))
-				);
-				setOriginalZoneList(
-					response[0].data.map((d) => ({
-						...d,
-						imageURL: <TabelRowImage imageURL={d?.imageURL} />,
-					}))
-				);
-				setZone(response[0].data);
+				if (!isMounted.aborted) {
+					setZonesList(
+						response[0].data.map((d) => ({
+							...d,
+							imageURL: <TabelRowImage imageURL={d?.imageURL} />,
+						}))
+					);
+					setOriginalZoneList(
+						response[0].data.map((d) => ({
+							...d,
+							imageURL: <TabelRowImage imageURL={d?.imageURL} />,
+						}))
+					);
+					setZone(response[0].data);
+				}
 			}
 			if (response[1].status) {
-				setModelEditable(!response[1]?.data?.isEMIModel);
+				if (!isMounted.aborted) {
+					setModelEditable(!response[1]?.data?.isEMIModel);
+				}
 			}
 		} catch (error) {
 			console.log(error);
 		} finally {
-			if (showLoading) setLoading(false);
+			if (showLoading && !isMounted.aborted) setLoading(false);
 		}
 	};
 
@@ -234,4 +239,4 @@ function Zones({ modelId, state, dispatch, access }) {
 	);
 }
 
-export default Zones;
+export default withMount(Zones);

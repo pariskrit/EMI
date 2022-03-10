@@ -9,6 +9,7 @@ import { handleSort } from "helpers/utils";
 import { getLubricants } from "services/clients/sites/siteApplications/lubricants";
 import { patchModelTask } from "services/models/modelDetails/modelTasks";
 import { Facebook } from "react-spinners-css";
+import withMount from "components/HOC/withMount";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -35,7 +36,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const Lubricant = ({ taskInfo, access }) => {
+const Lubricant = ({ taskInfo, access, isMounted }) => {
 	// init hooks
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -56,11 +57,13 @@ const Lubricant = ({ taskInfo, access }) => {
 	const isReadOnly = access === "R";
 
 	const fetchLubricants = async (id) => {
-		setLoading(true);
+		!isMounted.aborted && setLoading(true);
 		try {
 			const response = await getLubricants(id);
 			if (response.status) {
-				setLubricantsList(response.data);
+				if (!isMounted.aborted) {
+					setLubricantsList(response.data);
+				}
 			} else {
 				dispatch(
 					showError(
@@ -79,7 +82,7 @@ const Lubricant = ({ taskInfo, access }) => {
 				)
 			);
 		} finally {
-			setLoading(false);
+			!isMounted.aborted && setLoading(false);
 		}
 	};
 
@@ -244,4 +247,4 @@ const Lubricant = ({ taskInfo, access }) => {
 	);
 };
 
-export default Lubricant;
+export default withMount(Lubricant);

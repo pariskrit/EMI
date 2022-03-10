@@ -1,5 +1,6 @@
 import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
+import withMount from "components/HOC/withMount";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
@@ -12,7 +13,7 @@ import {
 } from "services/models/modelDetails/modelTaskZones";
 import TaskZoneListTable from "./TaskZoneListTable";
 
-const Zones = ({ taskInfo, access }) => {
+const Zones = ({ taskInfo, access, isMounted }) => {
 	const { id } = taskInfo;
 	const dispatch = useDispatch();
 
@@ -34,12 +35,14 @@ const Zones = ({ taskInfo, access }) => {
 	const isReadOnly = access === "R";
 
 	const fetchModelTaskZones = async (taskId) => {
-		setLoading(true);
+		!isMounted.aborted && setLoading(true);
 		try {
 			const response = await getModelTaskZonesList(taskId);
 			if (response.status) {
-				setZones(response.data);
-				setOriginalZones(response.data);
+				if (!isMounted.aborted) {
+					setZones(response.data);
+					setOriginalZones(response.data);
+				}
 			} else {
 				dispatch(
 					showError(
@@ -58,14 +61,16 @@ const Zones = ({ taskInfo, access }) => {
 				)
 			);
 		} finally {
-			setLoading(false);
+			!isMounted.aborted && setLoading(false);
 		}
 	};
 
 	const fetchCountAssest = async () => {
 		const response = await getSiteAssetsCount(siteID);
 		if (response.status) {
-			setAssestCount(response.data);
+			if (!isMounted.aborted) {
+				setAssestCount(response.data);
+			}
 		}
 	};
 
@@ -87,7 +92,9 @@ const Zones = ({ taskInfo, access }) => {
 				perPage,
 				search
 			);
-			setSiteAssest((prev) => [...prev, ...response.data]);
+			if (!isMounted.aborted) {
+				setSiteAssest((prev) => [...prev, ...response.data]);
+			}
 		} catch (error) {
 			dispatch(error?.response?.data || "Coulnd not fetch site asset");
 		}
@@ -229,4 +236,4 @@ const Zones = ({ taskInfo, access }) => {
 	);
 };
 
-export default Zones;
+export default withMount(Zones);

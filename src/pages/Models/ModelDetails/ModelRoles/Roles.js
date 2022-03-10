@@ -14,10 +14,11 @@ import { Apis } from "services/api";
 import AddModelRoleDialog from "./AddModelRoleDialog";
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
+import withMount from "components/HOC/withMount";
 
 const AC = ContentStyle();
 
-function Roles({ modelId, state, dispatch, access }) {
+function Roles({ modelId, state, dispatch, access, isMounted }) {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -49,19 +50,21 @@ function Roles({ modelId, state, dispatch, access }) {
 
 	// fetch model role list
 	const fetchModelRoles = async (loads) => {
-		loads && setLoading(true);
+		!isMounted.aborted && loads && setLoading(true);
 		try {
 			const response = await getModelRolesList(modelId);
 			if (response.status) {
-				setData(response.data);
-				setFilteredData(response.data);
+				if (!isMounted.aborted) {
+					setData(response.data);
+					setFilteredData(response.data);
+				}
 			} else {
 				reduxDispatch(showError(response?.title || "something went wrong"));
 			}
 		} catch (error) {
 			reduxDispatch(showError(error?.response?.data || "something went wrong"));
 		} finally {
-			loads && setLoading(false);
+			!isMounted.aborted && loads && setLoading(false);
 		}
 	};
 
@@ -199,4 +202,4 @@ function Roles({ modelId, state, dispatch, access }) {
 	);
 }
 
-export default Roles;
+export default withMount(Roles);

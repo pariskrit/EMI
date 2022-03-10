@@ -22,6 +22,7 @@ import {
 	addModelVersionTaskRoles,
 	removeModelVersionTaskRole,
 } from "services/models/modelDetails/modelVersionTaskRole";
+import withMount from "components/HOC/withMount";
 
 const ADD = AddDialogStyle();
 
@@ -59,7 +60,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const TaskDetails = ({ taskInfo, access }) => {
+const TaskDetails = ({ taskInfo, access, isMounted }) => {
 	const classes = useStyles();
 
 	const [loading, setLoading] = useState(false);
@@ -92,7 +93,7 @@ const TaskDetails = ({ taskInfo, access }) => {
 
 	useEffect(() => {
 		const fetchDropDownDatas = async () => {
-			setLoading(true);
+			!isMounted.aborted && setLoading(true);
 			const response = await Promise.all([
 				getOperatingModes(siteAppID),
 				getSystems(siteAppID),
@@ -103,23 +104,28 @@ const TaskDetails = ({ taskInfo, access }) => {
 
 			if (isResponseError) {
 				reduxDispatch(showError("Error: Could not fetch Dropdown datas"));
-				setDropDownDatas({
-					operatingModes: [],
-					systems: [],
-					roles: [],
-					actions: [],
-				});
+				if (!isMounted.aborted) {
+					setDropDownDatas({
+						operatingModes: [],
+						systems: [],
+						roles: [],
+						actions: [],
+					});
+				}
 			} else {
-				setDropDownDatas({
-					operatingModes: response[0].data,
-					systems: response[1].data,
-					roles: response[2].data,
-					actions: response[3].data,
-				});
+				if (!isMounted.aborted) {
+					setDropDownDatas({
+						operatingModes: response[0].data,
+						systems: response[1].data,
+						roles: response[2].data,
+						actions: response[3].data,
+					});
+				}
 			}
-			setLoading(false);
+			!isMounted.aborted && setLoading(false);
 		};
 		!isReadOnly && fetchDropDownDatas();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, reduxDispatch, siteAppID, isReadOnly]);
 
 	const handleEnterPress = (e, name) => {
@@ -515,4 +521,4 @@ const TaskDetails = ({ taskInfo, access }) => {
 	);
 };
 
-export default TaskDetails;
+export default withMount(TaskDetails);

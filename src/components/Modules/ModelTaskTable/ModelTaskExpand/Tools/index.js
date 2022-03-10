@@ -13,10 +13,11 @@ import {
 	getModelTaskTools,
 	patchModelTaskTool,
 } from "services/models/modelDetails/modelTaskTools";
+import withMount from "components/HOC/withMount";
 
 const AT = ActionButtonStyle();
 
-const Tools = ({ taskInfo, access }) => {
+const Tools = ({ taskInfo, access, isMounted }) => {
 	const [tools, setTools] = useState([]);
 	const [originalTools, setOriginalTools] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
@@ -33,12 +34,14 @@ const Tools = ({ taskInfo, access }) => {
 		JSON.parse(localStorage.getItem("me"));
 
 	const fetchTools = async (showLoading = true) => {
-		showLoading && setLoading(true);
+		!isMounted.aborted && showLoading && setLoading(true);
 		try {
 			const response = await getModelTaskTools(taskInfo.id);
 			if (response.status) {
-				setTools(response?.data);
-				setOriginalTools(response?.data);
+				if (!isMounted.aborted) {
+					setTools(response?.data);
+					setOriginalTools(response?.data);
+				}
 			} else {
 				dispatch(
 					showError(
@@ -57,7 +60,7 @@ const Tools = ({ taskInfo, access }) => {
 				)
 			);
 		} finally {
-			showLoading && setLoading(false);
+			!isMounted.aborted && showLoading && setLoading(false);
 		}
 	};
 
@@ -243,4 +246,4 @@ const Tools = ({ taskInfo, access }) => {
 	);
 };
 
-export default Tools;
+export default withMount(Tools);

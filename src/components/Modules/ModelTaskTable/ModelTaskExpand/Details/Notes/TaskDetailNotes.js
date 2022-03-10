@@ -21,6 +21,7 @@ import {
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
 import NoteContent from "./NoteContent";
+import withMount from "components/HOC/withMount";
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
@@ -58,7 +59,13 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ModelTaskNotes = ({ taskGroupId, modelId, customCaptions, disabled }) => {
+const ModelTaskNotes = ({
+	taskGroupId,
+	modelId,
+	customCaptions,
+	disabled,
+	isMounted,
+}) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
@@ -75,20 +82,22 @@ const ModelTaskNotes = ({ taskGroupId, modelId, customCaptions, disabled }) => {
 
 	const fetchNotes = async (showLoading = true) => {
 		try {
-			showLoading && setIsLoading(true);
+			!isMounted.aborted && showLoading && setIsLoading(true);
 			if (cancelFetch.current) {
 				return;
 			}
 			const response = await getModelTaskNotes(modelId, taskGroupId);
 			if (response.status) {
-				setData(response.data);
+				if (!isMounted.aborted) {
+					setData(response.data);
+				}
 			} else {
 				dispatch(showError(response?.data?.title || "something went wrong"));
 			}
 		} catch (err) {
 			dispatch(showError(err?.response?.data || "something went wrong"));
 		} finally {
-			showLoading && setIsLoading(false);
+			!isMounted.aborted && showLoading && setIsLoading(false);
 		}
 	};
 
@@ -191,4 +200,4 @@ const ModelTaskNotes = ({ taskGroupId, modelId, customCaptions, disabled }) => {
 	);
 };
 
-export default ModelTaskNotes;
+export default withMount(ModelTaskNotes);

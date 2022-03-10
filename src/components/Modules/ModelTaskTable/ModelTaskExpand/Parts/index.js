@@ -13,10 +13,11 @@ import {
 import { Apis } from "services/api";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import AddOrEditPart from "./AddOrEditPart";
+import withMount from "components/HOC/withMount";
 
 const AT = ActionButtonStyle();
 
-const Parts = ({ taskInfo, access }) => {
+const Parts = ({ taskInfo, access, isMounted }) => {
 	const [parts, setParts] = useState([]);
 	const [originalParts, setOriginalParts] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
@@ -33,12 +34,14 @@ const Parts = ({ taskInfo, access }) => {
 		JSON.parse(localStorage.getItem("me"));
 
 	const fetchParts = async (showLoading = true) => {
-		showLoading && setLoading(true);
+		!isMounted.aborted && showLoading && setLoading(true);
 		try {
 			const response = await getModelTaskParts(taskInfo.id);
 			if (response.status) {
-				setParts(response?.data);
-				setOriginalParts(response?.data);
+				if (!isMounted.aborted) {
+					setParts(response?.data);
+					setOriginalParts(response?.data);
+				}
 			} else {
 				dispatch(
 					showError(
@@ -57,7 +60,7 @@ const Parts = ({ taskInfo, access }) => {
 				)
 			);
 		} finally {
-			showLoading && setLoading(false);
+			!isMounted.aborted && showLoading && setLoading(false);
 		}
 	};
 
@@ -249,4 +252,4 @@ const Parts = ({ taskInfo, access }) => {
 	);
 };
 
-export default Parts;
+export default withMount(Parts);

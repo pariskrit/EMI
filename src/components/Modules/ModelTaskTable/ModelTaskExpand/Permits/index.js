@@ -13,10 +13,11 @@ import {
 	getModelTaskPermits,
 	patchModelTaskPermit,
 } from "services/models/modelDetails/modelTaskPermits";
+import withMount from "components/HOC/withMount";
 
 const AT = ActionButtonStyle();
 
-const Permits = ({ taskInfo, access }) => {
+const Permits = ({ taskInfo, access, isMounted }) => {
 	const [permits, setPermits] = useState([]);
 	const [originalPermits, setOriginalPermits] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
@@ -29,12 +30,14 @@ const Permits = ({ taskInfo, access }) => {
 	const dispatch = useDispatch();
 
 	const fetchPermits = async (showLoading = true) => {
-		showLoading && setLoading(true);
+		!isMounted.aborted && showLoading && setLoading(true);
 		try {
 			const response = await getModelTaskPermits(taskInfo.id);
 			if (response.status) {
-				setPermits(response?.data);
-				setOriginalPermits(response?.data);
+				if (!isMounted.aborted) {
+					setPermits(response?.data);
+					setOriginalPermits(response?.data);
+				}
 			} else {
 				dispatch(
 					showError(
@@ -53,7 +56,7 @@ const Permits = ({ taskInfo, access }) => {
 				)
 			);
 		} finally {
-			showLoading && setLoading(false);
+			!isMounted.aborted && showLoading && setLoading(false);
 		}
 	};
 
@@ -231,4 +234,4 @@ const Permits = ({ taskInfo, access }) => {
 	);
 };
 
-export default Permits;
+export default withMount(Permits);

@@ -16,6 +16,7 @@ import { showError } from "redux/common/actions";
 import { getSingleModelTask } from "services/models/modelDetails/modelTasks";
 import useDidMountEffect from "hooks/useDidMountEffect";
 import ErrorIcon from "@material-ui/icons/Error";
+import withMount from "components/HOC/withMount";
 
 const AT = TableStyle();
 
@@ -45,6 +46,7 @@ const ModelTaskRow = ({
 	handleCopyTaskQuestion,
 	customCaptions,
 	access,
+	isMounted,
 }) => {
 	const [toggle, setToggle] = useState(false);
 	const [singleTask, setSingleTask] = useState({});
@@ -60,18 +62,20 @@ const ModelTaskRow = ({
 
 		// call single task detail api only if expand is true
 		if (tg) {
-			setLoading(true);
+			!isMounted.aborted && setLoading(true);
 			try {
 				const response = await getSingleModelTask(rowId);
 				if (response.status) {
-					setSingleTask(response.data[0]);
+					if (!isMounted.aborted) {
+						setSingleTask(response.data[0]);
+					}
 				} else {
 					dispatch(showError(response?.data?.title || "something went wrong"));
 				}
 			} catch (error) {
 				dispatch(showError(error?.response?.data || "something went wrong"));
 			} finally {
-				setLoading(false);
+				!isMounted.aborted && setLoading(false);
 			}
 		}
 	};
@@ -233,4 +237,4 @@ const ModelTaskRow = ({
 	);
 };
 
-export default ModelTaskRow;
+export default withMount(ModelTaskRow);
