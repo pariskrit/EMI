@@ -18,6 +18,7 @@ import AddEditModel from "./AddEditModel";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import { modelServiceLayout, modelsPath } from "helpers/routePaths";
+import DetailsPanel from "components/Elements/DetailsPanel";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -33,14 +34,13 @@ const questionTypeOptions = [
 // Styling Task Question
 const useStyles = makeStyles({
 	question: { display: "flex", flexDirection: "column" },
-
 	header: {
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "space-between",
 	},
-
 	pasteTask: { background: "#ED8738" },
+	buttons: { display: "flex", justifyContent: "space-around" },
 });
 
 function apiResponse(d) {
@@ -293,9 +293,9 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 			/>
 			<div className={classes.question}>
 				<div className={classes.header}>
-					<h1>{captions.plural}</h1>
+					<DetailsPanel header={captions.plural} dataCount={data.length} />
 					{access === "F" ? (
-						<span>
+						<span className={classes.buttons}>
 							<GeneralButton
 								className={classes.pasteTask}
 								onClick={handlePaste}
