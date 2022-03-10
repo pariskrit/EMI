@@ -100,7 +100,13 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 								{x.name}
 							</span>
 						)}
-						<FormGroup style={{ width: "10%" }}>
+						<FormGroup
+							style={{ width: "10%" }}
+							onClick={(e) => {
+								e.persist();
+								setEdit(true);
+							}}
+						>
 							<FormControlLabel
 								style={{ marginLeft: 0 }}
 								control={

@@ -38,7 +38,7 @@ const useStyles = makeStyles({
 	add: {
 		marginBottom: 12,
 		display: "flex",
-		gap: 5,
+		justifyContent: "space-between",
 	},
 	options: { width: "100%" },
 	list: { display: "flex", flexDirection: "column" },
@@ -294,7 +294,7 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 								onChange={(e) => setState({ name: e.target.value })}
 								fullWidth
 								onKeyDown={handleEnterPress}
-								style={{ marginBottom: 12, width: "94%" }}
+								style={{ marginBottom: 12, width: "76%" }}
 							/>
 							<FormGroup style={{ width: "12%" }}>
 								<FormControlLabel
