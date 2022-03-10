@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
+import { DROPDOWN_LEFT_OFFSET, DROPDOWN_TOP_OFFSET } from "helpers/constants";
 
 function Dropdown(props) {
 	const {
@@ -43,8 +44,12 @@ function Dropdown(props) {
 		let isClickInside =
 			specifiedElement?.contains(event.target) ||
 			dropbox?.contains(event.target);
+		let parentEl = document.getElementsByClassName("dropdown active")[0];
 		if (!isClickInside) {
-			setDropActive(false);
+			//setDropActive(false);
+			if (dropbox) dropbox.classList.remove("active");
+			if (parentEl) parentEl.classList.remove("active");
+			if (specifiedElement) specifiedElement.classList.remove("active");
 		}
 	};
 	const onFilter = (val) => {
@@ -57,18 +62,51 @@ function Dropdown(props) {
 		setFilteredList(filteredSearchList);
 	};
 	const handleDrpdwnClick = (event) => {
+		removeActiveDropdown();
 		let el = event.target.closest(".dropbox");
-		setDropActive(true);
+		if (el) el.classList.add("active");
+		const parentEl = event.target.closest(".dropdown");
+		if (parentEl) parentEl.classList.add("active");
+		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
+		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
+		//setDropActive(true);
 		onFilter("");
 
-		setDropUpward(
-			window.innerHeight - el.getBoundingClientRect().bottom < 300
-				? false
-				: true
-		);
-		setDropSideway(
-			window.innerWidth - el.getBoundingClientRect().right < 150 ? false : true
-		);
+		// setDropUpward(
+		// 	window.innerHeight - el.getBoundingClientRect().bottom < 300
+		// 		? false
+		// 		: true
+		// );
+		// setDropSideway(
+		// 	window.innerWidth - el.getBoundingClientRect().right < 150 ? false : true
+		// );
+		if (dropdownExpandEl) {
+			const dropdownPos = parentEl?.getBoundingClientRect();
+			dropdownExpandEl.style.top =
+				window.innerHeight - el?.getBoundingClientRect().bottom < 300
+					? `${
+							dropdownPos.top -
+							dropdownExpandEl.scrollHeight +
+							DROPDOWN_TOP_OFFSET
+					  }px`
+					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
+
+			dropdownExpandEl.style.left = `${
+				dropdownPos.left + DROPDOWN_LEFT_OFFSET
+			}px`;
+		}
+	};
+
+	const removeActiveDropdown = () => {
+		let specifiedElement = document.getElementsByClassName(
+			"dropdown-expand active"
+		)[0];
+		let dropbox = document.getElementsByClassName("dropbox active")[0];
+
+		if (dropbox) dropbox.classList.remove("active");
+		let parentEl = document.getElementsByClassName("dropdown active")[0];
+		if (parentEl) parentEl.classList.remove("active");
+		if (specifiedElement) specifiedElement.classList.remove("active");
 	};
 	return (
 		<div
@@ -76,7 +114,7 @@ function Dropdown(props) {
 			style={disabled ? { pointerEvents: "none", opacity: "0.4" } : {}}
 		>
 			<div
-				className={`dropbox ${dropActive ? "active" : ""}`}
+				className="dropbox"
 				onClick={isReadOnly ? null : (event) => handleDrpdwnClick(event)}
 			>
 				{label.length > 0 && (
@@ -100,53 +138,53 @@ function Dropdown(props) {
 					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 				</div>
 			</div>
-			{dropActive && (
-				<div
-					className={clsx({
-						"dropdown-expand": true,
-						active: dropActive,
-						upward: dropUpward,
-						downward: !dropUpward,
-						rightSide: !dropSideway,
-					})}
-				>
-					<div className="search-box flex justify-between">
-						<div className="input-field flex">
-							<SearchIcon style={{ width: "20px" }} />
-							<input
-								type="text"
-								className="search-box__text"
-								placeholder="Search"
-								onChange={(e) => onFilter(e.target.value)}
-							/>
-						</div>
+			{/* {dropActive && ( */}
+			<div
+				className={clsx({
+					"dropdown-expand": true,
+					//active: dropActive,
+					upward: dropUpward,
+					downward: !dropUpward,
+					rightSide: !dropSideway,
+				})}
+			>
+				<div className="search-box flex justify-between">
+					<div className="input-field flex">
+						<SearchIcon style={{ width: "20px" }} />
+						<input
+							type="text"
+							className="search-box__text"
+							placeholder="Search"
+							onChange={(e) => onFilter(e.target.value)}
+						/>
+					</div>
 
-						<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
-					</div>
-					<div className="drop-list">
-						{filteredList.length > 0 ? (
-							filteredList?.map((list) => (
-								<div
-									className={
-										"list-item flex " +
-										(list.value === selectedValue?.value ? "selected" : "")
-									}
-									key={list.value}
-									onClick={() => {
-										onChange(list);
-										setDropActive(false);
-									}}
-								>
-									<CheckIcon className="check mr-sm" />
-									<span>{list.label}</span>
-								</div>
-							))
-						) : (
-							<span className="no-record">No records found</span>
-						)}
-					</div>
+					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 				</div>
-			)}
+				<div className="drop-list">
+					{filteredList.length > 0 ? (
+						filteredList?.map((list) => (
+							<div
+								className={
+									"list-item flex " +
+									(list.value === selectedValue?.value ? "selected" : "")
+								}
+								key={list.value}
+								onClick={() => {
+									onChange(list);
+									setDropActive(false);
+								}}
+							>
+								<CheckIcon className="check mr-sm" />
+								<span>{list.label}</span>
+							</div>
+						))
+					) : (
+						<span className="no-record">No records found</span>
+					)}
+				</div>
+			</div>
+			{/* )} */}
 		</div>
 	);
 }

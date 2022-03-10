@@ -135,3 +135,6 @@ export const workbookFields = (customCaptions) => [
 	{ id: "12", name: "customField2", label: `${customCaptions.customField2}` },
 	{ id: "13", name: "customField3", label: `${customCaptions.customField3}` },
 ];
+
+export const DROPDOWN_TOP_OFFSET = 30;
+export const DROPDOWN_LEFT_OFFSET = 30;
