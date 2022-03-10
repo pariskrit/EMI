@@ -46,6 +46,7 @@ const ModelQuestion = ({
 	const [questionId, setQuestionId] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [duplicating, setDuplicating] = useState(false);
+	const [editMode, setEditMode] = useState(false);
 
 	// HANDLING OPERATIONS
 	function apiResponse(x) {
@@ -219,6 +220,7 @@ const ModelQuestion = ({
 	// Handle Edit Question
 	const handleEdit = (id) => {
 		setQuestionId(id);
+		setEditMode(true);
 		dispatch({ type: "TOGGLE_ADD", payload: true });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	};
@@ -312,6 +314,7 @@ const ModelQuestion = ({
 			<AddEditModel
 				open={state.showAdd}
 				handleClose={() => {
+					setEditMode(false);
 					dispatch({ type: "TOGGLE_ADD", payload: false });
 					setQuestionId(null);
 				}}
@@ -322,6 +325,7 @@ const ModelQuestion = ({
 				roleOptions={roleOptions}
 				handleAddEditComplete={handleAddEditComplete}
 				handleOptions={handleOptions}
+				editMode={editMode}
 			/>
 			<DeleteDialog
 				open={deleteModel}
