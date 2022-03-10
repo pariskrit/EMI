@@ -72,6 +72,7 @@ const AddEditModel = ({
 	roleOptions,
 	handleAddEditComplete,
 	handleOptions,
+	editMode,
 }) => {
 	// DEFINE STATES
 	const [input, setInput] = useState(initialInput);
@@ -85,7 +86,7 @@ const AddEditModel = ({
 	const [loader, setLoader] = useState({ role: false, option: false });
 
 	useEffect(() => {
-		if (questionDetail) {
+		if (editMode) {
 			const {
 				caption,
 				type,
@@ -115,7 +116,7 @@ const AddEditModel = ({
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [questionDetail]);
+	}, [editMode]);
 
 	// HANDLE FUNCTIONS
 
@@ -233,7 +234,7 @@ const AddEditModel = ({
 			);
 
 			if (!localChecker.some((el) => el.valid === false)) {
-				if (questionDetail) {
+				if (editMode) {
 					// If Edit Mode
 					handleEdit(data);
 				} else {
@@ -297,7 +298,7 @@ const AddEditModel = ({
 		// If unchecked
 		if (index > -1) {
 			// If EditMode
-			if (questionDetail) {
+			if (editMode) {
 				const role = questionDetail.roles.find(
 					(x) => x.modelVersionRoleID === id
 				);
@@ -312,7 +313,7 @@ const AddEditModel = ({
 			roleIds.splice(index, 1);
 			// If checked
 		} else {
-			if (questionDetail) {
+			if (editMode) {
 				postRole({
 					ModelVersionQuestionID: questionDetail.id,
 					ModelVersionRoleID: id,
@@ -330,7 +331,8 @@ const AddEditModel = ({
 			if (result.status) {
 				return result.data;
 			} else {
-				getError(result.data);
+				if (result.data.detail) getError(result.data.detail);
+				else getError("Something went wrong");
 			}
 		} catch (e) {
 			return;
@@ -376,30 +378,34 @@ const AddEditModel = ({
 	const handleAddOption = async (value) => {
 		const opt = input.options;
 		// Check if it is in editMode or not
-		if (questionDetail) {
-			const option = {
+		if (editMode) {
+			const optData = {
 				ModelVersionQuestionID: questionDetail.id,
 				Name: value,
 				RaiseDefect: true,
 			};
-			const res = await postOption(option);
-			if (res)
+			const res = await postOption(optData);
+			if (res) {
 				handleOptions({
 					...questionDetail,
 					options: [...questionDetail.options, { name: value, id: res }],
 				});
+			}
 		}
 
 		setInput((th) => ({ ...th, options: [value, ...opt] }));
 		setIsAdd(false);
-		return true;
 	};
 
 	const handleRemoveOption = async (index) => {
 		const opt = input.options;
-		if (questionDetail) {
+		if (editMode) {
 			const { id } = questionDetail.options[index];
 			await deleteOption(id);
+			handleOptions({
+				...questionDetail,
+				options: questionDetail.options.filter((x) => x.id !== id),
+			});
 		}
 		opt.splice(index, 1);
 		setInput((th) => ({ ...th, options: opt }));
@@ -408,7 +414,7 @@ const AddEditModel = ({
 
 	const handleUpdateOption = async (index, text) => {
 		const opt = input.options;
-		if (questionDetail) {
+		if (editMode) {
 			const { id } = questionDetail.options[index];
 			await updateOption(id, [{ op: "replace", path: "name", value: text }]);
 			handleOptions({
@@ -417,7 +423,6 @@ const AddEditModel = ({
 					x.id === id ? { id, name: text } : x
 				),
 			});
-			return true;
 		}
 		opt[index] = text;
 		setInput((th) => ({ ...th, options: opt }));
@@ -449,7 +454,7 @@ const AddEditModel = ({
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
 					<ADD.HeaderText>
-						{questionDetail ? "Edit" : "Add"} {title}
+						{editMode ? "Edit" : "Add"} {title}
 					</ADD.HeaderText>
 				</DialogTitle>
 

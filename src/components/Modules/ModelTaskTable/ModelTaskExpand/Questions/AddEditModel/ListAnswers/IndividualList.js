@@ -69,7 +69,7 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 	return (
 		<Draggable draggableId={x.id + ""} index={index}>
 			{(provider) => (
-				<div ref={childRef}>
+				<div ref={childRef} onClick={(e) => setEdit(true)}>
 					<div
 						className={classes.individualRow}
 						{...provider.draggableProps}
@@ -96,9 +96,7 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 								onKeyDown={handlePressEnter}
 							/>
 						) : (
-							<span className={classes.text} onClick={() => setEdit(true)}>
-								{x.name}
-							</span>
+							<span className={classes.text}>{x.name}</span>
 						)}
 						<FormGroup style={{ width: "10%" }}>
 							<FormControlLabel
@@ -134,7 +132,13 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 									)}
 								</Button>
 							) : (
-								<DeleteIcon className={classes.deleteIcon} onClick={onDelete} />
+								<DeleteIcon
+									className={classes.deleteIcon}
+									onClick={(e) => {
+										e.stopPropagation();
+										onDelete();
+									}}
+								/>
 							)}
 						</span>
 					</div>
