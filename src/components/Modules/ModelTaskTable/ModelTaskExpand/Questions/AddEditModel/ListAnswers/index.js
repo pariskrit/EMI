@@ -83,6 +83,7 @@ const useStyles = makeStyles({
 		fontFamily: "Roboto Condensed",
 		fontWeight: "bold",
 		height: 35,
+		padding: "6px 26px",
 	},
 });
 
@@ -296,9 +297,8 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 								onKeyDown={handleEnterPress}
 								style={{ marginBottom: 12, width: "76%" }}
 							/>
-							<FormGroup style={{ width: "12%" }}>
+							<FormGroup>
 								<FormControlLabel
-									style={{ marginLeft: 0, marginRight: 3 }}
 									control={
 										<EMICheckbox
 											state={input.raiseDefect}
