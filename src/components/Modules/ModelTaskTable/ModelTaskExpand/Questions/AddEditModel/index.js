@@ -250,7 +250,7 @@ function AddEditModel({
 					<ADD.LeftInputContainer>
 						<FormGroup>
 							<FormControlLabel
-								style={{ marginLeft: 0 }}
+								style={{ marginLeft: 0, marginTop: -20 }}
 								control={
 									<EMICheckbox
 										state={input.isCompulsory}
