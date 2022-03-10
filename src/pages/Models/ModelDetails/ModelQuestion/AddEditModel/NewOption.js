@@ -25,7 +25,7 @@ const NewOption = ({ addNewOption, setIsAdd }) => {
 	};
 
 	return (
-		<AT.SubcatContainer style={{ width: "48%" }}>
+		<AT.SubcatContainer style={{ width: "49%" }}>
 			<AT.NameInput
 				autoFocus
 				onChange={handleChange}

@@ -634,79 +634,77 @@ const AddEditModel = ({
 				input.type === "B" ||
 				input.type === "O" ||
 				input.type === "C" ? (
-					<ADD.InputContainer>
-						<ADD.LeftInputContainer style={{ width: "100%" }}>
-							<ADD.NameLabel>
-								{input.type === "N"
-									? "Decimal Places"
-									: input.type === "B"
-									? "Checkbox Caption"
-									: "List Options"}
-								<ADD.RequiredStar>*</ADD.RequiredStar>
-							</ADD.NameLabel>
-							{input.type === "N" || input.type === "B" ? (
-								<ADD.NameInput
-									size="medium"
-									style={{ width: "48%" }}
-									error={
-										errors.decimalPlaces || errors.checkboxCaption !== null
-											? true
-											: false
-									}
-									helperText={
-										errors.decimalPlaces || errors.checkboxCaption !== null
-											? errors.decimalPlaces || errors.checkboxCaption
-											: null
-									}
-									variant="outlined"
-									type={input.type === "N" ? "number" : "string"}
-									onChange={(e) => {
-										const { value } = e.target;
-										setInput((th) => ({
-											...th,
-											decimalPlaces: input.type === "N" ? +value : null,
-											checkboxCaption: input.type === "B" ? value : "",
-										}));
-									}}
-									value={
-										input.type === "N"
-											? input.decimalPlaces
-											: input.type === "B"
-											? input.checkboxCaption
-											: ""
-									}
-								/>
-							) : (
-								<>
-									<ErrorInputFieldWrapper errorMessage={errors.options}>
-										{loader.option ? <LinearProgress /> : null}
-										<div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-											{isAdd ? (
-												<NewOption
-													addNewOption={handleAddOption}
-													setIsAdd={setIsAdd}
-												/>
-											) : null}
-											{input.options.map((x, i) => (
-												<Options
-													key={i}
-													id={i}
-													x={x}
-													handleRemoveOption={handleRemoveOption}
-													handleUpdateOption={handleUpdateOption}
-												/>
-											))}
-										</div>
-									</ErrorInputFieldWrapper>
-									<CurveButton
-										style={{ float: "left" }}
-										onClick={() => setIsAdd(true)}
-									>
-										Add Option
-									</CurveButton>
-								</>
-							)}
-						</ADD.LeftInputContainer>
+					<ADD.InputContainer style={{ flexDirection: "column" }}>
+						<ADD.NameLabel>
+							{input.type === "N"
+								? "Decimal Places"
+								: input.type === "B"
+								? "Checkbox Caption"
+								: "List Options"}
+							<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
+						{input.type === "N" || input.type === "B" ? (
+							<ADD.NameInput
+								style={{ width: "50%", paddingRight: 15 }}
+								size="medium"
+								error={
+									errors.decimalPlaces || errors.checkboxCaption !== null
+										? true
+										: false
+								}
+								helperText={
+									errors.decimalPlaces || errors.checkboxCaption !== null
+										? errors.decimalPlaces || errors.checkboxCaption
+										: null
+								}
+								variant="outlined"
+								type={input.type === "N" ? "number" : "string"}
+								onChange={(e) => {
+									const { value } = e.target;
+									setInput((th) => ({
+										...th,
+										decimalPlaces: input.type === "N" ? +value : null,
+										checkboxCaption: input.type === "B" ? value : "",
+									}));
+								}}
+								value={
+									input.type === "N"
+										? input.decimalPlaces
+										: input.type === "B"
+										? input.checkboxCaption
+										: ""
+								}
+							/>
+						) : (
+							<>
+								<ErrorInputFieldWrapper errorMessage={errors.options}>
+									{loader.option ? <LinearProgress /> : null}
+									<div style={{ display: "flex", flexWrap: "wrap", gap: 25 }}>
+										{isAdd ? (
+											<NewOption
+												addNewOption={handleAddOption}
+												setIsAdd={setIsAdd}
+											/>
+										) : null}
+										{input.options.map((x, i) => (
+											<Options
+												key={i}
+												id={i}
+												x={x}
+												handleRemoveOption={handleRemoveOption}
+												handleUpdateOption={handleUpdateOption}
+											/>
+										))}
+									</div>
+								</ErrorInputFieldWrapper>
+								<CurveButton
+									style={{ float: "left", width: 108 }}
+									onClick={() => setIsAdd(true)}
+								>
+									Add Option
+								</CurveButton>
+							</>
+						)}
 					</ADD.InputContainer>
 				) : null}
 			</ADD.DialogContent>
