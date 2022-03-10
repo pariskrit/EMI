@@ -14,7 +14,7 @@ function ListTable({
 	return (
 		<DragAndDropTable
 			data={data}
-			isModelEditable
+			isModelEditable={access === "F" || access === "E"}
 			headers={[
 				"Question Caption",
 				"Question Type",
