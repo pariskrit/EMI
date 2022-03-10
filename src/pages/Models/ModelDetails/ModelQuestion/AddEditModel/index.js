@@ -487,6 +487,7 @@ const AddEditModel = ({
 							onChange={(e) => {
 								setInput({ ...input, caption: e.target.value });
 							}}
+							style={{ width: "101%" }}
 						/>
 					</ADD.LeftInputContainer>
 
