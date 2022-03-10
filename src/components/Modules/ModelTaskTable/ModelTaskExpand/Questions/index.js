@@ -90,7 +90,10 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 		addEdit: false,
 		copy: false,
 	});
-	const [loading, setLoading] = useState({ fetch: false, loader: false });
+	const [loading, setLoading] = useState({
+		fetch: false,
+		loader: false,
+	});
 
 	// ARRANGING DATA FROM THE API RESPONSE
 
