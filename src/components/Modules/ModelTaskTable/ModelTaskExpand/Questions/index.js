@@ -101,10 +101,8 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 	};
 
 	const fetchTaskQuestion = async () => {
-		setLoading((th) => ({ ...th, fetch: true }));
 		try {
 			let result = await getQuestions(taskInfo.id);
-			setLoading((th) => ({ ...th, fetch: false }));
 			if (result.status) {
 				result = result.data.map((x) => apiResponse(x));
 				setData(result);
@@ -118,7 +116,9 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 	};
 
 	useEffect(() => {
+		setLoading((th) => ({ ...th, fetch: true }));
 		fetchTaskQuestion();
+		setLoading((th) => ({ ...th, fetch: false }));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
