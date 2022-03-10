@@ -330,7 +330,8 @@ const AddEditModel = ({
 			if (result.status) {
 				return result.data;
 			} else {
-				getError(result.data);
+				if (result.data.detail) getError(result.data.detail);
+				else getError("Something went wrong");
 			}
 		} catch (e) {
 			return;
@@ -377,17 +378,18 @@ const AddEditModel = ({
 		const opt = input.options;
 		// Check if it is in editMode or not
 		if (questionDetail) {
-			const option = {
+			const optData = {
 				ModelVersionQuestionID: questionDetail.id,
 				Name: value,
 				RaiseDefect: true,
 			};
-			const res = await postOption(option);
-			if (res)
+			const res = await postOption(optData);
+			if (res) {
 				handleOptions({
 					...questionDetail,
 					options: [...questionDetail.options, { name: value, id: res }],
 				});
+			}
 		}
 
 		setInput((th) => ({ ...th, options: [value, ...opt] }));
@@ -400,6 +402,10 @@ const AddEditModel = ({
 		if (questionDetail) {
 			const { id } = questionDetail.options[index];
 			await deleteOption(id);
+			handleOptions({
+				...questionDetail,
+				options: questionDetail.options.filter((x) => x.id !== id),
+			});
 		}
 		opt.splice(index, 1);
 		setInput((th) => ({ ...th, options: opt }));
