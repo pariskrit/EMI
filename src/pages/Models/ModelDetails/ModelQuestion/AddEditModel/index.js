@@ -484,7 +484,9 @@ const AddEditModel = ({
 						/>
 					</ADD.LeftInputContainer>
 
-					<ADD.RightInputContainer style={{ marginTop: "auto" }}>
+					<ADD.RightInputContainer
+						style={{ marginTop: "auto", marginLeft: 16 }}
+					>
 						<FormGroup>
 							<FormControlLabel
 								control={
@@ -639,6 +641,8 @@ const AddEditModel = ({
 							</ADD.NameLabel>
 							{input.type === "N" || input.type === "B" ? (
 								<ADD.NameInput
+									size="medium"
+									style={{ width: "48%" }}
 									error={
 										errors.decimalPlaces || errors.checkboxCaption !== null
 											? true
@@ -650,7 +654,6 @@ const AddEditModel = ({
 											: null
 									}
 									variant="outlined"
-									size="small"
 									type={input.type === "N" ? "number" : "string"}
 									onChange={(e) => {
 										const { value } = e.target;
@@ -672,13 +675,13 @@ const AddEditModel = ({
 								<>
 									<ErrorInputFieldWrapper errorMessage={errors.options}>
 										{loader.option ? <LinearProgress /> : null}
-										{isAdd ? (
-											<NewOption
-												addNewOption={handleAddOption}
-												setIsAdd={setIsAdd}
-											/>
-										) : null}
 										<div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+											{isAdd ? (
+												<NewOption
+													addNewOption={handleAddOption}
+													setIsAdd={setIsAdd}
+												/>
+											) : null}
 											{input.options.map((x, i) => (
 												<Options
 													key={i}

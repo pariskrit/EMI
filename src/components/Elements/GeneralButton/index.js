@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import "./style.css";
 
 function GeneralButton({
@@ -34,7 +35,7 @@ function GeneralButton({
 	return (
 		<button
 			onClick={onClick}
-			className={`button ${className}`}
+			className={clsx("button", className, { "disabled-button": disabled })}
 			style={style}
 			disabled={disabled}
 		>

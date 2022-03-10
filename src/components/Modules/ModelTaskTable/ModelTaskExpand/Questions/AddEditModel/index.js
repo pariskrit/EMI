@@ -212,7 +212,7 @@ function AddEditModel({
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
-				<ADD.InputContainer style={{ alignItems: "center" }}>
+				<ADD.InputContainer>
 					<ADD.LeftInputContainer>
 						<ADD.NameLabel>
 							Question Caption<ADD.RequiredStar>*</ADD.RequiredStar>
@@ -221,7 +221,7 @@ function AddEditModel({
 							error={errors.caption === null ? false : true}
 							helperText={errors.caption === null ? null : errors.caption}
 							variant="outlined"
-							size="small"
+							size="medium"
 							value={input.caption}
 							autoFocus
 							onKeyDown={handleEnterPress}
@@ -250,7 +250,7 @@ function AddEditModel({
 					<ADD.LeftInputContainer>
 						<FormGroup>
 							<FormControlLabel
-								style={{ marginLeft: 0 }}
+								style={{ marginLeft: 0, marginTop: -20 }}
 								control={
 									<EMICheckbox
 										state={input.isCompulsory}
@@ -280,7 +280,7 @@ function AddEditModel({
 										: errors.checkboxCaption
 								}
 								variant="outlined"
-								size="small"
+								size="medium"
 								value={input.checkboxCaption}
 								autoFocus
 								onKeyDown={handleEnterPress}
@@ -302,7 +302,7 @@ function AddEditModel({
 										errors.decimalPlaces === null ? null : errors.decimalPlaces
 									}
 									variant="outlined"
-									size="small"
+									size="medium"
 									value={input.decimalPlaces}
 									autoFocus
 									onKeyDown={handleEnterPress}
@@ -320,7 +320,7 @@ function AddEditModel({
 									error={errors.minValue === null ? false : true}
 									helperText={errors.minValue === null ? null : errors.minValue}
 									variant="outlined"
-									size="small"
+									size="medium"
 									value={input.minValue}
 									autoFocus
 									onKeyDown={handleEnterPress}
@@ -338,7 +338,7 @@ function AddEditModel({
 									error={errors.maxValue === null ? false : true}
 									helperText={errors.maxValue === null ? null : errors.maxValue}
 									variant="outlined"
-									size="small"
+									size="medium"
 									value={input.maxValue}
 									autoFocus
 									onKeyDown={handleEnterPress}
