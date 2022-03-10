@@ -234,6 +234,7 @@ const AddEditModel = ({
 			);
 
 			if (!localChecker.some((el) => el.valid === false)) {
+				setErrors(defaultError);
 				if (editMode) {
 					// If Edit Mode
 					handleEdit(data);
@@ -470,7 +471,7 @@ const AddEditModel = ({
 			<ADD.DialogContent>
 				{/* ROW 1 */}
 
-				<ADD.InputContainer style={{ alignItems: "center" }}>
+				<ADD.InputContainer>
 					<ADD.LeftInputContainer>
 						<ADD.NameLabel>
 							Caption<ADD.RequiredStar>*</ADD.RequiredStar>

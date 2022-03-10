@@ -162,6 +162,7 @@ function AddEditModel({
 		try {
 			const localChecker = await handleValidateObj(schema(input.type), d);
 			if (!localChecker.some((el) => el.valid === false)) {
+				setErrors(defaultError);
 				if (questionDetail) {
 					handleEditTaskQuestion(input);
 				} else {
