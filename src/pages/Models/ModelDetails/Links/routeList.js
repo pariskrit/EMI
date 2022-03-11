@@ -8,7 +8,7 @@ import {
 	modelTask,
 } from "helpers/routePaths";
 import ModelAsset from "../ModelAsset";
-import ModelStage from "../ModelStage";
+import ModelStage from "../ModelStages";
 import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
 import ModelQuestion from "../ModelQuestion";
