@@ -247,6 +247,7 @@ const AddEditModel = ({
 						<div>
 							<FormGroup>
 								<FormControlLabel
+									style={{ marginLeft: 0 }}
 									control={
 										<EMICheckbox
 											state={input.hasZones}
