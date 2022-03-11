@@ -173,6 +173,7 @@ function Dropdown(props) {
 								onClick={() => {
 									onChange(list);
 									setDropActive(false);
+									removeActiveDropdown();
 								}}
 							>
 								<CheckIcon className="check mr-sm" />

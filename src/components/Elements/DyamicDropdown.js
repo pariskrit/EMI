@@ -12,6 +12,7 @@ import TableStyle from "styles/application/TableStyle";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 
 import EMICheckbox from "./EMICheckbox";
+import { DROPDOWN_LEFT_OFFSET, DROPDOWN_TOP_OFFSET } from "helpers/constants";
 
 const ADD = AddDialogStyle();
 const AT = TableStyle();
@@ -122,22 +123,22 @@ function DyanamicDropdown(props) {
 		setFilteredList(dataSource);
 	}, [dataSource]);
 
-	const handleOutsideClick = useCallback(
-		(event) => {
-			let specifiedElement = document.getElementsByClassName(
-				"dropdown-expand active"
-			)[0];
-			let dropbox = document.getElementsByClassName("dropbox active")[0];
-			let isClickInside =
-				specifiedElement?.contains(event.target) ||
-				dropbox?.contains(event.target);
-			if (!isClickInside) {
-				setFilteredList(dataSource);
-				setDropActive(false);
-			}
-		},
-		[dataSource]
-	);
+	const handleOutsideClick = useCallback((event) => {
+		let specifiedElement = document.getElementsByClassName(
+			"dropdown-expand active"
+		)[0];
+		let dropbox = document.getElementsByClassName("dropbox active")[0];
+		let isClickInside =
+			specifiedElement?.contains(event.target) ||
+			dropbox?.contains(event.target);
+		let parentEl = document.getElementsByClassName("dropdown active")[0];
+		if (!isClickInside) {
+			//setDropActive(false);
+			if (dropbox) dropbox.classList.remove("active");
+			if (parentEl) parentEl.classList.remove("active");
+			if (specifiedElement) specifiedElement.classList.remove("active");
+		}
+	}, []);
 
 	useEffect(() => {
 		window.addEventListener("click", handleOutsideClick);
@@ -210,17 +211,51 @@ function DyanamicDropdown(props) {
 
 	const handleDrpdwnClick = (event) => {
 		if (isReadOnly) return;
+		removeActiveDropdown();
+		let el = event.target.closest(".dropbox");
+		if (el) el.classList.add("active");
+		const parentEl = event.target.closest(".dropdown");
+		if (parentEl) parentEl.classList.add("active");
+		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
+		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
 		setDropActive(true);
-		setDropUpward(
-			window.innerHeight - event.target.getBoundingClientRect().bottom < 300
-				? false
-				: true
-		);
-		setDropSideway(
-			window.innerWidth - event.target.getBoundingClientRect().right < 150
-				? false
-				: true
-		);
+		// setDropUpward(
+		// 	window.innerHeight - event.target.getBoundingClientRect().bottom < 300
+		// 		? false
+		// 		: true
+		// );
+		// setDropSideway(
+		// 	window.innerWidth - event.target.getBoundingClientRect().right < 150
+		// 		? false
+		// 		: true
+		// );
+		if (dropdownExpandEl) {
+			const dropdownPos = parentEl?.getBoundingClientRect();
+			dropdownExpandEl.style.top =
+				window.innerHeight - el?.getBoundingClientRect().bottom < 300
+					? `${
+							dropdownPos.top -
+							dropdownExpandEl.scrollHeight +
+							DROPDOWN_TOP_OFFSET
+					  }px`
+					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
+
+			dropdownExpandEl.style.left = `${
+				dropdownPos.left + DROPDOWN_LEFT_OFFSET
+			}px`;
+		}
+	};
+
+	const removeActiveDropdown = () => {
+		let specifiedElement = document.getElementsByClassName(
+			"dropdown-expand active"
+		)[0];
+		let dropbox = document.getElementsByClassName("dropbox active")[0];
+
+		if (dropbox) dropbox.classList.remove("active");
+		let parentEl = document.getElementsByClassName("dropdown active")[0];
+		if (parentEl) parentEl.classList.remove("active");
+		if (specifiedElement) specifiedElement.classList.remove("active");
 	};
 
 	// clear and reset dropdown content
@@ -282,158 +317,157 @@ function DyanamicDropdown(props) {
 					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 				</div>
 			</div>
-			{dropActive && (
-				<div
-					className={clsx({
-						"dropdown-expand": true,
-						active: dropActive,
-						upward: dropUpward,
-						downward: !dropUpward,
-						rightSide: !dropSideway,
-						leftSide: dropSideway,
-					})}
-				>
-					<div className="search-box flex justify-between">
-						<div className="input-field flex">
-							<SearchIcon style={{ width: "20px" }} />
-							<input
-								type="text"
-								className="search-box__text"
-								placeholder="Search"
-								onChange={(e) => onFilter(e.target.value)}
-							/>
-						</div>
-
-						<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
+			{/* {dropActive && ( */}
+			<div
+				className={clsx({
+					"dropdown-expand": true,
+					// active: dropActive,
+					upward: dropUpward,
+					downward: !dropUpward,
+					rightSide: !dropSideway,
+					leftSide: dropSideway,
+				})}
+			>
+				<div className="search-box flex justify-between">
+					<div className="input-field flex">
+						<SearchIcon style={{ width: "20px" }} />
+						<input
+							type="text"
+							className="search-box__text"
+							placeholder="Search"
+							onChange={(e) => onFilter(e.target.value)}
+						/>
 					</div>
-					<div className="dropdown-content">
-						{showHeader && (
-							<div className={classes.header}>
-								{dataHeader.map((header, i) => (
-									<div
-										key={header.id}
-										onClick={() => {
-											handleSortClick(columns[i].name);
-										}}
-										className={clsx(classes.nameRow, classes.tableHeadRow, {
-											[classes.selectedTableHeadRow]:
-												currentTableSort[0] === columns[i].name,
-											[classes.tableHeadRow]:
-												currentTableSort[0] !== columns[i].name,
-										})}
-										style={{
-											minWidth: header.minWidth || "150px",
-										}}
-									>
-										<span>{header.name}</span>
-										<div className="arrow">
-											<AT.DescArrow
-												fill={
-													currentTableSort[0] === columns[i].name &&
-													currentTableSort[1] === "asc"
-														? "#D2D2D9"
-														: "#F9F9FC"
-												}
-												className="arrowUp"
-											/>
-											<AT.DefaultArrow
-												fill={
-													currentTableSort[0] === columns[i].name &&
-													currentTableSort[1] === "desc"
-														? "#D2D2D9"
-														: "#F9F9FC"
-												}
-												className="arrowDown"
-											/>
-										</div>
+
+					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
+				</div>
+				<div className="dropdown-content">
+					{showHeader && (
+						<div className={classes.header}>
+							{dataHeader.map((header, i) => (
+								<div
+									key={header.id}
+									onClick={() => {
+										handleSortClick(columns[i].name);
+									}}
+									className={clsx(classes.nameRow, classes.tableHeadRow, {
+										[classes.selectedTableHeadRow]:
+											currentTableSort[0] === columns[i].name,
+										[classes.tableHeadRow]:
+											currentTableSort[0] !== columns[i].name,
+									})}
+									style={{
+										minWidth: header.minWidth || "150px",
+									}}
+								>
+									<span>{header.name}</span>
+									<div className="arrow">
+										<AT.DescArrow
+											fill={
+												currentTableSort[0] === columns[i].name &&
+												currentTableSort[1] === "asc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowUp"
+										/>
+										<AT.DefaultArrow
+											fill={
+												currentTableSort[0] === columns[i].name &&
+												currentTableSort[1] === "desc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowDown"
+										/>
 									</div>
-								))}
+								</div>
+							))}
+						</div>
+					)}
+					<div className="dynamic-drop-list">
+						{filteredList.length > 0 ? (
+							<>
+								{hasCheckBoxList
+									? filteredList?.map((list) => (
+											<div className="checklist-item flex" key={list?.id}>
+												{columns.map((col) => (
+													<ADD.CheckboxLabel key={col?.id}>
+														<EMICheckbox
+															state={
+																rolesChecklist.filter((r) => r.id === list.id)
+																	.length === 1
+															}
+															changeHandler={() => {
+																checklistChangeHandler(list.id, list[col.name]);
+																removeActiveDropdown();
+																setDropActive(false);
+															}}
+														/>
+														{list[col.name]}
+													</ADD.CheckboxLabel>
+												))}
+											</div>
+									  ))
+									: filteredList?.map((list) => (
+											<div
+												className={
+													"list-item flex " +
+													(list.id === selectedValue.id ? "selected" : "")
+												}
+												key={list.id}
+												onClick={() => {
+													onChange(list);
+													setDropActive(false);
+													removeActiveDropdown();
+												}}
+											>
+												{columns.map((col, i) => (
+													<span
+														style={{
+															flexGrow: "1",
+															minWidth: col.minWidth || "150px",
+														}}
+														className={clsx(classes.droplistitem, {
+															[classes.firstdroplistItem]: i === 0,
+														})}
+														key={i}
+													>
+														{i === 0 && <CheckIcon className="check mr-sm" />}
+														{list[col.name]}
+													</span>
+												))}
+											</div>
+									  ))}
+							</>
+						) : (
+							<span className="no-record">No records found</span>
+						)}
+						{/* scroll to load */}
+						{loading && (
+							<div style={{ padding: "16px 10px" }}>
+								<b>Loading...</b>
 							</div>
 						)}
-						<div className="dynamic-drop-list">
-							{filteredList.length > 0 ? (
-								<>
-									{hasCheckBoxList
-										? filteredList?.map((list) => (
-												<div className="checklist-item flex" key={list?.id}>
-													{columns.map((col) => (
-														<ADD.CheckboxLabel key={col?.id}>
-															<EMICheckbox
-																state={
-																	rolesChecklist.filter((r) => r.id === list.id)
-																		.length === 1
-																}
-																changeHandler={() => {
-																	checklistChangeHandler(
-																		list.id,
-																		list[col.name]
-																	);
-																	setDropActive(false);
-																}}
-															/>
-															{list[col.name]}
-														</ADD.CheckboxLabel>
-													))}
-												</div>
-										  ))
-										: filteredList?.map((list) => (
-												<div
-													className={
-														"list-item flex " +
-														(list.id === selectedValue.id ? "selected" : "")
-													}
-													key={list.id}
-													onClick={() => {
-														onChange(list);
-														setDropActive(false);
-													}}
-												>
-													{columns.map((col, i) => (
-														<span
-															style={{
-																flexGrow: "1",
-																minWidth: col.minWidth || "150px",
-															}}
-															className={clsx(classes.droplistitem, {
-																[classes.firstdroplistItem]: i === 0,
-															})}
-															key={i}
-														>
-															{i === 0 && <CheckIcon className="check mr-sm" />}
-															{list[col.name]}
-														</span>
-													))}
-												</div>
-										  ))}
-								</>
-							) : (
-								<span className="no-record">No records found</span>
-							)}
-							{/* scroll to load */}
-							{loading && (
-								<div style={{ padding: "16px 10px" }}>
-									<b>Loading...</b>
-								</div>
-							)}
 
-							{!hasMore && (
-								<div
-									style={{ textAlign: "center", padding: "16px 10px" }}
-									className="flex justify-center"
+						{!hasMore && (
+							<div
+								style={{ textAlign: "center", padding: "16px 10px" }}
+								className="flex justify-center"
+							>
+								<b>Yay! You have seen it all</b>
+								<span
+									className="link-color ml-md cursor-pointer"
+									onClick={() => gotoTop()}
 								>
-									<b>Yay! You have seen it all</b>
-									<span
-										className="link-color ml-md cursor-pointer"
-										onClick={() => gotoTop()}
-									>
-										Go to top
-									</span>
-								</div>
-							)}
-						</div>
+									Go to top
+								</span>
+							</div>
+						)}
 					</div>
 				</div>
-			)}
+			</div>
+			{/* )} */}
 		</div>
 	);
 }
