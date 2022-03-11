@@ -119,9 +119,12 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 	};
 
 	useEffect(() => {
-		setLoading((th) => ({ ...th, fetch: true }));
-		fetchTaskQuestion();
-		setLoading((th) => ({ ...th, fetch: false }));
+		const initialFetch = async () => {
+			setLoading((th) => ({ ...th, fetch: true }));
+			await fetchTaskQuestion();
+			setLoading((th) => ({ ...th, fetch: false }));
+		};
+		initialFetch();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
