@@ -12,6 +12,11 @@
 		left: 0;
 		right: 0;
 	}
+	.MuiDialogTitle-root {
+		flex: 0 0 auto;
+		margin: 0;
+		padding: 16px 10px;
+	}
 }
 
 .large-application-dailog {
@@ -30,6 +35,17 @@
 		left: 0;
 		right: 0;
 	}
+	.MuiDialogTitle-root {
+		flex: 0 0 auto;
+		margin: 0;
+		padding: 16px 10px;
+	}
+}
+
+.MuiDialogTitle-root {
+	flex: 0 0 auto;
+	margin: 0;
+	padding: 16px 10px;
 }
 
 .table-container {
