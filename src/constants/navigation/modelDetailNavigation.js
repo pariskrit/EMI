@@ -23,31 +23,31 @@ const ModelDetailNavigation = (id, detail, customCaptions) => {
 			url: links,
 		},
 		{
-			name: `${customCaptions.asset} (${detail.assetCount})`,
+			name: `${customCaptions.asset} (${detail.assetCount || ""})`,
 			url: links + modelAssest,
 		},
 		{
-			name: `${customCaptions.stagePlural} (${detail.stageCount})`,
+			name: `${customCaptions.stagePlural} (${detail.stageCount || ""})`,
 			url: links + modelStages,
 		},
 		{
-			name: `${customCaptions.zonePlural} (${detail.zoneCount})`,
+			name: `${customCaptions.zonePlural} (${detail.zoneCount || ""})`,
 			url: links + modelZones,
 		},
 		{
-			name: `${customCaptions.intervalPlural} (${detail.intervalCount})`,
+			name: `${customCaptions.intervalPlural} (${detail.intervalCount || ""})`,
 			url: links + modelIntervals,
 		},
 		{
-			name: `${customCaptions.rolePlural} (${detail.roleCount})`,
+			name: `${customCaptions.rolePlural} (${detail.roleCount || ""})`,
 			url: links + modelRoles,
 		},
 		{
-			name: `${customCaptions.questionPlural} (${detail.questionCount})`,
+			name: `${customCaptions.questionPlural} (${detail.questionCount || ""})`,
 			url: links + modelQuestions,
 		},
 		{
-			name: `${customCaptions.taskPlural} (${detail.taskCount})`,
+			name: `${customCaptions.taskPlural} (${detail.taskCount || ""})`,
 			url: links + modelTask,
 		},
 		{
