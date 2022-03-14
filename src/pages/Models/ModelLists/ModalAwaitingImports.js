@@ -13,7 +13,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { Typography } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { modelsPath } from "helpers/routePaths";
+import { modelImport, modelsPath } from "helpers/routePaths";
 
 // Init styled components
 const AT = TableStyle();
@@ -198,9 +198,7 @@ function ModalAwaitingImports({ modelImportData }) {
 															{
 																name: "Import",
 																handler: () => {
-																	history.push(
-																		`${modelsPath}/${row.id}/import`
-																	);
+																	history.push(`${modelImport}/${row.id}`);
 																},
 																isDelete: false,
 															},
