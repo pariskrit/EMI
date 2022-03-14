@@ -10,7 +10,7 @@ import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import NewSubCategoryField from "./NewSubCategoryField";
 import SubCategory from "./Subcategory";
 import DynamicDropdown from "components/Elements/DyamicDropdown";
-import { Grid } from "@material-ui/core";
+import { DialogContent, Grid } from "@material-ui/core";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -190,12 +190,12 @@ const AddDialog = ({
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
-						Add New
+						Save
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 
-			<ADD.DialogContent>
+			<DialogContent style={{ overflowY: "auto" }}>
 				<div>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
@@ -289,7 +289,7 @@ const AddDialog = ({
 						Add new
 					</APD.NewButton>
 				</div>
-			</ADD.DialogContent>
+			</DialogContent>
 		</Dialog>
 	);
 };

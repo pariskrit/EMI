@@ -19,7 +19,7 @@ import {
 import DynamicDropdown from "components/Elements/DyamicDropdown";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { Grid } from "@material-ui/core";
+import { DialogContent, Grid } from "@material-ui/core";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -173,6 +173,7 @@ const EditDialog = ({
 				data.id === id ? { ...data, checked: !data.checked } : data
 			),
 		});
+		setIsUpdating(true);
 
 		let response = null;
 		if (!includeId) {
@@ -189,12 +190,14 @@ const EditDialog = ({
 		} else {
 			fetchModelIntervals();
 		}
+		setIsUpdating(false);
 	};
 
 	const handleEditName = async () => {
 		if (!input.isNameChanged) {
 			return;
 		}
+		setIsUpdating(true);
 		const response = await updateModelIntervals(intervalId, [
 			{ path: "name", op: "replace", value: input.name },
 		]);
@@ -205,6 +208,8 @@ const EditDialog = ({
 			setInput({ ...input, isNameChanged: false });
 			fetchModelIntervals();
 		}
+
+		setIsUpdating(false);
 	};
 
 	const fetchModelIntervalsToEdit = useCallback(async () => {
@@ -268,7 +273,7 @@ const EditDialog = ({
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 
-			<ADD.DialogContent>
+			<DialogContent style={{ overflowY: "auto" }}>
 				<div>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
@@ -373,7 +378,7 @@ const EditDialog = ({
 						</APD.NewButton>
 					</div>
 				</div>
-			</ADD.DialogContent>
+			</DialogContent>
 		</Dialog>
 	);
 };
