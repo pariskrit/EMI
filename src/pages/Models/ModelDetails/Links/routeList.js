@@ -9,10 +9,10 @@ import {
 	modelIntervals,
 } from "helpers/routePaths";
 import ModelAsset from "../ModelAsset";
-import ModelStage from "../ModelStage";
+import ModelStage from "../ModelStages";
+import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
 import ModelInterval from "../ModelIntervals";
-import Roles from "../ModelRoles/Roles";
 import ModelQuestion from "../ModelQuestion";
 import Task from "../ModelTasks/Task";
 
@@ -31,7 +31,7 @@ const routeList = (detail, customCaptions) => [
 	{
 		id: 3,
 		ModelName: customCaptions.asset,
-		name: `${customCaptions.asset} (${detail.assetCount})`,
+		name: `${customCaptions.asset} (${detail.assetCount || 0})`,
 		path: modelAssest,
 		component: ModelAsset,
 		showSave: false,
@@ -43,7 +43,7 @@ const routeList = (detail, customCaptions) => [
 	{
 		id: 2,
 		ModelName: customCaptions.zonePlural,
-		name: `${customCaptions.zonePlural} (${detail.zoneCount})`,
+		name: `${customCaptions.zonePlural} (${detail.zoneCount || 0})`,
 		path: modelZones,
 		component: Zones,
 		showSave: false,
@@ -55,7 +55,7 @@ const routeList = (detail, customCaptions) => [
 	{
 		id: 4,
 		ModelName: customCaptions.stagePlural,
-		name: `${customCaptions.stagePlural} (${detail.stageCount})`,
+		name: `${customCaptions.stagePlural} (${detail.stageCount || 0})`,
 		path: modelStages,
 		component: ModelStage,
 		showAdd: true,
@@ -66,7 +66,8 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 5,
-		modelName: customCaptions.intervalPlural,
+		ModelName: customCaptions.intervalPlural,
+		name: `${customCaptions.intervalPlural} (${detail.intervalCount || 0})`,
 		path: modelIntervals,
 		component: ModelInterval,
 		showAdd: true,
@@ -78,7 +79,7 @@ const routeList = (detail, customCaptions) => [
 	{
 		id: 6,
 		ModelName: customCaptions.rolePlural,
-		name: `${customCaptions.rolePlural} (${detail.roleCount})`,
+		name: `${customCaptions.rolePlural} (${detail.roleCount || 0})`,
 		path: modelRoles,
 		component: Roles,
 		showSave: false,
@@ -92,7 +93,7 @@ const routeList = (detail, customCaptions) => [
 		id: 7,
 
 		ModelName: customCaptions.questionPlural,
-		name: `${customCaptions.questionPlural} (${detail.questionCount})`,
+		name: `${customCaptions.questionPlural} (${detail.questionCount || 0})`,
 		path: modelQuestions,
 		component: ModelQuestion,
 		showAdd: true,
@@ -105,7 +106,7 @@ const routeList = (detail, customCaptions) => [
 	{
 		id: 8,
 		ModelName: customCaptions.taskPlural,
-		name: `${customCaptions.taskPlural} (${detail.taskCount})`,
+		name: `${customCaptions.taskPlural} (${detail.taskCount || 0})`,
 		path: modelTask,
 		component: Task,
 		showSave: false,

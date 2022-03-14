@@ -140,6 +140,7 @@ const AddEditModel = ({
 			return;
 		}
 	};
+
 	const handleEdit = async () => {
 		setLoading(true);
 
@@ -235,7 +236,7 @@ const AddEditModel = ({
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
 								variant="outlined"
-								size="small"
+								size="medium"
 								value={input.name}
 								autoFocus
 								onKeyDown={handleEnterPress}
@@ -247,6 +248,7 @@ const AddEditModel = ({
 						<div>
 							<FormGroup>
 								<FormControlLabel
+									style={{ marginLeft: 0 }}
 									control={
 										<EMICheckbox
 											state={input.hasZones}

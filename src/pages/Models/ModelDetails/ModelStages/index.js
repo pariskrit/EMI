@@ -48,7 +48,8 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				setOriginalStageList(mainData);
 			} else {
 				setLoading(false);
-				getError(res.data.detail);
+				if (res.data.detail) getError(res.data.detail);
+				else getError("Something went wrong");
 			}
 		} catch (err) {
 			return;
@@ -82,7 +83,6 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 			image: <img src={response.imageURL} alt="" style={{ width: "20%" }} />,
 			hasZones: response.hasZones === true ? "Yes" : "",
 		};
-		console.log(res);
 		// if Edit Mode
 		if (stageId) {
 			let d = data.map((x) => (x.id === response.id ? res : x));
