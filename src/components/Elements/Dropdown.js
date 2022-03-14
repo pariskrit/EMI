@@ -31,8 +31,10 @@ function Dropdown(props) {
 
 	useEffect(() => {
 		window.addEventListener("click", handleOutsideClick);
+		window.addEventListener("scroll", handleWindowScroll);
 		return () => {
 			window.removeEventListener("click", handleOutsideClick);
+			window.removeEventListener("scroll", handleWindowScroll);
 		};
 	}, []);
 
@@ -50,6 +52,24 @@ function Dropdown(props) {
 			if (dropbox) dropbox.classList.remove("active");
 			if (parentEl) parentEl.classList.remove("active");
 			if (specifiedElement) specifiedElement.classList.remove("active");
+		}
+	};
+
+	const handleWindowScroll = () => {
+		let specifiedElement = document.getElementsByClassName(
+			"dropdown-expand active"
+		)[0];
+		if (specifiedElement) {
+			specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
+			let parentEl = document.getElementsByClassName("dropdown active")[0];
+			if (window.innerHeight - parentEl.getBoundingClientRect().bottom < 300) {
+				specifiedElement.style.top = "unset";
+				specifiedElement.style.bottom = `${DROPDOWN_TOP_OFFSET}px`;
+			} else {
+				specifiedElement.style.bottom = "unset";
+				specifiedElement.style.top = `-${DROPDOWN_TOP_OFFSET}px`;
+			}
+			specifiedElement.style.position = "absolute";
 		}
 	};
 	const onFilter = (val) => {

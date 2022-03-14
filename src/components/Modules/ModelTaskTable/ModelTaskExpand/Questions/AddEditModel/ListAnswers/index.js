@@ -85,6 +85,9 @@ const useStyles = makeStyles({
 		height: 35,
 		padding: "6px 26px",
 	},
+	labelGrp: {
+		marginRight: 0,
+	},
 });
 
 const defaultInput = { raiseDefect: false, name: "" };
@@ -295,10 +298,11 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 								onChange={(e) => setState({ name: e.target.value })}
 								fullWidth
 								onKeyDown={handleEnterPress}
-								style={{ marginBottom: 12, width: "76%" }}
+								style={{ marginBottom: 12, width: "76.3%" }}
 							/>
 							<FormGroup>
 								<FormControlLabel
+									className={classes.labelGrp}
 									control={
 										<EMICheckbox
 											state={input.raiseDefect}

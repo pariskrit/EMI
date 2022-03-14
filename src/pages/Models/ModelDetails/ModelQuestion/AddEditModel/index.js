@@ -487,7 +487,7 @@ const AddEditModel = ({
 							onChange={(e) => {
 								setInput({ ...input, caption: e.target.value });
 							}}
-							style={{ width: "101%" }}
+							style={{ width: "100%" }}
 						/>
 					</ADD.LeftInputContainer>
 
@@ -526,7 +526,7 @@ const AddEditModel = ({
 								selectedValue={questionTypeOptions.find(
 									(x) => x.value === input.type
 								)}
-								width="100%"
+								width="99%"
 								onChange={(val) =>
 									setInput((th) => ({ ...th, type: val.value }))
 								}
@@ -544,7 +544,7 @@ const AddEditModel = ({
 								selectedValue={questionTimingOptions.find(
 									(x) => x.value === input.timing
 								)}
-								width="100%"
+								width="99%"
 								onChange={handleTiming}
 							/>
 						</ErrorInputFieldWrapper>
@@ -567,7 +567,7 @@ const AddEditModel = ({
 								columns={[{ name: "name", id: 1 }]}
 								selectdValueToshow="name"
 								isServerSide={false}
-								width="100%"
+								width="99%"
 								checklistChangeHandler={handleRoles}
 								selectedValue={roleOptions
 									.filter((x) => {
@@ -611,7 +611,7 @@ const AddEditModel = ({
 														return x.value === input.modelVersionStageID;
 													}
 												})}
-												width="100%"
+												width="99%"
 												onChange={(val) => {
 													setInput((th) => ({
 														...th,
@@ -647,7 +647,7 @@ const AddEditModel = ({
 						</ADD.NameLabel>
 						{input.type === "N" || input.type === "B" ? (
 							<ADD.NameInput
-								style={{ width: "50%", paddingRight: 15 }}
+								style={{ width: "49.5%", paddingRight: 16 }}
 								size="medium"
 								error={
 									errors.decimalPlaces || errors.checkboxCaption !== null
@@ -681,7 +681,7 @@ const AddEditModel = ({
 							<>
 								<ErrorInputFieldWrapper errorMessage={errors.options}>
 									{loader.option ? <LinearProgress /> : null}
-									<div style={{ display: "flex", flexWrap: "wrap", gap: 25 }}>
+									<div style={{ display: "flex", flexWrap: "wrap", gap: 37 }}>
 										{isAdd ? (
 											<NewOption
 												addNewOption={handleAddOption}
