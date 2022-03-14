@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import { modelServiceLayout, modelsPath } from "helpers/routePaths";
 import DetailsPanel from "components/Elements/DetailsPanel";
+import withMount from "components/HOC/withMount";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -76,7 +77,7 @@ function apiResponse(d) {
 	return res;
 }
 
-const Questions = ({ captions, taskInfo, getError, access }) => {
+const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	const classes = useStyles();
 	const scrollRef = useRef();
 	const history = useHistory();
@@ -107,9 +108,11 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 		try {
 			let result = await getQuestions(taskInfo.id);
 			if (result.status) {
-				result = result.data.map((x) => apiResponse(x));
-				setData(result);
-				setOriginalList(result);
+				if (!isMounted.aborted) {
+					result = result.data.map((x) => apiResponse(x));
+					setData(result);
+					setOriginalList(result);
+				}
 			} else {
 				errorResponse(result);
 			}
@@ -119,9 +122,12 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 	};
 
 	useEffect(() => {
-		setLoading((th) => ({ ...th, fetch: true }));
-		fetchTaskQuestion();
-		setLoading((th) => ({ ...th, fetch: false }));
+		const initialFetch = async () => {
+			setLoading((th) => ({ ...th, fetch: true }));
+			await fetchTaskQuestion();
+			setLoading((th) => ({ ...th, fetch: false }));
+		};
+		initialFetch();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -177,13 +183,15 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 				modelVersionTaskQuestionID: questionId,
 			});
 
-			setLoading((th) => ({ ...th, loader: false }));
-			setModel((th) => ({ ...th, copy: false }));
-			if (result.status) {
-				fetchTaskQuestion();
-				setQuestionId(null);
-			} else {
-				errorResponse(result);
+			if (!isMounted.aborted) {
+				setLoading((th) => ({ ...th, loader: false }));
+				setModel((th) => ({ ...th, copy: false }));
+				if (result.status) {
+					fetchTaskQuestion();
+					setQuestionId(null);
+				} else {
+					errorResponse(result);
+				}
 			}
 		} catch (e) {
 			return;
@@ -259,10 +267,12 @@ const Questions = ({ captions, taskInfo, getError, access }) => {
 				},
 			];
 			const response = await patchQuestions(e.draggableId, payloadBody);
-			if (response.status) {
-				setOriginalList(data);
-			} else {
-				setData(originalList);
+			if (!isMounted.aborted) {
+				if (response.status) {
+					setOriginalList(data);
+				} else {
+					setData(originalList);
+				}
 			}
 		} catch (error) {
 			setData(originalList);
@@ -335,4 +345,4 @@ const mapDispatchToProps = (dispatch) => ({
 	getError: (msg) => dispatch(showError(msg)),
 });
 
-export default connect(null, mapDispatchToProps)(Questions);
+export default connect(null, mapDispatchToProps)(withMount(Questions));

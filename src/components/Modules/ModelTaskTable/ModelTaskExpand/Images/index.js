@@ -12,6 +12,7 @@ import AddEditModel from "./AddEditModel";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import TabelRowImage from "components/Elements/TabelRowImage";
 import DetailsPanel from "components/Elements/DetailsPanel";
+import withMount from "components/HOC/withMount";
 
 const useStyles = makeStyles({
 	images: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const Images = ({ taskInfo, getError }) => {
+const Images = ({ taskInfo, getError, isMounted }) => {
 	const me =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -68,12 +69,14 @@ const Images = ({ taskInfo, getError }) => {
 		setState({ loading: true });
 		try {
 			let result = await getImages(taskInfo.id);
-			setState({ loading: false });
-			if (result.status) {
-				const responseData = result.data.map((x) => apiResponse(x));
-				setState({ data: responseData, originalData: responseData });
-			} else {
-				errorResponse(result);
+			if (!isMounted.aborted) {
+				setState({ loading: false });
+				if (result.status) {
+					const responseData = result.data.map((x) => apiResponse(x));
+					setState({ data: responseData, originalData: responseData });
+				} else {
+					errorResponse(result);
+				}
 			}
 		} catch (e) {
 			return;
@@ -128,10 +131,12 @@ const Images = ({ taskInfo, getError }) => {
 				},
 			];
 			const response = await updateImage(e.draggableId, payloadBody);
-			if (response.status) {
-				setState({ originalData: result });
-			} else {
-				setState({ data: images.originalData });
+			if (!isMounted.aborted) {
+				if (response.status) {
+					setState({ originalData: result });
+				} else {
+					setState({ data: images.originalData });
+				}
 			}
 		} catch (error) {
 			return;
@@ -245,4 +250,4 @@ const mapDispatchToProps = (dispatch) => ({
 	getError: (msg) => dispatch(showError(msg)),
 });
 
-export default connect(null, mapDispatchToProps)(Images);
+export default connect(null, mapDispatchToProps)(withMount(Images));

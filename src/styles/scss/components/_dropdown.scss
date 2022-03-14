@@ -2,7 +2,7 @@ $border-color: #c1c1c1;
 $dropdown-fontcolor: #404149;
 $dropdown-errorcolor: #f44336;
 .dropdown {
-	//position: relative;
+	position: relative;
 	color: $dropdown-fontcolor;
 	font-size: 1rem;
 	.arrow-down {

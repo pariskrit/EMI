@@ -33,10 +33,10 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 	const openChangeStatusModel = () =>
 		dispatch({ type: "TOGGLE_CHANGE_STATUS", payload: true });
 
-	const addAccess = access === "F";
-	const pasteAccess = access === "F";
-	const showAdd = [route.showAdd, addAccess].every((x) => x === true);
-	const showPaste = [route.showPasteTask, pasteAccess].every((x) => x === true);
+	const showAdd = [route.showAdd, access === "F"].every((x) => x === true);
+	const showPaste = [route.showPasteTask, access === "F"].every(
+		(x) => x === true
+	);
 
 	return (
 		<div>

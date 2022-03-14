@@ -67,7 +67,7 @@ const ModelWrapper = ({
 	customCaptions,
 }) => {
 	const classes = useStyles();
-	let name;
+	let name = "Task";
 
 	if (ModelName === customCaptions.questionPlural) {
 		name = customCaptions.question;

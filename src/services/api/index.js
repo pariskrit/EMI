@@ -77,6 +77,11 @@ const BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL = `${BASE_API_PATH}ModelVersionT
 // Model Stages
 const BASE_API_PATH_MODEL_STAGES = `${BASE_API_PATH}modelversionstages`;
 
+const BASE_API_PATH_MODEL_INTERVALS = `${BASE_API_PATH}modelversionintervals`;
+
+const BASE_API_PATH_MODEL_VERSION_INTERVAL_INCLUDES = `${BASE_API_PATH}modelversionintervalincludes`;
+
+const BASE_API_PATH_MODEL_INTERVALS_TASK_LIST_NOS = `${BASE_API_PATH}ModelIntervalTaskListNos`;
 //ModelDetails
 const BASE_API_PATH_MODEL_DEPARTMENTS = `${BASE_API_PATH}ModelDepartments`;
 const BASE_API_PATH_MODEL_NOTES = `${BASE_API_PATH}ModelNotes`;
@@ -217,6 +222,11 @@ export const Apis = {
 	// Model Details
 	ModelStages: `${BASE_API_PATH_MODEL_STAGES}`,
 	ModelZones: `${BASE_API_PATH_MODEL_ZONES}`,
+	ModelIntervals: `${BASE_API_PATH_MODEL_INTERVALS}`,
+
+	ModelTaskList: `${BASE_API_PATH_MODEL_INTERVALS_TASK_LIST_NOS}`,
+
+	ModelVersionIntervalInclude: `${BASE_API_PATH_MODEL_VERSION_INTERVAL_INCLUDES}`,
 	ModelQuestions: `${BASE_API_PATH_MODEL_QUESTIONS}`,
 	ModelQuestionRole: `${BASE_API_PATH_MODEL_QUESTION_ROLE}`,
 	ModelQuestionOption: `${BASE_API_PATH_MODEL_QUESTION_OPTION}`,
