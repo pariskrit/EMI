@@ -9,7 +9,6 @@ import {
 	modelTask,
 	modelZones,
 } from "helpers/routePaths";
-
 /**
  * NOTE: This is currently a helper. In production, this data may come from either the API
  * or can be hard coded. Probably not approproate as a helper function
