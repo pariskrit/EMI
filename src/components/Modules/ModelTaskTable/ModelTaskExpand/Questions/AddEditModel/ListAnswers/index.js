@@ -115,15 +115,14 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 	const setState = (d) => setInput((th) => ({ ...th, ...d }));
 
 	const getOptions = async () => {
-		setListOptions({ options: [], loading: true });
 		try {
 			let result = await getQuestionOptions(modelVersionTaskQuestionID);
 			if (result.status) {
 				setListOptions({ options: result.data, loading: false });
 				setOriginalList(result.data);
 			} else {
-				setListOptions({ options: [], loading: false });
 				if (result.data.detail) getError(result.data.detail);
+				setListOptions((th) => ({ ...th, loading: false }));
 			}
 		} catch (e) {
 			return;
@@ -131,7 +130,11 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 	};
 
 	React.useEffect(() => {
-		getOptions();
+		const fetchOptions = async () => {
+			setListOptions((th) => ({ ...th, loading: true }));
+			await getOptions();
+		};
+		fetchOptions();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
