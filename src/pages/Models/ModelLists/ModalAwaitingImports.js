@@ -13,7 +13,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { Typography } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { modelImport, modelsPath } from "helpers/routePaths";
+import { modelImport } from "helpers/routePaths";
 
 // Init styled components
 const AT = TableStyle();
