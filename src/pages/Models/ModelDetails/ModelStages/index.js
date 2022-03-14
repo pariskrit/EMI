@@ -185,6 +185,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				<DragAndDropTable
 					data={data}
 					isModelEditable
+					disableDnd={access === "R"}
 					headers={["Name", "Image", "HasZones"]}
 					columns={[
 						{ id: 1, name: "name", style: { width: "40vw" } },
