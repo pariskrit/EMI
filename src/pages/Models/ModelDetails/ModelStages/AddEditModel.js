@@ -235,7 +235,7 @@ const AddEditModel = ({
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
 								variant="outlined"
-								size="small"
+								size="medium"
 								value={input.name}
 								autoFocus
 								onKeyDown={handleEnterPress}
