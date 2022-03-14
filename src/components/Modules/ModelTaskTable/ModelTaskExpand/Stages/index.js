@@ -59,7 +59,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		stageCount: taskInfo.stageCount,
 	});
 
-	const setState = (state) => setStages((th) => ({ ...th, ...state }));
+	// const setState = (state) => setStages((th) => ({ ...th, ...state }));
 
 	const errorResponse = (result) => {
 		if (result.data.detail) getError(result.data.detail);
@@ -70,7 +70,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		try {
 			let result = await getStages(taskInfo.id);
 			if (result.status) {
-				if (!isMounted.aborted) setState({ data: result.data });
+				if (!isMounted.aborted)
+					setStages((th) => ({ ...th, data: result.data }));
 			} else {
 				errorResponse(result);
 			}
@@ -84,9 +85,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			let result = await getSiteAssets(me?.siteID, p.pNo, p.pSize, p.search);
 			if (result.status) {
 				if (!isMounted.aborted)
-					setState({
-						assets: [...prevData, ...result.data],
-					});
+					setStages((th) => ({ ...th, assets: [...prevData, ...result.data] }));
 			} else {
 				errorResponse(result);
 			}
@@ -99,7 +98,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		try {
 			let result = await getSiteAssetsCount(me?.siteID);
 			if (result.status) {
-				if (!isMounted.aborted) setState({ assetCount: result.data });
+				if (!isMounted.aborted)
+					setStages((th) => ({ ...th, assetCount: result.data }));
 			} else {
 				errorResponse(result);
 			}
@@ -109,7 +109,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 	};
 
 	const fetchAll = async () => {
-		setState({ loading: true });
+		setStages((th) => ({ ...th, loading: true }));
 		await fetchTaskStages();
 		if (modelType === "F") {
 			await Promise.all([
@@ -117,7 +117,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 				getAssetsCount(),
 			]);
 		}
-		setState({ loading: false });
+		setStages((th) => ({ ...th, loading: false }));
 	};
 
 	useEffect(() => {
@@ -137,7 +137,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							? { ...x, siteAssetName: asset.name, siteAssetID: asset.id }
 							: x
 					);
-					setState({ data: mainData });
+					setStages((th) => ({ ...th, data: mainData }));
 					return { success: true };
 				} else {
 					// For asset change so if error, then selected will have current asset instead of new updated
@@ -171,7 +171,11 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							  }
 							: x
 					);
-					setState({ data: updated, stageCount: stages.stageCount + 1 });
+					setStages((th) => ({
+						...th,
+						data: updated,
+						stageCount: stages.stageCount + 1,
+					}));
 					return { success: true };
 				} else {
 					// Post is for selected so if error, then selected will be deselected
@@ -198,7 +202,11 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							  }
 							: x
 					);
-					setState({ data: updated, stageCount: stages.stageCount - 1 });
+					setStages((th) => ({
+						...th,
+						data: updated,
+						stageCount: stages.stageCount - 1,
+					}));
 					return { success: true };
 				} else {
 					// Delete is for deselected so if error, then deselected will be selected
