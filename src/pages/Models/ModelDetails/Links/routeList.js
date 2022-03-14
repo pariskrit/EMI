@@ -6,11 +6,13 @@ import {
 	modelStages,
 	modelQuestions,
 	modelTask,
+	modelIntervals,
 } from "helpers/routePaths";
 import ModelAsset from "../ModelAsset";
 import ModelStage from "../ModelStage";
-import Roles from "../ModelRoles/Roles";
 import Zones from "../ModelZones/Zones";
+import ModelInterval from "../ModelIntervals";
+import Roles from "../ModelRoles/Roles";
 import ModelQuestion from "../ModelQuestion";
 import Task from "../ModelTasks/Task";
 
@@ -64,15 +66,14 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 5,
-		ModelName: customCaptions.questionPlural,
-		name: `${customCaptions.questionPlural} (${detail.questionCount})`,
-		path: modelQuestions,
-		component: ModelQuestion,
+		modelName: customCaptions.intervalPlural,
+		path: modelIntervals,
+		component: ModelInterval,
 		showAdd: true,
 		showSave: false,
 		showChangeStatus: false,
 		showSaveChanges: false,
-		showPasteTask: true,
+		showPasteTask: false,
 	},
 	{
 		id: 6,
@@ -86,6 +87,21 @@ const routeList = (detail, customCaptions) => [
 		showPasteTask: false,
 		showAdd: true,
 	},
+
+	{
+		id: 7,
+
+		ModelName: customCaptions.questionPlural,
+		name: `${customCaptions.questionPlural} (${detail.questionCount})`,
+		path: modelQuestions,
+		component: ModelQuestion,
+		showAdd: true,
+		showSave: false,
+		showChangeStatus: false,
+		showSaveChanges: false,
+		showPasteTask: true,
+	},
+
 	{
 		id: 8,
 		ModelName: customCaptions.taskPlural,
