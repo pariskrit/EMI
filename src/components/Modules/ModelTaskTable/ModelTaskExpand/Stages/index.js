@@ -174,7 +174,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 					setStages((th) => ({
 						...th,
 						data: updated,
-						stageCount: stages.stageCount + 1,
+						stageCount: th.stageCount + 1,
 					}));
 					return { success: true };
 				} else {
@@ -205,7 +205,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 					setStages((th) => ({
 						...th,
 						data: updated,
-						stageCount: stages.stageCount - 1,
+						stageCount: th.stageCount - 1,
 					}));
 					return { success: true };
 				} else {
