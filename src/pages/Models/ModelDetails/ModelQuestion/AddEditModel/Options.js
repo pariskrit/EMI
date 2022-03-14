@@ -35,7 +35,7 @@ const Options = ({ x, id, handleRemoveOption, handleUpdateOption }) => {
 	};
 
 	return (
-		<div style={{ width: "49%" }}>
+		<div style={{ width: "48.3%" }}>
 			{isEdit ? (
 				<AS.SubcatContainer>
 					<AS.NameInput

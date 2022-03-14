@@ -139,11 +139,29 @@ function DyanamicDropdown(props) {
 			if (specifiedElement) specifiedElement.classList.remove("active");
 		}
 	}, []);
-
+	const handleWindowScroll = () => {
+		let specifiedElement = document.getElementsByClassName(
+			"dropdown-expand active"
+		)[0];
+		if (specifiedElement) {
+			specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
+			let parentEl = document.getElementsByClassName("dropdown active")[0];
+			if (window.innerHeight - parentEl.getBoundingClientRect().bottom < 300) {
+				specifiedElement.style.top = "unset";
+				specifiedElement.style.bottom = `${DROPDOWN_TOP_OFFSET}px`;
+			} else {
+				specifiedElement.style.bottom = "unset";
+				specifiedElement.style.top = `-${DROPDOWN_TOP_OFFSET}px`;
+			}
+			specifiedElement.style.position = "absolute";
+		}
+	};
 	useEffect(() => {
 		window.addEventListener("click", handleOutsideClick);
+		window.addEventListener("scroll", handleWindowScroll);
 		return () => {
 			window.removeEventListener("click", handleOutsideClick);
+			window.removeEventListener("click", handleWindowScroll);
 		};
 	}, [handleOutsideClick]);
 
@@ -243,6 +261,7 @@ function DyanamicDropdown(props) {
 			dropdownExpandEl.style.left = `${
 				dropdownPos.left + DROPDOWN_LEFT_OFFSET
 			}px`;
+			dropdownExpandEl.style.position = "fixed";
 		}
 	};
 
@@ -277,7 +296,7 @@ function DyanamicDropdown(props) {
 		>
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
-				style={{ width }}
+				style={{ width: "100%" }}
 				onClick={(event) => handleDrpdwnClick(event)}
 			>
 				<div
