@@ -163,17 +163,16 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			let res = await postStages(data);
 			if (!isMounted.aborted) {
 				if (res.status) {
-					const updated = stages.data.map((x) =>
-						x.modelVersionStageID === data.ModelVersionStageID
-							? {
-									...x,
-									id: res.data,
-							  }
-							: x
-					);
 					setStages((th) => ({
 						...th,
-						data: updated,
+						data: th.data.map((x) =>
+							x.modelVersionStageID === data.ModelVersionStageID
+								? {
+										...x,
+										id: res.data,
+								  }
+								: x
+						),
 						stageCount: th.stageCount + 1,
 					}));
 					return { success: true };
@@ -192,19 +191,18 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			let res = await deleteStages(stageId);
 			if (!isMounted.aborted) {
 				if (res.status) {
-					const updated = stages.data.map((x) =>
-						x.id === stageId
-							? {
-									...x,
-									id: null,
-									siteAssetID: null,
-									siteAssetName: null,
-							  }
-							: x
-					);
 					setStages((th) => ({
 						...th,
-						data: updated,
+						data: th.data.map((x) =>
+							x.id === stageId
+								? {
+										...x,
+										id: null,
+										siteAssetID: null,
+										siteAssetName: null,
+								  }
+								: x
+						),
 						stageCount: th.stageCount - 1,
 					}));
 					return { success: true };
