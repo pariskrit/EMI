@@ -26,6 +26,7 @@ const ModelsPage = () => {
 				path={modelDetailsPath}
 				component={ModelDetailPage}
 				access={access.modelAccess}
+				exact
 			/>
 		</Models>
 	);
