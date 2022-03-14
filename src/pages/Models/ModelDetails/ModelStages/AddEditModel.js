@@ -140,6 +140,7 @@ const AddEditModel = ({
 			return;
 		}
 	};
+
 	const handleEdit = async () => {
 		setLoading(true);
 
