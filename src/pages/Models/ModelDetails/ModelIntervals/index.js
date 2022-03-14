@@ -170,7 +170,8 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 	useEffect(() => {
 		fetchModelIntervals();
 	}, [fetchModelIntervals]);
-
+	const isReadOnly = access === "R";
+	const isEditOnly = access === "E";
 	return (
 		<div>
 			<AddDialog
@@ -232,7 +233,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 					]}
 					handleDragEnd={handleDragEnd}
 					isModelEditable={true}
-					// disableDnd={!isModelEditable}
+					disableDnd={isReadOnly}
 					menuData={[
 						{
 							name: "Edit",
@@ -244,7 +245,14 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 							handler: onOpenDeleteDialog,
 							isDelete: true,
 						},
-					]}
+					].filter((x) => {
+						if (isReadOnly) return false;
+						if (isEditOnly) {
+							if (x.name === "Edit") return true;
+							else return false;
+						}
+						return true;
+					})}
 				/>
 			)}
 		</div>
