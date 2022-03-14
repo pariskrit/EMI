@@ -66,9 +66,8 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 5,
-		ModelName: `${customCaptions.intervalPlural} (${
-			detail.intervalCount || 0
-		})`,
+		ModelName: customCaptions.intervalPlural,
+		name: `${customCaptions.intervalPlural} (${detail.intervalCount || 0})`,
 		path: modelIntervals,
 		component: ModelInterval,
 		showAdd: true,
@@ -79,8 +78,8 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 6,
-		ModelName: `${customCaptions.rolePlural} (${detail.roleCount || 0})`,
-		name: `${customCaptions.rolePlural} (${detail.roleCount})`,
+		ModelName: customCaptions.rolePlural,
+		name: `${customCaptions.rolePlural} (${detail.roleCount || 0})`,
 		path: modelRoles,
 		component: Roles,
 		showSave: false,
