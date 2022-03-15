@@ -6,7 +6,8 @@ import {
 	modelStages,
 	modelQuestions,
 	modelTask,
-	modelIntervals,
+	modelServiceLayout,
+  modelIntervals,
 } from "helpers/routePaths";
 import ModelAsset from "../ModelAsset";
 import ModelStage from "../ModelStages";
@@ -15,6 +16,7 @@ import Zones from "../ModelZones/Zones";
 import ModelInterval from "../ModelIntervals";
 import ModelQuestion from "../ModelQuestion";
 import Task from "../ModelTasks/Task";
+import ModelServiceLayout from "../ModelServiceLayout";
 
 const routeList = (detail, customCaptions) => [
 	{
@@ -115,6 +117,18 @@ const routeList = (detail, customCaptions) => [
 		showPasteTask: true,
 		showAdd: true,
 		isPasteTaskDisabled: true,
+	},
+	{
+		id: 9,
+		name: "Service Layout",
+		path: modelServiceLayout,
+		component: ModelServiceLayout,
+		showSave: false,
+		showChangeStatus: false,
+		showSaveChanges: false,
+		showPasteTask: false,
+		showAdd: false,
+		isPasteTaskDisabled: false,
 	},
 ];
 
