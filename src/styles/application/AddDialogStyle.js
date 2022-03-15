@@ -106,7 +106,6 @@ const AddDialogStyle = () => {
 		FullWidthContainer: styled("div")({
 			width: "100%",
 			paddingRight: 15,
-			marginTop: 5,
 			[media]: {
 				width: "100%",
 				paddingRight: 0,

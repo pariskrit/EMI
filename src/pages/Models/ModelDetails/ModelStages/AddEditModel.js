@@ -44,7 +44,6 @@ const useStyles = makeStyles({
 	paper: { minWidth: "90%" },
 
 	mainImage: {
-		padding: 12,
 		borderRadius: 5,
 		width: "100%",
 	},
@@ -226,73 +225,77 @@ const AddEditModel = ({
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
-				<ADD.InputContainer style={{ gap: 19 }}>
-					<div className={classes.inputTextCheck}>
-						<div>
-							<ADD.NameLabel>
-								Name<ADD.RequiredStar>*</ADD.RequiredStar>
-							</ADD.NameLabel>
-							<ADD.NameInput
-								error={errors.name === null ? false : true}
-								helperText={errors.name === null ? null : errors.name}
-								variant="outlined"
-								size="medium"
-								value={input.name}
-								autoFocus
-								onKeyDown={handleEnterPress}
-								onChange={(e) => {
-									setInput({ ...input, name: e.target.value });
-								}}
-							/>
-						</div>
-						<div>
-							<FormGroup>
-								<FormControlLabel
-									style={{ marginLeft: 0 }}
-									control={
-										<EMICheckbox
-											state={input.hasZones}
-											changeHandler={() => {
-												setInput((th) => ({ ...th, hasZones: !th.hasZones }));
-											}}
-										/>
-									}
-									label={<Typography>Has Zones</Typography>}
+				<ADD.InputContainer>
+					<ADD.LeftInputContainer>
+						<div className={classes.inputTextCheck}>
+							<div>
+								<ADD.NameLabel>
+									Name<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.NameLabel>
+								<ADD.NameInput
+									error={errors.name === null ? false : true}
+									helperText={errors.name === null ? null : errors.name}
+									variant="outlined"
+									size="medium"
+									value={input.name}
+									autoFocus
+									onKeyDown={handleEnterPress}
+									onChange={(e) => {
+										setInput({ ...input, name: e.target.value });
+									}}
 								/>
-							</FormGroup>
+							</div>
+							<div>
+								<FormGroup>
+									<FormControlLabel
+										style={{ marginLeft: 0 }}
+										control={
+											<EMICheckbox
+												state={input.hasZones}
+												changeHandler={() => {
+													setInput((th) => ({ ...th, hasZones: !th.hasZones }));
+												}}
+											/>
+										}
+										label={<Typography>Has Zones</Typography>}
+									/>
+								</FormGroup>
+							</div>
 						</div>
-					</div>
-					<div
-						className={classes.mainImage}
-						style={{ borderColor: errors.image === null ? null : "red" }}
-					>
-						<ADD.NameLabel>Image</ADD.NameLabel>
-						<div className={classes.image}>
-							<ImageUpload
-								onDrop={(e) => {
-									setInput({
-										...input,
-										image: e[0],
-										imageUrl: URL.createObjectURL(e[0]),
-										imageName: e[0].name,
-									});
-								}}
-								imageUrl={input?.imageUrl}
-								imageName={input?.image?.name || input?.imageName}
-								removeImage={() => {
-									setInput({
-										...input,
-										image: null,
-										imageUrl: "",
-										imageName: "",
-									});
-								}}
-							/>
+					</ADD.LeftInputContainer>
+					<ADD.RightInputContainer>
+						<div
+							className={classes.mainImage}
+							style={{ borderColor: errors.image === null ? null : "red" }}
+						>
+							<ADD.NameLabel>Image</ADD.NameLabel>
+							<div className={classes.image}>
+								<ImageUpload
+									onDrop={(e) => {
+										setInput({
+											...input,
+											image: e[0],
+											imageUrl: URL.createObjectURL(e[0]),
+											imageName: e[0].name,
+										});
+									}}
+									imageUrl={input?.imageUrl}
+									imageName={input?.image?.name || input?.imageName}
+									removeImage={() => {
+										setInput({
+											...input,
+											image: null,
+											imageUrl: "",
+											imageName: "",
+										});
+									}}
+								/>
+							</div>
+							<p style={{ color: "red" }}>
+								{errors.image === null ? null : errors.image}
+							</p>
 						</div>
-						<p style={{ color: "red" }}>
-							{errors.image === null ? null : errors.image}
-						</p>
-					</div>
+					</ADD.RightInputContainer>
 				</ADD.InputContainer>
 			</ADD.DialogContent>
 		</Dialog>
