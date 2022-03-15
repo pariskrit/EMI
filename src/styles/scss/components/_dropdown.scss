@@ -33,6 +33,9 @@ $dropdown-errorcolor: #f44336;
 		.error {
 			border: 1.5px solid $dropdown-errorcolor;
 		}
+		.icon-box {
+			padding: 12px 14px;
+		}
 	}
 	&-expand {
 		width: 500px;

@@ -347,7 +347,10 @@ function DyanamicDropdown(props) {
 				</div>
 
 				<div
-					className="inputbox flex justify-between"
+					className={clsx({
+						"inputbox flex justify-between": true,
+						"icon-box": icon,
+					})}
 					style={{
 						border:
 							showBorderColor && isValueSelected()
