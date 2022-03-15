@@ -2,23 +2,27 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin: 10px 0;
+	margin: 13px 0;
 	position: relative;
 }
 
 .row__questions__icon {
-	padding: 0 2px;
-	border-right: 1px solid gray;
+	padding: 0px 7px;
+	border-right: 2px solid #cfcfcf;
+	display: flex;
+	height: 26px;
+	align-items: center;
 }
 
 .row__questions__item {
-	margin: 0 12px;
+	margin: 0 15px;
 	color: gray;
 	flex: 1;
 }
 
 .row__questions__moreicon {
 	margin-left: 12px;
+	display: flex;
 }
 
 .children {
