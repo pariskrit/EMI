@@ -95,6 +95,8 @@ const EditDialog = ({
 			return;
 		}
 
+		setIsUpdating(true);
+
 		const response = await updateModelIntervalsTaskList(intervalList.id, [
 			{ path: "name", op: "replace", value: intervalList.name },
 		]);
@@ -108,6 +110,7 @@ const EditDialog = ({
 			});
 			fetchModelIntervals();
 		}
+		setIsUpdating(false);
 	};
 
 	const onNewSubCategoryFieldHide = () => {
