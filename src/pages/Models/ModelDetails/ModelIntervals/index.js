@@ -204,20 +204,22 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 					dataCount={state.modelDetail.intervalCount}
 					description={`Allocate ${intervalPlural} for this asset model`}
 				/>
-				<div
-					style={{
-						display: "flex",
-						alignItems: "center",
-						width: "50%",
-						justifyContent: "end",
-					}}
-				>
-					<EMICheckbox
-						state={enableAutoIncludeIntervals}
-						changeHandler={onCheckboxInputChange}
-					/>
-					<p>Enable Auto-Include of {intervalPlural}</p>
-				</div>
+				{isReadOnly ? null : (
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							width: "50%",
+							justifyContent: "end",
+						}}
+					>
+						<EMICheckbox
+							state={enableAutoIncludeIntervals}
+							changeHandler={onCheckboxInputChange}
+						/>
+						<p>Enable Auto-Include of {intervalPlural}</p>
+					</div>
+				)}
 			</div>
 
 			{isLoading ? (
