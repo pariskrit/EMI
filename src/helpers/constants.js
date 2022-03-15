@@ -138,3 +138,4 @@ export const workbookFields = (customCaptions) => [
 
 export const DROPDOWN_TOP_OFFSET = 30;
 export const DROPDOWN_LEFT_OFFSET = 30;
+export const DROPDOWN_RIGHT_OFFSET = 30;

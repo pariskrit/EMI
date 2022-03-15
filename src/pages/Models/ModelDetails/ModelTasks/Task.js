@@ -239,7 +239,9 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 
 	const handlePageChange = async (page) => {
 		setPageNumber(page);
-		await fetchData(modelId, true, "", page, perPage, false);
+		setIsSearching(false);
+		await fetchData(modelId, false, "", page, perPage, false);
+		setIsSearching(true);
 	};
 
 	if (isLoading) return <CircularProgress />;
