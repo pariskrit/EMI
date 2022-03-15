@@ -56,8 +56,11 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 										{...provided.draggableProps}
 										className="row__questions"
 									>
+										{isChild && i === rowData.value.length - 1 ? (
+											<div className="sl-white-border"></div>
+										) : null}
 										<div className="row__main">
-											{isChild ? (
+											{isChild && i !== rowData.value.length - 1 ? (
 												<span
 													style={{
 														width: "19px",
