@@ -12,7 +12,11 @@ import TableStyle from "styles/application/TableStyle";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 
 import EMICheckbox from "./EMICheckbox";
-import { DROPDOWN_LEFT_OFFSET, DROPDOWN_TOP_OFFSET } from "helpers/constants";
+import {
+	DROPDOWN_LEFT_OFFSET,
+	DROPDOWN_RIGHT_OFFSET,
+	DROPDOWN_TOP_OFFSET,
+} from "helpers/constants";
 
 const ADD = AddDialogStyle();
 const AT = TableStyle();
@@ -109,6 +113,7 @@ function DyanamicDropdown(props) {
 		rolesChecklist,
 		count,
 		isReadOnly,
+		showBorderColor,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -248,6 +253,7 @@ function DyanamicDropdown(props) {
 		// 		: true
 		// );
 		if (dropdownExpandEl) {
+			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();
 			dropdownExpandEl.style.top =
 				window.innerHeight - el?.getBoundingClientRect().bottom < 300
@@ -258,9 +264,16 @@ function DyanamicDropdown(props) {
 					  }px`
 					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
-			dropdownExpandEl.style.left = `${
-				dropdownPos.left + DROPDOWN_LEFT_OFFSET
-			}px`;
+			if (window.innerWidth - el.getBoundingClientRect().right < 150) {
+				dropdownExpandEl.style.right = `${
+					dropdownPos.scrollWidth + DROPDOWN_RIGHT_OFFSET
+				}px`;
+			} else {
+				dropdownExpandEl.style.left = `${
+					dropdownPos.left + DROPDOWN_LEFT_OFFSET
+				}px`;
+			}
+
 			dropdownExpandEl.style.position = "fixed";
 		}
 	};
@@ -287,6 +300,14 @@ function DyanamicDropdown(props) {
 		onClear();
 		e.stopPropagation();
 	};
+
+	const isValueSelected = () => {
+		if (typeof selectedValue === "object") {
+			return Boolean(selectedValue.name);
+		}
+		return Boolean(selectedValue);
+	};
+
 	return (
 		<div
 			className="dropdown"
@@ -304,6 +325,9 @@ function DyanamicDropdown(props) {
 						display: "flex",
 						justifyContent: "space-between",
 						alignItems: "center",
+						fontFamily: "Roboto Condensed",
+						fontWeight: "bold",
+						fontSize: "14px",
 					}}
 				>
 					<Typography className="label">
@@ -322,7 +346,15 @@ function DyanamicDropdown(props) {
 					)}
 				</div>
 
-				<div className="inputbox flex justify-between">
+				<div
+					className="inputbox flex justify-between"
+					style={{
+						border:
+							showBorderColor && isValueSelected()
+								? "2px solid rgb(48, 122, 215)"
+								: "0.9px solid #b9b9b9",
+					}}
+				>
 					<span className="flex" style={{ gap: "10px" }}>
 						{icon && icon}
 						{hasCheckBoxList
@@ -513,6 +545,7 @@ DyanamicDropdown.defaultProps = {
 	handleServierSideSearch: () => {},
 	handleServerSideSort: () => {},
 	onPageChange: () => {},
+	showBorderColor: false,
 };
 
 DyanamicDropdown.propTypes = {
@@ -538,4 +571,5 @@ DyanamicDropdown.propTypes = {
 	handleServierSideSearch: PropTypes.func,
 	handleServerSideSort: PropTypes.func,
 	onPageChange: PropTypes.func,
+	showBorderColor: PropTypes.bool,
 };

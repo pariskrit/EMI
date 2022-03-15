@@ -555,13 +555,15 @@ const AddEditModel = ({
 
 				<ADD.InputContainer>
 					<ADD.LeftInputContainer>
-						<ADD.NameLabel>
+						{/* <ADD.NameLabel>
 							Role<ADD.RequiredStar>*</ADD.RequiredStar>
-						</ADD.NameLabel>
+						</ADD.NameLabel> */}
 						<ErrorInputFieldWrapper errorMessage={errors.roles}>
 							{loader.role ? <LinearProgress /> : null}
 							<DynamicDropdown
 								showHeader={false}
+								label="Role"
+								required
 								hasCheckBoxList={true}
 								dataSource={roleOptions}
 								columns={[{ name: "name", id: 1 }]}

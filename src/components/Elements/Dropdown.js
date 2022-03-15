@@ -5,7 +5,11 @@ import React, { useEffect, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
-import { DROPDOWN_LEFT_OFFSET, DROPDOWN_TOP_OFFSET } from "helpers/constants";
+import {
+	DROPDOWN_LEFT_OFFSET,
+	DROPDOWN_RIGHT_OFFSET,
+	DROPDOWN_TOP_OFFSET,
+} from "helpers/constants";
 
 function Dropdown(props) {
 	const {
@@ -101,6 +105,7 @@ function Dropdown(props) {
 		// 	window.innerWidth - el.getBoundingClientRect().right < 150 ? false : true
 		// );
 		if (dropdownExpandEl) {
+			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();
 			dropdownExpandEl.style.top =
 				window.innerHeight - el?.getBoundingClientRect().bottom < 300
@@ -111,9 +116,13 @@ function Dropdown(props) {
 					  }px`
 					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
-			dropdownExpandEl.style.left = `${
-				dropdownPos.left + DROPDOWN_LEFT_OFFSET
-			}px`;
+			if (window.innerWidth - el.getBoundingClientRect().right < 150) {
+				dropdownExpandEl.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
+			} else {
+				dropdownExpandEl.style.left = `${
+					dropdownPos.left + DROPDOWN_LEFT_OFFSET
+				}px`;
+			}
 		}
 	};
 
