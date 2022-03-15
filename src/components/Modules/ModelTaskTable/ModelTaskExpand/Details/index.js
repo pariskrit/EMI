@@ -310,7 +310,6 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 			setUpdating((prev) => ({ ...prev, [name]: false }));
 		}
 	};
-
 	return (
 		<>
 			<DialogContent className={classes.dialogContent}>

@@ -1,0 +1,47 @@
+.row__questions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px 0;
+}
+
+.row__questions__icon {
+	padding: 0 2px;
+	border-right: 1px solid gray;
+}
+
+.row__questions__item {
+	margin: 0 12px;
+	color: gray;
+	flex: 1;
+}
+
+.row__questions__moreicon {
+	margin-left: 12px;
+}
+
+.children {
+	margin-left: 38px;
+}
+
+.row__main {
+	display: flex;
+	align-items: center;
+}
+
+.cursor {
+	cursor: pointer;
+}
+
+.highlight {
+	background-color: rgb(48, 122, 215);
+	color: white;
+}
+
+.detailContent {
+	overflow-y: auto !important;
+}
+
+.taskdetail-dialog > .MuiPaper-root {
+	min-width: 75% !important;
+}

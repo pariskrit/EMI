@@ -4,7 +4,12 @@ import DetailsStyle from "styles/application/DetailsStyle";
 // Init styled components
 const AD = DetailsStyle();
 
-const DetailsPanel = ({ header, dataCount, description }) => {
+const DetailsPanel = ({
+	header,
+	dataCount,
+	description,
+	countStyle = null,
+}) => {
 	return (
 		<AD.ParentContainer>
 			<AD.HeaderText>
@@ -12,7 +17,8 @@ const DetailsPanel = ({ header, dataCount, description }) => {
 					<>{header}</>
 				) : (
 					<>
-						{header} ({dataCount})
+						{header}{" "}
+						<span style={countStyle ? countStyle : null}>({dataCount})</span>
 					</>
 				)}
 			</AD.HeaderText>

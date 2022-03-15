@@ -76,7 +76,6 @@ const BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL = `${BASE_API_PATH}ModelVersionT
 
 // Model Stages
 const BASE_API_PATH_MODEL_STAGES = `${BASE_API_PATH}modelversionstages`;
-
 const BASE_API_PATH_MODEL_INTERVALS = `${BASE_API_PATH}modelversionintervals`;
 
 const BASE_API_PATH_MODEL_VERSION_INTERVAL_INCLUDES = `${BASE_API_PATH}modelversionintervalincludes`;
@@ -240,9 +239,10 @@ export const Apis = {
 	ModelTaskQuestionOptions: `${BASE_API_PATH_MODEL_TASKS_QUESTION_OPTIONS}`,
 
 	ModelTaskStages: `${BASE_API_PATH_MODEL_TASKS_STAGES}`,
+	ModelIntervals: `${BASE_API_PATH_MODEL_INTERVALS}`,
+	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
 	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,
 	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,
-	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
 	ModelVersionTaskRoles: `${BASE_API_PATH_MODEL_VERSION_TASK_ROLES}`,
 	ModelVersionTaskParts: `${BASE_API_PATH_MODEL_TASK_PARTS}`,
 	ModelVersionTaskImages: `${BASE_API_PATH_MODEL_TASK_IMAGES}`,
