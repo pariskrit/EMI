@@ -95,18 +95,18 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 														: ""
 												}
 												className={`row__questions__item ${
-													val.value.type === "task" ? "cursor" : null
+													val.value.type === "task" ? "cursor link" : ""
 												} ${
 													val.value.highlightTask ||
 													val.value.highlightQuestion ||
 													val.value.highlightTaskQuestion
 														? "highlight"
-														: null
+														: ""
 												}`}
 												onClick={
 													val.value.type === "task"
 														? () => onTaskClick(val.value.modelVersionTaskID)
-														: null
+														: () => {}
 												}
 											>
 												{val.value.type === "task"

@@ -39,8 +39,11 @@
 }
 
 .highlight {
-	background-color: rgb(48, 122, 215);
-	color: white;
+	/* background-color: rgb(48, 122, 215);
+	color: white; */
+	background: #ffeb3b;
+	padding: 5px 10px;
+	border-radius: 3px;
 }
 
 .detailContent {

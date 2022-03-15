@@ -338,3 +338,9 @@
 	left: -2px;
 	top: 16px;
 }
+
+.link:hover {
+	text-decoration: underline !important;
+	color: #307ad7 !important;
+	cursor: pointer;
+}

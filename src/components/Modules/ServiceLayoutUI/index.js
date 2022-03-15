@@ -39,8 +39,9 @@ const useStyles = makeStyles({
 	},
 	dropdown_container: {
 		display: "flex",
-		justifyContent: "space-between",
+		//justifyContent: "space-between",
 		alignItems: "center",
+		gap: "40px",
 	},
 });
 function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
