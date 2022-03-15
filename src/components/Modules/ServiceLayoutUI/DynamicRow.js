@@ -60,7 +60,7 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 											<div className="sl-white-border"></div>
 										) : null}
 										<div className="row__main">
-											{isChild && i !== rowData.value.length - 1 ? (
+											{isChild ? (
 												<span
 													style={{
 														width: "19px",
