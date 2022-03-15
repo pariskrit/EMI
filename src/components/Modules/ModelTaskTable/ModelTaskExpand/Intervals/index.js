@@ -8,8 +8,9 @@ import {
 import IntervalTable from "./Table";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import withMount from "components/HOC/withMount";
 
-const Intervals = ({ taskId, access }) => {
+const Intervals = ({ taskId, access, isMounted }) => {
 	const [intervals, setIntervals] = useState([]);
 	const [isLoading, setIsloading] = useState(true);
 	const dispatch = useDispatch();
@@ -50,18 +51,21 @@ const Intervals = ({ taskId, access }) => {
 
 	const fetchModelTaskIntervals = useCallback(async () => {
 		const response = await getModelVersionTaskIntervals(taskId);
-
 		if (response.status) {
-			setIntervals([
-				...response.data.map((interval) => ({
-					...interval,
-					checked: !!interval.id,
-				})),
-			]);
+			if (!isMounted.aborted) {
+				setIntervals([
+					...response.data.map((interval) => ({
+						...interval,
+						checked: !!interval.id,
+					})),
+				]);
+			}
+		} else {
+			dispatch(showError("Could not get intervals"));
 		}
 
-		setIsloading(false);
-	}, [taskId]);
+		if (!isMounted.aborted) setIsloading(false);
+	}, [taskId, isMounted, dispatch]);
 
 	useEffect(() => {
 		fetchModelTaskIntervals();
@@ -82,4 +86,4 @@ const Intervals = ({ taskId, access }) => {
 	);
 };
 
-export default Intervals;
+export default withMount(Intervals);

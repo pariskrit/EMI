@@ -19,6 +19,7 @@ import {
 import DynamicDropdown from "components/Elements/DyamicDropdown";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { DialogContent, Grid } from "@material-ui/core";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -172,6 +173,7 @@ const EditDialog = ({
 				data.id === id ? { ...data, checked: !data.checked } : data
 			),
 		});
+		setIsUpdating(true);
 
 		let response = null;
 		if (!includeId) {
@@ -188,12 +190,14 @@ const EditDialog = ({
 		} else {
 			fetchModelIntervals();
 		}
+		setIsUpdating(false);
 	};
 
 	const handleEditName = async () => {
 		if (!input.isNameChanged) {
 			return;
 		}
+		setIsUpdating(true);
 		const response = await updateModelIntervals(intervalId, [
 			{ path: "name", op: "replace", value: input.name },
 		]);
@@ -204,6 +208,8 @@ const EditDialog = ({
 			setInput({ ...input, isNameChanged: false });
 			fetchModelIntervals();
 		}
+
+		setIsUpdating(false);
 	};
 
 	const fetchModelIntervalsToEdit = useCallback(async () => {
@@ -227,11 +233,11 @@ const EditDialog = ({
 				),
 			});
 		} else {
-			console.log(response.data);
+			dispatch(showError("Could not get data"));
 		}
 
 		setIsUpdating(false);
-	}, [intervalId]);
+	}, [intervalId, dispatch]);
 
 	const handleEnterPress = (e) => {
 		if (e.keyCode === 13) {
@@ -260,9 +266,14 @@ const EditDialog = ({
 				<DialogTitle id="add-dialog-title">
 					<ADD.HeaderText>Edit {captions.interval}</ADD.HeaderText>
 				</DialogTitle>
+				<ADD.ButtonContainer>
+					<ADD.CancelButton onClick={closeOverride} variant="contained">
+						Cancel
+					</ADD.CancelButton>
+				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 
-			<ADD.DialogContent>
+			<DialogContent style={{ overflowY: "auto" }}>
 				<div>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
@@ -299,40 +310,6 @@ const EditDialog = ({
 									</ADD.InfoText>
 								</APD.SecondaryHeaderContainer>
 							</ADD.InputContainer>
-							{/* Field to add new subcat */}
-							{showAddNewField ? (
-								<NewSubCategoryField
-									name={newCategory}
-									onChange={onNewCategoryInputChange}
-									handleSave={handleAddCategory}
-									onClose={onNewSubCategoryFieldHide}
-								/>
-							) : null}
-							{!input.allCategories.length
-								? null
-								: input.allCategories.map((category) => {
-										return (
-											<SubCategory
-												key={category.name}
-												id={category.id}
-												category={category}
-												isEditable={isCategoryEditable[category.id]}
-												onChange={onCategoryChange}
-												onEditClick={onCategoryEdit}
-												handleEdit={() => handleEditCategory(category)}
-												onDelete={onDeleteCategory}
-												isDeleteClick={isDeleteClick}
-											/>
-										);
-								  })}
-							<APD.NewButtonContainer>
-								<APD.NewButton
-									variant="contained"
-									onClick={onNewSubCategoryFieldShow}
-								>
-									Add new
-								</APD.NewButton>
-							</APD.NewButtonContainer>
 						</ADD.LeftInputContainer>
 
 						{enableAutoIncludeIntervals ? (
@@ -358,8 +335,50 @@ const EditDialog = ({
 							</ADD.RightInputContainer>
 						) : null}
 					</ADD.InputContainer>
+					<Grid container spacing={2}>
+						{/* Field to add new subcat */}
+
+						{showAddNewField ? (
+							<Grid item xs={6}>
+								<NewSubCategoryField
+									name={newCategory}
+									onChange={onNewCategoryInputChange}
+									handleSave={handleAddCategory}
+									onClose={onNewSubCategoryFieldHide}
+								/>
+							</Grid>
+						) : null}
+						{!input.allCategories.length
+							? null
+							: input.allCategories.map((category) => {
+									return (
+										<Grid item xs={6}>
+											<SubCategory
+												key={category.name}
+												id={category.id}
+												category={category}
+												isEditable={isCategoryEditable[category.id]}
+												onChange={onCategoryChange}
+												onEditClick={onCategoryEdit}
+												handleEdit={() => handleEditCategory(category)}
+												onDelete={onDeleteCategory}
+												isDeleteClick={isDeleteClick}
+											/>
+										</Grid>
+									);
+							  })}
+					</Grid>
+
+					<div>
+						<APD.NewButton
+							variant="contained"
+							onClick={onNewSubCategoryFieldShow}
+						>
+							Add new
+						</APD.NewButton>
+					</div>
 				</div>
-			</ADD.DialogContent>
+			</DialogContent>
 		</Dialog>
 	);
 };

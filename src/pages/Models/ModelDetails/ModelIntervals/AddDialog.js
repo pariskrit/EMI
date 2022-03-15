@@ -10,6 +10,7 @@ import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import NewSubCategoryField from "./NewSubCategoryField";
 import SubCategory from "./Subcategory";
 import DynamicDropdown from "components/Elements/DyamicDropdown";
+import { DialogContent, Grid } from "@material-ui/core";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -189,12 +190,12 @@ const AddDialog = ({
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
-						Add New
+						Save
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 
-			<ADD.DialogContent>
+			<DialogContent style={{ overflowY: "auto" }}>
 				<div>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
@@ -214,50 +215,6 @@ const AddDialog = ({
 								/>
 							</ADD.FullWidthContainer>
 							<APD.DividerGutter />
-
-							<ADD.InputContainer>
-								<APD.SecondaryHeaderContainer>
-									<ADD.HeaderText>
-										{captions.taskListNoPlural}({input.allCategories.length})
-									</ADD.HeaderText>
-
-									<ADD.InfoText>Add additional task list number</ADD.InfoText>
-								</APD.SecondaryHeaderContainer>
-							</ADD.InputContainer>
-							{/* Field to add new subcat */}
-							{showAddNewField ? (
-								<NewSubCategoryField
-									name={newCategory}
-									onChange={onNewCategoryInputChange}
-									handleSave={handleAddCategory}
-									onClose={onNewSubCategoryFieldHide}
-								/>
-							) : null}
-							{!input.allCategories.length
-								? null
-								: input.allCategories.map((category, index) => {
-										return (
-											<SubCategory
-												key={category.name}
-												id={index}
-												category={category}
-												isEditable={isCategoryEditable[index]}
-												onChange={onCategoryChange}
-												onEditClick={onCategoryEdit}
-												handleEdit={handleEditCategory}
-												onDelete={onDeleteCategory}
-												isDeleteClick={isDeleteClick}
-											/>
-										);
-								  })}
-							<APD.NewButtonContainer>
-								<APD.NewButton
-									variant="contained"
-									onClick={onNewSubCategoryFieldShow}
-								>
-									Add new
-								</APD.NewButton>
-							</APD.NewButtonContainer>
 						</ADD.LeftInputContainer>
 
 						{enableAutoIncludeIntervals ? (
@@ -283,8 +240,56 @@ const AddDialog = ({
 							</ADD.RightInputContainer>
 						) : null}
 					</ADD.InputContainer>
+					<ADD.InputContainer>
+						<APD.SecondaryHeaderContainer>
+							<ADD.HeaderText>
+								{captions.taskListNoPlural}({input.allCategories.length})
+							</ADD.HeaderText>
+
+							<ADD.InfoText>Add additional task list number</ADD.InfoText>
+						</APD.SecondaryHeaderContainer>
+					</ADD.InputContainer>
+					{/* Field to add new subcat */}
+					<Grid container spacing={2} fullWidth>
+						{showAddNewField ? (
+							<Grid item xs={6}>
+								<NewSubCategoryField
+									name={newCategory}
+									onChange={onNewCategoryInputChange}
+									handleSave={handleAddCategory}
+									onClose={onNewSubCategoryFieldHide}
+								/>
+							</Grid>
+						) : null}
+						{!input.allCategories.length
+							? null
+							: input.allCategories.map((category, index) => {
+									return (
+										<Grid item xs={6}>
+											<SubCategory
+												key={category.name}
+												id={index}
+												category={category}
+												isEditable={isCategoryEditable[index]}
+												onChange={onCategoryChange}
+												onEditClick={onCategoryEdit}
+												handleEdit={handleEditCategory}
+												onDelete={onDeleteCategory}
+												isDeleteClick={isDeleteClick}
+											/>
+										</Grid>
+									);
+							  })}
+					</Grid>
+
+					<APD.NewButton
+						variant="contained"
+						onClick={onNewSubCategoryFieldShow}
+					>
+						Add new
+					</APD.NewButton>
 				</div>
-			</ADD.DialogContent>
+			</DialogContent>
 		</Dialog>
 	);
 };

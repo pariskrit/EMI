@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import ColourConstants from "helpers/colourConstants";
 import ChangeStatusPopup from "./ChangeStatusPopup";
+import withMount from "components/HOC/withMount";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ModelDetailContent({ modelId, state, dispatch, access }) {
+function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 	const classes = useStyles();
 	const [isLoading, setIsLoading] = useState(true);
 	const [modelDetailsData, setModelDetailsData] = useState({});
@@ -105,24 +106,27 @@ function ModelDetailContent({ modelId, state, dispatch, access }) {
 				details: [],
 			});
 		} else {
-			const changedDocuments = await changeDocumentUrl(res[2].data);
-			setModelDetailsData({
-				modelDepartments: res[0].data,
-				modelNotes: res[1].data,
-				modelDocuments: changedDocuments,
-				modelTypes: res[3].data,
-				detailDepartments: res[4].data,
-				details: state.modelDetail,
-			});
+			if (!isMounted.aborted) {
+				const changedDocuments = await changeDocumentUrl(res[2].data);
+				setModelDetailsData({
+					modelDepartments: res[0].data,
+					modelNotes: res[1].data,
+					modelDocuments: changedDocuments,
+					modelTypes: res[3].data,
+					detailDepartments: res[4].data,
+					details: state.modelDetail,
+				});
+			}
 		}
 
-		setIsLoading(false);
+		if (!isMounted.aborted) setIsLoading(false);
 	}, [
 		modelId,
 		position.siteAppID,
 		reduxDispatch,
 		changeDocumentUrl,
 		state.modelDetail,
+		isMounted,
 	]);
 
 	useEffect(() => {
@@ -191,4 +195,4 @@ function ModelDetailContent({ modelId, state, dispatch, access }) {
 	);
 }
 
-export default ModelDetailContent;
+export default withMount(ModelDetailContent);
