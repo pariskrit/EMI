@@ -16,7 +16,7 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 		state.modelDetail,
 		customCaptions
 	);
-	if (state.modelDetail.modelType === "F") {
+	if (state?.modelDetail?.modelType === "F") {
 		navigation.splice(1, 1);
 	}
 

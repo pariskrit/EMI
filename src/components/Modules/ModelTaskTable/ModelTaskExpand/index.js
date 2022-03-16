@@ -43,6 +43,48 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 	const [TaskDetailState] = useContext(TaskContext);
 	const { taskInfo: TaskDetail } = TaskDetailState;
 
+	const currentTab = (currentTab) => {
+		switch (currentTab) {
+			case "Details":
+				return <Details taskInfo={taskInfo} access={access} />;
+			case "interval":
+				return <Intervals taskId={taskInfo.id} access={access} />;
+			case "stage":
+				return <Stages taskInfo={taskInfo} access={access} />;
+			case "zone":
+				return <Zones taskInfo={taskInfo} access={access} />;
+			case "part":
+				return <Parts taskInfo={taskInfo} access={access} />;
+			case "lubricant":
+				return <Lubricant taskInfo={taskInfo} access={access} />;
+			case "tool":
+				return <Tools taskInfo={taskInfo} access={access} />;
+			case "permit":
+				return <Permits taskInfo={taskInfo} access={access} />;
+			case "workbook":
+				return <WorkBook taskInfo={taskInfo} access={access} />;
+			case "images":
+				return <Images taskInfo={taskInfo} access={access} />;
+			case "question":
+				return (
+					<Questions
+						captions={{
+							plural: customCaptions?.questionPlural,
+							singular: customCaptions?.question,
+						}}
+						taskInfo={taskInfo}
+						access={access}
+					/>
+				);
+
+			case "attachment":
+				return <Attachments taskInfo={taskInfo} access={access} />;
+
+			default:
+				return <Details taskInfo={taskInfo} access={access} />;
+		}
+	};
+
 	return (
 		<div className={classes.main}>
 			{taskLoading ? (
@@ -54,85 +96,63 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						navigation={[
 							{ label: "Details", name: "Details" },
 							{
-								label: `${customCaptions?.intervalPlural} (${TaskDetail?.intervalCount})`,
+								label: `${customCaptions?.intervalPlural} (${
+									TaskDetail?.intervalCount || 0
+								})`,
 								name: "interval",
 							},
 							{
-								label: `${customCaptions?.stagePlural} (${TaskDetail?.stageCount})`,
+								label: `${customCaptions?.stagePlural} (${
+									TaskDetail?.stageCount || 0
+								})`,
 								name: "stage",
 							},
 							{
-								label: `${customCaptions?.zonePlural} (${TaskDetail?.zoneCount})`,
+								label: `${customCaptions?.zonePlural} (${
+									TaskDetail?.zoneCount || 0
+								})`,
 								name: "zone",
 							},
 							...(showParts
 								? [
 										{
-											label: `${customCaptions?.partPlural} (${TaskDetail?.partCount})`,
+											label: `${customCaptions?.partPlural} (${
+												TaskDetail?.partCount || 0
+											})`,
 											name: "part",
 										},
 								  ]
 								: []),
 							{ label: `${customCaptions?.lubricant}`, name: "lubricant" },
 							{
-								label: `${customCaptions?.toolPlural} (${TaskDetail?.toolCount})`,
+								label: `${customCaptions?.toolPlural} (${
+									TaskDetail?.toolCount || 0
+								})`,
 								name: "tool",
 							},
-							{ label: `Permits (${TaskDetail?.permitCount})`, name: "permit" },
-							{ label: `${customCaptions?.workbook}`, name: "workbook" },
-							{ label: `Images (${TaskDetail?.imageCount})`, name: "images" },
 							{
-								label: `${customCaptions?.questionPlural} (${TaskDetail?.questionCount})`,
+								label: `Permits (${TaskDetail?.permitCount || 0})`,
+								name: "permit",
+							},
+							{ label: `${customCaptions?.workbook}`, name: "workbook" },
+							{
+								label: `Images (${TaskDetail?.imageCount || 0})`,
+								name: "images",
+							},
+							{
+								label: `${customCaptions?.questionPlural} (${
+									TaskDetail?.questionCount || 0
+								})`,
 								name: "question",
 							},
 							{
-								label: `Attachments (${TaskDetail?.documentCount})`,
+								label: `Attachments (${TaskDetail?.documentCount || 0})`,
 								name: "attachment",
 							},
 						]}
 						onClick={(d) => setCurrent(d)}
 					/>
-					<div className={classes.component}>
-						{current === "Details" && (
-							<Details taskInfo={taskInfo} access={access} />
-						)}
-						{current === `interval` && (
-							<Intervals taskId={taskInfo.id} access={access} />
-						)}
-						{current === `stage` && <Stages taskInfo={taskInfo} />}
-						{current === `zone` && (
-							<Zones taskInfo={taskInfo} access={access} />
-						)}
-						{current === `part` && (
-							<Parts taskInfo={taskInfo} access={access} />
-						)}
-						{current === `lubricant` && (
-							<Lubricant taskInfo={taskInfo} access={access} />
-						)}
-						{current === `tool` && (
-							<Tools taskInfo={taskInfo} access={access} />
-						)}
-						{current === `permit` && (
-							<Permits taskInfo={taskInfo} access={access} />
-						)}
-						{current === `workbook` && (
-							<WorkBook taskInfo={taskInfo} access={access} />
-						)}
-						{current === `images` && <Images taskInfo={taskInfo} />}
-						{current === `question` && (
-							<Questions
-								captions={{
-									plural: customCaptions?.questionPlural,
-									singular: customCaptions?.question,
-								}}
-								taskInfo={taskInfo}
-								access={access}
-							/>
-						)}
-						{current === `attachment` && (
-							<Attachments taskInfo={taskInfo} access={access} />
-						)}
-					</div>
+					<div className={classes.component}>{currentTab(current)}</div>
 				</>
 			)}
 		</div>

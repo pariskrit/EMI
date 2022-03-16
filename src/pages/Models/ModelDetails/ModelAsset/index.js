@@ -114,7 +114,7 @@ const ModelAsset = ({
 		return <CircularProgress />;
 	}
 
-	if (state.modelDetail.modelType === "F") {
+	if (state?.modelDetail?.modelType === "F") {
 		history.goBack();
 	}
 

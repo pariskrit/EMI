@@ -96,7 +96,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 				search
 			);
 			if (!isMounted.aborted) {
-				setSiteAssest((prev) => [...prev, ...response.data]);
+				setSiteAssest((prev) => [...prev, ...(response?.data || [])]);
 			}
 		} catch (error) {
 			dispatch(error?.response?.data || "Coulnd not fetch site asset");
@@ -230,6 +230,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 				}
 			}
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[dispatch, zones, originalZones, id]
 	);
 

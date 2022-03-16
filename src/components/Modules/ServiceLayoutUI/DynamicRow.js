@@ -8,7 +8,13 @@ import "./style.css";
 const style = {
 	color: "#307ad7",
 };
-function DynamicRow({ rowData, isChild = false, onTaskClick }) {
+function DynamicRow({
+	rowData,
+	isChild = false,
+	onTaskClick,
+	isDragDisabled,
+	isLastDroppable = false,
+}) {
 	const [isMore, setIsMore] = useState({});
 
 	const showChildren = (id) => {
@@ -56,12 +62,11 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 								key={val.value.id}
 								draggableId={`${val.value.type}_${val.value.id}_${val.value.grandParentId}_${val.value?.parentId}_${val.value.childId}`}
 								index={i}
-								isDragDisabled={!val.value.isDraggable}
+								isDragDisabled={!val.value.isDraggable || isDragDisabled}
 							>
 								{(provided2, snapshot) => (
 									<>
-										{i === rowData.value.length - 1 &&
-										rowData.value.length !== 1 ? (
+										{isLastDroppable ? (
 											<div className="sl-white-border last-child-row"></div>
 										) : null}
 										<div
@@ -83,7 +88,6 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 													></span>
 												) : null}
 												<div className="row__questions__icon">
-													{/* {<val.value.Icon />} */}
 													<img
 														src={val.value.icon}
 														alt="icon"
@@ -138,7 +142,8 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 												<div
 													{...provided2.dragHandleProps}
 													style={{
-														opacity: val.value.isDraggable ? 1 : 0,
+														opacity:
+															!isDragDisabled && val.value.isDraggable ? 1 : 0,
 														marginLeft: "10px",
 													}}
 												>
@@ -153,11 +158,13 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 									</>
 								)}
 							</Draggable>
-							{isMore[val.value.id]?.show ? (
+							{isMore[val.value.id]?.show && !val.value.hideTaskQuestions ? (
 								<DynamicRow
 									rowData={val.children}
 									isChild={val?.children?.value?.length}
 									onTaskClick={onTaskClick}
+									isDragDisabled={isDragDisabled}
+									isLastDroppable={i === rowData.value.length - 1}
 								/>
 							) : null}
 						</React.Fragment>
