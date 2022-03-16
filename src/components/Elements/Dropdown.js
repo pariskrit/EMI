@@ -55,7 +55,10 @@ function Dropdown(props) {
 			//setDropActive(false);
 			if (dropbox) dropbox.classList.remove("active");
 			if (parentEl) parentEl.classList.remove("active");
-			if (specifiedElement) specifiedElement.classList.remove("active");
+			if (specifiedElement) {
+				specifiedElement.classList.remove("active");
+				specifiedElement.style.position = "fixed";
+			}
 		}
 	};
 
@@ -64,7 +67,17 @@ function Dropdown(props) {
 			"dropdown-expand active"
 		)[0];
 		if (specifiedElement) {
-			specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
+			//specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
+			if (
+				window.innerWidth - specifiedElement.getBoundingClientRect().right <
+				150
+			) {
+				specifiedElement.style.left = "unset";
+				specifiedElement.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
+			} else {
+				specifiedElement.style.right = "unset";
+				specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
+			}
 			let parentEl = document.getElementsByClassName("dropdown active")[0];
 			if (window.innerHeight - parentEl.getBoundingClientRect().bottom < 300) {
 				specifiedElement.style.top = "unset";
@@ -107,6 +120,7 @@ function Dropdown(props) {
 		if (dropdownExpandEl) {
 			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();
+			dropdownExpandEl.style.bottom = "unset";
 			dropdownExpandEl.style.top =
 				window.innerHeight - el?.getBoundingClientRect().bottom < 300
 					? `${

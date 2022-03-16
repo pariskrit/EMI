@@ -705,7 +705,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					columns={[{ name: "name", id: 1, minWidth: "130px" }]}
 					columnsMinWidths={[140, 140, 140, 140, 140]}
 					showHeader={false}
-					width="600px"
+					width="50%"
 					placeholder="Select Interval"
 					onChange={(list) => onDropdownChange("interval", list)}
 					selectdValueToshow="name"
@@ -724,7 +724,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					columnsMinWidths={[140, 140, 140, 140, 140]}
 					showHeader={false}
 					placeholder="Select Role"
-					width="600px"
+					width="50%"
 					onChange={(list) => onDropdownChange("role", list)}
 					selectdValueToshow="name"
 					selectedValue={selectedRole}
