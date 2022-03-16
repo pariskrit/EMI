@@ -7,7 +7,7 @@ import {
 	modelQuestions,
 	modelTask,
 	modelServiceLayout,
-  modelIntervals,
+	modelIntervals,
 } from "helpers/routePaths";
 import ModelAsset from "../ModelAsset";
 import ModelStage from "../ModelStages";
@@ -120,6 +120,7 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 9,
+		ModelName: "Service Layout",
 		name: "Service Layout",
 		path: modelServiceLayout,
 		component: ModelServiceLayout,

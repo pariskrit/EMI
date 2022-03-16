@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import DragHandleIcon from "@material-ui/icons/DragHandle";
 import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
+import reorder from "assets/reorder.png";
 import "./style.css";
 
 const style = {
@@ -32,7 +32,14 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 		}
 	}, [rowData]);
 	return (
-		<Droppable droppableId={`droppable_${rowData?.name}`} type={rowData?.name}>
+		<Droppable
+			droppableId={
+				rowData?.parentId
+					? `droppable_${rowData?.name}_${rowData.parentId}`
+					: `droppable_${rowData?.name}`
+			}
+			type={rowData?.name}
+		>
 			{(provided, snapshot) => (
 				<div
 					{...provided.droppableProps}
@@ -46,14 +53,14 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 						<React.Fragment key={val.value.sn}>
 							<Draggable
 								key={val.value.id}
-								draggableId={`${rowData?.parentId}_${val.value.type}_${val.value.id}_${val.value.grandParentId}`}
+								draggableId={`${val.value.type}_${val.value.id}_${val.value.grandParentId}_${val.value?.parentId}_${val.value.childId}`}
 								index={i}
 								isDragDisabled={!val.value.isDraggable}
 							>
-								{(provided, snapshot) => (
+								{(provided2, snapshot) => (
 									<div
-										ref={provided.innerRef}
-										{...provided.draggableProps}
+										ref={provided2.innerRef}
+										{...provided2.draggableProps}
 										className="row__questions"
 									>
 										{isChild && i === rowData.value.length - 1 ? (
@@ -70,7 +77,12 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 												></span>
 											) : null}
 											<div className="row__questions__icon">
-												{<val.value.Icon />}
+												{/* {<val.value.Icon />} */}
+												<img
+													src={val.value.icon}
+													alt="icon"
+													style={{ width: "20px", height: "20px" }}
+												/>
 											</div>
 											{val?.children?.value?.length &&
 											!val.value.hideTaskQuestions ? (
@@ -118,13 +130,17 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 										<div className="row__main">
 											{val.value.type === "task" ? val.value.assetName : null}
 											<div
-												{...provided.dragHandleProps}
+												{...provided2.dragHandleProps}
 												style={{
 													opacity: val.value.isDraggable ? 1 : 0,
 													marginLeft: "10px",
 												}}
 											>
-												<DragHandleIcon style={style} />
+												<img
+													src={reorder}
+													alt="icon"
+													style={{ width: "18px", height: "18px" }}
+												/>
 											</div>
 										</div>
 									</div>

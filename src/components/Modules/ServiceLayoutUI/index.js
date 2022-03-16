@@ -9,6 +9,7 @@ import {
 	getServiceLayoutData,
 	getServiceLayoutDataByInterval,
 	getServiceLayoutDataByRole,
+	getServiceLayoutDataByRoleAndInterval,
 	patchQuestions,
 	patchTaskQuestions,
 	patchTaskStages,
@@ -16,7 +17,6 @@ import {
 } from "services/models/modelDetails/modelservicelayout";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import DragHandleIcon from "@material-ui/icons/DragHandle";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {
 	modifyResponseData,
@@ -80,19 +80,36 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		setIsLoading({ ...loading, dropdown: true });
 
 		let response = null;
-		if (type === "role") {
-			if (Object.values(selectedInterval).length !== 0) setSelectedInterval({});
+		const selectedRoleNotEmpty = Object.values(selectedRole).length !== 0;
+		const selectedIntervalNotEmpty =
+			Object.values(selectedInterval).length !== 0;
 
+		if (type === "role") {
 			setSelectedRole(list);
 
-			response = await getServiceLayoutDataByRole(modelId, list.id);
+			if (selectedIntervalNotEmpty) {
+				response = await getServiceLayoutDataByRoleAndInterval(
+					modelId,
+					selectedInterval.id,
+					list.id
+				);
+			} else {
+				response = await getServiceLayoutDataByRole(modelId, list.id);
+			}
 		}
 
 		if (type === "interval") {
-			if (Object.values(selectedRole).length !== 0) setSelectedRole({});
-
 			setSelectedInterval(list);
-			response = await getServiceLayoutDataByInterval(modelId, list.id);
+
+			if (selectedRoleNotEmpty) {
+				response = await getServiceLayoutDataByRoleAndInterval(
+					modelId,
+					list.id,
+					selectedRole.id
+				);
+			} else {
+				response = await getServiceLayoutDataByInterval(modelId, list.id);
+			}
 		}
 
 		if (response.status) {
@@ -133,28 +150,71 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		) {
 			return;
 		}
+		setIsLoading({ ...loading, dropdown: true });
 
-		if (type === "interval") {
+		let response = null,
+			modifiedResponse = null;
+		if (type === "interval" && !isRoleEmpty) {
 			setSelectedInterval({});
-		} else {
+			response = await getServiceLayoutDataByRole(modelId, selectedRole.id);
+
+			modifiedResponse = modifyResponseData(
+				response.data,
+				hideTaskQuestions,
+				null,
+				null,
+				null
+			);
+			setCounts({
+				zoneCount: response.data.zoneCount,
+				stageCount: response.data.stageCount,
+				taskCount: response.data.taskCount,
+			});
+			setOriginalServiceLayoutData(response.data);
+		} else if (type === "role" && !isIntervalEmpty) {
 			setSelectedRole({});
+			response = await getServiceLayoutDataByInterval(
+				modelId,
+				selectedInterval.id
+			);
+
+			modifiedResponse = modifyResponseData(
+				response.data,
+				hideTaskQuestions,
+				null,
+				null,
+				null
+			);
+			setCounts({
+				zoneCount: response.data.zoneCount,
+				stageCount: response.data.stageCount,
+				taskCount: response.data.taskCount,
+			});
+			setOriginalServiceLayoutData(response.data);
+		} else {
+			if (isIntervalEmpty) {
+				setSelectedRole({});
+			} else {
+				setSelectedInterval({});
+			}
+			modifiedResponse = modifyResponseData(
+				fixedServiceLayoutData,
+				hideTaskQuestions,
+				null,
+				null,
+				null
+			);
+			setCounts({
+				zoneCount: fixedServiceLayoutData.zoneCount,
+				stageCount: fixedServiceLayoutData.stageCount,
+				taskCount: fixedServiceLayoutData.taskCount,
+			});
+			setOriginalServiceLayoutData(fixedServiceLayoutData);
 		}
 
-		const modifiedResponse = modifyResponseData(
-			fixedServiceLayoutData,
-			hideTaskQuestions,
-			null,
-			null,
-			null
-		);
 		setAllServiceLayoutData(modifiedResponse);
 		setPositions(storePositions(modifiedResponse));
-		setCounts({
-			zoneCount: fixedServiceLayoutData.zoneCount,
-			stageCount: fixedServiceLayoutData.stageCount,
-			taskCount: fixedServiceLayoutData.taskCount,
-		});
-		setOriginalServiceLayoutData(fixedServiceLayoutData);
+		setIsLoading({ ...loading, dropdown: false });
 	};
 	// handle dragging of zone
 	const setPositionForPayload = (e, list, totalList) => {
@@ -224,7 +284,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		];
 
 		const response = await apiCallFunction(
-			result.draggableId.split("_")[2],
+			result.draggableId.split("_")[1],
 			payload
 		);
 
@@ -296,8 +356,8 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			result.type === "stageQuestionsAndTasks" ||
 			result.type === "stageQuestionsTasksAndZones"
 		) {
-			const stageId = result.draggableId.split("_")[0];
-			const dragItemType = result.draggableId.split("_")[1];
+			const stageId = result.draggableId.split("_")[2];
+			const dragItemType = result.draggableId.split("_")[0];
 			let selectedStage = tempData[1].value.find(
 				(stage) => stage.value.id === +stageId
 			);
@@ -342,7 +402,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		}
 		// Reorder tasks and zones of a stage
 		if (result.type === "stageTasksAndZones") {
-			const stageId = result.draggableId.split("_")[0];
+			const stageId = result.draggableId.split("_")[2];
 			let selectedStage = tempData[1].value.find(
 				(stage) => stage.value.id === +stageId
 			);
@@ -376,8 +436,8 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 		// Reorder questions and tasks of a zone
 		if (result.type === "zoneQuestionsAndTasks") {
-			const stageId = result.draggableId.split("_")[0];
-			const dragItemType = result.draggableId.split("_")[1];
+			const stageId = result.draggableId.split("_")[2];
+			const dragItemType = result.draggableId.split("_")[0];
 			const zoneId = result.draggableId.split("_")[3];
 			const selectedStage = tempData[1].value.find(
 				(stage) => stage.value.id === +stageId
@@ -435,21 +495,24 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 		//if the list contains only tasks or questions
 		if (result.type === "tasks" || result.type === "questions") {
+			const apiFunctions = {
+				tasks: patchTaskStages,
+				questions: patchTaskQuestions,
+			};
 			const updatedServiceData = getUpdatedServiceLayoutAfterDragAndDrop(
 				{ ...tempData[1] },
 				result
 			);
-
 			setAllServiceLayoutData([tempData[0], updatedServiceData, tempData[2]]);
 
-			const parentId = +result.draggableId.split("_")[0];
-			const parent_parentId = +result.draggableId.split("_")[3];
+			const parentId = +result.draggableId.split("_")[3];
+			const parent_parentId = +result.draggableId.split("_")[2];
 
 			let selectedStage = { ...tempData[1] }.value.find(
-				(stage) => stage.value.id === parentId
+				(stage) => stage.value.id === parent_parentId
 			);
 			let selectedZoneOrTask = null;
-			if (parent_parentId !== parentId) {
+			if (parentId) {
 				selectedStage = { ...tempData[1] }.value.find(
 					(stage) => stage.value.id === parent_parentId
 				);
@@ -460,13 +523,48 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 			updateTree(
 				result,
-				parent_parentId !== parentId
+				parentId
 					? selectedZoneOrTask.children.value
 					: selectedStage.children.value,
-				parent_parentId !== parentId
+				parentId
 					? selectedZoneOrTask.children.value
 					: selectedStage.children.value,
-				result.type === "questions" ? patchTaskQuestions : patchTaskStages
+				apiFunctions[result.type]
+			);
+		}
+
+		if (result.type === "zoneTasks" || result.type === "zoneTaskQuestions") {
+			const updatedServiceData = getUpdatedServiceLayoutAfterDragAndDrop(
+				{ ...tempData[1] },
+				result
+			);
+
+			setAllServiceLayoutData([tempData[0], updatedServiceData, tempData[2]]);
+
+			const parentId = +result.draggableId.split("_")[4];
+			const parent_parentId = +result.draggableId.split("_")[3];
+			const parent_parent_parentId = +result.draggableId.split("_")[2];
+			let selectedStage = { ...tempData[1] }.value.find(
+				(stage) => stage.value.id === parent_parent_parentId
+			);
+			let selectedZone = selectedStage.children.value.find(
+				(data) => data.value.id === parent_parentId
+			);
+
+			let selectedTask = null;
+
+			if (parentId) {
+				selectedTask = selectedZone.children.value.find(
+					(data) => data.value.id === parentId
+				);
+			}
+
+			updateTree(
+				result,
+				!parentId ? selectedZone.children.value : selectedTask.children.value,
+				!parentId ? selectedZone.children.value : selectedTask.children.value,
+
+				!parentId ? patchTaskZones : patchTaskQuestions
 			);
 		}
 	};

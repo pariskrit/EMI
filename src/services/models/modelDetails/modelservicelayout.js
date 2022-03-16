@@ -34,6 +34,21 @@ export const getServiceLayoutDataByInterval = async (id, intervalId) => {
 	}
 };
 
+export const getServiceLayoutDataByRoleAndInterval = async (
+	id,
+	intervalId,
+	roleId
+) => {
+	try {
+		let response = await API.get(
+			`${Apis.ModelVersions}/${id}/servicelayout?modelversionroleid=${roleId}&modelversionintervalid=${intervalId}`
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
 export const getModelIntervals = async (id) => {
 	try {
 		let response = await API.get(`${Apis.ModelIntervals}?modelVersionId=${id}`);

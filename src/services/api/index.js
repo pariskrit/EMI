@@ -239,7 +239,6 @@ export const Apis = {
 	ModelTaskQuestionOptions: `${BASE_API_PATH_MODEL_TASKS_QUESTION_OPTIONS}`,
 
 	ModelTaskStages: `${BASE_API_PATH_MODEL_TASKS_STAGES}`,
-	ModelIntervals: `${BASE_API_PATH_MODEL_INTERVALS}`,
 	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
 	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,
 	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,

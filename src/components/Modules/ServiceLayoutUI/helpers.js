@@ -1,7 +1,7 @@
-import ViewHeadlineIcon from "@material-ui/icons/ViewHeadline";
-import MessageOutlinedIcon from "@material-ui/icons/MessageOutlined";
-import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import questionIcon from "assets/question.png";
+import stageIcon from "assets/stage.png";
+import zoneIcon from "assets/zone.png";
+import taskIcon from "assets/task.png";
 
 export const reorder = (list, startIndex, endIndex) => {
 	const result = Array.from(list);
@@ -21,7 +21,6 @@ const findStageToExpand = (stages, taskId, questionId, taskQuestionId) => {
 				zone.tasks.find((task) => task.modelVersionTaskID === taskId)
 			)
 		);
-
 		if (taskInsideStage) {
 			return taskInsideStage.modelVersionStageID;
 		}
@@ -42,13 +41,12 @@ const findStageToExpand = (stages, taskId, questionId, taskQuestionId) => {
 	}
 	if (taskQuestionId) {
 		const questionInsideTask = stages.find((stage) =>
-			stage.tasks.find((task) =>
-				task.questions.find(
+			stage.tasks.some((task) =>
+				task.questions.some(
 					(question) => question.modelVersionTaskQuestionID === taskQuestionId
 				)
 			)
 		);
-
 		if (questionInsideTask) {
 			return questionInsideTask.modelVersionStageID;
 		}
@@ -72,6 +70,7 @@ export const modifyResponseData = (
 	let modifiedResponse = [];
 	let id = 1;
 	for (let property in changedData) {
+		console.log(questionIcon);
 		let sn = 0;
 		const isStages = property === "stages";
 		const field = {
@@ -97,7 +96,7 @@ export const modifyResponseData = (
 						type: "startQuestion",
 						sn,
 						highlightQuestion: value.modelVersionQuestionID === questionId,
-						Icon: isStages ? MessageOutlinedIcon : ContactSupportOutlinedIcon,
+						icon: isStages ? stageIcon : questionIcon,
 						isDraggable: !isStages,
 					},
 					children: isStages
@@ -123,10 +122,17 @@ export const modifyResponseData = (
 
 export const getUpdatedServiceLayoutAfterDragAndDrop = (data, result) => {
 	let tempMainData = { ...data };
-
+	const parentId =
+		result.draggableId.split("_")[4] !== "undefined" &&
+		result.draggableId.split("_")[4] !== "null"
+			? +result.draggableId.split("_")[4]
+			: result.draggableId.split("_")[3] !== "null" &&
+			  result.draggableId.split("_")[3] !== "undefined"
+			? +result.draggableId.split("_")[3]
+			: +result.draggableId.split("_")[2];
 	tempMainData.value.forEach((stage) => {
 		//if the children id and the draggable element's id is same then reorder the children array
-		if (stage.children.parentId === +result.draggableId.split("_")[0]) {
+		if (stage.children.parentId === parentId) {
 			stage.children.value = reorder(
 				stage.children.value,
 				result.source.index,
@@ -196,9 +202,9 @@ export const getDataType = (
 	let sn = 0;
 
 	const icons = {
-		questions: ContactSupportOutlinedIcon,
-		zones: HighlightOffIcon,
-		tasks: ViewHeadlineIcon,
+		questions: questionIcon,
+		zones: zoneIcon,
+		tasks: taskIcon,
 	};
 
 	if (hasQuestions && hasTasks && hasZones) {
@@ -207,6 +213,7 @@ export const getDataType = (
 			marginLeft: data.marginLeft ?? 0,
 			taskIdToHighlight: taskId,
 			questionIdToHighlight: questionId,
+			taskQuestionIdToHighlight: taskQuestionId,
 
 			expandedId:
 				(data.zones.find((zone) =>
@@ -224,7 +231,7 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...question,
-						Icon: icons["questions"],
+						icon: icons["questions"],
 						isDraggable: true,
 						type: "question",
 						sn,
@@ -237,7 +244,7 @@ export const getDataType = (
 					return {
 						...task,
 						id: task.id,
-						Icon: icons["tasks"],
+						icon: icons["tasks"],
 						type: "task",
 						sn,
 						isDraggable: true,
@@ -251,7 +258,7 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...zone,
-						Icon: icons["zones"],
+						icon: icons["zones"],
 						isDraggable: false,
 						type: "zones",
 						sn,
@@ -267,7 +274,7 @@ export const getDataType = (
 		return {
 			id: data.modelVersionStageID || data.id,
 			marginLeft: data.marginLeft ?? 0,
-			questionIdToHighlight: taskQuestionId,
+			taskQuestionIdToHighlight: taskQuestionId,
 			expandedId:
 				data.tasks.find((task) =>
 					task.questions.some(
@@ -281,7 +288,7 @@ export const getDataType = (
 					return {
 						...question,
 						sn: sn,
-						Icon: icons["questions"],
+						icon: icons["questions"],
 						isDraggable: true,
 						type: "question",
 						highlightQuestion: question.modelVersionQuestionID === questionId,
@@ -295,13 +302,15 @@ export const getDataType = (
 						...task,
 						sn: sn,
 						id: task.id,
-						Icon: icons["tasks"],
+						icon: icons["tasks"],
 						type: "task",
 						isDraggable: true,
 						questionId,
 						hideTaskQuestions,
 						highlightTask: task.modelVersionTaskID === taskId,
-						grandParentId: data.modelVersionStageID || data.id,
+						grandParentId:
+							data.modelVersionStageID || data.grandParentId || null,
+						parentId: data.id ?? null,
 					};
 				}),
 			],
@@ -318,6 +327,8 @@ export const getDataType = (
 			hideTaskQuestions,
 			marginLeft: 0,
 			taskIdToHighlight: taskId,
+			taskQuestionIdToHighlight: taskQuestionId,
+
 			expandedId:
 				(data.zones.find((zone) =>
 					zone.tasks.find((task) => task.modelVersionTaskID === taskId)
@@ -336,22 +347,23 @@ export const getDataType = (
 					return {
 						...task,
 						id: task.id,
-						Icon: icons["tasks"],
+						icon: icons["tasks"],
 						type: "task",
 						isDraggable: true,
 						hideTaskQuestions,
 						highlightTask: task.modelVersionTaskID === taskId,
-
-						parentId: data.modelVersionStageID || data.id,
+						grandParentId:
+							data.modelVersionStageID || data.grandParentId || null,
 					};
 				}),
 				...data.zones.map((zone) => {
 					sn += 1;
 					return {
 						...zone,
-						Icon: icons["zones"],
+						icon: icons["zones"],
 						isDraggable: false,
 						type: "zones",
+						sn,
 						id: zone.modelVersionZoneID,
 						grandParentId: data.modelVersionStageID || data.id,
 					};
@@ -378,7 +390,7 @@ export const getDataType = (
 					return {
 						...question,
 						id: question.modelVersionQuestionID,
-						Icon: icons["questions"],
+						icon: icons["questions"],
 						type: "question",
 						sn,
 						isDraggable: true,
@@ -389,11 +401,12 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...zone,
-						Icon: icons["zones"],
+						icon: icons["zones"],
 						isDraggable: false,
 						type: "zones",
+						sn,
 						id: zone.modelVersionZoneID,
-						grandParentId: data.modelVersionStageID || data.id,
+						grandParentId: data.modelVersionStageID,
 					};
 				}),
 			],
@@ -424,13 +437,12 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...zone,
-						Icon: icons["zones"],
+						icon: icons["zones"],
 						id: zone.modelVersionZoneID,
 						type: "zone",
 						isDraggable: false,
 						sn,
-						grandParentId:
-							data.modelVersionStageID || data.grandParentId || null,
+						grandParentId: data.modelVersionStageID,
 					};
 				}),
 			],
@@ -442,11 +454,11 @@ export const getDataType = (
 		return {
 			id: data.modelVersionStageID || data.id,
 			marginLeft: data.marginLeft ?? 0,
-			questionIdToHighlight: questionId,
+			taskQuestionIdToHighlight: taskQuestionId,
 			expandedId:
 				data.tasks.find((task) =>
 					task.questions.some(
-						(question) => question.modelVersionTaskQuestionID === questionId
+						(question) => question.modelVersionTaskQuestionID === taskQuestionId
 					)
 				)?.id ?? null,
 
@@ -456,7 +468,7 @@ export const getDataType = (
 					return {
 						...task,
 						id: task.id,
-						Icon: icons["tasks"],
+						icon: icons["tasks"],
 						type: "task",
 						sn,
 						isDraggable: true,
@@ -464,10 +476,11 @@ export const getDataType = (
 						highlightTask: task.modelVersionTaskID === taskId,
 						grandParentId:
 							data.modelVersionStageID || data.grandParentId || null,
+						parentId: data.id ?? null,
 					};
 				}),
 			],
-			type: "tasks",
+			type: data.type === "zones" ? "zoneTasks" : "tasks",
 		};
 	}
 
@@ -475,12 +488,13 @@ export const getDataType = (
 		return {
 			id: data.modelVersionStageID || data.id,
 			marginLeft: data.marginLeft ?? 0,
+			parentId: data?.parentId ?? null,
 			arrayData: [
 				...data.questions.map((question) => {
 					sn += 1;
 					return {
 						...question,
-						Icon: icons["questions"],
+						icon: icons["questions"],
 						isDraggable: true,
 						type: "question",
 						sn,
@@ -489,13 +503,16 @@ export const getDataType = (
 							question.modelVersionTaskQuestionID,
 						highlightQuestion:
 							question.modelVersionQuestionID === questionId ||
-							question.modelVersionTaskQuestionID === questionId,
+							question.modelVersionTaskQuestionID === taskQuestionId,
 
 						grandParentId: data.grandParentId ?? null,
+						parentId: data.parentId ?? data?.id ?? null,
+						childId: data.parentId ? data?.id : null,
 					};
 				}),
 			],
-			type: "questions",
+			type:
+				data.grandParentId && data.parentId ? "zoneTaskQuestions" : "questions",
 		};
 	}
 
@@ -509,6 +526,7 @@ export const getFields = (data) => {
 
 	return {
 		parentId: data.id,
+		childId: data.childId,
 		name: data.type,
 		marginLeft: 15 + data.marginLeft,
 		expandedId: data.expandedId,
@@ -519,7 +537,8 @@ export const getFields = (data) => {
 					{ ...value, marginLeft: data.marginLeft ? 15 : 17 },
 					data.hideTaskQuestions,
 					data.taskIdToHighlight,
-					data.questionIdToHighlight
+					data.questionIdToHighlight,
+					data.taskQuestionIdToHighlight
 				)
 			),
 		})),

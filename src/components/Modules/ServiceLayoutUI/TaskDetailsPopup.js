@@ -3,7 +3,6 @@ import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
-	LinearProgress,
 } from "@material-ui/core";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -50,10 +49,16 @@ function TaskDetailsPopup({ isOpen, onClose, rowId }) {
 			fullWidth
 			maxWidth="md"
 		>
-			{/* {isFetching ? <LinearProgress /> : null} */}
-			<DialogTitle id="alert-dialog-title">
-				{<ADD.HeaderText>Task Details</ADD.HeaderText>}
-			</DialogTitle>
+			<ADD.ActionContainer>
+				<DialogTitle id="add-dialog-title">
+					<ADD.HeaderText>Task Details</ADD.HeaderText>
+				</DialogTitle>
+				<ADD.ButtonContainer>
+					<ADD.CancelButton onClick={onClose} variant="contained">
+						Cancel
+					</ADD.CancelButton>
+				</ADD.ButtonContainer>
+			</ADD.ActionContainer>
 
 			<DialogContent className="detailContent">
 				{isFetching ? <CircularProgress /> : <TaskDetails taskInfo={task} />}
