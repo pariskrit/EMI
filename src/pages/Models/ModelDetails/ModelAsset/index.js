@@ -65,7 +65,7 @@ const ModelAsset = ({
 		setSearchQuery(v);
 		const d = data.filter((x) => {
 			const regex = new RegExp(v, "gi");
-			return x.asset.match(regex);
+			return x.name.match(regex);
 		});
 		setSearchedData(d);
 	};
