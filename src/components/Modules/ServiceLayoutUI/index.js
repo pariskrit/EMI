@@ -669,6 +669,8 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	if (loading.all) {
 		return <CircularProgress />;
 	}
+
+	const isReadOnly = access === "R";
 	return (
 		<>
 			<TaskDetailsPopup
@@ -676,6 +678,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				onClose={() => setOpenTaskDetails(false)}
 				rowId={taskId}
 				fetchFunction={reFetchServicelayout}
+				access={access}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
@@ -750,6 +753,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 									setOpenTaskDetails(true);
 									setTaskId(id);
 								}}
+								isDragDisabled={isReadOnly}
 							/>
 						))}
 					</DragDropContext>

@@ -14,7 +14,7 @@ import "./style.css";
 
 const ADD = AddDialogStyle();
 
-function TaskDetailsPopup({ isOpen, onClose, rowId, fetchFunction }) {
+function TaskDetailsPopup({ isOpen, onClose, rowId, fetchFunction, access }) {
 	const [isFetching, setIsFetching] = useState(false);
 	const [task, setTask] = useState({});
 	const dispatch = useDispatch();
@@ -68,6 +68,7 @@ function TaskDetailsPopup({ isOpen, onClose, rowId, fetchFunction }) {
 						taskInfo={task}
 						isFetching
 						fetchFunction={fetchFunction}
+						access={access}
 					/>
 				)}
 			</DialogContent>
