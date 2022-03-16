@@ -1,5 +1,5 @@
 import { CircularProgress } from "@material-ui/core";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
 	checkSelected,
 	unCheckSelected,
@@ -9,11 +9,13 @@ import IntervalTable from "./Table";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import withMount from "components/HOC/withMount";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const Intervals = ({ taskId, access, isMounted }) => {
 	const [intervals, setIntervals] = useState([]);
 	const [isLoading, setIsloading] = useState(true);
 	const dispatch = useDispatch();
+	const [, CtxDispatch] = useContext(TaskContext);
 
 	const handleIntervalCheckbox = async (
 		checked,
@@ -39,8 +41,40 @@ const Intervals = ({ taskId, access, isMounted }) => {
 				modelVersionTaskID: taskId,
 				modelVersionIntervalID: intervalId,
 			});
+			CtxDispatch({
+				type: "TAB_COUNT",
+				payload: {
+					countTab: "intervalCount",
+					data: intervals.filter((x) => Boolean(x.id)).length + 1,
+				},
+			});
+			document
+				.getElementById(`taskExpandable${taskId}`)
+				.querySelector(`#dataCellintervals > div >p`).innerHTML = intervals
+				.map((z) =>
+					z.modelVersionIntervalID === intervalId ? { ...z, id: true } : z
+				)
+				.filter((x) => Boolean(x.id))
+				.map((x) => x.name)
+				.join(",");
 		} else {
 			response = await unCheckSelected(taskIntervalId);
+			CtxDispatch({
+				type: "TAB_COUNT",
+				payload: {
+					countTab: "intervalCount",
+					data: intervals.filter((x) => Boolean(x.id)).length - 1,
+				},
+			});
+			document
+				.getElementById(`taskExpandable${taskId}`)
+				.querySelector(`#dataCellintervals > div >p`).innerHTML = intervals
+				.map((z) =>
+					z.modelVersionIntervalID === intervalId ? { ...z, id: null } : z
+				)
+				.filter((x) => Boolean(x.id))
+				.map((x) => x.name)
+				.join(",");
 		}
 
 		if (!response.status) {

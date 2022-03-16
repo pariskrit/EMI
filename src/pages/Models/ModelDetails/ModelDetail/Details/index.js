@@ -15,7 +15,7 @@ const inputDetails = [
 
 	{ id: 5, label: "Developer Name", name: "displayName" },
 ];
-function Details({ classes, data, customCaptions, isReadOnly }) {
+function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 	const { id } = useParams();
 	const [details, setDetails] = useState([]);
 	const [apiStatus, setApiStatus] = useState({});
@@ -37,6 +37,7 @@ function Details({ classes, data, customCaptions, isReadOnly }) {
 
 	const onUpdateInput = async (e) => {
 		const inputName = e.target.name;
+		const value = e.target.value;
 
 		if (!isInputChanged[inputName]) {
 			return;
@@ -54,6 +55,13 @@ function Details({ classes, data, customCaptions, isReadOnly }) {
 		}
 
 		setApiStatus({ ...apiStatus, [inputName]: "idle" });
+
+		if (inputName === "name" && response.status) {
+			Ctxdispatch({
+				type: "TAB_COUNT",
+				payload: { countTab: "name", data: value },
+			});
+		}
 		setInputChanged({});
 	};
 

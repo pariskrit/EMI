@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
@@ -17,6 +17,7 @@ import {
 } from "services/models/modelDetails/modelTaskAttachments";
 import ColourConstants from "helpers/colourConstants";
 import withMount from "components/HOC/withMount";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const AT = ActionButtonStyle();
 
@@ -29,6 +30,8 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 	const [openEditPermit, setOpenEditPermit] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(false);
+
+	const [, CtxDispatch] = useContext(TaskContext);
 
 	const dispatch = useDispatch();
 
@@ -71,6 +74,13 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						}))
 					);
 				}
+				CtxDispatch({
+					type: "TAB_COUNT",
+					payload: {
+						countTab: "documentCount",
+						data: response?.data?.length,
+					},
+				});
 			} else {
 				dispatch(
 					showError(
@@ -169,6 +179,13 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 		});
 		setPermits(newData);
 		setOriginalPermits(newData);
+		CtxDispatch({
+			type: "TAB_COUNT",
+			payload: {
+				countTab: "documentCount",
+				data: newData?.length,
+			},
+		});
 	};
 
 	const createPermit = async (newPermit) => {

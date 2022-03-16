@@ -23,6 +23,7 @@ import {
 	removeModelVersionTaskRole,
 } from "services/models/modelDetails/modelVersionTaskRole";
 import withMount from "components/HOC/withMount";
+import SafteryCritical from "assets/icons/safety-critical.svg";
 
 const ADD = AddDialogStyle();
 
@@ -69,6 +70,7 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 	const [isUpdating, setUpdating] = useState({});
 
 	const reduxDispatch = useDispatch();
+
 	const [modelState] = useContext(ModelContext);
 	const {
 		modelDetail: { id },
@@ -156,6 +158,20 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 							r.modelVersionRoleID === id ? { ...r, id: response.data } : r
 						),
 					});
+
+					const dataCell = document
+						.getElementById(`taskExpandable${taskInfo.id}`)
+						?.querySelector(`#dataCellroles > div > p`);
+					if (dataCell) {
+						dataCell.innerHTML =
+							localTaskInfo?.roles
+								?.map((r) =>
+									r.modelVersionRoleID === id ? { ...r, id: response.data } : r
+								)
+								?.filter((r) => r.id !== null)
+								?.map((r) => r.name)
+								?.join(", ") ?? "";
+					}
 				} else {
 					reduxDispatch(
 						showError(
@@ -186,6 +202,20 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 							r.modelVersionRoleID === id ? { ...r, id: null } : r
 						),
 					});
+
+					const dataCell = document
+						.getElementById(`taskExpandable${taskInfo.id}`)
+						?.querySelector(`#dataCellroles > div > p`);
+					if (dataCell) {
+						dataCell.innerHTML =
+							localTaskInfo?.roles
+								?.map((r) =>
+									r.modelVersionRoleID === id ? { ...r, id: null } : r
+								)
+								?.filter((r) => r.id !== null)
+								?.map((r) => r.name)
+								?.join(", ") ?? "";
+					}
 				} else {
 					reduxDispatch(
 						showError(
@@ -229,6 +259,13 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 			if (response.status) {
 				taskInfo[name] = value?.id || null;
 				taskInfo[actualName] = value.name;
+				const rowDataCell = document
+					.getElementById(`taskExpandable${taskInfo.id}`)
+					?.querySelector(`#dataCell${actualName} > div`);
+
+				if (rowDataCell) {
+					rowDataCell.innerHTML = value.name;
+				}
 			} else {
 				reduxDispatch(
 					showError(
@@ -240,6 +277,7 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 				setLocalTaskInfo(taskInfo);
 			}
 		} catch (error) {
+			console.log("error", error);
 			setLocalTaskInfo(taskInfo);
 			reduxDispatch(
 				showError(
@@ -287,6 +325,24 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 			]);
 			if (response.status) {
 				taskInfo[name] = value;
+				const dataCell = document
+					.getElementById(`taskExpandable${taskInfo.id}`)
+					?.querySelector(`#dataCell${name} > div`);
+
+				if (dataCell) {
+					if ("safetyCritical" === name) {
+						if (value === true) {
+							const imgEl = document.createElement("img");
+							imgEl.setAttribute("src", SafteryCritical);
+							imgEl.classList.add("white-filter");
+							dataCell.appendChild(imgEl);
+						} else {
+							dataCell.innerHTML = "";
+						}
+					} else {
+						dataCell.innerHTML = value;
+					}
+				}
 			} else {
 				reduxDispatch(
 					showError(

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles, CircularProgress } from "@material-ui/core";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import {
@@ -13,6 +13,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import TabelRowImage from "components/Elements/TabelRowImage";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const useStyles = makeStyles({
 	images: {
@@ -34,6 +35,9 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 	const access = me?.position?.modelAccess;
 
 	const classes = useStyles();
+
+	const [, CtxDispatch] = useContext(TaskContext);
+
 	const [images, setImage] = useState({
 		data: [],
 		loading: false,
@@ -161,6 +165,13 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 			const mainData = [...images.data];
 			mainData.push(apiResponse(data));
 			setState({ count: images.count + 1, data: mainData });
+			CtxDispatch({
+				type: "TAB_COUNT",
+				payload: {
+					countTab: "imageCount",
+					data: mainData?.length,
+				},
+			});
 		}
 	};
 
@@ -171,6 +182,13 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 	const handleRemoveData = (id) => {
 		const filteredData = images.data.filter((x) => x.id !== id);
 		setState({ data: filteredData, count: images.count - 1 });
+		CtxDispatch({
+			type: "TAB_COUNT",
+			payload: {
+				countTab: "imageCount",
+				data: filteredData?.length,
+			},
+		});
 	};
 
 	const handleDeleteDialogClose = () => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
 	CircularProgress,
 	LinearProgress,
@@ -20,6 +20,7 @@ import { showError } from "redux/common/actions";
 import { modelServiceLayout, modelsPath } from "helpers/routePaths";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -96,6 +97,8 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 		loader: false,
 	});
 
+	const [, CtxDispatch] = useContext(TaskContext);
+
 	// ARRANGING DATA FROM THE API RESPONSE
 
 	// HANDLE ERROR FROM API RESPONSE
@@ -113,6 +116,13 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 					setData(result);
 					setOriginalList(result);
 				}
+				CtxDispatch({
+					type: "TAB_COUNT",
+					payload: {
+						countTab: "questionCount",
+						data: result?.length,
+					},
+				});
 			} else {
 				errorResponse(result);
 			}
@@ -220,6 +230,13 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	const handleRemoveData = (id) => {
 		const filtered = data.filter((x) => x.id !== id);
 		setData(filtered);
+		CtxDispatch({
+			type: "TAB_COUNT",
+			payload: {
+				countTab: "questionCount",
+				data: filtered?.length,
+			},
+		});
 	};
 
 	// HANDLE DRAG AND DROP

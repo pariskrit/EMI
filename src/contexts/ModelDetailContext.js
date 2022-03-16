@@ -8,6 +8,7 @@ const initialState = {
 	showPasteTask: false,
 	showChangeStatus: false,
 	isPasteTaskDisabled: true,
+	taskDetail: {},
 };
 
 function reducer(state, action) {
@@ -45,6 +46,23 @@ function reducer(state, action) {
 			};
 		case "DISABLE_PASTE_TASK":
 			return { ...state, isPasteTaskDisabled: payload };
+
+		case "TAB_COUNT":
+			return {
+				...state,
+				modelDetail: { ...state.modelDetail, [payload.countTab]: payload.data },
+			};
+		case "TASK_DETAIL":
+			return {
+				...state,
+				taskDetail: payload,
+			};
+
+		case "TASK_DETAIL_UPDATE":
+			return {
+				...state,
+				taskDetail: { ...state.taskDetail, [payload.countTab]: payload.data },
+			};
 
 		default:
 			return state;

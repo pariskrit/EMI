@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Navigation from "./Navigation";
 import { makeStyles } from "@material-ui/core/styles";
 import { LinearProgress } from "@material-ui/core";
@@ -15,6 +15,7 @@ import WorkBook from "./WorkBook";
 import Images from "./Images";
 import Questions from "./Questions";
 import Attachments from "./Attachments";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 export const useStyles = makeStyles({
 	main: {
@@ -39,6 +40,9 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
+	const [TaskDetailState] = useContext(TaskContext);
+	const { taskInfo: TaskDetail } = TaskDetailState;
+
 	return (
 		<div className={classes.main}>
 			{taskLoading ? (
@@ -48,20 +52,43 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 					<Navigation
 						current={current}
 						navigation={[
-							"Details",
-							`${customCaptions?.intervalPlural} (${taskInfo?.intervalCount})`,
-							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})`,
-							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})`,
+							{ label: "Details", name: "Details" },
+							{
+								label: `${customCaptions?.intervalPlural} (${TaskDetail?.intervalCount})`,
+								name: "interval",
+							},
+							{
+								label: `${customCaptions?.stagePlural} (${TaskDetail?.stageCount})`,
+								name: "stage",
+							},
+							{
+								label: `${customCaptions?.zonePlural} (${TaskDetail?.zoneCount})`,
+								name: "zone",
+							},
 							...(showParts
-								? [`${customCaptions?.partPlural} (${taskInfo?.partCount})`]
+								? [
+										{
+											label: `${customCaptions?.partPlural} (${TaskDetail?.partCount})`,
+											name: "part",
+										},
+								  ]
 								: []),
-							`${customCaptions?.lubricant}`,
-							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})`,
-							`Permits (${taskInfo?.permitCount})`,
-							`${customCaptions?.workbook}`,
-							`Images (${taskInfo?.imageCount})`,
-							`${customCaptions?.questionPlural} (${taskInfo?.questionCount})`,
-							`Attachments (${taskInfo?.documentCount})`,
+							{ label: `${customCaptions?.lubricant}`, name: "lubricant" },
+							{
+								label: `${customCaptions?.toolPlural} (${TaskDetail?.toolCount})`,
+								name: "tool",
+							},
+							{ label: `Permits (${TaskDetail?.permitCount})`, name: "permit" },
+							{ label: `${customCaptions?.workbook}`, name: "workbook" },
+							{ label: `Images (${TaskDetail?.imageCount})`, name: "images" },
+							{
+								label: `${customCaptions?.questionPlural} (${TaskDetail?.questionCount})`,
+								name: "question",
+							},
+							{
+								label: `Attachments (${TaskDetail?.documentCount})`,
+								name: "attachment",
+							},
 						]}
 						onClick={(d) => setCurrent(d)}
 					/>
@@ -69,40 +96,30 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						{current === "Details" && (
 							<Details taskInfo={taskInfo} access={access} />
 						)}
-						{current ===
-							`${customCaptions?.intervalPlural} (${taskInfo?.intervalCount})` && (
+						{current === `interval` && (
 							<Intervals taskId={taskInfo.id} access={access} />
 						)}
-						{current ===
-							`${customCaptions?.stagePlural} (${taskInfo?.stageCount})` && (
-							<Stages taskInfo={taskInfo} />
-						)}
-						{current ===
-							`${customCaptions?.zonePlural} (${taskInfo?.zoneCount})` && (
+						{current === `stage` && <Stages taskInfo={taskInfo} />}
+						{current === `zone` && (
 							<Zones taskInfo={taskInfo} access={access} />
 						)}
-						{current ===
-							`${customCaptions?.partPlural} (${taskInfo?.partCount})` && (
+						{current === `part` && (
 							<Parts taskInfo={taskInfo} access={access} />
 						)}
-						{current === `${customCaptions?.lubricant}` && (
+						{current === `lubricant` && (
 							<Lubricant taskInfo={taskInfo} access={access} />
 						)}
-						{current ===
-							`${customCaptions?.toolPlural} (${taskInfo?.toolCount})` && (
+						{current === `tool` && (
 							<Tools taskInfo={taskInfo} access={access} />
 						)}
-						{current === `Permits (${taskInfo?.permitCount})` && (
+						{current === `permit` && (
 							<Permits taskInfo={taskInfo} access={access} />
 						)}
-						{current === `${customCaptions?.workbook}` && (
+						{current === `workbook` && (
 							<WorkBook taskInfo={taskInfo} access={access} />
 						)}
-						{current === `Images (${taskInfo?.imageCount})` && (
-							<Images taskInfo={taskInfo} />
-						)}
-						{current ===
-							`${customCaptions?.questionPlural} (${taskInfo?.questionCount})` && (
+						{current === `images` && <Images taskInfo={taskInfo} />}
+						{current === `question` && (
 							<Questions
 								captions={{
 									plural: customCaptions?.questionPlural,
@@ -112,7 +129,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 								access={access}
 							/>
 						)}
-						{current === `Attachments (${taskInfo?.documentCount})` && (
+						{current === `attachment` && (
 							<Attachments taskInfo={taskInfo} access={access} />
 						)}
 					</div>

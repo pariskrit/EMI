@@ -1,7 +1,9 @@
 import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
-import React, { useCallback, useEffect, useState } from "react";
+import { TaskContext } from "contexts/TaskDetailContext";
+import useDidMountEffect from "hooks/useDidMountEffect";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getSiteAssetsCount } from "services/clients/sites/siteAssets";
@@ -22,6 +24,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 	const [loading, setLoading] = useState(false);
 	const [siteAssset, setSiteAssest] = useState([]);
 	const [assestCount, setAssestCount] = useState(null);
+	const [, CtxDispatch] = useContext(TaskContext);
 
 	const {
 		customCaptions,
@@ -139,6 +142,17 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 									: z
 							)
 						);
+						document
+							.getElementById(`taskExpandable${taskInfo.id}`)
+							.querySelector(`#dataCellzones > div >p`).innerHTML = zones
+							.map((z) =>
+								z.modelVersionZoneID === modelVersionZoneID
+									? { ...z, id: true }
+									: z
+							)
+							.filter((x) => Boolean(x.id))
+							.map((x) => x.name)
+							.join(",");
 						return;
 					} else {
 						setZones(originalZones);
@@ -180,6 +194,17 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 									: z
 							)
 						);
+						document
+							.getElementById(`taskExpandable${taskInfo.id}`)
+							.querySelector(`#dataCellzones > div >p`).innerHTML = zones
+							.map((z) =>
+								z.modelVersionZoneID === modelVersionZoneID
+									? { ...z, id: null }
+									: z
+							)
+							.filter((x) => Boolean(x.id))
+							.map((x) => x.name)
+							.join(",");
 						return;
 					} else {
 						setZones(originalZones);
@@ -207,6 +232,16 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 		},
 		[dispatch, zones, originalZones, id]
 	);
+
+	useDidMountEffect(() => {
+		CtxDispatch({
+			type: "TAB_COUNT",
+			payload: {
+				countTab: "zoneCount",
+				data: zones.filter((z) => Boolean(z.id)).length,
+			},
+		});
+	}, [zones]);
 
 	if (loading) return <CircularProgress />;
 	return (

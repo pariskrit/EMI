@@ -71,6 +71,10 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const handleRemoveData = (id) => {
 		const d = [...data].filter((x) => x.id !== id);
 		setData(d);
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "stageCount", data: d },
+		});
 	};
 
 	const handleDeleteDialogClose = () => {
@@ -91,6 +95,10 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 			let d = data;
 			d.push(res);
 			setData(d);
+			dispatch({
+				type: "TAB_COUNT",
+				payload: { countTab: "stageCount", data: d.length },
+			});
 		}
 	};
 

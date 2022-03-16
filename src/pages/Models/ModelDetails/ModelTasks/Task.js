@@ -46,7 +46,7 @@ const debounce = (func, delay) => {
 };
 
 function Task({ modelId, state, dispatch, access, isMounted }) {
-	const [isLoading, setLoading] = useState(false);
+	const [isLoading, setLoading] = useState(true);
 	const [taskList, setTaskList] = useState([]);
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -212,6 +212,10 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	);
 
 	const createModelTask = async (payload) => {
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "taskCount", data: totalTaskCount + 1 },
+		});
 		return await addModelTask({ ...payload, modelVersionID: modelId });
 	};
 
@@ -225,6 +229,10 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			return item.id !== id;
 		});
 		setTaskList(newData);
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "taskCount", data: totalTaskCount - 1 },
+		});
 		setTotalTaskCount(totalTaskCount - 1);
 	};
 
@@ -349,7 +357,7 @@ const dymanicTableHeader = (operatingModeShown, customCaptions) => {
 					isSort: false,
 				},
 				{ id: 2, name: customCaptions?.actionRequired, isSort: true },
-				{ id: 3, name: "Name", isSort: true },
+				{ id: 3, name: "Name", isSort: true, uuid: "name" },
 				{ id: 4, name: customCaptions?.operatingMode, isSort: true },
 				{ id: 5, name: customCaptions?.system, isSort: true },
 				{ id: 6, name: customCaptions?.rolePlural, isSort: true },

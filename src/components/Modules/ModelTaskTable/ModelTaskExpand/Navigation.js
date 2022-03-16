@@ -82,14 +82,14 @@ const Navigation = ({ navigation, current, onClick }) => {
 						return (
 							<Button
 								className={`${
-									navItem === current
+									navItem.name === current
 										? clsx(classes.curveButton, classes.curveButtonCurrent)
 										: classes.curveButton
 								} largeBtn`}
-								onClick={() => onClick(navItem)}
+								onClick={() => onClick(navItem.name)}
 								key={index}
 							>
-								{navItem}
+								{navItem.label}
 							</Button>
 						);
 					})}
@@ -114,11 +114,11 @@ const Navigation = ({ navigation, current, onClick }) => {
 										: classes.curveButton
 								} largeBtn`}
 								onClick={(e) => {
-									onClick(navItem.url);
+									onClick(navItem.name);
 								}}
 								key={index}
 							>
-								{navItem.name}
+								{navItem.label}
 							</Button>
 						);
 					})}

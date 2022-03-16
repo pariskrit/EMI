@@ -2,7 +2,7 @@ import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { Apis } from "services/api";
@@ -14,6 +14,7 @@ import {
 	patchModelTaskTool,
 } from "services/models/modelDetails/modelTaskTools";
 import withMount from "components/HOC/withMount";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const AT = ActionButtonStyle();
 
@@ -26,6 +27,8 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 	const [openEditTool, setOpenEditTool] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(false);
+
+	const [, CtxDispatch] = useContext(TaskContext);
 
 	const dispatch = useDispatch();
 
@@ -42,6 +45,13 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 					setTools(response?.data);
 					setOriginalTools(response?.data);
 				}
+				CtxDispatch({
+					type: "TAB_COUNT",
+					payload: {
+						countTab: "toolCount",
+						data: response?.data?.length,
+					},
+				});
 			} else {
 				dispatch(
 					showError(
@@ -137,6 +147,13 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 		});
 		setTools(newData);
 		setOriginalTools(newData);
+		CtxDispatch({
+			type: "TAB_COUNT",
+			payload: {
+				countTab: "toolCount",
+				data: newData.length,
+			},
+		});
 	};
 
 	const createTool = async (newTool) => {

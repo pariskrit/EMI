@@ -590,6 +590,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
 					required={false}
 					onClear={() => handleClearDropdown("interval")}
+					showBorderColor
 				/>
 				<DyanamicDropdown
 					dataSource={roles}
@@ -607,6 +608,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
 					required={false}
 					onClear={() => handleClearDropdown("role")}
+					showBorderColor
 				/>
 			</div>
 			<div className={classes.dragDropContainer}>

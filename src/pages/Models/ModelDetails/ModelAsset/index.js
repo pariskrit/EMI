@@ -72,12 +72,16 @@ const ModelAsset = ({
 
 	const handleAddComplete = (responseData) => {
 		const main = data;
-		console.log(responseData);
 		main.push({
 			...responseData,
 			status: responseData.isActive ? "Active" : "Inactive",
 		});
+
 		setData(main);
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "assetCount", data: main.length },
+		});
 	};
 
 	const handleClose = () => {
@@ -89,6 +93,10 @@ const ModelAsset = ({
 	};
 	const handleRemoveData = (id) => {
 		setData((th) => [...th].filter((x) => x.id !== id));
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "assetCount", data: data.length - 1 },
+		});
 	};
 	const handleDeleteDialogClose = () => {
 		setDelete({ id: null, open: false });

@@ -58,6 +58,10 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 					setData(response.data);
 					setFilteredData(response.data);
 				}
+				dispatch({
+					type: "TAB_COUNT",
+					payload: { countTab: "roleCount", data: response.data.length },
+				});
 			} else {
 				reduxDispatch(showError(response?.title || "something went wrong"));
 			}
@@ -97,6 +101,10 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 		const newData = [...data.filter((d) => d.id !== id)];
 		setData(newData);
 		setFilteredData(newData);
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "roleCount", data: newData.length },
+		});
 	};
 
 	const createModalRole = async (payload) => {

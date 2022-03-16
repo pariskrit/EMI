@@ -17,6 +17,7 @@ import ListStages from "./ListStages";
 import withMount from "components/HOC/withMount";
 import { ModelContext } from "contexts/ModelDetailContext";
 import DetailsPanel from "components/Elements/DetailsPanel";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const useStyles = makeStyles({
 	stages: { display: "flex", flexDirection: "column", marginBottom: 12 },
@@ -51,6 +52,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			modelDetail: { modelType },
 		},
 	] = useContext(ModelContext);
+	const [, CtxDispatch] = useContext(TaskContext);
+
 	const [stages, setStages] = useState({
 		loading: false,
 		data: [],
@@ -175,6 +178,25 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 						),
 						stageCount: th.stageCount + 1,
 					}));
+					CtxDispatch({
+						type: "TAB_COUNT",
+						payload: {
+							countTab: "stageCount",
+							data: stages.stageCount + 1,
+						},
+					});
+					document
+						.getElementById(`taskExpandable${taskInfo.id}`)
+						.querySelector(`#dataCellstages > div >p`).innerHTML = stages.data
+						.map((z) =>
+							z.modelVersionStageID === data.ModelVersionStageID
+								? { ...z, id: true }
+								: z
+						)
+						.filter((x) => Boolean(x.id))
+						.map((x) => x.name)
+						.join(",");
+
 					return { success: true };
 				} else {
 					// Post is for selected so if error, then selected will be deselected
@@ -205,6 +227,20 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 						),
 						stageCount: th.stageCount - 1,
 					}));
+					CtxDispatch({
+						type: "TAB_COUNT",
+						payload: {
+							countTab: "stageCount",
+							data: stages.stageCount - 1,
+						},
+					});
+					document
+						.getElementById(`taskExpandable${taskInfo.id}`)
+						.querySelector(`#dataCellstages > div >p`).innerHTML = stages.data
+						.map((z) => (z.id === stageId ? { ...z, id: null } : z))
+						.filter((x) => Boolean(x.id))
+						.map((x) => x.name)
+						.join(",");
 					return { success: true };
 				} else {
 					// Delete is for deselected so if error, then deselected will be selected

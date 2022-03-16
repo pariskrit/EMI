@@ -2,7 +2,7 @@ import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { Apis } from "services/api";
@@ -14,6 +14,7 @@ import {
 	patchModelTaskPermit,
 } from "services/models/modelDetails/modelTaskPermits";
 import withMount from "components/HOC/withMount";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const AT = ActionButtonStyle();
 
@@ -27,6 +28,8 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(false);
 
+	const [, CtxDispatch] = useContext(TaskContext);
+
 	const dispatch = useDispatch();
 
 	const fetchPermits = async (showLoading = true) => {
@@ -38,6 +41,13 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 					setPermits(response?.data);
 					setOriginalPermits(response?.data);
 				}
+				CtxDispatch({
+					type: "TAB_COUNT",
+					payload: {
+						countTab: "permitCount",
+						data: response?.data?.length,
+					},
+				});
 			} else {
 				dispatch(
 					showError(
@@ -133,6 +143,13 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 		});
 		setPermits(newData);
 		setOriginalPermits(newData);
+		CtxDispatch({
+			type: "TAB_COUNT",
+			payload: {
+				countTab: "permitCount",
+				data: newData.length,
+			},
+		});
 	};
 
 	const createPermit = async (newPermit) => {

@@ -158,6 +158,7 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 							position={position}
 							customCaptions={customCaptions}
 							isReadOnly={isReadOnly}
+							Ctxdispatch={dispatch}
 						/>
 						<Departments
 							listOfDepartment={modelDetailsData.modelDepartments}

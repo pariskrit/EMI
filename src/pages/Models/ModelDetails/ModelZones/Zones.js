@@ -55,6 +55,10 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 					);
 					setZone(response[0].data);
 				}
+				dispatch({
+					type: "TAB_COUNT",
+					payload: { countTab: "zoneCount", data: response[0].data.length },
+				});
 			}
 			if (response[1].status) {
 				if (!isMounted.aborted) {
@@ -143,6 +147,10 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 		});
 		setZonesList(newData);
 		setOriginalZoneList(newData);
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "zoneCount", data: newData.length },
+		});
 	};
 
 	const handleEditZone = (row) => {

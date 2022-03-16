@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TableRow from "@material-ui/core/TableRow";
 import { Collapse, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
@@ -17,6 +17,8 @@ import { getSingleModelTask } from "services/models/modelDetails/modelTasks";
 import useDidMountEffect from "hooks/useDidMountEffect";
 import ErrorIcon from "@material-ui/icons/Error";
 import withMount from "components/HOC/withMount";
+import { TaskContext } from "contexts/TaskDetailContext";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const AT = TableStyle();
 
@@ -52,6 +54,8 @@ const ModelTaskRow = ({
 	const [singleTask, setSingleTask] = useState({});
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
+	const [, CtxDispatch] = useContext(TaskContext);
+	const [, ModelCtxDispatch] = useContext(ModelContext);
 
 	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
 
@@ -68,6 +72,11 @@ const ModelTaskRow = ({
 				if (response.status) {
 					if (!isMounted.aborted) {
 						setSingleTask(response.data[0]);
+						CtxDispatch({ type: "SET_TASK_DETAIL", payload: response.data[0] });
+						ModelCtxDispatch({
+							type: "TASK_DETAIL",
+							payload: response.data[0],
+						});
 					}
 				} else {
 					dispatch(showError(response?.data?.title || "something went wrong"));
@@ -117,6 +126,7 @@ const ModelTaskRow = ({
 							maxWidth: "200px",
 							color: toggle ? "#FFFFFF" : "",
 						}}
+						id={`dataCell${col}`}
 					>
 						<AT.CellContainer key={col}>
 							{/* <AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}> */}

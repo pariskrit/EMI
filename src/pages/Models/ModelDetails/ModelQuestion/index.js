@@ -89,6 +89,10 @@ const ModelQuestion = ({
 					setData(result);
 					setOriginalQuestionList(result);
 				}
+				dispatch({
+					type: "TAB_COUNT",
+					payload: { countTab: "questionCount", data: result.length },
+				});
 			} else {
 				if (result.data?.detail) getError(result.data.detail);
 				else {
@@ -268,6 +272,10 @@ const ModelQuestion = ({
 		const filteredData = data.filter((x) => x.id !== id);
 		setData(filteredData);
 		setOriginalQuestionList(filteredData);
+		dispatch({
+			type: "TAB_COUNT",
+			payload: { countTab: "questionCount", data: filteredData.length },
+		});
 	};
 
 	const handleDeleteDialogClose = () => {

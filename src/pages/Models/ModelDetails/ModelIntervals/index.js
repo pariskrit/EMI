@@ -119,9 +119,14 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 		const response = await deleteModelIntervals(id);
 
 		if (response.status) {
-			setModelIntervals([
-				...modelIntervals.filter((interval) => interval.id !== id),
-			]);
+			const latestIntervals = modelIntervals.filter(
+				(interval) => interval.id !== id
+			);
+			setModelIntervals([...latestIntervals]);
+			dispatch({
+				type: "TAB_COUNT",
+				payload: { countTab: "intervalCount", data: latestIntervals.length },
+			});
 		} else {
 			reduxDispatch(showError(response.data || "Could not delete intervals"));
 		}
@@ -160,6 +165,10 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 			}));
 			setModelIntervals(tempModelIntervals);
 			setOriginalModelIntervals(tempModelIntervals);
+			dispatch({
+				type: "TAB_COUNT",
+				payload: { countTab: "intervalCount", data: response.data.length },
+			});
 		} else {
 			reduxDispatch(showError("Could not fetch intervals"));
 		}

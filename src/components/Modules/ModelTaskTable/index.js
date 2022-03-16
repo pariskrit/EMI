@@ -12,6 +12,7 @@ import { handleSort } from "helpers/utils";
 import ModelTaskRow from "./ModelTaskRow";
 import AddNewModelTask from "pages/Models/ModelDetails/ModelTasks/AddNewModelTask";
 import { duplicateTask } from "services/models/modelDetails/modelTasks";
+import TaskDetailContext from "contexts/TaskDetailContext";
 
 // Init styled components
 const AT = TableStyle();
@@ -184,26 +185,28 @@ const ModelTaskTable = ({
 				<TableBody>
 					{data.length !== 0 ? (
 						data.map((row, index) => (
-							<ModelTaskRow
-								key={row.id}
-								row={row}
-								index={index}
-								setAnchorEl={setAnchorEl}
-								anchorEl={anchorEl}
-								selectedData={selectedData}
-								setSelectedData={setSelectedData}
-								handleEdit={handleEdit}
-								handleDelete={handleDelete}
-								handleDuplicate={handleDuplicate}
-								handleCopy={handleCopy}
-								handleCopyTaskQuestion={handleCopyTaskQuestion}
-								classes={classes}
-								columns={columns}
-								data={data}
-								modelId={modelId}
-								customCaptions={customCaptions}
-								access={access}
-							/>
+							<TaskDetailContext key={row.id}>
+								<ModelTaskRow
+									key={row.id}
+									row={row}
+									index={index}
+									setAnchorEl={setAnchorEl}
+									anchorEl={anchorEl}
+									selectedData={selectedData}
+									setSelectedData={setSelectedData}
+									handleEdit={handleEdit}
+									handleDelete={handleDelete}
+									handleDuplicate={handleDuplicate}
+									handleCopy={handleCopy}
+									handleCopyTaskQuestion={handleCopyTaskQuestion}
+									classes={classes}
+									columns={columns}
+									data={data}
+									modelId={modelId}
+									customCaptions={customCaptions}
+									access={access}
+								/>
+							</TaskDetailContext>
 						))
 					) : (
 						<TableRow>
