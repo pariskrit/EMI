@@ -138,7 +138,7 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 	}
 
 	// checking the access of the user to allow or disallow edit add.
-	const isReadOnly = access === "R" || state.modelDetail.isPublished;
+	const isReadOnly = access === "R" || state?.modelDetail?.isPublished;
 	const isEditOnly = access === "E";
 
 	return (

@@ -1,6 +1,6 @@
 import React from "react";
 import TableRow from "@material-ui/core/TableRow";
-import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
+import reorder from "assets/reorder.png";
 import PopupMenu from "components/Elements/PopupMenu";
 import TableStyle from "styles/application/TableStyle";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
@@ -39,11 +39,13 @@ const Row = ({
 										ref={provider.innerRef}
 										className="flex"
 									>
-										<DragIndicatorIcon />
+										<img src={reorder} alt="" height={18} width={18} />
 									</span>
 								)}
 
-								<span style={{ marginTop: "2.5px" }}>{row[col.name]}</span>
+								<span style={{ marginTop: "2.5px", marginLeft: "10px" }}>
+									{row[col.name]}
+								</span>
 							</span>
 						) : (
 							row[col.name]

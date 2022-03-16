@@ -210,7 +210,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={intervalPlural}
-					dataCount={state.modelDetail.intervalCount}
+					dataCount={state?.modelDetail?.intervalCount}
 					description={`Allocate ${intervalPlural} for this asset model`}
 				/>
 				{isReadOnly ? null : (

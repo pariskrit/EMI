@@ -1,7 +1,9 @@
 import React, { createContext, useReducer } from "react";
 
 const initialState = {
-	modelDetail: {},
+	modelDetail: {
+		id: "",
+	},
 	showAdd: false,
 	showSave: false,
 	showSaveChanges: false,
