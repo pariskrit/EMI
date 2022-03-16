@@ -188,7 +188,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 					<DetailsPanel
 						header={`Model ${stagePlural}`}
 						dataCount={data.length}
-						description="Stages managed to this asset model"
+						description={`${stagePlural} managed to this asset model`}
 					/>
 				</div>
 
