@@ -573,7 +573,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		setHideTaskQuestions((prev) => !prev);
 
 		if (!hideTaskQuestions) {
-			setAllServiceLayoutData(
+			setAllServiceLayoutData((prev) =>
 				modifyResponseData(
 					originalServiceLayoutData,
 					true,
@@ -595,9 +595,11 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		}
 	};
 	const fetchServiceLayoutData = useCallback(async () => {
-		const response = await getServiceLayoutData(modelId);
-		const response2 = await getModelRolesList(modelId);
-		const response3 = await getModelIntervals(modelId);
+		const [response, response2, response3] = await Promise.all([
+			getServiceLayoutData(modelId),
+			getModelRolesList(modelId),
+			getModelIntervals(modelId),
+		]);
 
 		if (response.status && response2.status && response3.status) {
 			if (!isMounted.aborted) {
@@ -635,6 +637,31 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		isMounted,
 	]);
 
+	const reFetchServicelayout = async () => {
+		const response = await getServiceLayoutData(modelId);
+
+		if (response.status) {
+			const modifiedResponse = modifyResponseData(
+				response.data,
+				false,
+				taskIdToHighlight,
+				questionIdToHighlight,
+				taskQuestionIdToHighlight
+			);
+			setAllServiceLayoutData(modifiedResponse);
+			setFixedServiceLayoutData(response.data);
+			setOriginalServiceLayoutData(response.data);
+			setCounts({
+				zoneCount: response.data.zoneCount,
+				stageCount: response.data.stageCount,
+				taskCount: response.data.taskCount,
+			});
+			setPositions(storePositions(modifiedResponse));
+		} else {
+			reduxDispatch(showError("Could not fetch Service Layout Data"));
+		}
+	};
+
 	useEffect(() => {
 		fetchServiceLayoutData();
 	}, [fetchServiceLayoutData]);
@@ -648,6 +675,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				isOpen={openTaskDetails}
 				onClose={() => setOpenTaskDetails(false)}
 				rowId={taskId}
+				fetchFunction={reFetchServicelayout}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel

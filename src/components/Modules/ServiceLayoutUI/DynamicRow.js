@@ -18,7 +18,6 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 		}
 		setIsMore({ ...isMore, [id]: { show: true } });
 	};
-
 	useEffect(() => {
 		const taskElement = document.getElementById(
 			`highlightedTask_${rowData.parentId}`
@@ -28,6 +27,7 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 			taskElement.scrollIntoView({ behavior: "smooth", block: "center" });
 		}
 		if (rowData.expandedId) {
+			console.log("expanded");
 			setIsMore({ [rowData.expandedId]: { show: true } });
 		}
 	}, [rowData]);
@@ -58,92 +58,97 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 								isDragDisabled={!val.value.isDraggable}
 							>
 								{(provided2, snapshot) => (
-									<div
-										ref={provided2.innerRef}
-										{...provided2.draggableProps}
-										className="row__questions"
-									>
-										{isChild && i === rowData.value.length - 1 ? (
+									<>
+										{i === rowData.value.length - 1 ? (
 											<div className="sl-white-border"></div>
 										) : null}
-										<div className="row__main">
-											{isChild ? (
-												<span
-													style={{
-														width: "19px",
-														height: "2px",
-														background: "#307ad7",
-													}}
-												></span>
+										<div
+											ref={provided2.innerRef}
+											{...provided2.draggableProps}
+											className="row__questions"
+										>
+											{isChild && i === rowData.value.length - 1 ? (
+												<div className="sl-white-border"></div>
 											) : null}
-											<div className="row__questions__icon">
-												{/* {<val.value.Icon />} */}
-												<img
-													src={val.value.icon}
-													alt="icon"
-													style={{ width: "20px", height: "20px" }}
-												/>
-											</div>
-											{val?.children?.value?.length &&
-											!val.value.hideTaskQuestions ? (
-												<div
-													className="row__questions__moreicon"
-													onClick={() => showChildren(val.value.id)}
-												>
-													{isMore[val.value.id]?.show ? (
-														<RemoveCircleOutlineIcon style={style} />
-													) : (
-														<AddCircleOutlineOutlinedIcon style={style} />
-													)}
+											<div className="row__main">
+												{isChild ? (
+													<span
+														style={{
+															width: "19px",
+															height: "2px",
+															background: "#307ad7",
+														}}
+													></span>
+												) : null}
+												<div className="row__questions__icon">
+													{/* {<val.value.Icon />} */}
+													<img
+														src={val.value.icon}
+														alt="icon"
+														style={{ width: "20px", height: "20px" }}
+													/>
 												</div>
-											) : null}
+												{val?.children?.value?.length &&
+												!val.value.hideTaskQuestions ? (
+													<div
+														className="row__questions__moreicon"
+														onClick={() => showChildren(val.value.id)}
+													>
+														{isMore[val.value.id]?.show ? (
+															<RemoveCircleOutlineIcon style={style} />
+														) : (
+															<AddCircleOutlineOutlinedIcon style={style} />
+														)}
+													</div>
+												) : null}
 
-											<div
-												id={
-													val.value.highlightTask ||
-													val.value.highlightQuestion ||
-													val.value.highlightTaskQuestion
-														? `highlightedTask_${rowData.parentId}`
-														: ""
-												}
-												className={`row__questions__item ${
-													val.value.type === "task" ? "cursor link" : ""
-												} ${
-													val.value.highlightTask ||
-													val.value.highlightQuestion ||
-													val.value.highlightTaskQuestion
-														? "highlight"
-														: ""
-												}`}
-												onClick={
-													val.value.type === "task"
-														? () => onTaskClick(val.value.modelVersionTaskID)
-														: () => {}
-												}
-											>
-												{val.value.type === "task"
-													? `${val.value.actionName} / ${val.value.name}`
-													: val.value.name}
+												<div
+													id={
+														val.value.highlightTask ||
+														val.value.highlightQuestion ||
+														val.value.highlightTaskQuestion
+															? `highlightedTask_${rowData.parentId}`
+															: ""
+													}
+													className={`row__questions__item ${
+														val.value.type === "task" ? "cursor link" : ""
+													} ${
+														val.value.highlightTask ||
+														val.value.highlightQuestion ||
+														val.value.highlightTaskQuestion
+															? "highlight"
+															: ""
+													}`}
+													onClick={
+														val.value.type === "task"
+															? () => onTaskClick(val.value.modelVersionTaskID)
+															: () => {}
+													}
+												>
+													{val.value.type === "task"
+														? `${val.value.actionName} / ${val.value.name}`
+														: val.value.name}
+												</div>
+											</div>
+
+											<div className="row__main">
+												{val.value.type === "task" ? val.value.assetName : null}
+												<div
+													{...provided2.dragHandleProps}
+													style={{
+														opacity: val.value.isDraggable ? 1 : 0,
+														marginLeft: "10px",
+													}}
+												>
+													<img
+														src={reorder}
+														alt="icon"
+														style={{ width: "18px", height: "18px" }}
+													/>
+												</div>
 											</div>
 										</div>
-
-										<div className="row__main">
-											{val.value.type === "task" ? val.value.assetName : null}
-											<div
-												{...provided2.dragHandleProps}
-												style={{
-													opacity: val.value.isDraggable ? 1 : 0,
-													marginLeft: "10px",
-												}}
-											>
-												<img
-													src={reorder}
-													alt="icon"
-													style={{ width: "18px", height: "18px" }}
-												/>
-											</div>
-										</div>
-									</div>
+									</>
 								)}
 							</Draggable>
 							{isMore[val.value.id]?.show ? (

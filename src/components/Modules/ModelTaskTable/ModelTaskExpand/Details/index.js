@@ -61,7 +61,13 @@ const useStyles = makeStyles({
 	},
 });
 
-const TaskDetails = ({ taskInfo, access, isMounted }) => {
+const TaskDetails = ({
+	taskInfo,
+	access,
+	isMounted,
+	isFetching = false,
+	fetchFunction = () => {},
+}) => {
 	const classes = useStyles();
 
 	const [loading, setLoading] = useState(false);
@@ -266,6 +272,9 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 				if (rowDataCell) {
 					rowDataCell.innerHTML = value.name;
 				}
+				if (isFetching) {
+					await fetchFunction();
+				}
 			} else {
 				reduxDispatch(
 					showError(
@@ -342,6 +351,10 @@ const TaskDetails = ({ taskInfo, access, isMounted }) => {
 					} else {
 						dataCell.innerHTML = value;
 					}
+				}
+
+				if (isFetching) {
+					await fetchFunction();
 				}
 			} else {
 				reduxDispatch(

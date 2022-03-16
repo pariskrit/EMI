@@ -14,7 +14,7 @@ import "./style.css";
 
 const ADD = AddDialogStyle();
 
-function TaskDetailsPopup({ isOpen, onClose, rowId }) {
+function TaskDetailsPopup({ isOpen, onClose, rowId, fetchFunction }) {
 	const [isFetching, setIsFetching] = useState(false);
 	const [task, setTask] = useState({});
 	const dispatch = useDispatch();
@@ -61,7 +61,15 @@ function TaskDetailsPopup({ isOpen, onClose, rowId }) {
 			</ADD.ActionContainer>
 
 			<DialogContent className="detailContent">
-				{isFetching ? <CircularProgress /> : <TaskDetails taskInfo={task} />}
+				{isFetching ? (
+					<CircularProgress />
+				) : (
+					<TaskDetails
+						taskInfo={task}
+						isFetching
+						fetchFunction={fetchFunction}
+					/>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

@@ -70,7 +70,6 @@ export const modifyResponseData = (
 	let modifiedResponse = [];
 	let id = 1;
 	for (let property in changedData) {
-		console.log(questionIcon);
 		let sn = 0;
 		const isStages = property === "stages";
 		const field = {
