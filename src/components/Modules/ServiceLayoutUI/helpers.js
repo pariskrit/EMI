@@ -47,8 +47,21 @@ const findStageToExpand = (stages, taskId, questionId, taskQuestionId) => {
 				)
 			)
 		);
+
+		const taskQuestionInsideZone = stages.find((stage) =>
+			stage.zones.find((zone) =>
+				zone.tasks.find((task) =>
+					task.questions.some(
+						(question) => question.modelVersionTaskQuestionID === taskQuestionId
+					)
+				)
+			)
+		);
 		if (questionInsideTask) {
 			return questionInsideTask.modelVersionStageID;
+		}
+		if (taskQuestionInsideZone) {
+			return taskQuestionInsideZone.modelVersionStageID;
 		}
 	}
 
@@ -332,6 +345,14 @@ export const getDataType = (
 				(data.zones.find((zone) =>
 					zone.tasks.find((task) => task.modelVersionTaskID === taskId)
 				)?.modelVersionZoneID ||
+					data.zones.find((zone) =>
+						zone.tasks.find((task) =>
+							task.questions.some(
+								(question) =>
+									question.modelVersionTaskQuestionID === taskQuestionId
+							)
+						)
+					)?.modelVersionZoneID ||
 					data.tasks.find((task) =>
 						task.questions.some(
 							(question) =>
@@ -379,9 +400,18 @@ export const getDataType = (
 			marginLeft: 0,
 			taskIdToHighlight: taskId,
 			expandedId:
-				data.zones.find((zone) =>
+				(data.zones.find((zone) =>
 					zone.tasks.find((task) => task.modelVersionTaskID === taskId)
-				)?.modelVersionZoneID ?? null,
+				)?.modelVersionZoneID ||
+					data.zones.find((zone) =>
+						zone.tasks.find((task) =>
+							task.questions.some(
+								(question) =>
+									question.modelVersionTaskQuestionID === taskQuestionId
+							)
+						)
+					)?.modelVersionZoneID) ??
+				null,
 
 			arrayData: [
 				...data.questions.map((question) => {
