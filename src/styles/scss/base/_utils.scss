@@ -331,16 +331,25 @@
 }
 
 .sl-white-border {
-	background: #fff;
+	background: #fafafa;
 	height: 29px;
 	width: 2px;
 	position: absolute;
 	left: -2px;
 	top: 16px;
+	&.last-child-row {
+		left: -36px;
+		top: 0;
+		height: 100%;
+	}
 }
 
 .link:hover {
 	text-decoration: underline !important;
 	color: #307ad7 !important;
 	cursor: pointer;
+}
+
+.position-relative {
+	position: relative;
 }

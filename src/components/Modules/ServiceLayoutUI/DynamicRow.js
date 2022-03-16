@@ -48,6 +48,7 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 						marginLeft: rowData.marginLeft,
 						borderLeft: isChild ? "2px solid #307ad7" : null,
 					}}
+					className="position-relative"
 				>
 					{rowData?.value?.map((val, i) => (
 						<React.Fragment key={val.value.sn}>
@@ -59,8 +60,9 @@ function DynamicRow({ rowData, isChild = false, onTaskClick }) {
 							>
 								{(provided2, snapshot) => (
 									<>
-										{i === rowData.value.length - 1 ? (
-											<div className="sl-white-border"></div>
+										{i === rowData.value.length - 1 &&
+										rowData.value.length !== 1 ? (
+											<div className="sl-white-border last-child-row"></div>
 										) : null}
 										<div
 											ref={provided2.innerRef}

@@ -255,6 +255,7 @@ function DyanamicDropdown(props) {
 		if (dropdownExpandEl) {
 			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();
+			debugger;
 			dropdownExpandEl.style.top =
 				window.innerHeight - el?.getBoundingClientRect().bottom < 300
 					? `${
