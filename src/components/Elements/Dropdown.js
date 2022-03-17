@@ -127,8 +127,19 @@ function Dropdown(props) {
 					  }px`
 					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
-			if (window.innerWidth - el.getBoundingClientRect().right < 150) {
-				dropdownExpandEl.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
+			if (
+				parentEl.scrollWidth < dropdownExpandEl.scrollWidth &&
+				window.innerWidth - el.getBoundingClientRect().right < 150
+			) {
+				const isScrollbarActive =
+					document.body.scrollHeight > window.innerHeight;
+				dropdownExpandEl.style.right = `${
+					window.innerWidth -
+					dropdownPos.right +
+					(isScrollbarActive
+						? DROPDOWN_RIGHT_OFFSET / 2
+						: DROPDOWN_RIGHT_OFFSET)
+				}px`;
 			} else {
 				dropdownExpandEl.style.left = `${
 					dropdownPos.left + DROPDOWN_LEFT_OFFSET
