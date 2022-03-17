@@ -84,6 +84,7 @@ function DynamicRow({
 															width: "19px",
 															height: "2px",
 															background: "#307ad7",
+															marginLeft: "-1px",
 														}}
 													></span>
 												) : null}
