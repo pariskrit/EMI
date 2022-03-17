@@ -174,7 +174,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 		}
 
 		setIsLoading(false);
-	}, [modelId, reduxDispatch]);
+	}, [modelId, reduxDispatch, dispatch]);
 
 	useEffect(() => {
 		fetchModelIntervals();

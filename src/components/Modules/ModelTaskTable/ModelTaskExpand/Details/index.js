@@ -270,7 +270,7 @@ const TaskDetails = ({
 					?.querySelector(`#dataCell${actualName} > div`);
 
 				if (rowDataCell) {
-					rowDataCell.innerHTML = value.name;
+					rowDataCell.innerHTML = value.name || "";
 				}
 				if (isFetching) {
 					await fetchFunction();
@@ -286,7 +286,6 @@ const TaskDetails = ({
 				setLocalTaskInfo(taskInfo);
 			}
 		} catch (error) {
-			console.log("error", error);
 			setLocalTaskInfo(taskInfo);
 			reduxDispatch(
 				showError(

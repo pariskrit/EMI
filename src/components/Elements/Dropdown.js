@@ -24,10 +24,7 @@ function Dropdown(props) {
 		disabled = false,
 		isReadOnly = false,
 	} = props;
-	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
-	const [dropUpward, setDropUpward] = useState(true);
-	const [dropSideway, setDropSideway] = useState(true);
 
 	useEffect(() => {
 		setFilteredList(options);
@@ -186,9 +183,6 @@ function Dropdown(props) {
 				className={clsx({
 					"dropdown-expand": true,
 					//active: dropActive,
-					upward: dropUpward,
-					downward: !dropUpward,
-					rightSide: !dropSideway,
 				})}
 			>
 				<div className="search-box flex justify-between">
@@ -215,7 +209,6 @@ function Dropdown(props) {
 								key={list.value}
 								onClick={() => {
 									onChange(list);
-									setDropActive(false);
 									removeActiveDropdown();
 								}}
 							>
