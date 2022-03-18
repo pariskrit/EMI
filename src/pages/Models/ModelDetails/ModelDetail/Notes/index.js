@@ -154,7 +154,7 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 			/>
 
 			<AccordionBox
-				title={`Notes (${data.length})`}
+				title={`Notes (${notes.length})`}
 				isActionsPresent={isReadOnly ? false : true}
 				buttonName="Add Note"
 				buttonAction={onOpenAddDialog}

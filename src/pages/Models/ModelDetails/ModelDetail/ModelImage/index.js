@@ -67,7 +67,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 				handleDelete={handleDeleteImage}
 				isDeleting={isDeleting}
 			/>
-			<AccordionBox title="Model Image (1)">
+			<AccordionBox title={`Model Image (${image ? 1 : 0})`}>
 				<ImageUpload
 					imageUrl={image}
 					imageName=""
