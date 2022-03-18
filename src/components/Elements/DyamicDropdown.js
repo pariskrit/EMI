@@ -179,7 +179,7 @@ function DyanamicDropdown(props) {
 		window.addEventListener("scroll", handleWindowScroll);
 		return () => {
 			window.removeEventListener("click", handleOutsideClick);
-			window.removeEventListener("click", handleWindowScroll);
+			window.removeEventListener("scroll", handleWindowScroll);
 		};
 	}, [handleOutsideClick]);
 

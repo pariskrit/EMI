@@ -84,6 +84,7 @@ const ModelTaskTable = ({
 	handleCopyTaskQuestion,
 	customCaptions,
 	access,
+	totalTaskCount,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
@@ -135,6 +136,7 @@ const ModelTaskTable = ({
 				fetchData={fetchData}
 				isDuplicate={true}
 				customCaptions={customCaptions}
+				totalTaskCount={totalTaskCount}
 			/>
 			<Table aria-label="Table" className={classes.table}>
 				<AT.TableHead>

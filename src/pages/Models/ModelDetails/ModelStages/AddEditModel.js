@@ -26,7 +26,10 @@ const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
 
 // Yup validation schema
 const schema = yup.object({
-	name: yup.string("This field must be a string").required("Name is required"),
+	name: yup
+		.string("This field must be a string")
+		.max(50, "The field Name must be a string with a maximum length of 50")
+		.required("Name is required"),
 	hasZones: yup.bool(),
 	imageUrl: yup.string(),
 	image: yup

@@ -4,6 +4,10 @@ const questionSchema = (questionType, questionTiming) =>
 	yup.object().shape({
 		caption: yup
 			.string("This field must be a string")
+			.max(
+				255,
+				"The field Caption must be a string with a maximum length of 255"
+			)
 			.required("Caption is required"),
 		type: yup
 			.string("This field must be a string")

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -19,13 +19,17 @@ import { getSystems } from "services/clients/sites/siteApplications/systems";
 import { showError } from "redux/common/actions";
 import { getActions } from "services/clients/sites/siteApplications/actions";
 import { getModelRolesList } from "services/models/modelDetails/modelRoles";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 // Init styled components
 const ADD = AddDialogStyle();
 
 // Yup validation schema
 const schema = yup.object({
-	name: yup.string("This field must be a string").required("Name is required"),
+	name: yup
+		.string("This field must be a string")
+		.max(255, "The field Name must be a string with a maximum length of 255")
+		.required("Name is required"),
 	actionID: yup.string("This field must be string").nullable(),
 	operatingModeID: yup.string().nullable(),
 	systemID: yup.string().nullable(),
@@ -79,6 +83,7 @@ function AddNewModelTask({
 	fetchData,
 	isDuplicate = false,
 	customCaptions,
+	totalTaskCount,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -92,6 +97,8 @@ function AddNewModelTask({
 	const [systems, setSystems] = useState([]);
 	const [modelRoles, setModelRoles] = useState([]);
 	const [actions, setActions] = useState([]);
+
+	const [, Ctxdispatch] = useContext(ModelContext);
 
 	useEffect(() => {
 		if (open && !isDuplicate) {
@@ -138,7 +145,6 @@ function AddNewModelTask({
 						);
 					}
 				} catch (error) {
-					console.log("error ", error);
 					dispatch(showError(error?.response?.data));
 				} finally {
 					setIsUpdating(false);
@@ -190,6 +196,10 @@ function AddNewModelTask({
 				});
 				if (newData.status) {
 					setIsUpdating(false);
+					Ctxdispatch({
+						type: "TAB_COUNT",
+						payload: { countTab: "taskCount", data: totalTaskCount + 1 },
+					});
 					fetchData();
 					closeOverride();
 				} else {
@@ -262,6 +272,7 @@ function AddNewModelTask({
 								}}
 								variant="outlined"
 								fullWidth
+								disabled={isDuplicate}
 							/>
 						</ADD.LeftInputContainer>
 
@@ -276,6 +287,7 @@ function AddNewModelTask({
 								label=""
 								placeholder={`Select ${customCaptions?.actionRequired}`}
 								width="100%"
+								disabled={isDuplicate}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -291,6 +303,7 @@ function AddNewModelTask({
 								label=""
 								placeholder={`Select ${customCaptions?.operatingMode}`}
 								width="100%"
+								disabled={isDuplicate}
 							/>
 						</ADD.LeftInputContainer>
 
@@ -306,6 +319,7 @@ function AddNewModelTask({
 								label=""
 								placeholder={`Select ${customCaptions?.system}`}
 								width="100%"
+								disabled={isDuplicate}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -322,6 +336,7 @@ function AddNewModelTask({
 								label=""
 								placeholder={`Select ${customCaptions?.role}`}
 								width="100%"
+								disabled={isDuplicate}
 							/>
 						</ADD.LeftInputContainer>
 
@@ -348,6 +363,7 @@ function AddNewModelTask({
 										</InputAdornment>
 									),
 								}}
+								disabled={isDuplicate}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -362,6 +378,7 @@ function AddNewModelTask({
 											safetyCritical: !input.safetyCritical,
 										});
 									}}
+									disabled={isDuplicate}
 								/>
 								{customCaptions?.safetyCritical}?
 							</ADD.CheckboxLabel>

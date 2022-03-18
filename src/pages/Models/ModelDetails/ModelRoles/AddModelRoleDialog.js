@@ -21,7 +21,10 @@ const ADD = AddDialogStyle();
 
 // Yup validation schema
 const schema = yup.object({
-	name: yup.string().required("Role Name is required"),
+	name: yup
+		.string()
+		.max(100, "The field Name must be a string with a maximum length of 100")
+		.required("Role Name is required"),
 	roleID: yup
 		.string("Map to Service Role is Required")
 		.required("Map to Service Role is Required"),

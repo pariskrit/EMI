@@ -77,8 +77,8 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			modelVersionId,
 			showLoading = true,
 			search = "",
-			pageNumber = 1,
-			pageSize = 10,
+			pageNumber,
+			pageSize,
 			callCount = true
 		) => {
 			!isMounted.aborted && showLoading && setLoading(true);
@@ -145,7 +145,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[reduxDispatch, modelId]
+		[reduxDispatch, modelId, pageNumber, perPage]
 	);
 
 	useEffect(() => {
@@ -171,6 +171,10 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 					});
 					if (response.status) {
 						fetchData(modelId, false, searchTxt, pageNumber, perPage);
+						dispatch({
+							type: "TAB_COUNT",
+							payload: { countTab: "taskCount", data: totalTaskCount + 1 },
+						});
 					} else {
 						reduxDispatch(
 							showError(response?.data?.title || "something went wrong")
@@ -189,6 +193,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			};
 			pasteTask();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		state.showPasteTask,
 		modelId,
@@ -207,14 +212,10 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			else await fetchData(modelId, false, "", pageNumber, perPage, false);
 			setIsSearching(false);
 		}, 1500),
-		[]
+		[pageNumber]
 	);
 
 	const createModelTask = async (payload) => {
-		dispatch({
-			type: "TAB_COUNT",
-			payload: { countTab: "taskCount", data: totalTaskCount + 1 },
-		});
 		return await addModelTask({ ...payload, modelVersionID: modelId });
 	};
 
@@ -271,6 +272,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				pageSize={perPage}
 				pageNo={pageNumber}
 				customCaptions={customCaptions}
+				totalTaskCount={totalTaskCount}
 			/>
 			<DeleteDialog
 				entityName={`Model ${customCaptions?.task}`}
@@ -312,6 +314,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				pageNo={pageNumber}
 				customCaptions={customCaptions}
 				access={access}
+				totalTaskCount={totalTaskCount}
 			/>
 			{searchTxt === "" && (
 				<TablePagination

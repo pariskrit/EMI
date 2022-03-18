@@ -119,8 +119,8 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		if (!e.destination) {
 			return;
 		}
-
 		if (e.destination.index === e.source.index) return;
+
 		const result = [...images.data];
 		const [removed] = result.splice(e.source.index, 1);
 		result.splice(e.destination.index, 0, removed);
@@ -160,11 +160,19 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 			const updatedData = images.data.map((x) =>
 				x.id === images.imageId ? { ...x, description: data } : x
 			);
-			setImage({ data: updatedData });
+			setImage((prev) => ({
+				...prev,
+				data: updatedData,
+				originalData: updatedData,
+			}));
 		} else {
 			const mainData = [...images.data];
 			mainData.push(apiResponse(data));
-			setState({ count: images.count + 1, data: mainData });
+			setState({
+				count: images.count + 1,
+				data: mainData,
+				originalData: mainData,
+			});
 			CtxDispatch({
 				type: "TAB_COUNT",
 				payload: {
