@@ -33,6 +33,7 @@ function Departments({
 }) {
 	const classes = useStyles();
 	const [tickInputLists, setTickInputLists] = useState([]);
+	const [isDisabled, setIsDisabled] = useState({});
 	const dispatch = useDispatch();
 
 	const onTickInputClick = async (data) => {
@@ -42,14 +43,7 @@ function Departments({
 
 		let prevData = [...tickInputLists];
 
-		setTickInputLists([
-			...tickInputLists.map((input) =>
-				input.id === data.id
-					? { ...input, checked: input.checked ? false : true }
-					: input
-			),
-		]);
-
+		setIsDisabled({ [data.id]: true });
 		let response = data.checked
 			? await deleteModelDepartment(data.deleteId)
 			: await addModelDepartment({
@@ -61,7 +55,21 @@ function Departments({
 			setTickInputLists(prevData);
 
 			dispatch(showError(response.data || "Could not check input box"));
+		} else {
+			setTickInputLists([
+				...tickInputLists.map((input) =>
+					input.id === data.id
+						? {
+								...input,
+								checked: input.checked ? false : true,
+								deleteId: data.checked ? input.deleteId : response.data,
+						  }
+						: input
+				),
+			]);
 		}
+
+		setIsDisabled({});
 	};
 
 	useEffect(() => {
@@ -94,6 +102,7 @@ function Departments({
 						key={detail.id}
 						state={detail}
 						handleCheck={onTickInputClick}
+						isDisabled={isDisabled[detail.id]}
 					/>
 				))}
 			</div>

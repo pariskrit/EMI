@@ -12,6 +12,8 @@ function Settings({ data, customCaptions, isReadOnly }) {
 	const dispatch = useDispatch();
 
 	const [inputDetails, setInputDetails] = useState([]);
+	const [isDisabled, setIsDisabled] = useState({});
+
 	const { id } = useParams();
 	const labels = useMemo(
 		() => ({
@@ -29,6 +31,14 @@ function Settings({ data, customCaptions, isReadOnly }) {
 		}
 
 		const prevData = [...inputDetails];
+		setIsDisabled({ [data.id]: true });
+		const response = await updateModel(id, [
+			{
+				op: "replace",
+				path: data.name,
+				value: data.checked ? false : true,
+			},
+		]);
 		setInputDetails([
 			...inputDetails.map((input) =>
 				input.name === data.name
@@ -40,18 +50,12 @@ function Settings({ data, customCaptions, isReadOnly }) {
 			),
 		]);
 
-		const response = await updateModel(id, [
-			{
-				op: "replace",
-				path: data.name,
-				value: data.checked ? false : true,
-			},
-		]);
-
 		if (!response.status) {
 			setInputDetails(prevData);
 			dispatch(showError(response.data || "Could Not Update Model Status"));
 		}
+
+		setIsDisabled({ [data.id]: false });
 	};
 
 	useEffect(() => {
@@ -64,7 +68,6 @@ function Settings({ data, customCaptions, isReadOnly }) {
 			setInputDetails(tickInputLists);
 		}
 	}, [data, labels, inputDetails.length]);
-
 	return (
 		<AccordionBox title="Settings">
 			<div>
@@ -73,6 +76,7 @@ function Settings({ data, customCaptions, isReadOnly }) {
 						key={detail.id}
 						state={detail}
 						handleCheck={onTickInputClick}
+						isDisabled={isDisabled[detail.id]}
 					/>
 				))}
 			</div>
