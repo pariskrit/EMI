@@ -20,7 +20,8 @@ const APD = PauseDialogStyle();
 const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
-		.required("This field is required"),
+		.required("This field is required")
+		.max(50, "The field Name must be a string with a maximum length of 50."),
 	allCategories: yup.array("This field must be an array"),
 	autoIncludeIntervals: yup.array("This field must be an array"),
 });
