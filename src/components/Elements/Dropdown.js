@@ -24,10 +24,7 @@ function Dropdown(props) {
 		disabled = false,
 		isReadOnly = false,
 	} = props;
-	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
-	const [dropUpward, setDropUpward] = useState(true);
-	const [dropSideway, setDropSideway] = useState(true);
 
 	useEffect(() => {
 		setFilteredList(options);
@@ -130,8 +127,19 @@ function Dropdown(props) {
 					  }px`
 					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
-			if (window.innerWidth - el.getBoundingClientRect().right < 150) {
-				dropdownExpandEl.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
+			if (
+				parentEl.scrollWidth < dropdownExpandEl.scrollWidth &&
+				window.innerWidth - el.getBoundingClientRect().right < 150
+			) {
+				const isScrollbarActive =
+					document.body.scrollHeight > window.innerHeight;
+				dropdownExpandEl.style.right = `${
+					window.innerWidth -
+					dropdownPos.right +
+					(isScrollbarActive
+						? DROPDOWN_RIGHT_OFFSET / 2
+						: DROPDOWN_RIGHT_OFFSET)
+				}px`;
 			} else {
 				dropdownExpandEl.style.left = `${
 					dropdownPos.left + DROPDOWN_LEFT_OFFSET
@@ -186,9 +194,6 @@ function Dropdown(props) {
 				className={clsx({
 					"dropdown-expand": true,
 					//active: dropActive,
-					upward: dropUpward,
-					downward: !dropUpward,
-					rightSide: !dropSideway,
 				})}
 			>
 				<div className="search-box flex justify-between">
@@ -215,7 +220,6 @@ function Dropdown(props) {
 								key={list.value}
 								onClick={() => {
 									onChange(list);
-									setDropActive(false);
 									removeActiveDropdown();
 								}}
 							>

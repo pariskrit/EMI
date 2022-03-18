@@ -117,8 +117,6 @@ function DyanamicDropdown(props) {
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
-	const [dropUpward, setDropUpward] = useState(true);
-	const [dropSideway, setDropSideway] = useState(true);
 	const [searchtext, setsearchText] = useState("");
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dropdownlistner, setdropdownlistner] = useState(window);
@@ -158,8 +156,10 @@ function DyanamicDropdown(props) {
 				window.innerWidth - specifiedElement.getBoundingClientRect().right <
 				150
 			) {
+				specifiedElement.style.left = "unset";
 				specifiedElement.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
 			} else {
+				specifiedElement.style.right = "unset";
 				specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
 			}
 
@@ -278,16 +278,23 @@ function DyanamicDropdown(props) {
 					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
 			if (
-				window.innerWidth - dropdownExpandEl.getBoundingClientRect().right <
-				150
+				parentEl.scrollWidth < dropdownExpandEl.scrollWidth &&
+				window.innerWidth - el.getBoundingClientRect().right < 150
 			) {
+				const isScrollbarActive =
+					document.body.scrollHeight > window.innerHeight;
 				dropdownExpandEl.style.right = `${
-					dropdownExpandEl.scrollWidth + DROPDOWN_RIGHT_OFFSET
+					window.innerWidth -
+					dropdownPos.right +
+					(isScrollbarActive
+						? DROPDOWN_RIGHT_OFFSET / 2
+						: DROPDOWN_RIGHT_OFFSET)
 				}px`;
 			} else {
 				dropdownExpandEl.style.left = `${
 					dropdownPos.left + DROPDOWN_LEFT_OFFSET
 				}px`;
+				dropdownExpandEl.style.right = "unset";
 			}
 
 			dropdownExpandEl.style.position = "fixed";
@@ -392,10 +399,6 @@ function DyanamicDropdown(props) {
 				className={clsx({
 					"dropdown-expand": true,
 					// active: dropActive,
-					upward: dropUpward,
-					downward: !dropUpward,
-					rightSide: !dropSideway,
-					leftSide: dropSideway,
 				})}
 			>
 				<div className="search-box flex justify-between">

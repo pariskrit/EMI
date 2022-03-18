@@ -58,7 +58,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
 	const [isSearching, setIsSearching] = useState(false);
-
 	const [enablePasteTask, setPasteTask] = useState(false);
 
 	const reduxDispatch = useDispatch();
@@ -247,9 +246,9 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 
 	const handlePageChange = async (page) => {
 		setPageNumber(page);
-		setIsSearching(false);
-		await fetchData(modelId, false, "", page, perPage, false);
 		setIsSearching(true);
+		await fetchData(modelId, false, "", page, perPage, false);
+		setIsSearching(false);
 	};
 
 	if (isLoading) return <CircularProgress />;

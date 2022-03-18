@@ -73,7 +73,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 		setData(d);
 		dispatch({
 			type: "TAB_COUNT",
-			payload: { countTab: "stageCount", data: d },
+			payload: { countTab: "stageCount", data: d.length },
 		});
 	};
 
