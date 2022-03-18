@@ -84,7 +84,9 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const handleComplete = (response) => {
 		const res = {
 			...response,
-			image: <img src={response.imageURL} alt="" style={{ width: "20%" }} />,
+			image: (
+				<TabelRowImage imageURL={response.imageURL} imageWrapperHeight="50px" />
+			),
 			hasZones: response.hasZones === true ? "Yes" : "",
 		};
 		// if Edit Mode
@@ -186,7 +188,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 					<DetailsPanel
 						header={`Model ${stagePlural}`}
 						dataCount={data.length}
-						description="Stages managed to this asset model"
+						description={`${stagePlural} managed to this asset model`}
 					/>
 				</div>
 

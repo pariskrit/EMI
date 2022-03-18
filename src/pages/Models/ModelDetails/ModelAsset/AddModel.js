@@ -14,6 +14,7 @@ import AddDialogStyle from "styles/application/AddDialogStyle";
 import { postModelAsset } from "services/models/modelDetails/modelAsset";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
+import { handleSort } from "helpers/utils";
 
 const ADD = AddDialogStyle();
 
@@ -169,6 +170,7 @@ const AddModel = ({
 						]}
 						selectdValueToshow="name"
 						count={count}
+						handleSort={handleSort}
 					/>
 
 					<FormGroup>
