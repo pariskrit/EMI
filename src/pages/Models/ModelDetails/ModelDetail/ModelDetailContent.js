@@ -130,8 +130,13 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 	]);
 
 	useEffect(() => {
-		fetchAllData();
-	}, [fetchAllData]);
+		if (
+			Object.keys(modelDetailsData).every(
+				(prop) => modelDetailsData[prop].length === 0
+			)
+		)
+			fetchAllData();
+	}, [fetchAllData, modelDetailsData]);
 
 	if (isLoading) {
 		return <CircularProgress />;

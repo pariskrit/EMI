@@ -77,6 +77,10 @@ function ChangeStatusPopup({ open, onClose }) {
 		if (open) {
 			fetchModelStatuses();
 		}
+
+		if (!open) {
+			setSelectedModelStatus({});
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 

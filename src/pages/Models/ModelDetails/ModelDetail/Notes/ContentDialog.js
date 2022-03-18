@@ -33,16 +33,22 @@ function ContentDialog({ open, onClose, note }) {
 			aria-describedby="alert-dialog-description"
 		>
 			<div className={classes.dialogContainer}>
-				<ADD.ActionContainer>
+				<div style={{ display: "flex" }}>
 					<DialogTitle id="alert-dialog-title">
 						{<ADD.HeaderText>Note</ADD.HeaderText>}
 					</DialogTitle>
-				</ADD.ActionContainer>
+					<ADD.ButtonContainer>
+						<ADD.CancelButton onClick={onClose} variant="contained">
+							Cancel
+						</ADD.CancelButton>
+					</ADD.ButtonContainer>
+				</div>
 				<DialogContent className={classes.dialogContent}>
 					<TextField
 						value={note}
 						variant="outlined"
 						fullWidth
+						multiline
 						InputProps={{
 							classes: {
 								input: classes.inputText,

@@ -79,7 +79,7 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 				handleDelete={handleDelete}
 				isDeleting={isDeleting}
 			/>
-			<AccordionBox title={`Model documents (2)`}>
+			<AccordionBox title={`Model documents (${listOfDocuments.length})`}>
 				<div className={classes.logoContentParent}>
 					<Table>
 						<TableHead className={classes.tableHead}>

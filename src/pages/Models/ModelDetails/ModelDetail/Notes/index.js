@@ -91,9 +91,9 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 		const response = await deleteModelNotes(id);
 
 		if (response.status) {
-			await fetchNotes();
+			setNotes([...notes.filter((note) => note.id !== id)]);
 		} else {
-			dispatch(showError(response.data.error || "Could not delete note"));
+			dispatch(showError(response?.data?.error || "Could not delete note"));
 		}
 
 		setIsDeleting(false);
@@ -132,7 +132,6 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 			setNotes(data);
 		}
 	}, [data, notes]);
-
 	return (
 		<div className={classes.noteContainer}>
 			<ContentDialog
@@ -154,7 +153,7 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 			/>
 
 			<AccordionBox
-				title={`Notes (${data.length})`}
+				title={`Notes (${notes.length})`}
 				isActionsPresent={isReadOnly ? false : true}
 				buttonName="Add Note"
 				buttonAction={onOpenAddDialog}

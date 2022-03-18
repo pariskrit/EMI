@@ -65,6 +65,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	const [taskId, setTaskId] = useState(null);
 	const reduxDispatch = useDispatch();
 	const [positions, setPositions] = useState([]);
+	const [emptyIsmore, setEmptyIsmore] = useState(false);
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -77,6 +78,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		if (Object.values(list).length === 0) {
 			return;
 		}
+		setEmptyIsmore(true);
 		setIsLoading({ ...loading, dropdown: true });
 
 		let response = null;
@@ -209,11 +211,13 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				stageCount: fixedServiceLayoutData.stageCount,
 				taskCount: fixedServiceLayoutData.taskCount,
 			});
+
 			setOriginalServiceLayoutData(fixedServiceLayoutData);
 		}
 
 		setAllServiceLayoutData(modifiedResponse);
 		setPositions(storePositions(modifiedResponse));
+		setEmptyIsmore(true);
 		setIsLoading({ ...loading, dropdown: false });
 	};
 	// handle dragging of zone
@@ -754,6 +758,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 									setTaskId(id);
 								}}
 								isDragDisabled={isReadOnly}
+								emptyIsmore={emptyIsmore}
 							/>
 						))}
 					</DragDropContext>
