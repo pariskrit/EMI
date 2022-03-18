@@ -91,7 +91,7 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 		const response = await deleteModelNotes(id);
 
 		if (response.status) {
-			await fetchNotes();
+			setNotes([...notes.filter((note) => note.id !== id)]);
 		} else {
 			dispatch(showError(response?.data?.error || "Could not delete note"));
 		}
@@ -132,7 +132,6 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 			setNotes(data);
 		}
 	}, [data, notes]);
-
 	return (
 		<div className={classes.noteContainer}>
 			<ContentDialog
