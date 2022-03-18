@@ -19,9 +19,14 @@ const NoteRow = ({ row, classes, onDeleteNote, disabled, onViewNote }) => {
 		<TableRow>
 			<TableCell>{row?.name}</TableCell>
 			<TableCell>{changeDate(row.date)}</TableCell>
-			<TableCell className="note-field" style={{ whiteSpace: "unset" }}>
+			<TableCell
+				className="note-field"
+				style={{ whiteSpace: "unset", maxWidth: "400px" }}
+			>
 				<HtmlTooltip title={row.note}>
-					<p className="max-two-line">{row.note}</p>
+					<p className="max-two-line" style={{ width: "100%" }}>
+						{row.note}
+					</p>
 				</HtmlTooltip>
 			</TableCell>
 			<TableCell>

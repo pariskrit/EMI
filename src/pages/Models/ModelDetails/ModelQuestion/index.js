@@ -136,6 +136,7 @@ const ModelQuestion = ({
 				setDuplicating(true);
 				try {
 					const questionText = await navigator.clipboard.readText();
+
 					const question = JSON.parse(questionText);
 
 					let result = await pasteModelQuestions(modelId, {
@@ -143,8 +144,7 @@ const ModelQuestion = ({
 					});
 
 					if (result.status) {
-						if (!isMounted.aborted)
-							setData((th) => [...th, { ...question, id: result.data }]);
+						if (!isMounted.aborted) await fetchQuestions();
 					} else {
 						if (result.data.detail) getError(result.data.detail);
 						else getError("Something went wrong");
@@ -154,6 +154,7 @@ const ModelQuestion = ({
 				} finally {
 					if (!isMounted.aborted) {
 						dispatch({ type: "DISABLE_PASTE_TASK", payload: true });
+						dispatch({ type: "TOGGLE_PASTE_TASK", payload: false });
 						setDuplicating(false);
 					}
 				}
@@ -232,13 +233,11 @@ const ModelQuestion = ({
 	//Handle Duplicate Question
 	const handleDuplicate = async (id) => {
 		setDuplicating(true);
-		const duplicatedData = data.find((x) => x.id === id);
 		try {
 			let result = await duplicateModelQuestions(id);
 			if (result.status) {
 				if (!isMounted.aborted) {
-					const finalData = { ...duplicatedData, id: result.data };
-					setData((th) => [...th, finalData]);
+					await fetchQuestions();
 					triggerRef.current.scrollIntoView({
 						behavior: "smooth",
 						block: "end",
