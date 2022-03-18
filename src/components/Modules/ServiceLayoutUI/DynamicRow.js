@@ -14,6 +14,7 @@ function DynamicRow({
 	onTaskClick,
 	isDragDisabled,
 	isLastDroppable = false,
+	emptyIsmore = false,
 }) {
 	const [isMore, setIsMore] = useState({});
 
@@ -33,10 +34,13 @@ function DynamicRow({
 			taskElement.scrollIntoView({ behavior: "smooth", block: "center" });
 		}
 		if (rowData.expandedId) {
-			console.log("expanded");
 			setIsMore({ [rowData.expandedId]: { show: true } });
 		}
-	}, [rowData]);
+
+		if (emptyIsmore) {
+			setIsMore({});
+		}
+	}, [rowData, emptyIsmore]);
 	return (
 		<Droppable
 			droppableId={
@@ -166,6 +170,7 @@ function DynamicRow({
 									onTaskClick={onTaskClick}
 									isDragDisabled={isDragDisabled}
 									isLastDroppable={i === rowData.value.length - 1}
+									emptyIsmore={emptyIsmore}
 								/>
 							) : null}
 						</React.Fragment>
