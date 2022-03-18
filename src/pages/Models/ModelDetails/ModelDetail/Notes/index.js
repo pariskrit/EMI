@@ -93,7 +93,7 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 		if (response.status) {
 			await fetchNotes();
 		} else {
-			dispatch(showError(response.data.error || "Could not delete note"));
+			dispatch(showError(response?.data?.error || "Could not delete note"));
 		}
 
 		setIsDeleting(false);

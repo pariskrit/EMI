@@ -18,6 +18,7 @@ const inputDetails = [
 function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 	const { id } = useParams();
 	const [details, setDetails] = useState([]);
+	const [oldDetails, setOldDetails] = useState([]);
 	const [apiStatus, setApiStatus] = useState({});
 	const [isInputChanged, setInputChanged] = useState(false);
 	const [selectedDropdownInput, setSelectedDropdownInput] = useState({});
@@ -52,6 +53,9 @@ function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 			dispatch(
 				showError(response.data.detail || "Error: Could not update input")
 			);
+			setDetails(oldDetails);
+		} else {
+			setOldDetails(details);
 		}
 
 		setApiStatus({ ...apiStatus, [inputName]: "idle" });
@@ -109,6 +113,7 @@ function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 			const { details, modelTypes } = data;
 			const inputProps = modifyApiData(details, modelTypes);
 			setDetails(inputProps);
+			setOldDetails(inputProps);
 
 			setSelectedDropdownInput({
 				modelTypeID: {
