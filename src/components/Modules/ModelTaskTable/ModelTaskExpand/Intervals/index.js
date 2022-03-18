@@ -14,6 +14,7 @@ import { TaskContext } from "contexts/TaskDetailContext";
 const Intervals = ({ taskId, access, isMounted }) => {
 	const [intervals, setIntervals] = useState([]);
 	const [isLoading, setIsloading] = useState(true);
+	const [isDisabled, setIsDisabled] = useState(false);
 	const dispatch = useDispatch();
 	const [, CtxDispatch] = useContext(TaskContext);
 
@@ -35,7 +36,7 @@ const Intervals = ({ taskId, access, isMounted }) => {
 		]);
 
 		let response = null;
-
+		setIsDisabled(true);
 		if (checked) {
 			response = await checkSelected({
 				modelVersionTaskID: taskId,
@@ -81,6 +82,8 @@ const Intervals = ({ taskId, access, isMounted }) => {
 			setIntervals(tempIntervals);
 			dispatch(showError("Could not update"));
 		}
+
+		setIsDisabled(false);
 	};
 
 	const fetchModelTaskIntervals = useCallback(async () => {
@@ -115,6 +118,7 @@ const Intervals = ({ taskId, access, isMounted }) => {
 				data={intervals}
 				loading={isLoading}
 				handleIntervalCheckbox={handleIntervalCheckbox}
+				isDisabled={isDisabled}
 			/>
 		</div>
 	);

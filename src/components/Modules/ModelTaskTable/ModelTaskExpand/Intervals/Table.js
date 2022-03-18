@@ -42,7 +42,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function IntervalTable({ data = [], handleIntervalCheckbox }) {
+function IntervalTable({ data = [], handleIntervalCheckbox, isDisabled }) {
 	const classes = useStyles();
 
 	return (
@@ -82,6 +82,7 @@ function IntervalTable({ data = [], handleIntervalCheckbox }) {
 												row.id
 											)
 										}
+										disabled={isDisabled}
 									/>
 								</TableCell>
 								<TableCell>{row.name}</TableCell>
