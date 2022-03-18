@@ -20,10 +20,22 @@ import DynamicDropdown from "components/Elements/DyamicDropdown";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { DialogContent, Grid } from "@material-ui/core";
+import * as yup from "yup";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 // Init styled components
 const ADD = AddDialogStyle();
 const APD = PauseDialogStyle();
+
+// Yup validation schema
+const schema = yup.object({
+	name: yup
+		.string("This field must be a string")
+		.required("This field is required")
+		.max(100, "The field Name must be a string with a maximum length of 100."),
+	allCategories: yup.array("This field must be an array"),
+	autoIncludeIntervals: yup.array("This field must be an array"),
+});
 
 // Default state schemas
 const defaultErrorSchema = { name: null };
@@ -111,6 +123,8 @@ const EditDialog = ({
 			fetchModelIntervals();
 		}
 		setIsUpdating(false);
+
+		closeOverride();
 	};
 
 	const onNewSubCategoryFieldHide = () => {
@@ -200,19 +214,30 @@ const EditDialog = ({
 		if (!input.isNameChanged) {
 			return;
 		}
-		setIsUpdating(true);
-		const response = await updateModelIntervals(intervalId, [
-			{ path: "name", op: "replace", value: input.name },
-		]);
+		const localChecker = await handleValidateObj(schema, {
+			name: input.name,
+			allCategories: input.allCategories,
+			autoIncludeIntervals: input.autoIncludeIntervals,
+		});
+		// Attempting API call if no local validaton errors
+		if (!localChecker.some((el) => el.valid === false)) {
+			setIsUpdating(true);
+			const response = await updateModelIntervals(intervalId, [
+				{ path: "name", op: "replace", value: input.name },
+			]);
 
-		if (!response.status) {
-			dispatch(showError(response.data.detail || "Could not update name"));
+			if (!response.status) {
+				dispatch(showError(response.data.detail || "Could not update name"));
+			} else {
+				setInput({ ...input, isNameChanged: false });
+				fetchModelIntervals();
+			}
+
+			setIsUpdating(false);
 		} else {
-			setInput({ ...input, isNameChanged: false });
-			fetchModelIntervals();
+			const newErrors = generateErrorState(localChecker);
+			setErrors({ ...errors, ...newErrors });
 		}
-
-		setIsUpdating(false);
 	};
 
 	const fetchModelIntervalsToEdit = useCallback(async () => {

@@ -51,7 +51,11 @@ function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 
 		if (!response.status) {
 			dispatch(
-				showError(response.data.detail || "Error: Could not update input")
+				showError(
+					response.data.detail ||
+						response.data.errors.name[0] ||
+						"Error: Could not update input"
+				)
 			);
 			setDetails(oldDetails);
 		} else {
