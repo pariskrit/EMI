@@ -38,9 +38,9 @@ function ContentDialog({ open, onClose, note }) {
 						{<ADD.HeaderText>Note</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={onClose} variant="contained">
-							Cancel
-						</ADD.CancelButton>
+						<ADD.ConfirmButton onClick={onClose} variant="contained">
+							Close
+						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</div>
 				<DialogContent className={classes.dialogContent}>

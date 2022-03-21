@@ -88,6 +88,7 @@ const ModelWrapper = ({
 					]}
 					hideLastLogin
 					state={state}
+					hideVersion={false}
 				/>
 				<div
 					className={

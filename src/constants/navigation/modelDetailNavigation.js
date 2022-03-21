@@ -50,7 +50,7 @@ const ModelDetailNavigation = (id, detail, customCaptions) => {
 			url: links + modelTask,
 		},
 		{
-			name: `${customCaptions?.service}`,
+			name: `${customCaptions?.service} Layout`,
 			url: links + modelServiceLayout,
 		},
 	];

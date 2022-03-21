@@ -39,6 +39,7 @@ const NavDetails = ({
 	status,
 	history,
 	hideLastLogin,
+	hideVersion,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -48,7 +49,6 @@ const NavDetails = ({
 	const DefaultSeparator = () => {
 		return <span className={classes.crumbText}>{">"}</span>;
 	};
-	console.log(state);
 	return (
 		<div>
 			<Breadcrumbs aria-label="breadcrumb" separator={<DefaultSeparator />}>
@@ -112,8 +112,8 @@ const NavDetails = ({
 				{history && (
 					<SaveHistory
 						hideLastLogin={hideLastLogin}
-						versionNumber={state.version}
-						hideVersion={false}
+						versionNumber={state?.version}
+						hideVersion={hideVersion}
 					/>
 				)}
 			</div>
