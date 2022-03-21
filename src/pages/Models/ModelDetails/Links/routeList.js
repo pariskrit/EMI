@@ -121,7 +121,7 @@ const routeList = (detail, customCaptions) => [
 	{
 		id: 9,
 		ModelName: "Service Layout",
-		name: "Service Layout",
+		name: `${customCaptions?.service} Layout`,
 		path: modelServiceLayout,
 		component: ModelServiceLayout,
 		showSave: false,
