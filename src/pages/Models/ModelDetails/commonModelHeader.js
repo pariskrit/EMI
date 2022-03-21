@@ -47,6 +47,7 @@ const useStyles = makeStyles({
 });
 
 const ModelWrapper = ({
+	state,
 	lastSaved,
 	onClickAdd,
 	showAdd,
@@ -85,6 +86,8 @@ const ModelWrapper = ({
 						{ id: 1, name: "Models", url: modelsPath },
 						{ id: 2, name: modelDetail?.modelDetail?.name },
 					]}
+					hideLastLogin
+					state={state}
 				/>
 				<div
 					className={
