@@ -370,6 +370,7 @@ export const getDataType = (
 						icon: icons["tasks"],
 						type: "task",
 						isDraggable: true,
+						sn,
 						hideTaskQuestions,
 						highlightTask: task.modelVersionTaskID === taskId,
 						grandParentId:

@@ -312,7 +312,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				)
 			);
 
-			reduxDispatch(showError(response.data.detail || "Failed"));
+			reduxDispatch(showError(response?.data?.detail || "Failed"));
 		}
 	};
 	const onDragEnd = async (result) => {
