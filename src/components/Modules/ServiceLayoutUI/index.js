@@ -83,7 +83,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		if (Object.values(list).length === 0) {
 			return;
 		}
-		setEmptyIsmore(true);
 		setIsLoading({ ...loading, dropdown: true });
 
 		let response = null;
@@ -529,7 +528,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					(data) => data.value.id === parentId
 				);
 			}
-
 			updateTree(
 				result,
 				parentId
@@ -680,6 +678,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	}
 
 	const isReadOnly = access === "R";
+
 	return (
 		<>
 			<TaskDetailsPopup

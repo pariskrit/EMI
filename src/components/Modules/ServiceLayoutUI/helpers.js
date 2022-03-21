@@ -534,7 +534,8 @@ export const getDataType = (
 							question.modelVersionQuestionID === questionId ||
 							question.modelVersionTaskQuestionID === taskQuestionId,
 
-						grandParentId: data.grandParentId ?? null,
+						grandParentId:
+							data.modelVersionStageID || data.grandParentId || null,
 						parentId: data.parentId ?? data?.id ?? null,
 						childId: data.parentId ? data?.id : null,
 					};
