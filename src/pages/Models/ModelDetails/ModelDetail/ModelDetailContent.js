@@ -58,7 +58,14 @@ const useStyles = makeStyles((theme) => ({
 function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 	const classes = useStyles();
 	const [isLoading, setIsLoading] = useState(true);
-	const [modelDetailsData, setModelDetailsData] = useState({});
+	const [modelDetailsData, setModelDetailsData] = useState({
+		modelDepartments: [],
+		modelNotes: [],
+		modelDocuments: [],
+		modelTypes: [],
+		detailDepartments: [],
+		details: [],
+	});
 	const { position, customCaptions } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -97,14 +104,6 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 
 		if (isResponseError) {
 			reduxDispatch(showError("Error: Could not fetch model details"));
-			setModelDetailsData({
-				modelDepartments: [],
-				modelNotes: [],
-				modelDocuments: [],
-				modelTypes: [],
-				detailDepartments: [],
-				details: [],
-			});
 		} else {
 			if (!isMounted.aborted) {
 				const changedDocuments = await changeDocumentUrl(res[2].data);
