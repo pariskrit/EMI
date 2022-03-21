@@ -24,6 +24,7 @@ function TextFieldContainer({
 	isFetching = false,
 	isDisabled = false,
 	onKeyDown,
+	isRequired = true,
 }) {
 	const classes = useStyles();
 
@@ -31,7 +32,7 @@ function TextFieldContainer({
 		<div className={className} style={{ width: "100%", marginBottom: "14px" }}>
 			<Typography className={classes.labelText}>
 				{label}
-				<span style={{ color: "#E31212" }}>*</span>
+				{isRequired ? <span style={{ color: "#E31212" }}>*</span> : null}
 			</Typography>
 			<TextField
 				name={name}
