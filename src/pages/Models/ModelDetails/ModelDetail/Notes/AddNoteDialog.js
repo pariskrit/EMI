@@ -87,7 +87,11 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 					{<ADD.HeaderText>Add Note</ADD.HeaderText>}
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={closeOverride} variant="contained">
+					<ADD.CancelButton
+						onClick={closeOverride}
+						variant="contained"
+						style={{ width: "auto" }}
+					>
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton
