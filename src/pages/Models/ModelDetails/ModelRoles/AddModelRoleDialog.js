@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -217,6 +217,7 @@ function AddNewModelRole({
 								variant="outlined"
 								fullWidth
 								autoFocus
+								id="roleName"
 							/>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
@@ -234,6 +235,7 @@ function AddNewModelRole({
 										setInput((prev) => ({ ...prev, roleID: e }));
 										if (input.name === "") {
 											setInput((prev) => ({ ...prev, name: e?.label }));
+											document.getElementById("roleName").focus();
 										}
 									}}
 									label=""
