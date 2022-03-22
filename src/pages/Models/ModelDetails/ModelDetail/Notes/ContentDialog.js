@@ -38,7 +38,11 @@ function ContentDialog({ open, onClose, note }) {
 						{<ADD.HeaderText>Note</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.ConfirmButton onClick={onClose} variant="contained">
+						<ADD.ConfirmButton
+							onClick={onClose}
+							variant="contained"
+							style={{ width: "105px" }}
+						>
 							Close
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
