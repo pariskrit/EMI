@@ -93,7 +93,7 @@ function Departments({
 			<div className={classes.contentContainer}>
 				<p className={classes.italic}>
 					<em>
-						Bill Thompson has access to Services of the following{" "}
+						Services can be registered for the following{" "}
 						{pluralDepartmentsTitle}
 					</em>
 				</p>

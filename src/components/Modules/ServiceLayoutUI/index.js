@@ -56,6 +56,11 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	const [selectedInterval, setSelectedInterval] = useState({});
 	const [loading, setIsLoading] = useState({ dropdown: false, all: true });
 	const [hideTaskQuestions, setHideTaskQuestions] = useState(false);
+	const {
+		customCaptions: { service },
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 	const [counts, setCounts] = useState({
 		stageCount: 0,
 		taskCount: 0,
@@ -78,7 +83,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		if (Object.values(list).length === 0) {
 			return;
 		}
-		setEmptyIsmore(true);
 		setIsLoading({ ...loading, dropdown: true });
 
 		let response = null;
@@ -308,7 +312,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				)
 			);
 
-			reduxDispatch(showError(response.data.detail || "Failed"));
+			reduxDispatch(showError(response?.data?.detail || "Failed"));
 		}
 	};
 	const onDragEnd = async (result) => {
@@ -524,7 +528,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					(data) => data.value.id === parentId
 				);
 			}
-
 			updateTree(
 				result,
 				parentId
@@ -675,6 +678,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	}
 
 	const isReadOnly = access === "R";
+
 	return (
 		<>
 			<TaskDetailsPopup
@@ -686,7 +690,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={`Service Layout`}
+					header={`${service} Layout`}
 					countStyle={{ fontWeight: "normal", fontSize: "15px" }}
 					dataCount={`${counts.zoneCount} Zones / ${counts.stageCount} Stages / ${counts.taskCount} Tasks`}
 					description={`Manage the order that tasks appear within the specified staged and zones for inspections`}

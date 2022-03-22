@@ -32,7 +32,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const NavDetails = ({ staticCrumbs, crumbs, status, history }) => {
+const NavDetails = ({
+	state,
+	staticCrumbs,
+	crumbs,
+	status,
+	history,
+	hideLastLogin,
+	hideVersion,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 	const [isActive, setActive] = useState(false);
@@ -41,7 +49,6 @@ const NavDetails = ({ staticCrumbs, crumbs, status, history }) => {
 	const DefaultSeparator = () => {
 		return <span className={classes.crumbText}>{">"}</span>;
 	};
-
 	return (
 		<div>
 			<Breadcrumbs aria-label="breadcrumb" separator={<DefaultSeparator />}>
@@ -96,13 +103,19 @@ const NavDetails = ({ staticCrumbs, crumbs, status, history }) => {
 						<div
 							className={`${classes.icon} flex`}
 							style={{
-								backgroundColor: "#24BA78",
+								backgroundColor: state?.isPublished ? "#24BA78" : "red",
 							}}
 						></div>
-						Active
+						{state?.modelStatusName ?? "Active"}
 					</div>
 				)}
-				{history && <SaveHistory />}
+				{history && (
+					<SaveHistory
+						hideLastLogin={hideLastLogin}
+						versionNumber={state?.version}
+						hideVersion={hideVersion}
+					/>
+				)}
 			</div>
 		</div>
 	);

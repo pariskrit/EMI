@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import React from "react";
 import Link from "@material-ui/core/Link";
+import { isoDateWithoutTimeZone } from "helpers/utils";
 
 const HtmlTooltip = withStyles((theme) => ({
 	tooltip: {
@@ -29,7 +30,9 @@ const Row = ({ row, classes, onDeleteClick, isReadOnly }) => {
 				</HtmlTooltip>
 			</TableCell>
 			<TableCell style={{ width: "100px" }}>{row.name}</TableCell>
-			<TableCell style={{ width: "100px" }}>{row.date}</TableCell>
+			<TableCell style={{ width: "100px" }}>
+				{isoDateWithoutTimeZone(row.date + "Z")}
+			</TableCell>
 
 			{isReadOnly ? null : (
 				<TableCell style={{ width: "50px" }}>

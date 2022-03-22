@@ -11,9 +11,20 @@ const inputDetails = [
 	{ id: 1, label: "Make", name: "name" },
 	{ id: 3, label: "Model", name: "modelName" },
 	{ id: 6, label: "Type", type: "dropdown", name: "modelTypeID" },
-	{ id: 4, label: "Serial Number Range", name: "serialNumberRange" },
+	{
+		id: 4,
+		label: "Serial Number Range",
+		name: "serialNumberRange",
+		isRequired: false,
+	},
 
-	{ id: 5, label: "Developer Name", name: "displayName" },
+	{
+		id: 5,
+		label: "Developer Name",
+		name: "displayName",
+		isRequired: false,
+		isDisabled: true,
+	},
 ];
 function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 	const { id } = useParams();
@@ -150,7 +161,8 @@ function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 							onChange={onInputChange}
 							onBlur={onUpdateInput}
 							isFetching={apiStatus[input.name] === "updating"}
-							isDisabled={isReadOnly}
+							isDisabled={isReadOnly || input.isDisabled}
+							isRequired={input.isRequired}
 							onKeyDown={onEnterPress}
 						/>
 					)

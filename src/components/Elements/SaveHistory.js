@@ -32,7 +32,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const SaveHistory = () => {
+const SaveHistory = ({
+	hideLastLogin = false,
+	hideVersion = true,
+	versionNumber,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -55,10 +59,20 @@ const SaveHistory = () => {
 				<Typography className={classes.lastSaved}>Last saved:</Typography>
 				<Typography className={classes.timestampSize}>{lastSave}</Typography>
 			</div>
-			<div className={classes.historyText}>
-				<Typography className={classes.lastSaved}>Last login:</Typography>
-				<Typography className={classes.timestampSize}>{lastSave}</Typography>
-			</div>
+			{hideLastLogin ? null : (
+				<div className={classes.historyText}>
+					<Typography className={classes.lastSaved}>Last login:</Typography>
+					<Typography className={classes.timestampSize}>{lastSave}</Typography>
+				</div>
+			)}
+			{hideVersion ? null : (
+				<div className={classes.historyText}>
+					<Typography className={classes.lastSaved}>Version:</Typography>
+					<Typography className={classes.timestampSize}>
+						{versionNumber ?? 1}
+					</Typography>
+				</div>
+			)}
 		</div>
 	);
 };

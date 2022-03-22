@@ -35,6 +35,7 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 		const response = await uploadDocument({ modelId, documentKey: key });
 		if (response.status) {
 			const documents = await getModelDocuments(modelId);
+			console.log(documents);
 			setDocumentError("");
 			setListOfDocuments(documents.data);
 		} else {
@@ -79,12 +80,12 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 				handleDelete={handleDelete}
 				isDeleting={isDeleting}
 			/>
-			<AccordionBox title={`Model documents (${listOfDocuments.length})`}>
+			<AccordionBox title={`Model Documents (${listOfDocuments.length})`}>
 				<div className={classes.logoContentParent}>
 					<Table>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
-								<TableCell style={{ width: "170px" }}>FileName</TableCell>
+								<TableCell style={{ width: "170px" }}>Filename</TableCell>
 								<TableCell>User</TableCell>
 								<TableCell>Date</TableCell>
 								{isReadOnly ? null : <TableCell></TableCell>}

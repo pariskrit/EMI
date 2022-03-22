@@ -4,7 +4,7 @@ import React from "react";
 
 function InputTick({ state, className = null, handleCheck, isDisabled }) {
 	return (
-		<div className={className} style={{ width: "100%" }}>
+		<div className={className} style={{ width: "100%", padding: "0 10px" }}>
 			<FormGroup>
 				<FormControlLabel
 					control={

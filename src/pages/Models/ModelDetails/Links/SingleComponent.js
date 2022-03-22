@@ -41,6 +41,7 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 	return (
 		<div>
 			<ModelWrapper
+				state={state.modelDetail}
 				ModelName={route.ModelName}
 				current={route.name}
 				navigation={navigation}
