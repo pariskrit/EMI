@@ -17,7 +17,7 @@ const modelState = { id: null, open: false };
 
 const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const {
-		customCaptions: { stage, stagePlural },
+		customCaptions: { stage, stagePlural, modelTemplate },
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -28,36 +28,42 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const [loading, setLoading] = useState(false);
 	const [originalStageList, setOriginalStageList] = useState([]);
 
-	const fetchData = async () => {
-		setLoading(true);
+	const fetchData = async (showLoading = false) => {
+		showLoading && setLoading(true);
 		try {
 			let res = await getModelStage(modelId);
 			if (res.status) {
 				const mainData = res.data.map((response) => ({
 					...response,
-					image: (
+					image: response.imageURL ? (
 						<TabelRowImage
 							imageURL={response.imageURL}
 							imageWrapperHeight="50px"
 						/>
+					) : (
+						""
 					),
 					hasZones: response.hasZones === true ? "Yes" : "",
 				}));
-				setLoading(false);
 				setData(mainData);
 				setOriginalStageList(mainData);
+				dispatch({
+					type: "TAB_COUNT",
+					payload: { countTab: "stageCount", data: res.data.length },
+				});
 			} else {
-				setLoading(false);
 				if (res.data.detail) getError(res.data.detail);
 				else getError("Something went wrong");
 			}
 		} catch (err) {
 			return;
+		} finally {
+			showLoading && setLoading(false);
 		}
 	};
 
 	React.useEffect(() => {
-		fetchData();
+		fetchData(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -81,27 +87,8 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 		setDeleteModel(modelState);
 	};
 
-	const handleComplete = (response) => {
-		const res = {
-			...response,
-			image: (
-				<TabelRowImage imageURL={response.imageURL} imageWrapperHeight="50px" />
-			),
-			hasZones: response.hasZones === true ? "Yes" : "",
-		};
-		// if Edit Mode
-		if (stageId) {
-			let d = data.map((x) => (x.id === response.id ? res : x));
-			setData(d);
-		} else {
-			let d = data;
-			d.push(res);
-			setData(d);
-			dispatch({
-				type: "TAB_COUNT",
-				payload: { countTab: "stageCount", data: d.length },
-			});
-		}
+	const handleComplete = async () => {
+		await fetchData();
 	};
 
 	// handle dragging of zone
@@ -186,9 +173,9 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 			<div style={{ display: "flex", flexDirection: "column" }}>
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<DetailsPanel
-						header={`Model ${stagePlural}`}
+						header={`${stagePlural}`}
 						dataCount={data.length}
-						description={`${stagePlural} managed to this asset model`}
+						description={`${stagePlural} used for this ${modelTemplate}`}
 					/>
 				</div>
 
@@ -196,7 +183,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 					data={data}
 					isModelEditable
 					disableDnd={access === "R"}
-					headers={["Name", "Image", "HasZones"]}
+					headers={["Name", "Image", "Has Zones"]}
 					columns={[
 						{ id: 1, name: "name", style: { width: "40vw" } },
 						{ id: 2, name: "image", style: { width: "40vw" } },

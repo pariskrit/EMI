@@ -208,6 +208,7 @@ function AddNewModelRole({
 								}}
 								variant="outlined"
 								fullWidth
+								autoFocus
 							/>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>

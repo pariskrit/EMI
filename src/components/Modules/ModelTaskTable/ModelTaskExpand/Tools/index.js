@@ -204,7 +204,7 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 				fetchData={() => fetchTools(false)}
 			/>
 			<DeleteDialog
-				entityName={`Model ${customCaptions.tool}`}
+				entityName={`${customCaptions.tool}`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelVersionTaskTools}

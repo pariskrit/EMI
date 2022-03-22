@@ -222,7 +222,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 			)}
 			<DeleteDialog
 				open={images.delete}
-				entityName="Model Image"
+				entityName="Image"
 				deleteID={images.imageId}
 				deleteEndpoint={`/api/modelversiontaskimages`}
 				handleRemoveData={handleRemoveData}

@@ -345,7 +345,7 @@ const ModelQuestion = ({
 			<div style={{ display: "flex", flexDirection: "column" }}>
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<DetailsPanel
-						header={`Model ${questionPlural}`}
+						header={`${questionPlural}`}
 						dataCount={data.length}
 						description="Questions managed to this question model"
 					/>

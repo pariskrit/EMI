@@ -208,7 +208,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 				fetchData={() => fetchParts(false)}
 			/>
 			<DeleteDialog
-				entityName={`Model ${customCaptions.part}`}
+				entityName={`${customCaptions.part}`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelVersionTaskParts}

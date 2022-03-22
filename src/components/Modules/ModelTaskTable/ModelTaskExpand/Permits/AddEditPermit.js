@@ -173,6 +173,7 @@ function AddOrEditPermit({
 							onKeyDown={handleKeydownPress}
 							variant="outlined"
 							fullWidth
+							autoFocus
 						/>
 					</ADD.FullWidthContainer>
 				</DialogContent>

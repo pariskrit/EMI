@@ -272,6 +272,7 @@ function AddNewModelTask({
 								}}
 								variant="outlined"
 								fullWidth
+								autoFocus
 								disabled={isDuplicate}
 							/>
 						</ADD.LeftInputContainer>

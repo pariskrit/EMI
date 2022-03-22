@@ -194,6 +194,7 @@ function AddOrEditAttachment({
 							onKeyDown={handleKeydownPress}
 							variant="outlined"
 							fullWidth
+							autoFocus
 						/>
 					</ADD.FullWidthContainer>
 
