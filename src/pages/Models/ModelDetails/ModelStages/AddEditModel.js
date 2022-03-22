@@ -142,6 +142,8 @@ const AddEditModel = ({
 			}
 		} catch (err) {
 			return;
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -167,12 +169,14 @@ const AddEditModel = ({
 
 				closeOverride();
 			} else {
-				setLoading(true);
+				setLoading(false);
 
 				getError(res.data.detail);
 			}
 		} catch (err) {
 			return;
+		} finally {
+			setLoading(false);
 		}
 	};
 
