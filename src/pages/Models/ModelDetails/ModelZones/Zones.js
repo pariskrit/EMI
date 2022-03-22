@@ -4,7 +4,6 @@ import DragAndDropTable from "components/Modules/DragAndDropTable";
 import React, { useEffect, useState } from "react";
 import {
 	addNewModelZone,
-	EditableModelVersionCheck,
 	getModelZonesList,
 	patchModelVersionZones,
 } from "services/models/modelDetails/modelZones";
@@ -13,6 +12,8 @@ import { Apis } from "services/api";
 import AddNewModelZone from "./AddNewModelZone";
 import TabelRowImage from "components/Elements/TabelRowImage";
 import withMount from "components/HOC/withMount";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
@@ -20,7 +21,6 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 	const [originalZoneList, setOriginalZoneList] = useState([]);
 	const [Zone, setZone] = useState([]);
 
-	const [isModelEditable, setModelEditable] = useState(true);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [selectedID, setSelectedID] = useState(null);
 	const [loading, setLoading] = useState([]);
@@ -32,25 +32,32 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
+	const reduxDispatch = useDispatch();
+
 	const fetchModelZoneList = async (showLoading) => {
 		if (showLoading && !isMounted.aborted) setLoading(true);
 		try {
-			const response = await Promise.all([
-				getModelZonesList(modelId),
-				EditableModelVersionCheck(modelId),
-			]);
+			const response = await Promise.all([getModelZonesList(modelId)]);
 			if (response[0].status) {
 				if (!isMounted.aborted) {
 					setZonesList(
 						response[0].data.map((d) => ({
 							...d,
-							imageURL: <TabelRowImage imageURL={d?.imageURL} />,
+							imageURL: d?.imageURL ? (
+								<TabelRowImage imageURL={d?.imageURL} />
+							) : (
+								""
+							),
 						}))
 					);
 					setOriginalZoneList(
 						response[0].data.map((d) => ({
 							...d,
-							imageURL: <TabelRowImage imageURL={d?.imageURL} />,
+							imageURL: d?.imageURL ? (
+								<TabelRowImage imageURL={d?.imageURL} />
+							) : (
+								""
+							),
 						}))
 					);
 					setZone(response[0].data);
@@ -60,13 +67,10 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 					payload: { countTab: "zoneCount", data: response[0].data.length },
 				});
 			}
-			if (response[1].status) {
-				if (!isMounted.aborted) {
-					setModelEditable(!response[1]?.data?.isEMIModel);
-				}
-			}
 		} catch (error) {
-			console.log(error);
+			reduxDispatch(
+				showError(error?.response?.data || "could not fectch model zones")
+			);
 		} finally {
 			if (showLoading && !isMounted.aborted) setLoading(false);
 		}
@@ -180,7 +184,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}
 				data={null}
-				title={`Add Model ${customCaptions?.zone}`}
+				title={`Add ${customCaptions?.zone}`}
 				createProcessHandler={createModalZone}
 				ModelVersionID={modelId}
 				fetchModelZoneList={() => fetchModelZoneList(false)}
@@ -189,13 +193,13 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 				open={openAddNewZone}
 				closeHandler={() => setOpenAddNewZone(false)}
 				data={zoneToEdit}
-				title={`Edit Model ${customCaptions?.zone}`}
+				title={`Edit ${customCaptions?.zone}`}
 				createProcessHandler={editModelZone}
 				zoneId={zoneToEditData?.id}
 				fetchModelZoneList={() => fetchModelZoneList(false)}
 			/>
 			<DeleteDialog
-				entityName={`Model ${customCaptions?.zone}`}
+				entityName={`${customCaptions?.zone}`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelZones}
@@ -209,7 +213,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 					<DetailsPanel
 						header={customCaptions?.zonePlural}
 						dataCount={zoneList.length}
-						description={`${customCaptions?.zonePlural} assigned in this asset model`}
+						description={`${customCaptions.zonePlural} to be used for this ${customCaptions.modelTemplate}`}
 					/>
 					<DragAndDropTable
 						data={zoneList}
@@ -219,8 +223,8 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 							{ id: 2, name: "imageURL", style: { width: "50vw" } },
 						]}
 						handleDragEnd={handleDragEnd}
-						isModelEditable={isModelEditable}
-						disableDnd={!isModelEditable || access === "R"}
+						isModelEditable={!state?.modelDetail?.isEMIModel}
+						disableDnd={state?.modelDetail?.isEMIModel || access === "R"}
 						menuData={[
 							{
 								name: "Edit",

@@ -64,7 +64,13 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const NavButtons = ({ navigation, applicationName, current, onClick }) => {
+const NavButtons = ({
+	navigation,
+	applicationName,
+	current,
+	onClick,
+	hideMobileViewBackground,
+}) => {
 	// Init hooks
 	const classes = useStyles();
 
@@ -78,7 +84,7 @@ const NavButtons = ({ navigation, applicationName, current, onClick }) => {
 	return (
 		<>
 			<div
-				className={classes.background}
+				className={hideMobileViewBackground ? "" : classes.background}
 				onClick={() => {
 					setAnchorElMobile(null);
 					setSelectedButtonMobile(null);
@@ -181,10 +187,13 @@ NavButtons.propTypes = {
 
 	//** this is the name of the nav current selected */
 	current: PropTypes.string.isRequired,
+
+	hideMobileViewBackground: PropTypes.bool,
 };
 
 NavButtons.defaultProps = {
 	onClick: () => {},
+	hideMobileViewBackground: false,
 };
 
 export default NavButtons;

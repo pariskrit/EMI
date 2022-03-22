@@ -130,7 +130,7 @@ const ModelTaskTable = ({
 					estimatedMinutes: dupicateTask?.estimatedMinutes,
 					safetyCritical: dupicateTask?.safetyCritical ? true : false,
 				}}
-				title={`Duplicate Model ${customCaptions?.task}`}
+				title={`Duplicate ${customCaptions?.task}`}
 				modelId={modelId}
 				createProcessHandler={dupliacteModelTask}
 				fetchData={fetchData}

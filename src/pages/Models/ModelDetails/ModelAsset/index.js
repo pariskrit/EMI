@@ -139,7 +139,7 @@ const ModelAsset = ({
 			<div style={{ display: "flex", flexDirection: "column" }}>
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<DetailsPanel
-						header={`Model ${assetPlural}`}
+						header={`${assetPlural}`}
 						dataCount={data.length}
 						description="Manage Model Asset"
 					/>

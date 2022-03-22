@@ -33,15 +33,13 @@ const Row = ({
 									gap: 10,
 								}}
 							>
-								{isModelEditable && (
-									<span
-										{...provider.dragHandleProps}
-										ref={provider.innerRef}
-										className="flex"
-									>
-										<img src={reorder} alt="" height={18} width={18} />
-									</span>
-								)}
+								<span
+									{...provider.dragHandleProps}
+									ref={provider.innerRef}
+									className="flex"
+								>
+									<img src={reorder} alt="" height={18} width={18} />
+								</span>
 
 								<span style={{ marginTop: "2.5px", marginLeft: "10px" }}>
 									{row[col.name]}

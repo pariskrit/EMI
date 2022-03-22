@@ -304,7 +304,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				fetchData={() => fetchAttachments(false)}
 			/>
 			<DeleteDialog
-				entityName={`Model Attachment`}
+				entityName={`Attachment`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelVersionTaskAttachments}

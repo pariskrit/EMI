@@ -117,6 +117,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler, fetchNotes }) => {
 					helperText={errors.note === null ? null : errors.note}
 					fullWidth
 					multiline
+					autoFocus
 					onChange={(e) => setInput({ note: e.target.value })}
 					onKeyDown={handleEnterPress}
 				/>

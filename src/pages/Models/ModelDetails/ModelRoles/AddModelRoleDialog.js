@@ -58,6 +58,7 @@ function AddNewModelRole({
 	fetchModelRoles,
 	mappedRoleName,
 	customCaptions,
+	showSave,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -155,6 +156,12 @@ function AddNewModelRole({
 		}
 	};
 
+	const handleEnterPress = (e) => {
+		if (e.keyCode === 13) {
+			handleCreateProcess();
+		}
+	};
+
 	return (
 		<div>
 			<Dialog
@@ -185,7 +192,7 @@ function AddNewModelRole({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{title}
+								{showSave ? "Save" : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>
@@ -206,13 +213,15 @@ function AddNewModelRole({
 								onChange={(e) => {
 									setInput({ ...input, name: e.target.value });
 								}}
+								onKeyDown={handleEnterPress}
 								variant="outlined"
 								fullWidth
+								autoFocus
 							/>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
 							<ADD.NameLabel>
-								Map To Service {customCaptions?.role}
+								Map To {customCaptions?.service} {customCaptions?.role}
 								<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ErrorInputFieldWrapper
@@ -222,7 +231,10 @@ function AddNewModelRole({
 									options={siteRoles}
 									selectedValue={input.roleID}
 									onChange={(e) => {
-										setInput({ ...input, roleID: e });
+										setInput((prev) => ({ ...prev, roleID: e }));
+										if (input.name === "") {
+											setInput((prev) => ({ ...prev, name: e?.label }));
+										}
 									}}
 									label=""
 									placeholder="Select Role"

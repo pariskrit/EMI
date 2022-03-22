@@ -98,8 +98,8 @@ const AddEditModel = ({
 				...input,
 				name,
 				hasZones: hasZones === "Yes" ? true : false,
-				imageUrl: imageURL,
-				imageName: imageKey,
+				imageUrl: imageURL || "",
+				imageName: imageKey || "",
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,10 +127,12 @@ const AddEditModel = ({
 		try {
 			let res = await postModelStage({ name, hasZones, modelVersionID });
 			if (res.status) {
-				const formData = new FormData();
-				formData.append("file", input.image);
-				let imageRes = await uploadImage(res.data, formData);
-				handleAddEditComplete(imageRes);
+				if (input.image) {
+					const formData = new FormData();
+					formData.append("file", input.image);
+					await uploadImage(res.data, formData);
+				}
+				await handleAddEditComplete();
 				setLoading(false);
 				closeOverride();
 			} else {
@@ -140,6 +142,8 @@ const AddEditModel = ({
 			}
 		} catch (err) {
 			return;
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -156,21 +160,23 @@ const AddEditModel = ({
 					const formData = new FormData();
 					formData.append("file", input.image);
 					let imageRes = await uploadImage(detailData.id, formData);
-					handleAddEditComplete(imageRes);
+					await handleAddEditComplete(imageRes);
 					setLoading(false);
 				} else {
-					handleAddEditComplete({ ...detailData, ...res.data });
+					await handleAddEditComplete({ ...detailData, ...res.data });
 					setLoading(false);
 				}
 
 				closeOverride();
 			} else {
-				setLoading(true);
+				setLoading(false);
 
 				getError(res.data.detail);
 			}
 		} catch (err) {
 			return;
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -178,14 +184,10 @@ const AddEditModel = ({
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 			if (!localChecker.some((el) => el.valid === false)) {
-				if (input.imageUrl === "") {
-					setErrors({ ...errors, image: "A file is required" });
+				if (detailData) {
+					await handleEdit();
 				} else {
-					if (detailData) {
-						await handleEdit();
-					} else {
-						await handleAdd();
-					}
+					await handleAdd();
 				}
 			} else {
 				const newError = generateErrorState(localChecker);

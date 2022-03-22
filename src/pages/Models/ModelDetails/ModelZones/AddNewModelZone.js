@@ -30,7 +30,6 @@ const schema = yup.object({
 		.required("Name is required"),
 	image: yup
 		.mixed()
-
 		.test("fileType", "Unsupported File Format", (value) =>
 			SUPPORTED_FORMATS.includes(value.type)
 		),
@@ -76,7 +75,7 @@ const defaultErrorSchema = {
 const defaultStateSchema = {
 	Name: "",
 	imageUrl: "",
-	image: "",
+	image: null,
 	imageName: "",
 };
 
@@ -102,7 +101,11 @@ function AddNewModelTask({
 
 	useEffect(() => {
 		if (data) {
-			setInput(data);
+			setInput({
+				...data,
+				imageUrl: data.imageUrl || "",
+				imageName: data.imageName || "",
+			});
 		}
 	}, [data]);
 
@@ -147,9 +150,9 @@ function AddNewModelTask({
 						formData.append("file", input.image);
 						await uploadZoneImage(zoneId || newData.data, formData);
 					}
-					closeOverride();
-					setIsUpdating(false);
 					await fetchModelZoneList();
+					setIsUpdating(false);
+					closeOverride();
 				} else {
 					displayError(newData, newData?.data?.detail);
 
@@ -217,6 +220,7 @@ function AddNewModelTask({
 									setInput({ ...input, Name: e.target.value });
 								}}
 								variant="outlined"
+								autoFocus
 							/>
 						</ADD.LeftInputContainer>
 
@@ -235,9 +239,14 @@ function AddNewModelTask({
 										});
 									}}
 									imageUrl={input?.imageUrl}
-									imageName={input?.image?.name || input?.imageName}
+									imageName={input?.image?.name || ""}
 									removeImage={() => {
-										setInput({ ...input, image: "", imageUrl: "" });
+										setInput({
+											...input,
+											imageUrl: "",
+											imageName: "",
+											image: null,
+										});
 									}}
 								/>
 							</ErrorInputFieldWrapper>

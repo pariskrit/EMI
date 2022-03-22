@@ -263,7 +263,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}
 				siteId={position?.siteAppID}
 				data={null}
-				title={`Add Model ${customCaptions?.task}`}
+				title={`Add ${customCaptions?.task}`}
 				modelId={modelId}
 				createProcessHandler={createModelTask}
 				fetchData={() =>
@@ -275,7 +275,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				totalTaskCount={totalTaskCount}
 			/>
 			<DeleteDialog
-				entityName={`Model ${customCaptions?.task}`}
+				entityName={`${customCaptions?.task}`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelTasks}

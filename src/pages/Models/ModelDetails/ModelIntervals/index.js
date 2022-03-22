@@ -35,7 +35,9 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 	const reduxDispatch = useDispatch();
 	const {
 		customCaptions: { interval, intervalPlural, taskListNo, taskListNoPlural },
-	} = JSON.parse(localStorage.getItem("me"));
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	const onCloseAddDialog = () =>
 		dispatch({ type: "TOGGLE_ADD", payload: false });

@@ -142,6 +142,7 @@ const ModelWrapper = ({
 				applicationName={applicationName}
 				current={current}
 				onClick={onNavClick}
+				hideMobileViewBackground
 			/>
 		</div>
 	);

@@ -198,7 +198,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 				fetchData={() => fetchPermits(false)}
 			/>
 			<DeleteDialog
-				entityName={`Model Permit`}
+				entityName={`Permit`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelVersionTaskPermits}

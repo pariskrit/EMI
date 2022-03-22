@@ -136,6 +136,7 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 				closeHandler={() => setopenEditModelRoleDialog(false)}
 				data={roleToEditData}
 				title={`Edit ${customCaptions?.role}`}
+				showSave
 				siteAppId={position?.siteAppID}
 				fetchModelRoles={() => fetchModelRoles(false)}
 				createProcessHandler={PatchModelRole}
@@ -143,7 +144,7 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 				customCaptions={customCaptions}
 			/>
 			<DeleteDialog
-				entityName={`Model ${customCaptions?.role}`}
+				entityName={`${customCaptions?.role}`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteID={deleteID}
@@ -158,7 +159,7 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 						<DetailsPanel
 							header={`${customCaptions?.rolePlural}`}
 							dataCount={data.length}
-							description={`Select ${customCaptions?.rolePlural} that are valid for ${customCaptions?.taskPlural} in this ${customCaptions?.asset} ${customCaptions?.model}`}
+							description={`${customCaptions?.rolePlural} that are used for this ${customCaptions?.modelTemplate}`}
 						/>
 						<AC.SearchContainer>
 							<AC.SearchInner className="applicationSearchBtn">
@@ -180,7 +181,10 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 						columns={["name", "mappedRoleName"]}
 						headers={[
 							{ id: 1, name: "Name" },
-							{ id: 2, name: `Map To Service ${customCaptions?.role}` },
+							{
+								id: 2,
+								name: `Map To ${customCaptions?.service} ${customCaptions?.role}`,
+							},
 						]}
 						data={filteredData}
 						setData={setFilteredData}
