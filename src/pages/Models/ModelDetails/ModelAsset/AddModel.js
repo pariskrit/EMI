@@ -17,11 +17,7 @@ import {
 } from "services/models/modelDetails/modelAsset";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import {
-	generateErrorState,
-	handleSort,
-	handleValidateObj,
-} from "helpers/utils";
+import { handleSort, handleValidateObj } from "helpers/utils";
 import * as yup from "yup";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 
@@ -136,8 +132,7 @@ const AddModel = ({
 				}
 			} else {
 				// show validation errors
-				const newErrors = generateErrorState(localChecker);
-				setErrors({ ...errors, ...newErrors });
+				setErrors({ asset: `${title} is required` });
 			}
 			setLoading(false);
 		} catch (e) {
