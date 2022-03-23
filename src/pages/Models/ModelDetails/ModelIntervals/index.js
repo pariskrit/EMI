@@ -34,7 +34,13 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const reduxDispatch = useDispatch();
 	const {
-		customCaptions: { interval, intervalPlural, taskListNo, taskListNoPlural },
+		customCaptions: {
+			interval,
+			intervalPlural,
+			taskListNo,
+			taskListNoPlural,
+			modelTemplate,
+		},
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -213,7 +219,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 				<DetailsPanel
 					header={intervalPlural}
 					dataCount={state?.modelDetail?.intervalCount}
-					description={`Allocate ${intervalPlural} for this asset model`}
+					description={`Allocate ${intervalPlural} for this ${modelTemplate}`}
 				/>
 				{isReadOnly ? null : (
 					<div
@@ -238,12 +244,27 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 			) : (
 				<DragAndDropTable
 					data={modelIntervals}
-					headers={["Name", taskListNoPlural, `Auto-Include ${intervalPlural}`]}
-					columns={[
-						{ id: 1, name: "name", style: { width: "33vw" } },
-						{ id: 2, name: "taskListNos", style: { width: "33vw" } },
-						{ id: 3, name: "autoIncludeIntervals", style: { width: "33vw" } },
-					]}
+					headers={
+						enableAutoIncludeIntervals
+							? ["Name", taskListNoPlural, `Auto-Include ${intervalPlural}`]
+							: ["Name", taskListNoPlural]
+					}
+					columns={
+						enableAutoIncludeIntervals
+							? [
+									{ id: 1, name: "name", style: { width: "33vw" } },
+									{ id: 2, name: "taskListNos", style: { width: "33vw" } },
+									{
+										id: 3,
+										name: "autoIncludeIntervals",
+										style: { width: "33vw" },
+									},
+							  ]
+							: [
+									{ id: 1, name: "name", style: { width: "33vw" } },
+									{ id: 2, name: "taskListNos", style: { width: "33vw" } },
+							  ]
+					}
 					handleDragEnd={handleDragEnd}
 					isModelEditable={true}
 					disableDnd={isReadOnly}

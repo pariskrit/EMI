@@ -22,6 +22,7 @@ import { showError } from "redux/common/actions";
 import { DialogContent, Grid } from "@material-ui/core";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import CheckboxContainer from "components/Modules/CheckboxContainer";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -179,35 +180,60 @@ const EditDialog = ({
 		}
 	};
 
-	const onCheckboxInputChange = async (id, name) => {
-		const tempInput = { ...input };
-		const includeId = input.autoIncludeIntervals.find((data) => data.id === id)
-			.includeId;
+	const onCheckboxInputChange = async (checkBox) => {
+		const tempInput = { ...checkBox };
+		const includeId = input.autoIncludeIntervals.find(
+			(data) => data.id === checkBox.id
+		).includeId;
 
 		setInput({
 			...input,
 			autoIncludeIntervals: input.autoIncludeIntervals.map((data) =>
-				data.id === id ? { ...data, checked: !data.checked } : data
+				data.id === checkBox.id
+					? { ...data, checked: !data.checked, isDisabled: true }
+					: data
 			),
 		});
-		setIsUpdating(true);
 
 		let response = null;
 		if (!includeId) {
 			response = await addModelIntervalsInclude({
 				modelVersionIntervalID: input.id,
-				includeModelVersionIntervalID: id,
+				includeModelVersionIntervalID: checkBox.id,
 			});
+			setInput((prev) => ({
+				...prev,
+				autoIncludeIntervals: prev.autoIncludeIntervals.map((data) =>
+					data.id === checkBox.id ? { ...data, includeId: response.data } : data
+				),
+			}));
 		} else {
 			response = await deleteModelIntervalsInclude(includeId);
+			setInput((prev) => ({
+				...prev,
+				autoIncludeIntervals: prev.autoIncludeIntervals.map((data) =>
+					data.id === checkBox.id ? { ...data, includeId: null } : data
+				),
+			}));
 		}
 
 		if (!response.status) {
-			setInput(tempInput);
+			setInput({
+				...input,
+				autoIncludeIntervals: input.autoIncludeIntervals.map((data) =>
+					data.id === checkBox.id ? tempInput : data
+				),
+			});
 		} else {
 			fetchModelIntervals();
 		}
-		setIsUpdating(false);
+
+		setInput((prev) => ({
+			...prev,
+			autoIncludeIntervals: prev.autoIncludeIntervals.map((data) =>
+				data.id === checkBox.id ? { ...data, isDisabled: false } : data
+			),
+		}));
 	};
 
 	const handleEditName = async () => {
@@ -256,6 +282,7 @@ const EditDialog = ({
 						includeId: interval.id,
 						id: interval.modelVersionIntervalID,
 						name: interval.name,
+						isDisabled: false,
 						checked: !!interval.id,
 					})
 				),
@@ -295,116 +322,99 @@ const EditDialog = ({
 					<ADD.HeaderText>Edit {captions.interval}</ADD.HeaderText>
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={closeOverride} variant="contained">
-						Cancel
-					</ADD.CancelButton>
+					<ADD.ConfirmButton onClick={closeOverride} variant="contained">
+						Close
+					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
 
 			<DialogContent style={{ overflowY: "auto" }}>
+				<div style={{ display: "flex" }}>
+					<ADD.LeftInputContainer>
+						<ADD.FullWidthContainer>
+							<ADD.NameLabel>
+								Name<ADD.RequiredStar>*</ADD.RequiredStar>
+							</ADD.NameLabel>
+							<ADD.NameInput
+								error={errors.name === null ? false : true}
+								helperText={errors.name === null ? null : errors.name}
+								variant="outlined"
+								value={input.name}
+								onBlur={handleEditName}
+								onKeyDown={handleEnterPress}
+								autoFocus
+								onChange={(e) => {
+									setInput({
+										...input,
+										name: e.target.value,
+										isNameChanged: true,
+									});
+								}}
+							/>
+						</ADD.FullWidthContainer>
+						<APD.DividerGutter />
+					</ADD.LeftInputContainer>
+
+					{enableAutoIncludeIntervals ? (
+						<ADD.RightInputContainer>
+							<CheckboxContainer
+								header={`Include ${captions?.intervalPlural}`}
+								checkBoxes={input.autoIncludeIntervals}
+								onCheck={onCheckboxInputChange}
+							/>
+						</ADD.RightInputContainer>
+					) : null}
+				</div>
 				<div>
-					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
-							<ADD.FullWidthContainer>
-								<ADD.NameLabel>
-									Name<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
-								<ADD.NameInput
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
-									variant="outlined"
-									value={input.name}
-									onBlur={handleEditName}
-									onKeyDown={handleEnterPress}
-									onChange={(e) => {
-										setInput({
-											...input,
-											name: e.target.value,
-											isNameChanged: true,
-										});
-									}}
-								/>
-							</ADD.FullWidthContainer>
-							<APD.DividerGutter />
+					<APD.SecondaryHeaderContainer>
+						<ADD.HeaderText>
+							{captions.taskListNo}({input.allCategories.length})
+						</ADD.HeaderText>
 
-							<ADD.InputContainer>
-								<APD.SecondaryHeaderContainer>
-									<ADD.HeaderText>
-										{captions.taskListNo}({input.allCategories.length})
-									</ADD.HeaderText>
+						<ADD.InfoText>Add additional {captions.taskListNo}</ADD.InfoText>
+					</APD.SecondaryHeaderContainer>
+				</div>
+				<Grid container spacing={2}>
+					{/* Field to add new subcat */}
 
-									<ADD.InfoText>
-										Add additional {captions.taskListNo}
-									</ADD.InfoText>
-								</APD.SecondaryHeaderContainer>
-							</ADD.InputContainer>
-						</ADD.LeftInputContainer>
+					{showAddNewField ? (
+						<Grid item xs={6}>
+							<NewSubCategoryField
+								name={newCategory}
+								onChange={onNewCategoryInputChange}
+								handleSave={handleAddCategory}
+								onClose={onNewSubCategoryFieldHide}
+							/>
+						</Grid>
+					) : null}
+					{!input.allCategories.length
+						? null
+						: input.allCategories.map((category) => {
+								return (
+									<Grid item xs={6} key={category.id}>
+										<SubCategory
+											key={category.name}
+											id={category.id}
+											category={category}
+											isEditable={isCategoryEditable[category.id]}
+											onChange={onCategoryChange}
+											onEditClick={onCategoryEdit}
+											handleEdit={() => handleEditCategory(category)}
+											onDelete={onDeleteCategory}
+											isDeleteClick={isDeleteClick}
+										/>
+									</Grid>
+								);
+						  })}
+				</Grid>
 
-						{enableAutoIncludeIntervals ? (
-							<ADD.RightInputContainer>
-								<DynamicDropdown
-									isServerSide={false}
-									width="100%"
-									placeholder={`Select Auto-Include ${captions.intervalPlural}`}
-									label={`Auto-Include ${captions.intervalPlural}`}
-									columns={[{ id: 1, name: "name" }]}
-									dataSource={input.autoIncludeIntervals}
-									selectedValue={input.autoIncludeIntervals
-										.filter((interval) => interval.checked)
-										.map((r) => r.name)
-										.join(", ")}
-									rolesChecklist={input.autoIncludeIntervals.filter(
-										(interval) => interval.checked
-									)}
-									selectdValueToshow="name"
-									hasCheckBoxList={true}
-									checklistChangeHandler={onCheckboxInputChange}
-								/>
-							</ADD.RightInputContainer>
-						) : null}
-					</ADD.InputContainer>
-					<Grid container spacing={2}>
-						{/* Field to add new subcat */}
-
-						{showAddNewField ? (
-							<Grid item xs={6}>
-								<NewSubCategoryField
-									name={newCategory}
-									onChange={onNewCategoryInputChange}
-									handleSave={handleAddCategory}
-									onClose={onNewSubCategoryFieldHide}
-								/>
-							</Grid>
-						) : null}
-						{!input.allCategories.length
-							? null
-							: input.allCategories.map((category) => {
-									return (
-										<Grid item xs={6}>
-											<SubCategory
-												key={category.name}
-												id={category.id}
-												category={category}
-												isEditable={isCategoryEditable[category.id]}
-												onChange={onCategoryChange}
-												onEditClick={onCategoryEdit}
-												handleEdit={() => handleEditCategory(category)}
-												onDelete={onDeleteCategory}
-												isDeleteClick={isDeleteClick}
-											/>
-										</Grid>
-									);
-							  })}
-					</Grid>
-
-					<div>
-						<APD.NewButton
-							variant="contained"
-							onClick={onNewSubCategoryFieldShow}
-						>
-							Add new
-						</APD.NewButton>
-					</div>
+				<div style={{ marginTop: "15px" }}>
+					<APD.NewButton
+						variant="contained"
+						onClick={onNewSubCategoryFieldShow}
+					>
+						Add new
+					</APD.NewButton>
 				</div>
 			</DialogContent>
 		</Dialog>

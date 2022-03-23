@@ -9,8 +9,8 @@ import { handleValidateObj, generateErrorState } from "helpers/utils";
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import NewSubCategoryField from "./NewSubCategoryField";
 import SubCategory from "./Subcategory";
-import DynamicDropdown from "components/Elements/DyamicDropdown";
 import { DialogContent, Grid } from "@material-ui/core";
+import CheckboxContainer from "components/Modules/CheckboxContainer";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -143,11 +143,11 @@ const AddDialog = ({
 		});
 	};
 
-	const onCheckboxInputChange = (id, name) =>
+	const onCheckboxInputChange = (checkBoxData) =>
 		setInput({
 			...input,
 			autoIncludeIntervals: input.autoIncludeIntervals.map((data) =>
-				data.id === id ? { ...data, checked: !data.checked } : data
+				data.id === checkBoxData.id ? { ...data, checked: !data.checked } : data
 			),
 		});
 
@@ -166,6 +166,7 @@ const AddDialog = ({
 					checked: false,
 					id: interval.id,
 					name: interval.name,
+					isDisabled: false,
 				})),
 			}));
 		}
@@ -184,7 +185,7 @@ const AddDialog = ({
 
 			<ADD.ActionContainer>
 				<DialogTitle id="add-dialog-title">
-					<ADD.HeaderText>Add New {captions.interval}</ADD.HeaderText>
+					<ADD.HeaderText>Add {captions.interval}</ADD.HeaderText>
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -197,92 +198,79 @@ const AddDialog = ({
 			</ADD.ActionContainer>
 
 			<DialogContent style={{ overflowY: "auto" }}>
+				<div style={{ display: "flex" }}>
+					<ADD.LeftInputContainer>
+						<ADD.FullWidthContainer>
+							<ADD.NameLabel>
+								Name<ADD.RequiredStar>*</ADD.RequiredStar>
+							</ADD.NameLabel>
+							<ADD.NameInput
+								error={errors.name === null ? false : true}
+								helperText={errors.name === null ? null : errors.name}
+								variant="outlined"
+								value={input.name}
+								autoFocus
+								onKeyDown={handleEnterPress}
+								onChange={(e) => {
+									setInput({ ...input, name: e.target.value });
+								}}
+							/>
+						</ADD.FullWidthContainer>
+						<APD.DividerGutter />
+					</ADD.LeftInputContainer>
+
+					{enableAutoIncludeIntervals ? (
+						<ADD.RightInputContainer>
+							<CheckboxContainer
+								header={`Include ${captions?.intervalPlural}`}
+								checkBoxes={input.autoIncludeIntervals}
+								onCheck={onCheckboxInputChange}
+							/>
+						</ADD.RightInputContainer>
+					) : null}
+				</div>
 				<div>
-					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
-							<ADD.FullWidthContainer>
-								<ADD.NameLabel>
-									Name<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
-								<ADD.NameInput
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
-									variant="outlined"
-									value={input.name}
-									onKeyDown={handleEnterPress}
-									onChange={(e) => {
-										setInput({ ...input, name: e.target.value });
-									}}
-								/>
-							</ADD.FullWidthContainer>
-							<APD.DividerGutter />
-						</ADD.LeftInputContainer>
+					<APD.SecondaryHeaderContainer>
+						<ADD.HeaderText>
+							{captions.taskListNoPlural}({input.allCategories.length})
+						</ADD.HeaderText>
 
-						{enableAutoIncludeIntervals ? (
-							<ADD.RightInputContainer>
-								<DynamicDropdown
-									isServerSide={false}
-									width="100%"
-									placeholder={`Select Auto-Include ${captions.intervalPlural}`}
-									label={`Auto-Include ${captions.intervalPlural}`}
-									columns={[{ id: 1, name: "name" }]}
-									dataSource={input.autoIncludeIntervals}
-									selectedValue={input.autoIncludeIntervals
-										.filter((interval) => interval.checked)
-										.map((r) => r.name)
-										.join(", ")}
-									rolesChecklist={input.autoIncludeIntervals.filter(
-										(interval) => interval.checked
-									)}
-									selectdValueToshow="name"
-									hasCheckBoxList={true}
-									checklistChangeHandler={onCheckboxInputChange}
-								/>
-							</ADD.RightInputContainer>
-						) : null}
-					</ADD.InputContainer>
-					<ADD.InputContainer>
-						<APD.SecondaryHeaderContainer>
-							<ADD.HeaderText>
-								{captions.taskListNoPlural}({input.allCategories.length})
-							</ADD.HeaderText>
-
-							<ADD.InfoText>Add additional task list number</ADD.InfoText>
-						</APD.SecondaryHeaderContainer>
-					</ADD.InputContainer>
-					{/* Field to add new subcat */}
-					<Grid container spacing={2} fullWidth>
-						{showAddNewField ? (
-							<Grid item xs={6}>
-								<NewSubCategoryField
-									name={newCategory}
-									onChange={onNewCategoryInputChange}
-									handleSave={handleAddCategory}
-									onClose={onNewSubCategoryFieldHide}
-								/>
-							</Grid>
-						) : null}
-						{!input.allCategories.length
-							? null
-							: input.allCategories.map((category, index) => {
-									return (
-										<Grid item xs={6}>
-											<SubCategory
-												key={category.name}
-												id={index}
-												category={category}
-												isEditable={isCategoryEditable[index]}
-												onChange={onCategoryChange}
-												onEditClick={onCategoryEdit}
-												handleEdit={handleEditCategory}
-												onDelete={onDeleteCategory}
-												isDeleteClick={isDeleteClick}
-											/>
-										</Grid>
-									);
-							  })}
-					</Grid>
-
+						<ADD.InfoText>Add additional {captions.taskListNo}</ADD.InfoText>
+					</APD.SecondaryHeaderContainer>
+				</div>
+				{/* Field to add new subcat */}
+				<Grid container spacing={2}>
+					{showAddNewField ? (
+						<Grid item xs={6}>
+							<NewSubCategoryField
+								name={newCategory}
+								onChange={onNewCategoryInputChange}
+								handleSave={handleAddCategory}
+								onClose={onNewSubCategoryFieldHide}
+							/>
+						</Grid>
+					) : null}
+					{!input.allCategories.length
+						? null
+						: input.allCategories.map((category, index) => {
+								return (
+									<Grid item xs={6}>
+										<SubCategory
+											key={category.name}
+											id={index}
+											category={category}
+											isEditable={isCategoryEditable[index]}
+											onChange={onCategoryChange}
+											onEditClick={onCategoryEdit}
+											handleEdit={handleEditCategory}
+											onDelete={onDeleteCategory}
+											isDeleteClick={isDeleteClick}
+										/>
+									</Grid>
+								);
+						  })}
+				</Grid>
+				<div style={{ marginTop: "15px" }}>
 					<APD.NewButton
 						variant="contained"
 						onClick={onNewSubCategoryFieldShow}
