@@ -268,6 +268,7 @@ function DyanamicDropdown(props) {
 		if (dropdownExpandEl) {
 			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();
+			dropdownExpandEl.style.bottom = "unset";
 			dropdownExpandEl.style.top =
 				window.innerHeight - el?.getBoundingClientRect().bottom < 300
 					? `${
@@ -294,10 +295,7 @@ function DyanamicDropdown(props) {
 				dropdownExpandEl.style.left = `${
 					dropdownPos.left + DROPDOWN_LEFT_OFFSET
 				}px`;
-				dropdownExpandEl.style.right = "unset";
 			}
-
-			dropdownExpandEl.style.position = "fixed";
 		}
 	};
 
