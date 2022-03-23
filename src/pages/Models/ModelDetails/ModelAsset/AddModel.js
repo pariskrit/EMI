@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -11,12 +11,38 @@ import {
 } from "@material-ui/core";
 import instance from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { postModelAsset } from "services/models/modelDetails/modelAsset";
+import {
+	getSearchedSiteAssets,
+	postModelAsset,
+} from "services/models/modelDetails/modelAsset";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import { handleSort } from "helpers/utils";
+import {
+	generateErrorState,
+	handleSort,
+	handleValidateObj,
+} from "helpers/utils";
+import * as yup from "yup";
+import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 
 const ADD = AddDialogStyle();
+
+// Yup validation schema
+const schema = yup.object({
+	asset: yup.number("Asset is Required").required("Asset is Required"),
+});
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
 
 const AddModel = ({
 	open,
@@ -28,10 +54,13 @@ const AddModel = ({
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [assets, setAsset] = useState([]);
-	const [input, setInput] = useState({ asset: {}, status: false });
+	const [input, setInput] = useState({ asset: {}, status: true });
 	const [page, setPage] = useState({ pageNo: 1, pageSize: 10 });
 	const [count, setCount] = useState(0);
-	const { position, siteID } = JSON.parse(sessionStorage.getItem("me"));
+	const { position, siteID } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+	const [errors, setErrors] = useState({});
 
 	const fetchAssets = async (pNo = 1, prevData = []) => {
 		let pageSearchField =
@@ -83,24 +112,34 @@ const AddModel = ({
 
 		setLoading(true);
 		try {
-			let result = await postModelAsset(data);
-			if (result.status) {
-				setLoading(false);
-				const assetData = assets.find((x) => x.id === asset.id);
-				handleAddComplete({
-					description: assetData.description,
-					id: result.data,
-					isActive: status,
-					name: assetData.name,
-				});
-				closeOverride();
-			} else {
-				setLoading(false);
-				if (result.data?.detail) getError(result.data.detail);
-				else {
+			const localChecker = await handleValidateObj(schema, {
+				asset: asset?.id,
+			});
+
+			// Attempting API call if no local validaton errors
+			if (!localChecker.some((el) => el.valid === false)) {
+				let result = await postModelAsset(data);
+				if (result.status) {
+					const assetData = assets.find((x) => x.id === asset.id);
+					handleAddComplete({
+						description: assetData.description,
+						id: result.data,
+						isActive: status,
+						name: assetData.name,
+					});
+					closeOverride();
+				} else {
 					if (result.data?.detail) getError(result.data.detail);
+					else {
+						if (result.data?.detail) getError(result.data.detail);
+					}
 				}
+			} else {
+				// show validation errors
+				const newErrors = generateErrorState(localChecker);
+				setErrors({ ...errors, ...newErrors });
 			}
+			setLoading(false);
 		} catch (e) {
 			return;
 		}
@@ -109,14 +148,32 @@ const AddModel = ({
 	const closeOverride = () => {
 		handleClose();
 		setAsset([]);
+		setErrors({});
 		setPage({ pageNo: 1, pageSize: 10 });
-		setInput({ asset: {}, status: false });
+		setInput({ asset: {}, status: true });
 	};
 
 	const pageChange = (p, prevData) => {
 		fetchAssets(p, prevData);
 		setPage({ pageNo: p, pageSize: page.pageSize });
 	};
+
+	const handleServerSideSearch = useCallback(
+		debounce(async (searchTxt) => {
+			if (searchTxt) {
+				const response = await getSearchedSiteAssets(
+					position.siteAppID,
+					1,
+					20,
+					searchTxt
+				);
+				setAsset(response.data);
+			} else {
+				pageChange(1, []);
+			}
+		}, 500),
+		[]
+	);
 
 	return (
 		<Dialog
@@ -139,7 +196,7 @@ const AddModel = ({
 					</div>
 					<div className="modalButton">
 						<ADD.ConfirmButton onClick={addModelAsset} variant="contained">
-							Save
+							Add {title}
 						</ADD.ConfirmButton>
 					</div>
 				</ADD.ButtonContainer>
@@ -153,25 +210,34 @@ const AddModel = ({
 						alignItems: "center",
 					}}
 				>
-					<DyanamicDropdown
-						dataSource={assets}
-						dataHeader={[
-							{ id: 1, name: "Name" },
-							{ id: 2, name: "Description" },
-						]}
-						showHeader
-						onChange={(val) => setInput((th) => ({ ...th, asset: val }))}
-						selectedValue={input.asset}
-						onPageChange={pageChange}
-						page={page.pageNo}
-						columns={[
-							{ name: "name", id: 1 },
-							{ name: "description", id: 2 },
-						]}
-						selectdValueToshow="name"
-						count={count}
-						handleSort={handleSort}
-					/>
+					<ErrorInputFieldWrapper
+						errorMessage={errors?.asset === null ? null : errors?.asset}
+					>
+						<DyanamicDropdown
+							label={title}
+							dataSource={assets}
+							dataHeader={[
+								{ id: 1, name: "Name" },
+								{ id: 2, name: "Description" },
+							]}
+							showHeader
+							onChange={(val) => setInput((th) => ({ ...th, asset: val }))}
+							selectedValue={input.asset}
+							onPageChange={pageChange}
+							page={page.pageNo}
+							columns={[
+								{ name: "name", id: 1 },
+								{ name: "description", id: 2 },
+							]}
+							selectdValueToshow="name"
+							count={count}
+							handleSort={handleSort}
+							required={true}
+							isError={errors?.asset ? false : true}
+							handleServierSideSearch={handleServerSideSearch}
+							isServerSide
+						/>
+					</ErrorInputFieldWrapper>
 
 					<FormGroup>
 						<FormControlLabel
@@ -183,7 +249,7 @@ const AddModel = ({
 									}}
 								/>
 							}
-							label={<Typography>Status</Typography>}
+							label={<Typography>Active</Typography>}
 						/>
 					</FormGroup>
 				</div>

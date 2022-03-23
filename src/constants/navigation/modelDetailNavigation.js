@@ -22,7 +22,7 @@ const ModelDetailNavigation = (id, detail, customCaptions) => {
 			url: links,
 		},
 		{
-			name: `${customCaptions?.asset} (${detail?.assetCount || 0})`,
+			name: `${customCaptions?.assetPlural} (${detail?.assetCount || 0})`,
 			url: links + modelAssest,
 		},
 		{

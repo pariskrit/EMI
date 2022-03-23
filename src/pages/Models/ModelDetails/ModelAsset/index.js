@@ -8,7 +8,6 @@ import { getModelAsset } from "services/models/modelDetails/modelAsset";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import AddModel from "./AddModel";
-// import TablePagination from "components/Elements/TablePagination";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 const AC = ContentStyle();
@@ -22,7 +21,7 @@ const ModelAsset = ({
 	history,
 }) => {
 	const {
-		customCaptions: { asset, assetPlural },
+		customCaptions: { asset, assetPlural, modelTemplate },
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -31,7 +30,6 @@ const ModelAsset = ({
 	const [searchedData, setSearchedData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [loading, setLoading] = useState(false);
-	// const [page, setPage] = useState({ pageNumber: 1, rowPerPage: 5 });
 	const [deleteAsset, setDelete] = useState({ open: false, id: null });
 
 	const fetchModelAsset = async () => {
@@ -103,12 +101,6 @@ const ModelAsset = ({
 	};
 
 	const mainData = searchQuery === "" ? data : searchedData;
-	// const { pageNumber, rowPerPage } = page;
-
-	// const paginatedData = mainData.slice(
-	// 	(pageNumber - 1) * rowPerPage,
-	// 	rowPerPage * pageNumber
-	// );
 
 	if (loading) {
 		return <CircularProgress />;
@@ -130,7 +122,7 @@ const ModelAsset = ({
 			/>
 			<DeleteDialog
 				open={deleteAsset.open}
-				entityName={`Model ${asset}`}
+				entityName={`${asset}`}
 				deleteID={deleteAsset.id}
 				deleteEndpoint={`/api/modelassets`}
 				handleRemoveData={handleRemoveData}
@@ -141,7 +133,7 @@ const ModelAsset = ({
 					<DetailsPanel
 						header={`${assetPlural}`}
 						dataCount={data.length}
-						description="Manage Model Asset"
+						description={`Manage ${assetPlural} this ${modelTemplate} can be assigned to`}
 					/>
 					<AC.SearchContainer>
 						<AC.SearchInner className="applicationSearchBtn">
@@ -165,7 +157,7 @@ const ModelAsset = ({
 						setData={setData}
 						searchedData={searchedData}
 						searchQuery={searchQuery}
-						headers={["Asset Name", "Status", "Description"]}
+						headers={[`${asset}`, "Status", "Description"]}
 						columns={["name", "status", "description"]}
 						menuData={[
 							{
@@ -183,15 +175,6 @@ const ModelAsset = ({
 							else return false;
 						})}
 					/>
-					{/* <TablePagination
-						title="Asset"
-						page={page.pageNumber}
-						rowsPerPage={page.rowPerPage}
-						onPageChange={(p) => {
-							setPage((th) => ({ ...th, pageNumber: p }));
-						}}
-						count={data.length}
-					/> */}
 				</div>
 			</div>
 		</>

@@ -21,4 +21,18 @@ const postModelAsset = async (data) => {
 	}
 };
 
-export { getModelAsset, postModelAsset };
+const getSearchedSiteAssets = async (siteId, pNo, pSize, search = "") => {
+	try {
+		let pageSearchField =
+			pNo !== null ? `&&pageNumber=${pNo}&&pageSize=${pSize}` : "";
+		let response = await API.get(
+			`${Apis.SiteAssets}?siteAppId=${siteId}${pageSearchField}&&search=${search}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+
+export { getModelAsset, postModelAsset,getSearchedSiteAssets };

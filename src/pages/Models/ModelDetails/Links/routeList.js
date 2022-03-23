@@ -32,8 +32,8 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 3,
-		ModelName: customCaptions?.asset,
-		name: `${customCaptions?.asset} (${detail?.assetCount || 0})`,
+		ModelName: customCaptions?.assetPlural,
+		name: `${customCaptions?.assetPlural} (${detail?.assetCount || 0})`,
 		path: modelAssest,
 		component: ModelAsset,
 		showSave: false,
