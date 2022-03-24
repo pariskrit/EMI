@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 		borderRightWidth: "1px",
 	},
 	nameRow: {
-		width: "200px",
+		width: "78px",
 		height: "10px",
 		lineHeight: "1rem",
 	},
@@ -51,7 +51,6 @@ function IntervalTable({ data = [], handleIntervalCheckbox, isDisabled }) {
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
 						<TableCell
-							style={{ width: "auto" }}
 							className={clsx(classes.nameRow, {
 								[classes.tableHeadRow]: true,
 							})}
@@ -72,7 +71,13 @@ function IntervalTable({ data = [], handleIntervalCheckbox, isDisabled }) {
 					{data?.length !== 0 ? (
 						data?.map((row) => (
 							<TableRow key={row?.modelVersionIntervalID}>
-								<TableCell>
+								<TableCell
+									style={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+									}}
+								>
 									<EMICheckbox
 										state={row?.checked}
 										changeHandler={(e) =>

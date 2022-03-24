@@ -40,6 +40,11 @@ const useStyles = makeStyles({
 		borderWidth: 1,
 		borderRadius: 0,
 	},
+	nameRow: {
+		width: "78px",
+		height: "10px",
+		lineHeight: "1rem",
+	},
 });
 
 const Stages = ({ taskInfo, getError, isMounted }) => {
@@ -88,7 +93,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			let result = await getSiteAssets(me?.siteID, p.pNo, p.pSize, p.search);
 			if (result.status) {
 				if (!isMounted.aborted)
-					setStages((th) => ({ ...th, assets: [...prevData, ...result.data] }));
+					setStages((th) => ({ ...th, assets: [...result.data] }));
 			} else {
 				errorResponse(result);
 			}
@@ -273,6 +278,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 				modelType={modelType}
 				pageChange={fetchAssets}
 				modelAccess={me?.position?.modelAccess}
+				customCaption={me?.customCaptions}
 			/>
 		</div>
 	);

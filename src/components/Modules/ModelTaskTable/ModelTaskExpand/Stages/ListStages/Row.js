@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { TableRow, FormGroup, FormControlLabel } from "@material-ui/core";
+import { TableRow, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -28,6 +28,7 @@ function Row({
 	pageChange,
 	modelType,
 	modelAccess,
+	customCaption,
 }) {
 	const [state, setStates] = useState({
 		selectedAsset: {
@@ -122,28 +123,28 @@ function Row({
 
 	return (
 		<TableRow>
-			<AT.DataCell style={{ width: "5%" }}>
-				<FormGroup style={{ paddingLeft: 10 }}>
-					<FormControlLabel
-						control={
-							<EMICheckbox
-								state={state.selected}
-								changeHandler={handleSelected}
-								disabled={modelAccess === "R"}
-							/>
-						}
-						label={""}
-					/>
-				</FormGroup>
-			</AT.DataCell>
-			<AT.DataCell style={{ width: "15%" }}>
+			<TableCell
+				style={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					height: modelType !== "F" ? "100%" : 113,
+				}}
+			>
+				<EMICheckbox
+					state={state.selected}
+					changeHandler={handleSelected}
+					disabled={modelAccess === "R"}
+				/>
+			</TableCell>
+			<TableCell>
 				<AT.CellContainer>
 					<AT.TableBodyText>{x.name}</AT.TableBodyText>
 				</AT.CellContainer>
-			</AT.DataCell>
+			</TableCell>
 
 			{modelType === "F" && (
-				<AT.DataCell style={{ width: "30%" }}>
+				<TableCell>
 					<DyanamicDropdown
 						dataHeader={[
 							{ id: 1, name: "Name" },
@@ -153,6 +154,7 @@ function Row({
 							{ id: 1, name: "name" },
 							{ id: 2, name: "description" },
 						]}
+						placeholder={`Select ${customCaption.asset}`}
 						selectedValue={state.selectedAsset}
 						onChange={onAssetChange}
 						showClear
@@ -162,10 +164,11 @@ function Row({
 						count={count}
 						onPageChange={handleAssetDropPage}
 						page={state.page}
-						disabled={!state.selected || modelAccess === "R"}
+						isReadOnly={!state.selected || modelAccess === "R"}
 						handleServierSideSearch={handleServierSideSearch}
+						isServerSide
 					/>
-				</AT.DataCell>
+				</TableCell>
 			)}
 		</TableRow>
 	);

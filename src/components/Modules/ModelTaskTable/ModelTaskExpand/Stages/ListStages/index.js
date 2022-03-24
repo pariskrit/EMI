@@ -2,6 +2,7 @@ import React from "react";
 import { Table, TableCell, TableBody, TableRow } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import Row from "./Row";
+import clsx from "clsx";
 
 const AT = TableStyle();
 
@@ -16,24 +17,30 @@ function ListStages({
 	pageChange,
 	modelType,
 	modelAccess,
+	customCaption,
 }) {
-	let headers = ["Selected", "Name"];
-	// If modelType is facility based model (F), then asset header column is shown
-	if (modelType === "F") {
-		headers.push("Assets");
-	}
-
 	return (
 		<Table aria-label="Table" className={classes.table}>
 			<AT.TableHead>
 				<TableRow className={classes.tableHead}>
-					{headers.map((header) => (
-						<TableCell key={header} className={classes.tableHeadRow}>
-							<AT.CellContainer className="flex justify-between">
-								{header}
-							</AT.CellContainer>
-						</TableCell>
-					))}
+					<TableCell
+						className={clsx(classes.nameRow, {
+							[classes.tableHeadRow]: true,
+						})}
+					>
+						Selected
+					</TableCell>
+					<TableCell
+						style={{ width: "auto" }}
+						className={clsx(classes.nameRow, {
+							[classes.tableHeadRow]: true,
+						})}
+					>
+						Name
+					</TableCell>
+					{modelType === "F" ? (
+						<TableCell className={classes.tableHeadRow}>Assets</TableCell>
+					) : null}
 				</TableRow>
 			</AT.TableHead>
 			<TableBody>
@@ -50,6 +57,7 @@ function ListStages({
 						pageChange={pageChange}
 						modelType={modelType}
 						modelAccess={modelAccess}
+						customCaption={customCaption}
 					/>
 				))}
 			</TableBody>
