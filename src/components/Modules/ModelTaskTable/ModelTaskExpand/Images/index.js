@@ -14,6 +14,7 @@ import TabelRowImage from "components/Elements/TabelRowImage";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const useStyles = makeStyles({
 	images: {
@@ -92,29 +93,6 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return images.originalData[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return images.originalData[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+images.originalData[destination.index]?.pos +
-					+images.originalData[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+images.originalData[destination.index]?.pos +
-				+images.originalData[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
-
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
 			return;
@@ -131,13 +109,16 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, images.originalData.length),
+					value: setPositionForPayload(e, images.originalData),
 				},
 			];
 			const response = await updateImage(e.draggableId, payloadBody);
 			if (!isMounted.aborted) {
 				if (response.status) {
-					setState({ originalData: result });
+					const newDate = result.map((x, i) =>
+						i === e.destination.index ? { ...x, pos: response.data.pos } : x
+					);
+					setState({ originalData: newDate, data: newDate });
 				} else {
 					setState({ data: images.originalData });
 				}

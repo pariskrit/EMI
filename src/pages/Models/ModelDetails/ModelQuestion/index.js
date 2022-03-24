@@ -19,7 +19,20 @@ import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
+import { Tooltip } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 // import useLazyLoad from "hooks/useLazyLoad";
+
+const HtmlTooltip = withStyles((theme) => ({
+	tooltip: {
+		backgroundColor: "#f5f5f9",
+		color: "rgba(0, 0, 0, 0.87)",
+		maxWidth: 220,
+		fontSize: theme.typography.pxToRem(12),
+		border: "1px solid #dadde9",
+	},
+}))(Tooltip);
 
 const ModelQuestion = ({
 	state,
@@ -31,12 +44,13 @@ const ModelQuestion = ({
 	history,
 }) => {
 	const {
-		customCaptions: { question, questionPlural },
+		customCaptions: { question, questionPlural, rolePlural, modelTemplate },
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
 	const triggerRef = useRef(null);
+	const pasteQuestionRef = useRef(false);
 
 	// INITIAL STATES
 	const [data, setData] = useState([]);
@@ -54,6 +68,7 @@ const ModelQuestion = ({
 		const timing = x.timing;
 		const questionType = questionTypeOptions.find((x) => x.value === type);
 		const timingType = questionTimingOptions.find((x) => x.value === timing);
+
 		return {
 			...x,
 			compulsory: x.isCompulsory ? "Yes" : "No",
@@ -63,16 +78,35 @@ const ModelQuestion = ({
 			additional:
 				type === "B" ? (
 					<>
-						<strong>Checkbox Caption : </strong>&nbsp;{x.checkboxCaption}
+						<span>
+							<strong>Checkbox Caption : </strong>&nbsp;{x.checkboxCaption}
+						</span>
 					</>
 				) : type === "O" || type === "C" ? (
 					<>
-						<strong>Options : </strong>&nbsp;
-						{x.options.map((a) => a.name).join(", ")}
+						<HtmlTooltip
+							title={x.options
+								.sort((a, b) => a.name.localeCompare(b.name))
+								.map((a) => a.name)
+								.join(", ")}
+						>
+							<p className="max-two-line">
+								<span>
+									{" "}
+									<strong>Options : </strong>&nbsp;
+									{x.options
+										.sort((a, b) => a.name.localeCompare(b.name))
+										.map((a) => a.name)
+										.join(", ")}
+								</span>
+							</p>
+						</HtmlTooltip>
 					</>
 				) : type === "N" ? (
 					<>
-						<strong>Decimal Places : </strong>&nbsp;{x.decimalPlaces}
+						<span>
+							<strong>Decimal Places : </strong>&nbsp;{x.decimalPlaces}
+						</span>
 					</>
 				) : (
 					""
@@ -140,7 +174,7 @@ const ModelQuestion = ({
 					const question = JSON.parse(questionText);
 
 					let result = await pasteModelQuestions(modelId, {
-						modelVersionQuestionID: question.id,
+						modelVersionQuestionID: question.copiedData.id,
 					});
 
 					if (result.status) {
@@ -153,7 +187,7 @@ const ModelQuestion = ({
 					return;
 				} finally {
 					if (!isMounted.aborted) {
-						dispatch({ type: "DISABLE_PASTE_TASK", payload: true });
+						// dispatch({ type: "DISABLE_QUESTION_TASK", payload: true });
 						dispatch({ type: "TOGGLE_PASTE_TASK", payload: false });
 						setDuplicating(false);
 					}
@@ -164,30 +198,6 @@ const ModelQuestion = ({
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state.showPasteTask]);
-
-	// handle dragging of questions
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalQuestionList[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalQuestionList[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalQuestionList[destination.index]?.pos +
-					+originalQuestionList[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalQuestionList[destination.index]?.pos +
-				+originalQuestionList[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -206,13 +216,17 @@ const ModelQuestion = ({
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalQuestionList.length),
+					value: setPositionForPayload(e, originalQuestionList),
 				},
 			];
 			const response = await patchModelQuestions(e.draggableId, payloadBody);
 			if (!isMounted.aborted) {
 				if (response.status) {
-					setOriginalQuestionList(data);
+					const newDate = result.map((x, i) =>
+						i === e.destination.index ? { ...x, pos: response.data.pos } : x
+					);
+					setOriginalQuestionList(newDate);
+					setData(newDate);
 				} else {
 					setData(originalQuestionList);
 				}
@@ -257,9 +271,27 @@ const ModelQuestion = ({
 
 	const handleCopy = (id) => {
 		const copiedData = data.find((x) => x.id === id);
-		navigator.clipboard.writeText(JSON.stringify(copiedData));
-		dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
+		navigator.clipboard.writeText(
+			JSON.stringify({ fromQuestion: true, copiedData })
+		);
+		pasteQuestionRef.current = true;
+		dispatch({ type: "DISABLE_QUESTION_TASK", payload: false });
 	};
+
+	useEffect(() => {
+		const checkcopyQuestionStatus = async () => {
+			try {
+				const questionText = await navigator.clipboard.readText();
+				if (JSON.parse(questionText).fromQuestion) {
+					dispatch({ type: "DISABLE_QUESTION_TASK", payload: false });
+				}
+			} catch (error) {
+				return;
+			}
+		};
+		checkcopyQuestionStatus();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	// Handle Delete Question
 	const handleDelete = (id) => {
@@ -333,10 +365,11 @@ const ModelQuestion = ({
 				handleAddEditComplete={handleAddEditComplete}
 				handleOptions={handleOptions}
 				editMode={editMode}
+				customCaptions={rolePlural}
 			/>
 			<DeleteDialog
 				open={deleteModel}
-				entityName={`Model ${question}`}
+				entityName={`${question}`}
 				deleteID={questionId}
 				deleteEndpoint={`/api/modelversionquestions`}
 				handleRemoveData={handleRemoveData}
@@ -347,7 +380,7 @@ const ModelQuestion = ({
 					<DetailsPanel
 						header={`${questionPlural}`}
 						dataCount={data.length}
-						description="Questions managed to this question model"
+						description={`${questionPlural} that will appear for this ${modelTemplate}`}
 					/>
 				</div>
 				{duplicating ? <LinearProgress /> : null}
@@ -356,6 +389,7 @@ const ModelQuestion = ({
 					data={data}
 					handleDragEnd={handleDragEnd}
 					isModelEditable={access === "F" || access === "E"}
+					rolePlural={rolePlural}
 					menuData={[
 						{
 							name: "Edit",

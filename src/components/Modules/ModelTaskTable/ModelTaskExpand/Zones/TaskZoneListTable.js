@@ -148,7 +148,7 @@ function TaskZoneListTable({
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
 						<TableCell
-							style={{ width: "auto" }}
+							style={{ width: "78px" }}
 							className={clsx(classes.nameRow, {
 								[classes.tableHeadRow]: true,
 							})}
@@ -191,6 +191,7 @@ function TaskZoneListTable({
 								handleServierSideSearch={handleServierSideSearch}
 								onDropDownChange={onDropDownChange}
 								isReadOnly={isReadOnly}
+								customCaptions={customCaptions}
 							/>
 						))
 					) : (

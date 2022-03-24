@@ -43,7 +43,7 @@ const TablePagination = (props) => {
 			<div>
 				{title}{" "}
 				<b>
-					{page}-{rowsPerPage}
+					{page}-{Math.ceil(count / rowsPerPage)}
 				</b>{" "}
 				of <b>{count}</b>
 			</div>

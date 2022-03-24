@@ -1,7 +1,7 @@
 import Typography from "@material-ui/core/Typography";
 import CheckIcon from "@material-ui/icons/Check";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
@@ -25,6 +25,7 @@ function Dropdown(props) {
 		isReadOnly = false,
 	} = props;
 	const [filteredList, setFilteredList] = useState([]);
+	const focusRef = useRef(false);
 
 	useEffect(() => {
 		setFilteredList(options);
@@ -104,6 +105,8 @@ function Dropdown(props) {
 		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
 		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
 		//setDropActive(true);
+		focusRef.current.focus();
+
 		onFilter("");
 
 		// setDropUpward(
@@ -182,9 +185,11 @@ function Dropdown(props) {
 					style={{ width }}
 				>
 					<span>
-						{selectedValue && selectedValue.label
-							? selectedValue.label
-							: placeholder}
+						{selectedValue && selectedValue.label ? (
+							selectedValue.label
+						) : (
+							<em style={{ opacity: "0.7" }}>{placeholder}</em>
+						)}
 					</span>
 					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 				</div>
@@ -204,6 +209,8 @@ function Dropdown(props) {
 							className="search-box__text"
 							placeholder="Search"
 							onChange={(e) => onFilter(e.target.value)}
+							id="dropdown-search-input"
+							ref={focusRef}
 						/>
 					</div>
 

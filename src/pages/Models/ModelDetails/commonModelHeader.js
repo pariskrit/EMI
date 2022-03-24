@@ -65,6 +65,7 @@ const ModelWrapper = ({
 	onClickShowChangeStatus,
 	onNavClick,
 	isPasteTaskDisabled,
+	isQuestionTaskDisabled,
 	customCaptions,
 }) => {
 	const classes = useStyles();
@@ -106,7 +107,11 @@ const ModelWrapper = ({
 							<AT.GeneralButton
 								onClick={onClickPasteTask}
 								className={classes.importButton}
-								disabled={isPasteTaskDisabled}
+								disabled={
+									ModelName === customCaptions.questionPlural
+										? isQuestionTaskDisabled
+										: isPasteTaskDisabled
+								}
 							>
 								Paste {name}
 							</AT.GeneralButton>

@@ -114,6 +114,7 @@ function DyanamicDropdown(props) {
 		count,
 		isReadOnly,
 		showBorderColor,
+		isError,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -121,6 +122,7 @@ function DyanamicDropdown(props) {
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dropdownlistner, setdropdownlistner] = useState(window);
 	const scrollRef = useRef(true);
+	const focusRef = useRef(false);
 
 	useEffect(() => {
 		setFilteredList(dataSource);
@@ -188,10 +190,10 @@ function DyanamicDropdown(props) {
 		if (dropActive) {
 			if (scrollRef.current === true) {
 				document
-					.getElementsByClassName("dropdown-content")[0]
+					.getElementsByClassName("dynamic-drop-list")[0]
 					.addEventListener("scroll", handleScroll);
 				setdropdownlistner(
-					document.getElementsByClassName("dropdown-content")[0]
+					document.getElementsByClassName("dynamic-drop-list")[0]
 				);
 				scrollRef.current = false;
 			}
@@ -254,7 +256,9 @@ function DyanamicDropdown(props) {
 		if (parentEl) parentEl.classList.add("active");
 		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
 		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
+		focusRef.current.focus();
 		setDropActive(true);
+
 		// setDropUpward(
 		// 	window.innerHeight - event.target.getBoundingClientRect().bottom < 300
 		// 		? false
@@ -371,6 +375,7 @@ function DyanamicDropdown(props) {
 					className={clsx({
 						"inputbox flex justify-between": true,
 						"icon-box": icon,
+						error: isError,
 					})}
 					style={{
 						border:
@@ -381,13 +386,17 @@ function DyanamicDropdown(props) {
 				>
 					<span className="flex" style={{ gap: "10px" }}>
 						{icon && icon}
-						{hasCheckBoxList
-							? selectedValue
-								? selectedValue
-								: placeholder
-							: selectedValue && selectedValue[selectdValueToshow]
-							? selectedValue[selectdValueToshow]
-							: placeholder}
+						{hasCheckBoxList ? (
+							selectedValue ? (
+								selectedValue
+							) : (
+								<em style={{ opacity: "0.7" }}>{placeholder}</em>
+							)
+						) : selectedValue && selectedValue[selectdValueToshow] ? (
+							selectedValue[selectdValueToshow]
+						) : (
+							<em style={{ opacity: "0.7" }}>{placeholder}</em>
+						)}
 					</span>
 					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 				</div>
@@ -407,6 +416,8 @@ function DyanamicDropdown(props) {
 							className="search-box__text"
 							placeholder="Search"
 							onChange={(e) => onFilter(e.target.value)}
+							id="dynamic-dropdown-search-input"
+							ref={focusRef}
 						/>
 					</div>
 

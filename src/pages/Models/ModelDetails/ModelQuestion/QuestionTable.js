@@ -1,7 +1,13 @@
 import React from "react";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 
-const QuestionTable = ({ data, handleDragEnd, menuData, isModelEditable }) => (
+const QuestionTable = ({
+	data,
+	handleDragEnd,
+	menuData,
+	isModelEditable,
+	rolePlural,
+}) => (
 	<DragAndDropTable
 		data={data}
 		isModelEditable={isModelEditable}
@@ -9,7 +15,7 @@ const QuestionTable = ({ data, handleDragEnd, menuData, isModelEditable }) => (
 			"Caption",
 			"Type",
 			"Timing",
-			"Roles",
+			rolePlural,
 			"Compulsory",
 			"Additional Options",
 		]}

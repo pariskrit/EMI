@@ -12,6 +12,7 @@ import { showError } from "redux/common/actions";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import withMount from "components/HOC/withMount";
 import TabelRowImage from "components/Elements/TabelRowImage";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const modelState = { id: null, open: false };
 
@@ -92,28 +93,6 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	};
 
 	// handle dragging of zone
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalStageList[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalStageList[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalStageList[destination.index]?.pos +
-					+originalStageList[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalStageList[destination.index]?.pos +
-				+originalStageList[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -130,12 +109,16 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalStageList.length),
+					value: setPositionForPayload(e, originalStageList),
 				},
 			];
 			const response = await editModelStage(e.draggableId, payloadBody);
 			if (response.status) {
-				setOriginalStageList(result);
+				const newDate = result.map((x, i) =>
+					i === e.destination.index ? { ...x, pos: response.data.pos } : x
+				);
+				setOriginalStageList(newDate);
+				setData(newDate);
 			} else {
 				setData(originalStageList);
 			}

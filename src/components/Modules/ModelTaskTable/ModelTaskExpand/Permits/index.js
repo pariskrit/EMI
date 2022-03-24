@@ -15,6 +15,7 @@ import {
 } from "services/models/modelDetails/modelTaskPermits";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const AT = ActionButtonStyle();
 
@@ -76,28 +77,6 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 	}, []);
 
 	// handle dragging of permit
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalPermits[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalPermits[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalPermits[destination.index]?.pos +
-					+originalPermits[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalPermits[destination.index]?.pos +
-				+originalPermits[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -116,12 +95,16 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalPermits.length),
+					value: setPositionForPayload(e, originalPermits),
 				},
 			];
 			const response = await patchModelTaskPermit(e.draggableId, payloadBody);
 			if (response.status) {
-				setOriginalPermits(result);
+				const newDate = result.map((x, i) =>
+					i === e.destination.index ? { ...x, pos: response.data.pos } : x
+				);
+				setOriginalPermits(newDate);
+				setPermits(newDate);
 			} else {
 				setPermits(originalPermits);
 			}

@@ -55,7 +55,7 @@ const initialInput = {
 	timing: "",
 	roles: [],
 	isCompulsory: false,
-	decimalPlaces: null,
+	decimalPlaces: "",
 	checkboxCaption: "",
 	modelVersionStageID: null,
 	modelVersionZoneID: null,
@@ -73,6 +73,7 @@ const AddEditModel = ({
 	handleAddEditComplete,
 	handleOptions,
 	editMode,
+	customCaptions,
 }) => {
 	// DEFINE STATES
 	const [input, setInput] = useState(initialInput);
@@ -206,15 +207,15 @@ const AddEditModel = ({
 			data["options"] = [];
 		} else if (ty === "B") {
 			// If type is checkbox
-			data["decimalPlaces"] = null;
+			data["decimalPlaces"] = "";
 			data["options"] = [];
 		} else if (ty === "O" || ty === "C") {
 			// if type is checkbox list or dropdown
 			data["checkboxCaption"] = "";
-			data["decimalPlaces"] = null;
+			data["decimalPlaces"] = "";
 		} else {
 			data["checkboxCaption"] = "";
-			data["decimalPlaces"] = null;
+			data["decimalPlaces"] = "";
 			data["options"] = [];
 		}
 
@@ -226,11 +227,13 @@ const AddEditModel = ({
 			data["modelVersionStageID"] = null;
 		} else {
 		}
-
 		try {
 			const localChecker = await handleValidateObj(
 				questionSchema(input.type, input.timing),
-				input
+				{
+					...input,
+					decimalPlaces: input.type === "N" ? input.decimalPlaces : null,
+				}
 			);
 
 			if (!localChecker.some((el) => el.valid === false)) {
@@ -389,12 +392,12 @@ const AddEditModel = ({
 			if (res) {
 				handleOptions({
 					...questionDetail,
-					options: [...questionDetail.options, { name: value, id: res }],
+					options: [...questionDetail.options, { name: value, id: res }].sort(),
 				});
 			}
 		}
 
-		setInput((th) => ({ ...th, options: [value, ...opt] }));
+		setInput((th) => ({ ...th, options: [value, ...opt].sort() }));
 		setIsAdd(false);
 	};
 
@@ -430,7 +433,7 @@ const AddEditModel = ({
 	};
 
 	const closeOverride = () => {
-		setInput(initialInput);
+		setInput({ ...initialInput, roles: [] });
 		setErrors(defaultError);
 		setStageZoneOptions({ loading: false, options: [] });
 		handleClose();
@@ -471,28 +474,30 @@ const AddEditModel = ({
 			<ADD.DialogContent>
 				{/* ROW 1 */}
 
-				<ADD.InputContainer>
+				<ADD.InputContainer style={{ alignItems: "center" }}>
 					<ADD.LeftInputContainer>
 						<ADD.NameLabel>
 							Caption<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
-						<ADD.NameInput
-							error={errors.caption === null ? false : true}
-							helperText={errors.caption === null ? null : errors.caption}
-							variant="outlined"
-							size="medium"
-							value={input.caption}
-							autoFocus
-							onKeyDown={handleEnterPress}
-							onChange={(e) => {
-								setInput({ ...input, caption: e.target.value });
-							}}
-							style={{ width: "100%" }}
-						/>
+						<ErrorInputFieldWrapper errorMessage={errors.caption}>
+							<ADD.NameInput
+								error={errors.caption === null ? false : true}
+								// helperText={errors.caption === null ? null : errors.caption}
+								variant="outlined"
+								size="medium"
+								value={input.caption}
+								autoFocus
+								onKeyDown={handleEnterPress}
+								onChange={(e) => {
+									setInput({ ...input, caption: e.target.value });
+								}}
+								style={{ width: "100%" }}
+							/>
+						</ErrorInputFieldWrapper>
 					</ADD.LeftInputContainer>
 
 					<ADD.RightInputContainer
-						style={{ marginTop: "auto", marginLeft: 16 }}
+						style={{ marginTop: errors.caption ? 0 : "9.25px", marginLeft: 16 }}
 					>
 						<FormGroup>
 							<FormControlLabel
@@ -530,6 +535,7 @@ const AddEditModel = ({
 								onChange={(val) =>
 									setInput((th) => ({ ...th, type: val.value }))
 								}
+								isError={errors.type === null ? false : true}
 							/>
 						</ErrorInputFieldWrapper>
 					</ADD.LeftInputContainer>
@@ -546,6 +552,7 @@ const AddEditModel = ({
 								)}
 								width="99%"
 								onChange={handleTiming}
+								isError={errors.timing === null ? false : true}
 							/>
 						</ErrorInputFieldWrapper>
 					</ADD.RightInputContainer>
@@ -562,7 +569,7 @@ const AddEditModel = ({
 							{loader.role ? <LinearProgress /> : null}
 							<DynamicDropdown
 								showHeader={false}
-								label="Role"
+								label={customCaptions}
 								required
 								hasCheckBoxList={true}
 								dataSource={roleOptions}
@@ -582,6 +589,7 @@ const AddEditModel = ({
 									.map((x) => x.name)
 									.join(", ")}
 								rolesChecklist={input.roles.map((x) => ({ id: x }))}
+								isError={errors.roles === null ? false : true}
 							/>
 						</ErrorInputFieldWrapper>
 					</ADD.LeftInputContainer>
@@ -623,6 +631,14 @@ const AddEditModel = ({
 															input.timing === "Z" ? val.value : null,
 													}));
 												}}
+												isError={
+													input.timing === "S"
+														? errors.modelVersionStageID !== null
+														: input.timing === "Z" &&
+														  errors.modelVersionZoneID === null
+														? false
+														: true
+												}
 											/>
 										</ErrorInputFieldWrapper>
 									</>
@@ -667,7 +683,7 @@ const AddEditModel = ({
 									const { value } = e.target;
 									setInput((th) => ({
 										...th,
-										decimalPlaces: input.type === "N" ? +value : null,
+										decimalPlaces: input.type === "N" ? value : "",
 										checkboxCaption: input.type === "B" ? value : "",
 									}));
 								}}

@@ -22,7 +22,10 @@ const questionSchema = (questionType, questionTiming) =>
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup.number().nullable().required("Please Provide Decimal"),
+				then: yup
+					.number()
+					.typeError("Please specify decimalPlaces")
+					.required("Please Provide Decimal"),
 			}),
 		checkboxCaption: yup.string("This field must be a string").when("type", {
 			is: () => questionType === "B",

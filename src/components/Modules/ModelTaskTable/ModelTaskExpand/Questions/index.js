@@ -21,6 +21,7 @@ import { modelServiceLayout, modelsPath } from "helpers/routePaths";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -240,28 +241,6 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	};
 
 	// HANDLE DRAG AND DROP
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalList[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalList[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalList[destination.index]?.pos +
-					+originalList[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalList[destination.index]?.pos +
-				+originalList[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -280,13 +259,17 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalList.length),
+					value: setPositionForPayload(e, originalList),
 				},
 			];
 			const response = await patchQuestions(e.draggableId, payloadBody);
 			if (!isMounted.aborted) {
 				if (response.status) {
-					setOriginalList(data);
+					const newDate = result.map((x, i) =>
+						i === e.destination.index ? { ...x, pos: response.data.pos } : x
+					);
+					setOriginalList(newDate);
+					setData(newDate);
 				} else {
 					setData(originalList);
 				}

@@ -228,7 +228,7 @@ const AddModel = ({
 							count={count}
 							handleSort={handleSort}
 							required={true}
-							isError={errors?.asset ? false : true}
+							isError={errors?.asset ? true : false}
 							handleServierSideSearch={handleServerSideSearch}
 							isServerSide
 						/>

@@ -555,7 +555,7 @@ const TaskDetails = ({
 									name="safetyCritical"
 									disabled={isReadOnly}
 								/>
-								{customCaptions?.safetyCritical}?
+								{customCaptions?.safetyCritical}
 							</ADD.CheckboxLabel>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
@@ -569,7 +569,7 @@ const TaskDetails = ({
 									name="notSkippable"
 									disabled={isReadOnly}
 								/>
-								Cannot Be Skipped?
+								Cannot Be Skipped
 							</ADD.CheckboxLabel>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>

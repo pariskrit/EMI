@@ -31,7 +31,7 @@ $dropdown-errorcolor: #f44336;
 			}
 		}
 		.error {
-			border: 1.5px solid $dropdown-errorcolor;
+			border: 1.5px solid $dropdown-errorcolor !important;
 		}
 		.icon-box {
 			padding: 12px 14px;
@@ -61,10 +61,21 @@ $dropdown-errorcolor: #f44336;
 		}
 
 		.dropdown-content {
-			padding-bottom: 10px;
 			width: 100%;
 			margin-bottom: 10px;
-			max-height: 40vh;
+			// max-height: 40vh;
+			// overflow: auto;
+		}
+
+		.dynamic-drop-list {
+			display: grid;
+			width: 100%;
+
+			//grid-gap: 10px;
+			// height: 243px;
+			padding-bottom: 10px;
+			max-height: 32vh;
+			border-top: 1px solid $border-color;
 			overflow: auto;
 			&::-webkit-scrollbar {
 				width: 5px;
@@ -95,16 +106,6 @@ $dropdown-errorcolor: #f44336;
 			&::-webkit-scrollbar-thumb:hover {
 				background: #555;
 			}
-		}
-
-		.dynamic-drop-list {
-			display: grid;
-			width: 100%;
-
-			//grid-gap: 10px;
-			padding-bottom: 10px;
-			max-height: 42vh;
-			border-top: 1px solid $border-color;
 
 			.checklist-item {
 				padding: 15px;

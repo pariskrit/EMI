@@ -15,6 +15,7 @@ import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import AddOrEditPart from "./AddOrEditPart";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const AT = ActionButtonStyle();
 
@@ -80,28 +81,6 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 	}, []);
 
 	// handle dragging of part
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalParts[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalParts[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalParts[destination.index]?.pos +
-					+originalParts[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalParts[destination.index]?.pos +
-				+originalParts[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -120,12 +99,16 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalParts.length),
+					value: setPositionForPayload(e, originalParts),
 				},
 			];
 			const response = await patchModelTaskPart(e.draggableId, payloadBody);
 			if (response.status) {
-				setOriginalParts(result);
+				const newDate = result.map((x, i) =>
+					i === e.destination.index ? { ...x, pos: response.data.pos } : x
+				);
+				setOriginalParts(newDate);
+				setParts(newDate);
 			} else {
 				setParts(originalParts);
 			}

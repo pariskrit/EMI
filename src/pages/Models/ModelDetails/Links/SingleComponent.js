@@ -60,6 +60,7 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 				onClickShowChangeStatus={openChangeStatusModel}
 				onNavClick={(path) => route.history.push(path)}
 				isPasteTaskDisabled={state.isPasteTaskDisabled}
+				isQuestionTaskDisabled={state.isQuestionTaskDisabled}
 				customCaptions={customCaptions}
 			/>
 			{

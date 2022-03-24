@@ -14,6 +14,7 @@ import TabelRowImage from "components/Elements/TabelRowImage";
 import withMount from "components/HOC/withMount";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
@@ -84,28 +85,6 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 	}, []);
 
 	// handle dragging of zone
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalZoneList[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalZoneList[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalZoneList[destination.index]?.pos +
-					+originalZoneList[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalZoneList[destination.index]?.pos +
-				+originalZoneList[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -124,12 +103,16 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalZoneList.length),
+					value: setPositionForPayload(e, originalZoneList),
 				},
 			];
 			const response = await patchModelVersionZones(e.draggableId, payloadBody);
 			if (response.status) {
-				setOriginalZoneList(zoneList);
+				const newDate = result.map((x, i) =>
+					i === e.destination.index ? { ...x, pos: response.data.pos } : x
+				);
+				setOriginalZoneList(newDate);
+				setZonesList(newDate);
 			} else {
 				setZonesList(originalZoneList);
 			}

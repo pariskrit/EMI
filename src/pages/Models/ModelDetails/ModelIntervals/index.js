@@ -14,6 +14,7 @@ import { showError } from "redux/common/actions";
 import DeleteDialog from "./DeleteDialog";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import EditDialog from "./EditDialog";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 function ModelInterval({ state, dispatch, modelId, access }) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -65,29 +66,6 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 	const onCheckboxInputChange = () =>
 		setEnableAutoIncludeIntervals(!enableAutoIncludeIntervals);
 
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalModelIntervals[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalModelIntervals[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalModelIntervals[destination.index]?.pos +
-					+originalModelIntervals[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalModelIntervals[destination.index]?.pos +
-				+originalModelIntervals[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
-
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
 			return;
@@ -104,7 +82,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 			{
 				path: "pos",
 				op: "replace",
-				value: setPositionForPayload(e, originalModelIntervals.length),
+				value: setPositionForPayload(e, originalModelIntervals),
 			},
 		];
 		const response = await dragAndDropModelIntervals(
@@ -112,7 +90,11 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 			payloadBody
 		);
 		if (response.status) {
-			setOriginalModelIntervals(result);
+			const newDate = result.map((x, i) =>
+				i === e.destination.index ? { ...x, pos: response.data.pos } : x
+			);
+			setOriginalModelIntervals(newDate);
+			setModelIntervals(newDate);
 		} else {
 			setModelIntervals(originalModelIntervals);
 			reduxDispatch(showError(response.data || "Could not drag interval"));

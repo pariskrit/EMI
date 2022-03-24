@@ -18,16 +18,17 @@ import {
 import ColourConstants from "helpers/colourConstants";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const AT = ActionButtonStyle();
 
 const Attachments = ({ taskInfo, access, isMounted }) => {
-	const [permits, setPermits] = useState([]);
-	const [originalPermits, setOriginalPermits] = useState([]);
+	const [attachments, setAttachments] = useState([]);
+	const [originalAttachments, setOriginalAttachments] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
 
-	const [openAddPermit, setOpenAddPermit] = useState(false);
-	const [openEditPermit, setOpenEditPermit] = useState(false);
+	const [openAddAttachment, setOpenAddAttachment] = useState(false);
+	const [openEditAttachment, setOpenEditAttachment] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(false);
 
@@ -41,7 +42,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 			const response = await getModelTaskAttachments(taskInfo.id);
 			if (response.status) {
 				if (!isMounted.aborted) {
-					setPermits(
+					setAttachments(
 						response?.data?.map((a) => ({
 							...a,
 							name: (
@@ -57,7 +58,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 							),
 						}))
 					);
-					setOriginalPermits(
+					setOriginalAttachments(
 						response?.data?.map((a) => ({
 							...a,
 							name: (
@@ -108,29 +109,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// handle dragging of permit
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalPermits[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalPermits[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalPermits[destination.index]?.pos +
-					+originalPermits[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalPermits[destination.index]?.pos +
-				+originalPermits[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
+	// handle dragging of attachment
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -139,17 +118,17 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 
 		if (e.destination.index === e.source.index) return;
 
-		const result = [...permits];
+		const result = [...attachments];
 		const [removed] = result.splice(e.source.index, 1);
 		result.splice(e.destination.index, 0, removed);
-		setPermits(result);
+		setAttachments(result);
 
 		try {
 			let payloadBody = [
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalPermits.length),
+					value: setPositionForPayload(e, originalAttachments),
 				},
 			];
 			const response = await patchModelTaskAttachment(
@@ -157,28 +136,32 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				payloadBody
 			);
 			if (response.status) {
-				setOriginalPermits(result);
+				const newDate = result.map((x, i) =>
+					i === e.destination.index ? { ...x, pos: response.data.pos } : x
+				);
+				setOriginalAttachments(newDate);
+				setAttachments(newDate);
 			} else {
-				setPermits(originalPermits);
+				setAttachments(originalAttachments);
 			}
 		} catch (error) {
-			setPermits(originalPermits);
+			setAttachments(originalAttachments);
 		}
 	};
 
-	// show popup for deletion of permit
-	const showDeletePermitPopUp = (TaskPartID) => {
+	// show popup for deletion of attachment
+	const showDeleteAttachmentPopUp = (TaskPartID) => {
 		setOpenDeleteDialog(true);
 		setSelectedID(TaskPartID);
 	};
 
-	// remove permit from permit list
+	// remove attachment from attachment list
 	const handleRemoveData = (id) => {
-		const newData = [...permits].filter(function (item) {
+		const newData = [...attachments].filter(function (item) {
 			return item.id !== id;
 		});
-		setPermits(newData);
-		setOriginalPermits(newData);
+		setAttachments(newData);
+		setOriginalAttachments(newData);
 		CtxDispatch({
 			type: "TAB_COUNT",
 			payload: {
@@ -188,7 +171,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 		});
 	};
 
-	const createPermit = async (newPermit) => {
+	const createAttachment = async (newPermit) => {
 		let response, callApi;
 		if (newPermit.file) {
 			response = await uploadModelTaskAttachmentDocument(
@@ -225,14 +208,14 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 		}
 	};
 
-	// show popUp for edit of permit
-	const showEditPermitPopUp = (row) => {
-		row = permits.find((r) => r.id === row);
-		setOpenEditPermit(true);
+	// show popUp for edit of attachment
+	const showEditAttachmentPopUp = (row) => {
+		row = attachments.find((r) => r.id === row);
+		setOpenEditAttachment(true);
 		setSelectedID(row);
 	};
 
-	const editPermit = async (payload) => {
+	const editAttachment = async (payload) => {
 		let response;
 		if (payload.file?.name) {
 			response = await uploadModelTaskAttachmentDocument(
@@ -280,27 +263,27 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 	return (
 		<div style={{ marginBottom: "20px" }}>
 			<AddOrEditAttachments
-				open={openAddPermit}
+				open={openAddAttachment}
 				title={`Add Attachment`}
 				closeHandler={() => {
-					setOpenAddPermit(false);
+					setOpenAddAttachment(false);
 				}}
 				data={null}
-				createProcessHandler={createPermit}
+				createProcessHandler={createAttachment}
 				fetchData={() => fetchAttachments(false)}
 			/>
 			<AddOrEditAttachments
-				open={openEditPermit}
+				open={openEditAttachment}
 				title={`Edit Attachment`}
 				closeHandler={() => {
-					setOpenEditPermit(false);
+					setOpenEditAttachment(false);
 				}}
 				data={{
 					name: selectedID?.name?.props?.children,
 					link: selectedID?.link === null ? "" : selectedID?.link,
 					file: selectedID?.documentKey,
 				}}
-				createProcessHandler={editPermit}
+				createProcessHandler={editAttachment}
 				fetchData={() => fetchAttachments(false)}
 			/>
 			<DeleteDialog
@@ -315,11 +298,11 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				className="detailsContainer topContainerCustomCaptions"
 				style={{ alignItems: "center" }}
 			>
-				<DetailsPanel header={`Attachments`} dataCount={permits.length} />
+				<DetailsPanel header={`Attachments`} dataCount={attachments.length} />
 				{access === "F" && (
 					<AT.GeneralButton
 						onClick={() => {
-							setOpenAddPermit(true);
+							setOpenAddAttachment(true);
 						}}
 					>
 						Add Attachment
@@ -327,19 +310,19 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				)}
 			</div>
 			<DragAndDropTable
-				data={permits}
+				data={attachments}
 				headers={["Name"]}
 				columns={[{ id: 2, name: "name" }]}
 				handleDragEnd={handleDragEnd}
 				menuData={[
 					{
 						name: "Edit",
-						handler: showEditPermitPopUp,
+						handler: showEditAttachmentPopUp,
 						isDelete: false,
 					},
 					{
 						name: "Delete",
-						handler: showDeletePermitPopUp,
+						handler: showDeleteAttachmentPopUp,
 						isDelete: true,
 					},
 				].filter((x) => {

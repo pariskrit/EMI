@@ -15,6 +15,7 @@ import {
 } from "services/models/modelDetails/modelTaskTools";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const AT = ActionButtonStyle();
 
@@ -80,28 +81,6 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 	}, []);
 
 	// handle dragging of tool
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalTools[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalTools[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalTools[destination.index]?.pos +
-					+originalTools[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalTools[destination.index]?.pos +
-				+originalTools[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -120,12 +99,16 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalTools.length),
+					value: setPositionForPayload(e, originalTools),
 				},
 			];
 			const response = await patchModelTaskTool(e.draggableId, payloadBody);
 			if (response.status) {
-				setOriginalTools(result);
+				const newDate = result.map((x, i) =>
+					i === e.destination.index ? { ...x, pos: response.data.pos } : x
+				);
+				setTools(newDate);
+				setOriginalTools(newDate);
 			} else {
 				setTools(originalTools);
 			}

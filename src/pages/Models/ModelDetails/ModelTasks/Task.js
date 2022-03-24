@@ -166,8 +166,9 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			const pasteTask = async () => {
 				try {
 					const taskId = await navigator.clipboard.readText();
+					const task = JSON.parse(taskId);
 					const response = await pasteModelTask(modelId, {
-						ModelVersionTaskID: +taskId,
+						ModelVersionTaskID: +task.modelTaskId,
 					});
 					if (response.status) {
 						fetchData(modelId, false, searchTxt, pageNumber, perPage);
@@ -185,7 +186,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						showError(error?.response?.data || "something went wrong")
 					);
 				} finally {
-					dispatch({ type: "DISABLE_PASTE_TASK", payload: true });
 					dispatch({ type: "TOGGLE_PASTE_TASK", payload: false });
 					setPasteTask(false);
 					setPasting(false);
@@ -204,6 +204,21 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		perPage,
 		searchTxt,
 	]);
+
+	useEffect(() => {
+		const checkcopyQuestionStatus = async () => {
+			try {
+				const taskText = await navigator.clipboard.readText();
+				if (JSON.parse(taskText).fromTask) {
+					dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
+				}
+			} catch (error) {
+				return;
+			}
+		};
+		checkcopyQuestionStatus();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const handleSearch = useCallback(
 		debounce(async (value) => {
@@ -237,7 +252,9 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	};
 
 	const handleCopy = (modelTaskId) => {
-		navigator.clipboard.writeText(modelTaskId);
+		navigator.clipboard.writeText(
+			JSON.stringify({ fromTask: true, modelTaskId })
+		);
 		setPasteTask(true);
 	};
 

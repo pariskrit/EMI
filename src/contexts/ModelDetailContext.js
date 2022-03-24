@@ -10,6 +10,7 @@ const initialState = {
 	showPasteTask: false,
 	showChangeStatus: false,
 	isPasteTaskDisabled: true,
+	isQuestionTaskDisabled: true,
 	taskDetail: {},
 };
 
@@ -48,6 +49,9 @@ function reducer(state, action) {
 			};
 		case "DISABLE_PASTE_TASK":
 			return { ...state, isPasteTaskDisabled: payload };
+
+		case "DISABLE_QUESTION_TASK":
+			return { ...state, isQuestionTaskDisabled: payload };
 
 		case "TAB_COUNT":
 			return {

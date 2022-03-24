@@ -16,7 +16,6 @@ import {
 	deleteModelIntervalsInclude,
 	addModelIntervalsInclude,
 } from "services/models/modelDetails/modelIntervals";
-import DynamicDropdown from "components/Elements/DyamicDropdown";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { DialogContent, Grid } from "@material-ui/core";

@@ -16,12 +16,20 @@ function ZoneRow({
 	handleServierSideSearch,
 	onDropDownChange,
 	isReadOnly,
+	customCaptions,
 }) {
 	const [selected, setSelected] = useState(false);
 
 	return (
-		<TableRow>
-			<TableCell>
+		<TableRow style={{ height: "100%" }}>
+			<TableCell
+				style={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					height: modelType !== "F" ? "100%" : 113,
+				}}
+			>
 				<EMICheckbox
 					state={row?.id ? true : false}
 					changeHandler={(e) =>
@@ -57,7 +65,8 @@ function ZoneRow({
 								? { id: row.siteAssetID, name: row.siteAssetName }
 								: {}
 						}
-						placeholder="Select Assest"
+						placeholder={`Select ${customCaptions?.asset}
+						`}
 						selectdValueToshow="name"
 						showClear
 						onChange={(list) => onDropDownChange(row.id, list)}
