@@ -7,7 +7,7 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
-import useInfiniteScroll from "hooks/useInfiniteScroll";
+import useInfiniteScroll from "hooks/useDropdownInfiniteScroll";
 import TableStyle from "styles/application/TableStyle";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 
@@ -300,6 +300,15 @@ function DyanamicDropdown(props) {
 					dropdownPos.left + DROPDOWN_LEFT_OFFSET
 				}px`;
 			}
+		}
+		if (scrollRef.current === true) {
+			document
+				.getElementsByClassName("dynamic-drop-list")[0]
+				.addEventListener("scroll", handleScroll);
+			setdropdownlistner(
+				document.getElementsByClassName("dynamic-drop-list")[0]
+			);
+			scrollRef.current = false;
 		}
 	};
 
