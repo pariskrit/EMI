@@ -169,7 +169,13 @@ const ModelQuestion = ({
 			const handlePaste = async () => {
 				setDuplicating(true);
 				try {
-					const questionText = await navigator.clipboard.readText();
+					// const queryOpts = {
+					// 	name: "clipboard-read",
+					// 	allowWithoutGesture: true,
+					// };
+					// await navigator.permissions.query(queryOpts);
+					// const questionText = await navigator.clipboard.readText();
+					const questionText = sessionStorage.getItem("question");
 
 					const question = JSON.parse(questionText);
 
@@ -271,7 +277,11 @@ const ModelQuestion = ({
 
 	const handleCopy = (id) => {
 		const copiedData = data.find((x) => x.id === id);
-		navigator.clipboard.writeText(
+		// navigator.clipboard.writeText(
+		// 	JSON.stringify({ fromQuestion: true, copiedData })
+		// );
+		sessionStorage.setItem(
+			"question",
 			JSON.stringify({ fromQuestion: true, copiedData })
 		);
 		pasteQuestionRef.current = true;
@@ -281,7 +291,14 @@ const ModelQuestion = ({
 	useEffect(() => {
 		const checkcopyQuestionStatus = async () => {
 			try {
-				const questionText = await navigator.clipboard.readText();
+				// const queryOpts = {
+				// 	name: "clipboard-read",
+				// 	allowWithoutGesture: true,
+				// };
+				// await navigator.permissions.query(queryOpts);
+				// const questionText = await navigator.clipboard.readText();
+				const questionText = sessionStorage.getItem("question");
+
 				if (JSON.parse(questionText).fromQuestion) {
 					dispatch({ type: "DISABLE_QUESTION_TASK", payload: false });
 				}

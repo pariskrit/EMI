@@ -10,8 +10,6 @@ import TableRow from "@material-ui/core/TableRow";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
 import ModelTaskRow from "./ModelTaskRow";
-import AddNewModelTask from "pages/Models/ModelDetails/ModelTasks/AddNewModelTask";
-import { duplicateTask } from "services/models/modelDetails/modelTasks";
 import TaskDetailContext from "contexts/TaskDetailContext";
 
 // Init styled components
@@ -79,24 +77,16 @@ const ModelTaskTable = ({
 	headers,
 	columns,
 	modelId,
-	fetchData,
 	handleCopy,
 	handleCopyTaskQuestion,
 	customCaptions,
+	handleDuplicate,
 	access,
-	totalTaskCount,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
-	const [dupicateTask, setDuplicateTask] = useState(null);
-	const [openDuplicate, setOPenDuplicate] = useState(false);
-
-	const handleDuplicate = (toDuplicateTask) => {
-		setDuplicateTask(toDuplicateTask);
-		setOPenDuplicate(true);
-	};
 
 	const handleSortClick = (field) => {
 		// Flipping current method
@@ -109,35 +99,8 @@ const ModelTaskTable = ({
 		setCurrentTableSort([field, newMethod]);
 	};
 
-	const dupliacteModelTask = async () => {
-		return await duplicateTask(dupicateTask?.id);
-	};
-
 	return (
 		<>
-			<AddNewModelTask
-				open={openDuplicate}
-				closeHandler={() => setOPenDuplicate(false)}
-				data={{
-					name: dupicateTask?.name,
-					actionID: {
-						label: dupicateTask?.actionName,
-						value: dupicateTask?.actionID,
-					},
-					operatingModeID: { label: dupicateTask?.operatingModeName },
-					systemID: { label: dupicateTask?.systemName },
-					roles: { label: dupicateTask?.roles },
-					estimatedMinutes: dupicateTask?.estimatedMinutes,
-					safetyCritical: dupicateTask?.safetyCritical ? true : false,
-				}}
-				title={`Duplicate ${customCaptions?.task}`}
-				modelId={modelId}
-				createProcessHandler={dupliacteModelTask}
-				fetchData={fetchData}
-				isDuplicate={true}
-				customCaptions={customCaptions}
-				totalTaskCount={totalTaskCount}
-			/>
 			<Table aria-label="Table" className={classes.table}>
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>

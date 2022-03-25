@@ -172,10 +172,11 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 				data={null}
 				createProcessHandler={createTool}
 				fetchData={() => fetchTools(false)}
+				customCaptions={customCaptions}
 			/>
 			<AddOrEditTool
 				open={openEditTool}
-				title={`Edit ${customCaptions.tool}`}
+				title={`${customCaptions.tool}`}
 				closeHandler={() => {
 					setOpenEditTool(false);
 				}}
@@ -185,6 +186,8 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 				}}
 				createProcessHandler={editTool}
 				fetchData={() => fetchTools(false)}
+				customCaptions={customCaptions}
+				isEdit
 			/>
 			<DeleteDialog
 				entityName={`${customCaptions.tool}`}
@@ -214,10 +217,13 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 			</div>
 			<DragAndDropTable
 				data={tools}
-				headers={["Quantity", "Description"]}
+				headers={[
+					customCaptions?.toolQuantity,
+					customCaptions?.toolDescription,
+				]}
 				columns={[
-					{ id: 1, name: "qty", style: { width: "50vw" } },
-					{ id: 2, name: "name", style: { width: "50vw" } },
+					{ id: 1, name: "qty", style: { width: "12vw" } },
+					{ id: 2, name: "name", style: { width: "auto" } },
 				]}
 				handleDragEnd={handleDragEnd}
 				menuData={[

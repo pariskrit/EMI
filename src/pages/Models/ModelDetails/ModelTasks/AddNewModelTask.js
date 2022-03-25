@@ -10,7 +10,11 @@ import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 import * as yup from "yup";
 import { makeStyles } from "@material-ui/core/styles";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import {
+	generateErrorState,
+	handleSort,
+	handleValidateObj,
+} from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
 import { useDispatch } from "react-redux";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -20,6 +24,8 @@ import { showError } from "redux/common/actions";
 import { getActions } from "services/clients/sites/siteApplications/actions";
 import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import { ModelContext } from "contexts/ModelDetailContext";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -33,7 +39,7 @@ const schema = yup.object({
 	actionID: yup.string("This field must be string").nullable(),
 	operatingModeID: yup.string().nullable(),
 	systemID: yup.string().nullable(),
-	roles: yup.string().nullable(),
+	roles: yup.array().nullable(),
 	estimatedMinutes: yup.string().nullable(),
 	safetyCritical: yup.boolean().nullable(),
 });
@@ -67,7 +73,7 @@ const defaultStateSchema = {
 	actionID: null,
 	operatingModeID: null,
 	systemID: null,
-	roles: null,
+	roles: [],
 	estimatedMinutes: "",
 	safetyCritical: false,
 };
@@ -97,6 +103,8 @@ function AddNewModelTask({
 	const [systems, setSystems] = useState([]);
 	const [modelRoles, setModelRoles] = useState([]);
 	const [actions, setActions] = useState([]);
+	const [apiRoles, setApiRoles] = useState([]);
+	const [defaultOperatingModeId, setDefaultOperatingModeId] = useState(null);
 
 	const [, Ctxdispatch] = useContext(ModelContext);
 
@@ -110,8 +118,15 @@ function AddNewModelTask({
 						getSystems(siteId),
 						getModelRolesList(modelId),
 						getActions(siteId),
+						getSiteApplicationDetail(siteId),
 					]);
-					const [operatingModes, systems, modelRoles, siteActions] = response;
+					const [
+						operatingModes,
+						systems,
+						modelRoles,
+						siteActions,
+						siteApplications,
+					] = response;
 					if (operatingModes.status) {
 						setOperatingModes(
 							operatingModes.data.map((list) => ({
@@ -129,10 +144,12 @@ function AddNewModelTask({
 						);
 					}
 					if (modelRoles.status) {
-						setModelRoles(
-							modelRoles.data.map((list) => ({
-								label: list.name,
-								value: list.id,
+						setModelRoles(modelRoles.data);
+						setApiRoles(
+							modelRoles.data.map((role) => ({
+								...role,
+								id: null,
+								modelVersionRoleID: role.id,
 							}))
 						);
 					}
@@ -143,6 +160,16 @@ function AddNewModelTask({
 								value: list.id,
 							}))
 						);
+					}
+
+					if (siteApplications.status) {
+						const tempOperatingMode = operatingModes.data.find(
+							(mode) => mode.id === siteApplications.data.defaultOperatingModeID
+						);
+						setDefaultOperatingModeId({
+							label: tempOperatingMode?.name,
+							value: tempOperatingMode?.id,
+						});
 					}
 				} catch (error) {
 					dispatch(showError(error?.response?.data));
@@ -182,7 +209,7 @@ function AddNewModelTask({
 				...input,
 				operatingModeID: input?.operatingModeID?.value || null,
 				systemID: input?.systemID?.value || null,
-				roles: input?.roles?.value || null,
+				roles: input?.roles || null,
 				actionID: input?.actionID?.value || null,
 				estimatedMinutes: input?.estimatedMinutes || 0,
 			};
@@ -192,7 +219,7 @@ function AddNewModelTask({
 			if (!localChecker.some((el) => el.valid === false)) {
 				const newData = await createProcessHandler({
 					...cleanInput,
-					roles: cleanInput.roles !== null ? [cleanInput.roles] : null,
+					roles: cleanInput.roles !== null ? [...cleanInput.roles] : null,
 				});
 				if (newData.status) {
 					setIsUpdating(false);
@@ -218,6 +245,41 @@ function AddNewModelTask({
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
 			dispatch(showError(err?.response?.data || "something went wrong"));
+		}
+	};
+
+	const handleCheckListClick = (id, clickedData) => {
+		const roleToFind = apiRoles.find((r) => r.modelVersionRoleID === id);
+
+		if (roleToFind.id === null) {
+			setInput({
+				...input,
+				roles: [...input.roles, roleToFind.modelVersionRoleID],
+			});
+			setApiRoles([
+				...apiRoles.map((role) =>
+					role.modelVersionRoleID === id
+						? { ...role, id: role.modelVersionRoleID }
+						: role
+				),
+			]);
+		} else {
+			setInput({
+				...input,
+				roles: [...input.roles.filter((role) => role !== id)],
+			});
+
+			setApiRoles([
+				...apiRoles.map((role) =>
+					role.modelVersionRoleID === id ? { ...role, id: null } : role
+				),
+			]);
+		}
+	};
+
+	const handleEnterPress = (e) => {
+		if (e.keyCode === 13) {
+			handleCreateProcess();
 		}
 	};
 
@@ -260,6 +322,21 @@ function AddNewModelTask({
 				<DialogContent className={classes.dialogContent}>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
+							<ADD.NameLabel>{customCaptions?.actionRequired}</ADD.NameLabel>
+							<Dropdown
+								options={actions}
+								selectedValue={input.actionID}
+								onChange={(e) => {
+									setInput({ ...input, actionID: e });
+								}}
+								label=""
+								placeholder={`Select ${customCaptions?.actionRequired}`}
+								width="100%"
+								disabled={isDuplicate}
+							/>
+						</ADD.LeftInputContainer>
+
+						<ADD.RightInputContainer>
 							<ADD.NameLabel>
 								Name<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
@@ -274,21 +351,7 @@ function AddNewModelTask({
 								fullWidth
 								autoFocus
 								disabled={isDuplicate}
-							/>
-						</ADD.LeftInputContainer>
-
-						<ADD.RightInputContainer>
-							<ADD.NameLabel>{customCaptions?.actionRequired}</ADD.NameLabel>
-							<Dropdown
-								options={actions}
-								selectedValue={input.actionID}
-								onChange={(e) => {
-									setInput({ ...input, actionID: e });
-								}}
-								label=""
-								placeholder={`Select ${customCaptions?.actionRequired}`}
-								width="100%"
-								disabled={isDuplicate}
+								onKeyDown={handleEnterPress}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -297,7 +360,7 @@ function AddNewModelTask({
 							<ADD.NameLabel>{customCaptions?.operatingMode}</ADD.NameLabel>
 							<Dropdown
 								options={operatingModes}
-								selectedValue={input.operatingModeID}
+								selectedValue={input.operatingModeID ?? defaultOperatingModeId}
 								onChange={(e) => {
 									setInput({ ...input, operatingModeID: e });
 								}}
@@ -326,17 +389,32 @@ function AddNewModelTask({
 					</ADD.InputContainer>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
-							<ADD.NameLabel>{customCaptions?.rolePlural}</ADD.NameLabel>
-							<Dropdown
-								options={modelRoles}
-								selectedValue={input.roles}
-								onChange={(e) => {
-									console.log(e);
-									setInput({ ...input, roles: e });
-								}}
-								label=""
-								placeholder={`Select ${customCaptions?.role}`}
+							<DyanamicDropdown
+								isServerSide={false}
 								width="100%"
+								placeholder={`Select ${customCaptions?.role}`}
+								dataHeader={[{ id: 1, name: "Roles" }]}
+								columns={[{ id: 1, name: "name" }]}
+								dataSource={modelRoles ?? []}
+								label={customCaptions?.rolePlural}
+								showHeader
+								handleSort={handleSort}
+								selectedValue={
+									apiRoles
+										?.filter((r) => r.id !== null)
+										?.map((r) => r.name)
+										?.join(", ") ?? ""
+								}
+								rolesChecklist={
+									apiRoles
+										?.filter((r) => r.id !== null)
+										?.map((r) => ({
+											id: r?.id,
+											name: r?.name,
+										})) ?? []
+								}
+								hasCheckBoxList={true}
+								checklistChangeHandler={handleCheckListClick}
 								disabled={isDuplicate}
 							/>
 						</ADD.LeftInputContainer>
@@ -365,6 +443,7 @@ function AddNewModelTask({
 									),
 								}}
 								disabled={isDuplicate}
+								onKeyDown={handleEnterPress}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -381,7 +460,7 @@ function AddNewModelTask({
 									}}
 									disabled={isDuplicate}
 								/>
-								{customCaptions?.safetyCritical}?
+								{customCaptions?.safetyCritical}
 							</ADD.CheckboxLabel>
 						</ADD.LeftInputContainer>
 					</ADD.InputContainer>

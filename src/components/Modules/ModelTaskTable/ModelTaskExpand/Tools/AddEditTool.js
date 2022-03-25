@@ -58,6 +58,8 @@ function AddOrEditTool({
 	title,
 	createProcessHandler,
 	fetchData,
+	customCaptions,
+	isEdit,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -104,7 +106,7 @@ function AddOrEditTool({
 				} else {
 					setIsUpdating(false);
 					dispatch(
-						showError(newData?.data?.detail || "Could not add new tool")
+						showError(newData?.data?.detail || "Could not add new Atool")
 					);
 				}
 			} else {
@@ -119,8 +121,14 @@ function AddOrEditTool({
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
 			dispatch(
-				showError(err?.response?.data?.title || "Could not add new tool")
+				showError(err?.response?.data?.title || "Could not add new Atool")
 			);
+		}
+	};
+
+	const handleKeydownPress = (e) => {
+		if (e.keyCode === 13) {
+			handleCreateProcess();
 		}
 	};
 
@@ -139,7 +147,11 @@ function AddOrEditTool({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>{title}</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								{isEdit ? "Edit " + title : title}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
@@ -154,7 +166,7 @@ function AddOrEditTool({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{title}
+								{isEdit ? "Save " + title : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>
@@ -164,7 +176,8 @@ function AddOrEditTool({
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
 							<ADD.NameLabel>
-								Quantity<ADD.RequiredStar>*</ADD.RequiredStar>
+								{customCaptions?.toolQuantity}
+								<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.qty === null ? false : true}
@@ -173,15 +186,18 @@ function AddOrEditTool({
 								onChange={(e) => {
 									setInput({ ...input, qty: e.target.value });
 								}}
+								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
 								type="number"
+								autoFocus
 							/>
 						</ADD.LeftInputContainer>
 
 						<ADD.RightInputContainer>
 							<ADD.NameLabel>
-								Description<ADD.RequiredStar>*</ADD.RequiredStar>
+								{customCaptions?.toolDescription}
+								<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.name === null ? false : true}
@@ -190,6 +206,7 @@ function AddOrEditTool({
 								onChange={(e) => {
 									setInput({ ...input, name: e.target.value });
 								}}
+								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
 							/>

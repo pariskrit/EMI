@@ -61,7 +61,7 @@ const ModelTaskRow = ({
 
 	const history = useHistory();
 
-	const onHandleTableExpand = async (tg, rowId) => {
+	const onHandleTableExpand = async (tg, rowId, e) => {
 		setToggle(tg);
 
 		// call single task detail api only if expand is true
@@ -109,7 +109,7 @@ const ModelTaskRow = ({
 	return (
 		<>
 			<TableRow
-				onClick={() => onHandleTableExpand(!toggle, row?.id)}
+				onClick={(e) => onHandleTableExpand(!toggle, row?.id, e)}
 				style={{
 					background: toggle ? " #307AD7" : "#FFFFFF",
 					borderBottom: "hidden",
@@ -135,6 +135,7 @@ const ModelTaskRow = ({
 									<p
 										className="max-two-line"
 										style={{ color: toggle ? "#FFFFFF" : "" }}
+										draggable="true"
 									>
 										{" "}
 										{row[col]}
@@ -147,7 +148,9 @@ const ModelTaskRow = ({
 									<ErrorIcon style={{ color: toggle ? "#FFFFFF" : "red" }} />
 								)
 							) : (
-								row[col]
+								<span className="lastSpan" draggable="true">
+									{row[col]}
+								</span>
 							)}
 							{/* </AT.TableBodyText> */}
 
@@ -162,10 +165,15 @@ const ModelTaskRow = ({
 											anchorEl === e.currentTarget ? null : index
 										);
 									}}
+									className="taskdotmenu"
 								>
 									{access === "F" || access === "E" ? (
-										<AT.TableMenuButton>
-											{toggle ? <WhiteMenuIcon /> : <BlueMenuIcon />}
+										<AT.TableMenuButton className="taskdotmenu">
+											{toggle ? (
+												<WhiteMenuIcon className="taskdotmenu" />
+											) : (
+												<BlueMenuIcon className="taskdotmenu" />
+											)}
 										</AT.TableMenuButton>
 									) : null}
 
@@ -207,6 +215,7 @@ const ModelTaskRow = ({
 														{ state: { ModelVersionTaskID: row.id } }
 													),
 												isDelete: false,
+												disabled: !row["stages"],
 											},
 											{
 												name: "Delete",

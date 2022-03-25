@@ -23,6 +23,7 @@ import SearchField from "components/Elements/SearchField/SearchField";
 import TablePagination from "components/Elements/TablePagination";
 import { makeStyles } from "@material-ui/core/styles";
 import withMount from "components/HOC/withMount";
+import { duplicateTask } from "services/models/modelDetails/modelTasks";
 
 const useStyles = makeStyles({
 	loading: {
@@ -59,6 +60,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
 	const [isSearching, setIsSearching] = useState(false);
 	const [enablePasteTask, setPasteTask] = useState(false);
+	const [duplicating, setDuplicating] = useState(false);
 
 	const reduxDispatch = useDispatch();
 
@@ -165,7 +167,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			setPasting(true);
 			const pasteTask = async () => {
 				try {
-					const taskId = await navigator.clipboard.readText();
+					const taskId = sessionStorage.getItem("task");
 					const task = JSON.parse(taskId);
 					const response = await pasteModelTask(modelId, {
 						ModelVersionTaskID: +task.modelTaskId,
@@ -208,8 +210,9 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	useEffect(() => {
 		const checkcopyQuestionStatus = async () => {
 			try {
-				const taskText = await navigator.clipboard.readText();
-				if (JSON.parse(taskText).fromTask) {
+				const taskId = sessionStorage.getItem("task");
+
+				if (JSON.parse(taskId).fromTask) {
 					dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
 				}
 			} catch (error) {
@@ -252,7 +255,8 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	};
 
 	const handleCopy = (modelTaskId) => {
-		navigator.clipboard.writeText(
+		sessionStorage.setItem(
+			"task",
 			JSON.stringify({ fromTask: true, modelTaskId })
 		);
 		setPasteTask(true);
@@ -267,6 +271,21 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		setIsSearching(true);
 		await fetchData(modelId, false, "", page, perPage, false);
 		setIsSearching(false);
+	};
+
+	const handleDuplicate = async (toDuplicateTask) => {
+		setDuplicating(true);
+		try {
+			await duplicateTask(toDuplicateTask?.id);
+			await fetchData(modelId, false, searchTxt, pageNumber, perPage);
+			dispatch({
+				type: "TAB_COUNT",
+				payload: { countTab: "taskCount", data: totalTaskCount + 1 },
+			});
+		} catch (error) {
+			reduxDispatch(showError(error?.response?.data || "something went wrong"));
+		}
+		setDuplicating(false);
 	};
 
 	if (isLoading) return <CircularProgress />;
@@ -314,6 +333,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				/>
 			</div>
 
+			{duplicating ? <LinearProgress /> : null}
 			<ModelTaskTable
 				handleEdit={() => {}}
 				handleDelete={handleDeleteTask}
@@ -324,14 +344,11 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				columns={dymanicTableHeader(showOperatingMode, customCaptions).columns}
 				data={taskList}
 				modelId={modelId}
-				fetchData={() =>
-					fetchData(modelId, false, searchTxt, pageNumber, perPage)
-				}
+				handleDuplicate={handleDuplicate}
 				pageSize={perPage}
 				pageNo={pageNumber}
 				customCaptions={customCaptions}
 				access={access}
-				totalTaskCount={totalTaskCount}
 			/>
 			{searchTxt === "" && (
 				<TablePagination

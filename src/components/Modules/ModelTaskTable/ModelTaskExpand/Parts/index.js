@@ -174,13 +174,15 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 				data={null}
 				createProcessHandler={createPart}
 				fetchData={() => fetchParts(false)}
+				customCaptions={customCaptions}
 			/>
 			<AddOrEditPart
 				open={openEditPart}
-				title={`Edit ${customCaptions.part}`}
+				title={`${customCaptions.part}`}
 				closeHandler={() => {
 					setOpenEditPart(false);
 				}}
+				isEdit
 				data={{
 					name: selectedID?.name,
 					stockNumber: selectedID?.stockNumber,
@@ -189,6 +191,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 				}}
 				createProcessHandler={editPart}
 				fetchData={() => fetchParts(false)}
+				customCaptions={customCaptions}
 			/>
 			<DeleteDialog
 				entityName={`${customCaptions.part}`}
@@ -218,9 +221,14 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 			</div>
 			<DragAndDropTable
 				data={parts}
-				headers={["Quantity", "Part Number", "Stock Number", "Description"]}
+				headers={[
+					customCaptions?.partQuantity,
+					customCaptions?.partName,
+					customCaptions?.partStockNumber,
+					customCaptions?.partDescription,
+				]}
 				columns={[
-					{ id: 1, name: "qty", style: { width: "10vw" } },
+					{ id: 1, name: "qty", style: { width: "12vw" } },
 					{ id: 2, name: "name", style: { width: "30vw" } },
 					{ id: 3, name: "stockNumber", style: { width: "30vw" } },
 					{ id: 4, name: "description", style: { width: "30vw" } },

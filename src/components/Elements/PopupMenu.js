@@ -39,6 +39,7 @@ const PopupMenu = ({
 	id,
 	clickAwayHandler,
 	menuData,
+	disabled = false,
 }) => {
 	// Event vars
 	// Opening if selected is this instance
@@ -64,6 +65,7 @@ const PopupMenu = ({
 										onClick={() => {
 											item.handler(id);
 										}}
+										disabled={item.disabled}
 									>
 										<ListItemText
 											primary={

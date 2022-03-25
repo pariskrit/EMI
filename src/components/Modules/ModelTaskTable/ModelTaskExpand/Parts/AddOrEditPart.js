@@ -17,11 +17,15 @@ const ADD = AddDialogStyle();
 
 // Yup validation schema
 const schema = yup.object({
-	qty: yup.number("This field must be a number"),
+	qty: yup
+		.number("This field must be a number")
+		.typeError("This field is required")
+		.moreThan(0.9999, "must be equal to 1 or greater")
+		.required("This field is required"),
 	name: yup
 		.string("This field must be string")
 		.max(100, "must be less than or equal to 100 characters")
-		.required("Part Number is required"),
+		.required("This field is required"),
 	description: yup
 		.string()
 		.max(100, "must be less than or equal to 100 characters")
@@ -67,6 +71,8 @@ function AddOrEditPart({
 	title,
 	createProcessHandler,
 	fetchData,
+	customCaptions,
+	isEdit,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -105,7 +111,7 @@ function AddOrEditPart({
 				...input,
 				description: input.description || null,
 				stockNumber: input.stockNumber || null,
-				qty: +input.qty || 0,
+				// qty: +input.qty,
 			};
 			const localChecker = await handleValidateObj(schema, cleanInput);
 
@@ -139,6 +145,12 @@ function AddOrEditPart({
 		}
 	};
 
+	const handleKeydownPress = (e) => {
+		if (e.keyCode === 13) {
+			handleCreateProcess();
+		}
+	};
+
 	return (
 		<div>
 			<Dialog
@@ -154,7 +166,11 @@ function AddOrEditPart({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>{title}</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								{isEdit ? "Edit " + title : title}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
@@ -169,7 +185,7 @@ function AddOrEditPart({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{title}
+								{isEdit ? "Save " + title : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>
@@ -178,7 +194,10 @@ function AddOrEditPart({
 				<DialogContent className={classes.dialogContent}>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
-							<ADD.NameLabel>Quantity</ADD.NameLabel>
+							<ADD.NameLabel>
+								{customCaptions?.partQuantity}
+								<ADD.RequiredStar>*</ADD.RequiredStar>
+							</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.qty === null ? false : true}
 								helperText={errors.qty === null ? null : errors.qty}
@@ -186,15 +205,18 @@ function AddOrEditPart({
 								onChange={(e) => {
 									setInput({ ...input, qty: e.target.value });
 								}}
+								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
 								type="number"
+								autoFocus
 							/>
 						</ADD.LeftInputContainer>
 
 						<ADD.RightInputContainer>
 							<ADD.NameLabel>
-								Part Number<ADD.RequiredStar>*</ADD.RequiredStar>
+								{customCaptions?.partName}
+								<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.name === null ? false : true}
@@ -203,6 +225,7 @@ function AddOrEditPart({
 								onChange={(e) => {
 									setInput({ ...input, name: e.target.value });
 								}}
+								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
 							/>
@@ -210,7 +233,7 @@ function AddOrEditPart({
 					</ADD.InputContainer>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
-							<ADD.NameLabel>Stock Number</ADD.NameLabel>
+							<ADD.NameLabel>{customCaptions?.partStockNumber}</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.stockNumber === null ? false : true}
 								helperText={
@@ -220,13 +243,14 @@ function AddOrEditPart({
 								onChange={(e) => {
 									setInput({ ...input, stockNumber: e.target.value });
 								}}
+								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
 							/>
 						</ADD.LeftInputContainer>
 
 						<ADD.RightInputContainer>
-							<ADD.NameLabel>Description</ADD.NameLabel>
+							<ADD.NameLabel>{customCaptions?.partDescription}</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.description === null ? false : true}
 								helperText={
@@ -236,6 +260,7 @@ function AddOrEditPart({
 								onChange={(e) => {
 									setInput({ ...input, description: e.target.value });
 								}}
+								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
 							/>
