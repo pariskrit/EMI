@@ -99,7 +99,11 @@ const DragAndDropTable = ({
 					<AT.TableHead>
 						<TableRow className={classes.tableHead}>
 							{headers.map((header, i) => (
-								<TableCell key={header} className={clsx(classes.tableHeadRow)}>
+								<TableCell
+									key={header}
+									className={clsx(classes.tableHeadRow)}
+									style={columns[i]?.style}
+								>
 									<AT.CellContainer
 										className="flex justify-between"
 										style={i === 0 ? { marginLeft: "38px" } : {}}

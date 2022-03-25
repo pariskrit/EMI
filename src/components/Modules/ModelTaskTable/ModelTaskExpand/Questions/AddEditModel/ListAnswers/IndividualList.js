@@ -98,9 +98,10 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 								variant="outlined"
 								autoFocus
 								onKeyDown={handlePressEnter}
+								onBlur={handleEdit}
 							/>
 						) : (
-							<span className={classes.text}>{x.name}</span>
+							<span className={classes.text}>{input?.name}</span>
 						)}
 						<FormGroup style={{ width: "10%" }}>
 							<FormControlLabel
@@ -123,28 +124,13 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 							/>
 						</FormGroup>
 						<span>
-							{editMode ? (
-								<Button
-									variant="outlined"
-									className={classes.button}
-									style={{ padding: "6px 15px" }}
-									onClick={handleEdit}
-								>
-									{loader ? (
-										<CircularProgress style={{ height: 22, width: 22 }} />
-									) : (
-										"Edit"
-									)}
-								</Button>
-							) : (
-								<DeleteIcon
-									className={classes.deleteIcon}
-									onClick={(e) => {
-										e.stopPropagation();
-										onDelete();
-									}}
-								/>
-							)}
+							<DeleteIcon
+								className={classes.deleteIcon}
+								onClick={(e) => {
+									e.stopPropagation();
+									onDelete();
+								}}
+							/>
 						</span>
 					</div>
 				</div>
