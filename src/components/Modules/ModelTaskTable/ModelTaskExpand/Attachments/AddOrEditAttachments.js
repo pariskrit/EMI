@@ -22,7 +22,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be string")
 		.required("This field is required")
-		.max(100, "must be less than or equal to 100 characters"),
+		.max(100, "Must be less than or equal to 100 characters"),
 	file: yup.mixed().test("fileType", "File size limited to 6 MB", (value) => {
 		return value.size < 6 * 1024 * 1024 || typeof value === "string";
 	}),

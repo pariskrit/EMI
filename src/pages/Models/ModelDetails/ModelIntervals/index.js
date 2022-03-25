@@ -243,8 +243,8 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 									},
 							  ]
 							: [
-									{ id: 1, name: "name", style: { width: "33vw" } },
-									{ id: 2, name: "taskListNos", style: { width: "33vw" } },
+									{ id: 1, name: "name", style: { width: "50vw" } },
+									{ id: 2, name: "taskListNos", style: { width: "50vw" } },
 							  ]
 					}
 					handleDragEnd={handleDragEnd}

@@ -312,7 +312,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 			<DragAndDropTable
 				data={attachments}
 				headers={["Name"]}
-				columns={[{ id: 2, name: "name" }]}
+				columns={[{ id: 2, name: "name", style: { width: "100vw" } }]}
 				handleDragEnd={handleDragEnd}
 				menuData={[
 					{

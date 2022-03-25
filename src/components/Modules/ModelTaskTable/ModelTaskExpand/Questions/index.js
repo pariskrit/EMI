@@ -55,20 +55,20 @@ function apiResponse(d) {
 		additional:
 			d.type === "B" ? (
 				<span>
-					<strong>Checkbox Caption:</strong>&nbsp;{d.checkboxCaption}
+					<strong>Checkbox Caption : </strong>&nbsp;{d.checkboxCaption}
 				</span>
 			) : d.type === "N" ? (
 				<span style={{ display: "flex", gap: 10 }}>
 					<span>
-						<strong>Decimal Places:</strong>
+						<strong>Decimal Places : </strong>
 						{d.decimalPlaces}
 					</span>
 					<span>
-						<strong>Minimum Value:</strong>
+						<strong>Minimum Value : </strong>
 						{d.minValue}
 					</span>
 					<span>
-						<strong>Maximum Value:</strong>
+						<strong>Maximum Value : </strong>
 						{d.maxValue}
 					</span>
 				</span>
@@ -298,7 +298,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 			)}
 			<DeleteDialog
 				open={model.delete}
-				entityName={`Task ${captions.singular}`}
+				entityName={`${captions?.taskCaption} ${captions.singular}`}
 				deleteEndpoint={"/api/modelversiontaskquestions"}
 				deleteID={questionId}
 				closeHandler={closeDeleteDialog}

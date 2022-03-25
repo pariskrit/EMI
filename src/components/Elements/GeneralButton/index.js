@@ -36,7 +36,7 @@ function GeneralButton({
 		<button
 			onClick={onClick}
 			className={clsx("button", className, { "disabled-button": disabled })}
-			style={style}
+			style={{ ...style, textTransform: "uppercase" }}
 			disabled={disabled}
 		>
 			{buttonChildren}

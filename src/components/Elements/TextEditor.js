@@ -5,9 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import "react-quill/dist/quill.snow.css";
 
 const useStyles = makeStyles({
-	quill: {
-		height: "85px",
-	},
+	quill: {},
 });
 
 const TextEditor = ({
@@ -35,7 +33,7 @@ const TextEditor = ({
 				readOnly={readOnly}
 				onBlur={onBlur}
 				className={classes.quill}
-			/>
+			></ReactQuill>
 		</div>
 	);
 };

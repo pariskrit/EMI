@@ -20,7 +20,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be string")
 		.required("This field is required")
-		.max(100, "must be less than or equal to 100 characters"),
+		.max(100, "Must be less than or equal to 100 characters"),
 });
 
 const useStyles = makeStyles({
@@ -52,6 +52,7 @@ function AddOrEditPermit({
 	title,
 	createProcessHandler,
 	fetchData,
+	isEdit,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -137,7 +138,11 @@ function AddOrEditPermit({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>{title}</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								{isEdit ? "Edit " + title : title}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
@@ -152,7 +157,7 @@ function AddOrEditPermit({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{title}
+								{isEdit ? "Save " + title : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>

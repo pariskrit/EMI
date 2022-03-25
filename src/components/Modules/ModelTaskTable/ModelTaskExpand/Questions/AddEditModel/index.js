@@ -34,7 +34,7 @@ const questionTypeOptions = [
 const ADD = AddDialogStyle();
 
 const useStyles = makeStyles({
-	paper: { minWidth: "90%", height: 410 },
+	paper: { minWidth: "90%" },
 	numberFields: { display: "flex", width: "100%", gap: 5, flexWrap: "wrap" },
 });
 
@@ -313,9 +313,7 @@ function AddEditModel({
 								/>
 							</div>
 							<div style={{ flexBasis: "33%" }}>
-								<ADD.NameLabel>
-									Minimum Value<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
+								<ADD.NameLabel>Minimum Value</ADD.NameLabel>
 								<ADD.NameInput
 									type="number"
 									error={errors.minValue === null ? false : true}
@@ -323,7 +321,6 @@ function AddEditModel({
 									variant="outlined"
 									size="medium"
 									value={input.minValue}
-									autoFocus
 									onKeyDown={handleEnterPress}
 									onChange={(e) => {
 										setState({ minValue: e.target.value });
@@ -331,9 +328,7 @@ function AddEditModel({
 								/>
 							</div>
 							<div style={{ flexBasis: "33%" }}>
-								<ADD.NameLabel>
-									Maximum Value<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.NameLabel>
+								<ADD.NameLabel>Maximum Value</ADD.NameLabel>
 								<ADD.NameInput
 									type="number"
 									error={errors.maxValue === null ? false : true}
@@ -341,7 +336,6 @@ function AddEditModel({
 									variant="outlined"
 									size="medium"
 									value={input.maxValue}
-									autoFocus
 									onKeyDown={handleEnterPress}
 									onChange={(e) => {
 										setState({ maxValue: e.target.value });

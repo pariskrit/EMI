@@ -223,7 +223,7 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 				]}
 				columns={[
 					{ id: 1, name: "qty", style: { width: "12vw" } },
-					{ id: 2, name: "name", style: { width: "auto" } },
+					{ id: 2, name: "name", style: { width: "88vw" } },
 				]}
 				handleDragEnd={handleDragEnd}
 				menuData={[

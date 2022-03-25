@@ -24,7 +24,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be string")
 		.required("This field is required")
-		.max(100, "must be less than or equal to 100 characters"),
+		.max(100, "Must be less than or equal to 100 characters"),
 });
 
 const useStyles = makeStyles({

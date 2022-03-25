@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import * as yup from "yup";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
+import reorder from "assets/reorder.png";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import useOutsideClick from "hooks/useOutsideClick";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
@@ -74,20 +74,24 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 						className={classes.individualRow}
 						{...provider.draggableProps}
 						ref={provider.innerRef}
+						style={{ justifyContent: "space-between" }}
 					>
 						<span
 							{...provider.dragHandleProps}
 							ref={provider.innerRef}
 							style={{ width: "0%" }}
 						>
-							<DragIndicatorIcon />
+							<img src={reorder} alt="" height={18} width={18} />
 						</span>
 
 						{editMode ? (
 							<TextField
 								error={error.name === null ? false : true}
 								helperText={error.name === null ? null : error.name}
-								style={{ width: "74%", padding: "10px 8px" }}
+								style={{
+									width: "74%",
+									backgroundColor: "white",
+								}}
 								onChange={(e) => setState({ name: e.target.value })}
 								value={input.name}
 								size="small"
@@ -118,11 +122,12 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 								disabled={!editMode}
 							/>
 						</FormGroup>
-						<span style={{ width: "8%" }}>
+						<span>
 							{editMode ? (
 								<Button
 									variant="outlined"
 									className={classes.button}
+									style={{ padding: "6px 15px" }}
 									onClick={handleEdit}
 								>
 									{loader ? (

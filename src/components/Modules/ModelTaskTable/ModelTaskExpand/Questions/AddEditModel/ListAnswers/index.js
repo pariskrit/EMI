@@ -283,11 +283,11 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 			/>
 			<div className={classes.options}>
 				<DetailsPanel
-					header={`${type === "O" ? "Dropdown" : "Checkbox"} List answers`}
+					header={`${type === "O" ? "Dropdown" : "Checkbox"} List Options`}
 					dataCount={options.length}
 					description={`Add ${
 						type === "O" ? "Dropdown" : "Checkbox"
-					}list answers`}
+					}List Options`}
 				/>
 				<div className={classes.list}>
 					{addNew ? (

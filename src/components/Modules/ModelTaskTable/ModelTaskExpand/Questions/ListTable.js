@@ -15,17 +15,12 @@ function ListTable({
 		<DragAndDropTable
 			data={data}
 			isModelEditable={access === "F" || access === "E"}
-			headers={[
-				"Question Caption",
-				"Question Type",
-				"Compulsory",
-				"Additional Options",
-			]}
+			headers={["Caption", "Type", "Compulsory", "Additional Options"]}
 			columns={[
-				{ id: 1, name: "caption", style: { width: "25%" } },
-				{ id: 2, name: "questionType", style: { width: "10%" } },
-				{ id: 3, name: "compulsory", style: { width: "5%" } },
-				{ id: 4, name: "additional", style: { width: "35%" } },
+				{ id: 1, name: "caption", style: { width: "25vw" } },
+				{ id: 2, name: "questionType", style: { width: "10vw" } },
+				{ id: 3, name: "compulsory", style: { width: "5vw" } },
+				{ id: 4, name: "additional", style: { width: "60vw" } },
 			]}
 			handleDragEnd={handleDragEnd}
 			menuData={[

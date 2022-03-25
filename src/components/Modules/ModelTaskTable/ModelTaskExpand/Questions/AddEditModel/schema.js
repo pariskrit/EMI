@@ -27,14 +27,14 @@ const schema = (questionType) =>
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup.number().nullable().required("Minimum value is required"),
+				then: yup.number().nullable(),
 			}),
 		maxValue: yup
 			.number()
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup.number().nullable().required("Maximum Value is required"),
+				then: yup.number().nullable(),
 			}),
 	});
 

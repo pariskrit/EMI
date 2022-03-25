@@ -20,19 +20,19 @@ const schema = yup.object({
 	qty: yup
 		.number("This field must be a number")
 		.typeError("This field is required")
-		.moreThan(0.9999, "must be equal to 1 or greater")
+		.moreThan(0.9999, "Must be equal to 1 or greater")
 		.required("This field is required"),
 	name: yup
 		.string("This field must be string")
-		.max(100, "must be less than or equal to 100 characters")
+		.max(100, "Must be less than or equal to 100 characters")
 		.required("This field is required"),
 	description: yup
 		.string()
-		.max(100, "must be less than or equal to 100 characters")
+		.max(100, "Must be less than or equal to 100 characters")
 		.nullable(),
 	stockNumber: yup
 		.string()
-		.max(100, "must be less than or equal to 100 characters")
+		.max(100, "Must be less than or equal to 100 characters")
 		.nullable(),
 });
 

@@ -71,6 +71,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 						captions={{
 							plural: customCaptions?.questionPlural,
 							singular: customCaptions?.question,
+							taskCaption: customCaptions?.task,
 						}}
 						taskInfo={taskInfo}
 						access={access}

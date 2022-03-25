@@ -170,7 +170,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 			/>
 			<AddOrEditPermit
 				open={openEditPermit}
-				title={`Edit Permit`}
+				title={`Permit`}
 				closeHandler={() => {
 					setOpenEditPermit(false);
 				}}
@@ -179,6 +179,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 				}}
 				createProcessHandler={editPermit}
 				fetchData={() => fetchPermits(false)}
+				isEdit
 			/>
 			<DeleteDialog
 				entityName={`Permit`}
@@ -206,7 +207,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 			<DragAndDropTable
 				data={permits}
 				headers={["Name"]}
-				columns={[{ id: 2, name: "name" }]}
+				columns={[{ id: 2, name: "name", style: { width: "100vw" } }]}
 				handleDragEnd={handleDragEnd}
 				menuData={[
 					{
