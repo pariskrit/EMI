@@ -41,9 +41,6 @@ const useStyles = makeStyles({
 	dialogContent: {
 		width: "100%",
 	},
-	createButton: {
-		width: "auto",
-	},
 	dividerStyle: {
 		margin: "10px 0",
 	},
@@ -89,6 +86,7 @@ function AddNewModelTask({
 	ModelVersionID,
 	zoneId,
 	fetchModelZoneList,
+	isEdit,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -172,6 +170,12 @@ function AddNewModelTask({
 		}
 	};
 
+	const handleEnterPress = (e) => {
+		if (e.keyCode === 13) {
+			handleCreateProcess();
+		}
+	};
+
 	return (
 		<div>
 			<Dialog
@@ -184,12 +188,16 @@ function AddNewModelTask({
 				{isUpdating ? <LinearProgress /> : null}
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>{title}</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								{isEdit ? "Edit " + title : title}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								Cancel
+								{isEdit ? "Close" : "Cancel"}
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">
@@ -199,7 +207,7 @@ function AddNewModelTask({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{title}
+								{isEdit ? "Save " : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>
@@ -221,6 +229,7 @@ function AddNewModelTask({
 								}}
 								variant="outlined"
 								autoFocus
+								onKeyDown={handleEnterPress}
 							/>
 						</ADD.LeftInputContainer>
 

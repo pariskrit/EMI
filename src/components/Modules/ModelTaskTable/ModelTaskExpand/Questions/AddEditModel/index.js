@@ -46,6 +46,7 @@ const initialState = {
 	maxValue: null,
 	checkboxCaption: "",
 	isCompulsory: false,
+	options: null,
 };
 
 const defaultError = {
@@ -56,6 +57,7 @@ const defaultError = {
 	maxValue: null,
 	checkboxCaption: null,
 	isCompulsory: null,
+	options: null,
 };
 
 function AddEditModel({
@@ -66,6 +68,7 @@ function AddEditModel({
 	taskId,
 	handleAddEditComplete,
 	getError,
+	addEditType,
 }) {
 	const classes = useStyles();
 
@@ -77,7 +80,7 @@ function AddEditModel({
 
 	useEffect(() => {
 		// If Edit Mode
-		if (questionDetail) {
+		if (questionDetail && addEditType === "edit") {
 			const {
 				caption,
 				checkboxCaption,
@@ -86,6 +89,7 @@ function AddEditModel({
 				maxValue,
 				minValue,
 				type,
+				options,
 			} = questionDetail;
 			setInput({
 				caption,
@@ -95,6 +99,7 @@ function AddEditModel({
 				maxValue,
 				minValue,
 				type,
+				options: options?.map((x) => x.name),
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,7 +113,9 @@ function AddEditModel({
 		data["ModelVersionTaskID"] = taskId;
 		setLoading(true);
 		try {
-			let result = await postQuestions(data);
+			let result = await postQuestions({
+				...data,
+			});
 			setLoading(false);
 			if (result.status) {
 				handleAddEditComplete();
@@ -129,7 +136,10 @@ function AddEditModel({
 
 		setLoading(true);
 		try {
-			let result = await patchQuestions(questionDetail.id, main);
+			let result = await patchQuestions(
+				questionDetail.id,
+				main.filter((x) => x.path !== "options")
+			);
 			setLoading(false);
 			if (result.status) {
 				handleAddEditComplete();
@@ -149,24 +159,36 @@ function AddEditModel({
 			d["decimalPlaces"] = null;
 			d["maxValue"] = null;
 			d["minValue"] = null;
+			d["options"] = [];
 		} else if (input.type === "N") {
 			// For Number Type
 			d["checkboxCaption"] = "";
+			d["options"] = [];
+		} else if (input.type === "C" || input.type === "O") {
+			d["checkboxCaption"] = "";
+			d["decimalPlaces"] = null;
 		} else {
 			d["decimalPlaces"] = null;
 			d["maxValue"] = null;
 			d["minValue"] = null;
 			d["checkboxCaption"] = "";
+			d["options"] = [];
 		}
 
 		try {
-			const localChecker = await handleValidateObj(schema(input.type), d);
+			const localChecker = await handleValidateObj(schema(input.type), {
+				...d,
+				options: d?.options?.map((x) => x.name) || [],
+			});
 			if (!localChecker.some((el) => el.valid === false)) {
 				setErrors(defaultError);
 				if (questionDetail) {
 					handleEditTaskQuestion(input);
 				} else {
-					handleAddTaskQuestion(input);
+					handleAddTaskQuestion({
+						...input,
+						options: input?.options?.map((x) => ({ name: x })) || [],
+					});
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
@@ -205,10 +227,10 @@ function AddEditModel({
 
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">
-						Cancel
+						{questionDetail ? "Close" : "Cancel"}
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleSave}>
-						Save
+						{questionDetail ? "Save" : "Add " + title}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
@@ -345,11 +367,15 @@ function AddEditModel({
 						</div>
 					) : input.type === "C" || input.type === "O" ? (
 						<>
-							{questionDetail && (
+							{true && (
 								<ListAnswers
 									type={input.type}
 									modelVersionTaskQuestionID={questionDetail?.id}
 									getError={getError}
+									addEditType={addEditType}
+									handleUpdateOption={setInput}
+									inputOptions={input?.options}
+									errors={errors}
 								/>
 							)}
 						</>

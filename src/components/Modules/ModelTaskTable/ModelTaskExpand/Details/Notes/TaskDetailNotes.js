@@ -163,6 +163,7 @@ const ModelTaskNotes = ({
 				buttonName="Add Note"
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
 				accordianDetailsCss="table-container"
+				defaultExpanded={false}
 			>
 				<Table>
 					<TableHead className={classes.tableHead}>

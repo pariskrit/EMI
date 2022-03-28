@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 		gap: "12px",
 	},
 	createButton: {
-		width: "auto",
+		// width: "auto",
 	},
 	inputText: {
 		fontSize: 14,
@@ -66,6 +66,7 @@ function AddOrEditAttachment({
 	title,
 	createProcessHandler,
 	fetchData,
+	isEdit,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -158,12 +159,16 @@ function AddOrEditAttachment({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>{title}</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								{isEdit ? "Edit " + title : title}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								Cancel
+								{isEdit ? "Close" : "Cancel"}
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">
@@ -173,7 +178,7 @@ function AddOrEditAttachment({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{title}
+								{isEdit ? "Save" : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>

@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 		gap: "12px",
 	},
 	createButton: {
-		width: "auto",
+		// width: "auto",
 	},
 });
 
@@ -182,7 +182,7 @@ function AddNewModelRole({
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								Cancel
+								{!showSave ? "Cancel" : "Close"}
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">

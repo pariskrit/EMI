@@ -22,6 +22,8 @@ import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import { Tooltip } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -33,6 +35,16 @@ const questionTypeOptions = [
 	{ label: "Short Text", value: "S" },
 	{ label: "Time", value: "T" },
 ];
+
+const HtmlTooltip = withStyles((theme) => ({
+	tooltip: {
+		backgroundColor: "#f5f5f9",
+		color: "rgba(0, 0, 0, 0.87)",
+		maxWidth: 220,
+		fontSize: theme.typography.pxToRem(12),
+		border: "1px solid #dadde9",
+	},
+}))(Tooltip);
 
 // Styling Task Question
 const useStyles = makeStyles({
@@ -72,6 +84,26 @@ function apiResponse(d) {
 						{d.maxValue}
 					</span>
 				</span>
+			) : d.type === "C" || d.type === "O" ? (
+				<>
+					<HtmlTooltip
+						title={d?.options
+							.sort((a, b) => a.name.localeCompare(b.name))
+							.map((a) => a.name)
+							.join(", ")}
+					>
+						<p className="max-two-line">
+							<span>
+								{" "}
+								<strong>Options : </strong>&nbsp;
+								{d?.options
+									.sort((a, b) => a.name.localeCompare(b.name))
+									.map((a) => a.name)
+									.join(", ")}
+							</span>
+						</p>
+					</HtmlTooltip>
+				</>
 			) : (
 				""
 			),
@@ -97,6 +129,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 		fetch: false,
 		loader: false,
 	});
+	const [addEditType, setAddEditType] = useState("add");
 
 	const [, CtxDispatch] = useContext(TaskContext);
 
@@ -146,6 +179,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	const handleEdit = (id) => {
 		setQuestionId(id);
 		setModel((th) => ({ ...th, addEdit: true }));
+		setAddEditType("edit");
 	};
 
 	const handleAddEditClose = () => {
@@ -311,6 +345,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 					taskId={taskInfo.id}
 					handleAddEditComplete={handleAddEditComplete}
 					getError={getError}
+					addEditType={addEditType}
 				/>
 			)}
 			<DeleteDialog
@@ -334,7 +369,10 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 								Paste {captions.singular}
 							</GeneralButton>
 							<GeneralButton
-								onClick={() => setModel((th) => ({ ...th, addEdit: true }))}
+								onClick={() => {
+									setModel((th) => ({ ...th, addEdit: true }));
+									setAddEditType("add");
+								}}
 							>
 								Add New
 							</GeneralButton>

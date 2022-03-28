@@ -92,14 +92,14 @@ const ModelTaskRow = ({
 	useDidMountEffect(() => {
 		if (toggle) {
 			document
-				.querySelectorAll(`#taskExpandable${row.id}  > td > div > img`)
+				.querySelectorAll(`#taskExpandable${row.id}  > td > div > span > img`)
 				?.forEach((i) => {
 					i.classList.add("white-filter");
 				});
 		} else {
 			// eslint-disable-next-line no-unused-expressions
 			document
-				.querySelectorAll(`#taskExpandable${row.id}  > td > div > img`)
+				.querySelectorAll(`#taskExpandable${row.id}  > td > div > span > img`)
 				?.forEach((i) => {
 					i.classList.remove("white-filter");
 				});

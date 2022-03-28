@@ -7,6 +7,7 @@ import {
 	Typography,
 	CircularProgress,
 	Button,
+	Grid,
 } from "@material-ui/core";
 import * as yup from "yup";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -25,6 +26,10 @@ import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Droppable } from "react-beautiful-dnd";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import SubcatStyle from "styles/application/SubcatStyle";
+import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
+
+const AT = SubcatStyle();
 
 const schema = yup.object({
 	name: yup.string().required("Please Provide Name"),
@@ -103,7 +108,15 @@ const defaultDelete = {
 	open: false,
 };
 
-function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
+function ListAnswers({
+	type,
+	modelVersionTaskQuestionID,
+	addEditType,
+	getError,
+	handleUpdateOption,
+	inputOptions,
+	errors,
+}) {
 	const ref = useRef();
 	const classes = useStyles();
 
@@ -117,6 +130,9 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 	});
 	const [originalList, setOriginalList] = useState([]);
 	const [deleteModel, setDeleteModel] = useState(defaultDelete);
+
+	const [optionTxt, setOptionTxt] = useState("");
+	const [isEditOptionFromAdd, setisEditOptionFromAdd] = useState(null);
 
 	const setState = (d) => setInput((th) => ({ ...th, ...d }));
 
@@ -137,6 +153,7 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 
 	React.useEffect(() => {
 		const fetchOptions = async () => {
+			if (addEditType === "add") return;
 			setListOptions((th) => ({ ...th, loading: true }));
 			await getOptions();
 		};
@@ -156,6 +173,10 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 				setLoader(false);
 				if (result.status) {
 					setAddNew(false);
+					handleUpdateOption((prev) => ({
+						...prev,
+						options: [...(prev.options || []), input.name],
+					}));
 					setInput(defaultInput);
 					getOptions();
 				} else {
@@ -192,8 +213,12 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 		}
 	};
 
-	const handleDeleteList = (id) => {
+	const handleDeleteList = (id, index) => {
 		setDeleteModel({ id, open: true });
+		handleUpdateOption((prev) => ({
+			...prev,
+			options: [...prev.options?.filter((x, ii) => ii !== index)].sort(),
+		}));
 	};
 
 	const handleOptionsClose = () => {
@@ -258,6 +283,30 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 		return <CircularProgress />;
 	}
 
+	const handleChange = (e) => {
+		const { value } = e.target;
+		setOptionTxt(value);
+	};
+
+	const handleSave = () => {
+		if (optionTxt === "" || optionTxt === null) {
+			setAddNew(false);
+			return false;
+		}
+		handleUpdateOption((prev) => ({
+			...prev,
+			options: [...(prev.options || []), optionTxt].sort(),
+		}));
+		setAddNew(false);
+		setOptionTxt("");
+	};
+
+	const onKeyPress = (e) => {
+		if (e.keyCode === 13) {
+			handleSave();
+		}
+	};
+
 	return (
 		<>
 			<DeleteDialog
@@ -271,81 +320,168 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 			<div className={classes.options}>
 				<DetailsPanel
 					header={`${type === "O" ? "Dropdown" : "Checkbox"} List Options`}
-					dataCount={options.length}
+					dataCount={
+						addEditType === "edit" ? options.length : inputOptions?.length || 0
+					}
 					description={`Add ${
 						type === "O" ? "Dropdown" : "Checkbox"
 					}List Options`}
 				/>
-				<div className={classes.list}>
-					{addNew ? (
-						<div ref={ref} className={classes.add}>
-							<TextField
-								error={error.name === null ? false : true}
-								helperText={error.name === null ? null : error.name}
-								variant="outlined"
-								autoFocus
-								size="small"
-								onChange={(e) => setState({ name: e.target.value })}
-								fullWidth
-								onKeyDown={handleEnterPress}
-								style={{ marginBottom: 12, width: "76.3%" }}
-							/>
-							<FormGroup>
-								<FormControlLabel
-									className={classes.labelGrp}
-									control={
-										<EMICheckbox
-											state={input.raiseDefect}
-											changeHandler={() =>
-												setState({ raiseDefect: !input.raiseDefect })
-											}
-										/>
-									}
-									label={
-										<Typography className={classes.checkboxText}>
-											Raise {me?.customCaptions.defectPlural}
-										</Typography>
-									}
+				{errors.options ? (
+					<ErrorInputFieldWrapper errorMessage={errors.options} />
+				) : (
+					""
+				)}
+				{addEditType === "edit" && (
+					<div className={classes.list}>
+						{addNew ? (
+							<div ref={ref} className={classes.add}>
+								<TextField
+									error={error.name === null ? false : true}
+									helperText={error.name === null ? null : error.name}
+									variant="outlined"
+									autoFocus
+									size="small"
+									onChange={(e) => setState({ name: e.target.value })}
+									fullWidth
+									onKeyDown={handleEnterPress}
+									style={{ marginBottom: 12, width: "76.3%" }}
 								/>
-							</FormGroup>
-							<Button
-								variant="outlined"
-								className={classes.button}
-								onClick={handleAddList}
-							>
-								{loader ? (
-									<CircularProgress style={{ height: 22, width: 22 }} />
-								) : (
-									"ADD"
-								)}
-							</Button>
-						</div>
-					) : null}
-					<DragDropContext onDragEnd={handleDrag}>
-						<Droppable droppableId="droppable-2" isCombineEnabled>
-							{(pp) => (
-								<div
-									ref={pp.innerRef}
-									{...pp.droppableProps}
-									className={classes.individualList}
+								<FormGroup>
+									<FormControlLabel
+										className={classes.labelGrp}
+										control={
+											<EMICheckbox
+												state={input.raiseDefect}
+												changeHandler={() =>
+													setState({ raiseDefect: !input.raiseDefect })
+												}
+											/>
+										}
+										label={
+											<Typography className={classes.checkboxText}>
+												Raise {me?.customCaptions.defectPlural}
+											</Typography>
+										}
+									/>
+								</FormGroup>
+								<Button
+									variant="outlined"
+									className={classes.button}
+									onClick={handleAddList}
 								>
-									{options.map((x, i) => (
-										<IndividualList
-											key={x.id}
-											x={x}
-											classes={classes}
-											onEdit={(ip) => handleEditList({ ...x, ...ip })}
-											onDelete={() => handleDeleteList(x.id)}
-											index={i}
+									{loader ? (
+										<CircularProgress style={{ height: 22, width: 22 }} />
+									) : (
+										"ADD"
+									)}
+								</Button>
+							</div>
+						) : null}
+						<DragDropContext onDragEnd={handleDrag}>
+							<Droppable droppableId="droppable-2" isCombineEnabled>
+								{(pp) => (
+									<div
+										ref={pp.innerRef}
+										{...pp.droppableProps}
+										className={classes.individualList}
+									>
+										{options.map((x, i) => (
+											<IndividualList
+												key={x.id}
+												x={x}
+												classes={classes}
+												onEdit={(ip) => handleEditList({ ...x, ...ip })}
+												onDelete={() => handleDeleteList(x.id, i)}
+												index={i}
+											/>
+										))}
+										{pp.placeholder}
+									</div>
+								)}
+							</Droppable>
+						</DragDropContext>
+					</div>
+				)}
+				{addEditType === "add" && (
+					<div>
+						<Grid container spacing={2}>
+							{addNew && (
+								<Grid item xs={6}>
+									<AT.SubcatContainer>
+										<AT.NameInput
+											autoFocus
+											onChange={handleChange}
+											onKeyDown={onKeyPress}
+											onBlur={() => {
+												if (optionTxt === "" || optionTxt === null)
+													setAddNew(false);
+												else handleSave();
+											}}
+											value={optionTxt}
 										/>
-									))}
-									{pp.placeholder}
-								</div>
+									</AT.SubcatContainer>
+								</Grid>
 							)}
-						</Droppable>
-					</DragDropContext>
-				</div>
-				<CurveButton onClick={addNewList} style={{ marginTop: 12 }}>
+							{inputOptions?.map((x, i) => (
+								<Grid item xs={6} key={i}>
+									<div key={i}>
+										{i === isEditOptionFromAdd ? (
+											<AT.SubcatContainer>
+												<AT.NameInput
+													type="text"
+													onKeyDown={handleEnterPress}
+													value={x}
+													onBlur={() => setisEditOptionFromAdd(null)}
+													autoFocus
+													onChange={(e) => {
+														e.persist();
+														handleUpdateOption((prev) => ({
+															...prev,
+															options: [
+																...prev.options?.map((a, ii) =>
+																	ii === i ? e?.target?.value : a
+																),
+															].sort(),
+														}));
+													}}
+												/>
+											</AT.SubcatContainer>
+										) : (
+											<>
+												<AT.SubcatContainer
+													onClick={() => {
+														setisEditOptionFromAdd(i);
+													}}
+												>
+													<AT.NameText>{x}</AT.NameText>
+													<AT.ButtonContainer>
+														<AT.DeleteIcon
+															onClick={() => {
+																handleUpdateOption((prev) => ({
+																	...prev,
+																	options: [
+																		...prev.options?.filter(
+																			(x, ii) => ii !== i
+																		),
+																	].sort(),
+																}));
+															}}
+														/>
+													</AT.ButtonContainer>
+												</AT.SubcatContainer>
+											</>
+										)}
+									</div>
+								</Grid>
+							))}
+						</Grid>
+					</div>
+				)}
+				<CurveButton
+					onClick={addNewList}
+					style={{ marginTop: 12, float: "left" }}
+				>
 					Add New
 				</CurveButton>
 			</div>

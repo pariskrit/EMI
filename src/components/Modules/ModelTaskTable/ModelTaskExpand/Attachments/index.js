@@ -274,7 +274,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 			/>
 			<AddOrEditAttachments
 				open={openEditAttachment}
-				title={`Edit Attachment`}
+				title={`Attachment`}
 				closeHandler={() => {
 					setOpenEditAttachment(false);
 				}}
@@ -285,6 +285,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				}}
 				createProcessHandler={editAttachment}
 				fetchData={() => fetchAttachments(false)}
+				isEdit
 			/>
 			<DeleteDialog
 				entityName={`Attachment`}

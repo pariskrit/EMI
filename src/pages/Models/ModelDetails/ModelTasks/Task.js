@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ModelTaskTable from "components/Modules/ModelTaskTable";
 import ErrorIcon from "@material-ui/icons/Error";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -20,10 +20,10 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { Apis } from "services/api";
 import SearchField from "components/Elements/SearchField/SearchField";
-import TablePagination from "components/Elements/TablePagination";
 import { makeStyles } from "@material-ui/core/styles";
 import withMount from "components/HOC/withMount";
 import { duplicateTask } from "services/models/modelDetails/modelTasks";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
 	loading: {
@@ -56,13 +56,39 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [searchTxt, setSearchTxt] = useState("");
 
 	const [perPage] = useState(10);
-	const [pageNumber, setPageNumber] = useState(1);
+	const [pageNumber] = useState(1);
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
 	const [isSearching, setIsSearching] = useState(false);
 	const [enablePasteTask, setPasteTask] = useState(false);
 	const [duplicating, setDuplicating] = useState(false);
+	const shouldExpandRef = useRef(false);
+
+	const history = useHistory();
 
 	const reduxDispatch = useDispatch();
+
+	const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
+
+	useEffect(() => {
+		if (
+			taskList.length !== 0 &&
+			isLoading === false &&
+			shouldExpandRef.current === false &&
+			fromSeriveLayoutId
+		) {
+			document.getElementById(`taskExpandable${fromSeriveLayoutId}`).click();
+			document
+				.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+				.scrollIntoView({
+					behavior: "smooth",
+					top:
+						document
+							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+							.getBoundingClientRect().bottom + window.pageYOffset,
+				});
+			shouldExpandRef.current = true;
+		}
+	}, [taskList, isLoading, fromSeriveLayoutId]);
 
 	const classes = useStyles();
 
@@ -173,11 +199,22 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						ModelVersionTaskID: +task.modelTaskId,
 					});
 					if (response.status) {
-						fetchData(modelId, false, searchTxt, pageNumber, perPage);
+						await fetchData(modelId, false, searchTxt, pageNumber, perPage);
 						dispatch({
 							type: "TAB_COUNT",
 							payload: { countTab: "taskCount", data: totalTaskCount + 1 },
 						});
+						document.getElementById(`taskExpandable${response.data}`).click();
+						document
+							.getElementById(`taskExpandable${response.data}`)
+							.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+								top:
+									document
+										.getElementById(`taskExpandable${response.data}`)
+										.getBoundingClientRect().bottom + window.pageYOffset,
+							});
 					} else {
 						reduxDispatch(
 							showError(response?.data?.title || "something went wrong")
@@ -187,6 +224,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 					reduxDispatch(
 						showError(error?.response?.data || "something went wrong")
 					);
+					console.log(error);
 				} finally {
 					dispatch({ type: "TOGGLE_PASTE_TASK", payload: false });
 					setPasteTask(false);
@@ -269,13 +307,22 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const handleDuplicate = async (toDuplicateTask) => {
 		setDuplicating(true);
 		try {
-			await duplicateTask(toDuplicateTask?.id);
+			const response = await duplicateTask(toDuplicateTask?.id);
 			await fetchData(modelId, false, searchTxt, pageNumber, perPage);
 			dispatch({
 				type: "TAB_COUNT",
 				payload: { countTab: "taskCount", data: totalTaskCount + 1 },
 			});
+			document.getElementById(`taskExpandable${response.data}`).click();
+			document.getElementById(`taskExpandable${response.data}`).scrollIntoView({
+				behavior: "smooth",
+				top:
+					document
+						.getElementById(`taskExpandable${response.data}`)
+						.getBoundingClientRect().bottom + window.pageYOffset,
+			});
 		} catch (error) {
+			console.log(error);
 			reduxDispatch(showError(error?.response?.data || "something went wrong"));
 		}
 		setDuplicating(false);
@@ -302,6 +349,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				pageNo={pageNumber}
 				customCaptions={customCaptions}
 				totalTaskCount={totalTaskCount}
+				showSave
 			/>
 			<DeleteDialog
 				entityName={`${customCaptions?.task}`}

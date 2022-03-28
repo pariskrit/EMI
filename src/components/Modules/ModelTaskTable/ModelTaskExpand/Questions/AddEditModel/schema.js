@@ -36,6 +36,19 @@ const schema = (questionType) =>
 				is: () => questionType === "N",
 				then: yup.number().nullable(),
 			}),
+		options: yup
+			.array()
+			.of(yup.string())
+			.nullable()
+			.when("type", {
+				is: () => questionType === "O" || questionType === "C",
+				then: yup
+					.array()
+					.of(yup.string())
+					.min(1, "Option is required")
+					.required("Option is required")
+					.nullable(),
+			}),
 	});
 
 export default schema;

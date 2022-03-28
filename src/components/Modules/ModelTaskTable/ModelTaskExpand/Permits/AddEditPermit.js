@@ -30,7 +30,7 @@ const useStyles = makeStyles({
 		gap: "12px",
 	},
 	createButton: {
-		width: "auto",
+		// width: "auto",
 	},
 	inputText: {
 		fontSize: 14,
@@ -147,7 +147,7 @@ function AddOrEditPermit({
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								Cancel
+								{isEdit ? "Close" : "Cancel"}
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">
@@ -157,7 +157,7 @@ function AddOrEditPermit({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{isEdit ? "Save " + title : title}
+								{isEdit ? "Save" : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>

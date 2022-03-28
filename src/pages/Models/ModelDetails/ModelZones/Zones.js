@@ -176,10 +176,11 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 				open={openAddNewZone}
 				closeHandler={() => setOpenAddNewZone(false)}
 				data={zoneToEdit}
-				title={`Edit ${customCaptions?.zone}`}
+				title={`${customCaptions?.zone}`}
 				createProcessHandler={editModelZone}
 				zoneId={zoneToEditData?.id}
 				fetchModelZoneList={() => fetchModelZoneList(false)}
+				isEdit
 			/>
 			<DeleteDialog
 				entityName={`${customCaptions?.zone}`}

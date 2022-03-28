@@ -367,10 +367,12 @@ const EditDialog = ({
 				<div>
 					<APD.SecondaryHeaderContainer>
 						<ADD.HeaderText>
-							{captions.taskListNo}({input.allCategories.length})
+							{captions.taskListNoPlural}({input.allCategories.length})
 						</ADD.HeaderText>
 
-						<ADD.InfoText>Add additional {captions.taskListNo}</ADD.InfoText>
+						<ADD.InfoText>
+							Add additional {captions.taskListNoPlural}
+						</ADD.InfoText>
 					</APD.SecondaryHeaderContainer>
 				</div>
 				<Grid container spacing={2}>

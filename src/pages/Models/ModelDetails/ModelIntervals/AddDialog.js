@@ -192,7 +192,7 @@ const AddDialog = ({
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
-						Save
+						Add {captions.interval}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
@@ -235,7 +235,9 @@ const AddDialog = ({
 							{captions.taskListNoPlural}({input.allCategories.length})
 						</ADD.HeaderText>
 
-						<ADD.InfoText>Add additional {captions.taskListNo}</ADD.InfoText>
+						<ADD.InfoText>
+							Add additional {captions.taskListNoPlural}
+						</ADD.InfoText>
 					</APD.SecondaryHeaderContainer>
 				</div>
 				{/* Field to add new subcat */}

@@ -3,12 +3,7 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 // get list of model zones
-const getModelTasksList = async (
-	modelVersionId,
-	searchTxt = "",
-	pageNumber = 1,
-	pageSize = 10
-) => {
+const getModelTasksList = async (modelVersionId, searchTxt = "") => {
 	try {
 		let response = await API.get(
 			`${Apis.ModelTasks}?modelVersionId=${modelVersionId}&search=${searchTxt}`

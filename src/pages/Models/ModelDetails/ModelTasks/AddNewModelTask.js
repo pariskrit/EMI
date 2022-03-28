@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 		gap: "12px",
 	},
 	createButton: {
-		width: "auto",
+		// width: "auto",
 	},
 	inputText: {
 		fontSize: 14,
@@ -90,6 +90,7 @@ function AddNewModelTask({
 	isDuplicate = false,
 	customCaptions,
 	totalTaskCount,
+	showSave,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -303,7 +304,7 @@ function AddNewModelTask({
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								Cancel
+								{showSave ? "Cancel" : "Close"}
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">
