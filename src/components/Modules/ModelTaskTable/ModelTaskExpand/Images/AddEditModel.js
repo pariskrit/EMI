@@ -78,6 +78,7 @@ const AddEditModel = ({
 	const uploadImage = async () => {
 		const formData = new FormData();
 		formData.append("file", input.image);
+		formData.append("description", input.description);
 		try {
 			let res = await uploadTaskImage(taskId, formData);
 			if (res.status) {
@@ -94,7 +95,6 @@ const AddEditModel = ({
 	const handleAdd = async () => {
 		setLoading(true);
 		await uploadImage();
-		setLoading(false);
 	};
 
 	const handleEdit = async () => {
@@ -107,7 +107,6 @@ const AddEditModel = ({
 				{ op: "replace", path: "description", value: input.description },
 			];
 			let result = await updateImage(imageDetail.id, patchData);
-			setLoading(false);
 			if (result.status) {
 				handleComplete(input.description);
 				closeOverride();
@@ -146,6 +145,7 @@ const AddEditModel = ({
 	const closeOverride = () => {
 		setInput(defaultInput);
 		setErrors(defaultError);
+		setLoading(false);
 		handleClose();
 	};
 
@@ -177,14 +177,12 @@ const AddEditModel = ({
 			</ADD.ActionContainer>
 			<ADD.DialogContent>
 				<ADD.InputContainer>
-					<ADD.LeftInputContainer
-						className={imageDetail ? classes.imageEdit : classes.image}
-					>
+					<ADD.LeftInputContainer className={classes.imageEdit}>
 						<ADD.NameLabel>
 							Image<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
 						<ImageUpload
-							imageName={input.image?.name || input.imageName}
+							imageName={input.image?.name || ""}
 							imageUrl={input.imageURL}
 							removeImage={() => {
 								setInput(defaultInput);
@@ -204,26 +202,25 @@ const AddEditModel = ({
 							{errors.image === null ? null : errors.image}
 						</p>
 					</ADD.LeftInputContainer>
-					{imageDetail ? (
-						<ADD.RightInputContainer>
-							<ADD.NameLabel>Description</ADD.NameLabel>
-							<ADD.NameInput
-								error={errors.description === null ? false : true}
-								helperText={
-									errors.description === null ? null : errors.description
-								}
-								variant="outlined"
-								size="medium"
-								value={input.description}
-								autoFocus
-								onKeyDown={handleEnterPress}
-								onChange={(e) => {
-									setInput({ ...input, description: e.target.value });
-								}}
-								fullWidth
-							/>
-						</ADD.RightInputContainer>
-					) : null}
+
+					<ADD.RightInputContainer>
+						<ADD.NameLabel>Description</ADD.NameLabel>
+						<ADD.NameInput
+							error={errors.description === null ? false : true}
+							helperText={
+								errors.description === null ? null : errors.description
+							}
+							variant="outlined"
+							size="medium"
+							value={input.description}
+							autoFocus
+							onKeyDown={handleEnterPress}
+							onChange={(e) => {
+								setInput({ ...input, description: e.target.value });
+							}}
+							fullWidth
+						/>
+					</ADD.RightInputContainer>
 				</ADD.InputContainer>
 			</ADD.DialogContent>
 		</Dialog>

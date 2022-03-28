@@ -89,17 +89,16 @@ const ModelQuestion = ({
 								.sort((a, b) => a.name.localeCompare(b.name))
 								.map((a) => a.name)
 								.join(", ")}
+							className="max-two-line"
 						>
-							<p className="max-two-line">
-								<span>
-									{" "}
-									<strong>Options : </strong>&nbsp;
-									{x.options
-										.sort((a, b) => a.name.localeCompare(b.name))
-										.map((a) => a.name)
-										.join(", ")}
-								</span>
-							</p>
+							<span>
+								{" "}
+								<strong>Options : </strong>&nbsp;
+								{x.options
+									.sort((a, b) => a.name.localeCompare(b.name))
+									.map((a) => a.name)
+									.join(", ")}
+							</span>
 						</HtmlTooltip>
 					</>
 				) : type === "N" ? (

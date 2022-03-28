@@ -214,7 +214,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 					<DetailsPanel header={`Images`} dataCount={images.count} />
 					{access === "F" ? (
 						<GeneralButton onClick={() => setState({ open: true })}>
-							Add Image
+							ADD IMAGE
 						</GeneralButton>
 					) : null}
 				</div>
