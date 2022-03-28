@@ -348,7 +348,7 @@ function AddEditModel({
 							{questionDetail && (
 								<ListAnswers
 									type={input.type}
-									modelVersionTaskQuestionID={questionDetail.id}
+									modelVersionTaskQuestionID={questionDetail?.id}
 									getError={getError}
 								/>
 							)}

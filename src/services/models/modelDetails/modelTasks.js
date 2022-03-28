@@ -11,7 +11,7 @@ const getModelTasksList = async (
 ) => {
 	try {
 		let response = await API.get(
-			`${Apis.ModelTasks}?modelVersionId=${modelVersionId}&search=${searchTxt}&pageNumber=${pageNumber}&pageSize=${pageSize}`
+			`${Apis.ModelTasks}?modelVersionId=${modelVersionId}&search=${searchTxt}`
 		);
 		return getAPIResponse(response);
 	} catch (error) {

@@ -1,19 +1,17 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
 	FormGroup,
 	FormControlLabel,
 	Typography,
-	Button,
 	TextField,
-	CircularProgress,
 } from "@material-ui/core";
 import * as yup from "yup";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import reorder from "assets/reorder.png";
 import EMICheckbox from "components/Elements/EMICheckbox";
-import useOutsideClick from "hooks/useOutsideClick";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { Draggable } from "react-beautiful-dnd";
+import { Facebook } from "react-spinners-css";
 
 const me =
 	JSON.parse(sessionStorage.getItem("me")) ||
@@ -39,22 +37,58 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 
 	const setState = (d) => setInput((th) => ({ ...th, ...d }));
 
-	const handleEdit = async () => {
+	useEffect(() => {
+		if (x) {
+			setInput({
+				name: x.name,
+				raiseDefect: x.raiseDefect,
+			});
+		}
+	}, [x]);
+
+	const handleEdit = async (e, fromcheckbox = false, checkBoxValue) => {
+		e.persist();
+		if (input?.name === x?.name && !fromcheckbox) {
+			setEdit(false);
+			return;
+		}
+
+		if (input?.name === "" && !fromcheckbox) {
+			setState({ name: x?.name });
+			setEdit(false);
+			return;
+		}
+
 		setLoader(true);
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 			if (!localChecker.some((el) => el.valid === false)) {
-				const res = await onEdit(input);
+				const res = await onEdit(
+					fromcheckbox ? { ...input, raiseDefect: e?.target?.checked } : input
+				);
 				setLoader(false);
 				if (res) {
 					setEdit(false);
+					x.name = input?.name;
+					x.raiseDefect = input?.raiseDefect;
 				}
 			} else {
 				const newError = generateErrorState(localChecker);
 				setError({ ...error, ...newError });
+				setInput({
+					name: x.name,
+					raiseDefect: x.raiseDefect,
+				});
 			}
 		} catch (e) {
+			setInput({
+				name: x.name,
+				raiseDefect: x.raiseDefect,
+			});
 			return;
+		} finally {
+			setLoader(false);
+			setEdit(false);
 		}
 	};
 
@@ -64,17 +98,16 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 		}
 	};
 
-	useOutsideClick(childRef, () => setEdit(false));
+	// useOutsideClick(childRef, () => setEdit(false));
 
 	return (
 		<Draggable draggableId={x.id + ""} index={index}>
 			{(provider) => (
-				<div ref={childRef} onClick={(e) => setEdit(true)}>
+				<div ref={childRef}>
 					<div
 						className={classes.individualRow}
 						{...provider.draggableProps}
 						ref={provider.innerRef}
-						style={{ justifyContent: "space-between" }}
 					>
 						<span
 							{...provider.dragHandleProps}
@@ -99,9 +132,21 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 								autoFocus
 								onKeyDown={handlePressEnter}
 								onBlur={handleEdit}
+								disabled={loader}
+								InputProps={{
+									classes: {
+										input: classes.inputText,
+									},
+
+									endAdornment: loader ? (
+										<Facebook size={20} color="#A79EB4" />
+									) : null,
+								}}
 							/>
 						) : (
-							<span className={classes.text}>{input?.name}</span>
+							<span className={classes.text} onClick={() => setEdit(true)}>
+								{input?.name}
+							</span>
 						)}
 						<FormGroup style={{ width: "10%" }}>
 							<FormControlLabel
@@ -109,10 +154,13 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 								control={
 									<EMICheckbox
 										state={input.raiseDefect}
-										changeHandler={() =>
-											setState({ raiseDefect: !input.raiseDefect })
-										}
-										disabled={!editMode}
+										changeHandler={(e) => {
+											setInput((prev) => ({
+												...prev,
+												raiseDefect: !input.raiseDefect,
+											}));
+											handleEdit(e, true, e.target.checked);
+										}}
 									/>
 								}
 								label={
@@ -120,7 +168,6 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 										Raise {me?.customCaptions.defectPlural}
 									</Typography>
 								}
-								disabled={!editMode}
 							/>
 						</FormGroup>
 						<span>

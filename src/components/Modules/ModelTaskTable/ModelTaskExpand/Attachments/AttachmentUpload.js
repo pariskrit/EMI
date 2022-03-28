@@ -86,27 +86,29 @@ const ImageUpload = ({ onDrop, file, disabled = false, removeImage }) => {
 
 	return (
 		<>
-			<div {...getRootProps()} className={classes.dragContainer}>
-				<>
-					{<input {...getInputProps()} />}
-					{isDragActive ? (
-						<div className={classes.dragTextContainer}>
-							<Typography className={classes.dropText}>
-								Drop the files here...
-							</Typography>
-						</div>
-					) : (
-						<div className={classes.dragTextContainer}>
-							<UploadIcon alt="upload icon" className={classes.uploadIcon} />
+			{!file && (
+				<div {...getRootProps()} className={classes.dragContainer}>
+					<>
+						{<input {...getInputProps()} />}
+						{isDragActive ? (
+							<div className={classes.dragTextContainer}>
+								<Typography className={classes.dropText}>
+									Drop the files here...
+								</Typography>
+							</div>
+						) : (
+							<div className={classes.dragTextContainer}>
+								<UploadIcon alt="upload icon" className={classes.uploadIcon} />
 
-							<Typography className={classes.dropText}>
-								Drag and drop some file here, or{" "}
-								<Link className={classes.imgLink}>browse</Link>
-							</Typography>
-						</div>
-					)}
-				</>
-			</div>
+								<Typography className={classes.dropText}>
+									Drag and drop some file here, or{" "}
+									<Link className={classes.imgLink}>browse</Link>
+								</Typography>
+							</div>
+						)}
+					</>
+				</div>
+			)}
 			{file && (
 				<aside className={classes.imageContainerMain}>
 					<Typography className="new-link">{file?.name ?? file}</Typography>

@@ -138,10 +138,10 @@ function AddOrEditAttachment({
 	};
 
 	const handleDropDocument = (e) => {
-		if (input.link !== "") return;
 		setInput({
 			...input,
 			file: e[0],
+			link: "",
 		});
 	};
 
@@ -199,51 +199,30 @@ function AddOrEditAttachment({
 					</ADD.FullWidthContainer>
 
 					<ADD.FullWidthContainer>
-						<ADD.NameLabel>
-							Document
-							{input.link !== "" && (
-								<ADD.RequiredStar>
-									{" "}
-									<span className={classes.inputInfo}>
-										Please remove link to add document
-									</span>
-								</ADD.RequiredStar>
-							)}
-						</ADD.NameLabel>
+						<ADD.NameLabel>Document</ADD.NameLabel>
 						<ErrorInputFieldWrapper
 							errorMessage={errors.file === null ? null : errors.file}
 						>
 							<AttachmentUpload
 								onDrop={handleDropDocument}
-								disabled={input.link !== ""}
 								file={input.file}
 								removeImage={() => setInput({ ...input, file: null })}
 							/>
 						</ErrorInputFieldWrapper>
 					</ADD.FullWidthContainer>
+
 					<ADD.FullWidthContainer>
-						<ADD.NameLabel>
-							Link
-							{input.file !== null && (
-								<ADD.RequiredStar>
-									{" "}
-									<span className={classes.inputInfo}>
-										Please remove document to add link
-									</span>
-								</ADD.RequiredStar>
-							)}
-						</ADD.NameLabel>
+						<ADD.NameLabel>Link</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.link === null ? false : true}
 							helperText={errors.link === null ? null : errors.link}
 							value={input.link}
 							onChange={(e) => {
-								setInput({ ...input, link: e.target.value });
+								setInput({ ...input, link: e.target.value, file: null });
 							}}
 							onKeyDown={handleKeydownPress}
 							variant="outlined"
 							fullWidth
-							disabled={input.file !== null}
 						/>
 					</ADD.FullWidthContainer>
 				</DialogContent>

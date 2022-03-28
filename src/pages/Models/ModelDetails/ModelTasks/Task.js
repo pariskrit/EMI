@@ -266,13 +266,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		navigator.clipboard.writeText(modelTaskId);
 	};
 
-	const handlePageChange = async (page) => {
-		setPageNumber(page);
-		setIsSearching(true);
-		await fetchData(modelId, false, "", page, perPage, false);
-		setIsSearching(false);
-	};
-
 	const handleDuplicate = async (toDuplicateTask) => {
 		setDuplicating(true);
 		try {
@@ -350,14 +343,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				customCaptions={customCaptions}
 				access={access}
 			/>
-			{searchTxt === "" && (
-				<TablePagination
-					page={pageNumber}
-					rowsPerPage={perPage}
-					onPageChange={handlePageChange}
-					count={totalTaskCount}
-				/>
-			)}
 		</div>
 	);
 }

@@ -184,19 +184,20 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	// HANDLE COPY AND PASTE
 	const handleCopy = (id) => {
 		setQuestionId(id);
+		sessionStorage.setItem("taskquestion", id);
 		setModel((th) => ({ ...th, copy: true }));
 	};
 
 	const handlePaste = async () => {
 		setLoading((th) => ({ ...th, loader: true }));
 		try {
+			const taskQuestionId = sessionStorage.getItem("taskquestion");
 			let result = await pasteModelTaskQuestion(taskInfo.id, {
-				modelVersionTaskQuestionID: questionId,
+				modelVersionTaskQuestionID: taskQuestionId,
 			});
 
 			if (!isMounted.aborted) {
 				setLoading((th) => ({ ...th, loader: false }));
-				setModel((th) => ({ ...th, copy: false }));
 				if (result.status) {
 					fetchTaskQuestion();
 					setQuestionId(null);
@@ -208,6 +209,22 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 			return;
 		}
 	};
+
+	useEffect(() => {
+		const checkcopyQuestionStatus = async () => {
+			try {
+				const questionTaskId = sessionStorage.getItem("taskquestion");
+
+				if (questionTaskId) {
+					setModel((th) => ({ ...th, copy: true }));
+				}
+			} catch (error) {
+				return;
+			}
+		};
+		checkcopyQuestionStatus();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	// HANDLE SERVICE LAYOUT
 	const handleServiceLayout = (modelVersionTaskQuestionID) => {

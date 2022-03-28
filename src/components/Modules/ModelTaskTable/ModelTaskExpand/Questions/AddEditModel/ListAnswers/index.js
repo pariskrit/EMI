@@ -24,6 +24,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Droppable } from "react-beautiful-dnd";
+import { setPositionForPayload } from "helpers/setPositionForPayload";
 
 const schema = yup.object({
 	name: yup.string().required("Please Provide Name"),
@@ -87,6 +88,11 @@ const useStyles = makeStyles({
 	},
 	labelGrp: {
 		marginRight: 0,
+	},
+	inputText: {
+		color: "black",
+		fontSize: 14,
+		padding: "13px 10px",
 	},
 });
 
@@ -203,29 +209,6 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 		setAddNew(true);
 	};
 
-	const setPositionForPayload = (e, listLength) => {
-		const { destination, source } = e;
-		if (destination.index === listLength - 1) {
-			return originalList[destination.index]?.pos + 1;
-		}
-		if (destination.index === 0) {
-			return originalList[destination.index]?.pos - 1;
-		}
-
-		if (destination.index > source.index) {
-			return (
-				(+originalList[destination.index]?.pos +
-					+originalList[e.destination.index + 1]?.pos) /
-				2
-			);
-		}
-		return (
-			(+originalList[destination.index]?.pos +
-				+originalList[e.destination.index - 1]?.pos) /
-			2
-		);
-	};
-
 	const handleDrag = async (e) => {
 		if (!e.destination) {
 			return;
@@ -243,12 +226,16 @@ function ListAnswers({ type, modelVersionTaskQuestionID, getError }) {
 				{
 					path: "pos",
 					op: "replace",
-					value: setPositionForPayload(e, originalList.length),
+					value: setPositionForPayload(e, originalList),
 				},
 			];
 			const response = await patchQuestionOptions(e.draggableId, payloadBody);
 			if (response.status) {
-				setOriginalList(listOptions.options);
+				const newDate = result.map((x, i) =>
+					i === e.destination.index ? { ...x, pos: response.data.pos } : x
+				);
+				setOriginalList(newDate);
+				setListOptions({ options: newDate, loading: false });
 			} else {
 				setListOptions({ options: originalList, loading: false });
 			}
