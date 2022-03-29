@@ -18,6 +18,8 @@ function ListStages({
 	modelType,
 	modelAccess,
 	customCaption,
+	setStages,
+	siteId,
 }) {
 	return (
 		<Table aria-label="Table" className={classes.table}>
@@ -58,6 +60,8 @@ function ListStages({
 						modelType={modelType}
 						modelAccess={modelAccess}
 						customCaption={customCaption}
+						setStages={setStages}
+						siteId={siteId}
 					/>
 				))}
 			</TableBody>

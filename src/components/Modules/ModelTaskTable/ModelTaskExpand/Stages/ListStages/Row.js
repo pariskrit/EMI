@@ -3,6 +3,7 @@ import { TableRow, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
+import { getSiteAssets } from "services/clients/sites/siteAssets";
 
 const AT = TableStyle();
 
@@ -29,6 +30,8 @@ function Row({
 	modelType,
 	modelAccess,
 	customCaption,
+	setStages,
+	siteId,
 }) {
 	const [state, setStates] = useState({
 		selectedAsset: {
@@ -113,7 +116,8 @@ function Row({
 	const handleServierSideSearch = useCallback(
 		debounce(async (searchTxt) => {
 			if (searchTxt) {
-				pageChange({ pNo: state.page, pSize: 10, search: searchTxt }, assets);
+				const response = await getSiteAssets(siteId, state.page, 10, searchTxt);
+				setStages((prev) => ({ ...prev, assets: response.data }));
 			} else {
 				handleAssetDropPage(1, assets);
 			}

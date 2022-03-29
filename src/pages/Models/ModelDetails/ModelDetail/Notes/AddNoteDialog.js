@@ -112,6 +112,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 					fullWidth
 					onChange={(e) => setInput({ note: e.target.value })}
 					onKeyDown={handleEnterPress}
+					autoFocus
 				/>
 			</DialogContent>
 		</Dialog>

@@ -127,7 +127,6 @@ function DyanamicDropdown(props) {
 	useEffect(() => {
 		setFilteredList(dataSource);
 	}, [dataSource]);
-
 	const handleOutsideClick = useCallback((event) => {
 		let specifiedElement = document.getElementsByClassName(
 			"dropdown-expand active"

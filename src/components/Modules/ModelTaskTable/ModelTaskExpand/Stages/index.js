@@ -93,7 +93,16 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			let result = await getSiteAssets(me?.siteID, p.pNo, p.pSize, p.search);
 			if (result.status) {
 				if (!isMounted.aborted)
-					setStages((th) => ({ ...th, assets: [...result.data] }));
+					setStages((th) => ({
+						...th,
+						assets: [
+							...th.assets,
+							...result.data.filter((data) => {
+								const isThereAssest = th.assets.find((x) => x.id === data.id);
+								if (!isThereAssest) return true;
+							}),
+						],
+					}));
 			} else {
 				errorResponse(result);
 			}
@@ -269,8 +278,10 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			/>
 			<ListStages
 				classes={classes}
+				siteId={me?.siteID}
 				data={stages.data}
 				assets={stages.assets}
+				setStages={setStages}
 				count={stages.assetCount}
 				patchStage={handlePatch}
 				postStage={handlePost}

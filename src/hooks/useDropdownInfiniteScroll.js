@@ -47,11 +47,13 @@ function useInfiniteScroll(
 	}, []);
 	const handleScroll = (event) => {
 		if (loading) return;
-		console.log(event);
+
 		if (
-			document.getElementsByClassName("dropdown-expand")[0].offsetHeight -
-				(document.getElementsByClassName("dynamic-drop-list")[0].scrollHeight +
-					document.getElementsByClassName("dynamic-drop-list")[0].scrollTop) <=
+			document.getElementsByClassName("dynamic-drop-list")[0].offsetHeight +
+				Math.floor(
+					document.getElementsByClassName("dynamic-drop-list")[0].scrollTop
+				) -
+				document.getElementsByClassName("dynamic-drop-list")[0].scrollHeight ===
 			threshold
 		) {
 			fetchMoreData();
