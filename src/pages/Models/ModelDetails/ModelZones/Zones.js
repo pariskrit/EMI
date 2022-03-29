@@ -152,13 +152,25 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 	};
 
 	const editModelZone = async (data) => {
-		return await patchModelVersionZones(zoneToEditData.id, [
-			{ path: "name", op: "replace", value: data.Name },
-		]);
+		return await patchModelVersionZones(
+			zoneToEditData.id,
+			[
+				{ path: "name", op: "replace", value: data.Name },
+
+				...[
+					data.imageKey === ""
+						? { path: "imageKey", op: "replace", value: null }
+						: [],
+				],
+			].filter((x) => JSON.stringify(x) !== "[]")
+		);
 	};
 
 	const createModalZone = async (input) => {
-		return await addNewModelZone(input);
+		return await addNewModelZone({
+			Name: input.Name,
+			ModelVersionID: input.ModelVersionID,
+		});
 	};
 
 	return (

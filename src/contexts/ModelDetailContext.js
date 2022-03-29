@@ -11,7 +11,6 @@ const initialState = {
 	showChangeStatus: false,
 	isPasteTaskDisabled: true,
 	isQuestionTaskDisabled: true,
-	taskDetail: {},
 };
 
 function reducer(state, action) {

@@ -203,7 +203,7 @@ function AddNewModelRole({
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
 							<ADD.NameLabel>
-								Model {customCaptions?.role}
+								Name
 								<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ADD.NameInput

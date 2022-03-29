@@ -141,6 +141,7 @@ function AddNewModelTask({
 				const newData = await createProcessHandler({
 					Name: input.Name,
 					ModelVersionID,
+					imageKey: input?.imageName,
 				});
 				if (newData?.status) {
 					if (input?.image) {

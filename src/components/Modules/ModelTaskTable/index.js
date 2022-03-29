@@ -80,13 +80,12 @@ const ModelTaskTable = ({
 	handleCopy,
 	handleCopyTaskQuestion,
 	customCaptions,
-	handleDuplicate,
+	totalTaskCount,
+	fetchData,
 	access,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
-	const [selectedData, setSelectedData] = useState(null);
-	const [anchorEl, setAnchorEl] = useState(null);
 
 	const handleSortClick = (field) => {
 		// Flipping current method
@@ -155,13 +154,8 @@ const ModelTaskTable = ({
 									key={row.id}
 									row={row}
 									index={index}
-									setAnchorEl={setAnchorEl}
-									anchorEl={anchorEl}
-									selectedData={selectedData}
-									setSelectedData={setSelectedData}
 									handleEdit={handleEdit}
 									handleDelete={handleDelete}
-									handleDuplicate={handleDuplicate}
 									handleCopy={handleCopy}
 									handleCopyTaskQuestion={handleCopyTaskQuestion}
 									classes={classes}
@@ -170,6 +164,8 @@ const ModelTaskTable = ({
 									modelId={modelId}
 									customCaptions={customCaptions}
 									access={access}
+									totalTaskCount={totalTaskCount}
+									fetchData={fetchData}
 								/>
 							</TaskDetailContext>
 						))

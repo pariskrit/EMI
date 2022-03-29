@@ -9,7 +9,6 @@ import HasParts from "assets/icons/parts.svg";
 import SafteryCritical from "assets/icons/safety-critical.svg";
 import { CircularProgress, LinearProgress } from "@material-ui/core";
 import AddNewModelTask from "./AddNewModelTask";
-import DeleteDialog from "components/Elements/DeleteDialog";
 import {
 	addModelTask,
 	getLengthOfModelTasks,
@@ -18,12 +17,10 @@ import {
 } from "services/models/modelDetails/modelTasks";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { Apis } from "services/api";
-import SearchField from "components/Elements/SearchField/SearchField";
 import { makeStyles } from "@material-ui/core/styles";
 import withMount from "components/HOC/withMount";
-import { duplicateTask } from "services/models/modelDetails/modelTasks";
 import { useHistory } from "react-router-dom";
+import SearchTask from "./SearchTask";
 
 const useStyles = makeStyles({
 	loading: {
@@ -34,33 +31,16 @@ const useStyles = makeStyles({
 	},
 });
 
-const debounce = (func, delay) => {
-	let timer;
-	return function () {
-		let self = this;
-		let args = arguments;
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			func.apply(self, args);
-		}, delay);
-	};
-};
-
 function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [isLoading, setLoading] = useState(true);
 	const [taskList, setTaskList] = useState([]);
 
-	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const [taskToDeleteId, setTaskToDeleteId] = useState(null);
 	const [isPasting, setPasting] = useState(false);
-	const [searchTxt, setSearchTxt] = useState("");
 
 	const [perPage] = useState(10);
 	const [pageNumber] = useState(1);
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
-	const [isSearching, setIsSearching] = useState(false);
 	const [enablePasteTask, setPasteTask] = useState(false);
-	const [duplicating, setDuplicating] = useState(false);
 	const shouldExpandRef = useRef(false);
 
 	const history = useHistory();
@@ -199,7 +179,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						ModelVersionTaskID: +task.modelTaskId,
 					});
 					if (response.status) {
-						await fetchData(modelId, false, searchTxt, pageNumber, perPage);
+						await fetchData(modelId, false, "", pageNumber, perPage);
 						dispatch({
 							type: "TAB_COUNT",
 							payload: { countTab: "taskCount", data: totalTaskCount + 1 },
@@ -242,7 +222,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		fetchData,
 		pageNumber,
 		perPage,
-		searchTxt,
 	]);
 
 	useEffect(() => {
@@ -261,23 +240,8 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const handleSearch = useCallback(
-		debounce(async (value) => {
-			setIsSearching(true);
-			if (value) await fetchData(modelId, false, value, 1, 100, false);
-			else await fetchData(modelId, false, "", pageNumber, perPage, false);
-			setIsSearching(false);
-		}, 1500),
-		[pageNumber]
-	);
-
 	const createModelTask = async (payload) => {
 		return await addModelTask({ ...payload, modelVersionID: modelId });
-	};
-
-	const handleDeleteTask = (taskId) => {
-		setTaskToDeleteId(taskId);
-		setOpenDeleteDialog(true);
 	};
 
 	const handleRemoveData = (id) => {
@@ -304,36 +268,10 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		navigator.clipboard.writeText(modelTaskId);
 	};
 
-	const handleDuplicate = async (toDuplicateTask) => {
-		setDuplicating(true);
-		try {
-			const response = await duplicateTask(toDuplicateTask?.id);
-			await fetchData(modelId, false, searchTxt, pageNumber, perPage);
-			dispatch({
-				type: "TAB_COUNT",
-				payload: { countTab: "taskCount", data: totalTaskCount + 1 },
-			});
-			document.getElementById(`taskExpandable${response.data}`).click();
-			document.getElementById(`taskExpandable${response.data}`).scrollIntoView({
-				behavior: "smooth",
-				top:
-					document
-						.getElementById(`taskExpandable${response.data}`)
-						.getBoundingClientRect().bottom + window.pageYOffset,
-			});
-		} catch (error) {
-			console.log(error);
-			reduxDispatch(showError(error?.response?.data || "something went wrong"));
-		}
-		setDuplicating(false);
-	};
-
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div>
-			{isPasting || isSearching ? (
-				<LinearProgress className={classes.loading} />
-			) : null}
+			{isPasting ? <LinearProgress className={classes.loading} /> : null}
 			<AddNewModelTask
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}
@@ -342,42 +280,26 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				title={`Add ${customCaptions?.task}`}
 				modelId={modelId}
 				createProcessHandler={createModelTask}
-				fetchData={() =>
-					fetchData(modelId, false, searchTxt, pageNumber, perPage)
-				}
+				fetchData={() => fetchData(modelId, false, "", pageNumber, perPage)}
 				pageSize={perPage}
 				pageNo={pageNumber}
 				customCaptions={customCaptions}
 				totalTaskCount={totalTaskCount}
 				showSave
 			/>
-			<DeleteDialog
-				entityName={`${customCaptions?.task}`}
-				open={openDeleteDialog}
-				closeHandler={() => setOpenDeleteDialog(false)}
-				deleteEndpoint={Apis.ModelTasks}
-				deleteID={taskToDeleteId}
-				handleRemoveData={handleRemoveData}
-			/>
+
 			<div className="detailsContainer" style={{ alignItems: "center" }}>
 				<DetailsPanel
 					header={customCaptions?.taskPlural}
-					dataCount={searchTxt === "" ? totalTaskCount : taskList.length}
+					dataCount={taskList.length}
 					description={`${customCaptions?.task} assigned in this asset model`}
 				/>
-				<SearchField
-					searchQuery={searchTxt}
-					setSearchQuery={(e) => {
-						setSearchTxt(e.target.value);
-						handleSearch(e.target.value);
-					}}
-				/>
+				<SearchTask fetchData={fetchData} modelId={modelId} classes={classes} />
 			</div>
 
-			{duplicating ? <LinearProgress /> : null}
 			<ModelTaskTable
 				handleEdit={() => {}}
-				handleDelete={handleDeleteTask}
+				handleDelete={handleRemoveData}
 				handleCopy={handleCopy}
 				handleCopyTaskQuestion={handleCopyTaskQuestion}
 				setData={setTaskList}
@@ -385,11 +307,12 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				columns={dymanicTableHeader(showOperatingMode, customCaptions).columns}
 				data={taskList}
 				modelId={modelId}
-				handleDuplicate={handleDuplicate}
 				pageSize={perPage}
 				pageNo={pageNumber}
 				customCaptions={customCaptions}
 				access={access}
+				totalTaskCount={totalTaskCount}
+				fetchData={fetchData}
 			/>
 		</div>
 	);

@@ -24,7 +24,7 @@ export const useStyles = makeStyles({
 		paddingBottom: 12,
 		display: "flex",
 		flexDirection: "column",
-		minHeight: "600px",
+		minHeight: "150px",
 	},
 	component: { width: "95%", margin: "auto" },
 });

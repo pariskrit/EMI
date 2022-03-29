@@ -664,37 +664,40 @@ const AddEditModel = ({
 							<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
 						{input.type === "N" || input.type === "B" ? (
-							<ADD.NameInput
-								style={{ width: "49.5%", paddingRight: 16 }}
-								size="medium"
-								error={
-									errors.decimalPlaces || errors.checkboxCaption !== null
-										? true
-										: false
-								}
-								helperText={
+							<ErrorInputFieldWrapper
+								errorMessage={
 									errors.decimalPlaces || errors.checkboxCaption !== null
 										? errors.decimalPlaces || errors.checkboxCaption
 										: null
 								}
-								variant="outlined"
-								type={input.type === "N" ? "number" : "string"}
-								onChange={(e) => {
-									const { value } = e.target;
-									setInput((th) => ({
-										...th,
-										decimalPlaces: input.type === "N" ? value : "",
-										checkboxCaption: input.type === "B" ? value : "",
-									}));
-								}}
-								value={
-									input.type === "N"
-										? input.decimalPlaces
-										: input.type === "B"
-										? input.checkboxCaption
-										: ""
-								}
-							/>
+							>
+								<ADD.NameInput
+									style={{ width: "49.5%", paddingRight: 16 }}
+									size="medium"
+									error={
+										errors.decimalPlaces || errors.checkboxCaption !== null
+											? true
+											: false
+									}
+									variant="outlined"
+									type={input.type === "N" ? "number" : "string"}
+									onChange={(e) => {
+										const { value } = e.target;
+										setInput((th) => ({
+											...th,
+											decimalPlaces: input.type === "N" ? value : "",
+											checkboxCaption: input.type === "B" ? value : "",
+										}));
+									}}
+									value={
+										input.type === "N"
+											? input.decimalPlaces
+											: input.type === "B"
+											? input.checkboxCaption
+											: ""
+									}
+								/>
+							</ErrorInputFieldWrapper>
 						) : (
 							<>
 								<ErrorInputFieldWrapper errorMessage={errors.options}>

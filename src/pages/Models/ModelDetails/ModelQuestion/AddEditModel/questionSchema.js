@@ -24,8 +24,8 @@ const questionSchema = (questionType, questionTiming) =>
 				is: () => questionType === "N",
 				then: yup
 					.number()
-					.typeError("Please specify decimalPlaces")
-					.required("Please Provide Decimal"),
+					.typeError("Decimal Places is required")
+					.required("Decimal Places is required"),
 			}),
 		checkboxCaption: yup.string("This field must be a string").when("type", {
 			is: () => questionType === "B",

@@ -70,8 +70,8 @@ const DeleteDialog = ({
 		handleDeleteData().then(() => {
 			// Once deleted, closing dialog and updating state
 			if (!pushSomeWhere) {
-				closeHandler();
 				setIsUpdating(false);
+				closeHandler();
 			}
 		});
 	};

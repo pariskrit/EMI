@@ -154,6 +154,11 @@ const AddEditModel = ({
 			let res = await editModelStage(detailData.id, [
 				{ op: "replace", path: "name", value: input.name },
 				{ op: "replace", path: "hasZones", value: input.hasZones },
+				...[
+					input.imageName === ""
+						? { path: "imageKey", op: "replace", value: null }
+						: [],
+				].filter((x) => JSON.stringify(x) !== "[]"),
 			]);
 			if (res.status) {
 				if (input.image) {
@@ -225,7 +230,7 @@ const AddEditModel = ({
 						{detailData ? "Close" : "Cancel"}
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleSave}>
-						Save
+						{detailData ? "Save" : "Add " + title}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
@@ -285,7 +290,7 @@ const AddEditModel = ({
 										});
 									}}
 									imageUrl={input?.imageUrl}
-									imageName={input?.image?.name || input?.imageName}
+									imageName={input?.image?.name || ""}
 									removeImage={() => {
 										setInput({
 											...input,

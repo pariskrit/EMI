@@ -62,7 +62,7 @@ $dropdown-errorcolor: #f44336;
 
 		.dropdown-content {
 			width: 100%;
-			margin-bottom: 10px;
+			margin-bottom: 5px;
 			// max-height: 40vh;
 			// overflow: auto;
 		}
@@ -73,7 +73,7 @@ $dropdown-errorcolor: #f44336;
 
 			//grid-gap: 10px;
 			// height: 243px;
-			padding-bottom: 10px;
+			// padding-bottom: 10px;
 			max-height: 32vh;
 			border-top: 1px solid $border-color;
 			overflow: auto;
@@ -140,7 +140,9 @@ $dropdown-errorcolor: #f44336;
 		.drop-list {
 			display: grid;
 			//grid-gap: 10px;
-			padding-bottom: 10px;
+			// padding-bottom: 10px;
+			margin-bottom: 5px;
+
 			max-height: 42vh;
 			border-top: 1px solid $border-color;
 			overflow: auto;

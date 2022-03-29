@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, memo } from "react";
 import TableRow from "@material-ui/core/TableRow";
-import { Collapse, TableCell } from "@material-ui/core";
+import { Collapse, LinearProgress, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as BlueMenuIcon } from "assets/icons/3dot-icon.svg";
@@ -13,12 +13,27 @@ import { modelServiceLayout, modelsPath } from "helpers/routePaths";
 import ModelTaskExpand from "./ModelTaskExpand";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { getSingleModelTask } from "services/models/modelDetails/modelTasks";
+import {
+	duplicateTask,
+	getSingleModelTask,
+} from "services/models/modelDetails/modelTasks";
 import useDidMountEffect from "hooks/useDidMountEffect";
 import ErrorIcon from "@material-ui/icons/Error";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { ModelContext } from "contexts/ModelDetailContext";
+import DeleteDialog from "components/Elements/DeleteDialog";
+import { Apis } from "services/api";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+	loading: {
+		position: "absolute",
+		width: "100%",
+		left: 0,
+		top: 0,
+	},
+});
 
 const AT = TableStyle();
 
@@ -36,24 +51,29 @@ const ModelTaskRow = ({
 	classes,
 	index,
 	columns,
-	setAnchorEl,
-	anchorEl,
-	setSelectedData,
-	selectedData,
 	row,
 	handleDelete,
 	modelId,
-	handleDuplicate,
+	totalTaskCount,
 	handleCopy,
 	handleCopyTaskQuestion,
 	customCaptions,
 	access,
+	fetchData,
 	isMounted,
 }) => {
 	const [toggle, setToggle] = useState(false);
 	const [singleTask, setSingleTask] = useState({});
 	const [loading, setLoading] = useState(false);
+	const [selectedData, setSelectedData] = useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [taskToDeleteId, setTaskToDeleteId] = useState(null);
+	const [duplicating, setDuplicating] = useState(false);
+
 	const dispatch = useDispatch();
+	const rowClasses = useStyles();
+
 	const [, CtxDispatch] = useContext(TaskContext);
 	const [, ModelCtxDispatch] = useContext(ModelContext);
 
@@ -73,10 +93,6 @@ const ModelTaskRow = ({
 					if (!isMounted.aborted) {
 						setSingleTask(response.data[0]);
 						CtxDispatch({ type: "SET_TASK_DETAIL", payload: response.data[0] });
-						ModelCtxDispatch({
-							type: "TASK_DETAIL",
-							payload: response.data[0],
-						});
 					}
 				} else {
 					dispatch(showError(response?.data?.title || "something went wrong"));
@@ -87,6 +103,29 @@ const ModelTaskRow = ({
 				!isMounted.aborted && setLoading(false);
 			}
 		}
+	};
+
+	const handleDuplicate = async (toDuplicateTask) => {
+		setDuplicating(true);
+		try {
+			const response = await duplicateTask(toDuplicateTask?.id);
+			await fetchData(modelId, false, "");
+			ModelCtxDispatch({
+				type: "TAB_COUNT",
+				payload: { countTab: "taskCount", data: totalTaskCount + 1 },
+			});
+			document.getElementById(`taskExpandable${response.data}`).click();
+			document.getElementById(`taskExpandable${response.data}`).scrollIntoView({
+				behavior: "smooth",
+				top:
+					document
+						.getElementById(`taskExpandable${response.data}`)
+						.getBoundingClientRect().bottom + window.pageYOffset,
+			});
+		} catch (error) {
+			dispatch(showError(error?.response?.data || "something went wrong"));
+		}
+		setDuplicating(false);
 	};
 
 	useDidMountEffect(() => {
@@ -106,8 +145,23 @@ const ModelTaskRow = ({
 		}
 	}, [toggle]);
 
+	const handleDeleteTask = (taskId) => {
+		setTaskToDeleteId(taskId);
+		setOpenDeleteDialog(true);
+	};
+
 	return (
 		<>
+			{duplicating && <LinearProgress className={rowClasses.loading} />}
+
+			<DeleteDialog
+				entityName={`${customCaptions?.task}`}
+				open={openDeleteDialog}
+				closeHandler={() => setOpenDeleteDialog(false)}
+				deleteEndpoint={Apis.ModelTasks}
+				deleteID={taskToDeleteId}
+				handleRemoveData={() => handleDelete(taskToDeleteId)}
+			/>
 			<TableRow
 				onClick={(e) => onHandleTableExpand(!toggle, row?.id, e)}
 				style={{
@@ -219,7 +273,7 @@ const ModelTaskRow = ({
 											},
 											{
 												name: "Delete",
-												handler: () => handleDelete(row.id),
+												handler: () => handleDeleteTask(row.id),
 												isDelete: true,
 											},
 										].filter((x) => {
@@ -256,4 +310,4 @@ const ModelTaskRow = ({
 	);
 };
 
-export default withMount(ModelTaskRow);
+export default memo(withMount(ModelTaskRow));
