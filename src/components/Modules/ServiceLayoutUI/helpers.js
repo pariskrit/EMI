@@ -11,63 +11,6 @@ export const reorder = (list, startIndex, endIndex) => {
 	return result;
 };
 
-const findStageToExpand = (stages, taskId, questionId, taskQuestionId) => {
-	if (taskId) {
-		const taskInsideStage = stages.find((stage) =>
-			stage.tasks.find((task) => task.modelVersionTaskID === taskId)
-		);
-		const taskInsideZone = stages.find((stage) =>
-			stage.zones.find((zone) =>
-				zone.tasks.find((task) => task.modelVersionTaskID === taskId)
-			)
-		);
-		if (taskInsideStage) {
-			return taskInsideStage.modelVersionStageID;
-		}
-
-		if (taskInsideZone) {
-			return taskInsideZone.modelVersionStageID;
-		}
-	}
-	if (questionId) {
-		const questionInsideStage = stages.find((stage) =>
-			stage.questions.find(
-				(question) => question.modelVersionQuestionID === questionId
-			)
-		);
-		if (questionInsideStage) {
-			return questionInsideStage.modelVersionStageID;
-		}
-	}
-	if (taskQuestionId) {
-		const questionInsideTask = stages.find((stage) =>
-			stage.tasks.some((task) =>
-				task.questions.some(
-					(question) => question.modelVersionTaskQuestionID === taskQuestionId
-				)
-			)
-		);
-
-		const taskQuestionInsideZone = stages.find((stage) =>
-			stage.zones.find((zone) =>
-				zone.tasks.find((task) =>
-					task.questions.some(
-						(question) => question.modelVersionTaskQuestionID === taskQuestionId
-					)
-				)
-			)
-		);
-		if (questionInsideTask) {
-			return questionInsideTask.modelVersionStageID;
-		}
-		if (taskQuestionInsideZone) {
-			return taskQuestionInsideZone.modelVersionStageID;
-		}
-	}
-
-	return null;
-};
-
 export const modifyResponseData = (
 	data,
 	hideTaskQuestions,
@@ -88,14 +31,7 @@ export const modifyResponseData = (
 		const field = {
 			id: "" + id,
 			parentId: 0,
-			expandedId: isStages
-				? findStageToExpand(
-						changedData[property],
-						taskId,
-						questionId,
-						taskQuestionId
-				  )
-				: null,
+
 			name: property,
 			value: changedData[property].map((value) => {
 				sn += 1;
@@ -227,17 +163,6 @@ export const getDataType = (
 			questionIdToHighlight: questionId,
 			taskQuestionIdToHighlight: taskQuestionId,
 
-			expandedId:
-				(data.zones.find((zone) =>
-					zone.tasks.some((task) => task.modelVersionTaskID === taskId)
-				)?.modelVersionZoneID ||
-					data.tasks.find((task) =>
-						task.questions.some(
-							(question) =>
-								question.modelVersionTaskQuestionID === taskQuestionId
-						)
-					)?.id) ??
-				null,
 			arrayData: [
 				...data.questions.map((question) => {
 					sn += 1;
@@ -249,6 +174,7 @@ export const getDataType = (
 						sn,
 						id: question.modelVersionQuestionID,
 						highlightQuestion: question.modelVersionQuestionID === questionId,
+						grandParentId: data.modelVersionStageID || data.id,
 					};
 				}),
 				...data.tasks.map((task) => {
@@ -287,12 +213,6 @@ export const getDataType = (
 			id: data.modelVersionStageID || data.id,
 			marginLeft: data.marginLeft ?? 0,
 			taskQuestionIdToHighlight: taskQuestionId,
-			expandedId:
-				data.tasks.find((task) =>
-					task.questions.some(
-						(question) => question.modelVersionTaskQuestionID === taskQuestionId
-					)
-				)?.id ?? null,
 
 			arrayData: [
 				...data.questions.map((question) => {
@@ -304,6 +224,9 @@ export const getDataType = (
 						isDraggable: true,
 						type: "question",
 						highlightQuestion: question.modelVersionQuestionID === questionId,
+						grandParentId:
+							data.modelVersionStageID || data.grandParentId || null,
+						parentId: data.id ?? null,
 						id: question.modelVersionQuestionID,
 					};
 				}),
@@ -339,27 +262,9 @@ export const getDataType = (
 			hideTaskQuestions,
 			marginLeft: 0,
 			taskIdToHighlight: taskId,
-			taskQuestionIdToHighlight: taskQuestionId,
+			questionIdToHighlight: questionId,
 
-			expandedId:
-				(data.zones.find((zone) =>
-					zone.tasks.find((task) => task.modelVersionTaskID === taskId)
-				)?.modelVersionZoneID ||
-					data.zones.find((zone) =>
-						zone.tasks.find((task) =>
-							task.questions.some(
-								(question) =>
-									question.modelVersionTaskQuestionID === taskQuestionId
-							)
-						)
-					)?.modelVersionZoneID ||
-					data.tasks.find((task) =>
-						task.questions.some(
-							(question) =>
-								question.modelVersionTaskQuestionID === taskQuestionId
-						)
-					)?.id) ??
-				null,
+			taskQuestionIdToHighlight: taskQuestionId,
 
 			arrayData: [
 				...data.tasks.map((task) => {
@@ -400,19 +305,9 @@ export const getDataType = (
 			hideTaskQuestions,
 			marginLeft: 0,
 			taskIdToHighlight: taskId,
-			expandedId:
-				(data.zones.find((zone) =>
-					zone.tasks.find((task) => task.modelVersionTaskID === taskId)
-				)?.modelVersionZoneID ||
-					data.zones.find((zone) =>
-						zone.tasks.find((task) =>
-							task.questions.some(
-								(question) =>
-									question.modelVersionTaskQuestionID === taskQuestionId
-							)
-						)
-					)?.modelVersionZoneID) ??
-				null,
+			questionIdToHighlight: questionId,
+
+			taskQuestionIdToHighlight: taskQuestionId,
 
 			arrayData: [
 				...data.questions.map((question) => {
@@ -451,16 +346,8 @@ export const getDataType = (
 			marginLeft: data.marginLeft ?? 0,
 			taskIdToHighlight: taskId,
 			questionIdToHighlight: questionId,
-			expandedId:
-				(data.zones.find((zone) =>
-					zone.tasks.find((task) => task.modelVersionTaskID === taskId)
-				)?.modelVersionZoneID ||
-					data.zones.find((zone) =>
-						zone.questions.find(
-							(question) => question.modelVersionQuestionID === questionId
-						)
-					)?.modelVersionZoneID) ??
-				null,
+
+			taskQuestionIdToHighlight: taskQuestionId,
 
 			arrayData: [
 				...data.zones.map((zone) => {
@@ -484,13 +371,9 @@ export const getDataType = (
 		return {
 			id: data.modelVersionStageID || data.id,
 			marginLeft: data.marginLeft ?? 0,
+			questionIdToHighlight: questionId,
+
 			taskQuestionIdToHighlight: taskQuestionId,
-			expandedId:
-				data.tasks.find((task) =>
-					task.questions.some(
-						(question) => question.modelVersionTaskQuestionID === taskQuestionId
-					)
-				)?.id ?? null,
 
 			arrayData: [
 				...data.tasks.map((task) => {
@@ -510,7 +393,7 @@ export const getDataType = (
 					};
 				}),
 			],
-			type: data.type === "zones" ? "zoneTasks" : "tasks",
+			type: data.type === "zone" ? "zoneTasks" : "tasks",
 		};
 	}
 
@@ -560,7 +443,6 @@ export const getFields = (data) => {
 		childId: data.childId,
 		name: data.type,
 		marginLeft: 15 + data.marginLeft,
-		expandedId: data.expandedId,
 		value: data.arrayData.map((value) => ({
 			value,
 			children: getFields(

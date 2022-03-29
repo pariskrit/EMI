@@ -4,6 +4,9 @@ import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOut
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import reorder from "assets/reorder.png";
 import "./style.css";
+import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { modelsPath, modelTask } from "helpers/routePaths";
 
 const style = {
 	color: "#307ad7",
@@ -11,12 +14,13 @@ const style = {
 function DynamicRow({
 	rowData,
 	isChild = false,
-	onTaskClick,
 	isDragDisabled,
 	isLastDroppable = false,
-	emptyIsmore = false,
+	firstRender = true,
 }) {
 	const [isMore, setIsMore] = useState({});
+	const history = useHistory();
+	const { id } = useParams();
 
 	const showChildren = (id) => {
 		if (isMore[id]?.show) {
@@ -25,22 +29,28 @@ function DynamicRow({
 		}
 		setIsMore({ ...isMore, [id]: { show: true } });
 	};
+
 	useEffect(() => {
-		const taskElement = document.getElementById(
-			`highlightedTask_${rowData.parentId}`
-		);
+		const autoExpandRows = () => {
+			if (
+				rowData.name !== "startQuestions" &&
+				rowData.name !== "endQuestions"
+			) {
+				const listOfIds = rowData?.value
+					.filter((val) => val?.children?.length !== 0)
+					.map((val) => val?.value?.id);
 
-		if (taskElement) {
-			taskElement.scrollIntoView({ behavior: "smooth", block: "center" });
-		}
-		if (rowData.expandedId) {
-			setIsMore({ [rowData.expandedId]: { show: true } });
-		}
-
-		if (emptyIsmore) {
-			setIsMore({});
-		}
-	}, [rowData, emptyIsmore]);
+				if (listOfIds.length !== 0) {
+					let idsToExpand = {};
+					listOfIds.forEach((id) => {
+						idsToExpand = { ...idsToExpand, [id]: { show: true } };
+					});
+					setIsMore(idsToExpand);
+				}
+			}
+		};
+		if (firstRender) autoExpandRows();
+	}, [rowData, firstRender]);
 	return (
 		<Droppable
 			droppableId={
@@ -118,7 +128,7 @@ function DynamicRow({
 														val.value.highlightTask ||
 														val.value.highlightQuestion ||
 														val.value.highlightTaskQuestion
-															? `highlightedTask_${rowData.parentId}`
+															? `highlightedTask`
 															: ""
 													}
 													className={`row__questions__item ${
@@ -132,18 +142,26 @@ function DynamicRow({
 													}`}
 													onClick={
 														val.value.type === "task"
-															? () => onTaskClick(val.value.modelVersionTaskID)
+															? () =>
+																	history.push({
+																		pathname: `${modelsPath}/${id}${modelTask}`,
+																		state: { modelVersionTaskID: val.value.id },
+																	})
 															: () => {}
 													}
 												>
 													{val.value.type === "task"
-														? `${val.value.actionName} / ${val.value.name}`
+														? `${val.value.actionName ?? ""} ${val.value.name} `
 														: val.value.name}
+													{val.value.assetName && val.value.type === "task" ? (
+														<span style={{ fontStyle: "italic" }}>
+															({val.value.assetName})
+														</span>
+													) : null}
 												</div>
 											</div>
 
 											<div className="row__main">
-												{val.value.type === "task" ? val.value.assetName : null}
 												<div
 													{...provided2.dragHandleProps}
 													style={{
@@ -167,10 +185,9 @@ function DynamicRow({
 								<DynamicRow
 									rowData={val.children}
 									isChild={val?.children?.value?.length}
-									onTaskClick={onTaskClick}
 									isDragDisabled={isDragDisabled}
 									isLastDroppable={i === rowData.value.length - 1}
-									emptyIsmore={emptyIsmore}
+									firstRender={firstRender}
 								/>
 							) : null}
 						</React.Fragment>

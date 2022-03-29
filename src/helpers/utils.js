@@ -79,8 +79,14 @@ export const changeDateFormat = (date) => {
 export const isoDateWithoutTimeZone = (date) => {
 	if (date == null) return date;
 	date = new Date(date);
-	var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
-	var correctDate = new Date(timestamp);
+	const localDateAndTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString(
+		[],
+		{
+			hour: "2-digit",
+			minute: "2-digit",
+		}
+	)}`;
+
 	// correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
-	return correctDate.toISOString();
+	return localDateAndTime;
 };

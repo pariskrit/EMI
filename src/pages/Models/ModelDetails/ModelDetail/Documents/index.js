@@ -35,7 +35,6 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 		const response = await uploadDocument({ modelId, documentKey: key });
 		if (response.status) {
 			const documents = await getModelDocuments(modelId);
-			console.log(documents);
 			setDocumentError("");
 			setListOfDocuments(documents.data);
 		} else {
