@@ -114,14 +114,18 @@ const ModelTaskRow = ({
 				type: "TAB_COUNT",
 				payload: { countTab: "taskCount", data: totalTaskCount + 1 },
 			});
-			document.getElementById(`taskExpandable${response.data}`).click();
-			document.getElementById(`taskExpandable${response.data}`).scrollIntoView({
-				behavior: "smooth",
-				top:
-					document
-						.getElementById(`taskExpandable${response.data}`)
-						.getBoundingClientRect().bottom + window.pageYOffset,
-			});
+			if (document.getElementById(`taskExpandable${response.data}`)) {
+				document.getElementById(`taskExpandable${response.data}`).click();
+				document
+					.getElementById(`taskExpandable${response.data}`)
+					.scrollIntoView({
+						behavior: "smooth",
+						top:
+							document
+								.getElementById(`taskExpandable${response.data}`)
+								.getBoundingClientRect().bottom + window.pageYOffset,
+					});
+			}
 		} catch (error) {
 			dispatch(showError(error?.response?.data || "something went wrong"));
 		}

@@ -56,17 +56,19 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			shouldExpandRef.current === false &&
 			fromSeriveLayoutId
 		) {
-			document.getElementById(`taskExpandable${fromSeriveLayoutId}`).click();
-			document
-				.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-				.scrollIntoView({
-					behavior: "smooth",
-					top:
-						document
-							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-							.getBoundingClientRect().bottom + window.pageYOffset,
-				});
-			shouldExpandRef.current = true;
+			if (document.getElementById(`taskExpandable${fromSeriveLayoutId}`)) {
+				document.getElementById(`taskExpandable${fromSeriveLayoutId}`).click();
+				document
+					.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+					.scrollIntoView({
+						behavior: "smooth",
+						top:
+							document
+								.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+								.getBoundingClientRect().bottom + window.pageYOffset,
+					});
+				shouldExpandRef.current = true;
+			}
 		}
 	}, [taskList, isLoading, fromSeriveLayoutId]);
 
@@ -184,17 +186,20 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 							type: "TAB_COUNT",
 							payload: { countTab: "taskCount", data: totalTaskCount + 1 },
 						});
-						document.getElementById(`taskExpandable${response.data}`).click();
-						document
-							.getElementById(`taskExpandable${response.data}`)
-							.scrollIntoView({
-								behavior: "smooth",
-								block: "center",
-								top:
-									document
-										.getElementById(`taskExpandable${response.data}`)
-										.getBoundingClientRect().bottom + window.pageYOffset,
-							});
+
+						if (document.getElementById(`taskExpandable${response.data}`)) {
+							document.getElementById(`taskExpandable${response.data}`).click();
+							document
+								.getElementById(`taskExpandable${response.data}`)
+								.scrollIntoView({
+									behavior: "smooth",
+									block: "center",
+									top:
+										document
+											.getElementById(`taskExpandable${response.data}`)
+											.getBoundingClientRect().bottom + window.pageYOffset,
+								});
+						}
 					} else {
 						reduxDispatch(
 							showError(response?.data?.title || "something went wrong")

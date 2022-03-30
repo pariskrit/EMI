@@ -145,7 +145,10 @@ function DynamicRow({
 															? () =>
 																	history.push({
 																		pathname: `${modelsPath}/${id}${modelTask}`,
-																		state: { modelVersionTaskID: val.value.id },
+																		state: {
+																			modelVersionTaskID:
+																				val.value.modelVersionTaskID,
+																		},
 																	})
 															: () => {}
 													}
