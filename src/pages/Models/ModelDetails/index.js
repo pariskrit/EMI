@@ -3,15 +3,22 @@ import { useParams } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
 import { ModelContext } from "contexts/ModelDetailContext";
 import { getModelDetails } from "services/models/modelDetails/details";
+import PageNotFound from "components/Elements/PageNotFound";
 
 function ModelDetails(props) {
 	const [state, dispatch] = useContext(ModelContext);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isError, setIsError] = useState(false);
+
 	const { id } = useParams();
 
 	const fetchModelDetails = useCallback(async () => {
 		const response = await getModelDetails(id);
-		dispatch({ type: "SET_MODEL_DETAIL", payload: response.data });
+		if (response.data.status === 404) {
+			setIsError(true);
+		} else {
+			dispatch({ type: "SET_MODEL_DETAIL", payload: response.data });
+		}
 		setIsLoading(false);
 	}, [id, dispatch]);
 
@@ -21,6 +28,10 @@ function ModelDetails(props) {
 
 	if (isLoading) {
 		return <CircularProgress />;
+	}
+
+	if (isError) {
+		return <PageNotFound message="Model Not Found" />;
 	}
 	return <>{props.children(state.modelDetail)}</>;
 }

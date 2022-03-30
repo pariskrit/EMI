@@ -173,7 +173,9 @@ const UserTable = ({
 														{
 															name: "Edit",
 															handler: () => {
-																history.push(`${modelsPath}/${row.id}`);
+																history.push(
+																	`${modelsPath}/${row.devModelVersionID}`
+																);
 															},
 															isDelete: false,
 														},

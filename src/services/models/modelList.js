@@ -23,7 +23,6 @@ const addModal = async (payload) => {
 const duplicateModal = async (payload) => {
 	try {
 		let response = await API.post(`${Apis.DuplicateModal}`, payload);
-		console.log(response);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -32,7 +31,7 @@ const duplicateModal = async (payload) => {
 
 const getListOfModelVersions = async (id) => {
 	try {
-		let response = await API.get(`${Apis.ModelVersions}?modelId=${id}`);
+		let response = await API.get(`${Apis.Models}/${id}/${Apis.Versions}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
