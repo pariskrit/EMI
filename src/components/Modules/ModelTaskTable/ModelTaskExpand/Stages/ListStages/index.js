@@ -20,6 +20,7 @@ function ListStages({
 	customCaption,
 	setStages,
 	siteId,
+	fetchFromDropDwn,
 }) {
 	return (
 		<Table aria-label="Table" className={classes.table}>
@@ -62,6 +63,7 @@ function ListStages({
 						customCaption={customCaption}
 						setStages={setStages}
 						siteId={siteId}
+						fetchFromDropDwn={fetchFromDropDwn}
 					/>
 				))}
 			</TableBody>

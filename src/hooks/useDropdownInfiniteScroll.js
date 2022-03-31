@@ -40,20 +40,19 @@ function useInfiniteScroll(
 		}
 	};
 
-	useEffect(() => {
-		scrollEvent.addEventListener("scroll", handleScroll);
-		return () => scrollEvent.removeEventListener("scroll", handleScroll);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-	const handleScroll = (event) => {
+	// useEffect(() => {
+	// 	scrollEvent.addEventListener("scroll", handleScroll);
+	// 	return () => scrollEvent.removeEventListener("scroll", handleScroll);
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, []);
+
+	const handleScroll = (event, uniqueId) => {
 		if (loading) return;
 
 		if (
-			document.getElementsByClassName("dynamic-drop-list")[0].offsetHeight +
-				Math.floor(
-					document.getElementsByClassName("dynamic-drop-list")[0].scrollTop
-				) -
-				document.getElementsByClassName("dynamic-drop-list")[0].scrollHeight ===
+			document.getElementById(uniqueId).offsetHeight +
+				Math.floor(document.getElementById(uniqueId).scrollTop) -
+				document.getElementById(uniqueId).scrollHeight ===
 			threshold
 		) {
 			fetchMoreData();

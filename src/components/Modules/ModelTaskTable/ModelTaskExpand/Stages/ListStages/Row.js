@@ -32,6 +32,7 @@ function Row({
 	customCaption,
 	setStages,
 	siteId,
+	fetchFromDropDwn,
 }) {
 	const [state, setStates] = useState({
 		selectedAsset: {
@@ -171,6 +172,7 @@ function Row({
 						isReadOnly={!state.selected || modelAccess === "R"}
 						handleServierSideSearch={handleServierSideSearch}
 						isServerSide
+						fetchData={fetchFromDropDwn}
 					/>
 				</TableCell>
 			)}

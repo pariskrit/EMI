@@ -21,14 +21,18 @@ function Dropdown(props) {
 		label,
 		isError,
 		required,
+		fetchData = () => {},
 		disabled = false,
 		isReadOnly = false,
 	} = props;
 	const [filteredList, setFilteredList] = useState([]);
+	const [originalFilteredList, setOriginalFilteredList] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const focusRef = useRef(false);
 
 	useEffect(() => {
 		setFilteredList(options);
+		setOriginalFilteredList(options);
 	}, [options]);
 
 	useEffect(() => {
@@ -89,7 +93,7 @@ function Dropdown(props) {
 	};
 	const onFilter = (val) => {
 		let filteredSearchList = [];
-		options.map((x) => {
+		originalFilteredList.map((x) => {
 			if (x.label.toLowerCase().includes(val.toLowerCase()))
 				filteredSearchList.push(x);
 			return x;
@@ -162,6 +166,29 @@ function Dropdown(props) {
 		if (parentEl) parentEl.classList.remove("active");
 		if (specifiedElement) specifiedElement.classList.remove("active");
 	};
+
+	const handleApiCall = async () => {
+		setIsLoading(true);
+		try {
+			const response = await fetchData();
+			setFilteredList(
+				response?.data?.map((x) => ({
+					label: x?.name,
+					value: x?.id,
+				}))
+			);
+			setOriginalFilteredList(
+				response?.data?.map((x) => ({
+					label: x?.name,
+					value: x?.id,
+				}))
+			);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 	return (
 		<div
 			className="dropdown"
@@ -169,7 +196,16 @@ function Dropdown(props) {
 		>
 			<div
 				className="dropbox"
-				onClick={isReadOnly ? null : (event) => handleDrpdwnClick(event)}
+				onClick={
+					isReadOnly
+						? null
+						: (event) => {
+								handleDrpdwnClick(event);
+								!isReadOnly &&
+									originalFilteredList.length === 0 &&
+									handleApiCall();
+						  }
+				}
 			>
 				{label.length > 0 && (
 					<Typography className="label">
@@ -217,7 +253,7 @@ function Dropdown(props) {
 					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
 				</div>
 				<div className="drop-list">
-					{filteredList.length > 0 ? (
+					{filteredList?.length > 0 ? (
 						filteredList?.map((list) => (
 							<div
 								className={
@@ -236,6 +272,12 @@ function Dropdown(props) {
 						))
 					) : (
 						<span className="no-record">No records found</span>
+					)}
+
+					{isLoading && (
+						<div style={{ padding: "16px 10px" }}>
+							<b>Loading...</b>
+						</div>
 					)}
 				</div>
 			</div>

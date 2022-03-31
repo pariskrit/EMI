@@ -115,18 +115,24 @@ function DyanamicDropdown(props) {
 		isReadOnly,
 		showBorderColor,
 		isError,
+		fetchData,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
+	const [originalFilteredList, setOriginalFilteredList] = useState([]);
 	const [searchtext, setsearchText] = useState("");
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dropdownlistner, setdropdownlistner] = useState(window);
+	const [isLoading, setLoading] = useState(false);
+	const [uniqueId] = useState(Math.random() * Date.now());
 	const scrollRef = useRef(true);
 	const focusRef = useRef(false);
 
 	useEffect(() => {
 		setFilteredList(dataSource);
+		setOriginalFilteredList(dataSource);
 	}, [dataSource]);
+
 	const handleOutsideClick = useCallback((event) => {
 		let specifiedElement = document.getElementsByClassName(
 			"dropdown-expand active"
@@ -147,6 +153,7 @@ function DyanamicDropdown(props) {
 			}
 		}
 	}, []);
+
 	const handleWindowScroll = () => {
 		let specifiedElement = document.getElementsByClassName(
 			"dropdown-expand active"
@@ -189,11 +196,9 @@ function DyanamicDropdown(props) {
 		if (dropActive) {
 			if (scrollRef.current === true) {
 				document
-					.getElementsByClassName("dynamic-drop-list")[0]
-					.addEventListener("scroll", handleScroll);
-				setdropdownlistner(
-					document.getElementsByClassName("dynamic-drop-list")[0]
-				);
+					.getElementById(uniqueId)
+					.addEventListener("scroll", (e) => handleScroll(e, uniqueId));
+				setdropdownlistner(document.getElementById(uniqueId));
 				scrollRef.current = false;
 			}
 		}
@@ -218,7 +223,7 @@ function DyanamicDropdown(props) {
 		} else {
 			// client side search
 			if (val !== "") {
-				const searchedList = dataSource.filter((item) =>
+				const searchedList = originalFilteredList.filter((item) =>
 					columns
 						.map((i) => i.name)
 						.some((col) => {
@@ -227,7 +232,7 @@ function DyanamicDropdown(props) {
 				);
 				setFilteredList(searchedList);
 			} else {
-				setFilteredList(dataSource);
+				setFilteredList(originalFilteredList);
 			}
 		}
 	};
@@ -302,11 +307,9 @@ function DyanamicDropdown(props) {
 		}
 		if (scrollRef.current === true) {
 			document
-				.getElementsByClassName("dynamic-drop-list")[0]
-				.addEventListener("scroll", handleScroll);
-			setdropdownlistner(
-				document.getElementsByClassName("dynamic-drop-list")[0]
-			);
+				.getElementById(uniqueId)
+				.addEventListener("scroll", (e) => handleScroll(e, uniqueId));
+			setdropdownlistner(document.getElementById(uniqueId));
 			scrollRef.current = false;
 		}
 	};
@@ -341,6 +344,37 @@ function DyanamicDropdown(props) {
 		return Boolean(selectedValue);
 	};
 
+	const handleApiCall = async () => {
+		setLoading(true);
+		try {
+			const response = await fetchData();
+			setFilteredList(
+				[...response?.data, ...(dataSource || [])].reduce((acc, current) => {
+					const x = acc.find((item) => item.id === current.id);
+					if (!x) {
+						return acc.concat([current]);
+					} else {
+						return acc;
+					}
+				}, [])
+			);
+			setOriginalFilteredList(
+				[...response?.data, ...(dataSource || [])].reduce((acc, current) => {
+					const x = acc.find((item) => item.id === current.id);
+					if (!x) {
+						return acc.concat([current]);
+					} else {
+						return acc;
+					}
+				}, [])
+			);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	return (
 		<div
 			className="dropdown"
@@ -351,7 +385,10 @@ function DyanamicDropdown(props) {
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
 				style={{ width: "100%" }}
-				onClick={(event) => handleDrpdwnClick(event)}
+				onClick={(event) => {
+					handleDrpdwnClick(event);
+					!isReadOnly && originalFilteredList?.length === 0 && handleApiCall();
+				}}
 			>
 				<div
 					style={{
@@ -475,8 +512,8 @@ function DyanamicDropdown(props) {
 							))}
 						</div>
 					)}
-					<div className="dynamic-drop-list">
-						{filteredList.length > 0 ? (
+					<div className="dynamic-drop-list" id={uniqueId}>
+						{filteredList?.length > 0 ? (
 							<>
 								{hasCheckBoxList
 									? filteredList?.map((list) => (
@@ -534,11 +571,12 @@ function DyanamicDropdown(props) {
 							<span className="no-record">No records found</span>
 						)}
 						{/* scroll to load */}
-						{loading && (
-							<div style={{ padding: "16px 10px" }}>
-								<b>Loading...</b>
-							</div>
-						)}
+						{loading ||
+							(isLoading && (
+								<div style={{ padding: "16px 10px" }}>
+									<b>Loading...</b>
+								</div>
+							))}
 
 						{!hasMore && (
 							<div
@@ -584,6 +622,7 @@ DyanamicDropdown.defaultProps = {
 	handleServierSideSearch: () => {},
 	handleServerSideSort: () => {},
 	onPageChange: () => {},
+	fetchData: () => {},
 	showBorderColor: false,
 };
 
@@ -611,4 +650,5 @@ DyanamicDropdown.propTypes = {
 	handleServerSideSort: PropTypes.func,
 	onPageChange: PropTypes.func,
 	showBorderColor: PropTypes.bool,
+	fetchData: PropTypes.func,
 };

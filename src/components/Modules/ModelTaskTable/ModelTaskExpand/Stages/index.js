@@ -100,6 +100,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							...result.data.filter((data) => {
 								const isThereAssest = th.assets.find((x) => x.id === data.id);
 								if (!isThereAssest) return true;
+								else return false;
 							}),
 						],
 					}));
@@ -128,12 +129,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 	const fetchAll = async () => {
 		setStages((th) => ({ ...th, loading: true }));
 		await fetchTaskStages();
-		if (modelType === "F") {
-			await Promise.all([
-				fetchAssets({ pNo: 1, pSize: 10, search: "" }),
-				getAssetsCount(),
-			]);
-		}
+
 		setStages((th) => ({ ...th, loading: false }));
 	};
 
@@ -141,6 +137,15 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		fetchAll();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	const fetchFromDropDwn = async () => {
+		if (modelType === "F") {
+			await Promise.all([
+				fetchAssets({ pNo: 1, pSize: 10, search: "" }),
+				getAssetsCount(),
+			]);
+		}
+	};
 
 	const handlePatch = async (id, asset) => {
 		try {
@@ -290,6 +295,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 				pageChange={fetchAssets}
 				modelAccess={me?.position?.modelAccess}
 				customCaption={me?.customCaptions}
+				fetchFromDropDwn={fetchFromDropDwn}
 			/>
 		</div>
 	);

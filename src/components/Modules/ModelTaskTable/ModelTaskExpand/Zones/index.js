@@ -112,11 +112,17 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 		}
 	};
 	useEffect(() => {
-		!isReadOnly &&
-			Promise.all([fetchSiteAssest(siteAppID, 1), fetchCountAssest()]);
+		!isReadOnly && Promise.all([fetchCountAssest()]);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [siteAppID, isReadOnly]);
+
+	const fetchSiteFromDropDown = async () => {
+		return await Promise.all([
+			fetchSiteAssest(siteAppID, 1),
+			fetchCountAssest(),
+		]);
+	};
 
 	const handleSelectZone = useCallback(
 		async (modelVersionZoneID, setSelected) => {
@@ -276,6 +282,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 				originalZones={originalZones}
 				customCaptions={customCaptions}
 				isReadOnly={isReadOnly}
+				fetchSiteFromDropDown={fetchSiteFromDropDown}
 			/>
 		</div>
 	);

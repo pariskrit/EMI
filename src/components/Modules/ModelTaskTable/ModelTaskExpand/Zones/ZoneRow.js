@@ -17,6 +17,7 @@ function ZoneRow({
 	onDropDownChange,
 	isReadOnly,
 	customCaptions,
+	fetchSiteFromDropDown,
 }) {
 	const [selected, setSelected] = useState(false);
 
@@ -71,6 +72,7 @@ function ZoneRow({
 						showClear
 						onChange={(list) => onDropDownChange(row.id, list)}
 						isReadOnly={isReadOnly || selected || row.id === null}
+						fetchData={fetchSiteFromDropDown}
 					/>
 				</TableCell>
 			) : null}

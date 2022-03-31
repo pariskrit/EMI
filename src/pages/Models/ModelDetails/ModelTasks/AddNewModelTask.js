@@ -101,11 +101,10 @@ function AddNewModelTask({
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [operatingModes, setOperatingModes] = useState([]);
-	const [systems, setSystems] = useState([]);
+	// const [systems, setSystems] = useState([]);
 	const [modelRoles, setModelRoles] = useState([]);
-	const [actions, setActions] = useState([]);
+	// const [actions, setActions] = useState([]);
 	const [apiRoles, setApiRoles] = useState([]);
-	const [defaultOperatingModeId, setDefaultOperatingModeId] = useState(null);
 
 	const [, Ctxdispatch] = useContext(ModelContext);
 
@@ -116,16 +115,16 @@ function AddNewModelTask({
 				try {
 					const response = await Promise.all([
 						getOperatingModes(siteId),
-						getSystems(siteId),
+						// getSystems(siteId),
 						getModelRolesList(modelId),
-						getActions(siteId),
+						// getActions(siteId),
 						getSiteApplicationDetail(siteId),
 					]);
 					const [
 						operatingModes,
-						systems,
+						// systems,
 						modelRoles,
-						siteActions,
+						// siteActions,
 						siteApplications,
 					] = response;
 					if (operatingModes.status) {
@@ -136,14 +135,14 @@ function AddNewModelTask({
 							}))
 						);
 					}
-					if (systems.status) {
-						setSystems(
-							systems.data.map((list) => ({
-								label: list.name,
-								value: list.id,
-							}))
-						);
-					}
+					// if (systems.status) {
+					// 	setSystems(
+					// 		systems.data.map((list) => ({
+					// 			label: list.name,
+					// 			value: list.id,
+					// 		}))
+					// 	);
+					// }
 					if (modelRoles.status) {
 						setModelRoles(modelRoles.data);
 						setApiRoles(
@@ -154,32 +153,40 @@ function AddNewModelTask({
 							}))
 						);
 					}
-					if (siteActions.status) {
-						setActions(
-							siteActions.data.map((list) => ({
-								label: list.name,
-								value: list.id,
-							}))
-						);
-					}
+					// if (siteActions.status) {
+					// 	// setActions(
+					// 	// 	siteActions.data.map((list) => ({
+					// 	// 		label: list.name,
+					// 	// 		value: list.id,
+					// 	// 	}))
+					// 	// );
+					// }
 
 					if (siteApplications.status) {
 						const tempOperatingMode = operatingModes.data.find(
 							(mode) => mode.id === siteApplications.data.defaultOperatingModeID
 						);
-						setDefaultOperatingModeId({
-							label: tempOperatingMode?.name,
-							value: tempOperatingMode?.id,
-						});
+
+						if (tempOperatingMode) {
+							setInput({
+								...input,
+								operatingModeID: {
+									label: tempOperatingMode?.name,
+									value: tempOperatingMode?.id,
+								},
+							});
+						}
 					}
 				} catch (error) {
 					dispatch(showError(error?.response?.data));
+					console.log(error);
 				} finally {
 					setIsUpdating(false);
 				}
 			};
 			getFormData();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open, siteId, modelId, dispatch, isDuplicate]);
 
 	useEffect(() => {
@@ -325,7 +332,7 @@ function AddNewModelTask({
 						<ADD.LeftInputContainer>
 							<ADD.NameLabel>{customCaptions?.actionRequired}</ADD.NameLabel>
 							<Dropdown
-								options={actions}
+								// options={actions}
 								selectedValue={input.actionID}
 								onChange={(e) => {
 									setInput({ ...input, actionID: e });
@@ -334,6 +341,7 @@ function AddNewModelTask({
 								placeholder={`Select ${customCaptions?.actionRequired}`}
 								width="100%"
 								disabled={isDuplicate}
+								fetchData={() => getActions(siteId)}
 							/>
 						</ADD.LeftInputContainer>
 
@@ -361,7 +369,7 @@ function AddNewModelTask({
 							<ADD.NameLabel>{customCaptions?.operatingMode}</ADD.NameLabel>
 							<Dropdown
 								options={operatingModes}
-								selectedValue={input.operatingModeID ?? defaultOperatingModeId}
+								selectedValue={input.operatingModeID}
 								onChange={(e) => {
 									setInput({ ...input, operatingModeID: e });
 								}}
@@ -375,16 +383,16 @@ function AddNewModelTask({
 						<ADD.RightInputContainer>
 							<ADD.NameLabel>{customCaptions?.system}</ADD.NameLabel>
 							<Dropdown
-								options={systems}
+								// options={systems}
 								selectedValue={input.systemID}
 								onChange={(e) => {
-									console.log(e);
 									setInput({ ...input, systemID: e });
 								}}
 								label=""
 								placeholder={`Select ${customCaptions?.system}`}
 								width="100%"
 								disabled={isDuplicate}
+								fetchData={() => getSystems(siteId)}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>

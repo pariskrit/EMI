@@ -41,8 +41,8 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
-	const [lubricantsList, setLubricantsList] = useState([]);
-	const [loading, setLoading] = useState(false);
+	// const [lubricantsList, setLubricantsList] = useState([]);
+	// const [loading, setLoading] = useState(false);
 	const [localTaskInfo, setLocalTaskInfo] = useState({});
 	const [isUpdating, setUpdating] = useState({});
 
@@ -56,40 +56,40 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 	// checking the access of the user to allow or disallow edit add.
 	const isReadOnly = access === "R";
 
-	const fetchLubricants = async (id) => {
-		!isMounted.aborted && setLoading(true);
-		try {
-			const response = await getLubricants(id);
-			if (response.status) {
-				if (!isMounted.aborted) {
-					setLubricantsList(response.data);
-				}
-			} else {
-				dispatch(
-					showError(
-						response?.data?.title ||
-							response?.data ||
-							"Could not fetch task lubricant"
-					)
-				);
-			}
-		} catch (error) {
-			dispatch(
-				showError(
-					error?.response?.data ||
-						error?.response ||
-						"Could not update task lubricant"
-				)
-			);
-		} finally {
-			!isMounted.aborted && setLoading(false);
-		}
-	};
+	// const fetchLubricants = async (id) => {
+	// 	!isMounted.aborted && setLoading(true);
+	// 	try {
+	// 		const response = await getLubricants(id);
+	// 		if (response.status) {
+	// 			if (!isMounted.aborted) {
+	// 				setLubricantsList(response.data);
+	// 			}
+	// 		} else {
+	// 			dispatch(
+	// 				showError(
+	// 					response?.data?.title ||
+	// 						response?.data ||
+	// 						"Could not fetch task lubricant"
+	// 				)
+	// 			);
+	// 		}
+	// 	} catch (error) {
+	// 		dispatch(
+	// 			showError(
+	// 				error?.response?.data ||
+	// 					error?.response ||
+	// 					"Could not update task lubricant"
+	// 			)
+	// 		);
+	// 	} finally {
+	// 		!isMounted.aborted && setLoading(false);
+	// 	}
+	// };
 
-	useEffect(() => {
-		fetchLubricants(siteAppID);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [siteAppID]);
+	// useEffect(() => {
+	// 	fetchLubricants(siteAppID);
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [siteAppID]);
 
 	useEffect(() => {
 		if (taskInfo) setLocalTaskInfo(taskInfo);
@@ -229,7 +229,7 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 					width="100%"
 					placeholder="Select Lubricant "
 					columns={[{ id: 1, name: "name" }]}
-					dataSource={lubricantsList}
+					// dataSource={lubricantsList}
 					selectedValue={{
 						id: localTaskInfo.lubricantID,
 						name: localTaskInfo.lubricantName,
@@ -239,7 +239,8 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 						dropdownHandleChange(val, "lubricantID", "lubricantName")
 					}
 					selectdValueToshow="name"
-					isReadOnly={isReadOnly || loading}
+					isReadOnly={isReadOnly}
+					fetchData={() => getLubricants(siteAppID)}
 					showClear
 				/>
 			</div>

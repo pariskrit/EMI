@@ -73,6 +73,7 @@ function TaskZoneListTable({
 	originalZones,
 	customCaptions,
 	isReadOnly,
+	fetchSiteFromDropDown,
 }) {
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -192,6 +193,7 @@ function TaskZoneListTable({
 								onDropDownChange={onDropDownChange}
 								isReadOnly={isReadOnly}
 								customCaptions={customCaptions}
+								fetchSiteFromDropDown={fetchSiteFromDropDown}
 							/>
 						))
 					) : (

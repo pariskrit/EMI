@@ -70,8 +70,8 @@ const TaskDetails = ({
 }) => {
 	const classes = useStyles();
 
-	const [loading, setLoading] = useState(false);
-	const [dropDownDatas, setDropDownDatas] = useState({});
+	// const [loading, setLoading] = useState(false);
+	// const [dropDownDatas, setDropDownDatas] = useState({});
 	const [localTaskInfo, setLocalTaskInfo] = useState({});
 	const [isUpdating, setUpdating] = useState({});
 
@@ -99,49 +99,48 @@ const TaskDetails = ({
 	const isReadOnly = access === "R";
 	const isEditOnly = access === "E";
 
-	useEffect(() => {
-		const fetchDropDownDatas = async () => {
-			!isMounted.aborted && setLoading(true);
-			const response = await Promise.all([
-				getOperatingModes(siteAppID),
-				getSystems(siteAppID),
-				getModelRolesList(id),
-				getActions(siteAppID),
-			]);
-			const isResponseError = response.some((data) => !data.status);
+	// useEffect(() => {
+	// 	const fetchDropDownDatas = async () => {
+	// 		!isMounted.aborted && setLoading(true);
+	// 		const response = await Promise.all([
+	// 			// getOperatingModes(siteAppID),
+	// 			// getSystems(siteAppID),
+	// 			// getModelRolesList(id),
+	// 			// getActions(siteAppID),
+	// 		]);
+	// 		const isResponseError = response.some((data) => !data.status);
 
-			if (isResponseError) {
-				reduxDispatch(showError("Error: Could not fetch Dropdown datas"));
-				if (!isMounted.aborted) {
-					setDropDownDatas({
-						operatingModes: [],
-						systems: [],
-						roles: [],
-						actions: [],
-					});
-				}
-			} else {
-				if (!isMounted.aborted) {
-					setDropDownDatas({
-						operatingModes: response[0].data,
-						systems: response[1].data,
-						roles: response[2].data,
-						actions: response[3].data,
-					});
-				}
-			}
-			!isMounted.aborted && setLoading(false);
-		};
-		!isReadOnly && fetchDropDownDatas();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id, reduxDispatch, siteAppID, isReadOnly]);
+	// 		if (isResponseError) {
+	// 			reduxDispatch(showError("Error: Could not fetch Dropdown datas"));
+	// 			if (!isMounted.aborted) {
+	// 				setDropDownDatas({
+	// 					operatingModes: [],
+	// 					systems: [],
+	// 					roles: [],
+	// 					actions: [],
+	// 				});
+	// 			}
+	// 		} else {
+	// 			if (!isMounted.aborted) {
+	// 				setDropDownDatas({
+	// 					// operatingModes: response[0].data,
+	// 					// systems: response[1].data,
+	// 					// roles: response[2].data,
+	// 					// actions: response[3].data,
+	// 				});
+	// 			}
+	// 		}
+	// 		!isMounted.aborted && setLoading(false);
+	// 	};
+	// 	!isReadOnly && fetchDropDownDatas();
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [id, reduxDispatch, siteAppID, isReadOnly]);
 
 	const handleEnterPress = (e, name) => {
 		// 13 is the enter keycode
-		if (!loading) {
-			if (e.keyCode === 13) {
-				handleOnBlur(e.target.value, name);
-			}
+
+		if (e.keyCode === 13) {
+			handleOnBlur(e.target.value, name);
 		}
 	};
 
@@ -390,7 +389,7 @@ const TaskDetails = ({
 								placeholder="Select Action"
 								dataHeader={[{ id: 1, name: "Actions" }]}
 								columns={[{ id: 1, name: "name" }]}
-								dataSource={dropDownDatas?.actions}
+								// dataSource={dropDownDatas?.actions}
 								showHeader
 								selectedValue={{
 									name: localTaskInfo?.actionName,
@@ -402,9 +401,10 @@ const TaskDetails = ({
 								}
 								selectdValueToshow="name"
 								showClear
-								disabled={loading || isUpdating.actionID}
+								disabled={isUpdating.actionID}
 								label={customCaptions?.actionRequired}
 								isReadOnly={isReadOnly}
+								fetchData={() => getActions(siteAppID)}
 							/>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
@@ -414,7 +414,7 @@ const TaskDetails = ({
 								placeholder="Select Roles"
 								dataHeader={[{ id: 1, name: "Roles" }]}
 								columns={[{ id: 1, name: "name" }]}
-								dataSource={dropDownDatas?.roles}
+								// dataSource={dropDownDatas?.roles}
 								label={customCaptions?.rolePlural}
 								showHeader
 								handleSort={handleSort}
@@ -434,8 +434,9 @@ const TaskDetails = ({
 								}
 								hasCheckBoxList={true}
 								checklistChangeHandler={checklistChangeHandler}
-								disabled={loading || isUpdating.role}
+								disabled={isUpdating.role}
 								isReadOnly={isReadOnly}
+								fetchData={() => getModelRolesList(id)}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -459,7 +460,7 @@ const TaskDetails = ({
 								isServerSide={false}
 								width="100%"
 								placeholder="Select System"
-								dataSource={dropDownDatas?.systems}
+								// dataSource={dropDownDatas?.systems}
 								dataHeader={[{ id: 1, name: "System" }]}
 								columns={[{ id: 1, name: "name" }]}
 								showHeader
@@ -473,9 +474,10 @@ const TaskDetails = ({
 								}
 								selectdValueToshow="name"
 								showClear
-								disabled={loading || isUpdating.systemID}
+								disabled={isUpdating.systemID}
 								label={customCaptions?.system}
 								isReadOnly={isReadOnly}
+								fetchData={() => getSystems(siteAppID)}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -487,7 +489,7 @@ const TaskDetails = ({
 								placeholder="Select Operating Mode"
 								dataHeader={[{ id: 1, name: "Operating Mode" }]}
 								columns={[{ id: 1, name: "name" }]}
-								dataSource={dropDownDatas?.operatingModes}
+								// dataSource={dropDownDatas?.operatingModes}
 								showHeader
 								selectedValue={{
 									name: localTaskInfo?.operatingModeName,
@@ -502,9 +504,10 @@ const TaskDetails = ({
 									)
 								}
 								selectdValueToshow="name"
-								disabled={loading || isUpdating?.operatingModeID}
+								disabled={isUpdating?.operatingModeID}
 								isReadOnly={isReadOnly}
 								label={customCaptions?.operatingMode}
+								fetchData={() => getOperatingModes(siteAppID)}
 								showClear
 							/>
 						</ADD.LeftInputContainer>

@@ -68,27 +68,27 @@ function AddNewModelRole({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
-	const [siteRoles, setSiteRoles] = useState([]);
+	// const [siteRoles, setSiteRoles] = useState([]);
 
 	// get model types for dropdown
-	useEffect(() => {
-		if (open) {
-			setIsUpdating(true);
-			const getFormData = async () => {
-				const response = await getSiteAppRoles(siteAppId);
-				if (response.status) {
-					setSiteRoles(
-						response.data.map((list) => ({
-							label: list.name,
-							value: list.id,
-						}))
-					);
-				}
-				setIsUpdating(false);
-			};
-			getFormData();
-		}
-	}, [open, siteAppId]);
+	// useEffect(() => {
+	// 	if (open) {
+	// 		setIsUpdating(true);
+	// 		const getFormData = async () => {
+	// 			const response = await getSiteAppRoles(siteAppId);
+	// 			if (response.status) {
+	// 				setSiteRoles(
+	// 					response.data.map((list) => ({
+	// 						label: list.name,
+	// 						value: list.id,
+	// 					}))
+	// 				);
+	// 			}
+	// 			setIsUpdating(false);
+	// 		};
+	// 		getFormData();
+	// 	}
+	// }, [open, siteAppId]);
 
 	useEffect(() => {
 		if (data && open) {
@@ -229,7 +229,7 @@ function AddNewModelRole({
 								errorMessage={errors.roleID === null ? null : errors.roleID}
 							>
 								<Dropdown
-									options={siteRoles}
+									// options={siteRoles}
 									selectedValue={input.roleID}
 									onChange={(e) => {
 										setInput((prev) => ({ ...prev, roleID: e }));
@@ -243,6 +243,7 @@ function AddNewModelRole({
 									required={true}
 									width="100%"
 									isError={errors.roleID === null ? false : true}
+									fetchData={() => getSiteAppRoles(siteAppId)}
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.RightInputContainer>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -87,15 +87,15 @@ const AddModel = ({
 	};
 
 	const fetchAssetData = async () => {
-		setLoading(true);
+		// setLoading(true);
 		await Promise.all([fetchAssets(), fetchAssetCount()]);
-		setLoading(false);
+		// setLoading(false);
 	};
 
-	useEffect(() => {
-		if (open) fetchAssetData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [open]);
+	// useEffect(() => {
+	// 	if (open) fetchAssetData();
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [open]);
 
 	const addModelAsset = async () => {
 		const { status, asset } = input;
@@ -231,6 +231,7 @@ const AddModel = ({
 							isError={errors?.asset ? true : false}
 							handleServierSideSearch={handleServerSideSearch}
 							isServerSide
+							fetchData={fetchAssetData}
 						/>
 					</ErrorInputFieldWrapper>
 
