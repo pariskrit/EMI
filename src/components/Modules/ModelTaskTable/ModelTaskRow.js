@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { useState, useContext, memo } from "react";
+import React, { useState, useContext, memo, useMemo } from "react";
 import TableRow from "@material-ui/core/TableRow";
 import { Collapse, LinearProgress, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
@@ -154,6 +154,167 @@ const ModelTaskRow = ({
 		setOpenDeleteDialog(true);
 	};
 
+	const taskRow = useMemo(() => {
+		return (
+			<>
+				<TableRow
+					onClick={(e) => onHandleTableExpand(!toggle, row?.id, e)}
+					style={{
+						background: toggle ? " #307AD7" : "#FFFFFF",
+						borderBottom: "hidden",
+						color: toggle ? "#FFFFFF" : "",
+					}}
+					id={`taskExpandable${row.id}`}
+				>
+					{columns.map((col, i, arr) => (
+						<TableCell
+							key={col}
+							className={classes.dataCell}
+							style={{
+								padding: "7px 10px",
+								maxWidth: "200px",
+								color: toggle ? "#FFFFFF" : "",
+							}}
+							id={`dataCell${col}`}
+						>
+							<AT.CellContainer key={col}>
+								{/* <AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}> */}
+								{toolTipColumn.includes(col) ? (
+									<HtmlTooltip title={row[col]}>
+										<p
+											className="max-two-line"
+											style={{ color: toggle ? "#FFFFFF" : "" }}
+											draggable="true"
+										>
+											{" "}
+											{row[col]}
+										</p>
+									</HtmlTooltip>
+								) : col === "errors" ? (
+									row[col] === "" ? (
+										""
+									) : (
+										<ErrorIcon style={{ color: toggle ? "#FFFFFF" : "red" }} />
+									)
+								) : (
+									<span className="lastSpan" draggable="true">
+										{row[col]}
+									</span>
+								)}
+								{/* </AT.TableBodyText> */}
+
+								{arr.length === i + 1 ? (
+									<AT.DotMenu
+										onClick={(e) => {
+											e.stopPropagation();
+											setAnchorEl(
+												anchorEl === e.currentTarget ? null : e.currentTarget
+											);
+											setSelectedData(
+												anchorEl === e.currentTarget ? null : index
+											);
+										}}
+										className="taskdotmenu"
+									>
+										{access === "F" || access === "E" ? (
+											<AT.TableMenuButton className="taskdotmenu">
+												{toggle ? (
+													<WhiteMenuIcon className="taskdotmenu" />
+												) : (
+													<BlueMenuIcon className="taskdotmenu" />
+												)}
+											</AT.TableMenuButton>
+										) : null}
+
+										<PopupMenu
+											index={index}
+											selectedData={selectedData}
+											anchorEl={anchorEl}
+											id={row.id}
+											clickAwayHandler={() => {
+												setAnchorEl(null);
+												setSelectedData(null);
+											}}
+											menuData={[
+												{
+													name: "Edit",
+													handler: () => onHandleTableExpand(!toggle, row?.id),
+													isDelete: false,
+												},
+												{
+													name: "Duplicate",
+													handler: () => handleDuplicate(row),
+													isDelete: false,
+												},
+												{
+													name: "Copy",
+													handler: () => handleCopy(row.id),
+													isDelete: false,
+												},
+												{
+													name: `Copy ${customCaptions?.task} ${customCaptions?.questionPlural}`,
+													handler: () => handleCopyTaskQuestion(row.id),
+													isDelete: false,
+												},
+												{
+													name: "Switch To Service Layout",
+													handler: () =>
+														history.push(
+															`${modelsPath}/${modelId}${modelServiceLayout}`,
+															{ state: { ModelVersionTaskID: row.id } }
+														),
+													isDelete: false,
+													disabled: !row["stages"],
+												},
+												{
+													name: "Delete",
+													handler: () => handleDeleteTask(row.id),
+													isDelete: true,
+												},
+											].filter((x) => {
+												if (access === "F") return true;
+												if (access === "E") {
+													if (x.name === "Edit") return true;
+													else return false;
+												}
+												return false;
+											})}
+										/>
+									</AT.DotMenu>
+								) : null}
+							</AT.CellContainer>
+						</TableCell>
+					))}
+				</TableRow>
+				<TableRow>
+					<TableCell
+						style={{ paddingBottom: 0, paddingTop: 0, background: "#307AD7" }}
+						colSpan={18}
+					>
+						<Collapse in={toggle} timeout="auto" unmountOnExit>
+							<ModelTaskExpand
+								customCaptions={customCaptions}
+								taskInfo={singleTask}
+								taskLoading={loading}
+								access={access}
+							/>
+						</Collapse>
+					</TableCell>
+				</TableRow>
+			</>
+		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		toggle,
+		totalTaskCount,
+		row,
+		anchorEl,
+		singleTask,
+		selectedData,
+		index,
+		loading,
+	]);
+
 	return (
 		<>
 			{duplicating && <LinearProgress className={rowClasses.loading} />}
@@ -166,150 +327,7 @@ const ModelTaskRow = ({
 				deleteID={taskToDeleteId}
 				handleRemoveData={() => handleDelete(taskToDeleteId)}
 			/>
-			<TableRow
-				onClick={(e) => onHandleTableExpand(!toggle, row?.id, e)}
-				style={{
-					background: toggle ? " #307AD7" : "#FFFFFF",
-					borderBottom: "hidden",
-					color: toggle ? "#FFFFFF" : "",
-				}}
-				id={`taskExpandable${row.id}`}
-			>
-				{columns.map((col, i, arr) => (
-					<TableCell
-						key={col}
-						className={classes.dataCell}
-						style={{
-							padding: "7px 10px",
-							maxWidth: "200px",
-							color: toggle ? "#FFFFFF" : "",
-						}}
-						id={`dataCell${col}`}
-					>
-						<AT.CellContainer key={col}>
-							{/* <AT.TableBodyText style={{ color: toggle ? "#FFFFFF" : "" }}> */}
-							{toolTipColumn.includes(col) ? (
-								<HtmlTooltip title={row[col]}>
-									<p
-										className="max-two-line"
-										style={{ color: toggle ? "#FFFFFF" : "" }}
-										draggable="true"
-									>
-										{" "}
-										{row[col]}
-									</p>
-								</HtmlTooltip>
-							) : col === "errors" ? (
-								row[col] === "" ? (
-									""
-								) : (
-									<ErrorIcon style={{ color: toggle ? "#FFFFFF" : "red" }} />
-								)
-							) : (
-								<span className="lastSpan" draggable="true">
-									{row[col]}
-								</span>
-							)}
-							{/* </AT.TableBodyText> */}
-
-							{arr.length === i + 1 ? (
-								<AT.DotMenu
-									onClick={(e) => {
-										e.stopPropagation();
-										setAnchorEl(
-											anchorEl === e.currentTarget ? null : e.currentTarget
-										);
-										setSelectedData(
-											anchorEl === e.currentTarget ? null : index
-										);
-									}}
-									className="taskdotmenu"
-								>
-									{access === "F" || access === "E" ? (
-										<AT.TableMenuButton className="taskdotmenu">
-											{toggle ? (
-												<WhiteMenuIcon className="taskdotmenu" />
-											) : (
-												<BlueMenuIcon className="taskdotmenu" />
-											)}
-										</AT.TableMenuButton>
-									) : null}
-
-									<PopupMenu
-										index={index}
-										selectedData={selectedData}
-										anchorEl={anchorEl}
-										id={row.id}
-										clickAwayHandler={() => {
-											setAnchorEl(null);
-											setSelectedData(null);
-										}}
-										menuData={[
-											{
-												name: "Edit",
-												handler: () => onHandleTableExpand(!toggle, row?.id),
-												isDelete: false,
-											},
-											{
-												name: "Duplicate",
-												handler: () => handleDuplicate(row),
-												isDelete: false,
-											},
-											{
-												name: "Copy",
-												handler: () => handleCopy(row.id),
-												isDelete: false,
-											},
-											{
-												name: `Copy ${customCaptions?.task} ${customCaptions?.questionPlural}`,
-												handler: () => handleCopyTaskQuestion(row.id),
-												isDelete: false,
-											},
-											{
-												name: "Switch To Service Layout",
-												handler: () =>
-													history.push(
-														`${modelsPath}/${modelId}${modelServiceLayout}`,
-														{ state: { ModelVersionTaskID: row.id } }
-													),
-												isDelete: false,
-												disabled: !row["stages"],
-											},
-											{
-												name: "Delete",
-												handler: () => handleDeleteTask(row.id),
-												isDelete: true,
-											},
-										].filter((x) => {
-											if (access === "F") return true;
-											if (access === "E") {
-												if (x.name === "Edit") return true;
-												else return false;
-											}
-											return false;
-										})}
-									/>
-								</AT.DotMenu>
-							) : null}
-						</AT.CellContainer>
-					</TableCell>
-				))}
-			</TableRow>
-			<TableRow>
-				<TableCell
-					style={{ paddingBottom: 0, paddingTop: 0, background: "#307AD7" }}
-					colSpan={18}
-				>
-					<Collapse in={toggle} timeout="auto" unmountOnExit>
-						<ModelTaskExpand
-							customCaptions={customCaptions}
-							taskInfo={singleTask}
-							taskLoading={loading}
-							access={access}
-						/>
-					</Collapse>
-				</TableCell>
-			</TableRow>
+			{taskRow}
 		</>
 	);
 };

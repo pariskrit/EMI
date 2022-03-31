@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import ModelTaskTable from "components/Modules/ModelTaskTable";
 import ErrorIcon from "@material-ui/icons/Error";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -91,7 +97,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			pageSize,
 			callCount = true
 		) => {
-			!isMounted.aborted && showLoading && setLoading(true);
+			// !isMounted.aborted && showLoading && setLoading(true);
 			try {
 				const response = await Promise.all([
 					getModelTasksList(modelVersionId, search, pageNumber, pageSize),
@@ -273,6 +279,29 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		navigator.clipboard.writeText(modelTaskId);
 	};
 
+	const modelTaskTable = useMemo(() => {
+		return (
+			<ModelTaskTable
+				handleEdit={() => {}}
+				handleDelete={handleRemoveData}
+				handleCopy={handleCopy}
+				handleCopyTaskQuestion={handleCopyTaskQuestion}
+				setData={setTaskList}
+				headers={dymanicTableHeader(showOperatingMode, customCaptions).header}
+				columns={dymanicTableHeader(showOperatingMode, customCaptions).columns}
+				data={taskList}
+				modelId={modelId}
+				pageSize={perPage}
+				pageNo={pageNumber}
+				customCaptions={customCaptions}
+				access={access}
+				totalTaskCount={totalTaskCount}
+				fetchData={fetchData}
+			/>
+		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [taskList, totalTaskCount]);
+
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div>
@@ -301,24 +330,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				/>
 				<SearchTask fetchData={fetchData} modelId={modelId} classes={classes} />
 			</div>
-
-			<ModelTaskTable
-				handleEdit={() => {}}
-				handleDelete={handleRemoveData}
-				handleCopy={handleCopy}
-				handleCopyTaskQuestion={handleCopyTaskQuestion}
-				setData={setTaskList}
-				headers={dymanicTableHeader(showOperatingMode, customCaptions).header}
-				columns={dymanicTableHeader(showOperatingMode, customCaptions).columns}
-				data={taskList}
-				modelId={modelId}
-				pageSize={perPage}
-				pageNo={pageNumber}
-				customCaptions={customCaptions}
-				access={access}
-				totalTaskCount={totalTaskCount}
-				fetchData={fetchData}
-			/>
+			{modelTaskTable}
 		</div>
 	);
 }

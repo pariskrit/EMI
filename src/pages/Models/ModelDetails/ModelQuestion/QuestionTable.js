@@ -20,12 +20,12 @@ const QuestionTable = ({
 			"Additional Options",
 		]}
 		columns={[
-			{ id: 1, name: "caption", style: { width: "20%" } },
-			{ id: 2, name: "modelType", style: { width: "5%" } },
-			{ id: 3, name: "modelTiming", style: { width: "10%" } },
-			{ id: 4, name: "modelRoles", style: { width: "5%" } },
-			{ id: 5, name: "compulsory", style: { width: "5%" } },
-			{ id: 6, name: "additional", style: { width: "20%" } },
+			{ id: 1, name: "caption", style: { width: "20vw" } },
+			{ id: 2, name: "modelType", style: { width: "10vw" } },
+			{ id: 3, name: "modelTiming", style: { width: "15vw" } },
+			{ id: 4, name: "modelRoles", style: { width: "17vw" } },
+			{ id: 5, name: "compulsory", style: { width: "8vw" } },
+			{ id: 6, name: "additional", style: { width: "30vw" } },
 		]}
 		handleDragEnd={handleDragEnd}
 		menuData={menuData}
