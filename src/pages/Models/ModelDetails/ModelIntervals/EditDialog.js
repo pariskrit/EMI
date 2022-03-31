@@ -80,10 +80,6 @@ const EditDialog = ({
 			return;
 		}
 		const tempInput = { ...input };
-		setInput({
-			...input,
-			allCategories: [...input.allCategories, { name: newCategory }],
-		});
 
 		const response = await addModelIntervalsTaskList({
 			modelID: modelId,
@@ -97,6 +93,14 @@ const EditDialog = ({
 				showError(response.data.detail || "Could not add task list number")
 			);
 		} else {
+			console.log(response);
+			setInput({
+				...input,
+				allCategories: [
+					...input.allCategories,
+					{ id: response.data, name: newCategory },
+				].sort((a, b) => a.name.localeCompare(b.name)),
+			});
 			fetchModelIntervals();
 		}
 	};
@@ -119,12 +123,13 @@ const EditDialog = ({
 			setInput({
 				...input,
 				isCategoryChanged: false,
+				allCategories: [
+					...input.allCategories.sort((a, b) => a.name.localeCompare(b.name)),
+				],
 			});
 			fetchModelIntervals();
 		}
 		setIsUpdating(false);
-
-		closeOverride();
 	};
 
 	const onNewSubCategoryFieldHide = () => {
@@ -163,7 +168,9 @@ const EditDialog = ({
 		setInput({
 			...input,
 			allCategories: [
-				...input.allCategories.filter((category) => category.id !== id),
+				...input.allCategories
+					.filter((category) => category.id !== id)
+					.sort((a, b) => a.name.localeCompare(b.name)),
 			],
 		});
 
@@ -275,7 +282,9 @@ const EditDialog = ({
 				id: response.data.id,
 				intervalGroupID: response.data.intervalGroupID,
 				name: response.data.name,
-				allCategories: response.data.taskListNos,
+				allCategories: response.data.taskListNos.sort((a, b) =>
+					a.name.localeCompare(b.name)
+				),
 				autoIncludeIntervals: response.data.autoIncludeIntervals.map(
 					(interval) => ({
 						includeId: interval.id,

@@ -75,14 +75,22 @@ function apiResponse(d) {
 						<strong>Decimal Places : </strong>
 						{d.decimalPlaces}
 					</span>
-					<span>
-						<strong>Minimum Value : </strong>
-						{d.minValue}
-					</span>
-					<span>
-						<strong>Maximum Value : </strong>
-						{d.maxValue}
-					</span>
+					{d.minValue !== null ? (
+						<span>
+							<strong>Minimum Value : </strong>
+							{d.minValue}
+						</span>
+					) : (
+						""
+					)}
+					{d.maxValue !== null ? (
+						<span>
+							<strong>Maximum Value : </strong>
+							{d.maxValue}
+						</span>
+					) : (
+						""
+					)}
 				</span>
 			) : d.type === "C" || d.type === "O" ? (
 				<>

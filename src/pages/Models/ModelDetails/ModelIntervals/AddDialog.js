@@ -97,12 +97,21 @@ const AddDialog = ({
 		}
 		setInput({
 			...input,
-			allCategories: [...input.allCategories, { name: newCategory }],
+			allCategories: [
+				...input.allCategories,
+				{ name: newCategory },
+			].sort((a, b) => a.name.localeCompare(b.name)),
 		});
 	};
 
 	const handleEditCategory = () => {
 		setIsCategoryEditable({});
+		setInput({
+			...input,
+			allCategories: [
+				...input.allCategories.sort((a, b) => a.name.localeCompare(b.name)),
+			],
+		});
 	};
 
 	const onNewSubCategoryFieldHide = () => {
@@ -139,7 +148,7 @@ const AddDialog = ({
 			...input,
 			allCategories: [
 				...input.allCategories.filter((category, index) => index !== id),
-			],
+			].sort((a, b) => a.name.localeCompare(b.name)),
 		});
 	};
 

@@ -20,7 +20,11 @@ const schema = (questionType) =>
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup.number().nullable().required("Decimal Places is required"),
+				then: yup
+					.number()
+					.nullable()
+					.typeError("Decimal Places is required")
+					.required("Decimal Places is required"),
 			}),
 		minValue: yup
 			.number()

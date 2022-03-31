@@ -148,7 +148,10 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 				...interval,
 				originalTaskList: interval.taskListNos,
 				originalAutoIncludeIntervals: interval.autoIncludeIntervals,
-				taskListNos: interval.taskListNos.map((task) => task.name).join(", "),
+				taskListNos: interval.taskListNos
+					.sort((a, b) => a.name.localeCompare(b.name))
+					.map((task) => task.name)
+					.join(", "),
 				autoIncludeIntervals: interval.autoIncludeIntervals
 					.map((interval) => interval.name)
 					.join(", "),

@@ -325,10 +325,13 @@ function ListAnswers({
 					}
 					description={`Add ${
 						type === "O" ? "Dropdown" : "Checkbox"
-					}List Options`}
+					} List Options`}
 				/>
 				{errors.options ? (
-					<ErrorInputFieldWrapper errorMessage={errors.options} />
+					<>
+						<ErrorInputFieldWrapper errorMessage={errors.options} />
+						<br />
+					</>
 				) : (
 					""
 				)}

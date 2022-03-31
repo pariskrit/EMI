@@ -345,7 +345,9 @@ function AddEditModel({
 									value={input.minValue}
 									onKeyDown={handleEnterPress}
 									onChange={(e) => {
-										setState({ minValue: e.target.value });
+										setState({
+											minValue: e.target.value === "" ? null : e.target.value,
+										});
 									}}
 								/>
 							</div>
@@ -360,7 +362,9 @@ function AddEditModel({
 									value={input.maxValue}
 									onKeyDown={handleEnterPress}
 									onChange={(e) => {
-										setState({ maxValue: e.target.value });
+										setState({
+											maxValue: e.target.value === "" ? null : e.target.value,
+										});
 									}}
 								/>
 							</div>
