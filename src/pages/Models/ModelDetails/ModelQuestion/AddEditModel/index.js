@@ -162,7 +162,7 @@ const AddEditModel = ({
 				closeOverride();
 			} else {
 				if (result.data.title) getError(result.data.title);
-				else getError("Something went wrong");
+				else getError(result.data || "Something went wrong");
 			}
 		} catch (e) {
 			return;

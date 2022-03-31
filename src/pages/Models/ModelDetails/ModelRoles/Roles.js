@@ -200,6 +200,8 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 								isDelete: true,
 							},
 						].filter((x) => {
+							if (state?.modelDetail?.isPublished) return false;
+
 							if (access === "F") return true;
 							if (access === "E") {
 								if (x.name === "Edit") return true;

@@ -100,19 +100,21 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 			getModelTypes(position.siteAppID),
 			getSiteDepartments(position.siteAppID),
 		]);
-		const isResponseError = res.some((data) => !data.status);
+		const response2 = res.some((data) => data.status);
 
-		if (isResponseError) {
+		if (!response2) {
 			reduxDispatch(showError("Error: Could not fetch model details"));
 		} else {
 			if (!isMounted.aborted) {
-				const changedDocuments = await changeDocumentUrl(res[2].data);
+				const changedDocuments = res[2].status
+					? await changeDocumentUrl(res[2].data)
+					: [];
 				setModelDetailsData({
 					modelDepartments: res[0].data,
-					modelNotes: res[1].data,
+					modelNotes: res[1].data || [],
 					modelDocuments: changedDocuments,
-					modelTypes: res[3].data,
-					detailDepartments: res[4].data,
+					modelTypes: res[3].data || [],
+					detailDepartments: res[4].data || [],
 					details: state.modelDetail,
 				});
 			}
@@ -142,7 +144,7 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 	}
 
 	// checking the access of the user to allow or disallow edit add.
-	const isReadOnly = access === "R" || state?.modelDetail?.isPublished;
+	const isReadOnly = access === "R";
 	const isEditOnly = access === "E";
 
 	return (
@@ -161,7 +163,7 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 							data={modelDetailsData}
 							position={position}
 							customCaptions={customCaptions}
-							isReadOnly={isReadOnly}
+							isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
 							Ctxdispatch={dispatch}
 						/>
 						<Departments
@@ -173,7 +175,9 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 						<Notes
 							data={modelDetailsData.modelNotes}
 							modelId={modelId}
-							isReadOnly={isReadOnly || isEditOnly}
+							isReadOnly={
+								isReadOnly || state?.modelDetail?.isPublished || isEditOnly
+							}
 						/>
 					</Grid>
 					<Grid item lg={6} md={6} xs={12}>
@@ -185,13 +189,17 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 						<ModelImage
 							imageUrl={modelDetailsData?.details?.imageURL}
 							modelId={modelId}
-							isReadOnly={isReadOnly || isEditOnly}
+							isReadOnly={
+								isReadOnly || state?.modelDetail?.isPublished || isEditOnly
+							}
 						/>
 						<Documents
 							classes={classes}
 							modelId={modelId}
 							documents={modelDetailsData.modelDocuments}
-							isReadOnly={isReadOnly || isEditOnly}
+							isReadOnly={
+								isReadOnly || state?.modelDetail?.isPublished || isEditOnly
+							}
 						/>
 					</Grid>
 				</Grid>

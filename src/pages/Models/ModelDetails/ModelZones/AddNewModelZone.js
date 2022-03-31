@@ -111,7 +111,10 @@ function AddNewModelTask({
 	const displayError = (response, responseMessage) => {
 		dispatch(
 			showError(
-				response?.data?.detail || responseMessage || "Something went wrong"
+				response?.data ||
+					response?.data?.detail ||
+					responseMessage ||
+					"Something went wrong"
 			)
 		);
 	};

@@ -1,3 +1,4 @@
+import { modelDetail } from "helpers/routePaths";
 import React, { createContext, useReducer } from "react";
 
 const initialState = {
@@ -20,6 +21,16 @@ function reducer(state, action) {
 			return {
 				...state,
 				modelDetail: payload,
+			};
+
+		case "SET_ISPUBLISHED":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					isPublished: payload.isPublished,
+					modelStatusName: payload.modelStatusName,
+				},
 			};
 		case "TOGGLE_ADD":
 			return {

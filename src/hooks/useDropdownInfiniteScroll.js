@@ -14,8 +14,6 @@ function useInfiniteScroll(
 	const dataRef = useRef(data);
 	const countRef = useRef(count);
 	const pageRef = useRef(page);
-	const prevPageRef = useRef(0);
-	const threshold = 1;
 
 	useMemo(() => {
 		dataRef.current = data;
@@ -31,9 +29,7 @@ function useInfiniteScroll(
 		if (countRef.current / pageRef.current < DefaultPageSize) {
 			setHasMore(false);
 			return;
-		}
-		if (prevPageRef.current !== pageRef.current) {
-			prevPageRef.current = pageRef.current;
+		} else {
 			setLoading(true);
 			await fetchData(pageRef.current, dataRef.current);
 			setLoading(false);
@@ -46,16 +42,18 @@ function useInfiniteScroll(
 	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	// }, []);
 
-	const handleScroll = (event, uniqueId) => {
+	const handleScroll = async (event, uniqueId) => {
 		if (loading) return;
 
 		if (
-			document.getElementById(uniqueId).offsetHeight +
-				Math.floor(document.getElementById(uniqueId).scrollTop) -
+			Math.floor(
+				document.getElementById(uniqueId).offsetHeight +
+					document.getElementById(uniqueId).scrollTop
+			) -
 				document.getElementById(uniqueId).scrollHeight ===
-			threshold
+			1
 		) {
-			fetchMoreData();
+			await fetchMoreData();
 		}
 	};
 	const gotoTop = () => {

@@ -135,7 +135,9 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 			await fetchModelIntervals();
 		} else {
 			reduxDispatch(
-				showError(response.data.detail || "Could not add Interval")
+				showError(
+					response.data || response.data.detail || "Could not add Interval"
+				)
 			);
 		}
 	};
@@ -252,7 +254,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 					}
 					handleDragEnd={handleDragEnd}
 					isModelEditable={true}
-					disableDnd={isReadOnly}
+					disableDnd={isReadOnly || state?.modelDetail?.isPublished}
 					menuData={[
 						{
 							name: "Edit",
@@ -265,6 +267,8 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 							isDelete: true,
 						},
 					].filter((x) => {
+						if (state?.modelDetail?.isPublished) return false;
+
 						if (isReadOnly) return false;
 						if (isEditOnly) {
 							if (x.name === "Edit") return true;

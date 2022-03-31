@@ -11,6 +11,7 @@ import { showError } from "redux/common/actions";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import DetailsPanel from "components/Elements/DetailsPanel";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const Intervals = ({ taskId, access, isMounted }) => {
 	const [intervals, setIntervals] = useState([]);
@@ -19,6 +20,7 @@ const Intervals = ({ taskId, access, isMounted }) => {
 	const [selectedIntervalsCount, setSelectedIntervalsCount] = useState(0);
 	const dispatch = useDispatch();
 	const [, CtxDispatch] = useContext(TaskContext);
+	const [state] = useContext(ModelContext);
 	const me =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -28,7 +30,7 @@ const Intervals = ({ taskId, access, isMounted }) => {
 		intervalId,
 		taskIntervalId
 	) => {
-		if (access === "R") {
+		if (access === "R" || state?.modelDetail?.isPublished) {
 			return;
 		}
 		const tempIntervals = [...intervals];

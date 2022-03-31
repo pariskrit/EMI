@@ -60,7 +60,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 	const [, CtxDispatch] = useContext(TaskContext);
 
 	const [stages, setStages] = useState({
-		loading: false,
+		loading: true,
 		data: [],
 		assets: [],
 		assetCount: 0,
@@ -95,14 +95,10 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 				if (!isMounted.aborted)
 					setStages((th) => ({
 						...th,
-						assets: [
-							...th.assets,
-							...result.data.filter((data) => {
-								const isThereAssest = th.assets.find((x) => x.id === data.id);
-								if (!isThereAssest) return true;
-								else return false;
-							}),
-						],
+						assets:
+							p.pNo === 1 && !p.search
+								? [...result.data]
+								: [...th.assets, ...result.data],
 					}));
 			} else {
 				errorResponse(result);

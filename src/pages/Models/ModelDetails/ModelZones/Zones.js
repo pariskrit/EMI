@@ -220,7 +220,11 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 						]}
 						handleDragEnd={handleDragEnd}
 						isModelEditable={!state?.modelDetail?.isEMIModel}
-						disableDnd={state?.modelDetail?.isEMIModel || access === "R"}
+						disableDnd={
+							state?.modelDetail?.isEMIModel ||
+							access === "R" ||
+							state?.modelDetail?.isPublished
+						}
 						menuData={[
 							{
 								name: "Edit",
@@ -233,6 +237,8 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 								isDelete: true,
 							},
 						].filter((x) => {
+							if (state?.modelDetail?.isPublished) return false;
+
 							if (access === "F") return true;
 							if (access === "E") {
 								if (x.name === "Edit") return true;

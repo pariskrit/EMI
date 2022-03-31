@@ -34,9 +34,17 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 		dispatch({ type: "TOGGLE_CHANGE_STATUS", payload: true });
 
 	const showAdd = [route.showAdd, access === "F"].every((x) => x === true);
-	const showPaste = [route.showPasteTask, access === "F"].every(
-		(x) => x === true
-	);
+	const showPaste = [
+		route.showPasteTask,
+		access === "F",
+		!state?.modelDetail?.isPublished,
+	].every((x) => x === true);
+	const showAddButton =
+		route.id === 3
+			? showAdd
+			: [route.showAdd, access === "F", !state?.modelDetail?.isPublished].every(
+					(x) => x === true
+			  );
 
 	return (
 		<div>
@@ -46,7 +54,7 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 				current={route.name}
 				navigation={navigation}
 				applicationName="Stage"
-				showAdd={showAdd}
+				showAdd={showAddButton}
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
 				showPasteTask={showPaste}

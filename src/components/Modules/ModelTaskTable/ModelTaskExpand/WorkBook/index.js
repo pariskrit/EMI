@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextEditor from "components/Elements/TextEditor";
 import { Grid } from "@material-ui/core";
@@ -7,6 +7,7 @@ import { workbookFields } from "helpers/constants";
 import { patchModelTask } from "services/models/modelDetails/modelTasks";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -26,6 +27,7 @@ const WorkBook = ({ taskInfo, access }) => {
 
 	const [localTaskInfo, setLocalTaskInfo] = useState({});
 	const [isUpdating, setIsUpdating] = useState({});
+	const [state] = useContext(ModelContext);
 
 	useEffect(() => {
 		if (taskInfo) setLocalTaskInfo(taskInfo);
@@ -84,7 +86,11 @@ const WorkBook = ({ taskInfo, access }) => {
 								<ADD.NameLabel>{field.label}</ADD.NameLabel>
 								<TextEditor
 									id={field.id}
-									readOnly={readOnly || isUpdating?.[field.name]}
+									readOnly={
+										readOnly ||
+										isUpdating?.[field.name] ||
+										state?.modelDetail?.isPublished
+									}
 									value={localTaskInfo[field.name]}
 									name={field.name}
 									onBlur={(range, source, editor) =>

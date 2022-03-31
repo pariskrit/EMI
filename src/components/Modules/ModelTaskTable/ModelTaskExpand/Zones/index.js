@@ -1,6 +1,7 @@
 import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
+import { ModelContext } from "contexts/ModelDetailContext";
 import { TaskContext } from "contexts/TaskDetailContext";
 import useDidMountEffect from "hooks/useDidMountEffect";
 import React, { useCallback, useContext, useEffect, useState } from "react";
@@ -21,10 +22,11 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 
 	const [zones, setZones] = useState([]);
 	const [originalZones, setOriginalZones] = useState([]);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [siteAssset, setSiteAssest] = useState([]);
 	const [assestCount, setAssestCount] = useState(null);
 	const [, CtxDispatch] = useContext(TaskContext);
+	const [state] = useContext(ModelContext);
 
 	const {
 		customCaptions,
@@ -85,7 +87,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 	const fetchSiteAssest = async (
 		siteAppID,
 		pageNo,
-		perPage = 20,
+		perPage = 10,
 		search = ""
 	) => {
 		try {
@@ -281,7 +283,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 				setOriginalZones={setOriginalZones}
 				originalZones={originalZones}
 				customCaptions={customCaptions}
-				isReadOnly={isReadOnly}
+				isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
 				fetchSiteFromDropDown={fetchSiteFromDropDown}
 			/>
 		</div>

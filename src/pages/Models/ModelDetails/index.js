@@ -14,7 +14,7 @@ function ModelDetails(props) {
 
 	const fetchModelDetails = useCallback(async () => {
 		const response = await getModelDetails(id);
-		if (response.data.status === 404) {
+		if (!response?.status) {
 			setIsError(true);
 		} else {
 			dispatch({ type: "SET_MODEL_DETAIL", payload: response.data });

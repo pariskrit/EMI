@@ -87,7 +87,7 @@ function TaskZoneListTable({
 
 	const onPageChange = (pageSize) => {
 		setPage(pageSize);
-		fetchSiteAssest(siteAppId, pageSize, 20);
+		fetchSiteAssest(siteAppId, pageSize, 10);
 	};
 
 	const handleServierSideSearch = useCallback(
@@ -96,7 +96,7 @@ function TaskZoneListTable({
 				const response = await getSiteAssetsForZones(
 					siteAppId,
 					1,
-					20,
+					100,
 					searchTxt
 				);
 				setSiteAssest(response.data);

@@ -24,6 +24,7 @@ import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { Tooltip } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -140,6 +141,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	const [addEditType, setAddEditType] = useState("add");
 
 	const [, CtxDispatch] = useContext(TaskContext);
+	const [state] = useContext(ModelContext);
 
 	// ARRANGING DATA FROM THE API RESPONSE
 
@@ -367,7 +369,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 			<div className={classes.question}>
 				<div className={classes.header}>
 					<DetailsPanel header={captions.plural} dataCount={data.length} />
-					{access === "F" ? (
+					{access === "F" && !state.modelDetail?.isPublished ? (
 						<span className={classes.buttons}>
 							<GeneralButton
 								className={classes.pasteTask}
@@ -397,6 +399,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 					handleServiceLayout={handleServiceLayout}
 					handleDragEnd={handleDragEnd}
 					access={access}
+					disable={state.modelDetail?.isPublished}
 				/>
 				<div ref={scrollRef} />
 			</div>

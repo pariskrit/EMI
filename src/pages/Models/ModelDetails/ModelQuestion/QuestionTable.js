@@ -6,6 +6,7 @@ const QuestionTable = ({
 	handleDragEnd,
 	menuData,
 	isModelEditable,
+	disableDnd,
 	rolePlural,
 }) => (
 	<DragAndDropTable
@@ -28,6 +29,7 @@ const QuestionTable = ({
 			{ id: 6, name: "additional", style: { width: "30vw" } },
 		]}
 		handleDragEnd={handleDragEnd}
+		disableDnd={disableDnd}
 		menuData={menuData}
 	/>
 );

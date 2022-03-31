@@ -15,6 +15,7 @@ import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const useStyles = makeStyles({
 	images: {
@@ -38,6 +39,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 	const classes = useStyles();
 
 	const [, CtxDispatch] = useContext(TaskContext);
+	const [state] = useContext(ModelContext);
 
 	const [images, setImage] = useState({
 		data: [],
@@ -212,7 +214,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 			<div className={classes.images}>
 				<div className={classes.header}>
 					<DetailsPanel header={`Images`} dataCount={images.count} />
-					{access === "F" ? (
+					{access === "F" && !state?.modelDetail?.isPublished ? (
 						<GeneralButton onClick={() => setState({ open: true })}>
 							ADD IMAGE
 						</GeneralButton>
@@ -227,7 +229,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 						{ id: 2, name: "description", style: { width: "50vw" } },
 					]}
 					isModelEditable
-					disableDnd={access === "R"}
+					disableDnd={access === "R" || state?.modelDetail?.isPublished}
 					menuData={[
 						{
 							name: "Edit",
@@ -240,6 +242,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 							isDelete: true,
 						},
 					].filter((x) => {
+						if (state?.modelDetail?.isPublished) return false;
 						if (access === "F") return true;
 						if (access === "E") {
 							if (x.name === "Edit") return true;

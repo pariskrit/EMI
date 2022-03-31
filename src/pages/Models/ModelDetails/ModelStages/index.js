@@ -165,7 +165,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				<DragAndDropTable
 					data={data}
 					isModelEditable
-					disableDnd={access === "R"}
+					disableDnd={access === "R" || state?.modelDetail?.isPublished}
 					headers={["Name", "Image", "Has Zones"]}
 					columns={[
 						{ id: 1, name: "name", style: { width: "40vw" } },
@@ -185,6 +185,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 							isDelete: true,
 						},
 					].filter((x) => {
+						if (state?.modelDetail?.isPublished) return false;
 						if (access === "F") return true;
 						if (access === "E") {
 							if (x.name === "Edit") return true;

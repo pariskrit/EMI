@@ -85,7 +85,10 @@ const ImageUpload = ({
 	// Init hooks
 	const classes = useStyles();
 
-	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({
+		onDrop,
+		disabled: isReadOnly,
+	});
 
 	if (isUploading) {
 		return (

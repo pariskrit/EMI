@@ -131,6 +131,11 @@ function DyanamicDropdown(props) {
 	useEffect(() => {
 		setFilteredList(dataSource);
 		setOriginalFilteredList(dataSource);
+
+		if (isLoading) {
+			setLoading(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dataSource]);
 
 	const handleOutsideClick = useCallback((event) => {
@@ -215,11 +220,12 @@ function DyanamicDropdown(props) {
 	);
 
 	// search
-	const onFilter = (val) => {
+	const onFilter = async (val) => {
 		setsearchText(val);
+		setLoading(true);
 		if (isServerSide) {
 			// server side search
-			handleServierSideSearch(val);
+			await handleServierSideSearch(val);
 		} else {
 			// client side search
 			if (val !== "") {
@@ -234,6 +240,8 @@ function DyanamicDropdown(props) {
 			} else {
 				setFilteredList(originalFilteredList);
 			}
+
+			setLoading(false);
 		}
 	};
 
@@ -349,24 +357,30 @@ function DyanamicDropdown(props) {
 		try {
 			const response = await fetchData();
 			setFilteredList(
-				[...response?.data, ...(dataSource || [])].reduce((acc, current) => {
-					const x = acc.find((item) => item.id === current.id);
-					if (!x) {
-						return acc.concat([current]);
-					} else {
-						return acc;
-					}
-				}, [])
+				[...(response?.data || []), ...(dataSource || [])].reduce(
+					(acc, current) => {
+						const x = acc.find((item) => item.id === current.id);
+						if (!x) {
+							return acc.concat([current]);
+						} else {
+							return acc;
+						}
+					},
+					[]
+				)
 			);
 			setOriginalFilteredList(
-				[...response?.data, ...(dataSource || [])].reduce((acc, current) => {
-					const x = acc.find((item) => item.id === current.id);
-					if (!x) {
-						return acc.concat([current]);
-					} else {
-						return acc;
-					}
-				}, [])
+				[...(response?.data || []), ...(dataSource || [])].reduce(
+					(acc, current) => {
+						const x = acc.find((item) => item.id === current.id);
+						if (!x) {
+							return acc.concat([current]);
+						} else {
+							return acc;
+						}
+					},
+					[]
+				)
 			);
 		} catch (error) {
 			console.log(error);
@@ -513,7 +527,7 @@ function DyanamicDropdown(props) {
 						</div>
 					)}
 					<div className="dynamic-drop-list" id={uniqueId}>
-						{filteredList?.length > 0 ? (
+						{isLoading ? null : filteredList?.length > 0 ? (
 							<>
 								{hasCheckBoxList
 									? filteredList?.map((list) => (
@@ -571,12 +585,11 @@ function DyanamicDropdown(props) {
 							<span className="no-record">No records found</span>
 						)}
 						{/* scroll to load */}
-						{loading ||
-							(isLoading && (
-								<div style={{ padding: "16px 10px" }}>
-									<b>Loading...</b>
-								</div>
-							))}
+						{(loading || isLoading) && (
+							<div style={{ padding: "16px 10px" }}>
+								<b>Loading...</b>
+							</div>
+						)}
 
 						{!hasMore && (
 							<div

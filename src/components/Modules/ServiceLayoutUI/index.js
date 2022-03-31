@@ -727,7 +727,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		return <CircularProgress />;
 	}
 
-	const isReadOnly = access === "R";
+	const isReadOnly = access === "R" || state?.modelDetail?.isPublished;
 	return (
 		<>
 			<div className="detailsContainer">

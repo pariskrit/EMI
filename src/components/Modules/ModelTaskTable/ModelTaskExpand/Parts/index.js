@@ -16,6 +16,7 @@ import AddOrEditPart from "./AddOrEditPart";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const AT = ActionButtonStyle();
 
@@ -30,6 +31,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 	const [loading, setLoading] = useState(false);
 
 	const [, CtxDispatch] = useContext(TaskContext);
+	const [state] = useContext(ModelContext);
 
 	const dispatch = useDispatch();
 
@@ -209,7 +211,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 					header={`${customCaptions.partPlural}`}
 					dataCount={parts.length}
 				/>
-				{access === "F" && (
+				{access === "F" && !state?.modelDetail?.isPublished && (
 					<AT.GeneralButton
 						onClick={() => {
 							setOpenAddPart(true);
@@ -246,6 +248,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 						isDelete: true,
 					},
 				].filter((x) => {
+					if (state?.modelDetail?.isPublished) return false;
 					if (access === "F") return true;
 					if (access === "E") {
 						if (x.name === "Edit") return true;
@@ -254,7 +257,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 					return false;
 				})}
 				isModelEditable
-				disableDnd={access === "R"}
+				disableDnd={access === "R" || state?.modelDetail?.isPublished}
 			/>
 		</div>
 	);

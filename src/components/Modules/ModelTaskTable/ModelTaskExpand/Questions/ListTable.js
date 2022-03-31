@@ -10,11 +10,13 @@ function ListTable({
 	handleServiceLayout,
 	handleDragEnd,
 	access,
+	disable,
 }) {
 	return (
 		<DragAndDropTable
 			data={data}
 			isModelEditable={access === "F" || access === "E"}
+			disableDnd={access === "R" || disable}
 			headers={["Caption", "Type", "Compulsory", "Additional Options"]}
 			columns={[
 				{ id: 1, name: "caption", style: { width: "25vw" } },
@@ -50,6 +52,7 @@ function ListTable({
 					isDelete: true,
 				},
 			].filter((x) => {
+				if (disable) return false;
 				if (access === "F") return true;
 				if (access === "E") {
 					if (x.name === "Edit") return true;

@@ -19,6 +19,7 @@ import ColourConstants from "helpers/colourConstants";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const AT = ActionButtonStyle();
 
@@ -33,6 +34,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 	const [loading, setLoading] = useState(false);
 
 	const [, CtxDispatch] = useContext(TaskContext);
+	const [state] = useContext(ModelContext);
 
 	const dispatch = useDispatch();
 
@@ -300,7 +302,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				style={{ alignItems: "center" }}
 			>
 				<DetailsPanel header={`Attachments`} dataCount={attachments.length} />
-				{access === "F" && (
+				{access === "F" && !state?.modelDetail?.isPublished && (
 					<AT.GeneralButton
 						onClick={() => {
 							setOpenAddAttachment(true);
@@ -327,6 +329,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						isDelete: true,
 					},
 				].filter((x) => {
+					if (state?.modelDetail?.isPublished) return false;
 					if (access === "F") return true;
 					if (access === "E") {
 						if (x.name === "Edit") return true;
@@ -335,7 +338,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 					return false;
 				})}
 				isModelEditable
-				disableDnd={access === "R"}
+				disableDnd={access === "R" || state.modelDetail?.isPublished}
 			/>
 		</div>
 	);

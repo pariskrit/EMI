@@ -345,21 +345,6 @@ const ModelQuestion = ({
 		});
 	};
 
-	// const onGrabData = (currentPage) =>
-	// 	new Promise((res) => {
-	// 		const NUM_PER_PAGE = 10;
-	// 		const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
-	// 		setTimeout(() => {
-	// 			const slicedData = data.slice(
-	// 				((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
-	// 				NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
-	// 			);
-	// 			res(slicedData);
-	// 		}, 100);
-	// 	});
-
-	// const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
-
 	if (loading) {
 		return <CircularProgress />;
 	}
@@ -404,6 +389,7 @@ const ModelQuestion = ({
 				<QuestionTable
 					data={data}
 					handleDragEnd={handleDragEnd}
+					disableDnd={access === "R" || state?.modelDetail?.isPublished}
 					isModelEditable={access === "F" || access === "E"}
 					rolePlural={rolePlural}
 					menuData={[
@@ -433,6 +419,8 @@ const ModelQuestion = ({
 							isDelete: true,
 						},
 					].filter((x) => {
+						if (state?.modelDetail?.isPublished) return false;
+
 						if (access === "F") return true;
 						if (access === "E") {
 							if (x.name === "Edit") return true;

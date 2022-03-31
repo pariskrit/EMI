@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { updateModel } from "services/models/modelDetails/details";
 import { useParams } from "react-router-dom";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const ADD = AddDialogStyle();
 
@@ -32,6 +33,7 @@ function ChangeStatusPopup({ open, onClose }) {
 	const [modelStatuses, setModelStatuses] = useState([]);
 	const [selectedModelStatus, setSelectedModelStatus] = useState({});
 	const dispatch = useDispatch();
+	const [, modelDispatch] = useContext(ModelContext);
 	const { id } = useParams();
 
 	const handleCreateProcess = async () => {
@@ -43,13 +45,21 @@ function ChangeStatusPopup({ open, onClose }) {
 				value: selectedModelStatus.id,
 			},
 		]);
-		if (!response.status) dispatch(showError("Could Not Update Model Status"));
+		if (!response.status)
+			dispatch(showError(response.data || "Could Not Update Model Status"));
+		else
+			modelDispatch({
+				type: "SET_ISPUBLISHED",
+				payload: {
+					isPublished: response?.data?.isPublished,
+					modelStatusName: selectedModelStatus.name,
+				},
+			});
 
 		onClose();
 
 		setIsUpdating(false);
 	};
-
 	const onModelStatusChange = (status) => setSelectedModelStatus(status);
 
 	const fetchModelStatuses = async () => {

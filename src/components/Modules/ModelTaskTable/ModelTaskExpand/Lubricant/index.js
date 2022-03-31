@@ -1,5 +1,5 @@
 import { Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
@@ -10,6 +10,7 @@ import { getLubricants } from "services/clients/sites/siteApplications/lubricant
 import { patchModelTask } from "services/models/modelDetails/modelTasks";
 import { Facebook } from "react-spinners-css";
 import withMount from "components/HOC/withMount";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -45,6 +46,7 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 	// const [loading, setLoading] = useState(false);
 	const [localTaskInfo, setLocalTaskInfo] = useState({});
 	const [isUpdating, setUpdating] = useState({});
+	const [state] = useContext(ModelContext);
 
 	const {
 		position: { siteAppID },
@@ -195,7 +197,11 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 							<Facebook size={20} color="#A79EB4" />
 						) : null,
 					}}
-					disabled={isUpdating?.lubricantVolume || isReadOnly}
+					disabled={
+						isUpdating?.lubricantVolume ||
+						isReadOnly ||
+						state?.modelDetail?.isPublished
+					}
 					onKeyDown={(e) => handleEnterPress(e)}
 				/>
 			</div>
@@ -216,7 +222,11 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 							<Facebook size={20} color="#A79EB4" />
 						) : null,
 					}}
-					disabled={isUpdating?.lubricantUOM || isReadOnly}
+					disabled={
+						isUpdating?.lubricantUOM ||
+						isReadOnly ||
+						state?.modelDetail?.isPublished
+					}
 					onKeyDown={(e) => handleEnterPress(e)}
 				/>
 			</div>
@@ -239,7 +249,7 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 						dropdownHandleChange(val, "lubricantID", "lubricantName")
 					}
 					selectdValueToshow="name"
-					isReadOnly={isReadOnly}
+					isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
 					fetchData={() => getLubricants(siteAppID)}
 					showClear
 				/>

@@ -75,7 +75,7 @@ const ModelTaskRow = ({
 	const rowClasses = useStyles();
 
 	const [, CtxDispatch] = useContext(TaskContext);
-	const [, ModelCtxDispatch] = useContext(ModelContext);
+	const [state, ModelCtxDispatch] = useContext(ModelContext);
 
 	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
 
@@ -216,7 +216,8 @@ const ModelTaskRow = ({
 										}}
 										className="taskdotmenu"
 									>
-										{access === "F" || access === "E" ? (
+										{(access === "F" || access === "E") &&
+										!state?.modelDetail?.isPublished ? (
 											<AT.TableMenuButton className="taskdotmenu">
 												{toggle ? (
 													<WhiteMenuIcon className="taskdotmenu" />

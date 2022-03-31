@@ -138,7 +138,7 @@ const AddEditModel = ({
 			} else {
 				setLoading(false);
 
-				getError(res.data.detail);
+				getError(res.data || "Could not add");
 			}
 		} catch (err) {
 			return;

@@ -79,7 +79,7 @@ const TaskDetails = ({
 
 	const [modelState] = useContext(ModelContext);
 	const {
-		modelDetail: { id },
+		modelDetail: { id, isPublished },
 	} = modelState;
 
 	const {
@@ -403,7 +403,7 @@ const TaskDetails = ({
 								showClear
 								disabled={isUpdating.actionID}
 								label={customCaptions?.actionRequired}
-								isReadOnly={isReadOnly}
+								isReadOnly={isReadOnly || isPublished}
 								fetchData={() => getActions(siteAppID)}
 							/>
 						</ADD.LeftInputContainer>
@@ -434,8 +434,8 @@ const TaskDetails = ({
 								}
 								hasCheckBoxList={true}
 								checklistChangeHandler={checklistChangeHandler}
+								isReadOnly={isReadOnly || isPublished}
 								disabled={isUpdating.role}
-								isReadOnly={isReadOnly}
 								fetchData={() => getModelRolesList(id)}
 							/>
 						</ADD.RightInputContainer>
@@ -451,7 +451,7 @@ const TaskDetails = ({
 									handleOnBlur(e.target.value, "name");
 								}}
 								isFetching={isUpdating?.name}
-								isDisabled={isUpdating?.name || isReadOnly}
+								isDisabled={isUpdating?.name || isReadOnly || isPublished}
 								onKeyDown={(e) => handleEnterPress(e, "name")}
 							/>
 						</ADD.LeftInputContainer>
@@ -476,7 +476,7 @@ const TaskDetails = ({
 								showClear
 								disabled={isUpdating.systemID}
 								label={customCaptions?.system}
-								isReadOnly={isReadOnly}
+								isReadOnly={isReadOnly || isPublished}
 								fetchData={() => getSystems(siteAppID)}
 							/>
 						</ADD.RightInputContainer>
@@ -504,8 +504,8 @@ const TaskDetails = ({
 									)
 								}
 								selectdValueToshow="name"
+								isReadOnly={isReadOnly || isPublished}
 								disabled={isUpdating?.operatingModeID}
-								isReadOnly={isReadOnly}
 								label={customCaptions?.operatingMode}
 								fetchData={() => getOperatingModes(siteAppID)}
 								showClear
@@ -526,7 +526,9 @@ const TaskDetails = ({
 								variant="outlined"
 								type="number"
 								fullWidth
-								disabled={isUpdating?.estimatedMinutes || isReadOnly}
+								disabled={
+									isUpdating?.estimatedMinutes || isReadOnly || isPublished
+								}
 								InputProps={{
 									classes: {
 										input: classes.inputText,
@@ -556,7 +558,7 @@ const TaskDetails = ({
 										handleOnBlur(e.target.checked, "safetyCritical");
 									}}
 									name="safetyCritical"
-									disabled={isReadOnly}
+									disabled={isReadOnly || isPublished}
 								/>
 								{customCaptions?.safetyCritical}
 							</ADD.CheckboxLabel>
@@ -570,7 +572,7 @@ const TaskDetails = ({
 										handleOnBlur(e.target.checked, "notSkippable");
 									}}
 									name="notSkippable"
-									disabled={isReadOnly}
+									disabled={isReadOnly || isPublished}
 								/>
 								Cannot Be Skipped
 							</ADD.CheckboxLabel>
@@ -582,7 +584,7 @@ const TaskDetails = ({
 							taskGroupId={taskInfo?.taskGroupID}
 							taskId={taskInfo?.id}
 							customCaptions={customCaptions}
-							disabled={isReadOnly || isEditOnly}
+							disabled={isReadOnly || isPublished || isEditOnly}
 						/>
 					</ADD.InputContainer>
 				</div>

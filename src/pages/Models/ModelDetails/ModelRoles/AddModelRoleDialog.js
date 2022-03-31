@@ -103,7 +103,10 @@ function AddNewModelRole({
 	const displayError = (errorMessage, response) =>
 		dispatch(
 			showError(
-				response?.data?.detail || errorMessage || "Something went wrong"
+				response.data ||
+					response?.data?.detail ||
+					errorMessage ||
+					"Something went wrong"
 			)
 		);
 

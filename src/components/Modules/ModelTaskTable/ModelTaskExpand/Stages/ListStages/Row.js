@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { TableRow, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { getSiteAssets } from "services/clients/sites/siteAssets";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const AT = TableStyle();
 
@@ -42,6 +43,8 @@ function Row({
 		page: 1,
 		selected: x.id !== null,
 	});
+	const [modelState] = useContext(ModelContext);
+	const [searchCount, setSearchCount] = useState(null);
 
 	const setState = (da) => setStates((th) => ({ ...th, ...da }));
 
@@ -117,9 +120,12 @@ function Row({
 	const handleServierSideSearch = useCallback(
 		debounce(async (searchTxt) => {
 			if (searchTxt) {
-				const response = await getSiteAssets(siteId, state.page, 10, searchTxt);
+				const response = await getSiteAssets(siteId, 1, 100, searchTxt);
+
 				setStages((prev) => ({ ...prev, assets: response.data }));
+				setSearchCount(1);
 			} else {
+				setSearchCount(null);
 				handleAssetDropPage(1, assets);
 			}
 		}, 500),
@@ -139,7 +145,7 @@ function Row({
 				<EMICheckbox
 					state={state.selected}
 					changeHandler={handleSelected}
-					disabled={modelAccess === "R"}
+					disabled={modelAccess === "R" || modelState?.modelDetail?.isPublished}
 				/>
 			</TableCell>
 			<TableCell>
@@ -166,10 +172,14 @@ function Row({
 						showHeader
 						dataSource={assets}
 						selectdValueToshow="name"
-						count={count}
+						count={searchCount || count}
 						onPageChange={handleAssetDropPage}
 						page={state.page}
-						isReadOnly={!state.selected || modelAccess === "R"}
+						isReadOnly={
+							!state.selected ||
+							modelAccess === "R" ||
+							modelState?.modelDetail?.isPublished
+						}
 						handleServierSideSearch={handleServierSideSearch}
 						isServerSide
 						fetchData={fetchFromDropDwn}

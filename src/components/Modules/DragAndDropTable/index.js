@@ -71,7 +71,6 @@ const DragAndDropTable = ({
 }) => {
 	// Init hooks
 	const classes = useStyles();
-
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -114,11 +113,7 @@ const DragAndDropTable = ({
 							))}
 						</TableRow>
 					</AT.TableHead>
-					<Droppable
-						droppableId="droppable-1"
-						isCombineEnabled
-						isDropDisabled={disableDnd}
-					>
+					<Droppable droppableId="droppable-1" isCombineEnabled>
 						{(pp) => (
 							<TableBody
 								className={classes.tableBody}
@@ -130,6 +125,7 @@ const DragAndDropTable = ({
 										key={row.id}
 										draggableId={row.id + ""}
 										index={index}
+										isDragDisabled={disableDnd}
 									>
 										{(provider) => (
 											<Row
