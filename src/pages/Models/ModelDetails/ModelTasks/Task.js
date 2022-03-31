@@ -27,6 +27,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import withMount from "components/HOC/withMount";
 import { useHistory } from "react-router-dom";
 import SearchTask from "./SearchTask";
+import { checkIfVisibleInViewPort } from "helpers/utils";
 
 const useStyles = makeStyles({
 	loading: {
@@ -39,6 +40,7 @@ const useStyles = makeStyles({
 
 function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [isLoading, setLoading] = useState(true);
+	const [isDataLoading, setDataLoading] = useState(true);
 	const [taskList, setTaskList] = useState([]);
 
 	const [isPasting, setPasting] = useState(false);
@@ -48,11 +50,13 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
 	const [enablePasteTask, setPasteTask] = useState(false);
 	const shouldExpandRef = useRef(false);
+	const isScrolledOnLoad = useRef(false);
 
 	const history = useHistory();
 
 	const reduxDispatch = useDispatch();
 
+	//const fromSeriveLayoutId = 9089;
 	const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
 
 	useEffect(() => {
@@ -62,21 +66,58 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			shouldExpandRef.current === false &&
 			fromSeriveLayoutId
 		) {
-			if (document.getElementById(`taskExpandable${fromSeriveLayoutId}`)) {
-				document.getElementById(`taskExpandable${fromSeriveLayoutId}`).click();
-				document
-					.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-					.scrollIntoView({
-						behavior: "smooth",
-						top:
-							document
-								.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-								.getBoundingClientRect().bottom + window.pageYOffset,
-					});
-				shouldExpandRef.current = true;
-			}
+			setTimeout(() => {
+				if (document.getElementById(`taskExpandable${fromSeriveLayoutId}`)) {
+					document
+						.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+						.scrollIntoView({
+							behavior: "smooth",
+							top:
+								document
+									.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+									.getBoundingClientRect().bottom + window.pageYOffset,
+						});
+					shouldExpandRef.current = true;
+				}
+			}, 1000);
 		}
 	}, [taskList, isLoading, fromSeriveLayoutId]);
+
+	useEffect(() => {
+		if (fromSeriveLayoutId) {
+			const handleScroll = () => {
+				if (
+					!isScrolledOnLoad.current &&
+					checkIfVisibleInViewPort(
+						document.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+					)
+				) {
+					// console.log("scrolled", isScrolledOnLoad);
+					isScrolledOnLoad.current = true;
+					setTimeout(() => {
+						document
+							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+							.click();
+						setTimeout(() => {
+							document
+								.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+								.scrollIntoView({
+									behavior: "smooth",
+									block: "center",
+									inline: "center",
+								});
+						}, 1000);
+					}, 500);
+				}
+			};
+			window.addEventListener("scroll", handleScroll);
+		}
+	}, [fromSeriveLayoutId]);
+	useEffect(() => {
+		return () => {
+			window.removeEventListener("scroll", () => {});
+		};
+	}, []);
 
 	const classes = useStyles();
 
@@ -105,35 +146,39 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				]);
 				if (response[0].status) {
 					if (!isMounted.aborted) {
-						setTaskList(
-							response[0].data.map((t) => ({
-								...t,
-								hasTaskImages: t?.hasTaskImages ? (
-									<img src={HasImages} alt="" />
-								) : (
-									""
-								),
-								hasTools: t?.hasTools ? <img src={HasTools} alt="" /> : "",
-								hasParts: t?.hasParts ? <img src={HasParts} alt="" /> : "",
-								hasDocuments: t?.hasDocuments ? (
-									<img src={HasDocuments} alt="" />
-								) : (
-									""
-								),
-								safetyCritical: t?.safetyCritical ? (
-									<img src={SafteryCritical} alt="" />
-								) : (
-									""
-								),
-								errors: t?.hasErrors ? t?.hasErrors : "",
-								intervals: t?.intervals
-									?.map((interval) => interval?.name)
-									?.join(", "),
-								zones: t?.zones?.map((zone) => zone?.name)?.join(", "),
-								roles: t?.roles?.map((role) => role?.name)?.join(", "),
-								stages: t?.stages?.map((stage) => stage?.name)?.join(", "),
-							}))
-						);
+						const taskList = response[0].data.map((t) => ({
+							...t,
+							hasTaskImages: t?.hasTaskImages ? (
+								<img src={HasImages} alt="" />
+							) : (
+								""
+							),
+							hasTools: t?.hasTools ? <img src={HasTools} alt="" /> : "",
+							hasParts: t?.hasParts ? <img src={HasParts} alt="" /> : "",
+							hasDocuments: t?.hasDocuments ? (
+								<img src={HasDocuments} alt="" />
+							) : (
+								""
+							),
+							safetyCritical: t?.safetyCritical ? (
+								<img src={SafteryCritical} alt="" />
+							) : (
+								""
+							),
+							errors: t?.hasErrors ? t?.hasErrors : "",
+							intervals: t?.intervals
+								?.map((interval) => interval?.name)
+								?.join(", "),
+							zones: t?.zones?.map((zone) => zone?.name)?.join(", "),
+							roles: t?.roles?.map((role) => role?.name)?.join(", "),
+							stages: t?.stages?.map((stage) => stage?.name)?.join(", "),
+						}));
+						setLoading(false);
+						setDataLoading(true);
+						setTimeout(() => {
+							setTaskList(taskList);
+							setDataLoading(false);
+						}, 1);
 					}
 				} else {
 					reduxDispatch(
@@ -297,6 +342,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				access={access}
 				totalTaskCount={totalTaskCount}
 				fetchData={fetchData}
+				isDataLoading={isDataLoading}
 			/>
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps

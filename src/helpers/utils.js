@@ -90,3 +90,15 @@ export const isoDateWithoutTimeZone = (date) => {
 	// correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
 	return localDateAndTime;
 };
+
+export const checkIfVisibleInViewPort = (el) => {
+	const rect = el?.getBoundingClientRect();
+	if (rect) {
+		const viewHeight = Math.max(
+			document.documentElement.clientHeight,
+			window.innerHeight
+		);
+		return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+	}
+	return false;
+};

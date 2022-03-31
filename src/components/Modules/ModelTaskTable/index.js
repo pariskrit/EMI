@@ -83,6 +83,7 @@ const ModelTaskTable = ({
 	totalTaskCount,
 	fetchData,
 	access,
+	isDataLoading,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
@@ -173,7 +174,11 @@ const ModelTaskTable = ({
 						<TableRow>
 							{headers.map((head, i) => {
 								if (i === 0) {
-									return <TableCell key={head.id}>No Record Found</TableCell>;
+									return (
+										<TableCell key={head.id}>
+											{isDataLoading ? "Data Loading..." : "No Record Found"}
+										</TableCell>
+									);
 								} else {
 									return <TableCell key={head.id}></TableCell>;
 								}
@@ -192,6 +197,7 @@ ModelTaskTable.propTypes = {
 	columns: PropTypes.arrayOf(PropTypes.string).isRequired,
 	handleEdit: PropTypes.func.isRequired,
 	handleDelete: PropTypes.func.isRequired,
+	isDataLoading: PropTypes.bool.isRequired,
 };
 
 export default ModelTaskTable;
