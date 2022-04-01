@@ -31,7 +31,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 	const [openAddAttachment, setOpenAddAttachment] = useState(false);
 	const [openEditAttachment, setOpenEditAttachment] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const [, CtxDispatch] = useContext(TaskContext);
 	const [state] = useContext(ModelContext);

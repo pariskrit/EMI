@@ -56,7 +56,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 
 	const reduxDispatch = useDispatch();
 
-	//const fromSeriveLayoutId = 9089;
+	// const fromSeriveLayoutId = 9089;
 	const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
 
 	useEffect(() => {
@@ -113,6 +113,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			window.addEventListener("scroll", handleScroll);
 		}
 	}, [fromSeriveLayoutId]);
+
 	useEffect(() => {
 		return () => {
 			window.removeEventListener("scroll", () => {});
@@ -238,19 +239,36 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 							payload: { countTab: "taskCount", data: totalTaskCount + 1 },
 						});
 
-						if (document.getElementById(`taskExpandable${response.data}`)) {
-							document.getElementById(`taskExpandable${response.data}`).click();
-							document
-								.getElementById(`taskExpandable${response.data}`)
-								.scrollIntoView({
-									behavior: "smooth",
-									block: "center",
-									top:
+						// scroll down to new pasted task
+						setTimeout(() => {
+							if (document.getElementById(`taskExpandable${response.data}`)) {
+								document
+									.getElementById(`taskExpandable${response.data}`)
+									.scrollIntoView({
+										behavior: "smooth",
+										block: "center",
+										top:
+											document
+												.getElementById(`taskExpandable${response.data}`)
+												.getBoundingClientRect().bottom + window.pageYOffset,
+									});
+
+								setTimeout(() => {
+									document
+										.getElementById(`taskExpandable${response.data}`)
+										.click();
+									setTimeout(() => {
 										document
 											.getElementById(`taskExpandable${response.data}`)
-											.getBoundingClientRect().bottom + window.pageYOffset,
-								});
-						}
+											.scrollIntoView({
+												behavior: "smooth",
+												block: "center",
+												inline: "center",
+											});
+									}, 1000);
+								}, 500);
+							}
+						}, 500);
 					} else {
 						reduxDispatch(
 							showError(response?.data?.title || "something went wrong")
@@ -346,7 +364,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			/>
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [taskList, totalTaskCount]);
+	}, [taskList, totalTaskCount, isDataLoading]);
 
 	if (isLoading) return <CircularProgress />;
 	return (

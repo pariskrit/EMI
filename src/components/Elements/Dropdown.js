@@ -270,6 +270,8 @@ function Dropdown(props) {
 								<span>{list.label}</span>
 							</div>
 						))
+					) : isLoading ? (
+						""
 					) : (
 						<span className="no-record">No records found</span>
 					)}

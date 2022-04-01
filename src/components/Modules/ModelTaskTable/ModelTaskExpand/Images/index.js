@@ -43,7 +43,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 
 	const [images, setImage] = useState({
 		data: [],
-		loading: false,
+		loading: true,
 		open: false,
 		imageId: null,
 		delete: false,

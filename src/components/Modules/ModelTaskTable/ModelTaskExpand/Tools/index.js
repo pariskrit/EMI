@@ -28,7 +28,7 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 	const [openAddTool, setOpenAddTool] = useState(false);
 	const [openEditTool, setOpenEditTool] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const [, CtxDispatch] = useContext(TaskContext);
 	const [state] = useContext(ModelContext);

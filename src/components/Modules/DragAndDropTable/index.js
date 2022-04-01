@@ -71,6 +71,7 @@ const DragAndDropTable = ({
 }) => {
 	// Init hooks
 	const classes = useStyles();
+
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -133,10 +134,6 @@ const DragAndDropTable = ({
 												provider={provider}
 												row={row}
 												columns={columns}
-												setAnchorEl={setAnchorEl}
-												setSelectedData={setSelectedData}
-												selectedData={selectedData}
-												anchorEl={anchorEl}
 												menuData={menuData}
 												isModelEditable={isModelEditable}
 											/>

@@ -94,7 +94,7 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 
 	const handlePressEnter = (e) => {
 		if (e.keyCode === 13) {
-			handleEdit();
+			handleEdit(e);
 		}
 	};
 

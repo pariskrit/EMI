@@ -464,10 +464,10 @@ const AddEditModel = ({
 
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">
-						{editMode ? "Close" : "Cancel"}
+						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleSave}>
-						{editMode ? "Save" : "Add " + title}
+						{editMode ? "Close" : "Add " + title}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>

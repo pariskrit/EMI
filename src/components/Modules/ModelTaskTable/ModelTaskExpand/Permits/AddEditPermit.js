@@ -147,7 +147,7 @@ function AddOrEditPermit({
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								{isEdit ? "Close" : "Cancel"}
+								Cancel
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">
@@ -157,7 +157,7 @@ function AddOrEditPermit({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{isEdit ? "Save" : title}
+								{isEdit ? "Close" : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>

@@ -185,7 +185,7 @@ function AddNewModelRole({
 					<ADD.ButtonContainer>
 						<div className="modalButton">
 							<ADD.CancelButton onClick={closeOverride} variant="contained">
-								{!showSave ? "Cancel" : "Close"}
+								Cancel
 							</ADD.CancelButton>
 						</div>
 						<div className="modalButton">
@@ -195,7 +195,7 @@ function AddNewModelRole({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{showSave ? "Save" : title}
+								{showSave ? "Close" : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>

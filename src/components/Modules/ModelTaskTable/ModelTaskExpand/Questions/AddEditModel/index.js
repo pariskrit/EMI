@@ -120,7 +120,7 @@ function AddEditModel({
 			if (result.status) {
 				handleAddEditComplete();
 			} else {
-				console.log(result);
+				getError(result.data.detail || "Could not add task question");
 			}
 		} catch (e) {
 			return;
@@ -144,7 +144,7 @@ function AddEditModel({
 			if (result.status) {
 				handleAddEditComplete();
 			} else {
-				console.log(result);
+				getError(result.data.detail || "Could not edit task question");
 			}
 		} catch (e) {
 			return;
@@ -227,10 +227,10 @@ function AddEditModel({
 
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">
-						{questionDetail ? "Close" : "Cancel"}
+						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleSave}>
-						{questionDetail ? "Save" : "Add " + title}
+						{questionDetail ? "Close" : "Add " + title}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>

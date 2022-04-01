@@ -114,18 +114,35 @@ const ModelTaskRow = ({
 				type: "TAB_COUNT",
 				payload: { countTab: "taskCount", data: totalTaskCount + 1 },
 			});
-			if (document.getElementById(`taskExpandable${response.data}`)) {
-				document.getElementById(`taskExpandable${response.data}`).click();
-				document
-					.getElementById(`taskExpandable${response.data}`)
-					.scrollIntoView({
-						behavior: "smooth",
-						top:
+
+			// scroll down to duplicated task
+			setTimeout(() => {
+				if (document.getElementById(`taskExpandable${response.data}`)) {
+					document
+						.getElementById(`taskExpandable${response.data}`)
+						.scrollIntoView({
+							behavior: "smooth",
+							block: "center",
+							top:
+								document
+									.getElementById(`taskExpandable${response.data}`)
+									.getBoundingClientRect().bottom + window.pageYOffset,
+						});
+
+					setTimeout(() => {
+						document.getElementById(`taskExpandable${response.data}`).click();
+						setTimeout(() => {
 							document
 								.getElementById(`taskExpandable${response.data}`)
-								.getBoundingClientRect().bottom + window.pageYOffset,
-					});
-			}
+								.scrollIntoView({
+									behavior: "smooth",
+									block: "center",
+									inline: "center",
+								});
+						}, 1000);
+					}, 500);
+				}
+			}, 500);
 		} catch (error) {
 			dispatch(showError(error?.response?.data || "something went wrong"));
 		}

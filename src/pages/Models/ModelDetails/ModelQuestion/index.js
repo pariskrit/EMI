@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { connect } from "react-redux";
 import {
 	getModelQuestions,
@@ -345,6 +345,69 @@ const ModelQuestion = ({
 		});
 	};
 
+
+	// const onGrabData = (currentPage) =>
+	// 	new Promise((res) => {
+	// 		const NUM_PER_PAGE = 10;
+	// 		const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
+	// 		setTimeout(() => {
+	// 			const slicedData = data.slice(
+	// 				((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
+	// 				NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
+	// 			);
+	// 			res(slicedData);
+	// 		}, 100);
+	// 	});
+
+	// const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
+
+	const questionTable = useMemo(() => {
+		return (
+			<QuestionTable
+				data={data}
+				handleDragEnd={handleDragEnd}
+				isModelEditable={access === "F" || access === "E"}
+				rolePlural={rolePlural}
+				menuData={[
+					{
+						name: "Edit",
+						handler: handleEdit,
+						isDelete: false,
+					},
+					{
+						name: "Duplicate",
+						handler: handleDuplicate,
+						isDelete: false,
+					},
+					{
+						name: "Copy",
+						handler: handleCopy,
+						isDelete: false,
+					},
+					{
+						name: "Switch To Service Layout",
+						handler: handleSwitchToServiceLayout,
+						isDelete: false,
+					},
+					{
+						name: "Delete",
+						handler: handleDelete,
+						isDelete: true,
+					},
+				].filter((x) => {
+					if (access === "F") return true;
+					if (access === "E") {
+						if (x.name === "Edit") return true;
+						else return false;
+					}
+					return false;
+				})}
+			/>
+		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, rolePlural, access]);
+
+
 	if (loading) {
 		return <CircularProgress />;
 	}
@@ -385,51 +448,7 @@ const ModelQuestion = ({
 					/>
 				</div>
 				{duplicating ? <LinearProgress /> : null}
-
-				<QuestionTable
-					data={data}
-					handleDragEnd={handleDragEnd}
-					disableDnd={access === "R" || state?.modelDetail?.isPublished}
-					isModelEditable={access === "F" || access === "E"}
-					rolePlural={rolePlural}
-					menuData={[
-						{
-							name: "Edit",
-							handler: handleEdit,
-							isDelete: false,
-						},
-						{
-							name: "Duplicate",
-							handler: handleDuplicate,
-							isDelete: false,
-						},
-						{
-							name: "Copy",
-							handler: handleCopy,
-							isDelete: false,
-						},
-						{
-							name: "Switch To Service Layout",
-							handler: handleSwitchToServiceLayout,
-							isDelete: false,
-						},
-						{
-							name: "Delete",
-							handler: handleDelete,
-							isDelete: true,
-						},
-					].filter((x) => {
-						if (state?.modelDetail?.isPublished) return false;
-
-						if (access === "F") return true;
-						if (access === "E") {
-							if (x.name === "Edit") return true;
-							else return false;
-						}
-						return false;
-					})}
-				/>
-
+				{questionTable}
 				<div ref={triggerRef} />
 			</div>
 		</>

@@ -28,7 +28,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 	const [openAddPermit, setOpenAddPermit] = useState(false);
 	const [openEditPermit, setOpenEditPermit] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const [, CtxDispatch] = useContext(TaskContext);
 	const [state] = useContext(ModelContext);

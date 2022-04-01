@@ -581,8 +581,10 @@ function DyanamicDropdown(props) {
 											</div>
 									  ))}
 							</>
-						) : (
+						) : !isLoading ? (
 							<span className="no-record">No records found</span>
+						) : (
+							""
 						)}
 						{/* scroll to load */}
 						{(loading || isLoading) && (

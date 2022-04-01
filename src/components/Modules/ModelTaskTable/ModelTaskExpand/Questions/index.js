@@ -135,7 +135,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 		copy: false,
 	});
 	const [loading, setLoading] = useState({
-		fetch: false,
+		fetch: true,
 		loader: false,
 	});
 	const [addEditType, setAddEditType] = useState("add");

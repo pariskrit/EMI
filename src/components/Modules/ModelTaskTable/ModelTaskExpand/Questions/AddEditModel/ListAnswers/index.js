@@ -180,7 +180,7 @@ function ListAnswers({
 					setInput(defaultInput);
 					getOptions();
 				} else {
-					if (result.data.detail) getError(result.data.detail);
+					if (result.data) getError(result.data.detail || result.data);
 				}
 			} else {
 				const newError = generateErrorState(localChecker);
@@ -205,6 +205,11 @@ function ListAnswers({
 				setListOptions({ loading: false, options: editedData });
 				return true;
 			} else {
+				setListOptions({ loading: false, options: originalList });
+				handleUpdateOption((prev) => ({
+					...prev,
+					options: originalList,
+				}));
 				if (result.data.detail) getError(result.data.detail);
 				return false;
 			}
