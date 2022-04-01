@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table, TableCell, TableBody, TableRow } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import Row from "./Row";
@@ -22,6 +22,7 @@ function ListStages({
 	siteId,
 	fetchFromDropDwn,
 }) {
+	const [page, setPage] = useState(1);
 	return (
 		<Table aria-label="Table" className={classes.table}>
 			<AT.TableHead>
@@ -64,6 +65,8 @@ function ListStages({
 						setStages={setStages}
 						siteId={siteId}
 						fetchFromDropDwn={fetchFromDropDwn}
+						page={page}
+						setPage={setPage}
 					/>
 				))}
 			</TableBody>

@@ -101,14 +101,7 @@ function AddNewModelRole({
 
 	//display error popup
 	const displayError = (errorMessage, response) =>
-		dispatch(
-			showError(
-				response.data ||
-					response?.data?.detail ||
-					errorMessage ||
-					"Something went wrong"
-			)
-		);
+		dispatch(showError(errorMessage || "Something went wrong"));
 
 	const closeOverride = () => {
 		// Clearing input state and errors
@@ -142,7 +135,7 @@ function AddNewModelRole({
 					setIsUpdating(false);
 				} else {
 					setIsUpdating(false);
-					displayError(newData.data, newData);
+					displayError(newData?.data?.detail, newData?.data);
 				}
 			} else {
 				// show validation errors
@@ -152,8 +145,7 @@ function AddNewModelRole({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-			displayError(err, err);
+			displayError("Something went wrong");
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
 		}

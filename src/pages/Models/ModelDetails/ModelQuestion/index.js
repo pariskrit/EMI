@@ -345,7 +345,6 @@ const ModelQuestion = ({
 		});
 	};
 
-
 	// const onGrabData = (currentPage) =>
 	// 	new Promise((res) => {
 	// 		const NUM_PER_PAGE = 10;
@@ -406,7 +405,6 @@ const ModelQuestion = ({
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, rolePlural, access]);
-
 
 	if (loading) {
 		return <CircularProgress />;

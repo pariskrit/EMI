@@ -85,9 +85,9 @@ function TaskZoneListTable({
 		modelDetail: { modelType },
 	} = modelState;
 
-	const onPageChange = (pageSize) => {
+	const onPageChange = async (pageSize) => {
 		setPage(pageSize);
-		fetchSiteAssest(siteAppId, pageSize, 10);
+		await fetchSiteAssest(siteAppId, pageSize, 10);
 	};
 
 	const handleServierSideSearch = useCallback(

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
@@ -71,10 +71,6 @@ const DragAndDropTable = ({
 }) => {
 	// Init hooks
 	const classes = useStyles();
-
-	// Init State
-	const [selectedData, setSelectedData] = useState(null);
-	const [anchorEl, setAnchorEl] = useState(null);
 
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>

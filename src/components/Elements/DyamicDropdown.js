@@ -353,34 +353,34 @@ function DyanamicDropdown(props) {
 	};
 
 	const handleApiCall = async () => {
+		// console.log("originalFilteredList", originalFilteredList);
+		if (isReadOnly || originalFilteredList?.length !== 0) return;
 		setLoading(true);
 		try {
 			const response = await fetchData();
-			setFilteredList(
-				[...(response?.data || []), ...(dataSource || [])].reduce(
-					(acc, current) => {
+			setFilteredList((prev) =>
+				[...prev, ...(response?.data ?? []), ...(dataSource ?? [])]
+					.filter((x) => Boolean(x))
+					.reduce((acc, current) => {
 						const x = acc.find((item) => item.id === current.id);
 						if (!x) {
 							return acc.concat([current]);
 						} else {
 							return acc;
 						}
-					},
-					[]
-				)
+					}, [])
 			);
-			setOriginalFilteredList(
-				[...(response?.data || []), ...(dataSource || [])].reduce(
-					(acc, current) => {
+			setOriginalFilteredList((prev) =>
+				[...prev, ...(response?.data || []), ...(dataSource || [])]
+					.filter((x) => Boolean(x))
+					.reduce((acc, current) => {
 						const x = acc.find((item) => item.id === current.id);
 						if (!x) {
 							return acc.concat([current]);
 						} else {
 							return acc;
 						}
-					},
-					[]
-				)
+					}, [])
 			);
 		} catch (error) {
 			console.log(error);
@@ -401,7 +401,7 @@ function DyanamicDropdown(props) {
 				style={{ width: "100%" }}
 				onClick={(event) => {
 					handleDrpdwnClick(event);
-					!isReadOnly && originalFilteredList?.length === 0 && handleApiCall();
+					handleApiCall();
 				}}
 			>
 				<div
@@ -587,10 +587,12 @@ function DyanamicDropdown(props) {
 							""
 						)}
 						{/* scroll to load */}
-						{(loading || isLoading) && (
+						{loading || isLoading ? (
 							<div style={{ padding: "16px 10px" }}>
 								<b>Loading...</b>
 							</div>
+						) : (
+							""
 						)}
 
 						{!hasMore && (

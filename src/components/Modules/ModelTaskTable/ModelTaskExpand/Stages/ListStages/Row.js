@@ -34,13 +34,14 @@ function Row({
 	setStages,
 	siteId,
 	fetchFromDropDwn,
+	page,
+	setPage,
 }) {
 	const [state, setStates] = useState({
 		selectedAsset: {
 			name: x.siteAssetName,
 			id: x.siteAssetID,
 		},
-		page: 1,
 		selected: x.id !== null,
 	});
 	const [modelState] = useContext(ModelContext);
@@ -102,9 +103,9 @@ function Row({
 		patchAsset(asset);
 	};
 
-	const handleAssetDropPage = (p, prevData) => {
-		pageChange({ pNo: p, pSize: 10, search: "" }, prevData);
-		setState({ page: p });
+	const handleAssetDropPage = async (p, prevData) => {
+		await pageChange({ pNo: p, pSize: 10, search: "" }, prevData);
+		setPage(p);
 	};
 
 	const handleSelected = () => {
@@ -174,7 +175,7 @@ function Row({
 						selectdValueToshow="name"
 						count={searchCount || count}
 						onPageChange={handleAssetDropPage}
-						page={state.page}
+						page={page}
 						isReadOnly={
 							!state.selected ||
 							modelAccess === "R" ||

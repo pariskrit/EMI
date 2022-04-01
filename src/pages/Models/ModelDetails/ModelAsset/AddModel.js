@@ -78,7 +78,6 @@ const AddModel = ({
 		try {
 			let result = await instance.get(`/api/SiteAssets/Count?siteId=${siteID}`);
 			if (result.status) {
-				console.log(result);
 				setCount(result.data);
 			}
 		} catch (e) {
@@ -148,8 +147,8 @@ const AddModel = ({
 		setInput({ asset: {}, status: true });
 	};
 
-	const pageChange = (p, prevData) => {
-		fetchAssets(p, prevData);
+	const pageChange = async (p, prevData) => {
+		await fetchAssets(p, prevData);
 		setPage({ pageNo: p, pageSize: page.pageSize });
 	};
 
