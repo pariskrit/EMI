@@ -104,8 +104,8 @@ function Row({
 	};
 
 	const handleAssetDropPage = async (p, prevData) => {
+		setPage(() => p);
 		await pageChange({ pNo: p, pSize: 10, search: "" }, prevData);
-		setPage(p);
 	};
 
 	const handleSelected = () => {

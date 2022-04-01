@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+	useState,
+	useEffect,
+	useRef,
+	useMemo,
+	useCallback,
+} from "react";
 import { connect } from "react-redux";
 import {
 	getModelQuestions,
@@ -204,42 +210,45 @@ const ModelQuestion = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state.showPasteTask]);
 
-	const handleDragEnd = async (e) => {
-		if (!e.destination) {
-			return;
-		}
-
-		if (e.destination.index === e.source.index) return;
-
-		const result = [...data];
-		const [removed] = result.splice(e.source.index, 1);
-		result.splice(e.destination.index, 0, removed);
-		setData(result);
-
-		try {
-			let payloadBody = [
-				{
-					path: "pos",
-					op: "replace",
-					value: setPositionForPayload(e, originalQuestionList),
-				},
-			];
-			const response = await patchModelQuestions(e.draggableId, payloadBody);
-			if (!isMounted.aborted) {
-				if (response.status) {
-					const newDate = result.map((x, i) =>
-						i === e.destination.index ? { ...x, pos: response.data.pos } : x
-					);
-					setOriginalQuestionList(newDate);
-					setData(newDate);
-				} else {
-					setData(originalQuestionList);
-				}
+	const handleDragEnd = useCallback(
+		async (e) => {
+			if (!e.destination) {
+				return;
 			}
-		} catch (error) {
-			if (!isMounted.aborted) setData(originalQuestionList);
-		}
-	};
+
+			if (e.destination.index === e.source.index) return;
+
+			const result = [...data];
+			const [removed] = result.splice(e.source.index, 1);
+			result.splice(e.destination.index, 0, removed);
+			setData(result);
+
+			try {
+				let payloadBody = [
+					{
+						path: "pos",
+						op: "replace",
+						value: setPositionForPayload(e, originalQuestionList),
+					},
+				];
+				const response = await patchModelQuestions(e.draggableId, payloadBody);
+				if (!isMounted.aborted) {
+					if (response.status) {
+						const newDate = result.map((x, i) =>
+							i === e.destination.index ? { ...x, pos: response.data.pos } : x
+						);
+						setOriginalQuestionList(newDate);
+						setData(newDate);
+					} else {
+						setData(originalQuestionList);
+					}
+				}
+			} catch (error) {
+				if (!isMounted.aborted) setData(originalQuestionList);
+			}
+		},
+		[data, originalQuestionList, isMounted.aborted]
+	);
 
 	// Handle Edit Question
 	const handleEdit = (id) => {
@@ -365,6 +374,7 @@ const ModelQuestion = ({
 			<QuestionTable
 				data={data}
 				handleDragEnd={handleDragEnd}
+				disableDnd={access === "R" || state?.modelDetail?.isPublished}
 				isModelEditable={access === "F" || access === "E"}
 				rolePlural={rolePlural}
 				menuData={[
@@ -394,6 +404,7 @@ const ModelQuestion = ({
 						isDelete: true,
 					},
 				].filter((x) => {
+					if (state?.modelDetail?.isPublished) return false;
 					if (access === "F") return true;
 					if (access === "E") {
 						if (x.name === "Edit") return true;
@@ -404,7 +415,7 @@ const ModelQuestion = ({
 			/>
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, rolePlural, access]);
+	}, [data, rolePlural, access, handleDragEnd]);
 
 	if (loading) {
 		return <CircularProgress />;

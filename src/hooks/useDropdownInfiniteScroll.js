@@ -37,8 +37,8 @@ function useInfiniteScroll(
 	};
 
 	// useEffect(() => {
-	// 	scrollEvent.addEventListener("scroll", handleScroll);
-	// 	return () => scrollEvent.removeEventListener("scroll", handleScroll);
+	// 	window.addEventListener("scroll", handleScroll);
+	// 	return () => window.removeEventListener("scroll", handleScroll);
 	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	// }, []);
 
@@ -50,8 +50,8 @@ function useInfiniteScroll(
 				document.getElementById(uniqueId).offsetHeight +
 					document.getElementById(uniqueId).scrollTop
 			) -
-				document.getElementById(uniqueId).scrollHeight ===
-			1
+				document.getElementById(uniqueId).scrollHeight >=
+			0
 		) {
 			await fetchMoreData();
 		}
