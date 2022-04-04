@@ -19,6 +19,7 @@ import { showError } from "redux/common/actions";
 import ColourConstants from "helpers/colourConstants";
 import ChangeStatusPopup from "./ChangeStatusPopup";
 import withMount from "components/HOC/withMount";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -55,7 +56,14 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
+function ModelDetailContent({
+	modelId,
+	modelDefaultId,
+	state,
+	dispatch,
+	access,
+	isMounted,
+}) {
 	const classes = useStyles();
 	const [isLoading, setIsLoading] = useState(true);
 	const [modelDetailsData, setModelDetailsData] = useState({
@@ -66,6 +74,7 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 		detailDepartments: [],
 		details: [],
 	});
+
 	const { position, customCaptions } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -94,9 +103,9 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 
 	const fetchAllData = useCallback(async () => {
 		const res = await Promise.all([
-			getModelDeparments(modelId),
-			getModelNotes(modelId),
-			getModelDocuments(modelId),
+			getModelDeparments(modelDefaultId),
+			getModelNotes(modelDefaultId),
+			getModelDocuments(modelDefaultId),
 			getModelTypes(position.siteAppID),
 			getSiteDepartments(position.siteAppID),
 		]);
@@ -122,12 +131,12 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 
 		if (!isMounted.aborted) setIsLoading(false);
 	}, [
-		modelId,
 		position.siteAppID,
 		reduxDispatch,
 		changeDocumentUrl,
 		state.modelDetail,
 		isMounted,
+		modelDefaultId,
 	]);
 
 	useEffect(() => {
@@ -169,12 +178,12 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 						<Departments
 							listOfDepartment={modelDetailsData.modelDepartments}
 							customCaptions={customCaptions}
-							modelId={modelId}
+							modelId={modelDefaultId}
 							isReadOnly={isReadOnly}
 						/>
 						<Notes
 							data={modelDetailsData.modelNotes}
-							modelId={modelId}
+							modelId={modelDefaultId}
 							isReadOnly={
 								isReadOnly || state?.modelDetail?.isPublished || isEditOnly
 							}
@@ -195,7 +204,7 @@ function ModelDetailContent({ modelId, state, dispatch, access, isMounted }) {
 						/>
 						<Documents
 							classes={classes}
-							modelId={modelId}
+							modelId={modelDefaultId}
 							documents={modelDetailsData.modelDocuments}
 							isReadOnly={
 								isReadOnly || state?.modelDetail?.isPublished || isEditOnly

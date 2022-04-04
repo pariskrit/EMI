@@ -79,16 +79,30 @@ export const changeDateFormat = (date) => {
 export const isoDateWithoutTimeZone = (date) => {
 	if (date == null) return date;
 	date = new Date(date);
-	const localDateAndTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString(
-		[],
-		{
-			hour: "2-digit",
-			minute: "2-digit",
-		}
-	)}`;
+	const localDateAndTimeForMac = `${date.toLocaleDateString([], {
+		year: "2-digit",
+		day: "numeric",
+		month: "numeric",
+	})} ${date.toLocaleTimeString([], {
+		hour: "numeric",
+		minute: "2-digit",
+	})}`
+		.toString()
+		.toLocaleLowerCase();
+
+	const localDateAndTimeForWindows = `${date.toLocaleDateString([], {
+		year: "numeric",
+		day: "numeric",
+		month: "2-digit",
+	})} ${date.toLocaleTimeString([], {
+		hour: "numeric",
+		minute: "2-digit",
+	})}`;
 
 	// correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
-	return localDateAndTime;
+	return window.navigator.userAgent.indexOf("Win") !== -1
+		? localDateAndTimeForWindows
+		: localDateAndTimeForMac;
 };
 
 export const checkIfVisibleInViewPort = (el) => {

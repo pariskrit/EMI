@@ -19,6 +19,7 @@ const ModelAsset = ({
 	getError,
 	access,
 	history,
+	modelDefaultId,
 }) => {
 	const {
 		customCaptions: { asset, assetPlural, modelTemplate },
@@ -35,7 +36,7 @@ const ModelAsset = ({
 	const fetchModelAsset = async () => {
 		setLoading(true);
 		try {
-			let result = await getModelAsset(modelId);
+			let result = await getModelAsset(modelDefaultId);
 
 			if (result.status) {
 				setData(
@@ -115,7 +116,7 @@ const ModelAsset = ({
 			<AddModel
 				open={state.showAdd}
 				handleClose={handleClose}
-				modelId={modelId}
+				modelId={modelDefaultId}
 				getError={getError}
 				title={asset}
 				handleAddComplete={handleAddComplete}

@@ -16,6 +16,7 @@ const HtmlTooltip = withStyles((theme) => ({
 }))(Tooltip);
 
 const Row = ({ row, classes, onDeleteClick, isReadOnly }) => {
+	console.log(isoDateWithoutTimeZone(row.date + "Z").toString());
 	return (
 		<TableRow>
 			<TableCell className="note-field" style={{ whiteSpace: "unset" }}>
@@ -31,7 +32,7 @@ const Row = ({ row, classes, onDeleteClick, isReadOnly }) => {
 			</TableCell>
 			<TableCell style={{ width: "100px" }}>{row.name}</TableCell>
 			<TableCell style={{ width: "100px" }}>
-				{isoDateWithoutTimeZone(row.date + "Z")}
+				{isoDateWithoutTimeZone(row.date + "Z").toString()}
 			</TableCell>
 
 			{isReadOnly ? null : (

@@ -208,7 +208,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 					dataCount={state?.modelDetail?.intervalCount}
 					description={`Allocate ${intervalPlural} for this ${modelTemplate}`}
 				/>
-				{isReadOnly ? null : (
+				{isReadOnly || state?.modelDetail?.isPublished ? null : (
 					<div
 						style={{
 							display: "flex",

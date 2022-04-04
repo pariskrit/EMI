@@ -79,7 +79,7 @@ const TaskDetails = ({
 
 	const [modelState] = useContext(ModelContext);
 	const {
-		modelDetail: { id, isPublished },
+		modelDetail: { id, modelID: modelDefaultId, isPublished },
 	} = modelState;
 
 	const {
@@ -580,7 +580,7 @@ const TaskDetails = ({
 					</ADD.InputContainer>
 					<ADD.InputContainer>
 						<TaskDetailNotes
-							modelId={id}
+							modelId={modelDefaultId}
 							taskGroupId={taskInfo?.taskGroupID}
 							taskId={taskInfo?.id}
 							customCaptions={customCaptions}

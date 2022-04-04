@@ -78,6 +78,7 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 					modelId={id}
 					access={access}
 					history={route.history}
+					modelDefaultId={state?.modelDetail?.modelID}
 				/>
 			}
 		</div>

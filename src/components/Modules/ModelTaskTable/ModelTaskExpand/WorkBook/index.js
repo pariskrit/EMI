@@ -42,6 +42,8 @@ const WorkBook = ({ taskInfo, access }) => {
 
 	// update field on blur event
 	const handleBlurEditor = async (_, __, editor, fieldName) => {
+		if (readOnly || state?.modelDetail?.isPublished) return;
+
 		const textEditorContent = editor.getHTML();
 
 		if (localTaskInfo[fieldName] === textEditorContent) return;
