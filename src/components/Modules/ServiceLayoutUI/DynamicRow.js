@@ -51,12 +51,13 @@ function DynamicRow({
 		};
 		if (firstRender) autoExpandRows();
 	}, [rowData, firstRender]);
+
 	return (
 		<Droppable
 			droppableId={
 				rowData?.parentId
-					? `droppable_${rowData?.name}_${rowData.parentId}`
-					: `droppable_${rowData?.name}`
+					? `droppable_${rowData?.rowName}_${rowData.parentId}`
+					: `droppable_${rowData?.rowName}`
 			}
 			type={rowData?.name}
 		>

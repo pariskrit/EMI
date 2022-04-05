@@ -31,6 +31,7 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { useHistory } from "react-router-dom";
 import withMount from "components/HOC/withMount";
+import { ContactSupportOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles({
 	dragDropContainer: {
@@ -229,15 +230,18 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		const indexOfFirstTask = totalList.findIndex(
 			(task) => task.value.type === "task"
 		);
+		const tempList2 = destination.index < list.length - 1 ? list : totalList;
+
 		let result =
-			(list[destination.index]?.value.pos +
-				list[destination.index - 1]?.value.pos) /
+			(tempList2[destination.index]?.value.pos +
+				tempList2[destination.index - 1]?.value.pos) /
 			2;
 		if (
-			destination.index === list.length - 1 ||
-			destination.index === totalList.length - 1
+			destination.index === totalList.length - 1 ||
+			destination.index === list.length - 1
 		) {
 			const tempList = destination.index === list.length - 1 ? list : totalList;
+
 			result = tempList[destination.index]?.value.pos + 1024;
 			return checkIfPosAreadyExists(
 				positions,
@@ -259,14 +263,12 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		}
 
 		if (destination.index > source.index) {
+			const tempList = destination.index < list.length - 1 ? list : totalList;
+
 			result =
-				(totalList[destination.index]?.value.pos +
-					totalList[destination.index + 1]?.value.pos) /
+				(tempList[destination.index]?.value.pos +
+					tempList[destination.index + 1]?.value.pos) /
 				2;
-			console.log(
-				totalList[destination.index]?.value.pos,
-				totalList[destination.index + 1]?.value.pos
-			);
 
 			return checkIfPosAreadyExists(
 				positions,
@@ -351,7 +353,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			return;
 		}
 		const tempData = [...allServiceLayoutData];
-
 		// Reorder start service questions
 		if (result.source.droppableId === "droppable_startQuestions") {
 			const updatedState = reorder(
@@ -403,7 +404,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			let filteredTasks = selectedStage.children.value.filter(
 				(data) => data.value.type === "task"
 			);
-
 			let questionsAndTasks = [...filteredQuestions, ...filteredTasks];
 			/// to allow drag and drop to questions list only or tasks list only.
 			if (
@@ -413,6 +413,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					result.destination.index > filteredQuestions.length - 1 &&
 					result.destination.index < questionsAndTasks.length)
 			) {
+				const totalList = [...selectedStage.children.value];
 				selectedStage.children.value = reorder(
 					selectedStage.children.value,
 					result.source.index,
@@ -422,7 +423,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				updateTree(
 					result,
 					dragItemType === "question" ? filteredQuestions : filteredTasks,
-					selectedStage.children.value,
+					totalList,
 					dragItemType === "question" ? patchQuestions : patchTaskStages
 				);
 				const updatedTempData = {
@@ -447,11 +448,15 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 			/// to allow drag and drop task item to tasks list only.
 			if (result.destination.index < filteredTasks.length) {
+				const totalList = [...selectedStage.children.value];
+
 				selectedStage.children.value = reorder(
 					selectedStage.children.value,
 					result.source.index,
 					result.destination.index
 				);
+
+				updateTree(result, filteredTasks, totalList, patchTaskStages);
 				const updatedTempData = {
 					...tempData[1],
 					value: { ...tempData[1] }.value.map((stage) =>
@@ -459,12 +464,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					),
 				};
 				setAllServiceLayoutData([tempData[0], updatedTempData, tempData[2]]);
-				updateTree(
-					result,
-					filteredTasks,
-					selectedStage.children.value,
-					patchTaskStages
-				);
 			}
 		}
 		// Reorder questions and tasks of a zone
@@ -495,6 +494,8 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				(dragItemType === "task" &&
 					result.destination.index > filteredQuestions.length - 1)
 			) {
+				const totalList = [...selectedZone.children.value];
+
 				selectedZone.children.value = reorder(
 					selectedZone.children.value,
 					result.source.index,
@@ -513,7 +514,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				updateTree(
 					result,
 					dragItemType === "question" ? filteredQuestions : filteredTasks,
-					selectedZone.children.value,
+					totalList,
 					dragItemType === "question" ? patchQuestions : patchTaskZones
 				);
 				const updatedTempData = {
@@ -525,7 +526,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				setAllServiceLayoutData([tempData[0], updatedTempData, tempData[2]]);
 			}
 		}
-
 		//if the list contains only tasks or questions
 		if (result.type === "tasks" || result.type === "questions") {
 			const apiFunctions = {
@@ -597,6 +597,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				{ ...tempData[1] },
 				result
 			);
+			console.log(updatedServiceData);
 
 			setAllServiceLayoutData([tempData[0], updatedServiceData, tempData[2]]);
 		}

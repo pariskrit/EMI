@@ -2,6 +2,7 @@ import questionIcon from "assets/question.png";
 import stageIcon from "assets/stage.png";
 import zoneIcon from "assets/zone.png";
 import taskIcon from "assets/task.png";
+import { ContactSupportOutlined } from "@material-ui/icons";
 
 export const reorder = (list, startIndex, endIndex) => {
 	const result = Array.from(list);
@@ -31,7 +32,7 @@ export const modifyResponseData = (
 		const field = {
 			id: "" + id,
 			parentId: 0,
-
+			rowName: property,
 			name: property,
 			value: changedData[property].map((value) => {
 				sn += 1;
@@ -78,9 +79,12 @@ export const getUpdatedServiceLayoutAfterDragAndDrop = (data, result) => {
 			  result.draggableId.split("_")[3] !== "undefined"
 			? +result.draggableId.split("_")[3]
 			: +result.draggableId.split("_")[2];
+	const uniqueId = `${result.destination.droppableId.split("_")[1]}${parentId}`;
+
 	tempMainData.value.forEach((stage) => {
+		const stageId = `${stage.children.rowName}${stage.children.parentId}`;
 		//if the children id and the draggable element's id is same then reorder the children array
-		if (stage.children.parentId === parentId) {
+		if (stageId === uniqueId) {
 			stage.children.value = reorder(
 				stage.children.value,
 				result.source.index,
@@ -162,7 +166,7 @@ export const getDataType = (
 			taskIdToHighlight: taskId,
 			questionIdToHighlight: questionId,
 			taskQuestionIdToHighlight: taskQuestionId,
-
+			rowName: data?.name,
 			arrayData: [
 				...data.questions.map((question) => {
 					sn += 1;
@@ -210,10 +214,10 @@ export const getDataType = (
 	}
 	if (hasQuestions && hasTasks) {
 		return {
-			id: data.modelVersionStageID || data.id,
+			id: data.id || data.modelVersionStageID,
 			marginLeft: data.marginLeft ?? 0,
 			taskQuestionIdToHighlight: taskQuestionId,
-
+			rowName: data?.name,
 			arrayData: [
 				...data.questions.map((question) => {
 					sn += 1;
@@ -250,7 +254,7 @@ export const getDataType = (
 				}),
 			],
 			type:
-				data.type === "zones"
+				data.type === "zone"
 					? "zoneQuestionsAndTasks"
 					: "stageQuestionsAndTasks",
 		};
@@ -260,12 +264,11 @@ export const getDataType = (
 		return {
 			id: data.modelVersionStageID || data.id,
 			hideTaskQuestions,
+			rowName: data?.name,
 			marginLeft: 0,
 			taskIdToHighlight: taskId,
 			questionIdToHighlight: questionId,
-
 			taskQuestionIdToHighlight: taskQuestionId,
-
 			arrayData: [
 				...data.tasks.map((task) => {
 					sn += 1;
@@ -303,12 +306,11 @@ export const getDataType = (
 		return {
 			id: data.modelVersionStageID || data.id,
 			hideTaskQuestions,
+			rowName: data?.name,
 			marginLeft: 0,
 			taskIdToHighlight: taskId,
 			questionIdToHighlight: questionId,
-
 			taskQuestionIdToHighlight: taskQuestionId,
-
 			arrayData: [
 				...data.questions.map((question) => {
 					sn += 1;
@@ -341,14 +343,13 @@ export const getDataType = (
 
 	if (hasZones) {
 		return {
-			id: data.id,
+			id: data.modelVersionStageID || data.id,
 			hideTaskQuestions,
+			rowName: data?.name,
 			marginLeft: data.marginLeft ?? 0,
 			taskIdToHighlight: taskId,
 			questionIdToHighlight: questionId,
-
 			taskQuestionIdToHighlight: taskQuestionId,
-
 			arrayData: [
 				...data.zones.map((zone) => {
 					sn += 1;
@@ -372,7 +373,7 @@ export const getDataType = (
 			id: data.modelVersionStageID || data.id,
 			marginLeft: data.marginLeft ?? 0,
 			questionIdToHighlight: questionId,
-
+			rowName: data?.name,
 			taskQuestionIdToHighlight: taskQuestionId,
 
 			arrayData: [
@@ -401,6 +402,7 @@ export const getDataType = (
 		return {
 			id: data.modelVersionStageID || data.id,
 			marginLeft: data.marginLeft ?? 0,
+			rowName: data?.name,
 			parentId: data?.parentId ?? null,
 			arrayData: [
 				...data.questions.map((question) => {
@@ -440,6 +442,7 @@ export const getFields = (data) => {
 
 	return {
 		parentId: data.id,
+		rowName: data.rowName,
 		childId: data.childId,
 		name: data.type,
 		marginLeft: 15 + data.marginLeft,

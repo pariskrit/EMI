@@ -170,7 +170,7 @@ const Notes = ({ data, modelId, isReadOnly }) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{notes.map((row) => (
+						{notes?.map((row) => (
 							<NoteRow
 								key={row.id}
 								row={row}
