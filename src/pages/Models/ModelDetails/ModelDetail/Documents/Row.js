@@ -32,7 +32,7 @@ const Row = ({ row, classes, onDeleteClick, isReadOnly }) => {
 			</TableCell>
 			<TableCell style={{ width: "100px" }}>{row.name}</TableCell>
 			<TableCell style={{ width: "100px" }}>
-				{isoDateWithoutTimeZone(row.date + "Z").toString()}
+				{isoDateWithoutTimeZone(row.date + "Z")}
 			</TableCell>
 
 			{isReadOnly ? null : (
