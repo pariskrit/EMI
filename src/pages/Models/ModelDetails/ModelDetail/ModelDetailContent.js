@@ -193,7 +193,7 @@ function ModelDetailContent({
 						<Settings
 							data={modelDetailsData?.details}
 							customCaptions={customCaptions}
-							isReadOnly={isReadOnly}
+							isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
 						/>
 						<ModelImage
 							imageUrl={modelDetailsData?.details?.imageURL}

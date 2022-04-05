@@ -230,17 +230,17 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		const indexOfFirstTask = totalList.findIndex(
 			(task) => task.value.type === "task"
 		);
-		const tempList2 = destination.index < list.length - 1 ? list : totalList;
+		let tempList = destination.index < list.length - 1 ? list : totalList;
 
 		let result =
-			(tempList2[destination.index]?.value.pos +
-				tempList2[destination.index - 1]?.value.pos) /
+			(tempList[destination.index]?.value.pos +
+				tempList[destination.index - 1]?.value.pos) /
 			2;
 		if (
 			destination.index === totalList.length - 1 ||
 			destination.index === list.length - 1
 		) {
-			const tempList = destination.index === list.length - 1 ? list : totalList;
+			tempList = destination.index === list.length - 1 ? list : totalList;
 
 			result = tempList[destination.index]?.value.pos + 1024;
 			return checkIfPosAreadyExists(
@@ -251,7 +251,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			);
 		}
 		if (destination.index === 0 || destination.index === indexOfFirstTask) {
-			const tempList = destination.index === 0 ? list : totalList;
+			tempList = destination.index === 0 ? list : totalList;
 
 			result = tempList[destination.index]?.value.pos - 1024;
 			return checkIfPosAreadyExists(
@@ -263,7 +263,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		}
 
 		if (destination.index > source.index) {
-			const tempList = destination.index < list.length - 1 ? list : totalList;
+			tempList = destination.index < list.length - 1 ? list : totalList;
 
 			result =
 				(tempList[destination.index]?.value.pos +
@@ -597,7 +597,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				{ ...tempData[1] },
 				result
 			);
-			console.log(updatedServiceData);
 
 			setAllServiceLayoutData([tempData[0], updatedServiceData, tempData[2]]);
 		}
