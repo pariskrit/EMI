@@ -131,7 +131,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				hideTaskQuestions
 			);
 			setAllServiceLayoutData(modifiedResponse);
-			setPositions(storePositions(modifiedResponse));
 			setCounts({
 				zoneCount: response.data.zoneCount,
 				stageCount: response.data.stageCount,
