@@ -16,7 +16,6 @@ const HtmlTooltip = withStyles((theme) => ({
 }))(Tooltip);
 
 const Row = ({ row, classes, onDeleteClick, isReadOnly }) => {
-	console.log(isoDateWithoutTimeZone(row.date + "Z").toString());
 	return (
 		<TableRow>
 			<TableCell className="note-field" style={{ whiteSpace: "unset" }}>

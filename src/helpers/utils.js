@@ -1,3 +1,5 @@
+import { changeDate } from "./date";
+
 export const handleSort = (
 	currentState,
 	stateSetter,
@@ -76,21 +78,24 @@ export const changeDateFormat = (date) => {
 	return `${newDate[1]}/${newDate[2]}/${newDate[0]} ${time[0]}`;
 };
 
+export function formatAMPM(date) {
+	let hours = date.getHours();
+	let minutes = date.getMinutes();
+	let ampm = hours >= 12 ? "PM" : "AM";
+	hours = hours % 12;
+	hours = hours ? hours : 12; // the hour '0' should be '12'
+	hours = hours < 10 ? "0" + hours : hours;
+	minutes = minutes < 10 ? "0" + minutes : minutes;
+	let strTime = hours + ":" + minutes + " " + ampm;
+	return strTime;
+}
+
 export const isoDateWithoutTimeZone = (date) => {
 	if (date == null) return date;
 	date = new Date(date);
 
-	const localDateAndTimeForWindows = `${date.toLocaleDateString("es-au", {
-		year: "numeric",
-		day: "2-digit",
-		month: "2-digit",
-	})} ${date.toLocaleTimeString([], {
-		hour: "2-digit",
-		minute: "2-digit",
-	})}`;
-
-	// correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
-	return localDateAndTimeForWindows;
+	const localDateAndTime = `${changeDate(date)} ${formatAMPM(date)}`;
+	return localDateAndTime;
 };
 
 export const checkIfVisibleInViewPort = (el) => {
