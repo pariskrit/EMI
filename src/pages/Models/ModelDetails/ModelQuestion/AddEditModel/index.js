@@ -266,7 +266,7 @@ const AddEditModel = ({
 				handleOptions({
 					...questionDetail,
 					roles: [
-						...roles,
+						...questionDetail.roles,
 						{
 							id: result.data,
 							name: role.name,

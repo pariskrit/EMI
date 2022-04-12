@@ -95,20 +95,12 @@ function apiResponse(d) {
 				</span>
 			) : d.type === "C" || d.type === "O" ? (
 				<>
-					<HtmlTooltip
-						title={d?.options
-							.sort((a, b) => a.name.localeCompare(b.name))
-							.map((a) => a.name)
-							.join(", ")}
-					>
+					<HtmlTooltip title={d?.options.map((a) => a.name).join(", ")}>
 						<p className="max-two-line">
 							<span>
 								{" "}
 								<strong>Options : </strong>&nbsp;
-								{d?.options
-									.sort((a, b) => a.name.localeCompare(b.name))
-									.map((a) => a.name)
-									.join(", ")}
+								{d?.options.map((a) => a.name).join(", ")}
 							</span>
 						</p>
 					</HtmlTooltip>
