@@ -142,7 +142,7 @@ const UserTable = ({
 									<AT.CellContainer key={col}>
 										<AT.TableBodyText>{row[col]}</AT.TableBodyText>
 
-										{arr.length === i + 1 && access !== "R" ? (
+										{arr.length === i + 1 ? (
 											<AT.DotMenu
 												onClick={(e) => {
 													setAnchorEl(
@@ -171,7 +171,7 @@ const UserTable = ({
 													}}
 													menuData={[
 														{
-															name: "Edit",
+															name: access === "R" ? "View" : "Edit",
 															handler: () => {
 																history.push(
 																	`${modelsPath}/${row.devModelVersionID}`
@@ -196,7 +196,30 @@ const UserTable = ({
 															handler: handleDeleteDialogOpen,
 															isDelete: true,
 														},
-													]}
+													].filter((x) => {
+														if (access === "F") return true;
+														if (access === "E") {
+															if (
+																x.name === "Edit" ||
+																x.name === "View" ||
+																x.name === "View Version"
+															) {
+																return true;
+															} else {
+																return false;
+															}
+														}
+														if (access === "R") {
+															if (
+																x.name === "Edit" ||
+																x.name === "View" ||
+																x.name === "View Version"
+															)
+																return true;
+															else return false;
+														}
+														return false;
+													})}
 												/>
 											</AT.DotMenu>
 										) : null}
