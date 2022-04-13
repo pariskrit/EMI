@@ -76,6 +76,7 @@ const ModelWrapper = ({
 	}
 
 	const [modelDetail] = useContext(ModelContext);
+	console.log(modelDetail?.modelDetail);
 	return (
 		<div className="container">
 			<div className={"topContainerCustomCaptions"}>
@@ -84,7 +85,15 @@ const ModelWrapper = ({
 					lastSaved={lastSaved}
 					staticCrumbs={[
 						{ id: 1, name: "Models", url: modelsPath },
-						{ id: 2, name: modelDetail?.modelDetail?.name },
+						{
+							id: 2,
+							name:
+								modelDetail.modelDetail?.modelName !== null
+									? modelDetail?.modelDetail?.name +
+									  " " +
+									  modelDetail.modelDetail?.modelName
+									: modelDetail?.modelDetail?.name + " ",
+						},
 					]}
 					hideLastLogin
 					state={state}

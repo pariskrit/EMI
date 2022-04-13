@@ -227,7 +227,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			setPasting(true);
 			const pasteTask = async () => {
 				try {
-					const taskId = sessionStorage.getItem("task");
+					const taskId = localStorage.getItem("task");
 					const task = JSON.parse(taskId);
 					const response = await pasteModelTask(modelId, {
 						ModelVersionTaskID: +task.modelTaskId,
@@ -271,7 +271,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						}, 500);
 					} else {
 						reduxDispatch(
-							showError(response?.data?.title || "something went wrong")
+							showError(response?.data?.detail || "something went wrong")
 						);
 					}
 				} catch (error) {
@@ -301,7 +301,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	useEffect(() => {
 		const checkcopyQuestionStatus = async () => {
 			try {
-				const taskId = sessionStorage.getItem("task");
+				const taskId = localStorage.getItem("task");
 
 				if (JSON.parse(taskId).fromTask) {
 					dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
@@ -331,7 +331,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	};
 
 	const handleCopy = (modelTaskId) => {
-		sessionStorage.setItem(
+		localStorage.setItem(
 			"task",
 			JSON.stringify({ fromTask: true, modelTaskId })
 		);

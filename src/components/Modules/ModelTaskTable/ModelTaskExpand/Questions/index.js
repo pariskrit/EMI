@@ -220,14 +220,14 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	// HANDLE COPY AND PASTE
 	const handleCopy = (id) => {
 		setQuestionId(id);
-		sessionStorage.setItem("taskquestion", id);
+		localStorage.setItem("taskquestion", id);
 		setModel((th) => ({ ...th, copy: true }));
 	};
 
 	const handlePaste = async () => {
 		setLoading((th) => ({ ...th, loader: true }));
 		try {
-			const taskQuestionId = sessionStorage.getItem("taskquestion");
+			const taskQuestionId = localStorage.getItem("taskquestion");
 			let result = await pasteModelTaskQuestion(taskInfo.id, {
 				modelVersionTaskQuestionID: taskQuestionId,
 			});
@@ -249,7 +249,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	useEffect(() => {
 		const checkcopyQuestionStatus = async () => {
 			try {
-				const questionTaskId = sessionStorage.getItem("taskquestion");
+				const questionTaskId = localStorage.getItem("taskquestion");
 
 				if (questionTaskId) {
 					setModel((th) => ({ ...th, copy: true }));

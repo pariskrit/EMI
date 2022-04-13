@@ -238,7 +238,7 @@ function AddEditModel({
 				<ADD.InputContainer>
 					<ADD.LeftInputContainer>
 						<ADD.NameLabel>
-							Question Caption<ADD.RequiredStar>*</ADD.RequiredStar>
+							Caption<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.caption === null ? false : true}

@@ -19,8 +19,9 @@ const ADD = AddDialogStyle();
 const schema = yup.object({
 	qty: yup
 		.number("This field must be a number")
-		.typeError("This field is required")
+		.integer("This field must be a integer")
 		.moreThan(0.9999, "Must be equal to 1 or greater")
+		.typeError("This field is required and must be a integer value")
 		.required("This field is required"),
 	name: yup
 		.string("This field must be string")

@@ -541,8 +541,8 @@ function DyanamicDropdown(props) {
 															}
 															changeHandler={() => {
 																checklistChangeHandler(list.id, list[col.name]);
-																removeActiveDropdown();
-																setDropActive(false);
+																// removeActiveDropdown();
+																// setDropActive(false);
 															}}
 														/>
 														{list[col.name]}

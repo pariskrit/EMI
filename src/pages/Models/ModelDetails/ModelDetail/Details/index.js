@@ -75,10 +75,16 @@ function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 
 		setApiStatus({ ...apiStatus, [inputName]: "idle" });
 
-		if (inputName === "name" && response.status) {
+		if (
+			(response.status && inputName === "name") ||
+			(response.status && inputName === "modelName")
+		) {
 			Ctxdispatch({
 				type: "TAB_COUNT",
-				payload: { countTab: "name", data: value },
+				payload: {
+					countTab: inputName === "name" ? "name" : "modelName",
+					data: value,
+				},
 			});
 		}
 		setInputChanged({});

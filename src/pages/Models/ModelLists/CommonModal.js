@@ -45,7 +45,7 @@ const useStyles = makeStyles({
 		width: 500,
 	},
 	createButton: {
-		width: "auto",
+		// width: "auto",
 	},
 });
 
@@ -59,7 +59,7 @@ const defaultErrorSchema = {
 };
 const defaultStateSchema = {
 	name: "",
-	model: null,
+	model: "",
 	type: {},
 	location: {},
 	modelTemplateType: null,
@@ -125,11 +125,12 @@ function AddNewModelDetail({
 
 	useEffect(() => {
 		if (data) {
-			setInput({
+			setInput(() => ({
 				...data,
 				type: { label: data.modelType, value: 0 },
 				location: { label: data.locationName, value: 0 },
-			});
+				model: data.modelName,
+			}));
 		}
 	}, [data]);
 
@@ -173,7 +174,7 @@ function AddNewModelDetail({
 
 				if (newData.status) {
 					// setIsUpdating(false);
-					history.push(`${modelsPath}/${newData.data.modelID}`);
+					history.push(`${modelsPath}/${newData?.data?.modelVersionID}`);
 				} else {
 					setIsUpdating(false);
 
@@ -182,7 +183,7 @@ function AddNewModelDetail({
 							show: true,
 							message:
 								newData?.data?.detail ||
-								newData?.data?.errors?.type[0] ||
+								newData?.data?.errors?.type?.[0] ||
 								"Could not add model.",
 							severity: "error",
 						})
@@ -208,15 +209,15 @@ function AddNewModelDetail({
 		const newData = await createProcessHandler();
 
 		if (newData.status) {
-			history.push(`${modelsPath}/${newData.data.modelID}`);
+			history.push(`${modelsPath}/${newData.data.modelVersionID}`);
 		} else {
 			console.log(newData);
 			dispatch(
 				showNotications({
 					show: true,
 					message:
-						newData?.data?.errors?.modelId[0] ||
-						newData?.data?.errors?.modelVersionId[0] ||
+						newData?.data?.errors?.modelId?.[0] ||
+						newData?.data?.errors?.modelVersionId?.[0] ||
 						newData?.data?.detail ||
 						"Could not duplicate model.",
 					severity: "error",
@@ -234,7 +235,7 @@ function AddNewModelDetail({
 				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
-				className="application-dailog"
+				className="medium-application-dailog"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
@@ -257,7 +258,7 @@ function AddNewModelDetail({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{title}
+								{isDuplicate ? "Duplicate" : title}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>

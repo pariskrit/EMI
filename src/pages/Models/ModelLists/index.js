@@ -211,7 +211,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 				closeHandler={() => setOpenDuplicateModal(false)}
 				siteId={position?.siteAppID}
 				data={duplicateModalData}
-				title="Duplicate Model"
+				title={"Duplicate " + customCaptions?.modelTemplate}
 				createProcessHandler={onDuplicateModal}
 				isDuplicate
 			/>

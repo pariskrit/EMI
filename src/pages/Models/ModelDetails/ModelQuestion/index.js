@@ -180,7 +180,7 @@ const ModelQuestion = ({
 					// };
 					// await navigator.permissions.query(queryOpts);
 					// const questionText = await navigator.clipboard.readText();
-					const questionText = sessionStorage.getItem("question");
+					const questionText = localStorage.getItem("question");
 
 					const question = JSON.parse(questionText);
 
@@ -288,7 +288,7 @@ const ModelQuestion = ({
 		// navigator.clipboard.writeText(
 		// 	JSON.stringify({ fromQuestion: true, copiedData })
 		// );
-		sessionStorage.setItem(
+		localStorage.setItem(
 			"question",
 			JSON.stringify({ fromQuestion: true, copiedData })
 		);
@@ -305,7 +305,7 @@ const ModelQuestion = ({
 				// };
 				// await navigator.permissions.query(queryOpts);
 				// const questionText = await navigator.clipboard.readText();
-				const questionText = sessionStorage.getItem("question");
+				const questionText = localStorage.getItem("question");
 
 				if (JSON.parse(questionText).fromQuestion) {
 					dispatch({ type: "DISABLE_QUESTION_TASK", payload: false });

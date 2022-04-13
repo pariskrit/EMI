@@ -20,6 +20,7 @@ import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { ModelContext } from "contexts/ModelDetailContext";
+import { getFormattedLink } from "helpers/utils";
 
 const AT = ActionButtonStyle();
 
@@ -45,20 +46,26 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 			if (response.status) {
 				if (!isMounted.aborted) {
 					setAttachments(
-						response?.data?.map((a) => ({
-							...a,
-							name: (
-								<Link
-									style={{ color: ColourConstants.activeLink }}
-									href={a?.documentURL || a?.link}
-									download={a?.name}
-									target="_blank"
-									rel="noopener"
-								>
-									{a?.name}
-								</Link>
-							),
-						}))
+						response?.data?.map((a) => {
+							return {
+								...a,
+								name: (
+									<Link
+										style={{ color: ColourConstants.activeLink }}
+										href={
+											a?.documentKey !== null
+												? a?.documentURL
+												: getFormattedLink(a?.link)
+										}
+										download={a?.name}
+										target="_blank"
+										rel="noopener"
+									>
+										{a?.name}
+									</Link>
+								),
+							};
+						})
 					);
 					setOriginalAttachments(
 						response?.data?.map((a) => ({

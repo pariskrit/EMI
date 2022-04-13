@@ -109,3 +109,11 @@ export const checkIfVisibleInViewPort = (el) => {
 	}
 	return false;
 };
+
+export const getFormattedLink = (link) => {
+	let formattedlink = link?.trim();
+	if (!/^https?:\/\//i.test(link)) {
+		formattedlink = "https://" + link;
+	}
+	return formattedlink;
+};
