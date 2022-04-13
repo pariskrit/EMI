@@ -15,9 +15,11 @@ const ADD = AddDialogStyle();
 const useStyles = makeStyles({
 	WorkBookContainer: {
 		margin: 20,
+		display: "flex",
+		gap: "20px",
 	},
 	inputContainer: {
-		marginBottom: 50,
+		marginBottom: 20,
 	},
 });
 
@@ -81,28 +83,58 @@ const WorkBook = ({ taskInfo, access }) => {
 	return (
 		<div className={classes.WorkBookContainer}>
 			<Grid container spacing={2}>
-				{workbookFields(customCaptions).map((field) => {
-					return (
-						<Grid item lg={6} md={6} xs={12} key={field.id}>
-							<div className={classes.inputContainer}>
-								<ADD.NameLabel>{field.label}</ADD.NameLabel>
-								<TextEditor
-									id={field.id}
-									readOnly={
-										readOnly ||
-										isUpdating?.[field.name] ||
-										state?.modelDetail?.isPublished
-									}
-									value={localTaskInfo[field.name]}
-									name={field.name}
-									onBlur={(range, source, editor) =>
-										handleBlurEditor(range, source, editor, field.name)
-									}
-								/>
-							</div>
-						</Grid>
-					);
-				})}
+				<Grid item lg={6} md={6} xs={12}>
+					{workbookFields(customCaptions).map((field, i) => {
+						if (i % 2 === 0)
+							return (
+								<Grid item lg={12} md={12} xs={12} key={field.id}>
+									<div className={classes.inputContainer}>
+										<ADD.NameLabel>{field.label}</ADD.NameLabel>
+										<TextEditor
+											id={field.id}
+											readOnly={
+												readOnly ||
+												isUpdating?.[field.name] ||
+												state?.modelDetail?.isPublished
+											}
+											value={localTaskInfo[field.name]}
+											name={field.name}
+											onBlur={(range, source, editor) =>
+												handleBlurEditor(range, source, editor, field.name)
+											}
+										/>
+									</div>
+								</Grid>
+							);
+						return null;
+					})}
+				</Grid>
+				<Grid item lg={6} md={6} xs={12}>
+					{workbookFields(customCaptions).map((field, i) => {
+						if (i % 2 !== 0)
+							return (
+								<Grid item lg={12} md={12} xs={12} key={field.id}>
+									<div className={classes.inputContainer}>
+										<ADD.NameLabel>{field.label}</ADD.NameLabel>
+										<TextEditor
+											id={field.id}
+											readOnly={
+												readOnly ||
+												isUpdating?.[field.name] ||
+												state?.modelDetail?.isPublished
+											}
+											value={localTaskInfo[field.name]}
+											name={field.name}
+											onBlur={(range, source, editor) =>
+												handleBlurEditor(range, source, editor, field.name)
+											}
+										/>
+									</div>
+								</Grid>
+							);
+						return null;
+					})}
+				</Grid>
 			</Grid>
 		</div>
 	);
