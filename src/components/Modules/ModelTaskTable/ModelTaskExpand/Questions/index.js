@@ -246,19 +246,29 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 		}
 	};
 
-	useEffect(() => {
-		const checkcopyQuestionStatus = async () => {
-			try {
-				const questionTaskId = localStorage.getItem("taskquestion");
+	const checkcopyQuestionStatus = async () => {
+		try {
+			const questionTaskId = localStorage.getItem("taskquestion");
 
-				if (questionTaskId) {
-					setModel((th) => ({ ...th, copy: true }));
-				}
-			} catch (error) {
-				return;
+			if (questionTaskId) {
+				setModel((th) => ({ ...th, copy: true }));
 			}
-		};
+		} catch (error) {
+			return;
+		}
+	};
+
+	const visibilitychangeCheck = function () {
+		if (!document.hidden) {
+			checkcopyQuestionStatus();
+		}
+	};
+
+	useEffect(() => {
 		checkcopyQuestionStatus();
+		document.addEventListener("visibilitychange", visibilitychangeCheck);
+		return () =>
+			document.removeEventListener("visibilitychange", visibilitychangeCheck);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

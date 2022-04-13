@@ -296,25 +296,29 @@ const ModelQuestion = ({
 		dispatch({ type: "DISABLE_QUESTION_TASK", payload: false });
 	};
 
-	useEffect(() => {
-		const checkcopyQuestionStatus = async () => {
-			try {
-				// const queryOpts = {
-				// 	name: "clipboard-read",
-				// 	allowWithoutGesture: true,
-				// };
-				// await navigator.permissions.query(queryOpts);
-				// const questionText = await navigator.clipboard.readText();
-				const questionText = localStorage.getItem("question");
+	const checkcopyQuestionStatus = async () => {
+		try {
+			const questionText = localStorage.getItem("question");
 
-				if (JSON.parse(questionText).fromQuestion) {
-					dispatch({ type: "DISABLE_QUESTION_TASK", payload: false });
-				}
-			} catch (error) {
-				return;
+			if (JSON.parse(questionText).fromQuestion) {
+				dispatch({ type: "DISABLE_QUESTION_TASK", payload: false });
 			}
-		};
+		} catch (error) {
+			return;
+		}
+	};
+
+	const visibilitychangeCheck = function () {
+		if (!document.hidden) {
+			checkcopyQuestionStatus();
+		}
+	};
+
+	useEffect(() => {
 		checkcopyQuestionStatus();
+		document.addEventListener("visibilitychange", visibilitychangeCheck);
+		return () =>
+			document.removeEventListener("visibilitychange", visibilitychangeCheck);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

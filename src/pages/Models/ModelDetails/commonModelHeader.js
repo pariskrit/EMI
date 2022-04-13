@@ -76,7 +76,6 @@ const ModelWrapper = ({
 	}
 
 	const [modelDetail] = useContext(ModelContext);
-	console.log(modelDetail?.modelDetail);
 	return (
 		<div className="container">
 			<div className={"topContainerCustomCaptions"}>

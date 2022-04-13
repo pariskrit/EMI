@@ -298,19 +298,29 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		perPage,
 	]);
 
-	useEffect(() => {
-		const checkcopyQuestionStatus = async () => {
-			try {
-				const taskId = localStorage.getItem("task");
+	const checkcopyQuestionStatus = async () => {
+		try {
+			const taskId = localStorage.getItem("task");
 
-				if (JSON.parse(taskId).fromTask) {
-					dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
-				}
-			} catch (error) {
-				return;
+			if (JSON.parse(taskId).fromTask) {
+				dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
 			}
-		};
+		} catch (error) {
+			return;
+		}
+	};
+
+	const visibilitychangeCheck = function () {
+		if (!document.hidden) {
+			checkcopyQuestionStatus();
+		}
+	};
+
+	useEffect(() => {
 		checkcopyQuestionStatus();
+		document.addEventListener("visibilitychange", visibilitychangeCheck);
+		return () =>
+			document.removeEventListener("visibilitychange", visibilitychangeCheck);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
