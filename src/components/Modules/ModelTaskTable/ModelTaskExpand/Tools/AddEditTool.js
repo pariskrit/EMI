@@ -195,7 +195,7 @@ function AddOrEditTool({
 								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
-								type="number"
+								type="text"
 								autoFocus
 							/>
 						</ADD.LeftInputContainer>
