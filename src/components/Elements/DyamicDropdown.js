@@ -393,7 +393,9 @@ function DyanamicDropdown(props) {
 		<div
 			className="dropdown"
 			style={
-				disabled ? { pointerEvents: "none", opacity: "0.4" } : { width: width }
+				disabled
+					? { pointerEvents: "none", opacity: hasCheckBoxList ? "1" : "0.4" }
+					: { width: width }
 			}
 		>
 			<div
@@ -544,6 +546,7 @@ function DyanamicDropdown(props) {
 																// removeActiveDropdown();
 																// setDropActive(false);
 															}}
+															disabled={disabled}
 														/>
 														{list[col.name]}
 													</ADD.CheckboxLabel>

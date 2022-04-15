@@ -14,6 +14,7 @@ import ProtectedLogin from "components/HOC/ProtectedLogin";
 import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "pages/ResetPassword/ResetPassword";
 import RegisterUserEmail from "pages/RegisterUser/RegisterUser";
+import Test from "pages/Test";
 import { loginPath } from "helpers/routePaths";
 import "./App.scss";
 
@@ -42,6 +43,7 @@ function App() {
 						<Launch />
 					</Route>
 					<ProtectedRoute path="/app" component={MainApp} />
+					<Route path="/test" component={Test} />
 				</Switch>
 			</Router>
 		</div>

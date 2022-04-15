@@ -204,7 +204,12 @@ function AddOrEditPart({
 								helperText={errors.qty === null ? null : errors.qty}
 								value={input.qty}
 								onChange={(e) => {
-									setInput({ ...input, qty: e.target.value });
+									if (
+										/^[0-9]+$/.test(e.target.value) ||
+										e.target.value === ""
+									) {
+										setInput({ ...input, qty: e.target.value });
+									}
 								}}
 								onKeyDown={handleKeydownPress}
 								variant="outlined"
