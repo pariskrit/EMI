@@ -61,6 +61,10 @@ function Dropdown(props) {
 				specifiedElement.classList.remove("active");
 				specifiedElement.style.position = "fixed";
 			}
+			const dailogContent = document.getElementsByClassName(
+				"MuiDialogContent-root"
+			)[0];
+			if (dailogContent) dailogContent.style.overflow = "auto";
 		}
 	};
 
@@ -153,6 +157,10 @@ function Dropdown(props) {
 				}px`;
 			}
 		}
+		const dailogContent = document.getElementsByClassName(
+			"MuiDialogContent-root"
+		)[0];
+		if (dailogContent) dailogContent.style.overflow = "visible";
 	};
 
 	const removeActiveDropdown = () => {

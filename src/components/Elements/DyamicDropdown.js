@@ -156,6 +156,10 @@ function DyanamicDropdown(props) {
 
 				specifiedElement.style.position = "fixed";
 			}
+			const dailogContent = document.getElementsByClassName(
+				"MuiDialogContent-root"
+			)[0];
+			if (dailogContent) dailogContent.style.overflow = "auto";
 		}
 	}, []);
 
@@ -320,6 +324,10 @@ function DyanamicDropdown(props) {
 			setdropdownlistner(document.getElementById(uniqueId));
 			scrollRef.current = false;
 		}
+		const dailogContent = document.getElementsByClassName(
+			"MuiDialogContent-root"
+		)[0];
+		if (dailogContent) dailogContent.style.overflow = "visible";
 	};
 
 	const removeActiveDropdown = () => {
