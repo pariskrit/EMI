@@ -19,6 +19,18 @@ export const handleSort = (
 	return true;
 };
 
+export const sortData = (data, sortField, sortMethod) => {
+	let sorted = [...data];
+
+	sorted.sort((a, b) =>
+		a[sortField]?.toString().localeCompare(b[sortField]?.toString())
+	);
+
+	if (sortMethod === "desc") sorted = sorted.reverse();
+
+	return sorted;
+};
+
 export const handleLocalValidate = (schema, checkField, checkData) => {
 	return schema
 		.validateAt(checkField, { [checkField]: checkData })

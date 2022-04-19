@@ -8,7 +8,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import ColourConstants from "helpers/colourConstants";
-import { handleSort } from "helpers/utils";
+import { handleSort, sortData } from "helpers/utils";
 import ModelTaskRow from "./ModelTaskRow";
 import TaskDetailContext from "contexts/TaskDetailContext";
 
@@ -99,6 +99,10 @@ const ModelTaskTable = ({
 		setCurrentTableSort([field, newMethod]);
 	};
 
+	// useDidMountEffect(() => {
+	// 	handleSortClick(currentTableSort[0]);
+	// }, [currentTableSort[0]]);
+
 	return (
 		<>
 			<Table aria-label="Table" className={classes.table}>
@@ -149,27 +153,29 @@ const ModelTaskTable = ({
 				</AT.TableHead>
 				<TableBody>
 					{data.length !== 0 ? (
-						data.map((row, index) => (
-							<TaskDetailContext key={row.id}>
-								<ModelTaskRow
-									key={row.id}
-									row={row}
-									index={index}
-									handleEdit={handleEdit}
-									handleDelete={handleDelete}
-									handleCopy={handleCopy}
-									handleCopyTaskQuestion={handleCopyTaskQuestion}
-									classes={classes}
-									columns={columns}
-									data={data}
-									modelId={modelId}
-									customCaptions={customCaptions}
-									access={access}
-									totalTaskCount={totalTaskCount}
-									fetchData={fetchData}
-								/>
-							</TaskDetailContext>
-						))
+						sortData(data, currentTableSort[0], currentTableSort[1]).map(
+							(row, index) => (
+								<TaskDetailContext key={row.id}>
+									<ModelTaskRow
+										key={row.id}
+										row={row}
+										index={index}
+										handleEdit={handleEdit}
+										handleDelete={handleDelete}
+										handleCopy={handleCopy}
+										handleCopyTaskQuestion={handleCopyTaskQuestion}
+										classes={classes}
+										columns={columns}
+										data={data}
+										modelId={modelId}
+										customCaptions={customCaptions}
+										access={access}
+										totalTaskCount={totalTaskCount}
+										fetchData={fetchData}
+									/>
+								</TaskDetailContext>
+							)
+						)
 					) : (
 						<TableRow>
 							{headers.map((head, i) => {
