@@ -99,7 +99,10 @@ function AddEditModel({
 				maxValue,
 				minValue,
 				type,
-				options: options?.map((x) => x.name),
+				options: options?.map((x) => ({
+					name: x.name,
+					raiseDefect: x.raiseDefect,
+				})),
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,7 +181,11 @@ function AddEditModel({
 		try {
 			const localChecker = await handleValidateObj(schema(input.type), {
 				...d,
-				options: d?.options?.map((x) => x.name) || [],
+				options:
+					d?.options?.map((x) => ({
+						name: x.name,
+						raiseDefect: x.raiseDefect,
+					})) || [],
 			});
 			if (!localChecker.some((el) => el.valid === false)) {
 				setErrors(defaultError);
@@ -187,7 +194,11 @@ function AddEditModel({
 				} else {
 					handleAddTaskQuestion({
 						...input,
-						options: input?.options?.map((x) => ({ name: x })) || [],
+						options:
+							input?.options?.map((x) => ({
+								name: x.name,
+								raiseDefect: x.raiseDefect || false,
+							})) || [],
 					});
 				}
 			} else {

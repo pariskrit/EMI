@@ -64,7 +64,9 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 			const localChecker = await handleValidateObj(schema, input);
 			if (!localChecker.some((el) => el.valid === false)) {
 				const res = await onEdit(
-					fromcheckbox ? { ...input, raiseDefect: e?.target?.checked } : input
+					fromcheckbox
+						? { ...input, raiseDefect: e?.target?.checked || false }
+						: input
 				);
 				setLoader(false);
 				if (res) {
@@ -126,7 +128,7 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 									backgroundColor: "white",
 								}}
 								onChange={(e) => setState({ name: e.target.value })}
-								value={input.name}
+								value={input?.name}
 								size="small"
 								variant="outlined"
 								autoFocus

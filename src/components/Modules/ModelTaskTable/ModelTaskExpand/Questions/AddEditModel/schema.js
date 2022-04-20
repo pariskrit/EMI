@@ -42,13 +42,13 @@ const schema = (questionType) =>
 			}),
 		options: yup
 			.array()
-			.of(yup.string())
+			.of(yup.object())
 			.nullable()
 			.when("type", {
 				is: () => questionType === "O" || questionType === "C",
 				then: yup
 					.array()
-					.of(yup.string())
+					.of(yup.object())
 					.min(1, "Option is required")
 					.required("Option is required")
 					.nullable(),
