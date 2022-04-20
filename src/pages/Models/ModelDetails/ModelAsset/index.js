@@ -1,16 +1,29 @@
 import React, { useState } from "react";
-import { CircularProgress, Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress, Grid, LinearProgress } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import CommonApplicationTable from "components/Modules/CommonApplicationTable";
+import CommonApplicationTable from "./AssestTable";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import ContentStyle from "styles/application/ContentStyle";
-import { getModelAsset } from "services/models/modelDetails/modelAsset";
+import {
+	getModelAsset,
+	patchmodelAssest,
+} from "services/models/modelDetails/modelAsset";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import AddModel from "./AddModel";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 const AC = ContentStyle();
+
+const useStyles = makeStyles({
+	loading: {
+		position: "absolute",
+		width: "100%",
+		left: 0,
+		top: 0,
+	},
+});
 
 const ModelAsset = ({
 	state,
@@ -27,14 +40,17 @@ const ModelAsset = ({
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
+	const classes = useStyles();
+
 	const [data, setData] = useState([]);
 	const [searchedData, setSearchedData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [deleteAsset, setDelete] = useState({ open: false, id: null });
+	const [isEditingActive, setIsEditingActive] = useState(false);
 
-	const fetchModelAsset = async () => {
-		setLoading(true);
+	const fetchModelAsset = async (showLoading = true) => {
+		showLoading && setLoading(true);
 		try {
 			let result = await getModelAsset(modelDefaultId);
 
@@ -48,7 +64,7 @@ const ModelAsset = ({
 				setLoading(false);
 			} else {
 				if (result?.data?.detail) getError(result.data.detail);
-				setLoading(false);
+				showLoading && setLoading(false);
 			}
 		} catch (e) {
 			return;
@@ -101,6 +117,28 @@ const ModelAsset = ({
 		setDelete({ id: null, open: false });
 	};
 
+	const handleEdit = async (id) => {
+		setIsEditingActive(true);
+		try {
+			const editData = data?.find((x) => x.id === id);
+			let result = await patchmodelAssest(editData?.id, [
+				{
+					op: "replace",
+					path: "isActive",
+					value: !editData?.isActive,
+				},
+			]);
+			if (result.status) {
+				await fetchModelAsset(false);
+			} else {
+				getError(result.data.detail);
+			}
+		} catch (error) {
+			getError(error.data.detail || "Could not change status");
+		}
+		setIsEditingActive(false);
+	};
+
 	const mainData = searchQuery === "" ? data : searchedData;
 
 	if (loading) {
@@ -113,6 +151,7 @@ const ModelAsset = ({
 
 	return (
 		<>
+			{isEditingActive && <LinearProgress className={classes.loading} />}
 			<AddModel
 				open={state.showAdd}
 				handleClose={handleClose}
@@ -121,6 +160,7 @@ const ModelAsset = ({
 				title={asset}
 				handleAddComplete={handleAddComplete}
 			/>
+
 			<DeleteDialog
 				open={deleteAsset.open}
 				entityName={`${asset}`}
@@ -160,10 +200,13 @@ const ModelAsset = ({
 						searchQuery={searchQuery}
 						headers={[`${asset}`, "Status", "Description"]}
 						columns={["name", "status", "description"]}
+						access={access}
+						handleEdit={handleEdit}
+						handleDelete={handleDelete}
 						menuData={[
 							{
-								name: "Print Defects",
-								handler: (id) => console.log(id),
+								name: "Edit",
+								handler: handleEdit,
 								isDelete: false,
 							},
 							{
@@ -173,7 +216,11 @@ const ModelAsset = ({
 							},
 						].filter((x) => {
 							if (access === "F") return true;
-							else return false;
+							if (access === "E") {
+								if (x.name === "Edit") return true;
+								else return false;
+							}
+							return false;
 						})}
 					/>
 				</div>

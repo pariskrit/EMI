@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -13,6 +13,7 @@ import instance from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
 	getSearchedSiteAssets,
+	patchmodelAssest,
 	postModelAsset,
 } from "services/models/modelDetails/modelAsset";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -47,6 +48,9 @@ const AddModel = ({
 	getError,
 	title,
 	handleAddComplete,
+	editData,
+	fetchModelAsset,
+	isEdit = false,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [assets, setAsset] = useState([]);
@@ -57,6 +61,15 @@ const AddModel = ({
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const [errors, setErrors] = useState({});
+
+	useEffect(() => {
+		if (isEdit && editData) {
+			setInput({
+				asset: { id: editData?.siteAssetID },
+				status: editData?.isActive,
+			});
+		}
+	}, [editData, isEdit]);
 
 	const fetchAssets = async (pNo = 1, prevData = []) => {
 		let pageSearchField =
@@ -110,23 +123,38 @@ const AddModel = ({
 			const localChecker = await handleValidateObj(schema, {
 				asset: asset?.id,
 			});
-
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
-				let result = await postModelAsset(data);
-				if (result.status) {
-					const assetData = assets.find((x) => x.id === asset.id);
-					handleAddComplete({
-						description: assetData.description,
-						id: result.data,
-						isActive: status,
-						name: assetData.name,
-					});
-					closeOverride();
-				} else {
-					if (result.data?.detail) getError(result.data.detail);
-					else {
+				if (!isEdit) {
+					let result = await postModelAsset(data);
+					if (result.status) {
+						const assetData = assets.find((x) => x.id === asset.id);
+						handleAddComplete({
+							description: assetData.description,
+							id: result.data,
+							isActive: status,
+							name: assetData.name,
+						});
+						closeOverride();
+					} else {
 						if (result.data?.detail) getError(result.data.detail);
+						else {
+							if (result.data?.detail) getError(result.data.detail);
+						}
+					}
+				} else {
+					let result = await patchmodelAssest(editData?.id, [
+						{
+							op: "replace",
+							path: "isActive",
+							value: status,
+						},
+					]);
+					if (result.status) {
+						await fetchModelAsset(false);
+						closeOverride();
+					} else {
+						getError(result.data.detail);
 					}
 				}
 			} else {
@@ -135,6 +163,7 @@ const AddModel = ({
 			}
 			setLoading(false);
 		} catch (e) {
+			console.log(e);
 			return;
 		}
 	};
@@ -144,7 +173,7 @@ const AddModel = ({
 		setAsset([]);
 		setErrors({});
 		setPage({ pageNo: 1, pageSize: 10 });
-		setInput({ asset: {}, status: true });
+		!isEdit && setInput({ asset: {}, status: true });
 	};
 
 	const pageChange = async (p, prevData) => {
@@ -180,7 +209,9 @@ const AddModel = ({
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
 				<DialogTitle>
-					<ADD.HeaderText>Add {title}</ADD.HeaderText>
+					<ADD.HeaderText>
+						{isEdit ? "Edit" : "Add"} {title}
+					</ADD.HeaderText>
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<div className="modalButton">
@@ -190,7 +221,7 @@ const AddModel = ({
 					</div>
 					<div className="modalButton">
 						<ADD.ConfirmButton onClick={addModelAsset} variant="contained">
-							Add {title}
+							{isEdit ? "Close" : `Add ${title}`}
 						</ADD.ConfirmButton>
 					</div>
 				</ADD.ButtonContainer>
@@ -200,45 +231,47 @@ const AddModel = ({
 				<div
 					style={{
 						display: "flex",
-						justifyContent: "space-between",
+						justifyContent: isEdit ? "left" : "space-between",
 						alignItems: "center",
 					}}
 				>
-					<ErrorInputFieldWrapper
-						errorMessage={errors?.asset === null ? null : errors?.asset}
-					>
-						<DyanamicDropdown
-							label={title}
-							dataSource={assets}
-							dataHeader={[
-								{ id: 1, name: "Name" },
-								{ id: 2, name: "Description" },
-							]}
-							showHeader
-							onChange={(val) => setInput((th) => ({ ...th, asset: val }))}
-							selectedValue={input.asset}
-							onPageChange={pageChange}
-							page={page.pageNo}
-							columns={[
-								{ name: "name", id: 1 },
-								{ name: "description", id: 2 },
-							]}
-							selectdValueToshow="name"
-							count={count}
-							handleSort={handleSort}
-							required={true}
-							isError={errors?.asset ? true : false}
-							handleServierSideSearch={handleServerSideSearch}
-							isServerSide
-							fetchData={fetchAssetData}
-						/>
-					</ErrorInputFieldWrapper>
+					{!isEdit && (
+						<ErrorInputFieldWrapper
+							errorMessage={errors?.asset === null ? null : errors?.asset}
+						>
+							<DyanamicDropdown
+								label={title}
+								dataSource={assets}
+								dataHeader={[
+									{ id: 1, name: "Name" },
+									{ id: 2, name: "Description" },
+								]}
+								showHeader
+								onChange={(val) => setInput((th) => ({ ...th, asset: val }))}
+								selectedValue={input.asset}
+								onPageChange={pageChange}
+								page={page.pageNo}
+								columns={[
+									{ name: "name", id: 1 },
+									{ name: "description", id: 2 },
+								]}
+								selectdValueToshow="name"
+								count={count}
+								handleSort={handleSort}
+								required={true}
+								isError={errors?.asset ? true : false}
+								handleServierSideSearch={handleServerSideSearch}
+								isServerSide
+								fetchData={fetchAssetData}
+							/>
+						</ErrorInputFieldWrapper>
+					)}
 
-					<FormGroup>
+					<FormGroup style={{ marginLeft: "10px" }}>
 						<FormControlLabel
 							control={
 								<EMICheckbox
-									state={input.status}
+									state={input?.status}
 									changeHandler={() => {
 										setInput((th) => ({ ...th, status: !th.status }));
 									}}

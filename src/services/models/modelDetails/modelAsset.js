@@ -34,5 +34,18 @@ const getSearchedSiteAssets = async (siteId, pNo, pSize, search = "") => {
 	}
 };
 
+const patchmodelAssest = async (id, payload) => {
+	try {
+		let response = await API.patch(`${Apis.ModelAssets}/${id}`, payload);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
 
-export { getModelAsset, postModelAsset,getSearchedSiteAssets };
+export {
+	getModelAsset,
+	postModelAsset,
+	getSearchedSiteAssets,
+	patchmodelAssest,
+};
