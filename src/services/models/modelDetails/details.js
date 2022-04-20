@@ -92,11 +92,12 @@ export const updateModel = async (id, payload) => {
 	}
 };
 
-export const uploadImageToS3 = async (id, payload) => {
+export const uploadImageToS3 = async (id, payload, config) => {
 	try {
 		let response = await API.post(
 			`${Apis.ModelVersions}/${id}/UploadImage`,
-			payload
+			payload,
+			config
 		);
 
 		return getAPIResponse(response);
@@ -105,9 +106,9 @@ export const uploadImageToS3 = async (id, payload) => {
 	}
 };
 
-export const uploadDocument = async (payload) => {
+export const uploadDocument = async (payload, config = {}) => {
 	try {
-		let response = await API.post(`${Apis.ModelDocuments}`, payload);
+		let response = await API.post(`${Apis.ModelDocuments}`, payload, config);
 
 		return getAPIResponse(response);
 	} catch (err) {

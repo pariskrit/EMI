@@ -88,6 +88,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const [isVersionTableLoading, setVersionTableLoading] = useState(false);
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
+	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
 
 	const { position, application, customCaptions } =
 		JSON.parse(sessionStorage.getItem("me")) ||
@@ -236,6 +237,8 @@ const ModelLists = ({ getError, isMounted, access }) => {
 				importSuccess={fetchModelImports}
 				getError={getError}
 				siteAppID={position?.siteAppID}
+				uploadPercentCompleted={uploadPercentCompleted}
+				setUploadPercentCompleted={setUploadPercentCompleted}
 			/>
 
 			<div className={classes.listActions}>

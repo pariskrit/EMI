@@ -14,6 +14,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
 	const [image, setImage] = useState(null);
+	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
 	const dispatch = useDispatch();
 
 	const onImageDrop = async (e) => {
@@ -21,7 +22,16 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 		const formData = new FormData();
 		formData.append("file", e[0]);
 
-		const response = await uploadImageToS3(modelId, formData);
+		const response = await uploadImageToS3(modelId, formData, {
+			onUploadProgress: (progressEvent) => {
+				let percentCompleted = Math.floor(
+					(progressEvent.loaded * 100) / progressEvent.total
+				);
+				setUploadPercentCompleted(() => percentCompleted);
+				// do whatever you like with the percentage complete
+				// maybe dispatch an action that will update a progress bar or something
+			},
+		});
 
 		if (response.status) {
 			setImage(response.data.imageURL);
@@ -29,6 +39,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 			dispatch(showError("Could not upload image"));
 		}
 		setIsUploading(false);
+		setUploadPercentCompleted(0);
 	};
 
 	const onDeleteLogo = () => setOpenDeleteDialog(true);
@@ -75,6 +86,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 					removeImage={onDeleteLogo}
 					isUploading={isUploading}
 					isReadOnly={isReadOnly}
+					uploadPercentCompleted={uploadPercentCompleted}
 				/>
 			</AccordionBox>
 		</>

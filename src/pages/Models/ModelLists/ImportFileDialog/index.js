@@ -38,6 +38,8 @@ const ImportFileDialouge = ({
 	importSuccess,
 	getError,
 	siteAppID,
+	uploadPercentCompleted,
+	setUploadPercentCompleted,
 }) => {
 	const classes = useStyles();
 	const [loading, setLoading] = useState(false);
@@ -47,7 +49,6 @@ const ImportFileDialouge = ({
 	const closeOverride = () => {
 		handleClose();
 		setShow(false);
-		setLoading(false);
 	};
 
 	const importDocument = async (Key, imp) => {
@@ -58,6 +59,7 @@ const ImportFileDialouge = ({
 				import: imp,
 			});
 			if (response.status) {
+				await importSuccess();
 				return response;
 			} else {
 				if (response.data.detail) {
@@ -81,15 +83,16 @@ const ImportFileDialouge = ({
 				})
 			);
 			return err;
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	const onDocumentUpload = async (key, url) => {
-		importDocument(key, true).then((res) => {
+		importDocument(key, true).then(async (res) => {
 			setShow(true);
-			setLoading(false);
-			importSuccess();
 			closeOverride();
+			setUploadPercentCompleted(0);
 		});
 	};
 
@@ -114,6 +117,9 @@ const ImportFileDialouge = ({
 							isImageUploaded={false}
 							uploadReturn={onDocumentUpload}
 							apiPath={`${BASE_API_PATH}ModelImports/upload`}
+							showProgress
+							uploadPercentCompleted={uploadPercentCompleted}
+							setUploadPercentCompleted={setUploadPercentCompleted}
 						/>
 					)}
 				</div>

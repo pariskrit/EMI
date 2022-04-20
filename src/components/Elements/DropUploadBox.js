@@ -7,6 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { ReactComponent as UploadIcon } from "assets/icons/uploadIcon.svg";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
 	dragContainer: {
@@ -41,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
 	dropText: {
 		fontSize: "14px",
 	},
+	loadingText: {
+		color: "#307AD6",
+	},
 }));
 
 // BIG TODO: Need to have handling for single vs. multi uploads
@@ -53,6 +57,9 @@ const DropUpload = ({
 	setFilesUploading,
 	getError,
 	inApplication,
+	uploadPercentCompleted,
+	setUploadPercentCompleted,
+	showProgress = false,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -146,7 +153,16 @@ const DropUpload = ({
 		// Attempting file upload
 		try {
 			// Attempting upload
-			await fetch(uploadURL, { method: "PUT", body: file });
+			await axios.put(uploadURL, file, {
+				onUploadProgress: (progressEvent) => {
+					let percentCompleted = Math.floor(
+						(progressEvent.loaded * 100) / progressEvent.total
+					);
+					showProgress && setUploadPercentCompleted((prev) => percentCompleted);
+					// do whatever you like with the percentage complete
+					// maybe dispatch an action that will update a progress bar or something
+				},
+			});
 
 			return true;
 		} catch (err) {
@@ -183,7 +199,13 @@ const DropUpload = ({
 		return (
 			<div className={classes.dragContainer}>
 				<div className={classes.spinnerContainer}>
-					<CircularProgress />
+					{!showProgress ? (
+						<CircularProgress />
+					) : (
+						<Typography variant="body1" className={classes.loadingText}>
+							{uploadPercentCompleted}%
+						</Typography>
+					)}
 				</div>
 			</div>
 		);

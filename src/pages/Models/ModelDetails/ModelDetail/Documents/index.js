@@ -29,12 +29,15 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 	});
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [documentError, setDocumentError] = useState("");
+	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
+
 	const dispatch = useDispatch();
 
 	const onDocumentUpload = async (key, url) => {
 		const response = await uploadDocument({ modelId, documentKey: key });
 		if (response.status) {
 			const documents = await getModelDocuments(modelId);
+
 			setDocumentError("");
 			setListOfDocuments(documents.data);
 		} else {
@@ -42,6 +45,7 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 		}
 
 		setFilesUploading(false);
+		setUploadPercentCompleted(0);
 	};
 
 	const onOpenDeleteDialog = (id) => setOpenDeleteDialog({ isOpen: true, id });
@@ -112,6 +116,9 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 								setFilesUploading={setFilesUploading}
 								isDocumentUploaded
 								getError={setDocumentError}
+								uploadPercentCompleted={uploadPercentCompleted}
+								setUploadPercentCompleted={setUploadPercentCompleted}
+								showProgress
 							/>
 							<p className={classes.documentError}>{documentError}</p>
 						</div>

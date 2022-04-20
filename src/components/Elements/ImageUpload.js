@@ -43,6 +43,10 @@ const useStyles = makeStyles((theme) => ({
 			cursor: "pointer",
 		},
 	},
+
+	loadingText: {
+		color: "#307AD6",
+	},
 	uploadIcon: {
 		marginRight: "2%",
 		color: ColourConstants.uploaderIcon,
@@ -81,6 +85,7 @@ const ImageUpload = ({
 	removeImage,
 	isUploading = false,
 	isReadOnly = false,
+	uploadPercentCompleted = 0,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -94,7 +99,9 @@ const ImageUpload = ({
 		return (
 			<div className={classes.dragContainer}>
 				<div className={classes.spinnerContainer}>
-					<CircularProgress />
+					<Typography variant="body1" className={classes.loadingText}>
+						{uploadPercentCompleted}%
+					</Typography>
 				</div>
 			</div>
 		);

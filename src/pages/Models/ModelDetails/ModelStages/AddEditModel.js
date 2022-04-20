@@ -197,8 +197,10 @@ const AddEditModel = ({
 			} else {
 				const newError = generateErrorState(localChecker);
 				setErrors({ ...errors, ...newError });
+				console.log(newError);
 			}
 		} catch (e) {
+			console.log(e);
 			return;
 		}
 	};
