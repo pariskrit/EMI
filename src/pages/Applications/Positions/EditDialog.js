@@ -12,6 +12,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import EMICheckbox from "../../../components/Elements/EMICheckbox";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -86,6 +88,7 @@ const defaultStateSchema = {
 };
 
 const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
+	const dispatch = useDispatch();
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
@@ -220,10 +223,13 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 
 				return { success: true };
 			} else {
+				dispatch(showError("Could not update"));
 				// If error, throwing to catch
+				// dispatch(showError(updatePosition));
 				throw new Error(updatePosition);
 			}
 		} catch (err) {
+			dispatch(showError(err?.response?.data?.detail || "Could not update"));
 			if (err.response.data.errors !== undefined) {
 				setErrors({ ...errors, ...err.response.data.errors });
 			} else {
@@ -261,8 +267,6 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 			});
 		}
 	}, [data, open]);
-
-	console.log(input);
 
 	return (
 		<div>
