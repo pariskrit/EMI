@@ -14,6 +14,7 @@ import { modelsPath } from "helpers/routePaths";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { Link } from "@material-ui/core";
 
 // Init styled components
 const AT = TableStyle();
@@ -135,99 +136,133 @@ const UserTable = ({
 					</TableRow>
 				</AT.TableHead>
 				<TableBody className={classes.tableBody}>
-					{data.map((row, index) => (
-						<TableRow key={row.id}>
-							{columns.map((col, i, arr) => (
-								<AT.DataCell key={col}>
-									<AT.CellContainer key={col}>
-										<AT.TableBodyText>{row[col]}</AT.TableBodyText>
-
-										{arr.length === i + 1 ? (
-											<AT.DotMenu
-												onClick={(e) => {
-													setAnchorEl(
-														anchorEl === e.currentTarget
-															? null
-															: e.currentTarget
-													);
-													setSelectedData(
-														anchorEl === e.currentTarget ? null : index
-													);
-												}}
-											>
-												<AT.TableMenuButton>
-													<MenuIcon />
-												</AT.TableMenuButton>
-
-												<PopupMenu
-													index={index}
-													selectedData={selectedData}
-													anchorEl={anchorEl}
-													isLast={index === data.length - 1}
-													id={row.id}
-													clickAwayHandler={() => {
-														setAnchorEl(null);
-														setSelectedData(null);
-													}}
-													menuData={[
-														{
-															name: access === "R" ? "View" : "Edit",
-															handler: () => {
+					{data.length ? (
+						data.map((row, index) => (
+							<TableRow key={row.id}>
+								{columns.map((col, i, arr) => {
+									return (
+										<AT.DataCell key={col}>
+											<AT.CellContainer key={col}>
+												<AT.TableBodyText>
+													{typeof col === "object" ? (
+														<Link
+															onClick={() => {
 																history.push(
 																	`${modelsPath}/${row.devModelVersionID}`
 																);
-															},
-															isDelete: false,
-														},
-														{
-															name: "View Version",
-															handler: handleViewVersionModalOpen,
-															isDelete: false,
-														},
-														{
-															name: "Duplicate",
-															handler: () => {
-																handleDuplicateModalOpen(row);
-															},
-															isDelete: false,
-														},
-														{
-															name: "Delete",
-															handler: handleDeleteDialogOpen,
-															isDelete: true,
-														},
-													].filter((x) => {
-														if (access === "F") return true;
-														if (access === "E") {
-															if (
-																x.name === "Edit" ||
-																x.name === "View" ||
-																x.name === "View Version"
-															) {
-																return true;
-															} else {
+															}}
+															style={{
+																color: "rgb(17, 100, 206)",
+																cursor: "pointer",
+															}}
+														>
+															{row?.[col?.[1]] === undefined ||
+															row?.[col?.[1]] === null
+																? row[col[0]]
+																: row[col[0]] + " " + row?.[col?.[1]]}
+														</Link>
+													) : (
+														row[col]
+													)}
+												</AT.TableBodyText>
+
+												{arr.length === i + 1 ? (
+													<AT.DotMenu
+														onClick={(e) => {
+															setAnchorEl(
+																anchorEl === e.currentTarget
+																	? null
+																	: e.currentTarget
+															);
+															setSelectedData(
+																anchorEl === e.currentTarget ? null : index
+															);
+														}}
+													>
+														<AT.TableMenuButton>
+															<MenuIcon />
+														</AT.TableMenuButton>
+
+														<PopupMenu
+															index={index}
+															selectedData={selectedData}
+															anchorEl={anchorEl}
+															isLast={index === data.length - 1}
+															id={row.id}
+															clickAwayHandler={() => {
+																setAnchorEl(null);
+																setSelectedData(null);
+															}}
+															menuData={[
+																{
+																	name:
+																		access === "R" ||
+																		row.activeModelVersionID ===
+																			row.devModelVersionID
+																			? "View"
+																			: "Edit",
+																	handler: () => {
+																		history.push(
+																			`${modelsPath}/${row.devModelVersionID}`
+																		);
+																	},
+																	isDelete: false,
+																},
+																{
+																	name: "View Version",
+																	handler: handleViewVersionModalOpen,
+																	isDelete: false,
+																},
+																{
+																	name: "Duplicate",
+																	handler: () => {
+																		handleDuplicateModalOpen(row);
+																	},
+																	isDelete: false,
+																},
+																{
+																	name: "Delete",
+																	handler: handleDeleteDialogOpen,
+																	isDelete: true,
+																},
+															].filter((x) => {
+																if (access === "F") return true;
+																if (access === "E") {
+																	if (
+																		x.name === "Edit" ||
+																		x.name === "View" ||
+																		x.name === "View Version"
+																	) {
+																		return true;
+																	} else {
+																		return false;
+																	}
+																}
+																if (access === "R") {
+																	if (
+																		x.name === "Edit" ||
+																		x.name === "View" ||
+																		x.name === "View Version"
+																	)
+																		return true;
+																	else return false;
+																}
 																return false;
-															}
-														}
-														if (access === "R") {
-															if (
-																x.name === "Edit" ||
-																x.name === "View" ||
-																x.name === "View Version"
-															)
-																return true;
-															else return false;
-														}
-														return false;
-													})}
-												/>
-											</AT.DotMenu>
-										) : null}
-									</AT.CellContainer>
-								</AT.DataCell>
-							))}
+															})}
+														/>
+													</AT.DotMenu>
+												) : null}
+											</AT.CellContainer>
+										</AT.DataCell>
+									);
+								})}
+							</TableRow>
+						))
+					) : (
+						<TableRow>
+							<TableCell>No any records found</TableCell>
 						</TableRow>
-					))}
+					)}
 				</TableBody>
 			</Table>
 		</AT.TableContainer>

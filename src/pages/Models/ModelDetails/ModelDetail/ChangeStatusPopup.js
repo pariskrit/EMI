@@ -37,26 +37,33 @@ function ChangeStatusPopup({ open, onClose }) {
 	const { id } = useParams();
 
 	const handleCreateProcess = async () => {
+		if (selectedModelStatus?.id === undefined) {
+			return;
+		}
 		setIsUpdating(true);
-		const response = await updateModel(id, [
-			{
-				op: "replace",
-				path: "ModelStatusID",
-				value: selectedModelStatus.id,
-			},
-		]);
-		if (!response.status)
-			dispatch(showError(response.data || "Could Not Update Model Status"));
-		else
-			modelDispatch({
-				type: "SET_ISPUBLISHED",
-				payload: {
-					isPublished: response?.data?.isPublished,
-					modelStatusName: selectedModelStatus.name,
+		try {
+			const response = await updateModel(id, [
+				{
+					op: "replace",
+					path: "ModelStatusID",
+					value: selectedModelStatus.id,
 				},
-			});
+			]);
+			if (!response.status)
+				dispatch(showError(response.data || "Could Not Update Model Status"));
+			else
+				modelDispatch({
+					type: "SET_ISPUBLISHED",
+					payload: {
+						isPublished: response?.data?.isPublished,
+						modelStatusName: selectedModelStatus.name,
+					},
+				});
 
-		onClose();
+			onClose();
+		} catch (error) {
+			console.log(error);
+		}
 
 		setIsUpdating(false);
 	};

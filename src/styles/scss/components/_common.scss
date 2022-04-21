@@ -106,3 +106,17 @@
 .ql-editor {
 	min-height: 85px;
 }
+
+.image_Viewer_Dialouge {
+	.MuiDialog-paper,
+	.MuiDialogContent-root {
+		max-width: 100%;
+		padding: 0;
+		.MuiDialogContent-root:first-child {
+			padding: 0;
+		}
+	}
+	.MuiDialog-paperWidthSm {
+		max-width: 100%;
+	}
+}

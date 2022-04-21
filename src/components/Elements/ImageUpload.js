@@ -85,6 +85,7 @@ const ImageUpload = ({
 	removeImage,
 	isUploading = false,
 	isReadOnly = false,
+	onClick = () => {},
 	uploadPercentCompleted = 0,
 }) => {
 	// Init hooks
@@ -123,6 +124,8 @@ const ImageUpload = ({
 							src={imageUrl}
 							alt="url of file"
 							className={classes.imageContainer}
+							onClick={onClick}
+							style={{ cursor: "pointer" }}
 						/>
 						<Link className="new-link">{imageName}</Link>
 					</div>

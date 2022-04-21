@@ -1,5 +1,5 @@
 import { handleSort } from "helpers/utils";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -67,7 +67,25 @@ const useStyles = makeStyles({
 		fontWeight: "bold",
 		marginRight: "10px",
 	},
+	loading: {
+		position: "absolute",
+		width: "100%",
+		left: 0,
+		top: 0,
+	},
 });
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
 
 const ModelLists = ({ getError, isMounted, access }) => {
 	const classes = useStyles();
@@ -88,6 +106,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const [isVersionTableLoading, setVersionTableLoading] = useState(false);
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
+	const [searching, setSearching] = useState(false);
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
 
 	const { position, application, customCaptions } =
@@ -118,27 +137,22 @@ const ModelLists = ({ getError, isMounted, access }) => {
 		setAllData(newData);
 	};
 	//handle search
-	const handleSearch = (searchValue) => {
-		if (searchValue !== "") {
-			const searchedList = allData.filter((item) =>
-				["name", "modelName", "modelType"].some((col) => {
-					return item[col]?.match(new RegExp(searchValue, "gi"));
-				})
-			);
-
-			setFilteredData(searchedList);
-		} else {
-			setFilteredData(allData);
-		}
-	};
+	const handleSearch = debounce(
+		async (searchValue) => {
+			setSearching(true);
+			await fetchModelList(searchValue);
+			setSearching(false);
+		},
+		[1000]
+	);
 
 	const onDuplicateModalOpen = (modalToDuplicate) => {
 		setDuplicateModalData(modalToDuplicate);
 		setOpenDuplicateModal(true);
 	};
 
-	const fetchModelList = async () => {
-		const response = await getModelList(position?.siteAppID || 24);
+	const fetchModelList = async (searchTxt = "") => {
+		const response = await getModelList(position?.siteAppID || 24, searchTxt);
 		if (!isMounted.aborted) {
 			if (response.status) {
 				setAllData(response.data);
@@ -199,6 +213,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	}, []);
 	return (
 		<div className="container">
+			{searching && <LinearProgress className={classes.loading} />}
 			<CommonModal
 				open={openAddNewModal}
 				closeHandler={() => setOpenAddNewModal(false)}
@@ -304,8 +319,9 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					headers={
 						application?.showModel
 							? [
-									customCaptions?.make,
-									customCaptions?.model,
+									// customCaptions?.make,
+									// customCaptions?.model,
+									customCaptions?.modelTemplate,
 									customCaptions?.modelType,
 									"Status",
 									"Serial Number Range",
@@ -313,7 +329,8 @@ const ModelLists = ({ getError, isMounted, access }) => {
 									"Active Version",
 							  ]
 							: [
-									customCaptions?.make,
+									// customCaptions?.make,
+									customCaptions?.modelTemplate,
 									customCaptions?.modelType,
 									"Status",
 									"Serial Number Range",
@@ -324,8 +341,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					columns={
 						application?.showModel
 							? [
-									"name",
-									"modelName",
+									["name", "modelName"],
 									"modelType",
 									"status",
 									"serialNumberRange",
@@ -333,7 +349,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 									"activeModelVersion",
 							  ]
 							: [
-									"name",
+									["name"],
 									"modelType",
 									"status",
 									"serialNumberRange",

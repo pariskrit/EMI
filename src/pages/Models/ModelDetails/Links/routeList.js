@@ -29,6 +29,7 @@ const routeList = (detail, customCaptions) => [
 		showChangeStatus: true,
 		showSaveChanges: false,
 		showPasteTask: false,
+		showVersion: true,
 	},
 	{
 		id: 3,

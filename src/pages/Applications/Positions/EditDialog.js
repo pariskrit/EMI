@@ -50,6 +50,9 @@ const schema = yup.object({
 	changeSkippedTasks: yup
 		.string("This field must be a string")
 		.required("This field is required"),
+	allowPublish: yup
+		.string("This field must be a string")
+		.required("This field is required"),
 });
 
 // Default state schemas
@@ -65,6 +68,7 @@ const defaultErrorSchema = {
 	reportingAnalytics: null,
 	settings: null,
 	changeSkippedTasks: null,
+	allowPublish: null,
 };
 const defaultStateSchema = {
 	name: "",
@@ -78,6 +82,7 @@ const defaultStateSchema = {
 	reportingAnalytics: "N",
 	settings: "N",
 	changeSkippedTasks: false,
+	allowPublish: false,
 };
 
 const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
@@ -185,6 +190,11 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 						path: "allowChangeSkippedTaskStatus",
 						value: input.changeSkippedTasks,
 					},
+					{
+						op: "replace",
+						path: "allowPublish",
+						value: input.allowPublish,
+					},
 				]
 			);
 
@@ -205,6 +215,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 					defectExportAccess: input.defectExports,
 					analyticsAccess: input.reportingAnalytics,
 					allowChangeSkippedTaskStatus: input.changeSkippedTasks,
+					allowPublish: input.allowPublish,
 				});
 
 				return { success: true };
@@ -246,9 +257,12 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 				reportingAnalytics: data.analyticsAccess,
 				settings: data.settingsAccess,
 				changeSkippedTasks: data.allowChangeSkippedTaskStatus,
+				allowPublish: data.allowPublish,
 			});
 		}
 	}, [data, open]);
+
+	console.log(input);
 
 	return (
 		<div>
@@ -552,6 +566,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 													changeSkippedTasks: !input.changeSkippedTasks,
 												});
 											}}
+											state={input.changeSkippedTasks}
 										/>
 									}
 									label={
@@ -561,6 +576,26 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 									}
 								/>
 							</AED.LeftInputContainer>
+							<AED.RightInputContainer>
+								<FormControlLabel
+									control={
+										<EMICheckbox
+											changeHandler={() => {
+												setInput({
+													...input,
+													allowPublish: !input.allowPublish,
+												});
+											}}
+											state={input.allowPublish}
+										/>
+									}
+									label={
+										<Typography style={{ fontSize: "14px" }}>
+											Allow Publication of AModel Template
+										</Typography>
+									}
+								/>
+							</AED.RightInputContainer>
 						</AED.InputContainer>
 					</div>
 				</AED.DialogContent>

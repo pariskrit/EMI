@@ -8,13 +8,16 @@ import {
 import DeleteDialog from "../DeleteDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import ImageViewer from "components/Elements/ImageViewer";
 
 function ModelImage({ imageUrl, modelId, isReadOnly }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
 	const [image, setImage] = useState(null);
+	const [openImage, setOPenImage] = useState(false);
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
+
 	const dispatch = useDispatch();
 
 	const onImageDrop = async (e) => {
@@ -71,6 +74,11 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 
 	return (
 		<>
+			<ImageViewer
+				open={openImage}
+				onClose={() => setOPenImage(false)}
+				imgSource={image}
+			/>
 			<DeleteDialog
 				open={openDeleteDialog}
 				closeHandler={onDeleteDialogClose}
@@ -86,6 +94,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 					removeImage={onDeleteLogo}
 					isUploading={isUploading}
 					isReadOnly={isReadOnly}
+					onClick={() => setOPenImage(true)}
 					uploadPercentCompleted={uploadPercentCompleted}
 				/>
 			</AccordionBox>

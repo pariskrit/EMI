@@ -59,10 +59,12 @@ const ModelWrapper = ({
 	showPasteTask,
 	showChangeStatus,
 	showSaveChanges,
+	showVersion,
 	onClickSave,
 	onCLickedSaveChanges,
 	onClickPasteTask,
 	onClickShowChangeStatus,
+	onClickVersion,
 	onNavClick,
 	isPasteTaskDisabled,
 	isQuestionTaskDisabled,
@@ -123,6 +125,14 @@ const ModelWrapper = ({
 								Paste {name}
 							</AT.GeneralButton>
 						)}
+						{showVersion && (
+							<AT.GeneralButton
+								onClick={onClickVersion}
+								className={classes.importButton}
+							>
+								New Version
+							</AT.GeneralButton>
+						)}
 						{showChangeStatus && (
 							<AT.GeneralButton
 								onClick={onClickShowChangeStatus}
@@ -177,6 +187,7 @@ ModelWrapper.defaultProps = {
 	onClickShowChangeStatus: () => {},
 	onNavClick: () => {},
 	Component: () => <div>Provide Component</div>,
+	onClickVersion: () => {},
 };
 
 ModelWrapper.propTypes = {
@@ -196,6 +207,7 @@ ModelWrapper.propTypes = {
 	showChangeStatus: PropTypes.bool,
 	showPasteTask: PropTypes.bool,
 	showSaveChanges: PropTypes.bool,
+	onClickVersion: PropTypes.func,
 };
 
 export default ModelWrapper;

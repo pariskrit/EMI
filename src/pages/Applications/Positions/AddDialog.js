@@ -50,6 +50,9 @@ const schema = yup.object({
 	changeSkippedTasks: yup
 		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
+	allowPublish: yup
+		.boolean("This field must be a boolean (true or false)")
+		.required("This field is required"),
 });
 
 // Default state schemas
@@ -65,6 +68,7 @@ const defaultErrorSchema = {
 	reportingAnalytics: null,
 	settings: null,
 	changeSkippedTasks: null,
+	allowPublish: null,
 };
 const defaultStateSchema = {
 	name: "",
@@ -78,6 +82,7 @@ const defaultStateSchema = {
 	reportingAnalytics: "N",
 	settings: "N",
 	changeSkippedTasks: false,
+	allowPublish: false,
 };
 
 const AddPositionDialog = ({
@@ -147,6 +152,7 @@ const AddPositionDialog = ({
 				defectExportAccess: input.defectExports,
 				analyticsAccess: input.reportingAnalytics,
 				allowChangeSkippedTaskStatus: input.changeSkippedTasks,
+				allowPublish: input.allowPublish,
 			};
 
 			const result = await API.post("/api/ApplicationPositions", data);
@@ -493,6 +499,25 @@ const AddPositionDialog = ({
 									}
 								/>
 							</ADD.LeftInputContainer>
+							<ADD.RightInputContainer>
+								<FormControlLabel
+									control={
+										<EMICheckbox
+											changeHandler={() => {
+												setInput({
+													...input,
+													allowPublish: !input.allowPublish,
+												});
+											}}
+										/>
+									}
+									label={
+										<Typography style={{ fontSize: "14px" }}>
+											Allow Publication of AModel Template
+										</Typography>
+									}
+								/>
+							</ADD.RightInputContainer>
 						</ADD.InputContainer>
 					</div>
 				</ADD.DialogContent>

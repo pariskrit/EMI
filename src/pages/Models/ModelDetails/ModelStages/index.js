@@ -13,6 +13,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import withMount from "components/HOC/withMount";
 import TabelRowImage from "components/Elements/TabelRowImage";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import ImageViewer from "components/Elements/ImageViewer";
 
 const modelState = { id: null, open: false };
 
@@ -28,6 +29,8 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const [deleteModel, setDeleteModel] = useState(modelState);
 	const [loading, setLoading] = useState(false);
 	const [originalStageList, setOriginalStageList] = useState([]);
+	const [openImage, setOPenImage] = useState(false);
+	const [ImageToOpen, setImageToOpen] = useState(null);
 
 	const fetchData = async (showLoading = false) => {
 		showLoading && setLoading(true);
@@ -40,6 +43,10 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 						<TabelRowImage
 							imageURL={response.imageURL}
 							imageWrapperHeight="50px"
+							onClickImage={() => {
+								setOPenImage(true);
+								setImageToOpen(response?.imageURL);
+							}}
 						/>
 					) : (
 						""
@@ -133,6 +140,14 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 
 	return (
 		<>
+			<ImageViewer
+				open={openImage}
+				onClose={() => {
+					setOPenImage(false);
+					setImageToOpen(null);
+				}}
+				imgSource={ImageToOpen}
+			/>
 			<AddEditModel
 				open={state.showAdd}
 				handleClose={() => {
@@ -172,6 +187,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 						{ id: 2, name: "image", style: { width: "40vw" } },
 						{ id: 3, name: "hasZones", style: { width: "20vw" } },
 					]}
+					onClickImage={() => setOPenImage(true)}
 					handleDragEnd={handleDragEnd}
 					menuData={[
 						{

@@ -19,6 +19,7 @@ import { showError } from "redux/common/actions";
 import ColourConstants from "helpers/colourConstants";
 import ChangeStatusPopup from "./ChangeStatusPopup";
 import withMount from "components/HOC/withMount";
+import NewVersionPopUp from "./NewVersionPopUp";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -162,6 +163,10 @@ function ModelDetailContent({
 				onClose={() =>
 					dispatch({ type: "TOGGLE_CHANGE_STATUS", payload: false })
 				}
+			/>
+			<NewVersionPopUp
+				open={state.showVersion}
+				onClose={() => dispatch({ type: "TOOGLE_VERSION", payload: false })}
 			/>
 			<div className={classes.detailContainer}>
 				<Grid container spacing={2}>

@@ -145,3 +145,13 @@ export const deleteModelDepartment = async (id) => {
 		return getAPIResponse(err?.response);
 	}
 };
+
+export const postNewModelVersion = async (modelVersionId) => {
+	try {
+		let response = await API.post(`${Apis.ModelVersions}`, { modelVersionId });
+
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};

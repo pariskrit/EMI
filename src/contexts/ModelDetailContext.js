@@ -9,6 +9,7 @@ const initialState = {
 	showSaveChanges: false,
 	showPasteTask: false,
 	showChangeStatus: false,
+	showVersion: false,
 	isPasteTaskDisabled: true,
 	isQuestionTaskDisabled: true,
 };
@@ -55,6 +56,12 @@ function reducer(state, action) {
 			return {
 				...state,
 				showChangeStatus: payload,
+			};
+
+		case "TOOGLE_VERSION":
+			return {
+				...state,
+				showVersion: payload,
 			};
 		case "DISABLE_PASTE_TASK":
 			return { ...state, isPasteTaskDisabled: payload };

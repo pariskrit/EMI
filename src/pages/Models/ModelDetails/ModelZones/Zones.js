@@ -15,6 +15,7 @@ import withMount from "components/HOC/withMount";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import ImageViewer from "components/Elements/ImageViewer";
 
 function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
@@ -28,6 +29,8 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 	const [openAddNewZone, setOpenAddNewZone] = useState(false);
 	const [zoneToEdit, setZoneToEdit] = useState(null);
 	const [zoneToEditData, setZoneToEditData] = useState(null);
+	const [openImage, setOPenImage] = useState(false);
+	const [ImageToOpen, setImageToOpen] = useState(null);
 
 	const { customCaptions } =
 		JSON.parse(sessionStorage.getItem("me")) ||
@@ -45,7 +48,13 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 						response[0].data.map((d) => ({
 							...d,
 							imageURL: d?.imageURL ? (
-								<TabelRowImage imageURL={d?.imageURL} />
+								<TabelRowImage
+									imageURL={d?.imageURL}
+									onClickImage={() => {
+										setOPenImage(true);
+										setImageToOpen(d?.imageURL);
+									}}
+								/>
 							) : (
 								""
 							),
@@ -55,7 +64,13 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 						response[0].data.map((d) => ({
 							...d,
 							imageURL: d?.imageURL ? (
-								<TabelRowImage imageURL={d?.imageURL} />
+								<TabelRowImage
+									imageURL={d?.imageURL}
+									onClickImage={() => {
+										setOPenImage(true);
+										setImageToOpen(response.imageURL);
+									}}
+								/>
 							) : (
 								""
 							),
@@ -175,6 +190,14 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 
 	return (
 		<div>
+			<ImageViewer
+				open={openImage}
+				onClose={() => {
+					setOPenImage(false);
+					setImageToOpen(null);
+				}}
+				imgSource={ImageToOpen}
+			/>
 			<AddNewModelZone
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}

@@ -8,6 +8,7 @@ function TabelRowImage(props) {
 		imageHeight,
 		imageWrapperHeight,
 		imageWrapperWidth,
+		onClickImage,
 	} = props;
 	return (
 		<span
@@ -21,7 +22,9 @@ function TabelRowImage(props) {
 					width: imageWidth,
 					height: imageHeight,
 					objectFit: "contain",
+					cursor: "pointer",
 				}}
+				onClick={onClickImage}
 			/>
 		</span>
 	);
@@ -32,6 +35,7 @@ TabelRowImage.defaultProps = {
 	imageWidth: "100px",
 	imageWrapperHeight: "70px",
 	imageWrapperWidth: "100px",
+	onClickImage: () => {},
 };
 TabelRowImage.propTypes = {
 	imageURL: PropTypes.string.isRequired,
@@ -39,5 +43,6 @@ TabelRowImage.propTypes = {
 	imageWidth: PropTypes.string,
 	imageWrapperHeight: PropTypes.string,
 	imageWrapperWidth: PropTypes.string,
+	onClickImage: PropTypes.func,
 };
 export default TabelRowImage;

@@ -33,6 +33,10 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 	const openChangeStatusModel = () =>
 		dispatch({ type: "TOGGLE_CHANGE_STATUS", payload: true });
 
+	const openClickVersion = () => {
+		dispatch({ type: "TOOGLE_VERSION", payload: true });
+	};
+
 	const showAdd = [route.showAdd, access === "F"].every((x) => x === true);
 	const showPaste = [
 		route.showPasteTask,
@@ -62,7 +66,9 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 					access === "E" || access === "F" ? route.showChangeStatus : false
 				}
 				showSaveChanges={route.showSaveChanges}
+				showVersion={route.showVersion}
 				onClickSave={openSaveModel}
+				onClickVersion={openClickVersion}
 				onCLickedSaveChanges={openClickSaveChanges}
 				onClickPasteTask={openPasteTaskModel}
 				onClickShowChangeStatus={openChangeStatusModel}

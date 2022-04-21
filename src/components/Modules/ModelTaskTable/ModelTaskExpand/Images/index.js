@@ -16,6 +16,7 @@ import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { ModelContext } from "contexts/ModelDetailContext";
+import ImageViewer from "components/Elements/ImageViewer";
 
 const useStyles = makeStyles({
 	images: {
@@ -50,6 +51,8 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		originalData: [],
 		count: taskInfo.imageCount,
 	});
+	const [openImage, setOPenImage] = useState(false);
+	const [ImageToOpen, setImageToOpen] = useState(null);
 
 	const setState = (da) => setImage((th) => ({ ...th, ...da }));
 
@@ -62,6 +65,10 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 					imageURL={x.imageURL}
 					imageHeight={"100px"}
 					imageWidth={"100px"}
+					onClickImage={() => {
+						setOPenImage(true);
+						setImageToOpen(x?.imageURL);
+					}}
 				/>
 			),
 		};
@@ -192,6 +199,14 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 
 	return (
 		<>
+			<ImageViewer
+				open={openImage}
+				onClose={() => {
+					setOPenImage(false);
+					setImageToOpen(null);
+				}}
+				imgSource={ImageToOpen}
+			/>
 			{images.open && (
 				<AddEditModel
 					open={images.open}

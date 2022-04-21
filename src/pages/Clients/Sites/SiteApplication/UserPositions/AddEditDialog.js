@@ -55,6 +55,9 @@ const schema = yup.object({
 	allowChangeSkippedTaskStatus: yup
 		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
+	allowPublish: yup
+		.boolean("This field must be a boolean (true or false)")
+		.required("This field is required"),
 });
 
 // Default state schemas
@@ -70,10 +73,12 @@ const defaultErrorSchema = {
 	serviceAccess: null,
 	settingsAccess: null,
 	userAccess: null,
+	allowPublish: null,
 };
 
 const defaultStateSchema = {
 	allowChangeSkippedTaskStatus: false,
+	allowPublish: false,
 	analyticsAccess: "N",
 	defectAccess: "N",
 	defectExportAccess: "N",
@@ -169,6 +174,7 @@ const AddDialog = ({
 			analyticsAccess: input.analyticsAccess,
 			settingsAccess: input.settingsAccess,
 			allowChangeSkippedTaskStatus: input.allowChangeSkippedTaskStatus,
+			allowPublish: input.allowPublish,
 		};
 
 		const result = await addPosition({
@@ -249,6 +255,11 @@ const AddDialog = ({
 				path: "allowChangeSkippedTaskStatus",
 				value: input.allowChangeSkippedTaskStatus,
 			},
+			{
+				op: "replace",
+				path: "allowPublish",
+				value: input.allowPublish,
+			},
 		]);
 		if (result.status) {
 			handleEditData({
@@ -265,6 +276,7 @@ const AddDialog = ({
 				analyticsAccess: positionAccessTypes[input.analyticsAccess],
 				settingsAccess: positionAccessTypes[input.settingsAccess],
 				allowChangeSkippedTaskStatus: input.allowChangeSkippedTaskStatus,
+				allowPublish: input.allowPublish,
 			});
 
 			return { success: true };
@@ -295,6 +307,7 @@ const AddDialog = ({
 				analyticsAccess: dataToEdit.analyticsAccess[0],
 				settingsAccess: dataToEdit.settingsAccess[0],
 				allowChangeSkippedTaskStatus: dataToEdit.allowChangeSkippedTaskStatus,
+				allowPublish: dataToEdit.allowPublish,
 			});
 		}
 	}, [dataToEdit, open]);
@@ -389,6 +402,26 @@ const AddDialog = ({
 								label={
 									<Typography style={{ fontSize: "14px" }}>
 										Allow change skipped task status
+									</Typography>
+								}
+							/>
+						</Grid>
+						<Grid item xs={6}>
+							<FormControlLabel
+								control={
+									<EMICheckbox
+										state={input.allowPublish}
+										changeHandler={() => {
+											setInput({
+												...input,
+												allowPublish: !input.allowPublish,
+											});
+										}}
+									/>
+								}
+								label={
+									<Typography style={{ fontSize: "14px" }}>
+										Allow Publication of AModel Template
 									</Typography>
 								}
 							/>
