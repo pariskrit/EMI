@@ -2,7 +2,6 @@ import questionIcon from "assets/question.png";
 import stageIcon from "assets/stage.png";
 import zoneIcon from "assets/zone.png";
 import taskIcon from "assets/task.png";
-import { ContactSupportOutlined } from "@material-ui/icons";
 
 export const reorder = (list, startIndex, endIndex) => {
 	const result = Array.from(list);

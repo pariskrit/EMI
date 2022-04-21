@@ -31,7 +31,6 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { useHistory } from "react-router-dom";
 import withMount from "components/HOC/withMount";
-import { ContactSupportOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles({
 	dragDropContainer: {

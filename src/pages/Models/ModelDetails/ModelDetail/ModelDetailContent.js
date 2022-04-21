@@ -19,7 +19,6 @@ import { showError } from "redux/common/actions";
 import ColourConstants from "helpers/colourConstants";
 import ChangeStatusPopup from "./ChangeStatusPopup";
 import withMount from "components/HOC/withMount";
-import { ModelContext } from "contexts/ModelDetailContext";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {

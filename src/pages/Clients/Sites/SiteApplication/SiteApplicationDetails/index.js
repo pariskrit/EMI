@@ -9,6 +9,7 @@ import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import { connect } from "react-redux";
 import { setNavCrumbs } from "redux/siteDetail/actions";
 import { clientsPath, siteDetailPath } from "helpers/routePaths";
+import RiskRatingImage from "./RiskRatingImage";
 
 function SiteApplicationDetails({
 	appId,
@@ -113,6 +114,9 @@ function SiteApplicationDetails({
 				</Grid>
 				<Grid item xs={12}>
 					{showLicenseTile ? <License details={siteAppDetails} /> : null}
+				</Grid>
+				<Grid item xs={12}>
+					<RiskRatingImage details={details} loading={isLoading} />
 				</Grid>
 			</Grid>
 		</>

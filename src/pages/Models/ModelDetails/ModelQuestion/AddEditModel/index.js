@@ -33,7 +33,6 @@ import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import NewOption from "./NewOption";
 import Options from "./Options";
 import CurveButton from "components/Elements/CurveButton";
-import roles from "helpers/roles";
 
 const ADD = AddDialogStyle();
 

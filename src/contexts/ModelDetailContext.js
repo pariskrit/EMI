@@ -1,4 +1,3 @@
-import { modelDetail } from "helpers/routePaths";
 import React, { createContext, useReducer } from "react";
 
 const initialState = {

@@ -20,4 +20,32 @@ const patchApplicationDetail = async (id, payload) => {
 	}
 };
 
-export { getSiteApplicationDetail, patchApplicationDetail };
+const uploadDefectRiskRatingImage = async (id, payload) => {
+	try {
+		let response = await API.post(
+			`${Apis.Applications}/${id}/uploadDefectRiskRatingImage`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const DeleteDefectRiskRatingImage = async (id, payload) => {
+	try {
+		let response = await API.delete(
+			`${Apis.Applications}/${id}/DefectRiskRatingImage`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export {
+	getSiteApplicationDetail,
+	patchApplicationDetail,
+	uploadDefectRiskRatingImage,
+	DeleteDefectRiskRatingImage,
+};
