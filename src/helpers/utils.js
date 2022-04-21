@@ -129,3 +129,29 @@ export const getFormattedLink = (link) => {
 	}
 	return formattedlink;
 };
+
+export const makeTableAutoScrollAndExpand = (data) => {
+	setTimeout(() => {
+		if (document.getElementById(`taskExpandable${data}`)) {
+			document.getElementById(`taskExpandable${data}`).scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+				top:
+					document
+						.getElementById(`taskExpandable${data}`)
+						.getBoundingClientRect().bottom + window.pageYOffset,
+			});
+
+			setTimeout(() => {
+				document.getElementById(`taskExpandable${data}`).click();
+				setTimeout(() => {
+					document.getElementById(`taskExpandable${data}`).scrollIntoView({
+						behavior: "smooth",
+						block: "center",
+						inline: "center",
+					});
+				}, 1000);
+			}, 500);
+		}
+	}, 500);
+};

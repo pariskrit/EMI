@@ -14,6 +14,7 @@ import {
 	generateErrorState,
 	handleSort,
 	handleValidateObj,
+	makeTableAutoScrollAndExpand,
 } from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
 import { useDispatch } from "react-redux";
@@ -230,13 +231,13 @@ function AddNewModelTask({
 					roles: cleanInput.roles !== null ? [...cleanInput.roles] : null,
 				});
 				if (newData.status) {
-					setIsUpdating(false);
+					await fetchData();
 					Ctxdispatch({
 						type: "TAB_COUNT",
 						payload: { countTab: "taskCount", data: totalTaskCount + 1 },
 					});
-					fetchData();
 					closeOverride();
+					makeTableAutoScrollAndExpand(newData?.data);
 				} else {
 					setIsUpdating(false);
 					dispatch(showError(newData?.data?.title || "something went wrong"));
