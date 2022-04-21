@@ -213,7 +213,6 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	}, []);
 	return (
 		<div className="container">
-			{searching && <LinearProgress className={classes.loading} />}
 			<CommonModal
 				open={openAddNewModal}
 				closeHandler={() => setOpenAddNewModal(false)}
@@ -310,6 +309,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					</AC.SearchInner>
 				</AC.SearchContainer>
 			</div>
+			{searching && <LinearProgress />}
 			{isLoading ? (
 				<CircularProgress />
 			) : (
