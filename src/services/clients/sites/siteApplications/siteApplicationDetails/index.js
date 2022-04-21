@@ -20,11 +20,12 @@ const patchApplicationDetail = async (id, payload) => {
 	}
 };
 
-const uploadDefectRiskRatingImage = async (id, payload) => {
+const uploadDefectRiskRatingImage = async (id, payload, config = {}) => {
 	try {
 		let response = await API.post(
 			`${Apis.Applications}/${id}/uploadDefectRiskRatingImage`,
-			payload
+			payload,
+			config
 		);
 		return getAPIResponse(response);
 	} catch (err) {

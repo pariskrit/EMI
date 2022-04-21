@@ -15,6 +15,7 @@ function RiskRatingImage({ loading, details }) {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
 	const [image, setImage] = useState(null);
+	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -30,7 +31,15 @@ function RiskRatingImage({ loading, details }) {
 
 		const response = await uploadDefectRiskRatingImage(
 			details?.data?.id,
-			formData
+			formData,
+			{
+				onUploadProgress: (progressEvent) => {
+					let percentCompleted = Math.floor(
+						(progressEvent.loaded * 100) / progressEvent.total
+					);
+					setUploadPercentCompleted(() => percentCompleted);
+				},
+			}
 		);
 
 		if (response.status) {
@@ -39,6 +48,7 @@ function RiskRatingImage({ loading, details }) {
 			dispatch(showError("Could not upload image"));
 		}
 		setIsUploading(false);
+		setUploadPercentCompleted(() => 0);
 	};
 
 	const onDeleteLogo = () => setOpenDeleteDialog(true);
@@ -82,6 +92,7 @@ function RiskRatingImage({ loading, details }) {
 					onDrop={onImageDrop}
 					removeImage={onDeleteLogo}
 					isUploading={isUploading}
+					uploadPercentCompleted={uploadPercentCompleted}
 				/>
 			</AccordionBox>
 		</>
