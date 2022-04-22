@@ -38,13 +38,13 @@ const ImportFileDialouge = ({
 	importSuccess,
 	getError,
 	siteAppID,
-	uploadPercentCompleted,
-	setUploadPercentCompleted,
 }) => {
 	const classes = useStyles();
+	const dispatch = useDispatch();
+
+	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [show, setShow] = useState(false);
-	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		handleClose();
@@ -53,15 +53,33 @@ const ImportFileDialouge = ({
 
 	const importDocument = async (Key, imp) => {
 		try {
-			const response = await API.post(`${BASE_API_PATH}ModelImports/prepare`, {
-				Key,
-				SiteAppID: siteAppID,
-				import: imp,
-			});
-			if (response.status) {
+			const response = await API.post(
+				`${BASE_API_PATH}ModelImports/prepare`,
+				{
+					Key,
+					SiteAppID: siteAppID,
+					import: imp,
+				},
+				{
+					onUploadProgress: (progressEvent) => {
+						let percentCompleted = Math.floor(
+							(progressEvent.loaded * 5) / progressEvent.total
+						);
+						setUploadPercentCompleted((prev) => prev + percentCompleted);
+						// do whatever you like with the percentage complete
+						// maybe dispatch an action that will update a progress bar or something
+					},
+				}
+			);
+			if (response.status === 201 || response.status === 200) {
+				setUploadPercentCompleted((prev) => 99);
 				await importSuccess();
+				setUploadPercentCompleted((prev) => 100);
+
 				return response;
 			} else {
+				setUploadPercentCompleted((prev) => 99);
+
 				if (response.data.detail) {
 					dispatch(
 						showNotications({
@@ -75,6 +93,7 @@ const ImportFileDialouge = ({
 			}
 			setLoading(false);
 		} catch (err) {
+			setUploadPercentCompleted((prev) => 99);
 			dispatch(
 				showNotications({
 					show: true,
@@ -83,16 +102,17 @@ const ImportFileDialouge = ({
 				})
 			);
 			return err;
-		} finally {
-			setLoading(false);
 		}
 	};
 
 	const onDocumentUpload = async (key, url) => {
 		importDocument(key, true).then(async (res) => {
-			setShow(true);
-			closeOverride();
-			setUploadPercentCompleted(0);
+			setTimeout(() => {
+				setShow(true);
+				closeOverride();
+				setLoading(false);
+				setUploadPercentCompleted(0);
+			}, 100);
 		});
 	};
 
@@ -120,6 +140,7 @@ const ImportFileDialouge = ({
 							showProgress
 							uploadPercentCompleted={uploadPercentCompleted}
 							setUploadPercentCompleted={setUploadPercentCompleted}
+							percentMultiplyBy={90}
 						/>
 					)}
 				</div>

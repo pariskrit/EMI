@@ -60,6 +60,7 @@ const DropUpload = ({
 	uploadPercentCompleted,
 	setUploadPercentCompleted,
 	showProgress = false,
+	percentMultiplyBy = 100,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -156,7 +157,7 @@ const DropUpload = ({
 			await axios.put(uploadURL, file, {
 				onUploadProgress: (progressEvent) => {
 					let percentCompleted = Math.floor(
-						(progressEvent.loaded * 100) / progressEvent.total
+						(progressEvent.loaded * percentMultiplyBy) / progressEvent.total
 					);
 					showProgress && setUploadPercentCompleted((prev) => percentCompleted);
 					// do whatever you like with the percentage complete
