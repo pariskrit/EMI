@@ -49,7 +49,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 							...d,
 							imageURL: d?.imageURL ? (
 								<TabelRowImage
-									imageURL={d?.imageURL}
+									imageURL={d?.thumbnailURL}
 									onClickImage={() => {
 										setOPenImage(true);
 										setImageToOpen(d?.imageURL);
@@ -65,7 +65,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 							...d,
 							imageURL: d?.imageURL ? (
 								<TabelRowImage
-									imageURL={d?.imageURL}
+									imageURL={d?.thumbnailURL}
 									onClickImage={() => {
 										setOPenImage(true);
 										setImageToOpen(response.imageURL);

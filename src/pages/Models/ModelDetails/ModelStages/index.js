@@ -41,7 +41,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 					...response,
 					image: response.imageURL ? (
 						<TabelRowImage
-							imageURL={response.imageURL}
+							imageURL={response.thumbnailURL}
 							imageWrapperHeight="50px"
 							onClickImage={() => {
 								setOPenImage(true);

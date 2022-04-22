@@ -201,6 +201,7 @@ function ModelDetailContent({
 						/>
 						<ModelImage
 							imageUrl={modelDetailsData?.details?.imageURL}
+							thumbnailURL={modelDetailsData?.details?.thumbnailURL}
 							modelId={modelId}
 							isReadOnly={
 								isReadOnly || state?.modelDetail?.isPublished || isEditOnly

@@ -10,11 +10,13 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import ImageViewer from "components/Elements/ImageViewer";
 
-function ModelImage({ imageUrl, modelId, isReadOnly }) {
+function ModelImage({ imageUrl, modelId, isReadOnly, thumbnailURL }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
 	const [image, setImage] = useState(null);
+	const [thumbnailImg, setThumbnailImg] = useState(null);
+
 	const [openImage, setOPenImage] = useState(false);
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
 
@@ -38,6 +40,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 
 		if (response.status) {
 			setImage(response.data.imageURL);
+			setThumbnailImg(response.data.thumbnailURL);
 		} else {
 			dispatch(showError("Could not upload image"));
 		}
@@ -57,6 +60,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 
 		if (response.status) {
 			setImage(null);
+			setThumbnailImg(null);
 		} else {
 			dispatch(showError("Could not delete"));
 		}
@@ -68,6 +72,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 	useEffect(() => {
 		if (image === null && imageUrl) {
 			setImage(imageUrl);
+			setThumbnailImg(thumbnailURL);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [imageUrl]);
@@ -88,7 +93,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly }) {
 			/>
 			<AccordionBox title={`Model Image (${image ? 1 : 0})`}>
 				<ImageUpload
-					imageUrl={image}
+					imageUrl={thumbnailImg}
 					imageName=""
 					onDrop={onImageDrop}
 					removeImage={onDeleteLogo}

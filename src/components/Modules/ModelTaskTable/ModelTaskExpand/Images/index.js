@@ -62,7 +62,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 			description: x.description === null ? "" : x.description,
 			image: (
 				<TabelRowImage
-					imageURL={x.imageURL}
+					imageURL={x?.thumbnailURL}
 					imageHeight={"100px"}
 					imageWidth={"100px"}
 					onClickImage={() => {
