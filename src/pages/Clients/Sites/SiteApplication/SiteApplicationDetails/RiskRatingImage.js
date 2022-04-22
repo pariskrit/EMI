@@ -9,6 +9,7 @@ import {
 	DeleteDefectRiskRatingImage,
 	uploadDefectRiskRatingImage,
 } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import ImageViewer from "components/Elements/ImageViewer";
 
 function RiskRatingImage({ loading, details }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -16,6 +17,8 @@ function RiskRatingImage({ loading, details }) {
 	const [isUploading, setIsUploading] = useState(false);
 	const [image, setImage] = useState(null);
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
+	const [openImage, setOPenImage] = useState(false);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -78,6 +81,13 @@ function RiskRatingImage({ loading, details }) {
 
 	return (
 		<>
+			<ImageViewer
+				open={openImage}
+				onClose={() => {
+					setOPenImage(false);
+				}}
+				imgSource={image}
+			/>
 			<DeleteDialog
 				open={openDeleteDialog}
 				closeHandler={onDeleteDialogClose}
@@ -93,6 +103,9 @@ function RiskRatingImage({ loading, details }) {
 					removeImage={onDeleteLogo}
 					isUploading={isUploading}
 					uploadPercentCompleted={uploadPercentCompleted}
+					onClick={() => {
+						setOPenImage(true);
+					}}
 				/>
 			</AccordionBox>
 		</>
