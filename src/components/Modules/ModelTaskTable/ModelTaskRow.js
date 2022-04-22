@@ -304,7 +304,7 @@ const ModelTaskRow = ({
 						</TableCell>
 					))}
 				</TableRow>
-				<TableRow>
+				<TableRow id={`taskExpanded${row.id}`}>
 					<TableCell
 						style={{ paddingBottom: 0, paddingTop: 0, background: "#307AD7" }}
 						colSpan={18}

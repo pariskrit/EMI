@@ -145,10 +145,10 @@ export const makeTableAutoScrollAndExpand = (data) => {
 			setTimeout(() => {
 				document.getElementById(`taskExpandable${data}`).click();
 				setTimeout(() => {
-					document.getElementById(`taskExpandable${data}`).scrollIntoView({
+					document.getElementById(`taskExpanded${data}`).scrollIntoView({
 						behavior: "smooth",
-						block: "center",
-						inline: "center",
+						block: "end",
+						// inline: "center",
 					});
 				}, 1000);
 			}, 500);
