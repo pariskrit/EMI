@@ -80,27 +80,6 @@ function ModelDetailContent({
 		JSON.parse(localStorage.getItem("me"));
 	const reduxDispatch = useDispatch();
 
-	// For downloading the document into the computer.
-	const changeDocumentUrl = useCallback(async (documents) => {
-		let tempDocuments = [];
-
-		for (const document of documents) {
-			try {
-				let res = await fetch(document.documentURL);
-				let blob = await res?.blob();
-				tempDocuments.push({
-					...document,
-					documentURL: URL.createObjectURL(blob),
-				});
-			} catch (error) {
-				reduxDispatch(showError("Error: Could not change model documents"));
-			}
-		}
-
-		return Promise.resolve(tempDocuments);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
 	const fetchAllData = useCallback(async () => {
 		const res = await Promise.all([
 			getModelDeparments(modelDefaultId),
@@ -115,13 +94,10 @@ function ModelDetailContent({
 			reduxDispatch(showError("Error: Could not fetch model details"));
 		} else {
 			if (!isMounted.aborted) {
-				const changedDocuments = res[2].status
-					? await changeDocumentUrl(res[2].data)
-					: [];
 				setModelDetailsData({
 					modelDepartments: res[0].data,
 					modelNotes: res[1].data || [],
-					modelDocuments: changedDocuments,
+					modelDocuments: res[2].data || [],
 					modelTypes: res[3].data || [],
 					detailDepartments: res[4].data || [],
 					details: state.modelDetail,
@@ -133,7 +109,6 @@ function ModelDetailContent({
 	}, [
 		position.siteAppID,
 		reduxDispatch,
-		changeDocumentUrl,
 		state.modelDetail,
 		isMounted,
 		modelDefaultId,

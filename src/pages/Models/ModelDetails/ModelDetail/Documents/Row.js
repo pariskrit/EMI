@@ -22,7 +22,7 @@ const Row = ({ row, classes, onDeleteClick, isReadOnly }) => {
 				<HtmlTooltip title={row.filename} className="note-field">
 					<Link
 						href={row.documentURL}
-						download={row.filename}
+						target="_blank"
 						className="max-two-line new-link"
 					>
 						{row.filename}
