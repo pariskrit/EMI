@@ -115,8 +115,10 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	}, [fromSeriveLayoutId]);
 
 	useEffect(() => {
+		document.body.style.overflowY = "hidden";
 		return () => {
 			window.removeEventListener("scroll", () => {});
+			document.body.style.overflowY = "auto";
 		};
 	}, []);
 

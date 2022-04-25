@@ -120,3 +120,60 @@
 		max-width: 100%;
 	}
 }
+
+.table-scroll-wrapper {
+	max-height: 60vh;
+	overflow: auto;
+	border-bottom: 1px solid #979797;
+	&::-webkit-scrollbar {
+		width: 5px;
+		height: 5px;
+	}
+
+	/* Track */
+	&::-webkit-scrollbar-track {
+		background: #f1f1f1;
+	}
+
+	/* Handle */
+	&::-webkit-scrollbar-thumb {
+		background: #bebebe;
+		border-radius: 12px;
+	}
+
+	/* Handle on hover */
+	&::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+	table {
+		border-top: 0;
+	}
+	thead {
+		position: sticky;
+		left: 0;
+		top: 0;
+		z-index: 100;
+	}
+	th {
+		position: sticky;
+		left: 0;
+		top: 0;
+		border-right: 0;
+	}
+	th::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+		border-right: 1px solid #979797;
+	}
+	th:before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		border-bottom: 1px solid #979797;
+	}
+}

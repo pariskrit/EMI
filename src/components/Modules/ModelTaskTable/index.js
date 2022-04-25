@@ -104,7 +104,7 @@ const ModelTaskTable = ({
 	// }, [currentTableSort[0]]);
 
 	return (
-		<>
+		<div className="table-scroll-wrapper">
 			<Table aria-label="Table" className={classes.table}>
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
@@ -193,7 +193,7 @@ const ModelTaskTable = ({
 					)}
 				</TableBody>
 			</Table>
-		</>
+		</div>
 	);
 };
 
