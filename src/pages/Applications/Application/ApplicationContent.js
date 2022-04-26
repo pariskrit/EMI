@@ -7,9 +7,8 @@ import ApplicationActionButtons from "./ApplicationActionButtons";
 import NavButtons from "components/Elements/NavButtons";
 import ApplicationDetails from "./ApplicationDetails";
 import ColourDetails from "./ColourDetails";
-import ApplicationLogo from "./ApplicationLogo";
-import SmallNavLogo from "./SmallNavLogo";
-import OtherAssets from "./OtherAssets/OtherAssets";
+// import ApplicationLogo from "./ApplicationLogo";
+// import SmallNavLogo from "./SmallNavLogo";
 import API from "helpers/api";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
@@ -17,6 +16,15 @@ import { handleValidateObj, generateErrorState } from "helpers/utils";
 import "./application2.css";
 import NavDetails from "components/Elements/NavDetails";
 import { applicationListPath } from "helpers/routePaths";
+import AlertColor from "./alertColor";
+import AssetUpload from "./ApplicationAssetUpload";
+import {
+	uploadAppLogo,
+	uploadMobileWhiteAppLogo,
+	uploadMobileWhiteSmallAppLogo,
+	uploadSmallAppLogo,
+	uploadWaterMark,
+} from "services/applications/detailsScreen/application";
 
 // Init styled components
 const AC = ContentStyle();
@@ -232,7 +240,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 		setIsActive(updatedIsActive);
 	};
 	const handleRedirect = (id) => {
-		history.push(`/application/${id}`);
+		history.push(`${applicationListPath}/${id}`);
 	};
 
 	// Fetching data after pageload
@@ -259,6 +267,8 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 						assetModelStructure: result.allowFacilityBasedModels,
 						showLocations: result.showLocations,
 						showLubricants: result.showLubricants,
+						showModel: result.showModel,
+						showSerialNumberRange: result.showSerialNumberRange,
 						showParts: result.showParts,
 						showOperatingMode: result.showOperatingMode,
 						showSystem: result.showSystem,
@@ -268,6 +278,11 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 						logoFilename: result.logoFilename,
 						isLogoTrademarked: result.isLogoTrademarked,
 						logoURL: result.logoURL,
+						alertColor: `#${result.alertColor}`,
+						watermarkURL: result.watermarkURL,
+						mobileWhiteAppLogoURL: result.mobileWhiteAppLogoURL,
+						mobileSmallWhiteAppLogoURL: result.mobileSmallWhiteAppLogoURL,
+						smallLogoURL: result.smallLogoURL,
 					};
 
 					// Updating state
@@ -332,8 +347,10 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 					<Grid item xs={12}>
 						<ApplicationDetails
 							inputData={inputData}
+							originalInputData={data}
 							setInputData={setInputData}
 							errors={errors}
+							id={id}
 						/>
 					</Grid>
 
@@ -341,105 +358,133 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 					<Grid item xs={6} className="desktopViewGrid">
 						<ColourDetails
 							inputColour={inputData.colour}
-							setInputColour={(newColour) => {
-								setInputData({ ...inputData, ...{ colour: newColour } });
-							}}
-						/>
-					</Grid>
-					<Grid item xs={6} className="desktopViewGrid">
-						<ApplicationLogo
-							logoName={data.logoFilename}
-							logoTrademark={inputData.isLogoTrademarked}
-							logoURL={data.logoURL}
-							newLogoKey={(newLogoKey) => {
-								setInputData({ ...inputData, ...{ logoKey: newLogoKey } });
-							}}
-							newLogoFilename={(newLogoFilename) => {
-								setInputData({
-									...inputData,
-									...{ logoFilename: newLogoFilename },
-								});
-							}}
-							newLogoTrademark={(newTrademark) => {
-								setInputData({
-									...inputData,
-									...{ isLogoTrademarked: newTrademark },
-								});
-							}}
+							setInputColour={setInputData}
 							id={id}
-							handleSave={handleSave}
 						/>
 					</Grid>
+
 					<Grid item xs={6} className="desktopViewGrid">
-						<SmallNavLogo
-							logoURL={data.logoURL}
-							newLogoKey={(newLogoKey) => {
-								setInputData({ ...inputData, ...{ logoKey: newLogoKey } });
-							}}
-							newLogoFilename={(newLogoFilename) => {
-								setInputData({
-									...inputData,
-									...{ logoFilename: newLogoFilename },
-								});
-							}}
+						<AssetUpload
+							imageUrl={inputData.logoURL}
 							id={id}
-							handleSave={handleSave}
+							uploadToS3={uploadAppLogo}
+							title="Application Logo"
+							titleKey="logoKey"
 						/>
 					</Grid>
+
 					<Grid item xs={6} className="desktopViewGrid">
-						<OtherAssets />
+						<AlertColor
+							inputColour={inputData.alertColor}
+							setInputColour={setInputData}
+							id={id}
+						/>
+					</Grid>
+
+					<Grid item xs={6} className="desktopViewGrid">
+						<AssetUpload
+							imageUrl={inputData.watermarkURL}
+							id={id}
+							uploadToS3={uploadWaterMark}
+							title="Watermark"
+							titleKey="watermarkKey"
+						/>
+					</Grid>
+
+					<Grid item xs={6} className="desktopViewGrid">
+						<AssetUpload
+							imageUrl={inputData.smallLogoURL}
+							id={id}
+							uploadToS3={uploadSmallAppLogo}
+							title="Small Navigation Logo"
+							titleKey="smallLogoKey"
+							paddingStyle={{ paddingRight: "2%" }}
+						/>
+					</Grid>
+
+					<Grid item xs={6} className="desktopViewGrid">
+						<AssetUpload
+							imageUrl={inputData.mobileWhiteAppLogoURL}
+							id={id}
+							uploadToS3={uploadMobileWhiteAppLogo}
+							title="Mobile White App Logo"
+							titleKey="mobileWhiteAppLogoKey"
+						/>
+					</Grid>
+
+					<Grid item xs={6} className="desktopViewGrid">
+						<AssetUpload
+							imageUrl={inputData.mobileSmallWhiteAppLogoURL}
+							id={id}
+							uploadToS3={uploadMobileWhiteSmallAppLogo}
+							title="Mobile Small White App Logo"
+							titleKey="mobileSmallWhiteAppLogoKey"
+							paddingStyle={{ paddingRight: "2%" }}
+						/>
 					</Grid>
 
 					{/* ----------------------- Mobile View ----------------------- */}
 					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
 						<ColourDetails
 							inputColour={inputData.colour}
-							setInputColour={(newColour) => {
-								setInputData({ ...inputData, ...{ colour: newColour } });
-							}}
-						/>
-					</Grid>
-					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
-						<ApplicationLogo
-							logoTrademark={inputData.isLogoTrademarked}
-							logoURL={data.logoURL}
-							newLogoKey={(newLogoKey) => {
-								setInputData({ ...inputData, ...{ logoKey: newLogoKey } });
-							}}
-							newLogoFilename={(newLogoFilename) => {
-								setInputData({
-									...inputData,
-									...{ logoFilename: newLogoFilename },
-								});
-							}}
-							newLogoTrademark={(newTrademark) => {
-								setInputData({
-									...inputData,
-									...{ isLogoTrademarked: newTrademark },
-								});
-							}}
+							setInputColour={setInputData}
 							id={id}
-							handleSave={handleSave}
 						/>
 					</Grid>
 					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
-						<SmallNavLogo
-							logoURL={data.logoURL}
-							newLogoKey={(newLogoKey) => {
-								setInputData({ ...inputData, ...{ logoKey: newLogoKey } });
-							}}
-							newLogoFilename={(newLogoFilename) => {
-								setInputData({
-									...inputData,
-									...{ logoFilename: newLogoFilename },
-								});
-							}}
+						<AlertColor
+							inputColour={inputData.alertColor}
+							setInputColour={setInputData}
 							id={id}
-							handleSave={handleSave}
 						/>
 					</Grid>
 					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
-						<OtherAssets />
+						<AssetUpload
+							imageUrl={inputData.logoURL}
+							id={id}
+							uploadToS3={uploadAppLogo}
+							title="Application Logo"
+							titleKey="logoKey"
+						/>
+					</Grid>
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
+						<AssetUpload
+							imageUrl={inputData.smallLogoURL}
+							id={id}
+							uploadToS3={uploadSmallAppLogo}
+							title="Small Navigation Logo"
+							titleKey="smallLogoKey"
+							paddingStyle={{ paddingRight: "2%" }}
+						/>
+					</Grid>
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
+						<AssetUpload
+							imageUrl={inputData.watermarkURL}
+							id={id}
+							uploadToS3={uploadWaterMark}
+							title="Watermark"
+							titleKey="watermarkKey"
+						/>
+					</Grid>
+
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
+						<AssetUpload
+							imageUrl={inputData.mobileWhiteAppLogoURL}
+							id={id}
+							uploadToS3={uploadMobileWhiteAppLogo}
+							title="Mobile White App Logo"
+							titleKey="mobileWhiteAppLogoKey"
+						/>
+					</Grid>
+
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
+						<AssetUpload
+							imageUrl={inputData.mobileSmallWhiteAppLogoURL}
+							id={id}
+							uploadToS3={uploadMobileWhiteSmallAppLogo}
+							title="Mobile Small White App Logo"
+							titleKey="mobileSmallWhiteAppLogoKey"
+						/>
 					</Grid>
 				</Grid>
 			</div>

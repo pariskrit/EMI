@@ -37,6 +37,9 @@ const BASE_API_PATH_DEFECT_RISK_RATINGS = `${BASE_API_PATH}defectriskratings`;
 const BASE_API_PATH_APPLICATION_PORTAL = `${BASE_API_PATH}users/me/clients`;
 const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
 
+// Application
+const BASE_API_PATH_APPLICATIONS = `${BASE_API_PATH}Applications`;
+
 //Users
 const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
 
@@ -251,4 +254,7 @@ export const Apis = {
 	ModelVersionTaskTools: `${BASE_API_PATH_MODEL_TASK_TOOLS}`,
 	ModelVersionTaskPermits: `${BASE_API_PATH_MODEL_TASK_PERMITS}`,
 	ModelVersionTaskAttachments: `${BASE_API_PATH_MODEL_TASK_ATTACHMENTS}`,
+
+	// Application Details
+	Application: `${BASE_API_PATH_APPLICATIONS}`,
 };

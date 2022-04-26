@@ -113,6 +113,11 @@ const DuplicateApplicationDialog = ({
 							onChange={(e) => {
 								setInput({ ...input, name: e.target.value });
 							}}
+							onKeyDown={(e) => {
+								if (e.keyCode === 13) {
+									handleCreateProcess();
+								}
+							}}
 						/>
 					</div>
 				</DialogContent>

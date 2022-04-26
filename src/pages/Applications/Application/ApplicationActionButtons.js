@@ -296,7 +296,7 @@ const ActionButtons = ({
 			</AAB.GeneralButton>
 
 			{/* Rendering button with spinner if saving currently happening */}
-			{isSaving ? (
+			{/* {isSaving ? (
 				<Button
 					disableElevation
 					variant="contained"
@@ -313,7 +313,7 @@ const ActionButtons = ({
 				>
 					Save
 				</AAB.GeneralButton>
-			)}
+			)} */}
 		</AAB.ButtonContainer>
 	);
 };

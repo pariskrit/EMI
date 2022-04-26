@@ -6,8 +6,8 @@ import ColourEditDialog from "./ColourEditDialog";
 import ColourConstants from "helpers/colourConstants";
 import AccordionBox from "components/Layouts/AccordionBox";
 import { updateApplicaitonDetails } from "services/applications/detailsScreen/application";
-import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
 	colourContainer: {
@@ -78,13 +78,12 @@ const ColourDetails = ({ inputColour, setInputColour, id }) => {
 		setOpenEditDialog(false);
 	};
 	const handleUpdateColour = async (newColour) => {
-		// TODO: in prod, this will trigger a PUT fetch
 		const [, ...formattedColor] = [...newColour];
 		try {
 			const payload = [
 				{
 					op: "replace",
-					path: "color",
+					path: "alertColor",
 					value: "" + formattedColor.join(""),
 				},
 			];
@@ -92,12 +91,12 @@ const ColourDetails = ({ inputColour, setInputColour, id }) => {
 			if (response.status) {
 				setInputColour((prev) => ({
 					...prev,
-					colour: "#" + formattedColor.join(""),
+					alertColor: "#" + formattedColor.join(""),
 				}));
 			} else {
 				dispatch(
 					showError(
-						response.data.detail || "could not update primary application color"
+						response.data.detail || "could not update primary alert color"
 					)
 				);
 			}
@@ -119,12 +118,11 @@ const ColourDetails = ({ inputColour, setInputColour, id }) => {
 				handleClose={handleEditClose}
 				handleUpdateColour={handleUpdateColour}
 				currentColour={inputColour}
+				title="Edit Alert Colour"
+				subtitle="Select new alert colour below."
 			/>
 			<div className={`${classes.colourContainer} colorContainer`}>
-				<AccordionBox
-					title="Primary Application Colour"
-					defaultExpanded={false}
-				>
+				<AccordionBox title="Alert Colour" defaultExpanded={false}>
 					<div className={classes.colourContent}>
 						<div className={classes.colourExample} style={bgColour}></div>
 						<div className={classes.colourText}>

@@ -24,6 +24,8 @@ const ColourEditDialog = ({
 	handleClose,
 	handleUpdateColour,
 	currentColour,
+	title = "Edit Application Colour",
+	subtitle = "Select new application colour below.",
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -50,12 +52,12 @@ const ColourEditDialog = ({
 							id="alert-dialog-title"
 							className={classes.dialogTitle}
 						>
-							{"Edit Application Colour"}
+							{title}
 						</DialogTitle>
 
 						<DialogContent>
 							<DialogContentText id="alert-dialog-description">
-								Select new application colour below.
+								{subtitle}
 							</DialogContentText>
 						</DialogContent>
 					</Grid>
