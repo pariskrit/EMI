@@ -168,6 +168,20 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	};
 
 	useEffect(() => {
+		const selectedQuestion = document.getElementById(
+			`row${history.location.state?.modelVersionQuestionID}`
+		);
+		if (
+			!loading.fetch &&
+			history.location.state?.modelVersionQuestionID &&
+			selectedQuestion
+		) {
+			selectedQuestion.style.background = "#ffeb3b";
+			selectedQuestion.scrollIntoView({ block: "center", behavior: "smooth" });
+		}
+	}, [loading, history.location.state]);
+
+	useEffect(() => {
 		const initialFetch = async () => {
 			setLoading((th) => ({ ...th, fetch: true }));
 			await fetchTaskQuestion();

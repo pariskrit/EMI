@@ -39,7 +39,7 @@ function DynamicRow({
 			state: goToTask
 				? {
 						modelVersionTaskID: value?.modelVersionTaskID || value?.taskId,
-						modelVersionQuestionID: value?.id,
+						modelVersionQuestionID: value.type === "task" ? null : value?.id,
 						fromServiceLayout: true,
 				  }
 				: { modelVersionQuestionID: value?.id },
