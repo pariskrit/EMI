@@ -6,7 +6,7 @@ import reorder from "assets/reorder.png";
 import "./style.css";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { modelsPath, modelTask } from "helpers/routePaths";
+import { modelQuestions, modelsPath, modelTask } from "helpers/routePaths";
 
 const style = {
 	color: "#307ad7",
@@ -28,6 +28,22 @@ function DynamicRow({
 			return;
 		}
 		setIsMore({ ...isMore, [id]: { show: true } });
+	};
+
+	const redirectToQuestionsOrTasksTab = (value) => {
+		const goToTask = value.type === "task" || value.type2 === "taskQuestion";
+		history.push({
+			pathname: goToTask
+				? `${modelsPath}/${id}${modelTask}`
+				: `${modelsPath}/${id}${modelQuestions}`,
+			state: goToTask
+				? {
+						modelVersionTaskID: value?.modelVersionTaskID || value?.taskId,
+						modelVersionQuestionID: value?.id,
+						fromServiceLayout: true,
+				  }
+				: { modelVersionQuestionID: value?.id },
+		});
 	};
 
 	useEffect(() => {
@@ -133,7 +149,10 @@ function DynamicRow({
 															: ""
 													}
 													className={`row__questions__item ${
-														val.value.type === "task" ? "cursor link" : ""
+														val.value.type !== "zone" &&
+														val.value.type !== "stage"
+															? "cursor link"
+															: ""
 													} ${
 														val.value.highlightTask ||
 														val.value.highlightQuestion ||
@@ -141,17 +160,8 @@ function DynamicRow({
 															? "highlight"
 															: ""
 													}`}
-													onClick={
-														val.value.type === "task"
-															? () =>
-																	history.push({
-																		pathname: `${modelsPath}/${id}${modelTask}`,
-																		state: {
-																			modelVersionTaskID:
-																				val.value.modelVersionTaskID,
-																		},
-																	})
-															: () => {}
+													onClick={() =>
+														redirectToQuestionsOrTasksTab(val.value)
 													}
 												>
 													{val.value.type === "task"

@@ -41,7 +41,7 @@ export const modifyResponseData = (
 						id: isStages
 							? value.modelVersionStageID
 							: value.modelVersionQuestionID,
-						type: "startQuestion",
+						type: isStages ? "stage" : "startQuestion",
 						sn,
 						highlightQuestion: value.modelVersionQuestionID === questionId,
 						icon: isStages ? stageIcon : questionIcon,
@@ -411,6 +411,7 @@ export const getDataType = (
 						icon: icons["questions"],
 						isDraggable: true,
 						type: "question",
+						type2: data?.type === "task" ? "taskQuestion" : "",
 						sn,
 						id:
 							question.modelVersionQuestionID ||
@@ -418,7 +419,7 @@ export const getDataType = (
 						highlightQuestion:
 							question.modelVersionQuestionID === questionId ||
 							question.modelVersionTaskQuestionID === taskQuestionId,
-
+						taskId: data?.modelVersionTaskID ?? null,
 						grandParentId:
 							data.modelVersionStageID || data.grandParentId || null,
 						parentId: data.parentId ?? data?.id ?? null,

@@ -4,6 +4,7 @@ import reorder from "assets/reorder.png";
 import PopupMenu from "components/Elements/PopupMenu";
 import TableStyle from "styles/application/TableStyle";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { useHistory } from "react-router-dom";
 
 const AT = TableStyle();
 
@@ -11,11 +12,26 @@ const Row = ({ index, provider, row, columns, menuData, isModelEditable }) => {
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
+	const history = useHistory();
 
 	return (
-		<TableRow key={index} {...provider.draggableProps} ref={provider.innerRef}>
+		<TableRow
+			key={index}
+			{...provider.draggableProps}
+			ref={provider.innerRef}
+			id={`row${row?.id}`}
+		>
 			{columns.map((col, i, arr) => (
-				<AT.DataCell key={col.id} style={col?.style}>
+				<AT.DataCell
+					key={col.id}
+					style={{
+						...col?.style,
+						background:
+							history.location.state?.modelVersionQuestionID === row?.id
+								? "#ffeb3b"
+								: "",
+					}}
+				>
 					<AT.CellContainer key={col}>
 						<AT.TableBodyText>
 							{i === 0 ? (

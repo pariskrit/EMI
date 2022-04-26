@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navigation from "./Navigation";
 import { makeStyles } from "@material-ui/core/styles";
 import { LinearProgress } from "@material-ui/core";
@@ -16,6 +16,7 @@ import Images from "./Images";
 import Questions from "./Questions";
 import Attachments from "./Attachments";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export const useStyles = makeStyles({
 	main: {
@@ -30,6 +31,7 @@ export const useStyles = makeStyles({
 });
 
 const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
+	const history = useHistory();
 	const classes = useStyles();
 	const [current, setCurrent] = useState("Details");
 
@@ -42,6 +44,15 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 
 	const [TaskDetailState] = useContext(TaskContext);
 	const { taskInfo: TaskDetail } = TaskDetailState;
+
+	useEffect(() => {
+		if (
+			taskInfo?.id === history.location.state?.modelVersionTaskID &&
+			!taskLoading
+		)
+			setCurrent("question");
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [taskLoading]);
 
 	const currentTab = (currentTab) => {
 		switch (currentTab) {

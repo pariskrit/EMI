@@ -67,6 +67,7 @@ const ModelQuestion = ({
 	const [loading, setLoading] = useState(false);
 	const [duplicating, setDuplicating] = useState(false);
 	const [editMode, setEditMode] = useState(false);
+	const fromSeriveLayoutId = history?.location?.state?.modelVersionQuestionID;
 
 	// HANDLING OPERATIONS
 	function apiResponse(x) {
@@ -165,9 +166,16 @@ const ModelQuestion = ({
 	};
 
 	useEffect(() => {
-		fetchData();
+		const dataIsEmpty = data.length === 0;
+		if (dataIsEmpty) fetchData();
+
+		if (fromSeriveLayoutId && !dataIsEmpty && !loading) {
+			const element = document.getElementById(`row${fromSeriveLayoutId}`);
+			element.scrollIntoView({ behavior: "smooth", block: "center" });
+		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [data, loading]);
 
 	useEffect(() => {
 		if (state.showPasteTask) {
@@ -317,6 +325,7 @@ const ModelQuestion = ({
 	useEffect(() => {
 		checkcopyQuestionStatus();
 		document.addEventListener("visibilitychange", visibilitychangeCheck);
+
 		return () =>
 			document.removeEventListener("visibilitychange", visibilitychangeCheck);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -372,7 +381,6 @@ const ModelQuestion = ({
 	// 	});
 
 	// const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
-
 	const questionTable = useMemo(() => {
 		return (
 			<QuestionTable
