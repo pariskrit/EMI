@@ -72,10 +72,12 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						.getElementById(`taskExpandable${fromSeriveLayoutId}`)
 						.scrollIntoView({
 							behavior: "smooth",
-							top:
-								document
-									.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-									.getBoundingClientRect().bottom + window.pageYOffset,
+							block: "center",
+							inline: "start",
+							// top:
+							// 	document
+							// 		.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+							// 		.getBoundingClientRect().bottom + window.pageYOffset,
 						});
 					shouldExpandRef.current = true;
 				}
@@ -84,7 +86,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	}, [taskList, isLoading, fromSeriveLayoutId]);
 
 	useEffect(() => {
-		if (fromSeriveLayoutId) {
+		if (fromSeriveLayoutId && !isLoading) {
 			const handleScroll = () => {
 				if (
 					!isScrolledOnLoad.current &&
@@ -104,15 +106,18 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 								.scrollIntoView({
 									behavior: "smooth",
 									block: "center",
-									inline: "center",
+									inline: "start",
 								});
 						}, 1000);
 					}, 500);
 				}
 			};
-			window.addEventListener("scroll", handleScroll);
+			const tableWrapper = document.getElementsByClassName(
+				"table-scroll-wrapper"
+			)[0];
+			if (tableWrapper) tableWrapper.addEventListener("scroll", handleScroll);
 		}
-	}, [fromSeriveLayoutId]);
+	}, [fromSeriveLayoutId, isLoading]);
 
 	useEffect(() => {
 		document.body.style.overflowY = "hidden";
@@ -248,7 +253,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 									.getElementById(`taskExpandable${response.data}`)
 									.scrollIntoView({
 										behavior: "smooth",
-										block: "center",
+										block: "start",
 										top:
 											document
 												.getElementById(`taskExpandable${response.data}`)
@@ -264,7 +269,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 											.getElementById(`taskExpandable${response.data}`)
 											.scrollIntoView({
 												behavior: "smooth",
-												block: "center",
+												block: "start",
 												inline: "center",
 											});
 									}, 1000);
@@ -406,7 +411,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				/>
 				<SearchTask fetchData={fetchData} modelId={modelId} classes={classes} />
 			</div>
-			{modelTaskTable}
+			<div className="table-scroll-wrapper">{modelTaskTable}</div>
 		</div>
 	);
 }

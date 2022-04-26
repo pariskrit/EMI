@@ -104,96 +104,93 @@ const ModelTaskTable = ({
 	// }, [currentTableSort[0]]);
 
 	return (
-		<div className="table-scroll-wrapper">
-			<Table aria-label="Table" className={classes.table}>
-				<AT.TableHead>
-					<TableRow className={classes.tableHead}>
-						{headers.map((header, index) => (
-							<TableCell
-								key={header.id}
-								onClick={() => {
-									header?.isSort && handleSortClick(columns[index]);
-								}}
-								style={{ width: header?.width || "auto" }}
-								className={clsx(classes.nameRow, {
-									[classes.selectedTableHeadRow]:
-										currentTableSort[0] === columns[index],
-									[classes.tableHeadRow]:
-										currentTableSort[0] !== columns[index],
-								})}
-							>
-								<AT.CellContainer className="flex justify-between">
-									{header.name}
-									{header.isSort && (
-										<div className="arrow">
-											<AT.DescArrow
-												fill={
-													currentTableSort[0] === columns[index] &&
-													currentTableSort[1] === "asc"
-														? "#D2D2D9"
-														: "#F9F9FC"
-												}
-												className="arrowUp"
-											/>
-											<AT.DefaultArrow
-												fill={
-													currentTableSort[0] === columns[index] &&
-													currentTableSort[1] === "desc"
-														? "#D2D2D9"
-														: "#F9F9FC"
-												}
-												className="arrowDown"
-											/>
-										</div>
-									)}
-								</AT.CellContainer>
-							</TableCell>
-						))}
-					</TableRow>
-				</AT.TableHead>
-				<TableBody>
-					{data.length !== 0 ? (
-						sortData(data, currentTableSort[0], currentTableSort[1]).map(
-							(row, index) => (
-								<TaskDetailContext key={row.id}>
-									<ModelTaskRow
-										key={row.id}
-										row={row}
-										index={index}
-										handleEdit={handleEdit}
-										handleDelete={handleDelete}
-										handleCopy={handleCopy}
-										handleCopyTaskQuestion={handleCopyTaskQuestion}
-										classes={classes}
-										columns={columns}
-										data={data}
-										modelId={modelId}
-										customCaptions={customCaptions}
-										access={access}
-										totalTaskCount={totalTaskCount}
-										fetchData={fetchData}
-									/>
-								</TaskDetailContext>
-							)
-						)
-					) : (
-						<TableRow>
-							{headers.map((head, i) => {
-								if (i === 0) {
-									return (
-										<TableCell key={head.id}>
-											{isDataLoading ? "Data Loading..." : "No Record Found"}
-										</TableCell>
-									);
-								} else {
-									return <TableCell key={head.id}></TableCell>;
-								}
+		<Table aria-label="Table" className={classes.table}>
+			<AT.TableHead>
+				<TableRow className={classes.tableHead}>
+					{headers.map((header, index) => (
+						<TableCell
+							key={header.id}
+							onClick={() => {
+								header?.isSort && handleSortClick(columns[index]);
+							}}
+							style={{ width: header?.width || "auto" }}
+							className={clsx(classes.nameRow, {
+								[classes.selectedTableHeadRow]:
+									currentTableSort[0] === columns[index],
+								[classes.tableHeadRow]: currentTableSort[0] !== columns[index],
 							})}
-						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-		</div>
+						>
+							<AT.CellContainer className="flex justify-between">
+								{header.name}
+								{header.isSort && (
+									<div className="arrow">
+										<AT.DescArrow
+											fill={
+												currentTableSort[0] === columns[index] &&
+												currentTableSort[1] === "asc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowUp"
+										/>
+										<AT.DefaultArrow
+											fill={
+												currentTableSort[0] === columns[index] &&
+												currentTableSort[1] === "desc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowDown"
+										/>
+									</div>
+								)}
+							</AT.CellContainer>
+						</TableCell>
+					))}
+				</TableRow>
+			</AT.TableHead>
+			<TableBody>
+				{data.length !== 0 ? (
+					sortData(data, currentTableSort[0], currentTableSort[1]).map(
+						(row, index) => (
+							<TaskDetailContext key={row.id}>
+								<ModelTaskRow
+									key={row.id}
+									row={row}
+									index={index}
+									handleEdit={handleEdit}
+									handleDelete={handleDelete}
+									handleCopy={handleCopy}
+									handleCopyTaskQuestion={handleCopyTaskQuestion}
+									classes={classes}
+									columns={columns}
+									data={data}
+									modelId={modelId}
+									customCaptions={customCaptions}
+									access={access}
+									totalTaskCount={totalTaskCount}
+									fetchData={fetchData}
+								/>
+							</TaskDetailContext>
+						)
+					)
+				) : (
+					<TableRow>
+						{headers.map((head, i) => {
+							if (i === 0) {
+								return (
+									<TableCell key={head.id}>
+										{isDataLoading ? "Data Loading..." : "No Record Found"}
+									</TableCell>
+								);
+							} else {
+								return <TableCell key={head.id}></TableCell>;
+							}
+						})}
+					</TableRow>
+				)}
+			</TableBody>
+		</Table>
 	);
 };
 

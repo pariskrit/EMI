@@ -177,3 +177,7 @@
 		border-bottom: 1px solid #979797;
 	}
 }
+
+div[role="tooltip"] {
+	z-index: 1000;
+}
