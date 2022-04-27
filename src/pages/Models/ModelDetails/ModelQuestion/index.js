@@ -166,16 +166,19 @@ const ModelQuestion = ({
 	};
 
 	useEffect(() => {
-		const dataIsEmpty = data.length === 0;
-		if (dataIsEmpty) fetchData();
+		fetchData();
+	}, []);
 
-		if (fromSeriveLayoutId && !dataIsEmpty && !loading) {
+	useEffect(() => {
+		if (fromSeriveLayoutId && !loading) {
 			const element = document.getElementById(`row${fromSeriveLayoutId}`);
-			element.scrollIntoView({ behavior: "smooth", block: "center" });
+			element &&
+				element.scrollIntoView({ behavior: "smooth", block: "center" });
+			element && (element.style.background = "#ffeb3b");
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, loading]);
+	}, [loading]);
 
 	useEffect(() => {
 		if (state.showPasteTask) {
@@ -197,7 +200,14 @@ const ModelQuestion = ({
 					});
 
 					if (result.status) {
-						if (!isMounted.aborted) await fetchQuestions();
+						if (!isMounted.aborted) {
+							await fetchQuestions();
+							triggerRef.current.scrollIntoView({
+								behavior: "smooth",
+								block: "end",
+								inline: "nearest",
+							});
+						}
 					} else {
 						if (result.data.detail) getError(result.data.detail);
 						else getError("Something went wrong");
@@ -352,8 +362,13 @@ const ModelQuestion = ({
 		setQuestionId(null);
 	};
 
-	const handleAddEditComplete = () => {
-		fetchQuestions();
+	const handleAddEditComplete = async () => {
+		await fetchQuestions();
+		triggerRef.current.scrollIntoView({
+			behavior: "smooth",
+			block: "end",
+			inline: "nearest",
+		});
 	};
 
 	const handleOptions = (responseData) => {

@@ -5,7 +5,7 @@ import { getAPIResponse } from "helpers/getApiResponse";
 //#region get locations
 const getSiteLocations = async (siteId) => {
 	try {
-		let response = await API.get(`${Apis.SiteLocations}?siteAppId=${siteId}`);
+		let response = await API.get(`${Apis.SiteLocations}?siteId=${siteId}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
