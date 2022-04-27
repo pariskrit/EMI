@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -65,10 +65,13 @@ const DropUpload = ({
 	// Init hooks
 	const classes = useStyles();
 
+	const [localLoading, setLocalLoading] = useState(false);
+
 	// Hook called when a file is dropped
 	const onDrop = useCallback(
 		(acceptedFiles) => {
 			// Setting spinner
+			showProgress && setLocalLoading(true);
 			setFilesUploading(true);
 
 			// Getting filetype
@@ -136,13 +139,18 @@ const DropUpload = ({
 
 			// Getting URL from stream if success
 			if (uploadLink.status === 200) {
+				showProgress && setLocalLoading(false);
+
 				return uploadLink.data;
 			} else {
 				// Printing failure
 				console.log(uploadLink);
+				showProgress && setLocalLoading(false);
+
 				throw new Error(`Unable to get link`);
 			}
 		} catch (err) {
+			showProgress && setLocalLoading(false);
 			// TODO: real error handling
 			console.log(err);
 
@@ -203,9 +211,15 @@ const DropUpload = ({
 					{!showProgress ? (
 						<CircularProgress />
 					) : (
-						<Typography variant="body1" className={classes.loadingText}>
-							{uploadPercentCompleted}%
-						</Typography>
+						<>
+							{localLoading ? (
+								<CircularProgress />
+							) : (
+								<Typography variant="body1" className={classes.loadingText}>
+									{uploadPercentCompleted}%
+								</Typography>
+							)}
+						</>
 					)}
 				</div>
 			</div>

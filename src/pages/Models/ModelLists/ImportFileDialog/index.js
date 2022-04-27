@@ -3,6 +3,7 @@ import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
+	LinearProgress,
 	makeStyles,
 } from "@material-ui/core";
 import { BASE_API_PATH } from "helpers/constants";
@@ -30,6 +31,12 @@ const useStyles = makeStyles({
 			width: "auto",
 		},
 	},
+	loading: {
+		position: "absolute",
+		width: "100%",
+		left: 0,
+		top: 0,
+	},
 });
 
 const ImportFileDialouge = ({
@@ -45,6 +52,7 @@ const ImportFileDialouge = ({
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [show, setShow] = useState(false);
+	const [fetchLoading, setFetchLoading] = useState(false);
 
 	const closeOverride = () => {
 		handleClose();
@@ -52,34 +60,19 @@ const ImportFileDialouge = ({
 	};
 
 	const importDocument = async (Key, imp) => {
+		setLoading(false);
+		setFetchLoading(true);
+		handleClose();
 		try {
-			const response = await API.post(
-				`${BASE_API_PATH}ModelImports/prepare`,
-				{
-					Key,
-					SiteAppID: siteAppID,
-					import: imp,
-				},
-				{
-					onUploadProgress: (progressEvent) => {
-						let percentCompleted = Math.floor(
-							(progressEvent.loaded * 5) / progressEvent.total
-						);
-						setUploadPercentCompleted((prev) => prev + percentCompleted);
-						// do whatever you like with the percentage complete
-						// maybe dispatch an action that will update a progress bar or something
-					},
-				}
-			);
+			const response = await API.post(`${BASE_API_PATH}ModelImports/prepare`, {
+				Key,
+				SiteAppID: siteAppID,
+				import: imp,
+			});
 			if (response.status === 201 || response.status === 200) {
-				setUploadPercentCompleted((prev) => 99);
 				await importSuccess();
-				setUploadPercentCompleted((prev) => 100);
-
 				return response;
 			} else {
-				setUploadPercentCompleted((prev) => 99);
-
 				if (response.data.detail) {
 					dispatch(
 						showNotications({
@@ -93,7 +86,6 @@ const ImportFileDialouge = ({
 			}
 			setLoading(false);
 		} catch (err) {
-			setUploadPercentCompleted((prev) => 99);
 			dispatch(
 				showNotications({
 					show: true,
@@ -102,50 +94,53 @@ const ImportFileDialouge = ({
 				})
 			);
 			return err;
+		} finally {
+			setFetchLoading(false);
+			setUploadPercentCompleted(0);
+			setLoading(false);
 		}
 	};
 
 	const onDocumentUpload = async (key, url) => {
 		importDocument(key, true).then(async (res) => {
-			setTimeout(() => {
-				setShow(true);
-				closeOverride();
-				setLoading(false);
-				setUploadPercentCompleted(0);
-			}, 100);
+			setShow(true);
+			closeOverride();
 		});
 	};
 
 	return (
-		<Dialog open={open} onClose={closeOverride} fullWidth maxWidth="md">
-			<AT.ActionContainer>
-				<DialogTitle>
-					<AT.HeaderText>Upload File</AT.HeaderText>
-				</DialogTitle>
-				<AT.ButtonContainer>
-					<AT.CancelButton variant="contained" onClick={closeOverride}>
-						Cancel
-					</AT.CancelButton>
-				</AT.ButtonContainer>
-			</AT.ActionContainer>
-			<DialogContent>
-				<div className={classes.content}>
-					{!show && (
-						<DropUpload
-							filesUploading={loading}
-							setFilesUploading={setLoading}
-							isImageUploaded={false}
-							uploadReturn={onDocumentUpload}
-							apiPath={`${BASE_API_PATH}ModelImports/upload`}
-							showProgress
-							uploadPercentCompleted={uploadPercentCompleted}
-							setUploadPercentCompleted={setUploadPercentCompleted}
-							percentMultiplyBy={90}
-						/>
-					)}
-				</div>
-			</DialogContent>
-		</Dialog>
+		<>
+			{fetchLoading && <LinearProgress className={classes.loading} />}
+			<Dialog open={open} onClose={closeOverride} fullWidth maxWidth="md">
+				<AT.ActionContainer>
+					<DialogTitle>
+						<AT.HeaderText>Upload File</AT.HeaderText>
+					</DialogTitle>
+					<AT.ButtonContainer>
+						<AT.CancelButton variant="contained" onClick={closeOverride}>
+							Cancel
+						</AT.CancelButton>
+					</AT.ButtonContainer>
+				</AT.ActionContainer>
+				<DialogContent>
+					<div className={classes.content}>
+						{!show && (
+							<DropUpload
+								filesUploading={loading}
+								setFilesUploading={setLoading}
+								isImageUploaded={false}
+								uploadReturn={onDocumentUpload}
+								apiPath={`${BASE_API_PATH}ModelImports/upload`}
+								showProgress
+								uploadPercentCompleted={uploadPercentCompleted}
+								setUploadPercentCompleted={setUploadPercentCompleted}
+								percentMultiplyBy={100}
+							/>
+						)}
+					</div>
+				</DialogContent>
+			</Dialog>
+		</>
 	);
 };
 
