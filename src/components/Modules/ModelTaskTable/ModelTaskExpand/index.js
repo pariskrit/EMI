@@ -46,7 +46,13 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 	const { taskInfo: TaskDetail } = TaskDetailState;
 
 	useEffect(() => {
-		if (history.location.state?.modelVersionQuestionID && !taskLoading)
+		const isTaskWithHighlightedQuestion =
+			history.location.state?.modelVersionTaskID === taskInfo.id;
+		if (
+			isTaskWithHighlightedQuestion &&
+			history.location.state?.modelVersionQuestionID &&
+			!taskLoading
+		)
 			setCurrent("question");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [taskLoading]);
