@@ -369,7 +369,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				{access === "F" && !state?.modelDetail?.isPublished && (
 					<>
 						<GeneralButton
-							style={{ background: "#ED8738" }}
+							style={{ background: "#ED8738", width: "200px" }}
 							onClick={handlePaste}
 							disabled={!pastePart}
 						>
@@ -379,6 +379,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 							onClick={() => {
 								setOpenAddAttachment(true);
 							}}
+							style={{ width: "200px" }}
 						>
 							Add Attachment
 						</AT.GeneralButton>

@@ -31,6 +31,7 @@ function reducer(state, action) {
 			return {
 				...state,
 				taskError: { ...state.taskError, [payload.name]: payload.value },
+			};
 		case "TOGGLE_CUSTOM_INTERVALS":
 			return {
 				...state,
