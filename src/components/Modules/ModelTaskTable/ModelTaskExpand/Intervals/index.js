@@ -12,14 +12,16 @@ import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import { ModelContext } from "contexts/ModelDetailContext";
+import EMICheckbox from "components/Elements/EMICheckbox";
+import { patchModelTask } from "services/models/modelDetails/modelTasks";
 
-const Intervals = ({ taskId, access, isMounted }) => {
+const Intervals = ({ taskInfo, access, isMounted }) => {
 	const [intervals, setIntervals] = useState([]);
 	const [isLoading, setIsloading] = useState(true);
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [selectedIntervalsCount, setSelectedIntervalsCount] = useState(0);
 	const dispatch = useDispatch();
-	const [, CtxDispatch] = useContext(TaskContext);
+	const [taskDetails, CtxDispatch] = useContext(TaskContext);
 	const [state] = useContext(ModelContext);
 	const me =
 		JSON.parse(sessionStorage.getItem("me")) ||
@@ -33,13 +35,15 @@ const Intervals = ({ taskId, access, isMounted }) => {
 		if (access === "R" || state?.modelDetail?.isPublished) {
 			return;
 		}
+		if (!taskDetails?.taskInfo?.customIntervals && checked) return;
+
 		const tempIntervals = [...intervals];
 
 		let response = null;
 		setIsDisabled(true);
 		if (checked) {
 			response = await checkSelected({
-				modelVersionTaskID: taskId,
+				modelVersionTaskID: taskInfo.id,
 				modelVersionIntervalID: intervalId,
 			});
 			setIntervals([
@@ -49,25 +53,6 @@ const Intervals = ({ taskId, access, isMounted }) => {
 						: interval
 				),
 			]);
-			setSelectedIntervalsCount(
-				intervals.filter((x) => Boolean(x.id)).length + 1
-			);
-			CtxDispatch({
-				type: "TAB_COUNT",
-				payload: {
-					countTab: "intervalCount",
-					data: intervals.filter((x) => Boolean(x.id)).length + 1,
-				},
-			});
-			document
-				.getElementById(`taskExpandable${taskId}`)
-				.querySelector(`#dataCellintervals > div >p`).innerHTML = intervals
-				.map((z) =>
-					z.modelVersionIntervalID === intervalId ? { ...z, id: true } : z
-				)
-				.filter((x) => Boolean(x.id))
-				.map((x) => x.name)
-				.join(",");
 		} else {
 			setIntervals([
 				...tempIntervals.map((interval) =>
@@ -77,73 +62,108 @@ const Intervals = ({ taskId, access, isMounted }) => {
 				),
 			]);
 			response = await unCheckSelected(taskIntervalId);
-
-			setSelectedIntervalsCount(
-				intervals.filter((x) => Boolean(x.id)).length - 1
-			);
-			CtxDispatch({
-				type: "TAB_COUNT",
-				payload: {
-					countTab: "intervalCount",
-					data: intervals.filter((x) => Boolean(x.id)).length - 1,
-				},
-			});
-			document
-				.getElementById(`taskExpandable${taskId}`)
-				.querySelector(`#dataCellintervals > div >p`).innerHTML = intervals
-				.map((z) =>
-					z.modelVersionIntervalID === intervalId ? { ...z, id: null } : z
-				)
-				.filter((x) => Boolean(x.id))
-				.map((x) => x.name)
-				.join(",");
 		}
 
 		if (!response.status) {
 			setIntervals(tempIntervals);
-			dispatch(showError("Could not update"));
+			dispatch(showError(response.data || "Could not update"));
+		} else {
+			const filteredIntervals = intervals.filter((x) => Boolean(x.id)).length;
+			const counts = checked ? filteredIntervals + 1 : filteredIntervals - 1;
+			setSelectedIntervalsCount(counts);
+			CtxDispatch({
+				type: "TAB_COUNT",
+				payload: {
+					countTab: "intervalCount",
+					data: counts,
+				},
+			});
+			document
+				.getElementById(`taskExpandable${taskInfo.id}`)
+				.querySelector(`#dataCellintervals > div >p`).innerHTML = intervals
+				.map((z) =>
+					z.modelVersionIntervalID === intervalId
+						? { ...z, id: checked ? true : null }
+						: z
+				)
+				.filter((x) => Boolean(x.id))
+				.map((x) => x.name)
+				.join(",");
+			await fetchModelTaskIntervals();
 		}
-
 		setIsDisabled(false);
 	};
 
 	const fetchModelTaskIntervals = useCallback(async () => {
-		if (intervals.length === 0) {
-			const response = await getModelVersionTaskIntervals(taskId);
-			if (response.status) {
-				if (!isMounted.aborted) {
-					setIntervals([
-						...response.data.map((interval) => ({
-							...interval,
-							checked: !!interval.id,
-						})),
-					]);
-					setSelectedIntervalsCount(
-						response.data.filter((interval) => Boolean(interval.id)).length
-					);
-				}
-			} else {
-				dispatch(showError("Could not get intervals"));
+		const response = await getModelVersionTaskIntervals(taskInfo.id);
+		if (response.status) {
+			if (!isMounted.aborted) {
+				setIntervals([
+					...response.data.map((interval) => ({
+						...interval,
+						checked: !!interval.id,
+					})),
+				]);
+				setSelectedIntervalsCount(
+					response.data.filter((interval) => Boolean(interval.id)).length
+				);
 			}
-
-			if (!isMounted.aborted) setIsloading(false);
+		} else {
+			dispatch(showError("Could not get intervals"));
 		}
-	}, [taskId, isMounted, dispatch, intervals]);
 
+		if (!isMounted.aborted) setIsloading(false);
+	}, [taskInfo.id, isMounted, dispatch]);
+
+	const onCustomCheckboxInputChange = async () => {
+		CtxDispatch({ type: "TOGGLE_CUSTOM_INTERVALS" });
+		setIsDisabled(true);
+		const res = await patchModelTask(taskInfo.id, [
+			{
+				path: "customIntervals",
+				op: "replace",
+				value: !taskInfo.customIntervals,
+			},
+		]);
+		if (!res.status) CtxDispatch({ type: "TOGGLE_CUSTOM_INTERVALS" });
+
+		setIsDisabled(false);
+		console.log(res);
+	};
 	useEffect(() => {
-		fetchModelTaskIntervals();
-	}, [fetchModelTaskIntervals]);
+		if (intervals.length === 0) fetchModelTaskIntervals();
+	}, [fetchModelTaskIntervals, intervals]);
 
 	if (isLoading) {
 		return <CircularProgress />;
 	}
-
 	return (
 		<div>
-			<DetailsPanel
-				header={me.customCaptions.intervalPlural}
-				dataCount={selectedIntervalsCount}
-			/>
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<DetailsPanel
+					header={me.customCaptions.intervalPlural}
+					dataCount={selectedIntervalsCount}
+				/>
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						width: "50%",
+						justifyContent: "end",
+					}}
+				>
+					<EMICheckbox
+						state={taskDetails?.taskInfo?.customIntervals}
+						changeHandler={onCustomCheckboxInputChange}
+						disabled={isDisabled}
+					/>
+					<p>
+						This {me?.customCaptions?.task} has Custom{" "}
+						{me?.customCaptions?.intervalPlural}
+					</p>
+				</div>
+			</div>
+
 			<IntervalTable
 				data={intervals}
 				loading={isLoading}

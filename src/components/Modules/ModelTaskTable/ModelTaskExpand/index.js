@@ -62,7 +62,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 			case "Details":
 				return <Details taskInfo={taskInfo} access={access} />;
 			case "interval":
-				return <Intervals taskId={taskInfo.id} access={access} />;
+				return <Intervals taskInfo={taskInfo} access={access} />;
 			case "stage":
 				return <Stages taskInfo={taskInfo} access={access} />;
 			case "zone":

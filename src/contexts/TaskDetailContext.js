@@ -26,6 +26,15 @@ function reducer(state, action) {
 				current: payload,
 			};
 
+		case "TOGGLE_CUSTOM_INTERVALS":
+			return {
+				...state,
+				taskInfo: {
+					...state.taskInfo,
+					customIntervals: !state.taskInfo.customIntervals,
+				},
+			};
+
 		default:
 			return state;
 	}

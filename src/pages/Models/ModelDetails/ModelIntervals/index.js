@@ -15,12 +15,12 @@ import DeleteDialog from "./DeleteDialog";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import EditDialog from "./EditDialog";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import { updateModel } from "services/models/modelDetails/details";
 
 function ModelInterval({ state, dispatch, modelId, access }) {
 	const [isLoading, setIsLoading] = useState(true);
-	const [enableAutoIncludeIntervals, setEnableAutoIncludeIntervals] = useState(
-		false
-	);
+	const [isDisabled, setDisabled] = useState(false);
+
 	const [modelIntervals, setModelIntervals] = useState([]);
 	const [originalModelIntervals, setOriginalModelIntervals] = useState([]);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState({
@@ -63,8 +63,24 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 	const onCloseDeleteDialog = () =>
 		setOpenDeleteDialog({ id: null, open: false });
 
-	const onCheckboxInputChange = () =>
-		setEnableAutoIncludeIntervals(!enableAutoIncludeIntervals);
+	const onCheckboxInputChange = async () => {
+		dispatch({ type: "TOGGLE_ENABLE_INTERVALS" });
+
+		setDisabled(true);
+		const response = await updateModel(modelId, [
+			{
+				path: "EnableIntervalAutoInclude",
+				op: "replace",
+				value: !state?.modelDetail?.enableIntervalAutoInclude,
+			},
+		]);
+
+		if (!response.status) {
+			dispatch({ type: "TOGGLE_ENABLE_INTERVALS" });
+		}
+
+		setDisabled(false);
+	};
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -144,7 +160,6 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 
 	const fetchModelIntervals = useCallback(async () => {
 		const response = await getModelIntervals(modelId);
-
 		if (response.status) {
 			const tempModelIntervals = response.data.map((interval) => ({
 				...interval,
@@ -172,10 +187,14 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 	}, [modelId, reduxDispatch, dispatch]);
 
 	useEffect(() => {
-		fetchModelIntervals();
-	}, [fetchModelIntervals]);
+		if (modelIntervals.length === 0) fetchModelIntervals();
+	}, [fetchModelIntervals, modelIntervals]);
 	const isReadOnly = access === "R";
 	const isEditOnly = access === "E";
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 	return (
 		<div>
 			<AddDialog
@@ -183,13 +202,17 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 				closeHandler={onCloseAddDialog}
 				autoIncludeIntervals={modelIntervals}
 				handleAddData={handleAddClick}
-				enableAutoIncludeIntervals={enableAutoIncludeIntervals}
+				enableAutoIncludeIntervals={
+					state?.modelDetail?.enableIntervalAutoInclude
+				}
 				captions={{ interval, intervalPlural, taskListNo, taskListNoPlural }}
 			/>
 			<EditDialog
 				open={openEditDialog.open}
 				closeHandler={onCloseEditDialog}
-				enableAutoIncludeIntervals={enableAutoIncludeIntervals}
+				enableAutoIncludeIntervals={
+					state?.modelDetail?.enableIntervalAutoInclude
+				}
 				intervalId={openEditDialog.id}
 				fetchModelIntervals={fetchModelIntervals}
 				modelId={modelId}
@@ -218,66 +241,67 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 						}}
 					>
 						<EMICheckbox
-							state={enableAutoIncludeIntervals}
+							state={state?.modelDetail?.enableIntervalAutoInclude}
 							changeHandler={onCheckboxInputChange}
+							disabled={isDisabled}
 						/>
 						<p>Enable Auto-Include of {intervalPlural}</p>
 					</div>
 				)}
 			</div>
 
-			{isLoading ? (
-				<CircularProgress />
-			) : (
-				<DragAndDropTable
-					data={modelIntervals}
-					headers={
-						enableAutoIncludeIntervals
-							? ["Name", taskListNoPlural, `Auto-Include ${intervalPlural}`]
-							: ["Name", taskListNoPlural]
-					}
-					columns={
-						enableAutoIncludeIntervals
-							? [
-									{ id: 1, name: "name", style: { width: "33vw" } },
-									{ id: 2, name: "taskListNos", style: { width: "33vw" } },
-									{
-										id: 3,
-										name: "autoIncludeIntervals",
-										style: { width: "33vw" },
-									},
-							  ]
-							: [
-									{ id: 1, name: "name", style: { width: "50vw" } },
-									{ id: 2, name: "taskListNos", style: { width: "50vw" } },
-							  ]
-					}
-					handleDragEnd={handleDragEnd}
-					isModelEditable={true}
-					disableDnd={isReadOnly || state?.modelDetail?.isPublished}
-					menuData={[
-						{
-							name: "Edit",
-							handler: onOpenEditDialog,
-							isDelete: false,
-						},
-						{
-							name: "Delete",
-							handler: onOpenDeleteDialog,
-							isDelete: true,
-						},
-					].filter((x) => {
-						if (state?.modelDetail?.isPublished) return false;
+			<DragAndDropTable
+				data={modelIntervals}
+				headers={
+					state?.modelDetail?.enableIntervalAutoInclude
+						? ["Name", `Auto-Include ${intervalPlural}`, taskListNoPlural]
+						: ["Name", taskListNoPlural]
+				}
+				columns={
+					state?.modelDetail?.enableIntervalAutoInclude
+						? [
+								{ id: 1, name: "name", style: { width: "33vw" } },
+								{
+									id: 2,
+									name: "autoIncludeIntervals",
+									style: { width: "33vw" },
+								},
+								{
+									id: 3,
+									name: "taskListNos",
+									style: { width: "33vw" },
+								},
+						  ]
+						: [
+								{ id: 1, name: "name", style: { width: "50vw" } },
+								{ id: 2, name: "taskListNos", style: { width: "50vw" } },
+						  ]
+				}
+				handleDragEnd={handleDragEnd}
+				isModelEditable={true}
+				disableDnd={isReadOnly || state?.modelDetail?.isPublished}
+				menuData={[
+					{
+						name: "Edit",
+						handler: onOpenEditDialog,
+						isDelete: false,
+					},
+					{
+						name: "Delete",
+						handler: onOpenDeleteDialog,
+						isDelete: true,
+					},
+				].filter((x) => {
+					if (state?.modelDetail?.isPublished) return false;
 
-						if (isReadOnly) return false;
-						if (isEditOnly) {
-							if (x.name === "Edit") return true;
-							else return false;
-						}
-						return true;
-					})}
-				/>
-			)}
+					if (isReadOnly) return false;
+					if (isEditOnly) {
+						if (x.name === "Edit") return true;
+						else return false;
+					}
+					return true;
+				})}
+			/>
 		</div>
 	);
 }

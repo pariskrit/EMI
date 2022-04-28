@@ -38,7 +38,6 @@ const useStyles = makeStyles({
 		borderColor: ColourConstants.tableBorder,
 		borderWidth: 1,
 		borderRadius: 0,
-		margin: "20px 0",
 	},
 });
 

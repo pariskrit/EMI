@@ -63,6 +63,16 @@ function reducer(state, action) {
 				...state,
 				showVersion: payload,
 			};
+
+		case "TOGGLE_ENABLE_INTERVALS":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					enableIntervalAutoInclude: !state.modelDetail
+						.enableIntervalAutoInclude,
+				},
+			};
 		case "DISABLE_PASTE_TASK":
 			return { ...state, isPasteTaskDisabled: payload };
 
