@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -17,6 +17,8 @@ import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { ModelContext } from "contexts/ModelDetailContext";
+import GeneralButton from "components/Elements/GeneralButton";
+import { pasteModelTaskPart } from "services/models/modelDetails/modelTasks/pasteApi";
 
 const AT = ActionButtonStyle();
 
@@ -29,6 +31,8 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 	const [openEditPart, setOpenEditPart] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [pastePart, setPastePart] = useState(false);
+	const [isPasting, setIsPasting] = useState(false);
 
 	const [, CtxDispatch] = useContext(TaskContext);
 	const [state] = useContext(ModelContext);
@@ -164,6 +168,59 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 		]);
 	};
 
+	const handleCopy = (id) => {
+		setPastePart(true);
+		localStorage.setItem("taskpart", id);
+	};
+
+	const handlePaste = async () => {
+		setIsPasting(true);
+		try {
+			const taskPartId = localStorage.getItem("taskpart");
+			let result = await pasteModelTaskPart(taskInfo.id, {
+				modelVersionTaskPartID: taskPartId,
+			});
+
+			if (!isMounted.aborted) {
+				if (result.status) {
+					await fetchParts(false);
+				} else {
+					// errorResponse(result);
+					dispatch(showError(result?.data?.detail || "Could not paste"));
+				}
+			}
+		} catch (e) {
+			return;
+		}
+		setIsPasting(false);
+	};
+
+	const checkcopyPartStatus = async () => {
+		try {
+			const taskId = localStorage.getItem("taskpart");
+
+			if (taskId) {
+				setPastePart(true);
+			}
+		} catch (error) {
+			return;
+		}
+	};
+
+	const visibilitychangeCheck = function () {
+		if (!document.hidden) {
+			checkcopyPartStatus();
+		}
+	};
+
+	useEffect(() => {
+		checkcopyPartStatus();
+		document.addEventListener("visibilitychange", visibilitychangeCheck);
+		return () =>
+			document.removeEventListener("visibilitychange", visibilitychangeCheck);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	if (loading) return <CircularProgress />;
 	return (
 		<div style={{ marginBottom: "20px" }}>
@@ -212,15 +269,25 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 					dataCount={parts.length}
 				/>
 				{access === "F" && !state?.modelDetail?.isPublished && (
-					<AT.GeneralButton
-						onClick={() => {
-							setOpenAddPart(true);
-						}}
-					>
-						Add {customCaptions.part}
-					</AT.GeneralButton>
+					<>
+						<GeneralButton
+							style={{ background: "#ED8738" }}
+							onClick={handlePaste}
+							disabled={!pastePart}
+						>
+							Paste {customCaptions.part}
+						</GeneralButton>
+						<AT.GeneralButton
+							onClick={() => {
+								setOpenAddPart(true);
+							}}
+						>
+							Add {customCaptions.part}
+						</AT.GeneralButton>
+					</>
 				)}
 			</div>
+			{isPasting ? <LinearProgress /> : null}
 			<DragAndDropTable
 				data={parts}
 				headers={[
@@ -241,6 +308,10 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 						name: "Edit",
 						handler: showEditPartPopUp,
 						isDelete: false,
+					},
+					{
+						name: "Copy",
+						handler: handleCopy,
 					},
 					{
 						name: "Delete",

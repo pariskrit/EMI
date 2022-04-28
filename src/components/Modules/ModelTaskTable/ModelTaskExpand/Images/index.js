@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { makeStyles, CircularProgress } from "@material-ui/core";
+import {
+	makeStyles,
+	CircularProgress,
+	LinearProgress,
+} from "@material-ui/core";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import {
 	getImages,
 	updateImage,
 } from "services/models/modelDetails/modelTasks/images";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import GeneralButton from "components/Elements/GeneralButton";
 import AddEditModel from "./AddEditModel";
@@ -16,6 +20,7 @@ import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { ModelContext } from "contexts/ModelDetailContext";
+import { pasteModelTaskImage } from "services/models/modelDetails/modelTasks/pasteApi";
 import ImageViewer from "components/Elements/ImageViewer";
 
 const useStyles = makeStyles({
@@ -38,6 +43,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 	const access = me?.position?.modelAccess;
 
 	const classes = useStyles();
+	const dispatch = useDispatch();
 
 	const [, CtxDispatch] = useContext(TaskContext);
 	const [state] = useContext(ModelContext);
@@ -51,6 +57,8 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		originalData: [],
 		count: taskInfo.imageCount,
 	});
+	const [pastePart, setPastePart] = useState(false);
+	const [isPasting, setIsPasting] = useState(false);
 	const [openImage, setOPenImage] = useState(false);
 	const [ImageToOpen, setImageToOpen] = useState(null);
 
@@ -79,12 +87,12 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		else getError("Something went wrong");
 	};
 
-	const fetchTaskImages = async () => {
-		setState({ loading: true });
+	const fetchTaskImages = async (showLoading = true) => {
+		showLoading && setState({ loading: true });
 		try {
 			let result = await getImages(taskInfo.id);
 			if (!isMounted.aborted) {
-				setState({ loading: false });
+				showLoading && setState({ loading: false });
 				if (result.status) {
 					const responseData = result.data.map((x) => apiResponse(x));
 					setState({ data: responseData, originalData: responseData });
@@ -193,6 +201,59 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		setState({ delete: false, imageId: null });
 	};
 
+	const handleCopy = (id) => {
+		setPastePart(true);
+		localStorage.setItem("taskimage", id);
+	};
+
+	const handlePaste = async () => {
+		setIsPasting(true);
+		try {
+			const taskPartId = localStorage.getItem("taskimage");
+			let result = await pasteModelTaskImage(taskInfo.id, {
+				modelVersionTaskImageID: taskPartId,
+			});
+
+			if (!isMounted.aborted) {
+				if (result.status) {
+					await fetchTaskImages(false);
+				} else {
+					// errorResponse(result);
+					dispatch(showError(result?.data?.detail || "Could not paste"));
+				}
+			}
+		} catch (e) {
+			return;
+		}
+		setIsPasting(false);
+	};
+
+	const checkcopyPartStatus = async () => {
+		try {
+			const taskId = localStorage.getItem("taskimage");
+
+			if (taskId) {
+				setPastePart(true);
+			}
+		} catch (error) {
+			return;
+		}
+	};
+
+	const visibilitychangeCheck = function () {
+		if (!document.hidden) {
+			checkcopyPartStatus();
+		}
+	};
+
+	useEffect(() => {
+		checkcopyPartStatus();
+		document.addEventListener("visibilitychange", visibilitychangeCheck);
+		return () =>
+			document.removeEventListener("visibilitychange", visibilitychangeCheck);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	if (images.loading) {
 		return <CircularProgress />;
 	}
@@ -230,11 +291,22 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 				<div className={classes.header}>
 					<DetailsPanel header={`Images`} dataCount={images.count} />
 					{access === "F" && !state?.modelDetail?.isPublished ? (
-						<GeneralButton onClick={() => setState({ open: true })}>
-							ADD IMAGE
-						</GeneralButton>
+						<>
+							<GeneralButton
+								style={{ background: "#ED8738" }}
+								onClick={handlePaste}
+								disabled={!pastePart}
+							>
+								Paste {"Image"}
+							</GeneralButton>
+							<GeneralButton onClick={() => setState({ open: true })}>
+								ADD IMAGE
+							</GeneralButton>
+						</>
 					) : null}
 				</div>
+				{isPasting ? <LinearProgress /> : null}
+
 				<DragAndDropTable
 					data={images.data}
 					handleDragEnd={handleDragEnd}
@@ -250,6 +322,10 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 							name: "Edit",
 							handler: handleEdit,
 							isDelete: false,
+						},
+						{
+							name: "Copy",
+							handler: handleCopy,
 						},
 						{
 							name: "Delete",

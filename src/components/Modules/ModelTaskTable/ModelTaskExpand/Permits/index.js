@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -17,6 +17,8 @@ import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { ModelContext } from "contexts/ModelDetailContext";
+import GeneralButton from "components/Elements/GeneralButton";
+import { pasteModelTaskPermit } from "services/models/modelDetails/modelTasks/pasteApi";
 
 const AT = ActionButtonStyle();
 
@@ -29,6 +31,8 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 	const [openEditPermit, setOpenEditPermit] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [pastePart, setPastePart] = useState(false);
+	const [isPasting, setIsPasting] = useState(false);
 
 	const [, CtxDispatch] = useContext(TaskContext);
 	const [state] = useContext(ModelContext);
@@ -157,6 +161,59 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 		]);
 	};
 
+	const handleCopy = (id) => {
+		setPastePart(true);
+		localStorage.setItem("taskpermit", id);
+	};
+
+	const handlePaste = async () => {
+		setIsPasting(true);
+		try {
+			const taskPartId = localStorage.getItem("taskpermit");
+			let result = await pasteModelTaskPermit(taskInfo.id, {
+				modelVersionTaskPermitID: taskPartId,
+			});
+
+			if (!isMounted.aborted) {
+				if (result.status) {
+					await fetchPermits(false);
+				} else {
+					// errorResponse(result);
+					dispatch(showError(result?.data?.detail || "Could not paste"));
+				}
+			}
+		} catch (e) {
+			return;
+		}
+		setIsPasting(false);
+	};
+
+	const checkcopyPartStatus = async () => {
+		try {
+			const taskId = localStorage.getItem("taskpermit");
+
+			if (taskId) {
+				setPastePart(true);
+			}
+		} catch (error) {
+			return;
+		}
+	};
+
+	const visibilitychangeCheck = function () {
+		if (!document.hidden) {
+			checkcopyPartStatus();
+		}
+	};
+
+	useEffect(() => {
+		checkcopyPartStatus();
+		document.addEventListener("visibilitychange", visibilitychangeCheck);
+		return () =>
+			document.removeEventListener("visibilitychange", visibilitychangeCheck);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	if (loading) return <CircularProgress />;
 	return (
 		<div style={{ marginBottom: "20px" }}>
@@ -197,15 +254,26 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 			>
 				<DetailsPanel header={`Permits`} dataCount={permits.length} />
 				{access === "F" && !state.modelDetail?.isPublished && (
-					<AT.GeneralButton
-						onClick={() => {
-							setOpenAddPermit(true);
-						}}
-					>
-						Add Permit
-					</AT.GeneralButton>
+					<>
+						<GeneralButton
+							style={{ background: "#ED8738" }}
+							onClick={handlePaste}
+							disabled={!pastePart}
+						>
+							Paste {"Permit"}
+						</GeneralButton>
+						<AT.GeneralButton
+							onClick={() => {
+								setOpenAddPermit(true);
+							}}
+						>
+							Add Permit
+						</AT.GeneralButton>
+					</>
 				)}
 			</div>
+			{isPasting ? <LinearProgress /> : null}
+
 			<DragAndDropTable
 				data={permits}
 				headers={["Name"]}
@@ -216,6 +284,10 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 						name: "Edit",
 						handler: showEditPermitPopUp,
 						isDelete: false,
+					},
+					{
+						name: "Copy",
+						handler: handleCopy,
 					},
 					{
 						name: "Delete",
