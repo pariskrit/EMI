@@ -84,6 +84,7 @@ const ModelTaskTable = ({
 	fetchData,
 	access,
 	isDataLoading,
+	originalData,
 }) => {
 	const classes = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
@@ -170,6 +171,7 @@ const ModelTaskTable = ({
 									access={access}
 									totalTaskCount={totalTaskCount}
 									fetchData={fetchData}
+									originalRow={originalData[index]}
 								/>
 							</TaskDetailContext>
 						)

@@ -5,6 +5,8 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import ColourConstants from "helpers/colourConstants";
 import PropTypes from "prop-types";
+import ErrorIcon from "@material-ui/icons/Error";
+import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 
 const media = "@media(max-width: 768px)";
 
@@ -89,7 +91,16 @@ const Navigation = ({ navigation, current, onClick }) => {
 								onClick={() => onClick(navItem.name)}
 								key={index}
 							>
-								{navItem.label}
+								<span className="caption-label">
+									{navItem.hasError ? (
+										<ErrorMessageWithErrorIcon
+											message={navItem?.errorMessage}
+										/>
+									) : (
+										""
+									)}
+									{navItem.label}
+								</span>
 							</Button>
 						);
 					})}

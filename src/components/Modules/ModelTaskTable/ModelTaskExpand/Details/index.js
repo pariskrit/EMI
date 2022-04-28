@@ -24,6 +24,8 @@ import {
 } from "services/models/modelDetails/modelVersionTaskRole";
 import withMount from "components/HOC/withMount";
 import SafteryCritical from "assets/icons/safety-critical.svg";
+import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
+import { TaskContext } from "contexts/TaskDetailContext";
 
 const ADD = AddDialogStyle();
 
@@ -78,6 +80,7 @@ const TaskDetails = ({
 	const reduxDispatch = useDispatch();
 
 	const [modelState] = useContext(ModelContext);
+	const [, taskDispatch] = useContext(TaskContext);
 	const {
 		modelDetail: { id, modelID: modelDefaultId, isPublished },
 	} = modelState;
@@ -94,6 +97,51 @@ const TaskDetails = ({
 			setLocalTaskInfo(taskInfo);
 		}
 	}, [taskInfo]);
+
+	useEffect(() => {
+		if (
+			localTaskInfo?.roles === null ||
+			localTaskInfo?.roles?.filter((r) => r.id !== null).length === 0
+		) {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: `No ${customCaptions?.rolePlural} Assigned`,
+				},
+			});
+		} else {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: "",
+				},
+			});
+		}
+		if (+localTaskInfo.estimatedMinutes <= 0) {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: `Invalid Estimated Minutes`,
+				},
+			});
+		} else {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: "",
+				},
+			});
+		}
+	}, [
+		customCaptions.rolePlural,
+		localTaskInfo.roles,
+		taskDispatch,
+		localTaskInfo.estimatedMinutes,
+	]);
 
 	// checking the access of the user to allow or disallow edit add.
 	const isReadOnly = access === "R";
@@ -437,6 +485,12 @@ const TaskDetails = ({
 								isReadOnly={isReadOnly || isPublished}
 								disabled={isUpdating.role}
 								fetchData={() => getModelRolesList(id)}
+								showErrorIcon={
+									localTaskInfo?.roles === null ||
+									localTaskInfo?.roles?.filter((r) => r.id !== null).length ===
+										0
+								}
+								errorMessage={`No ${customCaptions?.rolePlural} Assigned`}
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -512,7 +566,14 @@ const TaskDetails = ({
 							/>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
-							<ADD.NameLabel>Estimated Minutes</ADD.NameLabel>
+							<ADD.NameLabel>
+								<div className="caption-label">
+									<span>Estimated Minutes</span>
+									{+localTaskInfo.estimatedMinutes <= 0 && (
+										<ErrorMessageWithErrorIcon message="Invalid Estimated Minutes" />
+									)}
+								</div>
+							</ADD.NameLabel>
 							<ADD.NameInput
 								value={localTaskInfo?.estimatedMinutes ?? 0}
 								onChange={(e) =>

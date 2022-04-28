@@ -28,6 +28,7 @@ import AddEditModel from "./AddEditModel";
 import { Tooltip } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
+import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 // import useLazyLoad from "hooks/useLazyLoad";
 
 const HtmlTooltip = withStyles((theme) => ({
@@ -79,7 +80,12 @@ const ModelQuestion = ({
 		return {
 			...x,
 			compulsory: x.isCompulsory ? "Yes" : "No",
-			modelRoles: x.roles.map((x) => x.name).join(","),
+			modelRoles:
+				x.roles === null || x.roles?.length === 0 ? (
+					<ErrorMessageWithErrorIcon message={`No ${rolePlural} Assigned`} />
+				) : (
+					x.roles.map((x) => x.name).join(",")
+				),
 			modelType: questionType.label,
 			modelTiming: timingType.label,
 			additional:
@@ -91,22 +97,26 @@ const ModelQuestion = ({
 					</>
 				) : type === "O" || type === "C" ? (
 					<>
-						<HtmlTooltip
-							title={x.options
-								.sort((a, b) => a.name.localeCompare(b.name))
-								.map((a) => a.name)
-								.join(", ")}
-							className="max-two-line"
-						>
-							<span>
-								{" "}
-								<strong>Options : </strong>&nbsp;
-								{x.options
+						{x?.options === null || x?.options?.length === 0 ? (
+							<ErrorMessageWithErrorIcon message="No Options Assigned" />
+						) : (
+							<HtmlTooltip
+								title={x.options
 									.sort((a, b) => a.name.localeCompare(b.name))
 									.map((a) => a.name)
 									.join(", ")}
-							</span>
-						</HtmlTooltip>
+								className="max-two-line"
+							>
+								<span>
+									{" "}
+									<strong>Options : </strong>&nbsp;
+									{x.options
+										.sort((a, b) => a.name.localeCompare(b.name))
+										.map((a) => a.name)
+										.join(", ")}
+								</span>
+							</HtmlTooltip>
+						)}
 					</>
 				) : type === "N" ? (
 					<>

@@ -353,3 +353,9 @@
 .position-relative {
 	position: relative;
 }
+
+.caption-label {
+	display: flex;
+	align-items: center;
+	gap: 10px !important;
+}

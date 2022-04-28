@@ -25,6 +25,7 @@ import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { Tooltip } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { ModelContext } from "contexts/ModelDetailContext";
+import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -99,8 +100,14 @@ function apiResponse(d) {
 						<p className="max-two-line">
 							<span>
 								{" "}
-								<strong>Options : </strong>&nbsp;
-								{d?.options.map((a) => a.name).join(", ")}
+								{d?.options === null || d?.options?.length === 0 ? (
+									<ErrorMessageWithErrorIcon message={"No Options Assigned"} />
+								) : (
+									<>
+										<strong>Options : </strong>&nbsp;
+										{d?.options.map((a) => a.name).join(", ")}
+									</>
+								)}
 							</span>
 						</p>
 					</HtmlTooltip>

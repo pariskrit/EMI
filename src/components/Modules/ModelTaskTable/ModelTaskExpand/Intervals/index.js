@@ -95,7 +95,8 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 	};
 
 	const fetchModelTaskIntervals = useCallback(async () => {
-		const response = await getModelVersionTaskIntervals(taskInfo.id);
+	const response = await getModelVersionTaskIntervals(taskInfo.id);
+
 		if (response.status) {
 			if (!isMounted.aborted) {
 				setIntervals([
@@ -111,7 +112,6 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 		} else {
 			dispatch(showError("Could not get intervals"));
 		}
-
 		if (!isMounted.aborted) setIsloading(false);
 	}, [taskInfo.id, isMounted, dispatch]);
 

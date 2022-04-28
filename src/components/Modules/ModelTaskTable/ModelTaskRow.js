@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { useState, useContext, memo, useMemo } from "react";
+import React, { useState, useContext, memo, useMemo, useEffect } from "react";
 import TableRow from "@material-ui/core/TableRow";
 import { Collapse, LinearProgress, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
@@ -18,13 +18,13 @@ import {
 	getSingleModelTask,
 } from "services/models/modelDetails/modelTasks";
 import useDidMountEffect from "hooks/useDidMountEffect";
-import ErrorIcon from "@material-ui/icons/Error";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { ModelContext } from "contexts/ModelDetailContext";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { Apis } from "services/api";
 import { makeStyles } from "@material-ui/core/styles";
+import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 
 const useStyles = makeStyles({
 	loading: {
@@ -61,6 +61,7 @@ const ModelTaskRow = ({
 	access,
 	fetchData,
 	isMounted,
+	originalRow,
 }) => {
 	const [toggle, setToggle] = useState(false);
 	const [singleTask, setSingleTask] = useState({});
@@ -74,8 +75,9 @@ const ModelTaskRow = ({
 	const dispatch = useDispatch();
 	const rowClasses = useStyles();
 
-	const [, CtxDispatch] = useContext(TaskContext);
+	const [taskState, CtxDispatch] = useContext(TaskContext);
 	const [state, ModelCtxDispatch] = useContext(ModelContext);
+	const { taskError } = taskState;
 
 	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
 
@@ -171,6 +173,78 @@ const ModelTaskRow = ({
 		setOpenDeleteDialog(true);
 	};
 
+	useEffect(() => {
+		if (row?.intervals === "") {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "interval",
+					value: `No ${customCaptions?.intervalPlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "interval",
+					value: "",
+				},
+			});
+		}
+		if (row?.stages === "") {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "stage",
+					value: `No ${customCaptions?.stagePlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "stage",
+					value: "",
+				},
+			});
+		}
+		if (row?.roles === "") {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: `No ${customCaptions?.rolePlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: "",
+				},
+			});
+		}
+		if (+row?.estimatedMinutes <= 0) {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: `Invalid Estimated Minutes`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: "",
+				},
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [row, CtxDispatch]);
+
 	const taskRow = useMemo(() => {
 		return (
 			<>
@@ -211,7 +285,11 @@ const ModelTaskRow = ({
 									row[col] === "" ? (
 										""
 									) : (
-										<ErrorIcon style={{ color: toggle ? "#FFFFFF" : "red" }} />
+										<ErrorMessageWithErrorIcon
+											message={Object.values(taskState?.taskError)?.filter(
+												Boolean
+											)}
+										/>
 									)
 								) : (
 									<span className="lastSpan" draggable="true">
@@ -315,6 +393,7 @@ const ModelTaskRow = ({
 								taskInfo={singleTask}
 								taskLoading={loading}
 								access={access}
+								originalRow={originalRow}
 							/>
 						</Collapse>
 					</TableCell>
@@ -331,6 +410,7 @@ const ModelTaskRow = ({
 		selectedData,
 		index,
 		loading,
+		taskError,
 	]);
 
 	return (

@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import Navigation from "./Navigation";
 import { makeStyles } from "@material-ui/core/styles";
 import { LinearProgress } from "@material-ui/core";
-
+import Navigation from "./Navigation";
 import Details from "./Details";
 import Intervals from "./Intervals";
 import Stages from "./Stages";
@@ -30,7 +29,7 @@ export const useStyles = makeStyles({
 	component: { width: "95%", margin: "auto" },
 });
 
-const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
+const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
 	const history = useHistory();
 	const classes = useStyles();
 	const [current, setCurrent] = useState("Details");
@@ -42,7 +41,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
-	const [TaskDetailState] = useContext(TaskContext);
+	const [TaskDetailState, taskDispatch] = useContext(TaskContext);
 	const { taskInfo: TaskDetail } = TaskDetailState;
 
 	useEffect(() => {
@@ -56,6 +55,111 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 			setCurrent("question");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [taskLoading]);
+
+	useEffect(() => {
+		if (!TaskDetail?.intervalCount || 0) {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "interval",
+					value: `No ${customCaptions?.intervalPlural} Assigned`,
+				},
+			});
+		} else {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "interval",
+					value: "",
+				},
+			});
+		}
+		if (!TaskDetail?.stageCount || 0) {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "stage",
+					value: `No ${customCaptions?.stagePlural} Assigned`,
+				},
+			});
+		} else {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "stage",
+					value: "",
+				},
+			});
+		}
+		if (
+			originalRow.stages.filter((x) => x.hasZones).length > 0 &&
+			TaskDetail?.zoneCount === 0
+		) {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "zone",
+					value: `No ${customCaptions?.zonePlural} Assigned`,
+				},
+			});
+		} else {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "zone",
+					value: "",
+				},
+			});
+		}
+		if (
+			TaskDetail?.roles === null ||
+			TaskDetail?.roles?.filter((r) => r.id !== null).length === 0
+		) {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: `No ${customCaptions?.rolePlural} Assigned`,
+				},
+			});
+		} else {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: "",
+				},
+			});
+		}
+		if (+TaskDetail.estimatedMinutes <= 0) {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: `Invalid Estimated Minutes`,
+				},
+			});
+		} else {
+			taskDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: "",
+				},
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		TaskDetail.intervalCount,
+		taskDispatch,
+		customCaptions.intervalPlural,
+		customCaptions.stagePlural,
+		TaskDetail.stageCount,
+		TaskDetail.zoneCount,
+		TaskDetail.estimatedMinutes,
+		TaskDetail.roles,
+		originalRow.stages,
+	]);
 
 	const currentTab = (currentTab) => {
 		switch (currentTab) {
@@ -115,18 +219,28 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access }) => {
 									TaskDetail?.intervalCount || 0
 								})`,
 								name: "interval",
+								hasError: !TaskDetail?.intervalCount || 0 ? true : false,
+								errorMessage: `No ${customCaptions?.intervalPlural} Assigned`,
 							},
 							{
 								label: `${customCaptions?.stagePlural} (${
 									TaskDetail?.stageCount || 0
 								})`,
 								name: "stage",
+								hasError: !TaskDetail?.stageCount || 0 ? true : false,
+								errorMessage: `No ${customCaptions?.stagePlural} Assigned`,
 							},
 							{
 								label: `${customCaptions?.zonePlural} (${
 									TaskDetail?.zoneCount || 0
 								})`,
 								name: "zone",
+								hasError:
+									originalRow.stages.filter((x) => x.hasZones).length > 0 &&
+									TaskDetail?.zoneCount === 0
+										? true
+										: false,
+								errorMessage: `No ${customCaptions?.zonePlural} Assigned`,
 							},
 							...(showParts
 								? [

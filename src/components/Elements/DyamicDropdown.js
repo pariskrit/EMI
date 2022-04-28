@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
+import ErrorIcon from "@material-ui/icons/Error";
 import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import useInfiniteScroll from "hooks/useDropdownInfiniteScroll";
@@ -17,6 +18,7 @@ import {
 	DROPDOWN_RIGHT_OFFSET,
 	DROPDOWN_TOP_OFFSET,
 } from "helpers/constants";
+import ErrorMessageWithErrorIcon from "./ErrorMessageWithErrorIcon";
 
 const ADD = AddDialogStyle();
 const AT = TableStyle();
@@ -116,6 +118,8 @@ function DyanamicDropdown(props) {
 		showBorderColor,
 		isError,
 		fetchData,
+		showErrorIcon = false,
+		errorMessage = "",
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -425,8 +429,15 @@ function DyanamicDropdown(props) {
 					}}
 				>
 					<Typography className="label">
-						{label}
-						{required && <span className="required">*</span>}
+						<div className="caption-label">
+							<span>
+								{label}
+								{required && <span className="required">*</span>}
+							</span>
+							{showErrorIcon && (
+								<ErrorMessageWithErrorIcon message={errorMessage} />
+							)}
+						</div>
 					</Typography>
 
 					{showClear && (

@@ -43,6 +43,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [isLoading, setLoading] = useState(true);
 	const [isDataLoading, setDataLoading] = useState(true);
 	const [taskList, setTaskList] = useState([]);
+	const [originalTaskList, setOriginalTaskList] = useState([]);
 
 	const [isPasting, setPasting] = useState(false);
 
@@ -187,6 +188,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						setDataLoading(true);
 						setTimeout(() => {
 							setTaskList(taskList);
+							setOriginalTaskList(response[0].data);
 							setDataLoading(false);
 						}, 1);
 					}
@@ -391,6 +393,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				headers={dymanicTableHeader(showOperatingMode, customCaptions).header}
 				columns={dymanicTableHeader(showOperatingMode, customCaptions).columns}
 				data={taskList}
+				originalData={originalTaskList}
 				modelId={modelId}
 				pageSize={perPage}
 				pageNo={pageNumber}

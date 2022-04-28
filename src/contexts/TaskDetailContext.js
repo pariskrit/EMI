@@ -3,6 +3,7 @@ import React, { createContext, useReducer } from "react";
 const initialState = {
 	taskInfo: {},
 	current: "Details",
+	taskError: {},
 };
 
 function reducer(state, action) {
@@ -26,6 +27,10 @@ function reducer(state, action) {
 				current: payload,
 			};
 
+		case "SET_TASK_ERROR":
+			return {
+				...state,
+				taskError: { ...state.taskError, [payload.name]: payload.value },
 		case "TOGGLE_CUSTOM_INTERVALS":
 			return {
 				...state,
