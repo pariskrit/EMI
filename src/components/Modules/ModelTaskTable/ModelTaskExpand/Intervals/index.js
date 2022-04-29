@@ -35,7 +35,13 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 		if (access === "R" || state?.modelDetail?.isPublished) {
 			return;
 		}
-		if (!taskDetails?.taskInfo?.customIntervals && checked) return;
+
+		if (
+			checked &&
+			!taskDetails?.taskInfo?.customIntervals &&
+			intervals.some((interval) => interval.checked)
+		)
+			return;
 
 		const tempIntervals = [...intervals];
 
@@ -49,7 +55,7 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 			setIntervals([
 				...tempIntervals.map((interval) =>
 					interval.modelVersionIntervalID === intervalId
-						? { ...interval, checked: checked, id: response.data }
+						? { ...interval, checked, id: response.data }
 						: interval
 				),
 			]);
@@ -57,7 +63,7 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 			setIntervals([
 				...tempIntervals.map((interval) =>
 					interval.modelVersionIntervalID === intervalId
-						? { ...interval, checked: checked, id: null }
+						? { ...interval, checked, id: null }
 						: interval
 				),
 			]);
@@ -95,7 +101,7 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 	};
 
 	const fetchModelTaskIntervals = useCallback(async () => {
-	const response = await getModelVersionTaskIntervals(taskInfo.id);
+		const response = await getModelVersionTaskIntervals(taskInfo.id);
 
 		if (response.status) {
 			if (!isMounted.aborted) {

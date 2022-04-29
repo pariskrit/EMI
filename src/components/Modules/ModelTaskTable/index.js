@@ -67,6 +67,12 @@ const useStyles = makeStyles({
 		color: ColourConstants.commonText,
 		opacity: "50%",
 	},
+	taskHeader: {
+		position: "sticky",
+		left: 0,
+		top: 0,
+		zIndex: 100,
+	},
 });
 
 const ModelTaskTable = ({
@@ -106,7 +112,7 @@ const ModelTaskTable = ({
 
 	return (
 		<Table aria-label="Table" className={classes.table}>
-			<AT.TableHead>
+			<AT.TableHead className={classes.taskHeader}>
 				<TableRow className={classes.tableHead}>
 					{headers.map((header, index) => (
 						<TableCell
