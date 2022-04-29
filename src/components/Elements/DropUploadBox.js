@@ -168,6 +168,7 @@ const DropUpload = ({
 						(progressEvent.loaded * percentMultiplyBy) / progressEvent.total
 					);
 					showProgress && setUploadPercentCompleted((prev) => percentCompleted);
+
 					// do whatever you like with the percentage complete
 					// maybe dispatch an action that will update a progress bar or something
 				},

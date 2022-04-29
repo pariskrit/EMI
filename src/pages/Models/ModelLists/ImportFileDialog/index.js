@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -107,6 +107,14 @@ const ImportFileDialouge = ({
 			closeOverride();
 		});
 	};
+
+	useEffect(() => {
+		if (uploadPercentCompleted === 100) {
+			setLoading(false);
+			handleClose();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [uploadPercentCompleted]);
 
 	return (
 		<>

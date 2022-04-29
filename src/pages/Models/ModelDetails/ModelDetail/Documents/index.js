@@ -34,17 +34,16 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 	const dispatch = useDispatch();
 
 	const onDocumentUpload = async (key, url) => {
+		setFilesUploading(false);
 		const response = await uploadDocument({ modelId, documentKey: key });
 		if (response.status) {
 			const documents = await getModelDocuments(modelId);
-
 			setDocumentError("");
 			setListOfDocuments(documents.data);
 		} else {
 			dispatch(showError("Could not upload document"));
 		}
 
-		setFilesUploading(false);
 		setUploadPercentCompleted(0);
 	};
 
@@ -74,6 +73,12 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 			setListOfDocuments(documents);
 		}
 	}, [documents, listOfDocuments]);
+
+	useEffect(() => {
+		if (uploadPercentCompleted === 100) {
+			setFilesUploading(false);
+		}
+	}, [uploadPercentCompleted]);
 	return (
 		<>
 			<DeleteDialog
