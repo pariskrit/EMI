@@ -205,6 +205,9 @@ const TaskDetails = ({
 					ModelVersionRoleID: id,
 				});
 				if (response.status) {
+					taskInfo["roles"] = localTaskInfo?.roles?.map((r) =>
+						r.modelVersionRoleID === id ? { ...r, id: response.data } : r
+					);
 					setLocalTaskInfo({
 						...localTaskInfo,
 						roles: localTaskInfo?.roles?.map((r) =>
@@ -249,6 +252,9 @@ const TaskDetails = ({
 			try {
 				const response = await removeModelVersionTaskRole(roleToFind?.id);
 				if (response.status) {
+					taskInfo["roles"] = localTaskInfo?.roles?.map((r) =>
+						r.modelVersionRoleID === id ? { ...r, id: null } : r
+					);
 					setLocalTaskInfo({
 						...localTaskInfo,
 						roles: localTaskInfo?.roles?.map((r) =>
