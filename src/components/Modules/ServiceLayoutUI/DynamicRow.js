@@ -31,6 +31,8 @@ function DynamicRow({
 	};
 
 	const redirectToQuestionsOrTasksTab = (value) => {
+		if (value?.type === "stage") return;
+
 		const goToTask = value.type === "task" || value.type2 === "taskQuestion";
 		history.push({
 			pathname: goToTask

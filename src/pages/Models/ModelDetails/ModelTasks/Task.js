@@ -59,8 +59,8 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 
 	const reduxDispatch = useDispatch();
 
-	// const fromSeriveLayoutId = 9089;
-	const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
+	const fromSeriveLayoutId = 24102;
+	// const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
 
 	useEffect(() => {
 		if (
@@ -75,13 +75,14 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						.getElementById(`taskExpandable${fromSeriveLayoutId}`)
 						.scrollIntoView({
 							behavior: "smooth",
-							block: "center",
+							block: "start",
 							inline: "start",
 							// top:
 							// 	document
 							// 		.getElementById(`taskExpandable${fromSeriveLayoutId}`)
 							// 		.getBoundingClientRect().bottom + window.pageYOffset,
 						});
+
 					shouldExpandRef.current = true;
 				}
 			}, 1000);
@@ -108,13 +109,15 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 								.getElementById(`taskExpandable${fromSeriveLayoutId}`)
 								.scrollIntoView({
 									behavior: "smooth",
-									block: "center",
+									block: "start",
 									inline: "start",
 								});
 						}, 1000);
 					}, 500);
 				}
 			};
+			handleScroll();
+
 			const tableWrapper = document.getElementsByClassName(
 				"table-scroll-wrapper"
 			)[0];
