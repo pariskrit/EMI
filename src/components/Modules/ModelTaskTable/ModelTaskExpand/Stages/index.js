@@ -200,6 +200,18 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							data: stages.stageCount + 1,
 						},
 					});
+					CtxDispatch({
+						type: "SET_STAGE_NAME",
+						payload: stages.data
+							.map((z) =>
+								z.modelVersionStageID === data.ModelVersionStageID
+									? { ...z, id: true }
+									: z
+							)
+							.filter((x) => Boolean(x.id))
+							.map((x) => x.name)
+							.join(","),
+					});
 					document
 						.getElementById(`taskExpandable${taskInfo.id}`)
 						.querySelector(`#dataCellstages > div >p`).innerHTML = stages.data
@@ -248,6 +260,14 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							countTab: "stageCount",
 							data: stages.stageCount - 1,
 						},
+					});
+					CtxDispatch({
+						type: "SET_STAGE_NAME",
+						payload: stages.data
+							.map((z) => (z.id === stageId ? { ...z, id: null } : z))
+							.filter((x) => Boolean(x.id))
+							.map((x) => x.name)
+							.join(","),
 					});
 					document
 						.getElementById(`taskExpandable${taskInfo.id}`)

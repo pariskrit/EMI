@@ -4,6 +4,7 @@ const initialState = {
 	taskInfo: {},
 	current: "Details",
 	taskError: {},
+	stageName: "",
 };
 
 function reducer(state, action) {
@@ -40,6 +41,8 @@ function reducer(state, action) {
 					customIntervals: !state.taskInfo.customIntervals,
 				},
 			};
+		case "SET_STAGE_NAME":
+			return { ...state, stageName: payload };
 
 		default:
 			return state;

@@ -77,7 +77,7 @@ const ModelTaskRow = ({
 
 	const [taskState, CtxDispatch] = useContext(TaskContext);
 	const [state, ModelCtxDispatch] = useContext(ModelContext);
-	const { taskError } = taskState;
+	const { taskError, taskInfo } = taskState;
 
 	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
 
@@ -174,7 +174,7 @@ const ModelTaskRow = ({
 	};
 
 	useEffect(() => {
-		if (row?.intervals === "") {
+		if (row?.intervals === "" || taskInfo?.intervalCount === 0 || 0) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -191,7 +191,7 @@ const ModelTaskRow = ({
 				},
 			});
 		}
-		if (row?.stages === "") {
+		if (row?.stages === "" || taskInfo?.stageCount === 0 || 0) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -208,7 +208,11 @@ const ModelTaskRow = ({
 				},
 			});
 		}
-		if (row?.roles === "") {
+		if (
+			row?.roles === "" ||
+			taskInfo?.roles === null ||
+			taskInfo?.roles?.filter((r) => r.id !== null).length === 0
+		) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -225,7 +229,7 @@ const ModelTaskRow = ({
 				},
 			});
 		}
-		if (+row?.estimatedMinutes <= 0) {
+		if (+row?.estimatedMinutes <= 0 || +taskInfo.estimatedMinutes <= 0) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -242,8 +246,31 @@ const ModelTaskRow = ({
 				},
 			});
 		}
+		if (
+			(originalRow?.stages?.filter((x) => x.hasZones)?.length > 0 &&
+				row?.zones === "" &&
+				row?.stages !== "") ||
+			!taskInfo?.roles === null ||
+			taskInfo?.roles?.filter((r) => r.id !== null).length === 0
+		) {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "zone",
+					value: `No ${customCaptions?.zonePlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "zone",
+					value: "",
+				},
+			});
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [row, CtxDispatch]);
+	}, [row, CtxDispatch, originalRow]);
 
 	const taskRow = useMemo(() => {
 		return (
@@ -282,7 +309,9 @@ const ModelTaskRow = ({
 										</p>
 									</HtmlTooltip>
 								) : col === "errors" ? (
-									row[col] === "" ? (
+									row[col] === "" ||
+									Object.values(taskState?.taskError)?.filter(Boolean)
+										.length === 0 ? (
 										""
 									) : (
 										<ErrorMessageWithErrorIcon

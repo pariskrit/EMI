@@ -57,7 +57,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
 	}, [taskLoading]);
 
 	useEffect(() => {
-		if (!TaskDetail?.intervalCount || 0) {
+		if (TaskDetail?.intervalCount === 0 || 0) {
 			taskDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -74,7 +74,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
 				},
 			});
 		}
-		if (!TaskDetail?.stageCount || 0) {
+		if (TaskDetail?.stageCount === 0 || 0) {
 			taskDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -92,8 +92,15 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
 			});
 		}
 		if (
-			originalRow.stages.filter((x) => x.hasZones).length > 0 &&
-			TaskDetail?.zoneCount === 0
+			(originalRow.stages.filter((x) => x.hasZones).length > 0 &&
+				TaskDetail?.zoneCount === 0 &&
+				TaskDetail?.stageCount !== 0) ||
+			(originalRow.stages
+				.filter((x) => x.hasZones)
+				.map((x) => x.name)
+				.some((x) => TaskDetailState.stageName.split(",").includes(x)) &&
+				TaskDetail?.zoneCount === 0 &&
+				TaskDetail?.stageCount !== 0)
 		) {
 			taskDispatch({
 				type: "SET_TASK_ERROR",
@@ -236,8 +243,17 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
 								})`,
 								name: "zone",
 								hasError:
-									originalRow.stages.filter((x) => x.hasZones).length > 0 &&
-									TaskDetail?.zoneCount === 0
+									(originalRow.stages.filter((x) => x.hasZones).length > 0 &&
+										TaskDetail?.zoneCount === 0 &&
+										TaskDetail?.stageCount !== 0) ||
+									(originalRow.stages
+										.filter((x) => x.hasZones)
+										.map((x) => x.name)
+										.some((x) =>
+											TaskDetailState.stageName.split(",").includes(x)
+										) &&
+										TaskDetail?.zoneCount === 0 &&
+										TaskDetail?.stageCount !== 0)
 										? true
 										: false,
 								errorMessage: `No ${customCaptions?.zonePlural} Assigned`,
