@@ -60,7 +60,7 @@ const navList = [
 		icon: UserIcon,
 		path: usersPath,
 		access: access.userAccess,
-		roles: [roles.superAdmin, roles.clientAdmin],
+		roles: [roles.superAdmin, roles.clientAdmin, roles.siteUser],
 	},
 	{
 		activeName: "Analytics",

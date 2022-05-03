@@ -1,11 +1,16 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import SingleComponent from "./SingleComponent";
-import { userDetailPath, userProfilePath } from "helpers/routePaths";
+import {
+	userDetailPath,
+	userDetailSitePath,
+	userProfilePath,
+} from "helpers/routePaths";
 import CommonUserComponent from "components/Modules/CommonUserComponent";
 import differentUserAPIs from "helpers/differentUserAPIs";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import UserSite from "../UserDetail/UserSites";
 
 const routes = [
 	{
@@ -32,14 +37,36 @@ const routes = [
 		api: differentUserAPIs.UserProfileAPIs,
 		title: "User Profile",
 	},
+	{
+		id: 99,
+		name: "Sites",
+		path: userDetailPath + userDetailSitePath,
+		component: UserSite,
+		showHistory: true,
+		showSwitch: false,
+		showPasswordReset: false,
+		showNotes: false,
+		api: differentUserAPIs.UserDetailsAPIs,
+		title: "User Sites",
+	},
 ];
 
 const UserPage = ({ getError }) => {
-	const detail = routes[0];
-	const profile = routes[1];
+	// const detail = routes[0];
+	// const profile = routes[1];
 	return (
 		<div>
-			<Route
+			{routes.map((x) => (
+				<Route
+					key={x.id}
+					exact
+					path={x.path}
+					component={(props) => (
+						<SingleComponent {...props} {...x} getError={getError} />
+					)}
+				/>
+			))}
+			{/* <Route
 				exact
 				path={profile.path}
 				component={(props) => (
@@ -52,7 +79,7 @@ const UserPage = ({ getError }) => {
 				component={(props) => (
 					<SingleComponent {...props} {...detail} getError={getError} />
 				)}
-			/>
+			/> */}
 		</div>
 	);
 };

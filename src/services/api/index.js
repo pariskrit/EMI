@@ -36,6 +36,9 @@ const BASE_API_PATH_ROLES = `${BASE_API_PATH}roles`;
 const BASE_API_PATH_DEFECT_RISK_RATINGS = `${BASE_API_PATH}defectriskratings`;
 const BASE_API_PATH_APPLICATION_PORTAL = `${BASE_API_PATH}users/me/clients`;
 const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
+const BASE_API_PATH_USER_SITEs = `${BASE_API_PATH}clientusers`;
+const BASE_API_PATH_CLIENT_USER_SITES = `${BASE_API_PATH}clientusersites`;
+const BASE_API_PATH_CLIENT_USER_SITES_APPS = `${BASE_API_PATH}ClientUserSiteApps`;
 
 // Application
 const BASE_API_PATH_APPLICATIONS = `${BASE_API_PATH}Applications`;
@@ -132,6 +135,7 @@ export const Apis = {
 	UserDetailsNote: `${BASE_API_PATH_USERDETAILSNOTE}`,
 	UserDetailsNotePost: `${BASE_API_PATH_USERDETAILSNOTEPOST}`,
 	UserDetailReference: `${BASE_API_PATH_USERREFERENCE}`,
+	userDetailSites: `${BASE_API_PATH_USER_SITEs}`,
 
 	//userProfile
 	UserProfile: `${BASE_API_PATH_USERPROFILE}`,
@@ -144,6 +148,8 @@ export const Apis = {
 	ClientDocument: `${BASE_API_CLIENT_DOCUMENT}`,
 	ClientRegion: `${BASE_API_CLIENT_REGION}`,
 	ClientSite: `${BASE_API_CLIENT_SITE}`,
+	clientUserSites: `${BASE_API_PATH_CLIENT_USER_SITES}`,
+	ClientUserSitesApps: `${BASE_API_PATH_CLIENT_USER_SITES_APPS}`,
 
 	//sites
 	SiteAssets: `${BASE_API_PATH_SITES}`,

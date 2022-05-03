@@ -10,6 +10,7 @@ export const clientSettingPath = "/app/clientSetting";
 //Users List
 export const usersPath = "/app/users";
 export const userDetailPath = usersPath + "/:id";
+export const userDetailSitePath = "/sites";
 
 //Application Portal
 export const applicationPortalPath = "/app/portal";

@@ -6,14 +6,41 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import ContentStyle from "styles/application/ContentStyle";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import PasswordResetDialog from "components/Elements/PasswordResetDialog";
-import { usersPath } from "helpers/routePaths";
+import { userProfilePath, usersPath } from "helpers/routePaths";
+import Roles from "helpers/roles";
+import { useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const AC = ContentStyle();
 
 const SingleComponent = (route) => {
 	let getError = route.getError;
-	const navigation = UserNavigation();
+	const { role } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+
 	const { id } = useParams();
+	const location = useLocation();
+	const history = useHistory();
+	const navigation = UserNavigation(id);
+
+	if (location.pathname.includes("sites") && role === Roles.siteUser)
+		history.goBack();
+
+	if (location.pathname.includes("me")) {
+		navigation.shift();
+		navigation.unshift({
+			name: "Details",
+			main: "Details",
+			url: userProfilePath,
+		});
+		navigation.pop();
+		navigation.pop();
+	}
+	if (role === Roles.siteUser) {
+		navigation.splice(1, 1);
+	}
+
 	const [allData, setAllData] = useState({});
 	const [inputData, setInputData] = useState({});
 	const [loading, setLoading] = useState(true);

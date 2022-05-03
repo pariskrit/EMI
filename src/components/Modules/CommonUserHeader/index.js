@@ -3,6 +3,7 @@ import CommonHeader from "./CommonHeader";
 import NavButtons from "components/Elements/NavButtons";
 import Roles from "helpers/roles";
 import RoleWrapper from "../RoleWrapper";
+import { useHistory } from "react-router-dom";
 
 const CommonUserHeader = ({
 	status,
@@ -25,6 +26,10 @@ const CommonUserHeader = ({
 	showPasswordReset,
 	onPasswordReset,
 }) => {
+	const history = useHistory();
+
+	const onClick = (url) => history.push(url);
+
 	return (
 		<>
 			<CommonHeader
@@ -49,7 +54,11 @@ const CommonUserHeader = ({
 				}}
 			/>
 			<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
-				<NavButtons navigation={navigation} current={current} />
+				<NavButtons
+					navigation={navigation}
+					current={current}
+					onClick={onClick}
+				/>
 			</RoleWrapper>
 		</>
 	);
