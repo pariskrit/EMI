@@ -74,8 +74,6 @@ const EditDialog = ({
 	};
 
 	const handleAddCategory = async () => {
-		onNewSubCategoryFieldHide();
-
 		if (!newCategory) {
 			return;
 		}
@@ -93,7 +91,8 @@ const EditDialog = ({
 				showError(response.data.detail || "Could not add task list number")
 			);
 		} else {
-			console.log(response);
+			onNewSubCategoryFieldHide();
+
 			setInput({
 				...input,
 				allCategories: [

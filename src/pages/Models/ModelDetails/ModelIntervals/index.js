@@ -17,7 +17,7 @@ import EditDialog from "./EditDialog";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { updateModel } from "services/models/modelDetails/details";
 
-function ModelInterval({ state, dispatch, modelId, access }) {
+function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isDisabled, setDisabled] = useState(false);
 
@@ -215,7 +215,7 @@ function ModelInterval({ state, dispatch, modelId, access }) {
 				}
 				intervalId={openEditDialog.id}
 				fetchModelIntervals={fetchModelIntervals}
-				modelId={modelId}
+				modelId={modelDefaultId}
 				captions={{ interval, intervalPlural, taskListNo, taskListNoPlural }}
 			/>
 			<DeleteDialog
