@@ -7,7 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { ReactComponent as UploadIcon } from "assets/icons/uploadIcon.svg";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
-import axios from "axios";
+import axios, { CancelToken, isCancel } from "axios";
 
 const useStyles = makeStyles((theme) => ({
 	dragContainer: {
@@ -61,6 +61,7 @@ const DropUpload = ({
 	setUploadPercentCompleted,
 	showProgress = false,
 	percentMultiplyBy = 100,
+	cancelFileUpload,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -172,11 +173,22 @@ const DropUpload = ({
 					// do whatever you like with the percentage complete
 					// maybe dispatch an action that will update a progress bar or something
 				},
+				cancelToken: showProgress
+					? new CancelToken((cancel) => (cancelFileUpload.current = cancel))
+					: null,
 			});
 
 			return true;
 		} catch (err) {
+			if (isCancel(err)) {
+				console.log(err.message);
+			}
 			// TODO: real error handling
+			// if (showProgress) {
+			// 	if (axios.isCancel()) {
+			// 		source.cancel("Operation cancellled");
+			// 	}
+			// }
 			console.log(err);
 			return false;
 		}

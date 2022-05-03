@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -53,6 +53,7 @@ const ImportFileDialouge = ({
 	const [loading, setLoading] = useState(false);
 	const [show, setShow] = useState(false);
 	const [fetchLoading, setFetchLoading] = useState(false);
+	const cancelFileUpload = useRef(null);
 
 	const closeOverride = () => {
 		handleClose();
@@ -116,6 +117,19 @@ const ImportFileDialouge = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [uploadPercentCompleted]);
 
+	const handleCancelFileUpload = () => {
+		if (cancelFileUpload.current) {
+			cancelFileUpload.current("Cancelled File import");
+			dispatch(
+				showNotications({
+					show: true,
+					message: "Cancelled File import",
+					severity: "error",
+				})
+			);
+		}
+	};
+
 	return (
 		<>
 			{fetchLoading && <LinearProgress className={classes.loading} />}
@@ -125,7 +139,13 @@ const ImportFileDialouge = ({
 						<AT.HeaderText>Upload File</AT.HeaderText>
 					</DialogTitle>
 					<AT.ButtonContainer>
-						<AT.CancelButton variant="contained" onClick={closeOverride}>
+						<AT.CancelButton
+							variant="contained"
+							onClick={() => {
+								handleCancelFileUpload();
+								closeOverride();
+							}}
+						>
 							Cancel
 						</AT.CancelButton>
 					</AT.ButtonContainer>
@@ -143,6 +163,7 @@ const ImportFileDialouge = ({
 								uploadPercentCompleted={uploadPercentCompleted}
 								setUploadPercentCompleted={setUploadPercentCompleted}
 								percentMultiplyBy={100}
+								cancelFileUpload={cancelFileUpload}
 							/>
 						)}
 					</div>
