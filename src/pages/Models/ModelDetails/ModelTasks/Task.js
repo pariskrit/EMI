@@ -59,8 +59,8 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 
 	const reduxDispatch = useDispatch();
 
-	const fromSeriveLayoutId = 24102;
-	// const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
+	// const fromSeriveLayoutId = 24102;
+	const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
 
 	useEffect(() => {
 		if (
