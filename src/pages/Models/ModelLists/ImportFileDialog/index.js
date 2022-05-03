@@ -54,6 +54,7 @@ const ImportFileDialouge = ({
 	const [show, setShow] = useState(false);
 	const [fetchLoading, setFetchLoading] = useState(false);
 	const cancelFileUpload = useRef(null);
+	const isCancellled = useRef(false);
 
 	const closeOverride = () => {
 		handleClose();
@@ -75,25 +76,29 @@ const ImportFileDialouge = ({
 				return response;
 			} else {
 				if (response.data.detail) {
-					dispatch(
-						showNotications({
-							show: true,
-							message: response.data.detail || "Failed To Import",
-							severity: "error",
-						})
-					);
+					if (!isCancellled.current) {
+						dispatch(
+							showNotications({
+								show: true,
+								message: response.data.detail || "Failed To Import",
+								severity: "error",
+							})
+						);
+					}
 					return { success: false };
 				}
 			}
 			setLoading(false);
 		} catch (err) {
-			dispatch(
-				showNotications({
-					show: true,
-					message: "Failed To Import",
-					severity: "error",
-				})
-			);
+			if (!isCancellled.current) {
+				dispatch(
+					showNotications({
+						show: true,
+						message: "Failed To Import",
+						severity: "error",
+					})
+				);
+			}
 			return err;
 		} finally {
 			setFetchLoading(false);
@@ -106,6 +111,7 @@ const ImportFileDialouge = ({
 		importDocument(key, true).then(async (res) => {
 			setShow(true);
 			closeOverride();
+			isCancellled.current = false;
 		});
 	};
 
@@ -120,6 +126,7 @@ const ImportFileDialouge = ({
 	const handleCancelFileUpload = () => {
 		if (cancelFileUpload.current) {
 			cancelFileUpload.current("Cancelled File import");
+			isCancellled.current = true;
 			dispatch(
 				showNotications({
 					show: true,
