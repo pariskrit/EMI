@@ -6,10 +6,12 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import ContentStyle from "styles/application/ContentStyle";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import PasswordResetDialog from "components/Elements/PasswordResetDialog";
-import { userProfilePath, usersPath } from "helpers/routePaths";
+import { usersPath } from "helpers/routePaths";
 import Roles from "helpers/roles";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const AC = ContentStyle();
 
@@ -22,20 +24,12 @@ const SingleComponent = (route) => {
 	const { id } = useParams();
 	const location = useLocation();
 	const history = useHistory();
-	const navigation = UserNavigation(id);
-
+	let navigation = UserNavigation(id);
 	if (location.pathname.includes("sites") && role === Roles.siteUser)
 		history.goBack();
 
 	if (location.pathname.includes("me")) {
-		navigation.shift();
-		navigation.unshift({
-			name: "Details",
-			main: "Details",
-			url: userProfilePath,
-		});
-		navigation.pop();
-		navigation.pop();
+		navigation = navigation.filter(() => false);
 	}
 	if (role === Roles.siteUser) {
 		navigation.splice(1, 1);
@@ -47,42 +41,41 @@ const SingleComponent = (route) => {
 	const [openSwitch, setOpenSwitch] = useState(false);
 	const [openPasswordReset, setOpenPasswordReset] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
 		// NOTE: using useCallback to remove linter error. It's memoizing the function (similar
 		// to caching), which should technically prevent unrequired backend calls
 		// Attempting to get data
-		try {
-			// Getting data from API
-			let result = await route.api.getAPI(id);
 
-			// if success, adding data to state
-			if (result.status) {
-				setAllData(result.data);
-				setInputData(result.data);
-				localStorage.setItem("userCrumbs", JSON.stringify(result.data));
-				setLoading(false);
-				return true;
-			} // Handling 404
-			else if (result.status === 404) {
-				return;
-			} else {
-				// If error, throwing to catch
-				throw new Error(result);
-			}
-		} catch (err) {
-			// TODO: real error handling
+		let result = null;
+		const isSuperAdmin =
+			location.pathname === "/app/me" || role === "SuperAdmin";
+		if (isSuperAdmin) result = await route.api.getAPI(id);
+		else result = await route.api.getClientUserDetail(id);
 
-			return false;
+		// if success, adding data to state
+		if (result.status) {
+			setAllData(isSuperAdmin ? result.data : result.data[0]);
+			setInputData(isSuperAdmin ? result.data : result.data[0]);
+			localStorage.setItem(
+				"userCrumbs",
+				JSON.stringify(isSuperAdmin ? result.data : result.data[0])
+			);
+		} else {
+			dispatch(showError(result.data || "Could not get User details"));
 		}
+
+		setLoading(false);
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
 	// Fetch Side effect to get data
 	useEffect(() => {
 		// Getting data and updating state
-		handleGetData().catch((err) => console.log(err));
+		handleGetData();
 	}, [handleGetData]);
 
 	useEffect(() => {
@@ -190,6 +183,7 @@ const SingleComponent = (route) => {
 							inputData={inputData}
 							setInputData={setInputData}
 							showExternalReferenceNumber={route.showExternalReferenceNumber}
+							role={role}
 						/>
 					}
 				</div>

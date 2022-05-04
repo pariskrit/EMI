@@ -66,6 +66,10 @@ function RegionAndSite({ region, sites }) {
 
 	const handleSiteAppClick = async (id) => {
 		localStorage.setItem("siteAppId", id);
+		localStorage.setItem(
+			"clientUserId",
+			sessionStorage.getItem("clientUserId")
+		);
 		localStorage.setItem("isAdmin", sessionStorage.getItem("isAdmin"));
 	};
 	return (

@@ -23,6 +23,7 @@ const UserDetails = ({
 	setData,
 	inputData,
 	setInputData,
+	role,
 }) => {
 	const { id } = useParams();
 
@@ -68,9 +69,10 @@ const UserDetails = ({
 
 	// Fetch Side effect to get data
 	useEffect(() => {
-		// Getting data and updating state
-		handleGetNotes().catch((err) => console.log(err));
-	}, [handleGetNotes]);
+		if (role !== "SuperAdmin")
+			// Getting data and updating state
+			handleGetNotes().catch((err) => console.log(err));
+	}, [handleGetNotes, role]);
 
 	return (
 		<>

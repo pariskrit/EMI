@@ -12,6 +12,15 @@ const getUserDetails = async (id) => {
 	}
 };
 
+const getClientUserDetails = async (id) => {
+	try {
+		let response = await API.get(`${Apis.userDetailSites}/${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //endnd
 
 //#region notes
@@ -71,6 +80,7 @@ const patchSwitchUserDetails = async (id, data) => {
 //end
 
 export {
+	getClientUserDetails,
 	getUserDetailsNotes,
 	getUserDetails,
 	postUserDetailsNote,

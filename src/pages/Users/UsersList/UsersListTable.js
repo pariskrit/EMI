@@ -210,7 +210,9 @@ const UserTable = ({
 														{
 															name: "Edit",
 															handler: () => {
-																history.push(`${usersPath}/${row.id}`);
+																history.push(
+																	`${usersPath}/${row?.clientUserID ?? row?.id}`
+																);
 															},
 															isDelete: false,
 															access: "E",

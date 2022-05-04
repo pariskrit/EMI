@@ -108,7 +108,7 @@ const UserDetail = ({
 		}
 		handleApiCall(e.target.name, e.target.value);
 	};
-
+	console.log(inputData);
 	return (
 		<AccordionBox title={title} noExpand={true}>
 			<div className={classes.desktopViewUserDetail}>

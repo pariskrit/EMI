@@ -5,7 +5,11 @@ import { CircularProgress } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { getUsersList } from "services/users/usersList";
+import {
+	getClientAdminUserList,
+	getSiteAppUserList,
+	getUsersList,
+} from "services/users/usersList";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import { Grid } from "@material-ui/core";
@@ -61,9 +65,13 @@ const useStyles = makeStyles({
 
 const UsersListContent = ({ getError }) => {
 	const classes = useStyles();
-	const { position } =
+	const { position, role, siteAppID } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
+	const clientUserId =
+		JSON.parse(sessionStorage.getItem("clientUserId")) ||
+		JSON.parse(localStorage.getItem("clientUserId"));
+
 	const access = position?.[mainAccess.userAccess];
 
 	//Init State
@@ -91,7 +99,14 @@ const UsersListContent = ({ getError }) => {
 	const fetchData = useCallback(
 		async (pNo, searchText) => {
 			try {
-				let result = await getUsersList(pNo, DefaultPageSize, searchText);
+				let result = null;
+				if (role === "ClientAdmin")
+					result = await getClientAdminUserList(clientUserId);
+
+				if (role === "SiteUser") result = await getSiteAppUserList(siteAppID);
+
+				if (role === "SuperAdmin")
+					result = await getUsersList(pNo, DefaultPageSize, searchText);
 
 				if (result.status) {
 					result = result.data;
@@ -108,7 +123,7 @@ const UsersListContent = ({ getError }) => {
 				return err;
 			}
 		},
-		[setAllData]
+		[setAllData, clientUserId, role, siteAppID]
 	);
 
 	useEffect(() => {

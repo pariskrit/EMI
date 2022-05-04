@@ -85,6 +85,8 @@ function Navbar({
 			localStorage.setItem("token", storageSession.jwtToken);
 			// setUserDetail(JSON.parse(sessionStorage.getItem("me")));
 		}
+		const clientUserId = localStorage.getItem("clientUserId");
+		if (clientUserId) sessionStorage.setItem("clientUserId", clientUserId);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

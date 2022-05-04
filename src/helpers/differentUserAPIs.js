@@ -6,6 +6,7 @@ import {
 	patchUserDetails,
 	patchSwitchUserDetails,
 	patchExternalReference,
+	getClientUserDetails,
 } from "services/users/userDetails";
 import {
 	getUserProfile,
@@ -20,6 +21,7 @@ import {
 const differentUserAPIs = {
 	UserDetailsAPIs: {
 		getAPI: getUserDetails,
+		getClientUserDetail: getClientUserDetails,
 		getNotesAPI: getUserDetailsNotes,
 		postNotesAPI: postUserDetailsNote,
 		patchAPI: patchUserDetails,

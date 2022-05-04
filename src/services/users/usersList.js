@@ -16,6 +16,24 @@ const getUsersList = async (pNo, pSize, search = "") => {
 	}
 };
 
+const getClientAdminUserList = async (id) => {
+	try {
+		const response = await API.get(`${Apis.userDetailSites}?clientId=${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getSiteAppUserList = async (id) => {
+	try {
+		const response = await API.get(`${Apis.userDetailSites}?siteAppId=${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //end
 
 //#region add user
@@ -40,4 +58,10 @@ const importUserList = async (data) => {
 	}
 };
 
-export { getUsersList, addUserToList, importUserList };
+export {
+	getUsersList,
+	addUserToList,
+	importUserList,
+	getClientAdminUserList,
+	getSiteAppUserList,
+};
