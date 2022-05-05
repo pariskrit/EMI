@@ -29,7 +29,13 @@ export const useStyles = makeStyles({
 	component: { width: "95%", margin: "auto" },
 });
 
-const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
+const ModelTaskExpand = ({
+	taskInfo,
+	taskLoading,
+	access,
+	originalRow,
+	setTaskInfo,
+}) => {
 	const history = useHistory();
 	const classes = useStyles();
 	const [current, setCurrent] = useState("Details");
@@ -57,6 +63,7 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
 	}, [taskLoading]);
 
 	useEffect(() => {
+		console.log(TaskDetail?.roles?.filter((r) => r.id !== null));
 		if (TaskDetail?.intervalCount === 0 || 0) {
 			taskDispatch({
 				type: "SET_TASK_ERROR",
@@ -171,7 +178,13 @@ const ModelTaskExpand = ({ taskInfo, taskLoading, access, originalRow }) => {
 	const currentTab = (currentTab) => {
 		switch (currentTab) {
 			case "Details":
-				return <Details taskInfo={taskInfo} access={access} />;
+				return (
+					<Details
+						taskInfo={taskInfo}
+						access={access}
+						setTaskInfo={setTaskInfo}
+					/>
+				);
 			case "interval":
 				return <Intervals taskInfo={taskInfo} access={access} />;
 			case "stage":

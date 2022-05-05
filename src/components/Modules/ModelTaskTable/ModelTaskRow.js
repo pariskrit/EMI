@@ -174,7 +174,7 @@ const ModelTaskRow = ({
 	};
 
 	useEffect(() => {
-		if (row?.intervals === "" || taskInfo?.intervalCount === 0 || 0) {
+		if (taskInfo?.intervalCount === 0 || 0) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -191,7 +191,7 @@ const ModelTaskRow = ({
 				},
 			});
 		}
-		if (row?.stages === "" || taskInfo?.stageCount === 0 || 0) {
+		if (taskInfo?.stageCount === 0 || 0) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -209,7 +209,6 @@ const ModelTaskRow = ({
 			});
 		}
 		if (
-			row?.roles === "" ||
 			taskInfo?.roles === null ||
 			taskInfo?.roles?.filter((r) => r.id !== null).length === 0
 		) {
@@ -229,7 +228,7 @@ const ModelTaskRow = ({
 				},
 			});
 		}
-		if (+row?.estimatedMinutes <= 0 || +taskInfo.estimatedMinutes <= 0) {
+		if (+taskInfo.estimatedMinutes <= 0) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
 				payload: {
@@ -247,11 +246,9 @@ const ModelTaskRow = ({
 			});
 		}
 		if (
-			(originalRow?.stages?.filter((x) => x.hasZones)?.length > 0 &&
-				row?.zones === "" &&
-				row?.stages !== "") ||
-			!taskInfo?.roles === null ||
-			taskInfo?.roles?.filter((r) => r.id !== null).length === 0
+			originalRow?.stages?.filter((x) => x.hasZones)?.length > 0 &&
+			row?.zones === "" &&
+			row?.stages !== ""
 		) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
@@ -270,7 +267,117 @@ const ModelTaskRow = ({
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [row, CtxDispatch, originalRow]);
+	}, [
+		row,
+		CtxDispatch,
+		originalRow,
+		taskInfo.stageCount,
+		taskInfo.estimatedMinutes,
+		taskInfo.intervalCount,
+		taskInfo.roles,
+	]);
+
+	useEffect(() => {
+		if (row?.intervals === "") {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "interval",
+					value: `No ${customCaptions?.intervalPlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "interval",
+					value: "",
+				},
+			});
+		}
+		if (row?.stages === "") {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "stage",
+					value: `No ${customCaptions?.stagePlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "stage",
+					value: "",
+				},
+			});
+		}
+		if (row?.roles === "") {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: `No ${customCaptions?.rolePlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "role",
+					value: "",
+				},
+			});
+		}
+		if (+row?.estimatedMinutes <= 0) {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: `Invalid Estimated Minutes`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "estimatedMinutes",
+					value: "",
+				},
+			});
+		}
+		if (
+			originalRow?.stages?.filter((x) => x.hasZones)?.length > 0 &&
+			row?.zones === "" &&
+			row?.stages !== ""
+		) {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "zone",
+					value: `No ${customCaptions?.zonePlural} Assigned`,
+				},
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_TASK_ERROR",
+				payload: {
+					name: "zone",
+					value: "",
+				},
+			});
+		}
+		console.log("only at firest renderrrrrrrrrrrrrr");
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		row,
+		CtxDispatch,
+		originalRow,
+		// taskInfo.stageCount,
+		// taskInfo.estimatedMinutes,
+		// taskInfo.intervalCount,
+		// taskInfo.roles,
+	]);
 
 	const taskRow = useMemo(() => {
 		return (
@@ -309,15 +416,11 @@ const ModelTaskRow = ({
 										</p>
 									</HtmlTooltip>
 								) : col === "errors" ? (
-									row[col] === "" ||
-									Object.values(taskState?.taskError)?.filter(Boolean)
-										.length === 0 ? (
+									Object.values(taskError)?.filter(Boolean).length === 0 ? (
 										""
 									) : (
 										<ErrorMessageWithErrorIcon
-											message={Object.values(taskState?.taskError)?.filter(
-												Boolean
-											)}
+											message={Object.values(taskError)?.filter(Boolean)}
 										/>
 									)
 								) : (
@@ -420,6 +523,7 @@ const ModelTaskRow = ({
 							<ModelTaskExpand
 								customCaptions={customCaptions}
 								taskInfo={singleTask}
+								setTaskInfo={setSingleTask}
 								taskLoading={loading}
 								access={access}
 								originalRow={originalRow}
@@ -439,7 +543,7 @@ const ModelTaskRow = ({
 		selectedData,
 		index,
 		loading,
-		taskError,
+		taskState,
 	]);
 
 	return (

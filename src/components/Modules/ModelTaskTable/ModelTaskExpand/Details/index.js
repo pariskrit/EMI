@@ -65,6 +65,7 @@ const useStyles = makeStyles({
 
 const TaskDetails = ({
 	taskInfo,
+	setTaskInfo,
 	access,
 	isMounted,
 	isFetching = false,
@@ -205,9 +206,13 @@ const TaskDetails = ({
 					ModelVersionRoleID: id,
 				});
 				if (response.status) {
-					taskInfo["roles"] = localTaskInfo?.roles?.map((r) =>
-						r.modelVersionRoleID === id ? { ...r, id: response.data } : r
-					);
+					setTaskInfo((prev) => ({
+						...prev,
+						roles: localTaskInfo?.roles?.map((r) =>
+							r.modelVersionRoleID === id ? { ...r, id: response.data } : r
+						),
+					}));
+
 					setLocalTaskInfo({
 						...localTaskInfo,
 						roles: localTaskInfo?.roles?.map((r) =>
@@ -252,9 +257,12 @@ const TaskDetails = ({
 			try {
 				const response = await removeModelVersionTaskRole(roleToFind?.id);
 				if (response.status) {
-					taskInfo["roles"] = localTaskInfo?.roles?.map((r) =>
-						r.modelVersionRoleID === id ? { ...r, id: null } : r
-					);
+					setTaskInfo((prev) => ({
+						...prev,
+						roles: localTaskInfo?.roles?.map((r) =>
+							r.modelVersionRoleID === id ? { ...r, id: null } : r
+						),
+					}));
 					setLocalTaskInfo({
 						...localTaskInfo,
 						roles: localTaskInfo?.roles?.map((r) =>
@@ -316,8 +324,11 @@ const TaskDetails = ({
 				},
 			]);
 			if (response.status) {
-				taskInfo[name] = value?.id || null;
-				taskInfo[actualName] = value.name;
+				setTaskInfo((prev) => ({
+					...prev,
+					[name]: value?.id || null,
+					[actualName]: value?.name,
+				}));
 				const rowDataCell = document
 					.getElementById(`taskExpandable${taskInfo.id}`)
 					?.querySelector(`#dataCell${actualName} > div`);
@@ -385,7 +396,7 @@ const TaskDetails = ({
 				},
 			]);
 			if (response.status) {
-				taskInfo[name] = value;
+				setTaskInfo((prev) => ({ ...prev, [name]: value }));
 				const dataCell = document
 					.getElementById(`taskExpandable${taskInfo.id}`)
 					?.querySelector(`#dataCell${name} > div`);
