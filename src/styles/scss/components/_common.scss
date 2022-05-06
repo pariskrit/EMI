@@ -122,8 +122,9 @@
 }
 
 .common-scroll-wrapper {
-	overflow: auto;
-	border-bottom: 1px solid #979797;
+	overflow-y: auto;
+	overflow-x: hidden;
+	//border-bottom: 1px solid #979797;
 	&::-webkit-scrollbar {
 		width: 5px;
 		height: 5px;
@@ -148,8 +149,8 @@
 
 .table-scroll-wrapper {
 	max-height: 60vh;
-	overflow: auto;
-	border-bottom: 1px solid #979797;
+	overflow-y: auto;
+	//border-bottom: 1px solid #979797;
 	&::-webkit-scrollbar {
 		width: 5px;
 		height: 5px;
@@ -179,7 +180,6 @@
 		left: 0;
 		top: 0;
 		z-index: 100;
-		background-color: red;
 	}
 
 	th {
@@ -212,10 +212,10 @@ div[role="tooltip"] {
 
 .task-expand-table {
 	thead {
-		position: static;
+		position: relative;
 	}
 
 	th {
-		position: static;
+		position: relative;
 	}
 }
