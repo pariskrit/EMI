@@ -328,7 +328,10 @@ const PositionsContent = ({ navigation, id, setIs404, state }) => {
 					</div>
 
 					<PositionsTable
-						data={data}
+						data={data.map((position) => ({
+							...position,
+							allowPublish: position.allowPublish ? "Yes" : "No",
+						}))}
 						setData={setData}
 						handleSort={handleSort}
 						searchQuery={searchQuery}

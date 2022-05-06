@@ -147,7 +147,7 @@ const UserTable = ({
 													{typeof col === "object" ? (
 														<Link
 															onClick={() => {
-																history.push(
+																window.open(
 																	`${modelsPath}/${row.devModelVersionID}`
 																);
 															}}
@@ -202,7 +202,7 @@ const UserTable = ({
 																			? "View"
 																			: "Edit",
 																	handler: () => {
-																		history.push(
+																		window.open(
 																			`${modelsPath}/${row.devModelVersionID}`
 																		);
 																	},

@@ -143,6 +143,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 						path: "name",
 						value: input.name,
 					},
+
 					{
 						op: "replace",
 						path: "modelAccess",

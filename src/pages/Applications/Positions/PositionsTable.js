@@ -117,6 +117,28 @@ const PositionsTable = ({
 						</TableCell>
 						<TableCell
 							onClick={() => {
+								handleSortClick("allowPublish");
+							}}
+							className={clsx(classes.rowWithRightRow, {
+								[classes.selectedTableHeadRow]:
+									currentTableSort[0] === "allowPublish",
+								[classes.tableHeadRow]: currentTableSort[0] !== "allowPublish",
+							})}
+						>
+							<AT.CellContainer>
+								Allow Publish
+								<div className={classes.arrowContainer}>
+									{currentTableSort[0] === "allowPublish" &&
+									currentTableSort[1] === "desc" ? (
+										<AT.DefaultArrow fill="#FFFFFF" />
+									) : (
+										<AT.DescArrow fill="#FFFFFF" />
+									)}
+								</div>
+							</AT.CellContainer>
+						</TableCell>
+						<TableCell
+							onClick={() => {
 								handleSortClick("modelAccess");
 							}}
 							className={clsx(classes.generalRow, classes.rowWithRightRow, {
@@ -327,6 +349,11 @@ const PositionsTable = ({
 							<AT.DataCell>
 								<AT.CellContainer>
 									<AT.TableBodyText>{d.name}</AT.TableBodyText>
+								</AT.CellContainer>
+							</AT.DataCell>
+							<AT.DataCell>
+								<AT.CellContainer>
+									<AT.TableBodyText>{d.allowPublish}</AT.TableBodyText>
 								</AT.CellContainer>
 							</AT.DataCell>
 							<AT.DataCell className={classes.generalRow}>

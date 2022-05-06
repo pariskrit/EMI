@@ -311,7 +311,6 @@ const AddDialog = ({
 			});
 		}
 	}, [dataToEdit, open]);
-	console.log(dataToEdit);
 	return (
 		<Dialog
 			fullWidth={true}

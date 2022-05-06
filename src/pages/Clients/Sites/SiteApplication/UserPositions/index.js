@@ -36,22 +36,7 @@ function DefectStatuses({ appId, setError }) {
 	const [isEdit, setIsEdit] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	const addData = (newData) =>
-		setAllData([
-			...allData,
-			{
-				...newData,
-				modelAccess: positionAccessTypes[newData.modelAccess],
-				serviceAccess: positionAccessTypes[newData.serviceAccess],
-				defectAccess: positionAccessTypes[newData.defectAccess],
-				defectExportAccess: positionAccessTypes[newData.defectExportAccess],
-				noticeboardAccess: positionAccessTypes[newData.noticeboardAccess],
-				feedbackAccess: positionAccessTypes[newData.feedbackAccess],
-				userAccess: positionAccessTypes[newData.userAccess],
-				analyticsAccess: positionAccessTypes[newData.analyticsAccess],
-				settingsAccess: positionAccessTypes[newData.settingsAccess],
-			},
-		]);
+	const addData = (newData) => fetchPositions();
 
 	const onOpenDeleteDialog = (id) => {
 		setDeleteId(id);
@@ -70,10 +55,11 @@ function DefectStatuses({ appId, setError }) {
 		setAllData([...allData.filter((d) => d.id !== id)]);
 
 	const handleEditData = (editedData) => {
-		const newList = [...allData];
-		const index = newList.findIndex((data) => data.id === editedData.id);
-		newList.splice(index, 1, editedData);
-		setAllData(newList);
+		// const newList = [...allData];
+		// const index = newList.findIndex((data) => data.id === editedData.id);
+		// newList.splice(index, 1, editedData);
+		// setAllData(newList);
+		fetchPositions();
 	};
 
 	const closeAddModal = () => {
@@ -154,10 +140,14 @@ function DefectStatuses({ appId, setError }) {
 				/>
 			</div>
 			<CommonApplicationTable
-				data={allData}
+				data={allData.map((position) => ({
+					...position,
+					allowPublish: position.allowPublish ? "Yes" : "No",
+				}))}
 				setData={setAllData}
 				columns={[
 					"name",
+					"allowPublish",
 					"modelAccess",
 					"serviceAccess",
 					"defectAccess",
@@ -170,6 +160,7 @@ function DefectStatuses({ appId, setError }) {
 				]}
 				headers={[
 					"Name",
+					"Allow Publish",
 					"Assets Models",
 					"Services",
 					"Defects",
