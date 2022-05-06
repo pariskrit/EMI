@@ -74,7 +74,7 @@ const navList = [
 	{
 		activeName: "Services",
 		name: "Services",
-		icon: ModelIcon,
+		icon: ServiceIcon,
 		path: servicesPath,
 		access: access.serviceAccess,
 		roles: "",
@@ -94,15 +94,6 @@ const navList = [
 		path: analysisPath,
 		access: access.analysisAccess,
 		roles: "",
-	},
-
-	{
-		activeName: "Analytics",
-		name: "Analytics",
-		icon: AnalyticsIcon,
-		path: analyticsPath,
-		access: access.analyticsAccess,
-		roles: [roles.superAdmin, roles.clientAdmin],
 	},
 
 	{

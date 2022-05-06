@@ -508,6 +508,7 @@ const TaskDetails = ({
 										0
 								}
 								errorMessage={`No ${customCaptions?.rolePlural} Assigned`}
+								required
 							/>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
@@ -585,7 +586,10 @@ const TaskDetails = ({
 						<ADD.RightInputContainer>
 							<ADD.NameLabel>
 								<div className="caption-label">
-									<span>Estimated Minutes</span>
+									<span>
+										Estimated Minutes{" "}
+										<span style={{ color: "#E31212" }}>*</span>{" "}
+									</span>
 									{+localTaskInfo.estimatedMinutes <= 0 && (
 										<ErrorMessageWithErrorIcon message="Invalid Estimated Minutes" />
 									)}

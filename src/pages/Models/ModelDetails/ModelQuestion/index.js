@@ -183,8 +183,18 @@ const ModelQuestion = ({
 	useEffect(() => {
 		if (fromSeriveLayoutId && !loading) {
 			const element = document.getElementById(`row${fromSeriveLayoutId}`);
+			const tableElement = document.getElementById(
+				"table-scroll-wrapper-container"
+			);
+
 			element &&
-				element.scrollIntoView({ behavior: "smooth", block: "center" });
+				tableElement.scroll({
+					behavior: "smooth",
+					top:
+						element.getBoundingClientRect().top -
+						tableElement.getBoundingClientRect().top -
+						56,
+				});
 			element && (element.style.background = "#ffeb3b");
 		}
 
