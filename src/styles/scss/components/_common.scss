@@ -209,3 +209,13 @@
 div[role="tooltip"] {
 	z-index: 1000;
 }
+
+.task-expand-table {
+	thead {
+		position: static;
+	}
+
+	th {
+		position: static;
+	}
+}

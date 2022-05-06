@@ -229,7 +229,7 @@ const ModelTaskExpand = ({
 			{taskLoading ? (
 				<LinearProgress />
 			) : (
-				<>
+				<div className="task-expand-table">
 					<Navigation
 						current={current}
 						navigation={[
@@ -311,7 +311,7 @@ const ModelTaskExpand = ({
 						onClick={(d) => setCurrent(d)}
 					/>
 					<div className={classes.component}>{currentTab(current)}</div>
-				</>
+				</div>
 			)}
 		</div>
 	);
