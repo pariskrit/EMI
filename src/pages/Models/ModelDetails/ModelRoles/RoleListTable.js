@@ -10,7 +10,32 @@ import PopupMenu from "components/Elements/PopupMenu";
 
 const AT = TableStyle();
 
+const mediaMobile = "@media (max-width: 414px)";
+const mediaIpadpro = "@media (max-width: 1024px)";
+const mediaIpad = "@media (max-width: 768px)";
+
 const useStyles = makeStyles({
+	table: {
+		borderStyle: "solid",
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		overflowX: "auto",
+		borderColor: ColourConstants.tableBorder,
+		borderWidth: 1,
+		borderRadius: 0,
+		[mediaMobile]: {
+			maxWidth: "87vw",
+			overflowX: "auto",
+		},
+		[mediaIpadpro]: {
+			maxWidth: "87vw",
+			overflowX: "auto",
+		},
+		[mediaIpad]: {
+			maxWidth: "85vw",
+			overflowX: "auto",
+		},
+	},
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -60,117 +85,113 @@ function RoleListTable({ data, setData, headers, columns, menuData }) {
 	};
 
 	return (
-		<AT.TableContainer>
-			<Table aria-label="Table">
-				<AT.TableHead>
-					<TableRow className={classes.tableHead}>
-						{headers.map((header, index) => (
-							<TableCell
-								key={header.id}
-								onClick={() => {
-									handleSortClick(columns[index]);
-								}}
-								style={{ width: header?.width || "auto" }}
-								className={clsx(classes.nameRow, {
-									[classes.selectedTableHeadRow]:
-										currentTableSort[0] === columns[index],
-									[classes.tableHeadRow]:
-										currentTableSort[0] !== columns[index],
-								})}
-							>
-								<AT.CellContainer className="flex justify-between">
-									{header.name}
-
-									<div className="arrow">
-										<AT.DescArrow
-											fill={
-												currentTableSort[0] === columns[index] &&
-												currentTableSort[1] === "asc"
-													? "#D2D2D9"
-													: "#F9F9FC"
-											}
-											className="arrowUp"
-										/>
-										<AT.DefaultArrow
-											fill={
-												currentTableSort[0] === columns[index] &&
-												currentTableSort[1] === "desc"
-													? "#D2D2D9"
-													: "#F9F9FC"
-											}
-											className="arrowDown"
-										/>
-									</div>
-								</AT.CellContainer>
-							</TableCell>
-						))}
-					</TableRow>
-				</AT.TableHead>
-				<TableBody>
-					{data.length !== 0 ? (
-						data.map((row, index) => (
-							<TableRow key={row.id}>
-								{columns.map((col, i, arr) => (
-									<TableCell
-										key={col}
-										component="th"
-										scope="row"
-										className={clsx(classes.dataCell, classes.nameRow, {
-											[classes.lastCell]: index === data.length - 1,
-										})}
-									>
-										<AT.CellContainer key={col}>
-											<AT.TableBodyText>{row[col]}</AT.TableBodyText>
-											{arr.length === i + 1 ? (
-												<AT.DotMenu
-													onClick={(e) => {
-														setAnchorEl(
-															anchorEl === e.currentTarget
-																? null
-																: e.currentTarget
-														);
-														setSelectedData(
-															anchorEl === e.currentTarget ? null : index
-														);
-													}}
-												>
-													{menuData.length > 0 && (
-														<AT.TableMenuButton>
-															<MenuIcon />
-														</AT.TableMenuButton>
-													)}
-													<PopupMenu
-														index={index}
-														selectedData={selectedData}
-														anchorEl={anchorEl}
-														id={row.id}
-														clickAwayHandler={() => {
-															setAnchorEl(null);
-															setSelectedData(null);
-														}}
-														menuData={menuData}
-													/>
-												</AT.DotMenu>
-											) : null}
-										</AT.CellContainer>
-									</TableCell>
-								))}
-							</TableRow>
-						))
-					) : (
-						<TableRow>
-							{headers.map((head, i) => {
-								if (i === 0) {
-									return <TableCell key={head.id}>No Record Found</TableCell>;
-								} else {
-									return <TableCell key={head.id}></TableCell>;
-								}
+		<Table aria-label="Table" className={classes.table}>
+			<AT.TableHead>
+				<TableRow className={classes.tableHead}>
+					{headers.map((header, index) => (
+						<TableCell
+							key={header.id}
+							onClick={() => {
+								handleSortClick(columns[index]);
+							}}
+							style={{ width: header?.width || "auto" }}
+							className={clsx(classes.nameRow, {
+								[classes.selectedTableHeadRow]:
+									currentTableSort[0] === columns[index],
+								[classes.tableHeadRow]: currentTableSort[0] !== columns[index],
 							})}
+						>
+							<AT.CellContainer className="flex justify-between">
+								{header.name}
+
+								<div className="arrow">
+									<AT.DescArrow
+										fill={
+											currentTableSort[0] === columns[index] &&
+											currentTableSort[1] === "asc"
+												? "#D2D2D9"
+												: "#F9F9FC"
+										}
+										className="arrowUp"
+									/>
+									<AT.DefaultArrow
+										fill={
+											currentTableSort[0] === columns[index] &&
+											currentTableSort[1] === "desc"
+												? "#D2D2D9"
+												: "#F9F9FC"
+										}
+										className="arrowDown"
+									/>
+								</div>
+							</AT.CellContainer>
+						</TableCell>
+					))}
+				</TableRow>
+			</AT.TableHead>
+			<TableBody>
+				{data.length !== 0 ? (
+					data.map((row, index) => (
+						<TableRow key={row.id}>
+							{columns.map((col, i, arr) => (
+								<TableCell
+									key={col}
+									scope="row"
+									className={clsx(classes.dataCell, classes.nameRow, {
+										[classes.lastCell]: index === data.length - 1,
+									})}
+								>
+									<AT.CellContainer key={col}>
+										<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+										{arr.length === i + 1 ? (
+											<AT.DotMenu
+												onClick={(e) => {
+													setAnchorEl(
+														anchorEl === e.currentTarget
+															? null
+															: e.currentTarget
+													);
+													setSelectedData(
+														anchorEl === e.currentTarget ? null : index
+													);
+												}}
+											>
+												{menuData.length > 0 && (
+													<AT.TableMenuButton>
+														<MenuIcon />
+													</AT.TableMenuButton>
+												)}
+												<PopupMenu
+													index={index}
+													selectedData={selectedData}
+													anchorEl={anchorEl}
+													id={row.id}
+													clickAwayHandler={() => {
+														setAnchorEl(null);
+														setSelectedData(null);
+													}}
+													menuData={menuData}
+												/>
+											</AT.DotMenu>
+										) : null}
+									</AT.CellContainer>
+								</TableCell>
+							))}
 						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-		</AT.TableContainer>
+					))
+				) : (
+					<TableRow>
+						{headers.map((head, i) => {
+							if (i === 0) {
+								return <TableCell key={head.id}>No Record Found</TableCell>;
+							} else {
+								return <TableCell key={head.id}></TableCell>;
+							}
+						})}
+					</TableRow>
+				)}
+			</TableBody>
+		</Table>
 	);
 }
 

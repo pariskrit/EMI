@@ -121,6 +121,31 @@
 	}
 }
 
+.common-scroll-wrapper {
+	overflow: auto;
+	border-bottom: 1px solid #979797;
+	&::-webkit-scrollbar {
+		width: 5px;
+		height: 5px;
+	}
+
+	/* Track */
+	&::-webkit-scrollbar-track {
+		background: #f1f1f1;
+	}
+
+	/* Handle */
+	&::-webkit-scrollbar-thumb {
+		background: #bebebe;
+		border-radius: 12px;
+	}
+
+	/* Handle on hover */
+	&::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+}
+
 .table-scroll-wrapper {
 	max-height: 60vh;
 	overflow: auto;
@@ -147,6 +172,14 @@
 	}
 	table {
 		border-top: 0;
+	}
+
+	thead {
+		position: sticky;
+		left: 0;
+		top: 0;
+		z-index: 100;
+		background-color: red;
 	}
 
 	th {

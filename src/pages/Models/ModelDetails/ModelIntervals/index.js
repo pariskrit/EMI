@@ -16,6 +16,7 @@ import EMICheckbox from "components/Elements/EMICheckbox";
 import EditDialog from "./EditDialog";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { updateModel } from "services/models/modelDetails/details";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -250,58 +251,60 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 				)}
 			</div>
 
-			<DragAndDropTable
-				data={modelIntervals}
-				headers={
-					state?.modelDetail?.enableIntervalAutoInclude
-						? ["Name", `Auto-Include ${intervalPlural}`, taskListNoPlural]
-						: ["Name", taskListNoPlural]
-				}
-				columns={
-					state?.modelDetail?.enableIntervalAutoInclude
-						? [
-								{ id: 1, name: "name", style: { width: "33vw" } },
-								{
-									id: 2,
-									name: "autoIncludeIntervals",
-									style: { width: "33vw" },
-								},
-								{
-									id: 3,
-									name: "taskListNos",
-									style: { width: "33vw" },
-								},
-						  ]
-						: [
-								{ id: 1, name: "name", style: { width: "50vw" } },
-								{ id: 2, name: "taskListNos", style: { width: "50vw" } },
-						  ]
-				}
-				handleDragEnd={handleDragEnd}
-				isModelEditable={true}
-				disableDnd={isReadOnly || state?.modelDetail?.isPublished}
-				menuData={[
-					{
-						name: "Edit",
-						handler: onOpenEditDialog,
-						isDelete: false,
-					},
-					{
-						name: "Delete",
-						handler: onOpenDeleteDialog,
-						isDelete: true,
-					},
-				].filter((x) => {
-					if (state?.modelDetail?.isPublished) return false;
-
-					if (isReadOnly) return false;
-					if (isEditOnly) {
-						if (x.name === "Edit") return true;
-						else return false;
+			<AutoFitContentInScreen containsTable>
+				<DragAndDropTable
+					data={modelIntervals}
+					headers={
+						state?.modelDetail?.enableIntervalAutoInclude
+							? ["Name", `Auto-Include ${intervalPlural}`, taskListNoPlural]
+							: ["Name", taskListNoPlural]
 					}
-					return true;
-				})}
-			/>
+					columns={
+						state?.modelDetail?.enableIntervalAutoInclude
+							? [
+									{ id: 1, name: "name", style: { width: "33vw" } },
+									{
+										id: 2,
+										name: "autoIncludeIntervals",
+										style: { width: "33vw" },
+									},
+									{
+										id: 3,
+										name: "taskListNos",
+										style: { width: "33vw" },
+									},
+							  ]
+							: [
+									{ id: 1, name: "name", style: { width: "50vw" } },
+									{ id: 2, name: "taskListNos", style: { width: "50vw" } },
+							  ]
+					}
+					handleDragEnd={handleDragEnd}
+					isModelEditable={true}
+					disableDnd={isReadOnly || state?.modelDetail?.isPublished}
+					menuData={[
+						{
+							name: "Edit",
+							handler: onOpenEditDialog,
+							isDelete: false,
+						},
+						{
+							name: "Delete",
+							handler: onOpenDeleteDialog,
+							isDelete: true,
+						},
+					].filter((x) => {
+						if (state?.modelDetail?.isPublished) return false;
+
+						if (isReadOnly) return false;
+						if (isEditOnly) {
+							if (x.name === "Edit") return true;
+							else return false;
+						}
+						return true;
+					})}
+				/>
+			</AutoFitContentInScreen>
 		</div>
 	);
 }

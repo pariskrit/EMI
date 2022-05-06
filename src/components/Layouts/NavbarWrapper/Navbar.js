@@ -367,7 +367,6 @@ function Navbar({
 	}
 
 	// Filter which sidebar navigation is accessible
-
 	const navOptions = navList
 		.filter((x) => {
 			// // If position is null it is super admin
@@ -434,7 +433,6 @@ function Navbar({
 	};
 
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
-
 	return (
 		<>
 			<div className="drawerDesktop">

@@ -15,6 +15,7 @@ import AddModelRoleDialog from "./AddModelRoleDialog";
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
 import withMount from "components/HOC/withMount";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 const AC = ContentStyle();
 
@@ -177,39 +178,41 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 							</AC.SearchInner>
 						</AC.SearchContainer>
 					</div>
-					<RoleListTable
-						columns={["name", "mappedRoleName"]}
-						headers={[
-							{ id: 1, name: "Name" },
-							{
-								id: 2,
-								name: `Map To ${customCaptions?.service} ${customCaptions?.role}`,
-							},
-						]}
-						data={filteredData}
-						setData={setFilteredData}
-						menuData={[
-							{
-								name: "Edit",
-								handler: handleEditDialogOpen,
-								isDelete: false,
-							},
-							{
-								name: "Delete",
-								handler: handleDeteleDialogOpen,
-								isDelete: true,
-							},
-						].filter((x) => {
-							if (state?.modelDetail?.isPublished) return false;
+					<AutoFitContentInScreen containsTable>
+						<RoleListTable
+							columns={["name", "mappedRoleName"]}
+							headers={[
+								{ id: 1, name: "Name" },
+								{
+									id: 2,
+									name: `Map To ${customCaptions?.service} ${customCaptions?.role}`,
+								},
+							]}
+							data={filteredData}
+							setData={setFilteredData}
+							menuData={[
+								{
+									name: "Edit",
+									handler: handleEditDialogOpen,
+									isDelete: false,
+								},
+								{
+									name: "Delete",
+									handler: handleDeteleDialogOpen,
+									isDelete: true,
+								},
+							].filter((x) => {
+								if (state?.modelDetail?.isPublished) return false;
 
-							if (access === "F") return true;
-							if (access === "E") {
-								if (x.name === "Edit") return true;
-								else return false;
-							}
-							return false;
-						})}
-					/>
+								if (access === "F") return true;
+								if (access === "E") {
+									if (x.name === "Edit") return true;
+									else return false;
+								}
+								return false;
+							})}
+						/>
+					</AutoFitContentInScreen>
 				</>
 			)}
 		</div>

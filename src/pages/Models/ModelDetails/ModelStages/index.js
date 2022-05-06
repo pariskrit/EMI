@@ -14,6 +14,7 @@ import withMount from "components/HOC/withMount";
 import TabelRowImage from "components/Elements/TabelRowImage";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import ImageViewer from "components/Elements/ImageViewer";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 const modelState = { id: null, open: false };
 
@@ -176,40 +177,41 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 						description={`${stagePlural} used for this ${modelTemplate}`}
 					/>
 				</div>
-
-				<DragAndDropTable
-					data={data}
-					isModelEditable
-					disableDnd={access === "R" || state?.modelDetail?.isPublished}
-					headers={["Name", "Image", "Has Zones"]}
-					columns={[
-						{ id: 1, name: "name", style: { width: "40vw" } },
-						{ id: 2, name: "image", style: { width: "40vw" } },
-						{ id: 3, name: "hasZones", style: { width: "20vw" } },
-					]}
-					onClickImage={() => setOPenImage(true)}
-					handleDragEnd={handleDragEnd}
-					menuData={[
-						{
-							name: "Edit",
-							handler: handleEdit,
-							isDelete: false,
-						},
-						{
-							name: "Delete",
-							handler: handleDelete,
-							isDelete: true,
-						},
-					].filter((x) => {
-						if (state?.modelDetail?.isPublished) return false;
-						if (access === "F") return true;
-						if (access === "E") {
-							if (x.name === "Edit") return true;
-							else return false;
-						}
-						return false;
-					})}
-				/>
+				<AutoFitContentInScreen containsTable>
+					<DragAndDropTable
+						data={data}
+						isModelEditable
+						disableDnd={access === "R" || state?.modelDetail?.isPublished}
+						headers={["Name", "Image", "Has Zones"]}
+						columns={[
+							{ id: 1, name: "name", style: { width: "40vw" } },
+							{ id: 2, name: "image", style: { width: "40vw" } },
+							{ id: 3, name: "hasZones", style: { width: "20vw" } },
+						]}
+						onClickImage={() => setOPenImage(true)}
+						handleDragEnd={handleDragEnd}
+						menuData={[
+							{
+								name: "Edit",
+								handler: handleEdit,
+								isDelete: false,
+							},
+							{
+								name: "Delete",
+								handler: handleDelete,
+								isDelete: true,
+							},
+						].filter((x) => {
+							if (state?.modelDetail?.isPublished) return false;
+							if (access === "F") return true;
+							if (access === "E") {
+								if (x.name === "Edit") return true;
+								else return false;
+							}
+							return false;
+						})}
+					/>
+				</AutoFitContentInScreen>
 			</div>
 		</>
 	);

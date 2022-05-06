@@ -67,12 +67,6 @@ const useStyles = makeStyles({
 		color: ColourConstants.commonText,
 		opacity: "50%",
 	},
-	taskHeader: {
-		position: "sticky",
-		left: 0,
-		top: 0,
-		zIndex: 100,
-	},
 });
 
 const ModelTaskTable = ({

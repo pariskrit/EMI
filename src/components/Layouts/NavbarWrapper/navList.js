@@ -3,6 +3,7 @@ import { ReactComponent as ApplicationIcon } from "assets/icons/applicationsIcon
 import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
+import { ReactComponent as ServiceIcon } from "assets/icons/services.svg";
 import access from "helpers/access";
 import roles from "helpers/roles";
 import {
@@ -87,14 +88,6 @@ const navList = [
 		roles: "",
 	},
 	{
-		activeName: "DefectExport",
-		name: "Defect Export",
-		icon: ModelIcon,
-		path: defectExportPath,
-		access: access.defectExportAccess,
-		roles: "",
-	},
-	{
 		activeName: "Analysis",
 		name: "Analysis",
 		icon: ModelIcon,
@@ -102,6 +95,25 @@ const navList = [
 		access: access.analysisAccess,
 		roles: "",
 	},
+
+	{
+		activeName: "Analytics",
+		name: "Analytics",
+		icon: AnalyticsIcon,
+		path: analyticsPath,
+		access: access.analyticsAccess,
+		roles: [roles.superAdmin, roles.clientAdmin],
+	},
+
+	{
+		activeName: "DefectExport",
+		name: "Defect Export",
+		icon: ModelIcon,
+		path: defectExportPath,
+		access: access.defectExportAccess,
+		roles: "",
+	},
+
 	{
 		activeName: "Feedback",
 		name: "Feedback",
@@ -118,6 +130,7 @@ const navList = [
 		access: access.noticeboardAccess,
 		roles: "",
 	},
+
 	{
 		activeName: "Setting",
 		name: "Setting",

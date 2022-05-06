@@ -169,62 +169,58 @@ const ModelAsset = ({
 				handleRemoveData={handleRemoveData}
 				closeHandler={handleDeleteDialogClose}
 			/>
-			<div style={{ display: "flex", flexDirection: "column" }}>
-				<div style={{ display: "flex", alignItems: "center" }}>
-					<DetailsPanel
-						header={`${assetPlural}`}
-						dataCount={data.length}
-						description={`Manage ${assetPlural} this ${modelTemplate} can be assigned to`}
-					/>
-					<AC.SearchContainer>
-						<AC.SearchInner className="applicationSearchBtn">
-							<Grid container spacing={1} alignItems="flex-end">
-								<Grid item>
-									<SearchIcon />
-								</Grid>
-								<Grid item>
-									<AC.SearchInput
-										onChange={(e) => handleSearch(e.target.value)}
-										label="Search"
-									/>
-								</Grid>
+			<div style={{ display: "flex", alignItems: "center" }}>
+				<DetailsPanel
+					header={`${assetPlural}`}
+					dataCount={data.length}
+					description={`Manage ${assetPlural} this ${modelTemplate} can be assigned to`}
+				/>
+				<AC.SearchContainer>
+					<AC.SearchInner className="applicationSearchBtn">
+						<Grid container spacing={1} alignItems="flex-end">
+							<Grid item>
+								<SearchIcon />
 							</Grid>
-						</AC.SearchInner>
-					</AC.SearchContainer>
-				</div>
-				<div>
-					<CommonApplicationTable
-						data={mainData}
-						setData={setData}
-						searchedData={searchedData}
-						searchQuery={searchQuery}
-						headers={[`${asset}`, "Status", "Description"]}
-						columns={["name", "status", "description"]}
-						access={access}
-						handleEdit={handleEdit}
-						handleDelete={handleDelete}
-						menuData={[
-							{
-								name: "Edit",
-								handler: handleEdit,
-								isDelete: false,
-							},
-							{
-								name: "Delete",
-								handler: handleDelete,
-								isDelete: true,
-							},
-						].filter((x) => {
-							if (access === "F") return true;
-							if (access === "E") {
-								if (x.name === "Edit") return true;
-								else return false;
-							}
-							return false;
-						})}
-					/>
-				</div>
+							<Grid item>
+								<AC.SearchInput
+									onChange={(e) => handleSearch(e.target.value)}
+									label="Search"
+								/>
+							</Grid>
+						</Grid>
+					</AC.SearchInner>
+				</AC.SearchContainer>
 			</div>
+			<CommonApplicationTable
+				data={mainData}
+				setData={setData}
+				searchedData={searchedData}
+				searchQuery={searchQuery}
+				headers={[`${asset}`, "Status", "Description"]}
+				columns={["name", "status", "description"]}
+				access={access}
+				handleEdit={handleEdit}
+				handleDelete={handleDelete}
+				menuData={[
+					{
+						name: "Edit",
+						handler: handleEdit,
+						isDelete: false,
+					},
+					{
+						name: "Delete",
+						handler: handleDelete,
+						isDelete: true,
+					},
+				].filter((x) => {
+					if (access === "F") return true;
+					if (access === "E") {
+						if (x.name === "Edit") return true;
+						else return false;
+					}
+					return false;
+				})}
+			/>
 		</>
 	);
 };

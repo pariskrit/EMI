@@ -20,12 +20,11 @@ import ColourConstants from "helpers/colourConstants";
 import ChangeStatusPopup from "./ChangeStatusPopup";
 import withMount from "components/HOC/withMount";
 import NewVersionPopUp from "./NewVersionPopUp";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
 		marginTop: 25,
-		display: "flex",
-		justifyContent: "center",
 	},
 
 	logoContentParent: {
@@ -144,54 +143,56 @@ function ModelDetailContent({
 				onClose={() => dispatch({ type: "TOOGLE_VERSION", payload: false })}
 			/>
 			<div className={classes.detailContainer}>
-				<Grid container spacing={2}>
-					<Grid item lg={6} md={6} xs={12}>
-						<Details
-							classes={classes}
-							data={modelDetailsData}
-							position={position}
-							customCaptions={customCaptions}
-							isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
-							Ctxdispatch={dispatch}
-						/>
-						<Departments
-							listOfDepartment={modelDetailsData.modelDepartments}
-							customCaptions={customCaptions}
-							modelId={modelDefaultId}
-							isReadOnly={isReadOnly}
-						/>
-						<Notes
-							data={modelDetailsData.modelNotes}
-							modelId={modelDefaultId}
-							isReadOnly={
-								isReadOnly || state?.modelDetail?.isPublished || isEditOnly
-							}
-						/>
+				<AutoFitContentInScreen loading={isLoading}>
+					<Grid container spacing={2}>
+						<Grid item lg={6} md={6} xs={12}>
+							<Details
+								classes={classes}
+								data={modelDetailsData}
+								position={position}
+								customCaptions={customCaptions}
+								isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
+								Ctxdispatch={dispatch}
+							/>
+							<Departments
+								listOfDepartment={modelDetailsData.modelDepartments}
+								customCaptions={customCaptions}
+								modelId={modelDefaultId}
+								isReadOnly={isReadOnly}
+							/>
+							<Notes
+								data={modelDetailsData.modelNotes}
+								modelId={modelDefaultId}
+								isReadOnly={
+									isReadOnly || state?.modelDetail?.isPublished || isEditOnly
+								}
+							/>
+						</Grid>
+						<Grid item lg={6} md={6} xs={12}>
+							<Settings
+								data={modelDetailsData?.details}
+								customCaptions={customCaptions}
+								isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
+							/>
+							<ModelImage
+								imageUrl={modelDetailsData?.details?.imageURL}
+								thumbnailURL={modelDetailsData?.details?.thumbnailURL}
+								modelId={modelId}
+								isReadOnly={
+									isReadOnly || state?.modelDetail?.isPublished || isEditOnly
+								}
+							/>
+							<Documents
+								classes={classes}
+								modelId={modelDefaultId}
+								documents={modelDetailsData.modelDocuments}
+								isReadOnly={
+									isReadOnly || state?.modelDetail?.isPublished || isEditOnly
+								}
+							/>
+						</Grid>
 					</Grid>
-					<Grid item lg={6} md={6} xs={12}>
-						<Settings
-							data={modelDetailsData?.details}
-							customCaptions={customCaptions}
-							isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
-						/>
-						<ModelImage
-							imageUrl={modelDetailsData?.details?.imageURL}
-							thumbnailURL={modelDetailsData?.details?.thumbnailURL}
-							modelId={modelId}
-							isReadOnly={
-								isReadOnly || state?.modelDetail?.isPublished || isEditOnly
-							}
-						/>
-						<Documents
-							classes={classes}
-							modelId={modelDefaultId}
-							documents={modelDetailsData.modelDocuments}
-							isReadOnly={
-								isReadOnly || state?.modelDetail?.isPublished || isEditOnly
-							}
-						/>
-					</Grid>
-				</Grid>
+				</AutoFitContentInScreen>
 			</div>
 		</>
 	);

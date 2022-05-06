@@ -28,7 +28,7 @@ import withMount from "components/HOC/withMount";
 import { useHistory } from "react-router-dom";
 import SearchTask from "./SearchTask";
 import { checkIfVisibleInViewPort } from "helpers/utils";
-import useDidMountEffect from "hooks/useDidMountEffect";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 const useStyles = makeStyles({
 	loading: {
@@ -51,7 +51,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [pageNumber] = useState(1);
 	const [totalTaskCount, setTotalTaskCount] = useState(null);
 	const [enablePasteTask, setPasteTask] = useState(false);
-	const [tableHeight, setTableHeight] = useState(0);
 	const shouldExpandRef = useRef(false);
 	const isScrolledOnLoad = useRef(false);
 
@@ -124,14 +123,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			if (tableWrapper) tableWrapper.addEventListener("scroll", handleScroll);
 		}
 	}, [fromSeriveLayoutId, isLoading]);
-
-	useEffect(() => {
-		document.body.style.overflowY = "hidden";
-		return () => {
-			window.removeEventListener("scroll", () => {});
-			document.body.style.overflowY = "auto";
-		};
-	}, []);
 
 	const classes = useStyles();
 
@@ -366,46 +357,31 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		navigator.clipboard.writeText(modelTaskId);
 	};
 
-	const handleTableHeight = () => {
-		const tableContainer = document.getElementById(
-			"table-scroll-wrapper-container"
-		);
-		if (tableContainer) {
-			let tableContainerTop = tableContainer.getBoundingClientRect().top;
-			setTableHeight(window.innerHeight - tableContainerTop - 25);
-		}
-	};
-
-	useDidMountEffect(() => {
-		handleTableHeight();
-	}, [isLoading]);
-
-	useEffect(() => {
-		window.addEventListener("resize", handleTableHeight);
-		return () => window.removeEventListener("resize", handleTableHeight);
-	}, []);
-
 	const modelTaskTable = useMemo(() => {
 		return (
-			<ModelTaskTable
-				handleEdit={() => {}}
-				handleDelete={handleRemoveData}
-				handleCopy={handleCopy}
-				handleCopyTaskQuestion={handleCopyTaskQuestion}
-				setData={setTaskList}
-				headers={dymanicTableHeader(showOperatingMode, customCaptions).header}
-				columns={dymanicTableHeader(showOperatingMode, customCaptions).columns}
-				data={taskList}
-				originalData={originalTaskList}
-				modelId={modelId}
-				pageSize={perPage}
-				pageNo={pageNumber}
-				customCaptions={customCaptions}
-				access={access}
-				totalTaskCount={totalTaskCount}
-				fetchData={fetchData}
-				isDataLoading={isDataLoading}
-			/>
+			<AutoFitContentInScreen containsTable>
+				<ModelTaskTable
+					handleEdit={() => {}}
+					handleDelete={handleRemoveData}
+					handleCopy={handleCopy}
+					handleCopyTaskQuestion={handleCopyTaskQuestion}
+					setData={setTaskList}
+					headers={dymanicTableHeader(showOperatingMode, customCaptions).header}
+					columns={
+						dymanicTableHeader(showOperatingMode, customCaptions).columns
+					}
+					data={taskList}
+					originalData={originalTaskList}
+					modelId={modelId}
+					pageSize={perPage}
+					pageNo={pageNumber}
+					customCaptions={customCaptions}
+					access={access}
+					totalTaskCount={totalTaskCount}
+					fetchData={fetchData}
+					isDataLoading={isDataLoading}
+				/>
+			</AutoFitContentInScreen>
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [taskList, totalTaskCount, isDataLoading]);
@@ -438,13 +414,8 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				/>
 				<SearchTask fetchData={fetchData} modelId={modelId} classes={classes} />
 			</div>
-			<div
-				className="table-scroll-wrapper"
-				id="table-scroll-wrapper-container"
-				style={{ maxHeight: tableHeight + "px" }}
-			>
-				{modelTaskTable}
-			</div>
+
+			{modelTaskTable}
 		</div>
 	);
 }

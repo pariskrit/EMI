@@ -16,6 +16,7 @@ import ColourConstants from "helpers/colourConstants";
 import TableStyle from "styles/application/TableStyle";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { handleSort } from "helpers/utils";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 const AT = TableStyle();
 
@@ -25,6 +26,25 @@ const mediaIpad = "@media(max-width: 1024px)";
 const useStyles = makeStyles({
 	tableContainer: {
 		tableLayout: "fixed",
+		borderStyle: "solid",
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		overflowX: "auto",
+		borderColor: ColourConstants.tableBorder,
+		borderWidth: 1,
+		borderRadius: 0,
+		// [mediaMobile]: {
+		// 	maxWidth: "87vw",
+		// 	overflowX: "auto",
+		// },
+		// [mediaIpadpro]: {
+		// 	maxWidth: "87vw",
+		// 	overflowX: "auto",
+		// },
+		// [mediaIpad]: {
+		// 	maxWidth: "85vw",
+		// 	overflowX: "auto",
+		// },
 		[mediaMobile]: {
 			tableLayout: "auto",
 		},
@@ -95,8 +115,6 @@ const CommonApplicationTable = ({
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
-	console.log(data);
-
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
@@ -115,139 +133,136 @@ const CommonApplicationTable = ({
 	}
 
 	return (
-		<div>
-			<AT.TableContainer component={Paper} elevation={0}>
-				<Table aria-label="Table" className={classes.tableContainer}>
-					<AT.TableHead>
-						<TableRow className={classes.tableHead}>
-							{headers.map((header, index) => (
-								<TableCell
-									key={header}
-									onClick={() => {
-										handleSortClick(columns[index]);
-									}}
-									className={clsx(classes.nameRow, {
-										[classes.selectedTableHeadRow]:
-											currentTableSort[0] === columns[index],
-										[classes.tableHeadRow]:
-											currentTableSort[0] !== columns[index],
-									})}
-								>
-									<AT.CellContainer className="flex justify-between">
-										{header}
-										{currentTableSort[0] === columns[index] &&
-										currentTableSort[1] === "desc" ? (
-											<AT.DefaultArrow fill="#FFFFFF" />
-										) : (
-											<AT.DescArrow fill="#FFFFFF" />
-										)}
-									</AT.CellContainer>
-								</TableCell>
-							))}
-						</TableRow>
-					</AT.TableHead>
-					<TableBody>
-						{data.length !== 0 ? (
-							(searchQuery.length === 0 ? data : searchedData).map(
-								(row, index) => (
-									<TableRow key={row.id}>
-										{columns.map((col, i, arr) => (
-											<TableCell
-												key={col}
-												component="th"
-												scope="row"
-												className={clsx(classes.dataCell, classes.nameRow, {
-													[classes.lastCell]: index === data.length - 1,
-												})}
-											>
-												<AT.CellContainer key={col}>
-													<AT.TableBodyText
-														className={clsx({
-															[classes.defaultNameText]:
-																row.id === defaultID && i === 0,
-														})}
-													>
-														{`${row[col]}`}
-													</AT.TableBodyText>
-													{row.id === defaultID && i === 0 ? (
-														<Typography className={classes.defaultText}>
-															(Default)
-														</Typography>
-													) : null}
-													{arr.length === i + 1 ? (
-														<AT.DotMenu
-															onClick={(e) => {
-																setAnchorEl(
-																	anchorEl === e.currentTarget
-																		? null
-																		: e.currentTarget
-																);
-																setSelectedData(
-																	anchorEl === e.currentTarget ? null : index
-																);
-															}}
-														>
-															{menuData.length > 0 && (
-																<AT.TableMenuButton>
-																	<MenuIcon />
-																</AT.TableMenuButton>
-															)}
-
-															<PopupMenu
-																index={index}
-																selectedData={selectedData}
-																anchorEl={anchorEl}
-																id={row.id}
-																clickAwayHandler={() => {
-																	setAnchorEl(null);
-																	setSelectedData(null);
-																}}
-																menuData={[
-																	{
-																		name:
-																			row["isActive"] === true
-																				? "Make Inactive"
-																				: "Make Active",
-																		handler: handleEdit,
-																		isDelete: false,
-																	},
-																	{
-																		name: "Delete",
-																		handler: handleDelete,
-																		isDelete: true,
-																	},
-																].filter((x) => {
-																	if (access === "F") return true;
-																	if (access === "E") {
-																		if (x.name === "Edit") return true;
-																		else return false;
-																	}
-																	return false;
-																})}
-															/>
-														</AT.DotMenu>
-													) : null}
-												</AT.CellContainer>
-											</TableCell>
-										))}
-									</TableRow>
-								)
-							)
-						) : (
-							<TableRow>
-								{headers.map((head, i) => {
-									if (i === 0) {
-										return <TableCell key={head}>No Record Found</TableCell>;
-									} else {
-										return <TableCell key={head}></TableCell>;
-									}
+		<AutoFitContentInScreen containsTable>
+			<Table aria-label="Table" className={classes.tableContainer}>
+				<AT.TableHead>
+					<TableRow className={classes.tableHead}>
+						{headers.map((header, index) => (
+							<TableCell
+								key={header}
+								onClick={() => {
+									handleSortClick(columns[index]);
+								}}
+								className={clsx(classes.nameRow, {
+									[classes.selectedTableHeadRow]:
+										currentTableSort[0] === columns[index],
+									[classes.tableHeadRow]:
+										currentTableSort[0] !== columns[index],
 								})}
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</AT.TableContainer>
-		</div>
+							>
+								<AT.CellContainer className="flex justify-between">
+									{header}
+									{currentTableSort[0] === columns[index] &&
+									currentTableSort[1] === "desc" ? (
+										<AT.DefaultArrow fill="#FFFFFF" />
+									) : (
+										<AT.DescArrow fill="#FFFFFF" />
+									)}
+								</AT.CellContainer>
+							</TableCell>
+						))}
+					</TableRow>
+				</AT.TableHead>
+				<TableBody>
+					{data.length !== 0 ? (
+						(searchQuery.length === 0 ? data : searchedData).map(
+							(row, index) => (
+								<TableRow key={row.id}>
+									{columns.map((col, i, arr) => (
+										<TableCell
+											key={col}
+											scope="row"
+											className={clsx(classes.dataCell, classes.nameRow, {
+												[classes.lastCell]: index === data.length - 1,
+											})}
+										>
+											<AT.CellContainer key={col}>
+												<AT.TableBodyText
+													className={clsx({
+														[classes.defaultNameText]:
+															row.id === defaultID && i === 0,
+													})}
+												>
+													{`${row[col]}`}
+												</AT.TableBodyText>
+												{row.id === defaultID && i === 0 ? (
+													<Typography className={classes.defaultText}>
+														(Default)
+													</Typography>
+												) : null}
+												{arr.length === i + 1 ? (
+													<AT.DotMenu
+														onClick={(e) => {
+															setAnchorEl(
+																anchorEl === e.currentTarget
+																	? null
+																	: e.currentTarget
+															);
+															setSelectedData(
+																anchorEl === e.currentTarget ? null : index
+															);
+														}}
+													>
+														{menuData.length > 0 && (
+															<AT.TableMenuButton>
+																<MenuIcon />
+															</AT.TableMenuButton>
+														)}
+
+														<PopupMenu
+															index={index}
+															selectedData={selectedData}
+															anchorEl={anchorEl}
+															id={row.id}
+															clickAwayHandler={() => {
+																setAnchorEl(null);
+																setSelectedData(null);
+															}}
+															menuData={[
+																{
+																	name:
+																		row["isActive"] === true
+																			? "Make Inactive"
+																			: "Make Active",
+																	handler: handleEdit,
+																	isDelete: false,
+																},
+																{
+																	name: "Delete",
+																	handler: handleDelete,
+																	isDelete: true,
+																},
+															].filter((x) => {
+																if (access === "F") return true;
+																if (access === "E") {
+																	if (x.name === "Edit") return true;
+																	else return false;
+																}
+																return false;
+															})}
+														/>
+													</AT.DotMenu>
+												) : null}
+											</AT.CellContainer>
+										</TableCell>
+									))}
+								</TableRow>
+							)
+						)
+					) : (
+						<TableRow>
+							{headers.map((head, i) => {
+								if (i === 0) {
+									return <TableCell key={head}>No Record Found</TableCell>;
+								} else {
+									return <TableCell key={head}></TableCell>;
+								}
+							})}
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+		</AutoFitContentInScreen>
 	);
 };
 

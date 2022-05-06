@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import ImageViewer from "components/Elements/ImageViewer";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
@@ -234,42 +235,44 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 						dataCount={zoneList.length}
 						description={`${customCaptions.zonePlural} to be used for this ${customCaptions.modelTemplate}`}
 					/>
-					<DragAndDropTable
-						data={zoneList}
-						headers={["Name", "Image"]}
-						columns={[
-							{ id: 1, name: "name", style: { width: "50vw" } },
-							{ id: 2, name: "imageURL", style: { width: "50vw" } },
-						]}
-						handleDragEnd={handleDragEnd}
-						isModelEditable={!state?.modelDetail?.isEMIModel}
-						disableDnd={
-							state?.modelDetail?.isEMIModel ||
-							access === "R" ||
-							state?.modelDetail?.isPublished
-						}
-						menuData={[
-							{
-								name: "Edit",
-								handler: handleEditZone,
-								isDelete: false,
-							},
-							{
-								name: "Delete",
-								handler: showDeleteZonePopUp,
-								isDelete: true,
-							},
-						].filter((x) => {
-							if (state?.modelDetail?.isPublished) return false;
-
-							if (access === "F") return true;
-							if (access === "E") {
-								if (x.name === "Edit") return true;
-								else return false;
+					<AutoFitContentInScreen containsTable>
+						<DragAndDropTable
+							data={zoneList}
+							headers={["Name", "Image"]}
+							columns={[
+								{ id: 1, name: "name", style: { width: "50vw" } },
+								{ id: 2, name: "imageURL", style: { width: "50vw" } },
+							]}
+							handleDragEnd={handleDragEnd}
+							isModelEditable={!state?.modelDetail?.isEMIModel}
+							disableDnd={
+								state?.modelDetail?.isEMIModel ||
+								access === "R" ||
+								state?.modelDetail?.isPublished
 							}
-							return false;
-						})}
-					/>
+							menuData={[
+								{
+									name: "Edit",
+									handler: handleEditZone,
+									isDelete: false,
+								},
+								{
+									name: "Delete",
+									handler: showDeleteZonePopUp,
+									isDelete: true,
+								},
+							].filter((x) => {
+								if (state?.modelDetail?.isPublished) return false;
+
+								if (access === "F") return true;
+								if (access === "E") {
+									if (x.name === "Edit") return true;
+									else return false;
+								}
+								return false;
+							})}
+						/>
+					</AutoFitContentInScreen>
 				</>
 			)}
 		</div>

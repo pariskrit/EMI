@@ -31,6 +31,7 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { useHistory } from "react-router-dom";
 import withMount from "components/HOC/withMount";
+import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 const useStyles = makeStyles({
 	dragDropContainer: {
@@ -791,20 +792,24 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				/>
 			</div>
 			<div className={classes.dragDropContainer}>
-				{loading.dropdown ? (
-					<CircularProgress />
-				) : (
-					<DragDropContext onDragEnd={onDragEnd}>
-						{allServiceLayoutData.map((data) => (
-							<DynamicRow
-								rowData={data}
-								key={data.id}
-								isDragDisabled={isReadOnly}
-								firstRender={isFirstRender}
-							/>
-						))}
-					</DragDropContext>
-				)}
+				<AutoFitContentInScreen>
+					<div style={{ marginRight: "10px" }}>
+						{loading.dropdown ? (
+							<CircularProgress />
+						) : (
+							<DragDropContext onDragEnd={onDragEnd}>
+								{allServiceLayoutData.map((data) => (
+									<DynamicRow
+										rowData={data}
+										key={data.id}
+										isDragDisabled={isReadOnly}
+										firstRender={isFirstRender}
+									/>
+								))}
+							</DragDropContext>
+						)}
+					</div>
+				</AutoFitContentInScreen>
 			</div>
 		</>
 	);

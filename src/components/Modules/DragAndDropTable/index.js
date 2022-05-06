@@ -20,7 +20,32 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
+const mediaMobile = "@media (max-width: 414px)";
+const mediaIpadpro = "@media (max-width: 1024px)";
+const mediaIpad = "@media (max-width: 768px)";
+
 const useStyles = makeStyles({
+	table: {
+		borderStyle: "solid",
+		fontFamily: "Roboto Condensed",
+		fontSize: 14,
+		overflowX: "auto",
+		borderColor: ColourConstants.tableBorder,
+		borderWidth: 1,
+		borderRadius: 0,
+		[mediaMobile]: {
+			maxWidth: "87vw",
+			overflowX: "auto",
+		},
+		[mediaIpadpro]: {
+			maxWidth: "87vw",
+			overflowX: "auto",
+		},
+		[mediaIpad]: {
+			maxWidth: "85vw",
+			overflowX: "auto",
+		},
+	},
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -73,76 +98,74 @@ const DragAndDropTable = ({
 	const classes = useStyles();
 
 	return (
-		<AT.TableContainer component={Paper} elevation={0}>
-			<DragDropContext
-				onDragEnd={(dragProps) => {
-					document
-						.querySelectorAll(
-							`[data-rbd-draggable-id="${dragProps.draggableId}"]`
-						)[0]
-						.classList.remove("no-border");
-					handleDragEnd(dragProps);
-				}}
-				onDragStart={(dragProps) => {
-					document
-						.querySelectorAll(
-							`[data-rbd-draggable-id="${dragProps.draggableId}"]`
-						)[0]
-						.classList.add("no-border");
-				}}
-			>
-				<Table aria-label="Table">
-					<AT.TableHead>
-						<TableRow className={classes.tableHead}>
-							{headers.map((header, i) => (
-								<TableCell
-									key={header}
-									className={clsx(classes.tableHeadRow)}
-									style={columns[i]?.style}
-								>
-									<AT.CellContainer
-										className="flex justify-between"
-										style={i === 0 ? { marginLeft: "38px" } : {}}
-									>
-										{header}
-									</AT.CellContainer>
-								</TableCell>
-							))}
-						</TableRow>
-					</AT.TableHead>
-					<Droppable droppableId="droppable-1" isCombineEnabled>
-						{(pp) => (
-							<TableBody
-								className={classes.tableBody}
-								ref={pp.innerRef}
-								{...pp.droppableProps}
+		<DragDropContext
+			onDragEnd={(dragProps) => {
+				document
+					.querySelectorAll(
+						`[data-rbd-draggable-id="${dragProps.draggableId}"]`
+					)[0]
+					.classList.remove("no-border");
+				handleDragEnd(dragProps);
+			}}
+			onDragStart={(dragProps) => {
+				document
+					.querySelectorAll(
+						`[data-rbd-draggable-id="${dragProps.draggableId}"]`
+					)[0]
+					.classList.add("no-border");
+			}}
+		>
+			<Table aria-label="Table" className={classes.table}>
+				<AT.TableHead>
+					<TableRow className={classes.tableHead}>
+						{headers.map((header, i) => (
+							<TableCell
+								key={header}
+								className={clsx(classes.tableHeadRow)}
+								style={columns[i]?.style}
 							>
-								{data.map((row, index) => (
-									<Draggable
-										key={row.id}
-										draggableId={row.id + ""}
-										index={index}
-										isDragDisabled={disableDnd}
-									>
-										{(provider) => (
-											<Row
-												index={index}
-												provider={provider}
-												row={row}
-												columns={columns}
-												menuData={menuData}
-												isModelEditable={isModelEditable}
-											/>
-										)}
-									</Draggable>
-								))}
-								{pp.placeholder}
-							</TableBody>
-						)}
-					</Droppable>
-				</Table>
-			</DragDropContext>
-		</AT.TableContainer>
+								<AT.CellContainer
+									className="flex justify-between"
+									style={i === 0 ? { marginLeft: "38px" } : {}}
+								>
+									{header}
+								</AT.CellContainer>
+							</TableCell>
+						))}
+					</TableRow>
+				</AT.TableHead>
+				<Droppable droppableId="droppable-1" isCombineEnabled>
+					{(pp) => (
+						<TableBody
+							className={classes.tableBody}
+							ref={pp.innerRef}
+							{...pp.droppableProps}
+						>
+							{data.map((row, index) => (
+								<Draggable
+									key={row.id}
+									draggableId={row.id + ""}
+									index={index}
+									isDragDisabled={disableDnd}
+								>
+									{(provider) => (
+										<Row
+											index={index}
+											provider={provider}
+											row={row}
+											columns={columns}
+											menuData={menuData}
+											isModelEditable={isModelEditable}
+										/>
+									)}
+								</Draggable>
+							))}
+							{pp.placeholder}
+						</TableBody>
+					)}
+				</Droppable>
+			</Table>
+		</DragDropContext>
 	);
 };
 
