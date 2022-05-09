@@ -7,6 +7,7 @@ import SitePage from "pages/Clients/Sites/Links/SitePage";
 import SiteAppPage from "./Clients/Sites/SiteApplication/Links/SiteAppPage";
 import UsersPage from "pages/Users/Links/UsersPage";
 import ModelsPage from "./Models/Links/ModelsPage";
+import ServicesPage from "./Services/Links/ServicesPage";
 import ApplicationPortal from "./ApplicationPortal";
 import {
 	analysisPath,
@@ -16,11 +17,9 @@ import {
 	defectsPath,
 	feedbackPath,
 	noticeboardPath,
-	servicesPath,
 	settingPath,
 } from "helpers/routePaths";
 import AccessRoute from "components/HOC/AccessRoute";
-import Services from "./Services";
 import access from "helpers/access";
 import role from "helpers/roles";
 import Defects from "./Defects";
@@ -46,6 +45,7 @@ const MainApp = ({ location }) => {
 				<SiteAppPage />
 				<UsersPage />
 				<ModelsPage />
+				<ServicesPage />
 
 				<AccessRoleRoute
 					type={"access"}
@@ -54,12 +54,6 @@ const MainApp = ({ location }) => {
 					exact
 					component={(props) => <h1>Analytics Path</h1>}
 					access={access.analyticsAccess}
-				/>
-				<AccessRoute
-					path={servicesPath}
-					exact
-					component={Services}
-					access={access.serviceAccess}
 				/>
 				<AccessRoute
 					path={defectsPath}

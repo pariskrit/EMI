@@ -78,7 +78,7 @@ export const modelsPath = "/app/models";
 export const modelDetailsPath = modelsPath + "/:id";
 export const modelImport = "/app/model/import";
 export const analyticsPath = "/app/analytics";
-export const servicesPath = "/app/services";
+
 export const defectsPath = "/app/defects";
 export const feedbackPath = "/app/feedback";
 export const analysisPath = "/app/analysis";
@@ -94,3 +94,11 @@ export const modelRoles = "/roles";
 export const modelQuestions = "/questions";
 export const modelTask = "/tasks";
 export const modelServiceLayout = "/service-layout";
+
+// Services List
+export const servicesPath = "/app/services";
+export const serviceDetailsPath = servicesPath + "/:id";
+export const serviceImpact = "/service-impacts";
+export const serviceDefects = "/service-defects";
+export const serviceConditionMonitorning = "/service-condition-monitoring";
+export const serviceTimes = "/service-times";

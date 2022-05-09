@@ -13,6 +13,15 @@ const getModelList = async (id, search = "") => {
 	}
 };
 
+const getPublishedModel = async (id) => {
+	try {
+		let response = await API.get(`${Apis.Models}/published?siteAppId=${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 const addModal = async (payload) => {
 	try {
 		let response = await API.post(`${Apis.Models}`, payload);
@@ -55,4 +64,5 @@ export {
 	duplicateModal,
 	getListOfModelVersions,
 	getModelImports,
+	getPublishedModel,
 };

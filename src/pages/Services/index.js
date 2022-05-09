@@ -1,7 +1,7 @@
 import React from "react";
 
-const Services = () => {
-	return <h1>Services Page</h1>;
+const ServicesPage = (props) => {
+	return <div>{props.children}</div>;
 };
 
-export default Services;
+export default ServicesPage;

@@ -155,3 +155,9 @@ export const makeTableAutoScrollAndExpand = (data) => {
 		}
 	}, 500);
 };
+
+export const sortFromDate = (data = [], sortField) => {
+	return data?.sort(function (a, b) {
+		return new Date(a[sortField]) - new Date(b[sortField]);
+	});
+};

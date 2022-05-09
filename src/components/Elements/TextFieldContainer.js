@@ -20,11 +20,12 @@ function TextFieldContainer({
 	value,
 	onChange,
 	className = null,
-	onBlur = false,
+	onBlur = () => {},
 	isFetching = false,
 	isDisabled = false,
 	onKeyDown,
 	isRequired = true,
+	type = "text",
 }) {
 	const classes = useStyles();
 
@@ -51,6 +52,7 @@ function TextFieldContainer({
 				disabled={isFetching || isDisabled}
 				onKeyDown={onKeyDown}
 				value={value ?? ""}
+				type={type}
 			/>
 		</div>
 	);
