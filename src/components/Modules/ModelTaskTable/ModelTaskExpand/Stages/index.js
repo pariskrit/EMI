@@ -64,8 +64,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		data: [],
 		assets: [],
 		assetCount: 0,
-		stageCount: taskInfo.stageCount,
 	});
+	const [stageCount, setStageCount] = useState(0);
 
 	// const setState = (state) => setStages((th) => ({ ...th, ...state }));
 
@@ -80,6 +80,17 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			if (result.status) {
 				if (!isMounted.aborted)
 					setStages((th) => ({ ...th, data: result.data }));
+				setStageCount(
+					(prev) => result.data.filter((x) => Boolean(x.id)).length
+				);
+				CtxDispatch({ type: "SET_STAGE_LIST", payload: result.data });
+				CtxDispatch({
+					type: "TAB_COUNT",
+					payload: {
+						countTab: "stageCount",
+						data: result.data.filter((x) => Boolean(x.id)).length,
+					},
+				});
 			} else {
 				errorResponse(result);
 			}
@@ -191,15 +202,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 								  }
 								: x
 						),
-						stageCount: th.stageCount + 1,
 					}));
-					CtxDispatch({
-						type: "TAB_COUNT",
-						payload: {
-							countTab: "stageCount",
-							data: stages.stageCount + 1,
-						},
-					});
+
 					CtxDispatch({
 						type: "SET_STAGE_NAME",
 						payload: stages.data
@@ -223,6 +227,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 						.filter((x) => Boolean(x.id))
 						.map((x) => x.name)
 						.join(",");
+
+					await fetchTaskStages();
 
 					return { success: true };
 				} else {
@@ -252,15 +258,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 								  }
 								: x
 						),
-						stageCount: th.stageCount - 1,
 					}));
-					CtxDispatch({
-						type: "TAB_COUNT",
-						payload: {
-							countTab: "stageCount",
-							data: stages.stageCount - 1,
-						},
-					});
 					CtxDispatch({
 						type: "SET_STAGE_NAME",
 						payload: stages.data
@@ -276,6 +274,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 						.filter((x) => Boolean(x.id))
 						.map((x) => x.name)
 						.join(",");
+					await fetchTaskStages();
 					return { success: true };
 				} else {
 					// Delete is for deselected so if error, then deselected will be selected
@@ -295,7 +294,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		<div className={classes.stages}>
 			<DetailsPanel
 				header={me.customCaptions.stagePlural}
-				dataCount={stages.stageCount}
+				dataCount={stageCount}
 			/>
 			<ListStages
 				classes={classes}

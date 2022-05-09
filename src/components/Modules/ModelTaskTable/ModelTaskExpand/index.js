@@ -48,7 +48,7 @@ const ModelTaskExpand = ({
 		JSON.parse(localStorage.getItem("me"));
 
 	const [TaskDetailState, taskDispatch] = useContext(TaskContext);
-	const { taskInfo: TaskDetail } = TaskDetailState;
+	const { taskInfo: TaskDetail, stageList } = TaskDetailState;
 
 	useEffect(() => {
 		const isTaskWithHighlightedQuestion =
@@ -63,7 +63,6 @@ const ModelTaskExpand = ({
 	}, [taskLoading]);
 
 	useEffect(() => {
-		console.log(TaskDetail?.roles?.filter((r) => r.id !== null));
 		if (TaskDetail?.intervalCount === 0 || 0) {
 			taskDispatch({
 				type: "SET_TASK_ERROR",
@@ -99,15 +98,9 @@ const ModelTaskExpand = ({
 			});
 		}
 		if (
-			(originalRow.stages.filter((x) => x.hasZones).length > 0 &&
-				TaskDetail?.zoneCount === 0 &&
-				TaskDetail?.stageCount !== 0) ||
-			(originalRow.stages
-				.filter((x) => x.hasZones)
-				.map((x) => x.name)
-				.some((x) => TaskDetailState.stageName.split(",").includes(x)) &&
-				TaskDetail?.zoneCount === 0 &&
-				TaskDetail?.stageCount !== 0)
+			stageList.filter((x) => x.hasZones && x.id !== null)?.length > 0 &&
+			TaskDetail?.zoneCount === 0 &&
+			TaskDetail?.stageCount !== 0
 		) {
 			taskDispatch({
 				type: "SET_TASK_ERROR",
@@ -173,6 +166,7 @@ const ModelTaskExpand = ({
 		TaskDetail.estimatedMinutes,
 		TaskDetail.roles,
 		originalRow.stages,
+		stageList,
 	]);
 
 	const currentTab = (currentTab) => {
@@ -220,7 +214,13 @@ const ModelTaskExpand = ({
 				return <Attachments taskInfo={taskInfo} access={access} />;
 
 			default:
-				return <Details taskInfo={taskInfo} access={access} />;
+				return (
+					<Details
+						taskInfo={taskInfo}
+						access={access}
+						setTaskInfo={setTaskInfo}
+					/>
+				);
 		}
 	};
 
@@ -239,7 +239,7 @@ const ModelTaskExpand = ({
 									TaskDetail?.intervalCount || 0
 								})`,
 								name: "interval",
-								hasError: !TaskDetail?.intervalCount || 0 ? true : false,
+								hasError: TaskDetail?.intervalCount === 0 || 0 ? true : false,
 								errorMessage: `No ${customCaptions?.intervalPlural} Assigned`,
 							},
 							{
@@ -247,7 +247,7 @@ const ModelTaskExpand = ({
 									TaskDetail?.stageCount || 0
 								})`,
 								name: "stage",
-								hasError: !TaskDetail?.stageCount || 0 ? true : false,
+								hasError: TaskDetail?.stageCount === 0 || 0 ? true : false,
 								errorMessage: `No ${customCaptions?.stagePlural} Assigned`,
 							},
 							{
@@ -256,17 +256,10 @@ const ModelTaskExpand = ({
 								})`,
 								name: "zone",
 								hasError:
-									(originalRow.stages.filter((x) => x.hasZones).length > 0 &&
-										TaskDetail?.zoneCount === 0 &&
-										TaskDetail?.stageCount !== 0) ||
-									(originalRow.stages
-										.filter((x) => x.hasZones)
-										.map((x) => x.name)
-										.some((x) =>
-											TaskDetailState.stageName.split(",").includes(x)
-										) &&
-										TaskDetail?.zoneCount === 0 &&
-										TaskDetail?.stageCount !== 0)
+									stageList.filter((x) => x.hasZones && x.id !== null)?.length >
+										0 &&
+									TaskDetail?.zoneCount === 0 &&
+									TaskDetail?.stageCount !== 0
 										? true
 										: false,
 								errorMessage: `No ${customCaptions?.zonePlural} Assigned`,

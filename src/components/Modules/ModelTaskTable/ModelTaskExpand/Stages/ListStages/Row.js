@@ -46,6 +46,7 @@ function Row({
 	});
 	const [modelState] = useContext(ModelContext);
 	const [searchCount, setSearchCount] = useState(null);
+	const [updating, setUpdating] = useState(false);
 
 	const setState = (da) => setStates((th) => ({ ...th, ...da }));
 
@@ -108,14 +109,16 @@ function Row({
 		await pageChange({ pNo: p, pSize: 10, search: "" }, prevData);
 	};
 
-	const handleSelected = () => {
+	const handleSelected = async () => {
+		setUpdating(true);
 		const toggle = !state.selected;
 		setState({ selected: toggle });
 		if (toggle) {
-			postSelected();
+			await postSelected();
 		} else {
-			deleteSelected();
+			await deleteSelected();
 		}
+		setUpdating(false);
 	};
 
 	const handleServierSideSearch = useCallback(
@@ -146,7 +149,11 @@ function Row({
 				<EMICheckbox
 					state={state.selected}
 					changeHandler={handleSelected}
-					disabled={modelAccess === "R" || modelState?.modelDetail?.isPublished}
+					disabled={
+						modelAccess === "R" ||
+						modelState?.modelDetail?.isPublished ||
+						updating
+					}
 				/>
 			</TableCell>
 			<TableCell>

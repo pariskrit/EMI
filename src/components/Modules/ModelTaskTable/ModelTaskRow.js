@@ -77,7 +77,7 @@ const ModelTaskRow = ({
 
 	const [taskState, CtxDispatch] = useContext(TaskContext);
 	const [state, ModelCtxDispatch] = useContext(ModelContext);
-	const { taskError, taskInfo } = taskState;
+	const { taskError, taskInfo, stageList } = taskState;
 
 	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
 
@@ -246,9 +246,9 @@ const ModelTaskRow = ({
 			});
 		}
 		if (
-			originalRow?.stages?.filter((x) => x.hasZones)?.length > 0 &&
-			row?.zones === "" &&
-			row?.stages !== ""
+			stageList.filter((x) => x.hasZones && x.id !== null).length > 0 &&
+			taskInfo.stageCount !== 0 &&
+			taskInfo.zoneCount === 0
 		) {
 			CtxDispatch({
 				type: "SET_TASK_ERROR",
@@ -275,6 +275,9 @@ const ModelTaskRow = ({
 		taskInfo.estimatedMinutes,
 		taskInfo.intervalCount,
 		taskInfo.roles,
+		stageList,
+		taskInfo.stageCount,
+		taskInfo.zoneCount,
 	]);
 
 	useEffect(() => {
@@ -367,7 +370,6 @@ const ModelTaskRow = ({
 				},
 			});
 		}
-		console.log("only at firest renderrrrrrrrrrrrrr");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		row,

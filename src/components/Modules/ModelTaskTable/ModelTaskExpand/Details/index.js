@@ -26,6 +26,7 @@ import withMount from "components/HOC/withMount";
 import SafteryCritical from "assets/icons/safety-critical.svg";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { getStages } from "services/models/modelDetails/modelTasks/stages";
 
 const ADD = AddDialogStyle();
 
@@ -96,8 +97,15 @@ const TaskDetails = ({
 	useEffect(() => {
 		if (taskInfo) {
 			setLocalTaskInfo(taskInfo);
+			const getStage = async () => {
+				const result = await getStages(taskInfo.id);
+				if (result.status) {
+					taskDispatch({ type: "SET_STAGE_LIST", payload: result.data });
+				}
+			};
+			getStage();
 		}
-	}, [taskInfo]);
+	}, [taskInfo, taskDispatch]);
 
 	useEffect(() => {
 		if (
@@ -212,6 +220,15 @@ const TaskDetails = ({
 							r.modelVersionRoleID === id ? { ...r, id: response.data } : r
 						),
 					}));
+					taskDispatch({
+						type: "TAB_COUNT",
+						payload: {
+							countTab: "roles",
+							data: localTaskInfo?.roles?.map((r) =>
+								r.modelVersionRoleID === id ? { ...r, id: response.data } : r
+							),
+						},
+					});
 
 					setLocalTaskInfo({
 						...localTaskInfo,
@@ -263,6 +280,15 @@ const TaskDetails = ({
 							r.modelVersionRoleID === id ? { ...r, id: null } : r
 						),
 					}));
+					taskDispatch({
+						type: "TAB_COUNT",
+						payload: {
+							countTab: "roles",
+							data: localTaskInfo?.roles?.map((r) =>
+								r.modelVersionRoleID === id ? { ...r, id: null } : r
+							),
+						},
+					});
 					setLocalTaskInfo({
 						...localTaskInfo,
 						roles: localTaskInfo?.roles?.map((r) =>
@@ -397,6 +423,13 @@ const TaskDetails = ({
 			]);
 			if (response.status) {
 				setTaskInfo((prev) => ({ ...prev, [name]: value }));
+				taskDispatch({
+					type: "TAB_COUNT",
+					payload: {
+						countTab: name,
+						data: value,
+					},
+				});
 				const dataCell = document
 					.getElementById(`taskExpandable${taskInfo.id}`)
 					?.querySelector(`#dataCell${name} > div`);

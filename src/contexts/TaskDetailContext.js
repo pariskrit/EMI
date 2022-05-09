@@ -5,6 +5,7 @@ const initialState = {
 	current: "Details",
 	taskError: {},
 	stageName: "",
+	stageList: [],
 };
 
 function reducer(state, action) {
@@ -43,6 +44,9 @@ function reducer(state, action) {
 			};
 		case "SET_STAGE_NAME":
 			return { ...state, stageName: payload };
+
+		case "SET_STAGE_LIST":
+			return { ...state, stageList: payload };
 
 		default:
 			return state;

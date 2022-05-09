@@ -77,13 +77,6 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 			const filteredIntervals = intervals.filter((x) => Boolean(x.id)).length;
 			const counts = checked ? filteredIntervals + 1 : filteredIntervals - 1;
 			setSelectedIntervalsCount(counts);
-			CtxDispatch({
-				type: "TAB_COUNT",
-				payload: {
-					countTab: "intervalCount",
-					data: counts,
-				},
-			});
 			document
 				.getElementById(`taskExpandable${taskInfo.id}`)
 				.querySelector(`#dataCellintervals > div >p`).innerHTML = intervals
@@ -114,12 +107,20 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 				setSelectedIntervalsCount(
 					response.data.filter((interval) => Boolean(interval.id)).length
 				);
+				CtxDispatch({
+					type: "TAB_COUNT",
+					payload: {
+						countTab: "intervalCount",
+						data: response.data.filter((interval) => Boolean(interval.id))
+							.length,
+					},
+				});
 			}
 		} else {
 			dispatch(showError("Could not get intervals"));
 		}
 		if (!isMounted.aborted) setIsloading(false);
-	}, [taskInfo.id, isMounted, dispatch]);
+	}, [taskInfo.id, isMounted, dispatch, CtxDispatch]);
 
 	const onCustomCheckboxInputChange = async () => {
 		CtxDispatch({ type: "TOGGLE_CUSTOM_INTERVALS" });
