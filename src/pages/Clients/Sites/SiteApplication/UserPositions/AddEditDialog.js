@@ -193,7 +193,9 @@ const AddDialog = ({
 
 			return { success: true };
 		} else {
-			setError(result.data.detail);
+			setError(
+				result.data?.detail || result.data?.errors?.name[0] || "Could not add"
+			);
 			return { success: false };
 		}
 	};

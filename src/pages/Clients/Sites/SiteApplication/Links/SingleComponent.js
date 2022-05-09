@@ -90,7 +90,7 @@ const SingleComponent = (route) => {
 			Object.keys(state.details).length === 0
 		) {
 			const response = await fetchSiteApplicationDetails();
-			await fetchDefaultCustomCaptionsData(response.applicationID);
+			await fetchDefaultCustomCaptionsData(response?.applicationID);
 		}
 
 		setLoading(false);

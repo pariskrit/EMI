@@ -24,7 +24,6 @@ const mediaIpad = "@media(max-width: 1024px)";
 
 const useStyles = makeStyles({
 	tableContainer: {
-		tableLayout: "fixed",
 		[mediaMobile]: {
 			tableLayout: "auto",
 		},

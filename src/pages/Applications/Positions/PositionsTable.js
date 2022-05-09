@@ -42,7 +42,7 @@ const useStyles = makeStyles({
 		color: "#FFFFFF",
 	},
 	generalRow: {
-		width: 130,
+		width: "20%",
 	},
 	headerName: {
 		width: 95,
@@ -50,6 +50,9 @@ const useStyles = makeStyles({
 	arrowContainer: {
 		marginLeft: "auto",
 		width: 15,
+	},
+	tableHead: {
+		whiteSpace: "nowrap",
 	},
 });
 
@@ -90,7 +93,7 @@ const PositionsTable = ({
 	};
 
 	return (
-		<div className="positionTableContainer" component={Paper} elevation={0}>
+		<AT.TableContainer component={Paper} elevation={0}>
 			<Table aria-label="Positions Table">
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
@@ -98,7 +101,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("name");
 							}}
-							className={clsx(classes.rowWithRightRow, {
+							className={clsx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]: currentTableSort[0] === "name",
 								[classes.tableHeadRow]: currentTableSort[0] !== "name",
 							})}
@@ -119,7 +122,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("allowPublish");
 							}}
-							className={clsx(classes.rowWithRightRow, {
+							className={clsx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "allowPublish",
 								[classes.tableHeadRow]: currentTableSort[0] !== "allowPublish",
@@ -466,7 +469,7 @@ const PositionsTable = ({
 					))}
 				</TableBody>
 			</Table>
-		</div>
+		</AT.TableContainer>
 	);
 };
 
