@@ -19,6 +19,7 @@ import {
 } from "services/users/userSites";
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
+import DialogPopup from "components/Elements/DialogPopup";
 
 const AT = TableStyle();
 
@@ -73,6 +74,9 @@ function ApplicationRow({
 	const [status, setStatus] = useState(false);
 	const [updatingStatus, setUpdatingStatus] = useState(false);
 	const [position, setPosition] = useState({});
+	const [openStatusChnageMessagePopup, setStatusChnageMessagePopup] = useState(
+		false
+	);
 
 	useEffect(() => {
 		if (row) {
@@ -93,14 +97,18 @@ function ApplicationRow({
 	}, [row]);
 
 	const handleChangeStatus = async (e, tg) => {
-		setUpdatingStatus(true);
-
 		if (
 			!row.clientUserSiteApps ||
 			row.clientUserSiteApps === null ||
 			row.clientUserSiteApps.length === 0
 		) {
+			if (!position.id) {
+				setStatusChnageMessagePopup(true);
+				return;
+			}
 			try {
+				setUpdatingStatus(true);
+
 				const response = await postClientUserSiteApps({
 					clientUserSiteID: +clientUserSiteID,
 					siteAppID: row.id,
@@ -117,6 +125,8 @@ function ApplicationRow({
 			}
 		} else {
 			try {
+				setUpdatingStatus(true);
+
 				const response = await updateClientUserSiteAppsStatus(
 					row.clientUserSiteApps?.[0].id,
 					[{ op: "replace", path: "active", value: tg }]
@@ -136,6 +146,11 @@ function ApplicationRow({
 	return (
 		<>
 			{updatingStatus && <LinearProgress className={classes.loading} />}
+			<DialogPopup
+				open={openStatusChnageMessagePopup}
+				closeHandler={() => setStatusChnageMessagePopup(false)}
+				message="Please select Position to activate the Application"
+			/>
 			<TableRow key={row.id}>
 				<TableCell
 					component="th"
@@ -158,7 +173,7 @@ function ApplicationRow({
 					<AT.CellContainer key={row.id}>
 						<DyanamicDropdown
 							isServerSide={false}
-							width="100%"
+							width="50%"
 							// dataHeader={[{ id: 1, name: "Operating Mode" }]}
 							columns={[{ id: 1, name: "name" }]}
 							// dataSource={dropDownDatas?.operatingModes}

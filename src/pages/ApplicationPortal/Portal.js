@@ -95,6 +95,7 @@ function Portal({ setUserDetail }) {
 					role: roles.clientAdmin,
 					application: null,
 					customCaptions: null,
+					siteAppID: null,
 				};
 				await setMeStorage(data);
 				setUserDetail(data);

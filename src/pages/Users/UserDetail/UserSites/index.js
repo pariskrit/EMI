@@ -58,16 +58,16 @@ function UserSite() {
 				fetchUserSites={fetchUserSites}
 				columns={["name", "Department", "Active"]}
 				headers={[
-					{ id: 1, name: "Site Name", width: "33.33vw" },
+					{ id: 1, name: "Site Name", width: "20vw" },
 					{
-						width: "33.33vw",
+						width: "40vw",
 						id: 2,
 						name: `Department`,
 					},
 					{
 						id: 3,
 						name: `Active`,
-						width: "33.33vw",
+						width: "10vw",
 					},
 				]}
 			/>

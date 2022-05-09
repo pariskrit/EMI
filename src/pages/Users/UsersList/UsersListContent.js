@@ -101,7 +101,11 @@ const UsersListContent = ({ getError }) => {
 			try {
 				let result = null;
 				if (role === "ClientAdmin")
-					result = await getClientAdminUserList(clientUserId);
+					if (siteAppID !== null) {
+						result = await getSiteAppUserList(siteAppID);
+					} else {
+						result = await getClientAdminUserList(clientUserId);
+					}
 
 				if (role === "SiteUser") result = await getSiteAppUserList(siteAppID);
 

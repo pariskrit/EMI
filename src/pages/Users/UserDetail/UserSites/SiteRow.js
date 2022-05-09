@@ -21,6 +21,7 @@ import {
 } from "services/users/userSites";
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
+import DialogPopup from "components/Elements/DialogPopup";
 
 const AT = TableStyle();
 
@@ -70,6 +71,9 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 	const [status, setStatus] = useState(false);
 	const [selectedDepartment, setSelectedDepartment] = useState({});
 	const [updatingStatus, setUpdatingStatus] = useState(false);
+	const [openStatusChnageMessagePopup, setStatusChnageMessagePopup] = useState(
+		false
+	);
 
 	useEffect(() => {
 		if (row) {
@@ -87,6 +91,10 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 	}, [row]);
 
 	const handleChangeStatus = async (e, tg) => {
+		if (tg && !selectedDepartment.id) {
+			setStatusChnageMessagePopup(true);
+			return;
+		}
 		setUpdatingStatus(true);
 		if (tg) {
 			try {
@@ -133,6 +141,11 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 	return (
 		<>
 			{updatingStatus && <LinearProgress className={classes.loading} />}
+			<DialogPopup
+				open={openStatusChnageMessagePopup}
+				closeHandler={() => setStatusChnageMessagePopup(false)}
+				message="Please select Department to activate the Site"
+			/>
 			<TableRow key={row.id}>
 				<TableCell
 					component="th"
@@ -155,7 +168,7 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 					<AT.CellContainer key={row.id}>
 						<DyanamicDropdown
 							isServerSide={false}
-							width="100%"
+							width="50%"
 							// dataHeader={[{ id: 1, name: "Operating Mode" }]}
 							columns={[{ id: 1, name: "name" }]}
 							// dataSource={dropDownDatas?.operatingModes}
@@ -207,16 +220,16 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 							fetchUserSites={fetchUserSites}
 							columns={["name", "Position", "Active"]}
 							headers={[
-								{ id: 1, name: "Application", width: "33.33vw" },
+								{ id: 1, name: "Application", width: "20vw" },
 								{
-									width: "33.33vw",
+									width: "40vw",
 									id: 2,
 									name: `Position`,
 								},
 								{
 									id: 3,
 									name: `Active`,
-									width: "33.33vw",
+									width: "10vw",
 								},
 							]}
 						/>

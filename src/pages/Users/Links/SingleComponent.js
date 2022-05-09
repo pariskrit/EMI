@@ -17,7 +17,7 @@ const AC = ContentStyle();
 
 const SingleComponent = (route) => {
 	let getError = route.getError;
-	const { role } =
+	const { role, siteAppID } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
@@ -25,13 +25,16 @@ const SingleComponent = (route) => {
 	const location = useLocation();
 	const history = useHistory();
 	let navigation = UserNavigation(id);
-	if (location.pathname.includes("sites") && role === Roles.siteUser)
+	if (
+		(location.pathname.includes("sites") && role === Roles.siteUser) ||
+		(location.pathname.includes("sites") && siteAppID !== null)
+	)
 		history.goBack();
 
 	if (location.pathname.includes("me")) {
 		navigation = navigation.filter(() => false);
 	}
-	if (role === Roles.siteUser) {
+	if (role === Roles.siteUser || siteAppID !== null) {
 		navigation.splice(1, 1);
 	}
 
