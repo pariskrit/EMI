@@ -31,7 +31,7 @@ function DetailTile({
 		}
 	}, [detail]);
 
-	const handleDropDopChnage = async (val, field, actualField) => {
+	const handleDropDopChnage = async (val, field, actualField, otherField) => {
 		setUpdating((prev) => ({ ...prev, [field]: true }));
 
 		try {
@@ -42,6 +42,10 @@ function DetailTile({
 				dispatch({
 					type: "UPDATE_FIELD",
 					payload: { name: field, value: response.data[field] },
+				});
+				dispatch({
+					type: "UPDATE_FIELD",
+					payload: { name: otherField, value: val?.name },
 				});
 			} else {
 				reduxDispatch(
@@ -130,7 +134,7 @@ function DetailTile({
 					}}
 					handleSort={handleSort}
 					onChange={(val) =>
-						handleDropDopChnage(val, "roleID", "modelVersionRoleID")
+						handleDropDopChnage(val, "roleID", "modelVersionRoleID", "role")
 					}
 					selectdValueToshow="name"
 					label={customCaptions?.role}
@@ -151,7 +155,9 @@ function DetailTile({
 						id: serviceDetails.modelID,
 					}}
 					handleSort={handleSort}
-					onChange={(val) => handleDropDopChnage(val, "modelID", "modelID")}
+					onChange={(val) =>
+						handleDropDopChnage(val, "modelID", "modelID", "modelName")
+					}
 					selectdValueToshow="name"
 					label={customCaptions?.model}
 					required
@@ -172,7 +178,12 @@ function DetailTile({
 					}}
 					handleSort={handleSort}
 					onChange={(val) =>
-						handleDropDopChnage(val, "intervalID", "modelVersionIntervalID")
+						handleDropDopChnage(
+							val,
+							"intervalID",
+							"modelVersionIntervalID",
+							"interval"
+						)
 					}
 					selectdValueToshow="name"
 					label={customCaptions?.interval}
@@ -206,7 +217,12 @@ function DetailTile({
 						}}
 						handleSort={handleSort}
 						onChange={(val) =>
-							handleDropDopChnage(val, "siteAssetID", "siteAssetID")
+							handleDropDopChnage(
+								val,
+								"siteAssetID",
+								"siteAssetID",
+								"siteAssetName"
+							)
 						}
 						selectdValueToshow="name"
 						label={customCaptions?.asset}
