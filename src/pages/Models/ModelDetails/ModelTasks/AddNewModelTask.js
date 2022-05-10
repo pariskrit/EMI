@@ -426,11 +426,19 @@ function AddNewModelTask({
 								hasCheckBoxList={true}
 								checklistChangeHandler={handleCheckListClick}
 								disabled={isDuplicate}
+								required
 							/>
 						</ADD.LeftInputContainer>
 
 						<ADD.RightInputContainer>
-							<ADD.NameLabel>Estimated Minutes</ADD.NameLabel>
+							<ADD.NameLabel>
+								<div className="caption-label">
+									<span>
+										Estimated Minutes{" "}
+										<span style={{ color: "#E31212" }}>*</span>{" "}
+									</span>
+								</div>
+							</ADD.NameLabel>
 							<ADD.NameInput
 								value={input.estimatedMinutes}
 								onChange={(e) => {
