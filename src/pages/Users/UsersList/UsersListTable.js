@@ -211,7 +211,11 @@ const UserTable = ({
 															name: "Edit",
 															handler: () => {
 																history.push(
-																	`${usersPath}/${row?.clientUserID ?? row?.id}`
+																	`${usersPath}/${
+																		row?.clientUserSiteAppID ||
+																		row?.clientUserID ||
+																		row?.id
+																	}`
 																);
 															},
 															isDelete: false,

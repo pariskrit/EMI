@@ -6,6 +6,7 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import MenuDropdown from "./MenuDropdown";
 import ColourConstants from "helpers/colourConstants";
 import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
 
 const media = "@media(max-width: 768px)";
 

@@ -46,7 +46,7 @@ const UserDetails = ({
 		// Attempting to get data
 		try {
 			// Getting data from API
-			let result = await apis.getNotesAPI(id);
+			let result = await apis.getNotesAPI(data?.clientUserID || id);
 
 			// if success, adding data to state
 			if (result.status) {

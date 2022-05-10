@@ -100,15 +100,15 @@ const UsersListContent = ({ getError }) => {
 		async (pNo, searchText) => {
 			try {
 				let result = null;
-				if (role === "ClientAdmin")
-					if (siteAppID !== null) {
-						result = await getSiteAppUserList(siteAppID);
-					} else {
-						result = await getClientAdminUserList(clientUserId);
-					}
 
-				if (role === "SiteUser") result = await getSiteAppUserList(siteAppID);
+				// user is Site Application User
+				if (siteAppID) result = await getSiteAppUserList(siteAppID);
 
+				// user is Client Admin
+				if (role === "ClientAdmin" && !siteAppID)
+					result = await getClientAdminUserList(clientUserId);
+
+				// user is Super Admin
 				if (role === "SuperAdmin")
 					result = await getUsersList(pNo, DefaultPageSize, searchText);
 

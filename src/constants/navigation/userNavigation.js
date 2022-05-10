@@ -1,6 +1,6 @@
 import {
-	userDetailPath,
 	userDetailSitePath,
+	userModelAccess,
 	usersPath,
 } from "helpers/routePaths";
 
@@ -23,8 +23,9 @@ const userNavigation = (id) => {
 			url: usersPath + userdetail + userDetailSitePath,
 		},
 		{
-			name: "Service Access",
-			main: "Service Access",
+			name: "Model Access",
+			main: "Model Access",
+			url: usersPath + userdetail + userModelAccess,
 		},
 	];
 

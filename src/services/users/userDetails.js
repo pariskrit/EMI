@@ -21,6 +21,15 @@ const getClientUserDetails = async (id) => {
 	}
 };
 
+export const getClientUserSiteAppDetail = async (id) => {
+	try {
+		let response = await API.get(`${Apis.ClientUserSiteApps}/${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //endnd
 
 //#region notes

@@ -27,7 +27,9 @@ const getClientAdminUserList = async (id) => {
 
 const getSiteAppUserList = async (id) => {
 	try {
-		const response = await API.get(`${Apis.userDetailSites}?siteAppId=${id}`);
+		const response = await API.get(
+			`${Apis.ClientUserSitesApps}?siteAppId=${id}`
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { getClientUserSiteAppDetail } from "services/users/userDetails";
 
 const AC = ContentStyle();
 
@@ -56,7 +57,11 @@ const SingleComponent = (route) => {
 		const isSuperAdmin =
 			location.pathname === "/app/me" || role === "SuperAdmin";
 		if (isSuperAdmin) result = await route.api.getAPI(id);
-		else result = await route.api.getClientUserDetail(id);
+
+		if (siteAppID && !isSuperAdmin)
+			result = await getClientUserSiteAppDetail(id);
+		if (!siteAppID && !isSuperAdmin)
+			result = await route.api.getClientUserDetail(id);
 
 		// if success, adding data to state
 		if (result.status) {
@@ -67,7 +72,11 @@ const SingleComponent = (route) => {
 				JSON.stringify(isSuperAdmin ? result.data : result.data[0])
 			);
 		} else {
-			dispatch(showError(result.data || "Could not get User details"));
+			dispatch(
+				showError(
+					result?.data?.detail || result?.data || "Could not get User details"
+				)
+			);
 		}
 
 		setLoading(false);

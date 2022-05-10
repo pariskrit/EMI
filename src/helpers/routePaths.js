@@ -11,6 +11,7 @@ export const clientSettingPath = "/app/clientSetting";
 export const usersPath = "/app/users";
 export const userDetailPath = usersPath + "/:id";
 export const userDetailSitePath = "/sites";
+export const userModelAccess = "/modelaccess";
 
 //Application Portal
 export const applicationPortalPath = "/app/portal";

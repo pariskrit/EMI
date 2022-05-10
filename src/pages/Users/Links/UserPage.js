@@ -4,12 +4,14 @@ import SingleComponent from "./SingleComponent";
 import {
 	userDetailPath,
 	userDetailSitePath,
+	userModelAccess,
 	userProfilePath,
 } from "helpers/routePaths";
 import CommonUserComponent from "components/Modules/CommonUserComponent";
 import differentUserAPIs from "helpers/differentUserAPIs";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import UserModelAccess from "../UserDetail/UserModelAccess";
 import UserSite from "../UserDetail/UserSites";
 
 const routes = [
@@ -44,10 +46,22 @@ const routes = [
 		component: UserSite,
 		showHistory: true,
 		showSwitch: false,
-		showPasswordReset: false,
+		showPasswordReset: true,
 		showNotes: false,
 		api: differentUserAPIs.UserDetailsAPIs,
 		title: "User Sites",
+	},
+	{
+		id: 101,
+		name: "Model Access",
+		path: userDetailPath + userModelAccess,
+		component: UserModelAccess,
+		showHistory: true,
+		showSwitch: false,
+		showPasswordReset: false,
+		showNotes: false,
+		api: differentUserAPIs.UserDetailsAPIs,
+		title: "Model Access",
 	},
 ];
 
