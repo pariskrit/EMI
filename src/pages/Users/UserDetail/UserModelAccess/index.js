@@ -43,6 +43,7 @@ const useStyles = makeStyles({
 function UserModelAccess() {
 	const classes = useStyles();
 	const [isLoading, setLoading] = useState(true);
+	const [allowAllModels, setAllowAllModels] = useState(false);
 	const [sites, setSites] = useState([]);
 	const [selectedSite, setSelectedSite] = useState({});
 	const [applications, setApplications] = useState([]);
@@ -54,7 +55,7 @@ function UserModelAccess() {
 	const dispatch = useDispatch();
 
 	const { id } = useParams();
-	const { siteAppID, customCaptions, site, application, role } = JSON.parse(
+	const { siteAppID, customCaptions, site, application } = JSON.parse(
 		sessionStorage.getItem("me") || localStorage.getItem("me")
 	);
 
@@ -195,7 +196,6 @@ function UserModelAccess() {
 						: { ...model, isDisabled: false }
 				),
 			]);
-			console.log(response);
 			displayError(response);
 		}
 	};
@@ -254,6 +254,7 @@ function UserModelAccess() {
 							: null,
 				}))
 			);
+			setAllowAllModels(response.data.allowAllModels);
 			setShowTiles(true);
 		} else displayError(response);
 	};
@@ -352,8 +353,9 @@ function UserModelAccess() {
 						/>
 						<Models
 							data={models}
-							allowAllModels={true}
-							siteAppId={selectedApplication.clientUserSiteAppID || siteAppID}
+							allowAllModels={allowAllModels}
+							setAllowAllModels={setAllowAllModels}
+							siteAppId={selectedApplication.clientUserSiteAppID || id}
 							captions={[
 								customCaptions?.modelPlural,
 								customCaptions?.servicePlural,
@@ -361,6 +363,7 @@ function UserModelAccess() {
 								customCaptions?.rolePlural,
 							]}
 							handleCheck={handleModelChange}
+							dispatch={dispatch}
 						/>
 					</Grid>
 					<Grid item lg={6}>
