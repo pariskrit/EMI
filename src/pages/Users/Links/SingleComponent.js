@@ -47,6 +47,8 @@ const SingleComponent = (route) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const dispatch = useDispatch();
 
+	const isSuperAdmin = location.pathname === "/app/me" || role === "SuperAdmin";
+
 	// Handlers
 	const handleGetData = useCallback(async () => {
 		// NOTE: using useCallback to remove linter error. It's memoizing the function (similar
@@ -54,8 +56,7 @@ const SingleComponent = (route) => {
 		// Attempting to get data
 
 		let result = null;
-		const isSuperAdmin =
-			location.pathname === "/app/me" || role === "SuperAdmin";
+
 		if (isSuperAdmin) result = await route.api.getAPI(id);
 
 		if (siteAppID && !isSuperAdmin)
@@ -106,19 +107,19 @@ const SingleComponent = (route) => {
 
 	const changeStatus = async () => {
 		setIsUpdating(true);
-		const result = await route.api.patchSwitchAPI(id, [
-			{ op: "replace", path: "active", value: !allData.active },
-		]);
-
-		if (result.status) {
-			setOpenSwitch(false);
-			setAllData({ ...allData, active: result.data.active });
-		} else {
-			if (result.data.detail) {
-				getError(result.data.detail);
+		try {
+			const result = await route.api.patchSwitchAPI(
+				isSuperAdmin ? id : allData?.userID,
+				[{ op: "replace", path: "active", value: !allData.active }]
+			);
+			if (result.status) {
+				setOpenSwitch(false);
+				setAllData({ ...allData, active: result.data.active });
 			} else {
-				return { success: false, errors: { ...result.data.errors } };
+				dispatch(showError(result?.data?.title || "Status Change Failed"));
 			}
+		} catch (error) {
+			dispatch(showError("Status Change Failed"));
 		}
 
 		setIsUpdating(false);

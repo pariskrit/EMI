@@ -162,7 +162,10 @@ const CommonHeader = ({
 				<div className={"topContainerCustomCaptions"}>
 					<NavDetails
 						status={status}
-						state={{ isPublished: currentStatus }}
+						state={{
+							isPublished: currentStatus,
+							modelStatusName: currentStatus ? "Active" : "Inactive",
+						}}
 						staticCrumbs={crumbs}
 					/>
 					<div
