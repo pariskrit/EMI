@@ -88,7 +88,7 @@ function SingleApplication({ data, clientId }) {
 
 	return (
 		<Grid item className={classes.itemSize}>
-			<Accordion className={classes.accordionParent}>
+			<Accordion className={classes.accordionParent} defaultExpanded>
 				<AccordionSummary
 					className={classes.summary}
 					expandIcon={

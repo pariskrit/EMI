@@ -73,7 +73,7 @@ function RegionAndSite({ region, sites }) {
 		localStorage.setItem("isAdmin", sessionStorage.getItem("isAdmin"));
 	};
 	return (
-		<Accordion className={classes.accordionParent}>
+		<Accordion className={classes.accordionParent} defaultExpanded>
 			<AccordionSummary
 				className={classes.summary}
 				expandIcon={
