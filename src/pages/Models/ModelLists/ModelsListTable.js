@@ -2,7 +2,6 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
-import { useHistory } from "react-router-dom";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -87,7 +86,6 @@ const UserTable = ({
 }) => {
 	// Init hooks
 	const classes = useStyles();
-	const history = useHistory();
 
 	// Init State
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -207,11 +205,13 @@ const UserTable = ({
 																		);
 																	},
 																	isDelete: false,
+																	ShouldHide: false,
 																},
 																{
 																	name: "View Version",
 																	handler: handleViewVersionModalOpen,
 																	isDelete: false,
+																	ShouldHide: false,
 																},
 																{
 																	name: "Duplicate",
@@ -219,15 +219,18 @@ const UserTable = ({
 																		handleDuplicateModalOpen(row);
 																	},
 																	isDelete: false,
+																	ShouldHide: false,
 																},
 																{
 																	name: "Delete",
 																	handler: handleDeleteDialogOpen,
 																	isDelete: true,
+																	ShouldHide: row.activeModelVersion !== null,
 																},
 															].filter((x) => {
-																if (access === "F") return true;
-																if (access === "E") {
+																if (access === "F" && !x.ShouldHide)
+																	return true;
+																if (access === "E" && !x.ShouldHide) {
 																	if (
 																		x.name === "Edit" ||
 																		x.name === "View" ||
@@ -238,7 +241,7 @@ const UserTable = ({
 																		return false;
 																	}
 																}
-																if (access === "R") {
+																if (access === "R" && !x.ShouldHide) {
 																	if (
 																		x.name === "Edit" ||
 																		x.name === "View" ||
