@@ -8,7 +8,6 @@ import React, {
 import { connect } from "react-redux";
 import {
 	getModelQuestions,
-	patchModelQuestions,
 	duplicateModelQuestions,
 	pasteModelQuestions,
 } from "services/models/modelDetails/modelQuestions";
@@ -26,10 +25,11 @@ import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
 import { Tooltip } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
-import { setPositionForPayload } from "helpers/setPositionForPayload";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import SearchField from "components/Elements/SearchField/SearchField";
 // import useLazyLoad from "hooks/useLazyLoad";
 
 const HtmlTooltip = withStyles((theme) => ({
@@ -41,6 +41,26 @@ const HtmlTooltip = withStyles((theme) => ({
 		border: "1px solid #dadde9",
 	},
 }))(Tooltip);
+
+const debounce = (func, delay) => {
+	let timer;
+	return function () {
+		let self = this;
+		let args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			func.apply(self, args);
+		}, delay);
+	};
+};
+const useStyles = makeStyles({
+	loading: {
+		position: "absolute",
+		width: "100%",
+		left: 0,
+		top: 0,
+	},
+});
 
 const ModelQuestion = ({
 	state,
@@ -57,19 +77,22 @@ const ModelQuestion = ({
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
+	const classes = useStyles();
+
 	const triggerRef = useRef(null);
 	const pasteQuestionRef = useRef(false);
 
 	// INITIAL STATES
 	const [data, setData] = useState([]);
 	const [roleOptions, setRoleOptions] = useState([]);
-	const [originalQuestionList, setOriginalQuestionList] = useState([]);
 	const [deleteModel, setDeleteModel] = useState(false);
 	const [questionId, setQuestionId] = useState(null);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [duplicating, setDuplicating] = useState(false);
 	const [editMode, setEditMode] = useState(false);
+	const [isSearching, setIsSearching] = useState(false);
 	const fromSeriveLayoutId = history?.location?.state?.modelVersionQuestionID;
+	const [searchTxt, setSearchTxt] = useState("");
 
 	// HANDLING OPERATIONS
 	function apiResponse(x) {
@@ -131,14 +154,13 @@ const ModelQuestion = ({
 		};
 	}
 
-	const fetchQuestions = async () => {
+	const fetchQuestions = async (seachTxt = "") => {
 		try {
-			let result = await getModelQuestions(modelId);
+			let result = await getModelQuestions(modelId, seachTxt);
 			if (result.status) {
 				if (!isMounted.aborted) {
 					result = result.data.map((x) => apiResponse(x));
 					setData(result);
-					setOriginalQuestionList(result);
 				}
 				dispatch({
 					type: "TAB_COUNT",
@@ -171,7 +193,6 @@ const ModelQuestion = ({
 	};
 
 	const fetchData = async () => {
-		setLoading(true);
 		await Promise.all([fetchQuestions(), fetchRoles()]);
 		setLoading(false);
 	};
@@ -180,6 +201,16 @@ const ModelQuestion = ({
 		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	// searching questions
+	const handleSearch = useCallback(
+		debounce(async (value) => {
+			setIsSearching(true);
+			await fetchQuestions(value + "");
+			setIsSearching(false);
+		}, 1500),
+		[]
+	);
 
 	useEffect(() => {
 		if (fromSeriveLayoutId && !loading) {
@@ -207,12 +238,6 @@ const ModelQuestion = ({
 			const handlePaste = async () => {
 				setDuplicating(true);
 				try {
-					// const queryOpts = {
-					// 	name: "clipboard-read",
-					// 	allowWithoutGesture: true,
-					// };
-					// await navigator.permissions.query(queryOpts);
-					// const questionText = await navigator.clipboard.readText();
 					const questionText = localStorage.getItem("question");
 
 					const question = JSON.parse(questionText);
@@ -224,11 +249,16 @@ const ModelQuestion = ({
 					if (result.status) {
 						if (!isMounted.aborted) {
 							await fetchQuestions();
-							triggerRef.current.scrollIntoView({
-								behavior: "smooth",
-								block: "end",
-								inline: "nearest",
-							});
+
+							// scroll to pasted question
+							setTimeout(() => {
+								const element = document.getElementById(`row${result.data}`);
+								element &&
+									element.scrollIntoView({
+										behavior: "smooth",
+										block: "end",
+									});
+							}, 1000);
 						}
 					} else {
 						if (result.data.detail) getError(result.data.detail);
@@ -250,46 +280,6 @@ const ModelQuestion = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state.showPasteTask]);
 
-	const handleDragEnd = useCallback(
-		async (e) => {
-			if (!e.destination) {
-				return;
-			}
-
-			if (e.destination.index === e.source.index) return;
-
-			const result = [...data];
-			const [removed] = result.splice(e.source.index, 1);
-			result.splice(e.destination.index, 0, removed);
-			setData(result);
-
-			try {
-				let payloadBody = [
-					{
-						path: "pos",
-						op: "replace",
-						value: setPositionForPayload(e, originalQuestionList),
-					},
-				];
-				const response = await patchModelQuestions(e.draggableId, payloadBody);
-				if (!isMounted.aborted) {
-					if (response.status) {
-						const newDate = result.map((x, i) =>
-							i === e.destination.index ? { ...x, pos: response.data.pos } : x
-						);
-						setOriginalQuestionList(newDate);
-						setData(newDate);
-					} else {
-						setData(originalQuestionList);
-					}
-				}
-			} catch (error) {
-				if (!isMounted.aborted) setData(originalQuestionList);
-			}
-		},
-		[data, originalQuestionList, isMounted.aborted]
-	);
-
 	// Handle Edit Question
 	const handleEdit = (id) => {
 		setQuestionId(id);
@@ -305,12 +295,18 @@ const ModelQuestion = ({
 			let result = await duplicateModelQuestions(id);
 			if (result.status) {
 				if (!isMounted.aborted) {
+					setSearchTxt("");
 					await fetchQuestions();
-					triggerRef.current.scrollIntoView({
-						behavior: "smooth",
-						block: "end",
-						inline: "nearest",
-					});
+
+					// scroll to duplicated question
+					setTimeout(() => {
+						const element = document.getElementById(`row${result.data}`);
+						element &&
+							element.scrollIntoView({
+								behavior: "smooth",
+								block: "end",
+							});
+					}, 1000);
 				}
 			} else {
 				if (result.data.detail) getError(result.data.detail);
@@ -325,9 +321,7 @@ const ModelQuestion = ({
 
 	const handleCopy = (id) => {
 		const copiedData = data.find((x) => x.id === id);
-		// navigator.clipboard.writeText(
-		// 	JSON.stringify({ fromQuestion: true, copiedData })
-		// );
+
 		localStorage.setItem(
 			"question",
 			JSON.stringify({ fromQuestion: true, copiedData })
@@ -372,7 +366,6 @@ const ModelQuestion = ({
 	const handleRemoveData = (id) => {
 		const filteredData = data.filter((x) => x.id !== id);
 		setData(filteredData);
-		setOriginalQuestionList(filteredData);
 		dispatch({
 			type: "TAB_COUNT",
 			payload: { countTab: "questionCount", data: filteredData.length },
@@ -384,13 +377,19 @@ const ModelQuestion = ({
 		setQuestionId(null);
 	};
 
-	const handleAddEditComplete = async () => {
+	const handleAddEditComplete = async (addedquestionId) => {
+		setSearchTxt("");
 		await fetchQuestions();
-		triggerRef.current.scrollIntoView({
-			behavior: "smooth",
-			block: "end",
-			inline: "nearest",
-		});
+
+		// scroll to added question
+		setTimeout(() => {
+			const element = document.getElementById(`row${addedquestionId}`);
+			element &&
+				element.scrollIntoView({
+					behavior: "smooth",
+					block: "end",
+				});
+		}, 1000);
 	};
 
 	const handleOptions = (responseData) => {
@@ -404,28 +403,12 @@ const ModelQuestion = ({
 		});
 	};
 
-	// const onGrabData = (currentPage) =>
-	// 	new Promise((res) => {
-	// 		const NUM_PER_PAGE = 10;
-	// 		const TOTAL_PAGES = Math.floor(data.length / NUM_PER_PAGE);
-	// 		setTimeout(() => {
-	// 			const slicedData = data.slice(
-	// 				((currentPage - 1) % TOTAL_PAGES) * NUM_PER_PAGE,
-	// 				NUM_PER_PAGE * (currentPage % TOTAL_PAGES)
-	// 			);
-	// 			res(slicedData);
-	// 		}, 100);
-	// 	});
-
-	// const { lazyData } = useLazyLoad({ triggerRef, onGrabData });
 	const questionTable = useMemo(() => {
 		return (
 			<AutoFitContentInScreen containsTable>
 				<QuestionTable
 					data={data}
-					handleDragEnd={handleDragEnd}
-					disableDnd={access === "R" || state?.modelDetail?.isPublished}
-					isModelEditable={access === "F" || access === "E"}
+					setData={setData}
 					rolePlural={rolePlural}
 					menuData={[
 						{
@@ -463,10 +446,11 @@ const ModelQuestion = ({
 						return false;
 					})}
 				/>
+				<div ref={triggerRef} />
 			</AutoFitContentInScreen>
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, rolePlural, access, handleDragEnd]);
+	}, [data, rolePlural, access, triggerRef]);
 
 	if (loading) {
 		return <CircularProgress />;
@@ -474,6 +458,7 @@ const ModelQuestion = ({
 
 	return (
 		<>
+			{isSearching && <LinearProgress className={classes.loading} />}
 			<AddEditModel
 				open={state.showAdd}
 				handleClose={() => {
@@ -506,10 +491,16 @@ const ModelQuestion = ({
 						dataCount={data.length}
 						description={`${questionPlural} that will appear for this ${modelTemplate}`}
 					/>
+					<SearchField
+						searchQuery={searchTxt}
+						setSearchQuery={(e) => {
+							setSearchTxt(e.target.value);
+							handleSearch(e.target.value);
+						}}
+					/>
 				</div>
 				{duplicating ? <LinearProgress /> : null}
 				{questionTable}
-				<div ref={triggerRef} />
 			</div>
 		</>
 	);

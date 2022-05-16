@@ -157,7 +157,7 @@ const AddEditModel = ({
 			let result = await postModelQuestions(data);
 			setLoading(false);
 			if (result.status) {
-				handleAddEditComplete();
+				handleAddEditComplete(result.data);
 				closeOverride();
 			} else {
 				if (result.data.title) getError(result.data.title);
@@ -181,7 +181,7 @@ const AddEditModel = ({
 			const response = await patchModelQuestions(questionDetail.id, main);
 			setLoading(false);
 			if (response.status) {
-				handleAddEditComplete();
+				handleAddEditComplete(response.data);
 				closeOverride();
 			} else {
 				if (response.data.detail) getError(response.data.detail);

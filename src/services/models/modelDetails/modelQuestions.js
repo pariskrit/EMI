@@ -2,9 +2,11 @@ import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
-const getModelQuestions = async (id) => {
+const getModelQuestions = async (id, searchTxt = "") => {
 	try {
-		let response = await API.get(`${Apis.ModelQuestions}?modelVersionId=${id}`);
+		let response = await API.get(
+			`${Apis.ModelQuestions}?modelVersionId=${id}&search=${searchTxt}`
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
