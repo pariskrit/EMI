@@ -38,6 +38,7 @@ const schema = yup.object({
 
 	location: yup.number("This field must be a string").nullable(),
 	modelTemplateType: yup.string("This field must be a string").nullable(),
+	serialNumberRange: yup.string("This field must be a string").nullable(),
 });
 
 const useStyles = makeStyles({
@@ -56,6 +57,7 @@ const defaultErrorSchema = {
 	type: null,
 	location: null,
 	modelTemplateType: null,
+	serialNumberRange: null,
 };
 const defaultStateSchema = {
 	name: "",
@@ -63,6 +65,7 @@ const defaultStateSchema = {
 	type: {},
 	location: {},
 	modelTemplateType: null,
+	serialNumberRange: null,
 };
 
 function AddNewModelDetail({
@@ -168,6 +171,7 @@ function AddNewModelDetail({
 					type: input.modelTemplateType || null,
 					modelTypeID: input.type.value,
 					siteLocationID: input.location.value || null,
+					serialNumberRange: input.serialNumberRange || null,
 				};
 
 				const newData = await createProcessHandler(payload);
@@ -227,7 +231,7 @@ function AddNewModelDetail({
 
 		setIsUpdating(false);
 	};
-
+	console.log(input);
 	return (
 		<div>
 			<Dialog
@@ -265,8 +269,36 @@ function AddNewModelDetail({
 				</ADD.ActionContainer>
 
 				<DialogContent className={classes.dialogContent}>
+					{application?.allowFacilityBasedModels &&
+						application?.allowIndividualAssetModels && (
+							<ADD.InputContainer>
+								<ADD.LeftInputContainer>
+									<ADD.NameLabel>{customCaptions?.modelTemplate}</ADD.NameLabel>
+									<RadioGroup
+										aria-label="ModelTemplateType"
+										name="ModelTemplateType"
+										value={input.modelTemplateType}
+										onChange={(e) =>
+											setInput({ ...input, modelTemplateType: e.target.value })
+										}
+										required
+									>
+										<FormControlLabel
+											value="F"
+											control={<Radio color="default" />}
+											label="Facility-Based"
+										/>
+										<FormControlLabel
+											value="A"
+											control={<Radio color="default" />}
+											label="Asset-Based"
+										/>
+									</RadioGroup>
+								</ADD.LeftInputContainer>
+							</ADD.InputContainer>
+						)}
 					<ADD.InputContainer>
-						{application?.showModel ? (
+						{application?.showModel && input.modelTemplateType === "A" ? (
 							<ADD.LeftInputContainer>
 								<ADD.NameLabel>
 									{customCaptions?.make}
@@ -298,7 +330,7 @@ function AddNewModelDetail({
 							</ADD.FullWidthContainer>
 						)}
 
-						{application?.showModel && (
+						{application?.showModel && input.modelTemplateType === "A" && (
 							<ADD.RightInputContainer>
 								<ADD.NameLabel>{customCaptions?.model}</ADD.NameLabel>
 								<ADD.NameInput
@@ -337,48 +369,39 @@ function AddNewModelDetail({
 							</ErrorInputFieldWrapper>
 						</ADD.FullWidthContainer>
 					</ADD.InputContainer>
-					<ADD.InputContainer>
-						<ADD.FullWidthContainer>
-							<ADD.NameLabel>Location</ADD.NameLabel>
-							<Dropdown
-								options={locations}
-								selectedValue={input.location}
-								onChange={(e) => {
-									setInput({ ...input, location: e });
-								}}
-								label=""
-								placeholder="Select Location"
-								width="100%"
-							/>
-						</ADD.FullWidthContainer>
-					</ADD.InputContainer>
-
-					{application?.allowFacilityBasedModels &&
-						application?.allowIndividualAssetModels && (
+					{application?.showLocations && (
+						<ADD.InputContainer>
+							<ADD.FullWidthContainer>
+								<ADD.NameLabel>Location</ADD.NameLabel>
+								<Dropdown
+									options={locations}
+									selectedValue={input.location}
+									onChange={(e) => {
+										setInput({ ...input, location: e });
+									}}
+									label=""
+									placeholder="Select Location"
+									width="100%"
+								/>
+							</ADD.FullWidthContainer>
+						</ADD.InputContainer>
+					)}
+					{application?.showSerialNumberRange &&
+						input.modelTemplateType === "A" && (
 							<ADD.InputContainer>
-								<ADD.LeftInputContainer>
-									<ADD.NameLabel>{customCaptions?.modelTemplate}</ADD.NameLabel>
-									<RadioGroup
-										aria-label="ModelTemplateType"
-										name="ModelTemplateType"
-										value={input.modelTemplateType}
-										onChange={(e) =>
-											setInput({ ...input, modelTemplateType: e.target.value })
+								<ADD.FullWidthContainer>
+									<ADD.NameLabel>Serial Number Range</ADD.NameLabel>
+									<ADD.NameInput
+										error={errors.serialNumberRange === null ? false : true}
+										helperText={
+											errors.serialNumberRange === null ? null : errors.name
 										}
-										required
-									>
-										<FormControlLabel
-											value="F"
-											control={<Radio color="default" />}
-											label="Facility-Based"
-										/>
-										<FormControlLabel
-											value="A"
-											control={<Radio color="default" />}
-											label="Asset-Based"
-										/>
-									</RadioGroup>
-								</ADD.LeftInputContainer>
+										value={input.serialNumberRange}
+										onChange={(e) => {
+											setInput({ ...input, serialNumberRange: e.target.value });
+										}}
+									/>
+								</ADD.FullWidthContainer>
 							</ADD.InputContainer>
 						)}
 				</DialogContent>

@@ -26,7 +26,14 @@ const inputDetails = [
 		isDisabled: true,
 	},
 ];
-function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
+function Details({
+	classes,
+	data,
+	customCaptions,
+	isReadOnly,
+	Ctxdispatch,
+	application,
+}) {
 	const { id } = useParams();
 	const [details, setDetails] = useState([]);
 	const [oldDetails, setOldDetails] = useState([]);
@@ -115,18 +122,25 @@ function Details({ classes, data, customCaptions, isReadOnly, Ctxdispatch }) {
 				: data.map((type) => ({ label: type?.name, value: type.id })),
 		[isReadOnly]
 	);
-
 	const modifyApiData = useCallback(
 		(details, modelTypes) =>
-			inputDetails.map((input) => ({
-				...input,
-				label: customCaptions[input.label.toLowerCase()] ?? input.label,
-				value:
-					input.name === "modelTypeID"
-						? modifyDropdownData(modelTypes)
-						: details[input?.name],
-			})),
-		[customCaptions, modifyDropdownData]
+			inputDetails
+				.filter((input) =>
+					(data?.details?.modelType === "F" && input.label === "Model") ||
+					(input.label === "Serial Number Range" &&
+						!application.showSerialNumberRange)
+						? false
+						: true
+				)
+				.map((input) => ({
+					...input,
+					label: customCaptions[input.label.toLowerCase()] ?? input.label,
+					value:
+						input.name === "modelTypeID"
+							? modifyDropdownData(modelTypes)
+							: details[input?.name],
+				})),
+		[customCaptions, modifyDropdownData, data, application]
 	);
 
 	useEffect(() => {

@@ -55,9 +55,14 @@ function UserModelAccess({ data }) {
 	const dispatch = useDispatch();
 
 	const { id } = useParams();
-	const { siteAppID, customCaptions, site, application } = JSON.parse(
-		sessionStorage.getItem("me") || localStorage.getItem("me")
-	);
+	const {
+		siteAppID,
+		customCaptions,
+		site,
+		application,
+		firstName,
+		lastName,
+	} = JSON.parse(sessionStorage.getItem("me") || localStorage.getItem("me"));
 
 	const onDropdownChange = async (type, item) => {
 		if (type === "site") {
@@ -245,10 +250,10 @@ function UserModelAccess({ data }) {
 				}))
 			);
 			setModels(
-				response.data.models.map((model) => ({
-					...model,
-					name: `${model.name} ${model.modelName}`,
-					checked: model.clientUserSiteAppServiceModels?.length > 0,
+				response.data.models.map((role) => ({
+					...role,
+					name: `${firstName} ${lastName} ${role.name}`,
+					checked: role.clientUserSiteAppServiceModels?.length > 0,
 					idToDelete:
 						model.clientUserSiteAppServiceModels?.length > 0
 							? model.clientUserSiteAppServiceModels[0]?.id
@@ -350,7 +355,7 @@ function UserModelAccess({ data }) {
 								customCaptions?.servicePlural,
 							]}
 							handleCheck={handleDepartmentChange}
-							name={`${data.firstName} ${data.lastName}`}
+							name={`${firstName} ${lastName}`}
 						/>
 						<Models
 							data={models}
@@ -365,7 +370,7 @@ function UserModelAccess({ data }) {
 							]}
 							handleCheck={handleModelChange}
 							dispatch={dispatch}
-							name={`${data.firstName} ${data.lastName}`}
+							name={`${firstName} ${lastName}`}
 						/>
 					</Grid>
 					<Grid item lg={6}>
@@ -376,7 +381,7 @@ function UserModelAccess({ data }) {
 								customCaptions?.servicePlural,
 							]}
 							handleCheck={handleRoleChange}
-							name={`${data.firstName} ${data.lastName}`}
+							name={`${firstName} ${lastName}`}
 						/>
 					</Grid>
 				</Grid>

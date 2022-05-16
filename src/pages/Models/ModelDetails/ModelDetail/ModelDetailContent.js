@@ -74,7 +74,7 @@ function ModelDetailContent({
 		details: [],
 	});
 
-	const { position, customCaptions } =
+	const { position, customCaptions, application } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const reduxDispatch = useDispatch();
@@ -153,6 +153,7 @@ function ModelDetailContent({
 								customCaptions={customCaptions}
 								isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
 								Ctxdispatch={dispatch}
+								application={application}
 							/>
 							<Departments
 								listOfDepartment={modelDetailsData.modelDepartments}
