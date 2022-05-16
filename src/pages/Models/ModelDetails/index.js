@@ -24,7 +24,10 @@ function ModelDetails(props) {
 
 	useEffect(() => {
 		fetchModelDetails();
-	}, [fetchModelDetails]);
+
+		if (JSON.parse(localStorage.getItem("serviceLayoutData"))?.modelId !== id)
+			localStorage.removeItem("serviceLayoutData");
+	}, [fetchModelDetails, id]);
 
 	if (isLoading) {
 		return <CircularProgress />;

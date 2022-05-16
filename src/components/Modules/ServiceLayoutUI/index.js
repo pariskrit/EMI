@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import "./style.css";
 
@@ -70,6 +70,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
+
 	const [counts, setCounts] = useState({
 		stageCount: 0,
 		taskCount: 0,
@@ -80,22 +81,27 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	const [isFirstRender, setIsFirstRender] = useState(true);
 	const classes = useStyles();
 	const history = useHistory();
+	const serviceLayoutData =
+		JSON.parse(localStorage.getItem("serviceLayoutData")) ?? {};
 
 	const taskIdToHighlight = history.location.state?.state?.ModelVersionTaskID;
 	const questionIdToHighlight =
 		history.location.state?.state?.ModelVersionQuestionID;
 	const taskQuestionIdToHighlight =
 		history.location.state?.modelVersionTaskQuestionID;
+
 	const onDropdownChange = async (type, list) => {
 		if (Object.values(list).length === 0) {
 			return;
 		}
+
 		setIsLoading({ ...loading, dropdown: true });
 
 		let response = null;
 		const selectedRoleNotEmpty = Object.values(selectedRole).length !== 0;
 		const selectedIntervalNotEmpty =
 			Object.values(selectedInterval).length !== 0;
+		const serviceLayoutDataBackup = { ...serviceLayoutData };
 		setIsFirstRender(true);
 		if (type === "role") {
 			setSelectedRole(list);
@@ -124,24 +130,36 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				response = await getServiceLayoutDataByInterval(modelId, list.id);
 			}
 		}
+		localStorage.setItem(
+			"serviceLayoutData",
+			JSON.stringify({
+				...serviceLayoutData,
+				[type]: list,
+			})
+		);
 
 		if (response.status) {
-			const modifiedResponse = modifyResponseData(
-				response.data,
-				hideTaskQuestions
-			);
-			setAllServiceLayoutData(modifiedResponse);
-			setCounts({
-				zoneCount: response.data.zoneCount,
-				stageCount: response.data.stageCount,
-				taskCount: response.data.taskCount,
-			});
-			setOriginalServiceLayoutData(response.data);
+			initialDataSetup(response);
 		} else {
+			localStorage.setItem(
+				"serviceLayoutData",
+				JSON.stringify(serviceLayoutDataBackup)
+			);
 			console.log("error");
 		}
 
-		setIsLoading({ ...loading, dropdown: false });
+		setIsLoading({ all: false, dropdown: false });
+	};
+
+	const initialDataSetup = (response, hideTask = false) => {
+		const modifiedResponse = modifyResponseData(response.data, hideTask);
+		setAllServiceLayoutData(modifiedResponse);
+		setCounts({
+			zoneCount: response.data.zoneCount,
+			stageCount: response.data.stageCount,
+			taskCount: response.data.taskCount,
+		});
+		setOriginalServiceLayoutData(response.data);
 	};
 
 	const handleClearDropdown = async (type) => {
@@ -167,7 +185,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		setIsFirstRender(true);
 
 		setIsLoading({ ...loading, dropdown: true });
-
 		let response = null,
 			modifiedResponse = null;
 		if (type === "interval" && !isRoleEmpty) {
@@ -189,6 +206,11 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			setOriginalServiceLayoutData(response.data);
 			setAllServiceLayoutData(modifiedResponse);
 			setPositions(storePositions(modifiedResponse));
+			console.log(hideTaskQuestions);
+			localStorage.setItem(
+				"serviceLayoutData",
+				JSON.stringify({ ...serviceLayoutData, interval: null })
+			);
 		} else if (type === "role" && !isIntervalEmpty) {
 			setSelectedRole({});
 			response = await getServiceLayoutDataByInterval(
@@ -211,12 +233,20 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			setAllServiceLayoutData(modifiedResponse);
 			setPositions(storePositions(modifiedResponse));
 			setOriginalServiceLayoutData(response.data);
+			localStorage.setItem(
+				"serviceLayoutData",
+				JSON.stringify({ ...serviceLayoutData, role: null })
+			);
 		} else {
 			if (isIntervalEmpty) {
 				setSelectedRole({});
 			} else {
 				setSelectedInterval({});
 			}
+			localStorage.setItem(
+				"serviceLayoutData",
+				JSON.stringify({ ...serviceLayoutData, interval: null, role: null })
+			);
 
 			await reFetchServicelayout();
 		}
@@ -603,7 +633,10 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 	const onCheckboxInputChange = () => {
 		setHideTaskQuestions((prev) => !prev);
-
+		localStorage.setItem(
+			"serviceLayoutData",
+			JSON.stringify({ ...serviceLayoutData, hideTask: !hideTaskQuestions })
+		);
 		if (!hideTaskQuestions) {
 			setAllServiceLayoutData((prev) =>
 				modifyResponseData(
@@ -637,7 +670,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			if (!isMounted.aborted) {
 				const modifiedResponse = modifyResponseData(
 					response.data,
-					false,
+					serviceLayoutData["hideTask"] ? serviceLayoutData["hideTask"] : false,
 					taskIdToHighlight,
 					questionIdToHighlight,
 					taskQuestionIdToHighlight
@@ -652,6 +685,8 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					taskCount: response.data.taskCount,
 				});
 				setPositions(storePositions(modifiedResponse));
+				if (serviceLayoutData["hideTask"])
+					setHideTaskQuestions(serviceLayoutData["hideTask"]);
 			}
 		} else {
 			reduxDispatch(showError("Could not fetch Service Layout Data"));
@@ -659,6 +694,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 		if (!isMounted.aborted)
 			setIsLoading((loading) => ({ dropdown: false, all: false }));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		modelId,
 		reduxDispatch,
@@ -667,14 +703,14 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		questionIdToHighlight,
 		isMounted,
 	]);
-
 	const reFetchServicelayout = async () => {
 		const response = await getServiceLayoutData(modelId);
 
 		if (response.status) {
 			const modifiedResponse = modifyResponseData(
 				response.data,
-				false,
+				serviceLayoutData["hideTask"] ? serviceLayoutData["hideTask"] : false,
+
 				taskIdToHighlight,
 				questionIdToHighlight,
 				taskQuestionIdToHighlight
@@ -692,12 +728,49 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		}
 	};
 
+	const fetchServiceLayoutUsingLocalStorage = useCallback(async () => {
+		const [response, response2] = await Promise.all([
+			getModelRolesList(modelId),
+			getModelIntervals(modelId),
+		]);
+
+		setRoles(response.data);
+		setIntervals(response2.data);
+		if (serviceLayoutData["role"] && serviceLayoutData["interval"]) {
+			const response = await getServiceLayoutDataByRoleAndInterval(
+				modelId,
+				serviceLayoutData["interval"].id,
+				serviceLayoutData["role"].id
+			);
+			setSelectedInterval(serviceLayoutData["interval"]);
+			setSelectedRole(serviceLayoutData["role"]);
+			initialDataSetup(response, serviceLayoutData["hideTask"]);
+		}
+		if (serviceLayoutData["role"] && !serviceLayoutData["interval"]) {
+			onDropdownChange("role", serviceLayoutData?.role);
+		}
+
+		if (serviceLayoutData["interval"] && !serviceLayoutData["role"]) {
+			onDropdownChange("interval", serviceLayoutData?.interval);
+		}
+
+		if (serviceLayoutData["hideTask"])
+			setHideTaskQuestions(serviceLayoutData["hideTask"]);
+
+		setIsLoading((loading) => ({ dropdown: false, all: false }));
+	}, []);
 	useEffect(() => {
-		if (allServiceLayoutData.length === 0) fetchServiceLayoutData();
+		if (
+			allServiceLayoutData.length === 0 &&
+			!serviceLayoutData["role"] &&
+			!serviceLayoutData["interval"]
+		)
+			fetchServiceLayoutData();
 
 		let timer = null;
 		const hasIdToHighlight =
 			taskIdToHighlight || questionIdToHighlight || taskQuestionIdToHighlight;
+
 		if (allServiceLayoutData.length > 0 && hasIdToHighlight) {
 			timer = setTimeout(() => {
 				const element = document.getElementById("highlightedTask");
@@ -721,6 +794,16 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		questionIdToHighlight,
 		taskQuestionIdToHighlight,
 	]);
+
+	useEffect(() => {
+		if (serviceLayoutData["role"] || serviceLayoutData["interval"])
+			fetchServiceLayoutUsingLocalStorage();
+
+		localStorage.setItem(
+			"serviceLayoutData",
+			JSON.stringify({ ...serviceLayoutData, modelId: modelId })
+		);
+	}, []);
 
 	if (loading.all) {
 		return <CircularProgress />;
