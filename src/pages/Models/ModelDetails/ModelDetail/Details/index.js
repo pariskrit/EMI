@@ -128,6 +128,8 @@ function Details({
 				.filter((input) =>
 					(data?.details?.modelType === "F" && input.label === "Model") ||
 					(input.label === "Serial Number Range" &&
+						data?.details?.modelType === "F") ||
+					(input.label === "Serial Number Range" &&
 						!application.showSerialNumberRange)
 						? false
 						: true
