@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import "./style.css";
 
@@ -89,7 +89,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		history.location.state?.state?.ModelVersionQuestionID;
 	const taskQuestionIdToHighlight =
 		history.location.state?.modelVersionTaskQuestionID;
-
 	const onDropdownChange = async (type, list) => {
 		if (Object.values(list).length === 0) {
 			return;
@@ -152,7 +151,13 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	};
 
 	const initialDataSetup = (response, hideTask = false) => {
-		const modifiedResponse = modifyResponseData(response.data, hideTask);
+		const modifiedResponse = modifyResponseData(
+			response.data,
+			hideTask,
+			taskIdToHighlight,
+			questionIdToHighlight,
+			taskQuestionIdToHighlight
+		);
 		setAllServiceLayoutData(modifiedResponse);
 		setCounts({
 			zoneCount: response.data.zoneCount,
