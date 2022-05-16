@@ -250,10 +250,10 @@ function UserModelAccess({ data }) {
 				}))
 			);
 			setModels(
-				response.data.models.map((role) => ({
-					...role,
-					name: `${firstName} ${lastName} ${role.name}`,
-					checked: role.clientUserSiteAppServiceModels?.length > 0,
+				response.data.models.map((model) => ({
+					...model,
+					name: `${firstName} ${lastName} ${model.name}`,
+					checked: model.clientUserSiteAppServiceModels?.length > 0,
 					idToDelete:
 						model.clientUserSiteAppServiceModels?.length > 0
 							? model.clientUserSiteAppServiceModels[0]?.id
