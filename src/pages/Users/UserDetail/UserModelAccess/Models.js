@@ -12,6 +12,7 @@ function Models({
 	handleCheck,
 	dispatch,
 	setAllowAllModels,
+	name,
 }) {
 	const [disabled, setDisabled] = useState(false);
 
@@ -39,8 +40,8 @@ function Models({
 		<AccordionBox title={captions[0] ?? "Models"}>
 			<div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
 				<em>
-					Bill Thompson can perform {captions[1] ?? "Services"} for the
-					following {captions[0] ?? "Models"}
+					{name} can perform {captions[1] ?? "Services"} for the following{" "}
+					{captions[0] ?? "Models"}
 				</em>
 				<CheckboxContainer
 					checkBoxes={[

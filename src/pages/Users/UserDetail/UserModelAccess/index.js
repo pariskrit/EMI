@@ -40,7 +40,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function UserModelAccess() {
+function UserModelAccess({ data }) {
 	const classes = useStyles();
 	const [isLoading, setLoading] = useState(true);
 	const [allowAllModels, setAllowAllModels] = useState(false);
@@ -245,12 +245,13 @@ function UserModelAccess() {
 				}))
 			);
 			setModels(
-				response.data.models.map((role) => ({
-					...role,
-					checked: role.clientUserSiteAppServiceModels?.length > 0,
+				response.data.models.map((model) => ({
+					...model,
+					name: `${model.name} ${model.modelName}`,
+					checked: model.clientUserSiteAppServiceModels?.length > 0,
 					idToDelete:
-						role.clientUserSiteAppServiceModels?.length > 0
-							? role.clientUserSiteAppServiceModels[0]?.id
+						model.clientUserSiteAppServiceModels?.length > 0
+							? model.clientUserSiteAppServiceModels[0]?.id
 							: null,
 				}))
 			);
@@ -297,32 +298,16 @@ function UserModelAccess() {
 			/>
 			<div className={classes.applicationSiteContainer}>
 				<label>
-					<b>Application:</b>{" "}
-					<span>{application?.name ?? selectedApplication?.name}</span>
+					<b>Site:</b> <span>{site?.siteName ?? selectedSite?.name}</span>
 				</label>
 				<label>
-					<b>Site:</b> <span>{site?.siteName ?? selectedSite?.name}</span>
+					<b>Application:</b>{" "}
+					<span>{application?.name ?? selectedApplication?.name}</span>
 				</label>
 			</div>
 
 			{!siteAppID ? (
 				<div className={classes.dropdown}>
-					<DyanamicDropdown
-						dataSource={applications}
-						columns={[{ name: "name", id: 1, minWidth: "130px" }]}
-						showHeader={false}
-						width="100%"
-						placeholder={`Select Application`}
-						onChange={(list) => onDropdownChange("application", list)}
-						selectdValueToshow="name"
-						selectedValue={selectedApplication}
-						label={`Filter by Application`}
-						isServerSide={false}
-						icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
-						required={false}
-						showBorderColor
-					/>
-
 					<DyanamicDropdown
 						dataSource={sites}
 						columns={[{ name: "name", id: 1, minWidth: "130px" }]}
@@ -333,6 +318,21 @@ function UserModelAccess() {
 						selectdValueToshow="name"
 						selectedValue={selectedSite}
 						label={`Filter by Site`}
+						isServerSide={false}
+						icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
+						required={false}
+						showBorderColor
+					/>
+					<DyanamicDropdown
+						dataSource={applications}
+						columns={[{ name: "name", id: 1, minWidth: "130px" }]}
+						showHeader={false}
+						width="100%"
+						placeholder={`Select Application`}
+						onChange={(list) => onDropdownChange("application", list)}
+						selectdValueToshow="name"
+						selectedValue={selectedApplication}
+						label={`Filter by Application`}
 						isServerSide={false}
 						icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
 						required={false}
@@ -350,6 +350,7 @@ function UserModelAccess() {
 								customCaptions?.servicePlural,
 							]}
 							handleCheck={handleDepartmentChange}
+							name={`${data.firstName} ${data.lastName}`}
 						/>
 						<Models
 							data={models}
@@ -364,6 +365,7 @@ function UserModelAccess() {
 							]}
 							handleCheck={handleModelChange}
 							dispatch={dispatch}
+							name={`${data.firstName} ${data.lastName}`}
 						/>
 					</Grid>
 					<Grid item lg={6}>
@@ -374,6 +376,7 @@ function UserModelAccess() {
 								customCaptions?.servicePlural,
 							]}
 							handleCheck={handleRoleChange}
+							name={`${data.firstName} ${data.lastName}`}
 						/>
 					</Grid>
 				</Grid>
