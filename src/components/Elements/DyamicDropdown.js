@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
-import ErrorIcon from "@material-ui/icons/Error";
 import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import useInfiniteScroll from "hooks/useDropdownInfiniteScroll";
@@ -371,7 +370,11 @@ function DyanamicDropdown(props) {
 		try {
 			const response = await fetchData();
 			setFilteredList((prev) =>
-				[...prev, ...(response?.data ?? []), ...(dataSource ?? [])]
+				[
+					...prev,
+					...(Array.isArray(response?.data) ? response?.data ?? [] : []),
+					...(dataSource ?? []),
+				]
 					.filter((x) => Boolean(x))
 					.reduce((acc, current) => {
 						const x = acc.find((item) => item.id === current.id);
@@ -383,7 +386,11 @@ function DyanamicDropdown(props) {
 					}, [])
 			);
 			setOriginalFilteredList((prev) =>
-				[...prev, ...(response?.data || []), ...(dataSource || [])]
+				[
+					...prev,
+					...(Array.isArray(response?.data) ? response?.data ?? [] : []),
+					...(dataSource || []),
+				]
 					.filter((x) => Boolean(x))
 					.reduce((acc, current) => {
 						const x = acc.find((item) => item.id === current.id);

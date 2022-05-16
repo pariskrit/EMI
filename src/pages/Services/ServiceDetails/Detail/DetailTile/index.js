@@ -32,12 +32,19 @@ function DetailTile({
 	}, [detail]);
 
 	const handleDropDopChnage = async (val, field, actualField, otherField) => {
+		if (+val.id === +serviceDetails[field]) return;
+
 		setUpdating((prev) => ({ ...prev, [field]: true }));
 
 		try {
-			const response = await patchServiceDetails(serviceId, [
-				{ op: "replace", path: actualField, value: val.id },
-			]);
+			const response =
+				actualField === "siteAssetID"
+					? await patchServiceDetails(serviceId, [
+							{ op: "replace", path: actualField, value: val.siteAssetID },
+					  ])
+					: await patchServiceDetails(serviceId, [
+							{ op: "replace", path: actualField, value: val.id },
+					  ]);
 			if (response.status) {
 				dispatch({
 					type: "UPDATE_FIELD",
@@ -61,6 +68,8 @@ function DetailTile({
 	};
 
 	const handleBlurTextField = async (name) => {
+		if (serviceDetails[name] === detail[name]) return;
+
 		setUpdating((prev) => ({ ...prev, [name]: true }));
 		try {
 			const response = await patchServiceDetails(serviceId, [
@@ -71,7 +80,6 @@ function DetailTile({
 				},
 			]);
 			if (response.status) {
-				console.log(response.data[name]);
 				dispatch({
 					type: "UPDATE_FIELD",
 					payload: {
@@ -124,6 +132,35 @@ function DetailTile({
 				<DyanamicDropdown
 					isServerSide={false}
 					width="100%"
+					placeholder="Select Model"
+					dataHeader={[
+						{ id: 1, name: "Name" },
+						{ id: 2, name: "Model" },
+					]}
+					columns={[
+						{ id: 1, name: "name" },
+						{ id: 2, name: "modelName" },
+					]}
+					// dataSource={dropDownDatas?.actions}
+					selectedValue={{
+						name: serviceDetails.modelName,
+						id: serviceDetails.modelID,
+					}}
+					handleSort={handleSort}
+					onChange={(val) =>
+						handleDropDopChnage(val, "modelID", "modelID", "modelName")
+					}
+					showHeader
+					selectdValueToshow="name"
+					label={customCaptions?.model}
+					required
+					isReadOnly={true}
+					fetchData={() => getPublishedModel(serviceDetails.siteAppID)}
+				/>
+				<div style={{ marginBottom: 14 }}></div>
+				<DyanamicDropdown
+					isServerSide={false}
+					width="100%"
 					placeholder="Select Role"
 					dataHeader={[{ id: 1, name: "Role" }]}
 					columns={[{ id: 1, name: "name" }]}
@@ -140,31 +177,12 @@ function DetailTile({
 					label={customCaptions?.role}
 					required
 					isReadOnly={isReadOnly || updating["roleID"] === true}
-					fetchData={() => getModelRolesList(serviceDetails.modelID)}
-				/>
-				<div style={{ marginBottom: 14 }}></div>
-				<DyanamicDropdown
-					isServerSide={false}
-					width="100%"
-					placeholder="Select Model"
-					dataHeader={[{ id: 1, name: "Model" }]}
-					columns={[{ id: 1, name: "name" }]}
-					// dataSource={dropDownDatas?.actions}
-					selectedValue={{
-						name: serviceDetails.modelName,
-						id: serviceDetails.modelID,
-					}}
-					handleSort={handleSort}
-					onChange={(val) =>
-						handleDropDopChnage(val, "modelID", "modelID", "modelName")
+					fetchData={() =>
+						getModelRolesList(serviceDetails.activeModelVersionID)
 					}
-					selectdValueToshow="name"
-					label={customCaptions?.model}
-					required
-					isReadOnly={isReadOnly || updating["modelID"] === true}
-					fetchData={() => getPublishedModel(serviceDetails.siteAppID)}
 				/>
 				<div style={{ marginBottom: 14 }}></div>
+
 				<DyanamicDropdown
 					isServerSide={false}
 					width="100%"
@@ -189,13 +207,15 @@ function DetailTile({
 					label={customCaptions?.interval}
 					required
 					isReadOnly={isReadOnly || updating["intervalID"] === true}
-					fetchData={() => getModelIntervals(serviceDetails.modelID)}
+					fetchData={() =>
+						getModelIntervals(serviceDetails.activeModelVersionID)
+					}
 				/>
 				<div style={{ marginBottom: 14 }}></div>
 				<TextFieldContainer
 					label={"Scheduled Date"}
 					name={"scheduledDate"}
-					value={serviceDetails.scheduledDate}
+					value={serviceDetails?.scheduledDate?.split("Z")[0]}
 					onChange={(e) => onInputChange(e, "scheduledDate")}
 					onBlur={() => handleBlurTextField("scheduledDate")}
 					isDisabled={isReadOnly}
