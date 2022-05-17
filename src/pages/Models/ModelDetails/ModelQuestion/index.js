@@ -108,7 +108,7 @@ const ModelQuestion = ({
 				x.roles === null || x.roles?.length === 0 ? (
 					<ErrorMessageWithErrorIcon message={`No ${rolePlural} Assigned`} />
 				) : (
-					x.roles.map((x) => x.name).join(",")
+					x.roles.map((x) => x.name).join(", ")
 				),
 			modelType: questionType.label,
 			modelTiming: timingType.label,
