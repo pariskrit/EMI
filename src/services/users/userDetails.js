@@ -86,6 +86,17 @@ const patchSwitchUserDetails = async (id, data) => {
 		return getAPIResponse(err?.response);
 	}
 };
+
+// #region patch notes
+const patchSwitchClientUserDetails = async (id, data) => {
+	try {
+		let response = await API.patch(`${Apis.ClientUserSitesApps}/${id}`, data);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //end
 
 export {
@@ -96,4 +107,5 @@ export {
 	patchUserDetails,
 	patchExternalReference,
 	patchSwitchUserDetails,
+	patchSwitchClientUserDetails,
 };

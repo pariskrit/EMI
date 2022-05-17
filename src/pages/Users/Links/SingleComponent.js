@@ -92,7 +92,7 @@ const SingleComponent = (route) => {
 	}, [handleGetData]);
 
 	useEffect(() => {
-		if (allData.id) {
+		if (allData?.id) {
 			setLoading(false);
 			localStorage.setItem("userCrumbs", JSON.stringify(allData));
 		} else {
@@ -108,15 +108,24 @@ const SingleComponent = (route) => {
 	const changeStatus = async () => {
 		setIsUpdating(true);
 		try {
-			const result = await route.api.patchSwitchAPI(
-				isSuperAdmin ? id : allData?.userID,
-				[{ op: "replace", path: "active", value: !allData.active }]
-			);
+			const result =
+				siteAppID && !isSuperAdmin
+					? await route.api.patchClientUserSwitchAPI(id, [
+							{ op: "replace", path: "active", value: !allData.active },
+					  ])
+					: await route.api.patchSwitchAPI(isSuperAdmin ? id : allData.userID, [
+							{ op: "replace", path: "active", value: !allData.active },
+					  ]);
+
 			if (result.status) {
 				setOpenSwitch(false);
-				setAllData({ ...allData, active: result.data.active });
+				setAllData({
+					...allData,
+					active:
+						siteAppID && !isSuperAdmin ? allData.active : result.data.active,
+				});
 			} else {
-				dispatch(showError(result?.data?.title || "Status Change Failed"));
+				dispatch(showError(result?.data?.detail || "Status Change Failed"));
 			}
 		} catch (error) {
 			dispatch(showError("Status Change Failed"));
