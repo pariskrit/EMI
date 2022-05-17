@@ -56,7 +56,7 @@ const defaultErrorSchema = {
 	model: null,
 	type: null,
 	location: null,
-	modelTemplateType: null,
+	modelTemplateType: "F",
 	serialNumberRange: null,
 };
 const defaultStateSchema = {
@@ -64,7 +64,7 @@ const defaultStateSchema = {
 	model: "",
 	type: {},
 	location: {},
-	modelTemplateType: null,
+	modelTemplateType: "F",
 	serialNumberRange: null,
 };
 

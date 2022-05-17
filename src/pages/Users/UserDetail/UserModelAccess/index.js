@@ -252,7 +252,7 @@ function UserModelAccess({ data }) {
 			setModels(
 				response.data.models.map((model) => ({
 					...model,
-					name: `${firstName} ${lastName} ${model.name}`,
+					name: `${model.name} ${model.modelName}`,
 					checked: model.clientUserSiteAppServiceModels?.length > 0,
 					idToDelete:
 						model.clientUserSiteAppServiceModels?.length > 0
@@ -312,42 +312,46 @@ function UserModelAccess({ data }) {
 			</div>
 
 			{!siteAppID ? (
-				<div className={classes.dropdown}>
-					<DyanamicDropdown
-						dataSource={sites}
-						columns={[{ name: "name", id: 1, minWidth: "130px" }]}
-						showHeader={false}
-						placeholder={`Select Site`}
-						width="100%"
-						onChange={(list) => onDropdownChange("site", list)}
-						selectdValueToshow="name"
-						selectedValue={selectedSite}
-						label={`Filter by Site`}
-						isServerSide={false}
-						icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
-						required={false}
-						showBorderColor
-					/>
-					<DyanamicDropdown
-						dataSource={applications}
-						columns={[{ name: "name", id: 1, minWidth: "130px" }]}
-						showHeader={false}
-						width="100%"
-						placeholder={`Select Application`}
-						onChange={(list) => onDropdownChange("application", list)}
-						selectdValueToshow="name"
-						selectedValue={selectedApplication}
-						label={`Filter by Application`}
-						isServerSide={false}
-						icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
-						required={false}
-						showBorderColor
-					/>
-				</div>
+				<Grid container spacing={4}>
+					<Grid item xs={12} md={6}>
+						<DyanamicDropdown
+							dataSource={sites}
+							columns={[{ name: "name", id: 1, minWidth: "130px" }]}
+							showHeader={false}
+							placeholder={`Select Site`}
+							width="100%"
+							onChange={(list) => onDropdownChange("site", list)}
+							selectdValueToshow="name"
+							selectedValue={selectedSite}
+							label={`Filter by Site`}
+							isServerSide={false}
+							icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
+							required={false}
+							showBorderColor
+						/>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<DyanamicDropdown
+							dataSource={applications}
+							columns={[{ name: "name", id: 1, minWidth: "130px" }]}
+							showHeader={false}
+							width="100%"
+							placeholder={`Select Application`}
+							onChange={(list) => onDropdownChange("application", list)}
+							selectdValueToshow="name"
+							selectedValue={selectedApplication}
+							label={`Filter by Application`}
+							isServerSide={false}
+							icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
+							required={false}
+							showBorderColor
+						/>
+					</Grid>
+				</Grid>
 			) : null}
 			{showTiles ? (
 				<Grid container spacing={4} className={classes.grid}>
-					<Grid item lg={6}>
+					<Grid item xs={12} md={6}>
 						<Departments
 							data={departments}
 							captions={[
@@ -373,7 +377,7 @@ function UserModelAccess({ data }) {
 							name={`${firstName} ${lastName}`}
 						/>
 					</Grid>
-					<Grid item lg={6}>
+					<Grid item xs={12} md={6}>
 						<Roles
 							data={roles}
 							captions={[
