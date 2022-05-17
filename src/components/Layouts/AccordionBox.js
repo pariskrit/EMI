@@ -38,6 +38,7 @@ function AccordionBox({
 	children,
 	defaultExpanded = true,
 	accordionClass = "",
+	style = { marginTop: "10px" },
 }) {
 	const classes = useStyles();
 
@@ -46,6 +47,7 @@ function AccordionBox({
 			className={`${classes.logoAccordion} ${accordionClass}`}
 			defaultExpanded={defaultExpanded}
 			expanded={noExpand}
+			style={style}
 		>
 			<AccordionSummary
 				expandIcon={

@@ -37,7 +37,7 @@ function Models({
 	};
 
 	return (
-		<AccordionBox title={captions[0] ?? "Models"}>
+		<AccordionBox title={captions[0] ?? "Models"} style={{ marginTop: "15px" }}>
 			<div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
 				<em>
 					{name} can perform {captions[1] ?? "Services"} for the following{" "}
