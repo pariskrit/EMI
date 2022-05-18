@@ -143,7 +143,7 @@ function DetailTile({
 					]}
 					// dataSource={dropDownDatas?.actions}
 					selectedValue={{
-						name: serviceDetails.modelName,
+						name: serviceDetails.modelName + " " + serviceDetails.model,
 						id: serviceDetails.modelID,
 					}}
 					handleSort={handleSort}
