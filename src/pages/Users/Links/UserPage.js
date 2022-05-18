@@ -46,7 +46,7 @@ const routes = [
 		component: UserSite,
 		showHistory: true,
 		showSwitch: false,
-		showPasswordReset: true,
+		showPasswordReset: false,
 		showNotes: false,
 		api: differentUserAPIs.UserDetailsAPIs,
 		title: "User Sites",
