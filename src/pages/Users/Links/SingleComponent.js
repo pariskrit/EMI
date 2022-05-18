@@ -73,11 +73,7 @@ const SingleComponent = (route) => {
 				JSON.stringify(isSuperAdmin ? result.data : result.data[0])
 			);
 		} else {
-			dispatch(
-				showError(
-					result?.data?.detail || result?.data || "Could not get User details"
-				)
-			);
+			dispatch(showError(result?.data?.detail || "Could not get User details"));
 		}
 
 		setLoading(false);
@@ -100,7 +96,10 @@ const SingleComponent = (route) => {
 		}
 	}, [allData]);
 
-	let titleName = JSON.parse(localStorage.getItem("userCrumbs"));
+	let titleName;
+	try {
+		titleName = JSON.parse(localStorage.getItem("userCrumbs"));
+	} catch (error) {}
 
 	//Switch
 	const openConfirmationModal = () => setOpenSwitch(true);

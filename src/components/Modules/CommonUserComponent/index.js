@@ -87,7 +87,7 @@ const UserDetails = ({
 							setErrors={setErrors}
 							getError={getError}
 							apis={apis}
-							id={+id}
+							id={+data?.userID || +id}
 							inputData={inputData}
 							setInputData={setInputData}
 						/>
@@ -95,7 +95,7 @@ const UserDetails = ({
 					<Grid item xs={12}>
 						<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
 							<UserNotes
-								id={+id}
+								id={+data?.clientUserID || +id}
 								notes={notes}
 								setNotes={setNotes}
 								getError={getError}
