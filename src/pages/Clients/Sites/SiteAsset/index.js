@@ -61,7 +61,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 	};
 
 	useEffect(() => {
-		fetchCrumbs(id);
+		fetchCrumbs(id, clientId);
 		fetchAset(1);
 
 		return () => {
@@ -149,7 +149,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-	fetchCrumbs: (id) => dispatch(fetchSiteDetail(id)),
+	fetchCrumbs: (id, clientId) => dispatch(fetchSiteDetail(id, clientId)),
 	getError: (msg) => dispatch(showError(msg)),
 });
 

@@ -303,11 +303,11 @@ function UserModelAccess({ data }) {
 			/>
 			<div className={classes.applicationSiteContainer}>
 				<label>
-					<b>Site:</b> <span>{site?.siteName ?? selectedSite?.name}</span>
+					<b>Site:</b> <span>{selectedSite?.name ?? site?.siteName}</span>
 				</label>
 				<label>
 					<b>Application:</b>{" "}
-					<span>{application?.name ?? selectedApplication?.name}</span>
+					<span>{selectedApplication?.name ?? application?.name}</span>
 				</label>
 			</div>
 

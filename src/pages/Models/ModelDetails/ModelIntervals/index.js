@@ -188,8 +188,8 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 	}, [modelId, reduxDispatch, dispatch]);
 
 	useEffect(() => {
-		if (modelIntervals.length === 0) fetchModelIntervals();
-	}, [fetchModelIntervals, modelIntervals]);
+		fetchModelIntervals();
+	}, [fetchModelIntervals]);
 	const isReadOnly = access === "R";
 	const isEditOnly = access === "E";
 

@@ -96,6 +96,9 @@ function Portal({ setUserDetail }) {
 					application: null,
 					customCaptions: null,
 					siteAppID: null,
+					siteID: null,
+					siteName: null,
+					site: null,
 				};
 				await setMeStorage(data);
 				setUserDetail(data);

@@ -42,7 +42,7 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail, getError }) => {
 	useEffect(() => {
 		fetchSiteDepartments();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		handlefetchSiteDetail(id);
+		handlefetchSiteDetail(id, clientId);
 		return () => {
 			cancelFetch.current = true;
 		};
@@ -95,7 +95,8 @@ const mapStateToProps = ({ siteDetailData: { siteDetails } }) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-	handlefetchSiteDetail: (siteId) => dispatch(fetchSiteDetail(siteId)),
+	handlefetchSiteDetail: (siteId, clientId) =>
+		dispatch(fetchSiteDetail(siteId, clientId)),
 	getError: (msg) => dispatch(showError(msg)),
 });
 
