@@ -103,7 +103,7 @@ const NavDetails = ({
 						<div
 							className={`${classes.icon} flex`}
 							style={{
-								backgroundColor: state?.isPublished ? "#24BA78" : "red",
+								backgroundColor: state?.statusColor,
 							}}
 						></div>
 						{state?.modelStatusName ?? "Active"}

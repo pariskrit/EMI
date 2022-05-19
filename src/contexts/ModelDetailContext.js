@@ -1,3 +1,4 @@
+import ColourConstants from "helpers/colourConstants";
 import React, { createContext, useReducer } from "react";
 
 const initialState = {
@@ -20,7 +21,15 @@ function reducer(state, action) {
 		case "SET_MODEL_DETAIL":
 			return {
 				...state,
-				modelDetail: payload,
+				modelDetail: {
+					...payload?.detail,
+					statusColor: !payload?.detail?.isPublished
+						? ColourConstants.orange
+						: payload?.detail?.version === payload.activeModelVersion
+						? ColourConstants.green
+						: ColourConstants.red,
+					activeModelVersion: payload.activeModelVersion,
+				},
 			};
 
 		case "SET_ISPUBLISHED":
@@ -30,6 +39,9 @@ function reducer(state, action) {
 					...state.modelDetail,
 					isPublished: payload.isPublished,
 					modelStatusName: payload.modelStatusName,
+					statusColor: !payload.isPublished
+						? ColourConstants.orange
+						: ColourConstants.green,
 				},
 			};
 		case "TOGGLE_ADD":

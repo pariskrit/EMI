@@ -13,6 +13,7 @@ import {
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { modelsPath } from "helpers/routePaths";
 import { changeDateFormat } from "helpers/utils";
+import ColourConstants from "helpers/colourConstants";
 
 const useStyles = makeStyles({
 	row: {
@@ -21,10 +22,30 @@ const useStyles = makeStyles({
 			background: "#d7d7d7",
 		},
 	},
+	icon: {
+		width: 10,
+		height: 10,
+		borderRadius: "50%",
+		margin: "0 5px 0px 5px",
+		display: "flex",
+		alignItems: "center",
+	},
+	cell: {
+		display: "flex",
+		width: "152px",
+		alignItems: "center",
+	},
 });
-const VersionListTable = ({ versions, open, closeHandler, isLoading }) => {
+const VersionListTable = ({
+	versions,
+	open,
+	closeHandler,
+	isLoading,
+	activeModelVersion,
+}) => {
 	const style = useStyles();
 	const history = useHistory();
+	console.log(activeModelVersion, versions);
 	return (
 		<Dialog open={open} onClose={closeHandler}>
 			<div style={{ margin: 20, minWidth: 500, minHeight: 300 }}>
@@ -40,9 +61,7 @@ const VersionListTable = ({ versions, open, closeHandler, isLoading }) => {
 								<TableCell style={{ whiteSpace: "nowrap" }}>
 									Version Number
 								</TableCell>
-								<TableCell style={{ whiteSpace: "nowrap" }}>
-									IsPublished
-								</TableCell>
+								<TableCell style={{ whiteSpace: "nowrap" }}>Status</TableCell>
 								<TableCell style={{ whiteSpace: "nowrap" }}>
 									Modified By
 								</TableCell>
@@ -59,7 +78,19 @@ const VersionListTable = ({ versions, open, closeHandler, isLoading }) => {
 									onClick={() => history.push(`${modelsPath}/${version.id}`)}
 								>
 									<TableCell>{version.version}</TableCell>
-									<TableCell>{version.isPublished ? "Yes" : "No"}</TableCell>
+									<TableCell className={style.cell}>
+										<div
+											className={`${style.icon} flex`}
+											style={{
+												backgroundColor: !version.isPublished
+													? ColourConstants.orange
+													: activeModelVersion === version.version
+													? ColourConstants.green
+													: ColourConstants.red,
+											}}
+										></div>
+										<p>{version.isPublished ? "Active" : "In Development"}</p>
+									</TableCell>
 									<TableCell>{version.displayName}</TableCell>
 									<TableCell>
 										{changeDateFormat(version.modifiedDateTime)}

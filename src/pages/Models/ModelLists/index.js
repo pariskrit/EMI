@@ -107,6 +107,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const [openImportFile, setOpenImportFile] = useState(false);
 	const [modelImportData, setModelImportData] = useState([]);
 	const [searching, setSearching] = useState(false);
+	const [activeModelVersion, setActiveModelVersion] = useState(null);
 
 	const { position, application, customCaptions } =
 		JSON.parse(sessionStorage.getItem("me")) ||
@@ -178,6 +179,9 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const onViewVersionTableOpen = async (id) => {
 		setOpenVersionTableDialog(true);
 		setVersionTableLoading(true);
+		setActiveModelVersion(
+			allData.find((model) => model.id === id).activeModelVersion
+		);
 
 		const response = await getListOfModelVersions(id);
 
@@ -243,6 +247,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 				isLoading={isVersionTableLoading}
 				closeHandler={() => setOpenVersionTableDialog(false)}
 				versions={modelVersions}
+				activeModelVersion={activeModelVersion}
 			/>
 			<ImportFileDialouge
 				open={openImportFile}

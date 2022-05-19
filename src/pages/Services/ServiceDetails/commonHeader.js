@@ -95,7 +95,7 @@ const ServicesWrapper = ({
 					hideLastLogin
 					state={{
 						...state,
-						isPublished: redService.includes(state?.status) ? false : true,
+						statusColor: redService.includes(state?.status) ? "red" : "#24BA78",
 						modelStatusName: serviceStatus[state?.status],
 					}}
 					hideVersion={true}

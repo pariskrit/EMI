@@ -163,7 +163,7 @@ const CommonHeader = ({
 					<NavDetails
 						status={status}
 						state={{
-							isPublished: currentStatus,
+							statusColor: currentStatus ? "#24BA78" : "red",
 							modelStatusName: currentStatus ? "Active" : "Inactive",
 						}}
 						staticCrumbs={crumbs}

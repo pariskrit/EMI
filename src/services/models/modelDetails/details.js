@@ -11,6 +11,15 @@ export const getModelDetails = async (id) => {
 	}
 };
 
+export const getModelLists = async (id) => {
+	try {
+		let response = await API.get(`${Apis.Models}?siteAppId=${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const getModelTypes = async (id) => {
 	try {
 		let response = await API.get(`${Apis.ModelTypes}?siteAppId=${id}`);
