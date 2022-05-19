@@ -1,11 +1,17 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import { TableRow, TableCell } from "@material-ui/core";
 import TableStyle from "styles/application/TableStyle";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
-import { getSiteAssets } from "services/clients/sites/siteAssets";
+import {
+	getSiteAssetReferences,
+	getSiteAssets,
+} from "services/clients/sites/siteAssets";
 import { ModelContext } from "contexts/ModelDetailContext";
 import { handleSort } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { patchTaskStages } from "services/models/modelDetails/modelservicelayout";
 
 const AT = TableStyle();
 
@@ -37,7 +43,10 @@ function Row({
 	fetchFromDropDwn,
 	page,
 	setPage,
+	fetchTaskStages,
 }) {
+	const dispatch = useDispatch();
+
 	const [state, setStates] = useState({
 		selectedAsset: {
 			name: x.siteAssetName,
@@ -45,11 +54,25 @@ function Row({
 		},
 		selected: x.id !== null,
 	});
+
 	const [modelState] = useContext(ModelContext);
 	const [searchCount, setSearchCount] = useState(null);
 	const [updating, setUpdating] = useState(false);
+	const [SiteAssetRefrenceData, setSiteAssetRefrenceData] = useState([]);
 
 	const setState = (da) => setStates((th) => ({ ...th, ...da }));
+
+	useEffect(() => {
+		if (x) {
+			setStates((prev) => ({
+				...prev,
+				selectedAsset: {
+					name: x.siteAssetName,
+					id: x.siteAssetID,
+				},
+			}));
+		}
+	}, [x]);
 
 	const patchAsset = async (asset) => {
 		try {
@@ -137,6 +160,34 @@ function Row({
 		[]
 	);
 
+	const changeRefrenceSiteAsset = async (assetReference) => {
+		try {
+			const response = await patchTaskStages(x.id, [
+				{
+					op: "replace",
+					path: "SiteAssetReferenceID",
+					value: assetReference.id,
+				},
+			]);
+			if (response.status) {
+				fetchTaskStages();
+			} else {
+				dispatch(
+					showError(
+						response?.data?.detail || "Could not assign site asset reference"
+					)
+				);
+			}
+		} catch (error) {
+			console.log(error);
+			dispatch(
+				showError(
+					error?.response?.detail || "Could not assign site asset reference"
+				)
+			);
+		}
+	};
+
 	return (
 		<TableRow>
 			<TableCell
@@ -176,7 +227,10 @@ function Row({
 						]}
 						placeholder={`Select ${customCaption.asset}`}
 						selectedValue={state.selectedAsset}
-						onChange={onAssetChange}
+						onChange={(val) => {
+							onAssetChange(val);
+							setSiteAssetRefrenceData([]);
+						}}
 						showClear
 						showHeader
 						dataSource={assets}
@@ -195,6 +249,37 @@ function Row({
 					/>
 				</TableCell>
 			)}
+			{modelType === "F" ? (
+				<TableCell>
+					<DyanamicDropdown
+						dataSource={SiteAssetRefrenceData}
+						columns={[
+							{ name: "name", id: 1 },
+							{ name: "description", id: 2 },
+						]}
+						dataHeader={[
+							{ name: "Name", id: 1 },
+							{ name: "Description", id: 2 },
+						]}
+						showHeader
+						handleSort={handleSort}
+						selectedValue={{
+							id: x.SiteAssetReferenceID,
+							name: x.siteAssetReferenceName,
+						}}
+						placeholder={`Select ${customCaption?.assetReference}`}
+						selectdValueToshow="name"
+						showClear
+						onChange={(list) => changeRefrenceSiteAsset(list)}
+						isReadOnly={
+							// isReadOnly ||
+							// selected ||
+							x.id === null || x.siteAssetID === null
+						}
+						fetchData={() => getSiteAssetReferences(x.siteAssetID)}
+					/>
+				</TableCell>
+			) : null}
 		</TableRow>
 	);
 }

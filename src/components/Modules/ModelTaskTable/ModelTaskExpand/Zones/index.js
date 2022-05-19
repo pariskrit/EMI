@@ -39,36 +39,39 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 	// checking the access of the user to allow or disallow edit add.
 	const isReadOnly = access === "R";
 
-	const fetchModelTaskZones = async (taskId) => {
-		!isMounted.aborted && setLoading(true);
-		try {
-			const response = await getModelTaskZonesList(taskId);
-			if (response.status) {
-				if (!isMounted.aborted) {
-					setZones(response.data);
-					setOriginalZones(response.data);
+	const fetchModelTaskZones = useCallback(
+		async (showLoading = true) => {
+			!isMounted.aborted && showLoading && setLoading(true);
+			try {
+				const response = await getModelTaskZonesList(id);
+				if (response.status) {
+					if (!isMounted.aborted) {
+						setZones(response.data);
+						setOriginalZones(response.data);
+					}
+				} else {
+					dispatch(
+						showError(
+							response?.data?.detail ||
+								response?.data ||
+								"Could not fetch task detail"
+						)
+					);
 				}
-			} else {
+			} catch (error) {
 				dispatch(
 					showError(
-						response?.data?.title ||
-							response?.data ||
-							"Could not update task detail"
+						error?.response?.data ||
+							error?.response ||
+							"Could not fetch task detail"
 					)
 				);
+			} finally {
+				!isMounted.aborted && showLoading && setLoading(false);
 			}
-		} catch (error) {
-			dispatch(
-				showError(
-					error?.response?.data ||
-						error?.response ||
-						"Could not update task detail"
-				)
-			);
-		} finally {
-			!isMounted.aborted && setLoading(false);
-		}
-	};
+		},
+		[dispatch, isMounted.aborted, id]
+	);
 
 	const fetchCountAssest = async () => {
 		const response = await getSiteAssetsCount(siteID);
@@ -80,7 +83,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 	};
 
 	useEffect(() => {
-		fetchModelTaskZones(id);
+		fetchModelTaskZones();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
@@ -159,6 +162,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 									: z
 							)
 						);
+						fetchModelTaskZones(false);
 						document
 							.getElementById(`taskExpandable${taskInfo.id}`)
 							.querySelector(`#dataCellzones > div >p`).innerHTML = zones
@@ -211,6 +215,8 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 									: z
 							)
 						);
+						fetchModelTaskZones(false);
+
 						document
 							.getElementById(`taskExpandable${taskInfo.id}`)
 							.querySelector(`#dataCellzones > div >p`).innerHTML = zones
@@ -285,6 +291,7 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 				customCaptions={customCaptions}
 				isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
 				fetchSiteFromDropDown={fetchSiteFromDropDown}
+				fetchModelTaskZones={fetchModelTaskZones}
 			/>
 		</div>
 	);

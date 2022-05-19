@@ -15,12 +15,18 @@ import TabelRowImage from "components/Elements/TabelRowImage";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import ImageViewer from "components/Elements/ImageViewer";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import {
+	ModelStageTableColumn,
+	ModelStageTableHeader,
+} from "constants/modelDetails";
 
 const modelState = { id: null, open: false };
 
 const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const {
-		customCaptions: { stage, stagePlural, modelTemplate },
+		customCaptions: { stage, stagePlural, modelTemplate, asset },
+		siteAppID,
+		siteID,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -160,6 +166,10 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				modelVersionID={modelId}
 				handleAddEditComplete={handleComplete}
 				title={stage}
+				siteAppId={siteAppID}
+				siteID={siteID}
+				modelType={state?.modelDetail?.modelType}
+				customCaptionsAsset={asset}
 			/>
 			<DeleteDialog
 				open={deleteModel.open}
@@ -182,12 +192,11 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 						data={data}
 						isModelEditable
 						disableDnd={access === "R" || state?.modelDetail?.isPublished}
-						headers={["Name", "Image", "Has Zones"]}
-						columns={[
-							{ id: 1, name: "name", style: { width: "40vw" } },
-							{ id: 2, name: "image", style: { width: "40vw" } },
-							{ id: 3, name: "hasZones", style: { width: "20vw" } },
-						]}
+						headers={ModelStageTableHeader(
+							state?.modelDetail?.modelType,
+							asset
+						)}
+						columns={ModelStageTableColumn(state?.modelDetail?.modelType)}
 						onClickImage={() => setOPenImage(true)}
 						handleDragEnd={handleDragEnd}
 						menuData={[

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
 	Dialog,
 	DialogTitle,
@@ -10,7 +10,12 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import * as yup from "yup";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { handleValidateObj, generateErrorState } from "helpers/utils";
+import {
+	handleValidateObj,
+	generateErrorState,
+	handleSort,
+	debounce,
+} from "helpers/utils";
 import ColourConstants from "helpers/colourConstants";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { useEffect } from "react";
@@ -20,6 +25,9 @@ import {
 	uploadModelStageImage,
 } from "services/models/modelDetails/modelStages";
 import ImageUpload from "components/Elements/ImageUpload";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
+import { getSiteAssetsForZones } from "services/models/modelDetails/modelTaskZones";
+import { getSiteAssetsCount } from "services/clients/sites/siteAssets";
 
 const ADD = AddDialogStyle();
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
@@ -38,9 +46,14 @@ const schema = yup.object({
 			SUPPORTED_FORMATS.includes(value.type)
 		),
 	imageName: yup.string(),
+	defaultSiteAssetID: yup.string().nullable(),
 });
 
-const defaultErrorSchema = { name: null, image: null };
+const defaultErrorSchema = {
+	name: null,
+	image: null,
+	defaultSiteAssetID: null,
+};
 
 const useStyles = makeStyles({
 	// Override for paper used in dialog
@@ -54,7 +67,6 @@ const useStyles = makeStyles({
 		width: "100%",
 		display: "flex",
 		flexDirection: "column",
-		gap: 10,
 		justifyContent: "center",
 	},
 	image: { display: "flex", alignItems: "center", gap: 10 },
@@ -75,6 +87,7 @@ const initialInput = {
 	imageUrl: "",
 	image: null,
 	imageName: "",
+	defaultSiteAssetID: "",
 };
 
 const AddEditModel = ({
@@ -85,21 +98,36 @@ const AddEditModel = ({
 	modelVersionID,
 	handleAddEditComplete,
 	title,
+	siteAppId,
+	siteID,
+	modelType,
+	customCaptionsAsset,
 }) => {
 	const classes = useStyles();
 	const [input, setInput] = useState(initialInput);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [loading, setLoading] = useState(false);
+	const [siteAssset, setSiteAssest] = useState([]);
+	const [assestCount, setAssestCount] = useState(null);
+	const [page, setPage] = useState(1);
 
 	useEffect(() => {
 		if (detailData) {
-			const { name, imageURL, imageKey, hasZones } = detailData;
+			const {
+				name,
+				imageURL,
+				imageKey,
+				hasZones,
+				defaultSiteAssetID,
+				assetName,
+			} = detailData;
 			setInput({
 				...input,
 				name,
 				hasZones: hasZones === "Yes" ? true : false,
 				imageUrl: imageURL || "",
 				imageName: imageKey || "",
+				defaultSiteAssetID: { id: defaultSiteAssetID, name: assetName },
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,6 +136,9 @@ const AddEditModel = ({
 	const closeOverride = () => {
 		setInput(initialInput);
 		setErrors(defaultErrorSchema);
+		setSiteAssest([]);
+		setAssestCount(null);
+		setPage(1);
 		handleClose();
 	};
 
@@ -121,11 +152,16 @@ const AddEditModel = ({
 	};
 
 	const handleAdd = async () => {
-		let { name, hasZones } = input;
+		let { name, hasZones, defaultSiteAssetID } = input;
 		setLoading(true);
 
 		try {
-			let res = await postModelStage({ name, hasZones, modelVersionID });
+			let res = await postModelStage({
+				name,
+				hasZones,
+				modelVersionID,
+				defaultSiteAssetID: defaultSiteAssetID.id || null,
+			});
 			if (res.status) {
 				if (input.image) {
 					const formData = new FormData();
@@ -154,6 +190,11 @@ const AddEditModel = ({
 			let res = await editModelStage(detailData.id, [
 				{ op: "replace", path: "name", value: input.name },
 				{ op: "replace", path: "hasZones", value: input.hasZones },
+				{
+					path: "defaultSiteAssetID",
+					op: "replace",
+					value: input.defaultSiteAssetID?.id || null,
+				},
 				...[
 					input.imageName === ""
 						? { path: "imageKey", op: "replace", value: null }
@@ -187,7 +228,10 @@ const AddEditModel = ({
 
 	const handleSave = async () => {
 		try {
-			const localChecker = await handleValidateObj(schema, input);
+			const localChecker = await handleValidateObj(schema, {
+				...input,
+				defaultSiteAssetID: input.defaultSiteAssetID?.id || null,
+			});
 			if (!localChecker.some((el) => el.valid === false)) {
 				if (detailData) {
 					await handleEdit();
@@ -203,6 +247,78 @@ const AddEditModel = ({
 			console.log(e);
 			return;
 		}
+	};
+
+	// api call to handle serverside asset search
+	const handleServierSideSearch = useCallback(
+		debounce(async (searchTxt) => {
+			if (searchTxt) {
+				const response = await getSiteAssetsForZones(
+					siteAppId,
+					1,
+					100,
+					searchTxt
+				);
+				setSiteAssest(response.data);
+			} else {
+				onPageChange(1);
+			}
+		}, 500),
+		[]
+	);
+
+	// fetch site assets
+	const fetchSiteAssest = async (
+		siteAppID,
+		pageNo,
+		perPage = 10,
+		search = ""
+	) => {
+		try {
+			const response = await getSiteAssetsForZones(
+				siteAppID,
+				pageNo,
+				perPage,
+				search
+			);
+
+			setSiteAssest((prev) =>
+				[...prev, ...(response?.data || [])].reduce((acc, current) => {
+					const x = acc.find((item) => item.id === current.id);
+					if (!x) {
+						return acc.concat([current]);
+					} else {
+						return acc;
+					}
+				}, [])
+			);
+		} catch (error) {
+			getError(error?.response?.data || "Coulnd not fetch site asset");
+		}
+	};
+
+	// api call to get total count of asset for pagiantion
+	useEffect(() => {
+		if (open && modelType === "F") {
+			const fetchCountAssest = async () => {
+				const response = await getSiteAssetsCount(siteID);
+				if (response.status) {
+					setAssestCount(response.data);
+				}
+			};
+			fetchCountAssest();
+		}
+	}, [open, siteID, modelType]);
+
+	// pagination for site asset
+	const onPageChange = async (pageSize) => {
+		setPage(pageSize);
+		await fetchSiteAssest(siteAppId, pageSize, 10);
+	};
+
+	// api call when site asset dropDown clicked
+	const fetchSiteFromDropDown = async () => {
+		return await fetchSiteAssest(siteAppId, 1);
 	};
 
 	const handleEnterPress = (e) => {
@@ -257,22 +373,6 @@ const AddEditModel = ({
 									}}
 								/>
 							</div>
-							<div>
-								<FormGroup>
-									<FormControlLabel
-										style={{ marginLeft: 0 }}
-										control={
-											<EMICheckbox
-												state={input.hasZones}
-												changeHandler={() => {
-													setInput((th) => ({ ...th, hasZones: !th.hasZones }));
-												}}
-											/>
-										}
-										label={<Typography>Has Zones</Typography>}
-									/>
-								</FormGroup>
-							</div>
 						</div>
 					</ADD.LeftInputContainer>
 					<ADD.RightInputContainer>
@@ -308,6 +408,60 @@ const AddEditModel = ({
 							</p>
 						</div>
 					</ADD.RightInputContainer>
+				</ADD.InputContainer>
+				{modelType === "F" && (
+					<ADD.InputContainer>
+						<ADD.LeftInputContainer>
+							<DyanamicDropdown
+								label={`Default ${customCaptionsAsset}`}
+								dataSource={siteAssset}
+								columns={[
+									{ name: "name", id: 1 },
+									{ name: "description", id: 2 },
+								]}
+								dataHeader={[
+									{ name: "Name", id: 1 },
+									{ name: "Description", id: 2 },
+								]}
+								showHeader
+								onPageChange={onPageChange}
+								isServerSide
+								handleServerSideSort={(field, method) =>
+									handleSort(siteAssset, setSiteAssest, field, method)
+								}
+								page={page}
+								count={assestCount}
+								handleServierSideSearch={handleServierSideSearch}
+								selectedValue={{
+									id: input.defaultSiteAssetID?.id,
+									name: input.defaultSiteAssetID?.name,
+								}}
+								placeholder={`Select ${customCaptionsAsset}`}
+								selectdValueToshow="name"
+								width="100%	"
+								onChange={(list) =>
+									setInput((prev) => ({ ...prev, defaultSiteAssetID: list }))
+								}
+								fetchData={fetchSiteFromDropDown}
+							/>
+						</ADD.LeftInputContainer>
+					</ADD.InputContainer>
+				)}
+				<ADD.InputContainer>
+					<FormGroup>
+						<FormControlLabel
+							style={{ marginLeft: 0 }}
+							control={
+								<EMICheckbox
+									state={input.hasZones}
+									changeHandler={() => {
+										setInput((th) => ({ ...th, hasZones: !th.hasZones }));
+									}}
+								/>
+							}
+							label={<Typography>Has Zones</Typography>}
+						/>
+					</FormGroup>
 				</ADD.InputContainer>
 			</ADD.DialogContent>
 		</Dialog>

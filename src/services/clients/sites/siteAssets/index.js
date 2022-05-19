@@ -56,6 +56,17 @@ const editSiteAsset = async (id, data) => {
 	}
 };
 
+const getSiteAssetReferences = async (siteAssetId) => {
+	try {
+		let response = await API.get(
+			`${Apis.SiteReferences}?siteAssetId=${siteAssetId}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //#endregion
 
 export {
@@ -64,4 +75,5 @@ export {
 	addSiteAsset,
 	editSiteAsset,
 	importSiteAssets,
+	getSiteAssetReferences,
 };

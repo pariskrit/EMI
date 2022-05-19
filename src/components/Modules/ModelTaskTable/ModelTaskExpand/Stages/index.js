@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { connect } from "react-redux";
 import { CircularProgress, makeStyles } from "@material-ui/core";
 import ColourConstants from "helpers/colourConstants";
@@ -74,7 +74,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		else getError("Something went wrong");
 	};
 
-	const fetchTaskStages = async () => {
+	const fetchTaskStages = useCallback(async () => {
 		try {
 			let result = await getStages(taskInfo.id);
 			if (result.status) {
@@ -97,7 +97,8 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		} catch (e) {
 			return;
 		}
-	};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [CtxDispatch, taskInfo.id, isMounted.aborted]);
 
 	const fetchAssets = async (p = {}, prevData = []) => {
 		try {
@@ -158,6 +159,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		try {
 			let result = await patchStages(id, [
 				{ op: "replace", path: "siteAssetID", value: asset.id || null },
+				{ op: "replace", path: "SiteAssetReferenceID", value: null },
 			]);
 			if (!isMounted.isAborted) {
 				if (result.status) {
@@ -167,6 +169,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 							: x
 					);
 					setStages((th) => ({ ...th, data: mainData }));
+					fetchTaskStages();
 					return { success: true };
 				} else {
 					// For asset change so if error, then selected will have current asset instead of new updated
@@ -203,7 +206,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 								: x
 						),
 					}));
-
+					fetchTaskStages();
 					CtxDispatch({
 						type: "SET_STAGE_NAME",
 						payload: stages.data
@@ -227,8 +230,6 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 						.filter((x) => Boolean(x.id))
 						.map((x) => x.name)
 						.join(",");
-
-					await fetchTaskStages();
 
 					return { success: true };
 				} else {
@@ -311,6 +312,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 				modelAccess={me?.position?.modelAccess}
 				customCaption={me?.customCaptions}
 				fetchFromDropDwn={fetchFromDropDwn}
+				fetchTaskStages={fetchTaskStages}
 			/>
 		</div>
 	);

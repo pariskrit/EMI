@@ -74,6 +74,7 @@ function TaskZoneListTable({
 	customCaptions,
 	isReadOnly,
 	fetchSiteFromDropDown,
+	fetchModelTaskZones,
 }) {
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -125,12 +126,14 @@ function TaskZoneListTable({
 			try {
 				const response = await patchModelTaskZone(zoneId, [
 					{ op: "replace", path: "siteAssetID", value: list.id },
+					{ op: "replace", path: "SiteAssetReferenceID", value: null },
 				]);
 				if (response.status) {
 					setOriginalZones(data);
+					fetchModelTaskZones(false);
 				} else {
 					dispatch(
-						showError(response?.data?.title || "Could not add assest to zone")
+						showError(response?.data?.detail || "Could not add assest to zone")
 					);
 					setZones(originalZones);
 				}
@@ -174,6 +177,16 @@ function TaskZoneListTable({
 								{customCaptions?.asset}
 							</TableCell>
 						) : null}
+						{modelType === "F" ? (
+							<TableCell
+								style={{ width: "auto" }}
+								className={clsx(classes.nameRow, {
+									[classes.tableHeadRow]: true,
+								})}
+							>
+								{customCaptions?.assetReference}
+							</TableCell>
+						) : null}
 					</TableRow>
 				</AT.TableHead>
 				<TableBody>
@@ -194,6 +207,7 @@ function TaskZoneListTable({
 								isReadOnly={isReadOnly}
 								customCaptions={customCaptions}
 								fetchSiteFromDropDown={fetchSiteFromDropDown}
+								fetchModelTaskZones={fetchModelTaskZones}
 							/>
 						))
 					) : (

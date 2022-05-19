@@ -120,7 +120,7 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 			dispatch(showError("Could not get intervals"));
 		}
 		if (!isMounted.aborted) setIsloading(false);
-	}, [taskInfo.id, isMounted, dispatch, CtxDispatch]);
+	}, [taskInfo.id, isMounted.aborted, dispatch, CtxDispatch]);
 
 	const onCustomCheckboxInputChange = async () => {
 		CtxDispatch({ type: "TOGGLE_CUSTOM_INTERVALS" });
@@ -135,11 +135,11 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 		if (!res.status) CtxDispatch({ type: "TOGGLE_CUSTOM_INTERVALS" });
 
 		setIsDisabled(false);
-		console.log(res);
 	};
+
 	useEffect(() => {
-		if (intervals.length === 0) fetchModelTaskIntervals();
-	}, [fetchModelTaskIntervals, intervals]);
+		fetchModelTaskIntervals();
+	}, [fetchModelTaskIntervals]);
 
 	if (isLoading) {
 		return <CircularProgress />;

@@ -21,6 +21,7 @@ function ListStages({
 	setStages,
 	siteId,
 	fetchFromDropDwn,
+	fetchTaskStages,
 }) {
 	const [page, setPage] = useState(1);
 	return (
@@ -45,6 +46,16 @@ function ListStages({
 					{modelType === "F" ? (
 						<TableCell className={classes.tableHeadRow}>Assets</TableCell>
 					) : null}
+					{modelType === "F" ? (
+						<TableCell
+							style={{ width: "auto" }}
+							className={clsx(classes.nameRow, {
+								[classes.tableHeadRow]: true,
+							})}
+						>
+							{customCaption?.assetReference}
+						</TableCell>
+					) : null}
 				</TableRow>
 			</AT.TableHead>
 			<TableBody>
@@ -67,6 +78,7 @@ function ListStages({
 						fetchFromDropDwn={fetchFromDropDwn}
 						page={page}
 						setPage={setPage}
+						fetchTaskStages={fetchTaskStages}
 					/>
 				))}
 			</TableBody>

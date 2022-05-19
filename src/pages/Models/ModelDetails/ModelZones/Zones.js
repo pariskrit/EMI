@@ -17,6 +17,10 @@ import { showError } from "redux/common/actions";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import ImageViewer from "components/Elements/ImageViewer";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import {
+	ModelZoneTableColumn,
+	ModelZoneTableHeader,
+} from "constants/modelDetails";
 
 function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
@@ -33,7 +37,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 	const [openImage, setOPenImage] = useState(false);
 	const [ImageToOpen, setImageToOpen] = useState(null);
 
-	const { customCaptions } =
+	const { customCaptions, siteAppID, siteID } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
@@ -162,6 +166,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 			Name: row.name,
 			imageUrl: row.imageURL,
 			imageName: row.imageKey,
+			defaultSiteAssetID: { id: row.defaultSiteAssetID, name: row.assetName },
 		});
 		setZoneToEditData(row);
 		setOpenAddNewZone(true);
@@ -178,6 +183,11 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 						? { path: "imageKey", op: "replace", value: null }
 						: [],
 				],
+				{
+					path: "defaultSiteAssetID",
+					op: "replace",
+					value: data.defaultSiteAssetID,
+				},
 			].filter((x) => JSON.stringify(x) !== "[]")
 		);
 	};
@@ -186,6 +196,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 		return await addNewModelZone({
 			Name: input.Name,
 			ModelVersionID: input.ModelVersionID,
+			defaultSiteAssetID: input.defaultSiteAssetID,
 		});
 	};
 
@@ -207,6 +218,10 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 				createProcessHandler={createModalZone}
 				ModelVersionID={modelId}
 				fetchModelZoneList={() => fetchModelZoneList(false)}
+				customCaptions={customCaptions}
+				siteAppId={siteAppID}
+				siteID={siteID}
+				modelType={state?.modelDetail?.modelType}
 			/>
 			<AddNewModelZone
 				open={openAddNewZone}
@@ -216,6 +231,10 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 				createProcessHandler={editModelZone}
 				zoneId={zoneToEditData?.id}
 				fetchModelZoneList={() => fetchModelZoneList(false)}
+				customCaptions={customCaptions}
+				siteAppId={siteAppID}
+				siteID={siteID}
+				modelType={state?.modelDetail?.modelType}
 				isEdit
 			/>
 			<DeleteDialog
@@ -238,11 +257,11 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 					<AutoFitContentInScreen containsTable>
 						<DragAndDropTable
 							data={zoneList}
-							headers={["Name", "Image"]}
-							columns={[
-								{ id: 1, name: "name", style: { width: "50vw" } },
-								{ id: 2, name: "imageURL", style: { width: "50vw" } },
-							]}
+							headers={ModelZoneTableHeader(
+								state?.modelDetail?.modelType,
+								customCaptions
+							)}
+							columns={ModelZoneTableColumn(state?.modelDetail?.modelType)}
 							handleDragEnd={handleDragEnd}
 							isModelEditable={!state?.modelDetail?.isEMIModel}
 							disableDnd={
