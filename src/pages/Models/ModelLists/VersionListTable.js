@@ -47,7 +47,11 @@ const VersionListTable = ({
 	const history = useHistory();
 	console.log(activeModelVersion, versions);
 	return (
-		<Dialog open={open} onClose={closeHandler}>
+		<Dialog
+			open={open}
+			onClose={closeHandler}
+			className="medium-application-dailog"
+		>
 			<div style={{ margin: 20, minWidth: 500, minHeight: 300 }}>
 				<Typography variant="h6">Versions</Typography>
 				{isLoading ? (
