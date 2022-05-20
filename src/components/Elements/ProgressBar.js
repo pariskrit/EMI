@@ -1,36 +1,32 @@
 import React from "react";
-import { makeStyles, createStyles, withStyles } from "@material-ui/core/styles";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import ProgressBar from "@ramonak/react-progress-bar";
 
-const BorderLinearProgress = withStyles((theme) =>
-	createStyles({
-		root: {
-			height: 10,
-			borderRadius: 5,
-			marginTop: "5px",
-		},
-		colorPrimary: {
-			backgroundColor: "#ece1e1",
-		},
-		bar: {
-			borderRadius: 5,
-			backgroundColor: "#23BB79",
-		},
-	})
-)(LinearProgress);
-
-const useStyles = makeStyles({
-	root: {
-		flexGrow: 1,
-	},
-});
-
-export default function ProgressBar({ value }) {
-	const classes = useStyles();
-
+export default function ProgressBars({
+	value,
+	bgColour = "#23BB79",
+	height = "15px",
+	baseBgColor,
+	borderRadius,
+	padding,
+	margin,
+	labelAlignment,
+	labelColor,
+	width,
+	isLabelVisible = true,
+}) {
 	return (
-		<div className={classes.root}>
-			<BorderLinearProgress variant="determinate" value={value} />
-		</div>
+		<ProgressBar
+			completed={value}
+			bgColor={bgColour}
+			height={height}
+			baseBgColor={baseBgColor}
+			borderRadius={borderRadius}
+			padding={padding}
+			margin={margin}
+			labelAlignment={labelAlignment}
+			labelColor={labelColor}
+			width={width}
+			isLabelVisible={isLabelVisible}
+		/>
 	);
 }

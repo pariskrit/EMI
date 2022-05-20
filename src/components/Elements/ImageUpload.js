@@ -6,7 +6,7 @@ import Link from "@material-ui/core/Link";
 import { ReactComponent as UploadIcon } from "assets/icons/uploadIcon.svg";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import { CircularProgress, Divider } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	assetParentContainer: {

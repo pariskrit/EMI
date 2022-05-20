@@ -5,10 +5,11 @@ import BlockIcon from "@material-ui/icons/Block";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import AvTimerIcon from "@material-ui/icons/AvTimer";
+import RestoreIcon from "@material-ui/icons/Restore";
 
-function Icon({ name, fontSize = "14px" }) {
+function Icon({ name, fontSize = "14px", className }) {
 	switch (name) {
-		case "Stopped":
+		case "Stopped" || "Stopped (Tasks Skipped)":
 			return <HighlightOffIcon style={{ color: "red", fontSize }} />;
 
 		case "Scheduled":
@@ -17,7 +18,7 @@ function Icon({ name, fontSize = "14px" }) {
 		case "Cancelled":
 			return <BlockIcon style={{ fontSize, color: "red" }} />;
 
-		case "Complete":
+		case "Complete" || "Complete (Tasks Skipped)":
 			return <CheckCircleIcon style={{ fontSize, color: "#24BA78" }} />;
 
 		case "Complete (By Paper)":
@@ -28,6 +29,10 @@ function Icon({ name, fontSize = "14px" }) {
 
 		case "In Progress":
 			return <AvTimerIcon style={{ fontSize, color: "#24BA78" }} />;
+		case "Restore":
+			return <RestoreIcon className={className} />;
+		case "Incomplete":
+			return <CheckCircleIcon style={{ fontSize, color: "#24BA78" }} />;
 
 		default:
 			return <HighlightOffIcon />;

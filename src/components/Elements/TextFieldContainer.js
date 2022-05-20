@@ -26,6 +26,8 @@ function TextFieldContainer({
 	onKeyDown,
 	isRequired = true,
 	type = "text",
+	error = false,
+	placeholder = "",
 }) {
 	const classes = useStyles();
 
@@ -37,6 +39,7 @@ function TextFieldContainer({
 			</Typography>
 			<TextField
 				name={name}
+				placeholder={placeholder}
 				variant="outlined"
 				fullWidth
 				InputProps={{
@@ -53,6 +56,7 @@ function TextFieldContainer({
 				onKeyDown={onKeyDown}
 				value={value ?? ""}
 				type={type}
+				error={error}
 			/>
 		</div>
 	);

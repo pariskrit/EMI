@@ -119,6 +119,8 @@ function DyanamicDropdown(props) {
 		fetchData,
 		showErrorIcon = false,
 		errorMessage = "",
+		hasGroup,
+		groupBy,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -435,8 +437,8 @@ function DyanamicDropdown(props) {
 						fontSize: "14px",
 					}}
 				>
-					<Typography className="label">
-						<div className="caption-label">
+					<div className="caption-label">
+						<Typography className="label">
 							<span>
 								{label}
 								{required && <span className="required">*</span>}
@@ -444,8 +446,8 @@ function DyanamicDropdown(props) {
 							{showErrorIcon && (
 								<ErrorMessageWithErrorIcon message={errorMessage} />
 							)}
-						</div>
-					</Typography>
+						</Typography>
+					</div>
 
 					{showClear && (
 						<Typography
@@ -579,6 +581,59 @@ function DyanamicDropdown(props) {
 												))}
 											</div>
 									  ))
+									: hasGroup
+									? groupBy.map((group) => {
+											return (
+												<div key={group.id} style={{}}>
+													<div
+														style={{
+															padding: "15px 10px 15px 5px",
+															background: "#D8D8D8",
+														}}
+													>
+														<span style={{ marginLeft: 5, fontWeight: "500" }}>
+															{group.name}
+														</span>
+													</div>
+													{filteredList
+														?.filter((x) => x.groupBy === group.name)
+														?.map((list) => (
+															<div
+																className={
+																	"list-item flex " +
+																	(list.id === selectedValue.id
+																		? "selected"
+																		: "")
+																}
+																key={list.id}
+																onClick={() => {
+																	onChange(list);
+																	setDropActive(false);
+																	removeActiveDropdown();
+																}}
+															>
+																{columns.map((col, i) => (
+																	<span
+																		style={{
+																			flexGrow: "1",
+																			minWidth: col.minWidth || "150px",
+																		}}
+																		className={clsx(classes.droplistitem, {
+																			[classes.firstdroplistItem]: i === 0,
+																		})}
+																		key={i}
+																	>
+																		{i === 0 && (
+																			<CheckIcon className="check mr-sm" />
+																		)}
+																		{list[col.name]}
+																	</span>
+																))}
+															</div>
+														))}
+												</div>
+											);
+									  })
 									: filteredList?.map((list) => (
 											<div
 												className={

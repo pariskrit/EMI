@@ -68,7 +68,7 @@ function ServiceInformation({ classes, detail, customCaptions }) {
 							<span className={classess.greenTxt}>
 								{detail?.percentageComplete}%
 							</span>
-							<ProgressBar value={detail?.percentageComplete} />
+							<ProgressBar value={60} height={"8px"} isLabelVisible={false} />
 						</Typography>
 						<Typography className={classess.labelText}>
 							Percentage Time Over/Under:{" "}

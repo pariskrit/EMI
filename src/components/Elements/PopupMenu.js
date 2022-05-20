@@ -63,7 +63,7 @@ const PopupMenu = ({
 									<ListItem
 										button
 										onClick={() => {
-											item.handler(id);
+											item.handler(id, item?.name, item?.otherDetail);
 										}}
 										disabled={item.disabled}
 									>

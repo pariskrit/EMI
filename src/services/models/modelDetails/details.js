@@ -38,6 +38,17 @@ export const getModelDeparments = async (id) => {
 	}
 };
 
+export const getAvailabeleModelDeparments = async (id) => {
+	try {
+		let response = await API.get(
+			`${Apis.ModelDepartments}/available?modelId=${id}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const getModelNotes = async (id) => {
 	try {
 		let response = await API.get(`${Apis.ModelNotes}?modelId=${id}`);

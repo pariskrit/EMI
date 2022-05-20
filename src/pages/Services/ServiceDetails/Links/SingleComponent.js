@@ -62,9 +62,7 @@ const SingleComponent = ({ access, customCaptions, siteAppID, ...route }) => {
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
 				showPasteTask={showPaste}
-				showChangeStatus={
-					access === "E" || access === "F" ? route.showChangeStatus : false
-				}
+				showChangeStatus={route.showChangeStatus}
 				showSaveChanges={route.showSaveChanges}
 				showVersion={route.showVersion}
 				onClickSave={openSaveModel}

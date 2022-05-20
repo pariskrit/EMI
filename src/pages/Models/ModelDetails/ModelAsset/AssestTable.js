@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import {
 	CircularProgress,
 	makeStyles,
-	Paper,
 	Table,
 	TableBody,
 	TableCell,

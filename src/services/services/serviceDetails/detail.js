@@ -32,6 +32,18 @@ export const changeServiceStatus = async (serviceId, payload) => {
 	}
 };
 
+export const resetServiceStatus = async (serviceId, payload) => {
+	try {
+		let response = await API.post(
+			`${Apis.Services}/${serviceId}/reset`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const postServiceNote = async (payload) => {
 	try {
 		let response = await API.post(`${Apis.ServiceNotes}`, payload);

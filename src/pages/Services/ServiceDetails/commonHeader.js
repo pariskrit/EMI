@@ -152,9 +152,9 @@ const ServicesWrapper = ({
 						{showSave && (
 							<AT.GeneralButton onClick={onClickSave}>Save</AT.GeneralButton>
 						)}
-					</div>
-					<div className="restore">
-						<RestoreIcon className={classes.restore} />
+						<div className="restore">
+							<RestoreIcon className={classes.restore} />
+						</div>
 					</div>
 				</div>
 			</div>

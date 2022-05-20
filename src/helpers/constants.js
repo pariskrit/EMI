@@ -139,3 +139,15 @@ export const workbookFields = (customCaptions) => [
 export const DROPDOWN_TOP_OFFSET = 30;
 export const DROPDOWN_LEFT_OFFSET = 30;
 export const DROPDOWN_RIGHT_OFFSET = 30;
+
+export const statusOptions = [
+	{ id: "X", name: "Cancelled", groupBy: "Complete" },
+	{ id: "C", name: "Complete", groupBy: "Complete" },
+	{ id: "P", name: "Completed by Paper", groupBy: "Complete" },
+	{ id: "O", name: "Checked Out", groupBy: "Not Complete" },
+	{ id: "I", name: "In Progress", groupBy: "Not Complete" },
+	{ id: "N", name: "Incomplete", groupBy: "Not Complete" },
+	{ id: "S", name: "Scheduled", groupBy: "Not Complete" },
+	{ id: "T", name: "Stopped", groupBy: "Not Complete" },
+	{ id: "", name: "Show All", groupBy: "Not Complete" },
+];

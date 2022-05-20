@@ -7,7 +7,6 @@ import {
 	Typography,
 	CircularProgress,
 	Button,
-	Grid,
 } from "@material-ui/core";
 import * as yup from "yup";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -26,10 +25,7 @@ import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Droppable } from "react-beautiful-dnd";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
-import SubcatStyle from "styles/application/SubcatStyle";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
-
-const AT = SubcatStyle();
 
 const schema = yup.object({
 	name: yup.string().required("Please Provide Name"),

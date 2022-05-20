@@ -7,7 +7,8 @@ function useInfiniteScroll(
 	fetchData,
 	page,
 	searchText,
-	scrollEvent = window
+	scrollEvent = window,
+	extra = {}
 ) {
 	const [hasMore, setHasMore] = useState(true);
 	const [loading, setLoading] = useState(false);
@@ -15,13 +16,20 @@ function useInfiniteScroll(
 	const countRef = useRef(count);
 	const pageRef = useRef(page);
 	const prevPageRef = useRef(0);
+	const extraInfo = useRef(extra);
 	const threshold = 1;
 
 	useMemo(() => {
 		dataRef.current = data;
 		countRef.current = count;
 		pageRef.current = page;
-	}, [data, count, page]);
+		extraInfo.current = extra;
+	}, [data, count, page, extra]);
+
+	useEffect(() => {
+		prevPageRef.current = page === 1 ? 0 : prevPageRef.current;
+	}, [page]);
+
 	useEffect(() => {
 		setHasMore(true);
 		pageRef.current = 1;
@@ -35,7 +43,7 @@ function useInfiniteScroll(
 		if (prevPageRef.current !== pageRef.current) {
 			prevPageRef.current = pageRef.current;
 			setLoading(true);
-			await fetchData(pageRef.current, dataRef.current);
+			await fetchData(pageRef.current, dataRef.current, extraInfo.current);
 			setLoading(false);
 		}
 	};
@@ -45,10 +53,21 @@ function useInfiniteScroll(
 		return () => scrollEvent.removeEventListener("scroll", handleScroll);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	const handleScroll = () => {
+	const handleScroll = (e, uniqueId) => {
 		if (loading) return;
 
-		if (
+		if (uniqueId) {
+			if (
+				Math.ceil(
+					document.getElementById(uniqueId).offsetHeight +
+						document.getElementById(uniqueId).scrollTop
+				) -
+					document.getElementById(uniqueId).scrollHeight >=
+				0
+			) {
+				fetchMoreData();
+			}
+		} else if (
 			document.documentElement.offsetHeight -
 				(scrollEvent.innerHeight + document.documentElement.scrollTop) <=
 			threshold

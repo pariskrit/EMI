@@ -9,19 +9,22 @@ const DetailsPanel = ({
 	dataCount,
 	description,
 	countStyle = null,
+	showHeader = true,
 }) => {
 	return (
 		<AD.ParentContainer>
-			<AD.HeaderText>
-				{dataCount === null ? (
-					<>{header}</>
-				) : (
-					<>
-						{header}{" "}
-						<span style={countStyle ? countStyle : null}>({dataCount})</span>
-					</>
-				)}
-			</AD.HeaderText>
+			{showHeader && (
+				<AD.HeaderText>
+					{dataCount === null ? (
+						<>{header}</>
+					) : (
+						<>
+							{header}{" "}
+							<span style={countStyle ? countStyle : null}>({dataCount})</span>
+						</>
+					)}
+				</AD.HeaderText>
+			)}
 			<AD.InfoText>{description}</AD.InfoText>
 		</AD.ParentContainer>
 	);

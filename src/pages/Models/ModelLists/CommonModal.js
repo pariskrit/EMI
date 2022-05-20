@@ -231,7 +231,6 @@ function AddNewModelDetail({
 
 		setIsUpdating(false);
 	};
-	console.log(input);
 	return (
 		<div>
 			<Dialog
