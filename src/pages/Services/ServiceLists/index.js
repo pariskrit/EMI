@@ -515,7 +515,10 @@ function ServiceLists() {
 					setImportCSV={setImportCSV}
 					dataLength={countOFService}
 				/>
-				<div className="detailsContainer" style={{ alignItems: "center" }}>
+				<div
+					className="detailsContainer"
+					style={{ alignItems: "center", marginTop: "-15px" }}
+				>
 					<DetailsPanel
 						showHeader={false}
 						description={`View all ${customCaptions?.servicePlural} across your operations`}
@@ -532,9 +535,8 @@ function ServiceLists() {
 						}}
 					/>
 				</div>
-				<div style={{ height: 20 }}></div>
 
-				<Grid container spacing={2}>
+				<Grid container spacing={10}>
 					<Grid item lg={4}>
 						<DyanamicDropdown
 							dataSource={statusOptions}

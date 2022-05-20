@@ -69,7 +69,7 @@ function Header({ setOpenAddService, setImportCSV, dataLength }) {
 					</AT.GeneralButton>
 				</div>
 				<div className="restore">
-					<Icon className={classes.restore} />
+					<Icon className={classes.restore} name="Restore" />
 				</div>
 			</div>
 		</div>
