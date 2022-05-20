@@ -536,8 +536,8 @@ function ServiceLists() {
 					/>
 				</div>
 
-				<Grid container spacing={10}>
-					<Grid item lg={4}>
+				<Grid container spacing={2}>
+					<Grid item lg={3}>
 						<DyanamicDropdown
 							dataSource={statusOptions}
 							groupBy={[
@@ -560,7 +560,7 @@ function ServiceLists() {
 							hasGroup
 						/>
 					</Grid>
-					<Grid item lg={4}>
+					<Grid item lg={3}>
 						<DyanamicDropdown
 							dataSource={timeframeOptions}
 							columns={[{ name: "name", id: 1, minWidth: "130px" }]}
@@ -578,7 +578,7 @@ function ServiceLists() {
 							showBorderColor
 						/>
 					</Grid>
-					<Grid item lg={4}>
+					<Grid item lg={3}>
 						<DyanamicDropdown
 							dataSource={siteDepartments}
 							columns={[{ name: "name", id: 1, minWidth: "130px" }]}
