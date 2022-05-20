@@ -7,6 +7,7 @@ import CurveButton from "components/Elements/CurveButton";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 import Icon from "components/Elements/Icon";
+import { roundedToFixed } from "helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	labelText: {
@@ -87,7 +88,7 @@ function ServiceInformation({ classes, detail, customCaptions }) {
 						<Typography className={classess.labelText}>
 							Remaining Minutes:{" "}
 							<span className={classess.greenTxt}>
-								{detail?.estimatedMinutes}
+								{roundedToFixed(detail?.estimatedMinutes, 1)}
 							</span>
 						</Typography>
 					</Grid>
