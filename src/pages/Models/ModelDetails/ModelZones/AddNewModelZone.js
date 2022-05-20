@@ -124,18 +124,6 @@ function AddNewModelTask({
 		}
 	}, [data]);
 
-	//display error popup
-	const displayError = (response, responseMessage) => {
-		dispatch(
-			showError(
-				response?.data ||
-					response?.data?.detail ||
-					responseMessage ||
-					"Something went wrong"
-			)
-		);
-	};
-
 	const closeOverride = () => {
 		// Clearing input state and errors
 		setInput(defaultStateSchema);
@@ -181,8 +169,9 @@ function AddNewModelTask({
 					setIsUpdating(false);
 					closeOverride();
 				} else {
-					displayError(newData, newData?.data?.detail);
-
+					dispatch(
+						showError(newData?.data?.detail || "Failed to add new zone")
+					);
 					setIsUpdating(false);
 				}
 			} else {
@@ -195,7 +184,9 @@ function AddNewModelTask({
 			// TODO: handle non validation errors here
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
-			displayError(err, err?.response?.detail);
+			dispatch(
+				showError(err?.response?.data?.detail || "Failed to add new zone")
+			);
 		}
 	};
 
