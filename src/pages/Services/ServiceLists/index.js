@@ -12,6 +12,7 @@ import {
 	isoDateWithoutTimeZone,
 	convertDateToUTC,
 	debounce,
+	roundedToFixed,
 } from "helpers/utils";
 import React, {
 	useCallback,
@@ -138,6 +139,7 @@ const formattedData = (data, history) => {
 			</span>
 		),
 		scheduledDate: isoDateWithoutTimeZone(x.scheduledDate + "Z"),
+		estimatedMinutes: roundedToFixed(x.estimatedMinutes, 1),
 		checkoutDate: x.checkoutDate
 			? isoDateWithoutTimeZone(x.checkoutDate + "Z")
 			: "",

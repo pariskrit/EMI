@@ -193,3 +193,8 @@ export const debounce = (func, delay) => {
 		}, delay);
 	};
 };
+
+export function roundedToFixed(input, digits) {
+	var rounded = Math.pow(10, digits);
+	return Math.round(input * rounded) / rounded;
+}
