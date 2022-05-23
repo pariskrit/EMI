@@ -66,14 +66,48 @@ function ServiceInformation({ classes, detail, customCaptions }) {
 						</Typography>
 						<Typography className={classess.labelText}>
 							Percentage Completed:{" "}
-							<span className={classess.greenTxt}>
-								{detail?.percentageComplete}%
+							<span
+								className={classess.greenTxt}
+								style={{
+									color:
+										detail?.percentageOverTime <= 5
+											? "#23BB79"
+											: detail?.percentageOverTime > 5 &&
+											  detail?.percentageOverTime <= 10
+											? "#ED8738"
+											: "#E31212",
+								}}
+							>
+								{roundedToFixed(detail?.percentageComplete, 0)}%
 							</span>
-							<ProgressBar value={60} height={"8px"} isLabelVisible={false} />
+							<ProgressBar
+								value={detail?.percentageComplete}
+								height={"8px"}
+								isLabelVisible={false}
+								bgColour={
+									detail?.percentageOverTime <= 5
+										? "#23BB79"
+										: detail?.percentageOverTime > 5 &&
+										  detail?.percentageOverTime <= 10
+										? "#ED8738"
+										: "#E31212"
+								}
+							/>
 						</Typography>
 						<Typography className={classess.labelText}>
 							Percentage Time Over/Under:{" "}
-							<span className={classess.greenTxt}>
+							<span
+								className={classess.greenTxt}
+								style={{
+									color:
+										detail?.percentageOverTime <= 5
+											? "#23BB79"
+											: detail?.percentageOverTime > 5 &&
+											  detail?.percentageOverTime <= 10
+											? "#ED8738"
+											: "#E31212",
+								}}
+							>
 								{detail?.percentageOverTime
 									? detail?.percentageOverTime + "%"
 									: ""}
@@ -81,13 +115,24 @@ function ServiceInformation({ classes, detail, customCaptions }) {
 						</Typography>
 						<Typography className={classess.labelText}>
 							Time (Mins) Over/Under:{" "}
-							<span className={classess.greenTxt}>
+							<span
+								className={classess.greenTxt}
+								style={{
+									color:
+										detail?.percentageOverTime <= 5
+											? "#23BB79"
+											: detail?.percentageOverTime > 5 &&
+											  detail?.percentageOverTime <= 10
+											? "#ED8738"
+											: "#E31212",
+								}}
+							>
 								{detail?.minutesOverTime}
 							</span>
 						</Typography>
 						<Typography className={classess.labelText}>
 							Remaining Minutes:{" "}
-							<span className={classess.greenTxt}>
+							<span style={{ fontWeight: 400 }}>
 								{roundedToFixed(detail?.estimatedMinutes, 1)}
 							</span>
 						</Typography>
