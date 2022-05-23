@@ -315,7 +315,7 @@ function AddNewModelDetail({
 						) : (
 							<ADD.FullWidthContainer>
 								<ADD.NameLabel>
-									{customCaptions?.make}
+									{customCaptions?.modelTemplate}
 									<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.NameLabel>
 								<ADD.NameInput

@@ -160,6 +160,8 @@ function Details({
 			});
 		}
 	}, [data, details, modifyApiData]);
+
+	console.log(details);
 	return (
 		<AccordionBox title="Details">
 			<div className={classes.inputContainer}>
@@ -177,7 +179,13 @@ function Details({
 					) : (
 						<TextFieldContainer
 							key={input.id}
-							label={input.label}
+							label={
+								input.id === 1
+									? data?.details?.modelType === "F"
+										? customCaptions.modelTemplate
+										: input.label
+									: input.label
+							}
 							name={input.name}
 							value={input.value}
 							onChange={onInputChange}
