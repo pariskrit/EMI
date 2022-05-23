@@ -128,6 +128,23 @@ function DynamicRow({
 														style={{ width: "20px", height: "20px" }}
 													/>
 												</div>
+												<div
+													{...provided2.dragHandleProps}
+													style={{
+														display:
+															!isDragDisabled && val.value.isDraggable
+																? "block"
+																: "none",
+
+														marginLeft: "10px",
+													}}
+												>
+													<img
+														src={reorder}
+														alt="icon"
+														style={{ width: "18px", height: "18px" }}
+													/>
+												</div>
 												{val?.children?.value?.length &&
 												!val.value.hideTaskQuestions ? (
 													<div
@@ -174,23 +191,6 @@ function DynamicRow({
 															({val.value.assetName})
 														</span>
 													) : null}
-												</div>
-											</div>
-
-											<div className="row__main">
-												<div
-													{...provided2.dragHandleProps}
-													style={{
-														opacity:
-															!isDragDisabled && val.value.isDraggable ? 1 : 0,
-														marginLeft: "10px",
-													}}
-												>
-													<img
-														src={reorder}
-														alt="icon"
-														style={{ width: "18px", height: "18px" }}
-													/>
 												</div>
 											</div>
 										</div>
