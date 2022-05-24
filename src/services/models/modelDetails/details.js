@@ -175,3 +175,12 @@ export const postNewModelVersion = async (modelVersionId) => {
 		return getAPIResponse(err?.response);
 	}
 };
+
+export const revertVersion = async (id) => {
+	try {
+		let response = await API.post(`${Apis.ModelVersions}/${id}/revert`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};

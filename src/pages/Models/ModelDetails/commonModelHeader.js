@@ -58,12 +58,14 @@ const ModelWrapper = ({
 	showSave,
 	showPasteTask,
 	showChangeStatus,
+	showRevert,
 	showSaveChanges,
 	showVersion,
 	onClickSave,
 	onCLickedSaveChanges,
 	onClickPasteTask,
 	onClickShowChangeStatus,
+	onClickRevert,
 	onClickVersion,
 	onNavClick,
 	isPasteTaskDisabled,
@@ -106,7 +108,8 @@ const ModelWrapper = ({
 						showSave ||
 						showPasteTask ||
 						showSaveChanges ||
-						showChangeStatus
+						showChangeStatus ||
+						showRevert
 							? classes.wrapper
 							: ""
 					}
@@ -139,6 +142,14 @@ const ModelWrapper = ({
 								className={classes.importButton}
 							>
 								Change Status
+							</AT.GeneralButton>
+						)}
+						{showRevert && (
+							<AT.GeneralButton
+								onClick={onClickRevert}
+								className={classes.importButton}
+							>
+								Revert
 							</AT.GeneralButton>
 						)}
 						{showSaveChanges && (
@@ -179,6 +190,7 @@ ModelWrapper.defaultProps = {
 	showPasteTask: false,
 	showSaveChanges: false,
 	showChangeStatus: false,
+	showRevert: false,
 	current: "Details",
 	onClickAdd: () => {},
 	onClickSave: () => {},
@@ -205,6 +217,7 @@ ModelWrapper.propTypes = {
 	ModelName: PropTypes.string.isRequired,
 	showSave: PropTypes.bool,
 	showChangeStatus: PropTypes.bool,
+	showRevert: PropTypes.bool,
 	showPasteTask: PropTypes.bool,
 	showSaveChanges: PropTypes.bool,
 	onClickVersion: PropTypes.func,

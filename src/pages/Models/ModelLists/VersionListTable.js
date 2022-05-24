@@ -45,7 +45,6 @@ const VersionListTable = ({
 }) => {
 	const style = useStyles();
 	const history = useHistory();
-	console.log(activeModelVersion, versions);
 	return (
 		<Dialog
 			open={open}

@@ -24,6 +24,9 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 
 	const openSaveModel = () => dispatch({ type: "TOGGLE_SAVE", payload: true });
 
+	const openConfirmationPopup = () =>
+		dispatch({ type: "TOGGLE_CONFIRMATION_POPUP", payload: true });
+
 	const openClickSaveChanges = () =>
 		dispatch({ type: "TOGGLE_SAVE_CHANGES", payload: true });
 
@@ -50,6 +53,10 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 					(x) => x === true
 			  );
 
+	const showRevert =
+		state.modelDetail?.isPublished &&
+		state.modelDetail?.version !== state.modelDetail?.activeModelVersion;
+
 	return (
 		<div>
 			<ModelWrapper
@@ -63,8 +70,11 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 				showSave={route.showSave}
 				showPasteTask={showPaste}
 				showChangeStatus={
-					access === "E" || access === "F" ? route.showChangeStatus : false
+					(access === "E" || access === "F") && !showRevert
+						? route.showChangeStatus
+						: false
 				}
+				showRevert={showRevert}
 				showSaveChanges={route.showSaveChanges}
 				showVersion={route.showVersion}
 				onClickSave={openSaveModel}
@@ -72,6 +82,7 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 				onCLickedSaveChanges={openClickSaveChanges}
 				onClickPasteTask={openPasteTaskModel}
 				onClickShowChangeStatus={openChangeStatusModel}
+				onClickRevert={openConfirmationPopup}
 				onNavClick={(path) => route.history.push(path)}
 				isPasteTaskDisabled={state.isPasteTaskDisabled}
 				isQuestionTaskDisabled={state.isQuestionTaskDisabled}

@@ -12,6 +12,7 @@ import {
 	getModelDocuments,
 	getModelNotes,
 	getSiteDepartments,
+	revertVersion,
 } from "services/models/modelDetails/details";
 import { getModelTypes } from "services/clients/sites/siteApplications/modelTypes";
 import { useDispatch } from "react-redux";
@@ -21,6 +22,7 @@ import ChangeStatusPopup from "./ChangeStatusPopup";
 import withMount from "components/HOC/withMount";
 import NewVersionPopUp from "./NewVersionPopUp";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -73,11 +75,36 @@ function ModelDetailContent({
 		detailDepartments: [],
 		details: [],
 	});
+	const [revertingVersion, setRevertingVersion] = useState(false);
 
 	const { position, customCaptions, application } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const reduxDispatch = useDispatch();
+
+	const handleRevertVersion = async () => {
+		setRevertingVersion(true);
+		const response = await revertVersion(modelId);
+
+		if (response.status) {
+			dispatch({
+				type: "REVERT_VERSION",
+				payload: modelDetailsData.details.version,
+			});
+		} else {
+			reduxDispatch(
+				showError(
+					response.data || response.data?.detail || "Could not revert version"
+				)
+			);
+		}
+
+		setRevertingVersion(false);
+		closeConfirmationPopup();
+	};
+
+	const closeConfirmationPopup = () =>
+		dispatch({ type: "TOGGLE_CONFIRMATION_POPUP", payload: false });
 
 	const fetchAllData = useCallback(async () => {
 		const res = await Promise.all([
@@ -132,6 +159,13 @@ function ModelDetailContent({
 
 	return (
 		<>
+			<ConfirmChangeDialog
+				open={state.showConfirmationPopup}
+				closeHandler={closeConfirmationPopup}
+				message="Do you want to revert the Active Version to this Version"
+				handleChangeConfirm={handleRevertVersion}
+				isUpdating={revertingVersion}
+			/>
 			<ChangeStatusPopup
 				open={state.showChangeStatus}
 				onClose={() =>

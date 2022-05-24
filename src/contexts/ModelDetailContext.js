@@ -10,6 +10,7 @@ const initialState = {
 	showSaveChanges: false,
 	showPasteTask: false,
 	showChangeStatus: false,
+	showConfirmationPopup: false,
 	showVersion: false,
 	isPasteTaskDisabled: true,
 	isQuestionTaskDisabled: true,
@@ -42,6 +43,16 @@ function reducer(state, action) {
 					statusColor: !payload.isPublished
 						? ColourConstants.orange
 						: ColourConstants.green,
+					activeModelVersion: state.modelDetail.version,
+				},
+			};
+		case "REVERT_VERSION":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					statusColor: ColourConstants.green,
+					activeModelVersion: payload,
 				},
 			};
 		case "TOGGLE_ADD":
@@ -68,6 +79,11 @@ function reducer(state, action) {
 			return {
 				...state,
 				showChangeStatus: payload,
+			};
+		case "TOGGLE_CONFIRMATION_POPUP":
+			return {
+				...state,
+				showConfirmationPopup: payload,
 			};
 
 		case "TOOGLE_VERSION":

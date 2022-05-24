@@ -17,6 +17,7 @@ const ConfirmChangeDialog = ({
 	closeHandler,
 	isUpdating,
 	handleChangeConfirm,
+	message = "You are about to change",
 }) => {
 	return (
 		<Dialog open={open} onClose={closeHandler}>
@@ -30,7 +31,7 @@ const ConfirmChangeDialog = ({
 				</AT.CancelButton>
 			</DialogActions>
 			<DialogContent>
-				<DialogContentText>You are about to change</DialogContentText>
+				<DialogContentText>{message}</DialogContentText>
 			</DialogContent>
 		</Dialog>
 	);
