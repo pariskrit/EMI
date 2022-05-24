@@ -151,3 +151,5 @@ export const statusOptions = [
 	{ id: "T", name: "Stopped", groupBy: "Not Complete" },
 	{ id: "", name: "Show All", groupBy: "Not Complete" },
 ];
+
+export const statusTypeClassification = { 1: "C", 2: "O" };

@@ -17,7 +17,7 @@ import { servicesPath } from "helpers/routePaths";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import { getServicesList } from "services/services/serviceLists";
-import { DefaultPageSize } from "helpers/constants";
+import { DefaultPageSize, statusTypeClassification } from "helpers/constants";
 
 // Init styled components
 const AT = TableStyle();
@@ -124,8 +124,10 @@ const ServiceListTable = ({
 		searchText,
 		scrollEvent,
 		{
+			statusType:
+				status === 2 || status === 1 ? statusTypeClassification[status] : "",
+			status: status === 2 || status === 1 ? "" : status,
 			siteDepartmentID: department,
-			status: status,
 			fromDate: date.fromDate,
 			toDate: date.toDate,
 			page,
@@ -247,7 +249,11 @@ const ServiceListTable = ({
 								{columns?.map((col, i, arr) => (
 									<AT.DataCell key={col}>
 										<AT.CellContainer key={col}>
-											<AT.TableBodyText>{row[col]}</AT.TableBodyText>
+											<AT.TableBodyText>
+												{col === "modelName"
+													? row[col] + " " + row["model"]
+													: row[col]}
+											</AT.TableBodyText>
 
 											{arr.length === i + 1 ? (
 												<AT.DotMenu

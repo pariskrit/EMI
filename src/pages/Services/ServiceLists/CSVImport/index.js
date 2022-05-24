@@ -59,6 +59,7 @@ const ImportFileDialouge = ({
 	const cancelFileUpload = useRef(null);
 	const [templateCSV, setTemplateCSV] = useState("");
 	const isCancellled = useRef(false);
+	const [showProgress, setShowProgress] = useState(true);
 
 	useEffect(() => {
 		if (open) {
@@ -79,9 +80,7 @@ const ImportFileDialouge = ({
 	};
 
 	const importDocument = async (Key, imp) => {
-		setLoading(false);
 		setFetchLoading(true);
-		handleClose();
 		try {
 			const response = await API.post(`${BASE_API_PATH}Services/import`, {
 				Key,
@@ -116,14 +115,14 @@ const ImportFileDialouge = ({
 		importDocument(key, true).then(async (res) => {
 			setShow(true);
 			closeOverride();
+			setShowProgress(true);
 			isCancellled.current = false;
 		});
 	};
 
 	useEffect(() => {
 		if (uploadPercentCompleted === 100) {
-			setLoading(false);
-			handleClose();
+			setShowProgress(false);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [uploadPercentCompleted]);
@@ -171,7 +170,7 @@ const ImportFileDialouge = ({
 								isImageUploaded={false}
 								uploadReturn={onDocumentUpload}
 								apiPath={`${BASE_API_PATH}Services/upload`}
-								showProgress
+								showProgress={showProgress}
 								uploadPercentCompleted={uploadPercentCompleted}
 								setUploadPercentCompleted={setUploadPercentCompleted}
 								percentMultiplyBy={100}

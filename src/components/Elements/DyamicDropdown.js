@@ -588,10 +588,31 @@ function DyanamicDropdown(props) {
 													<div
 														style={{
 															padding: "15px 10px 15px 5px",
-															background: "#D8D8D8",
+															backgroundColor: "#D8D8D8",
+															cursor: "pointer",
+														}}
+														onClick={() => {
+															onChange(group);
+															setDropActive(false);
+															removeActiveDropdown();
 														}}
 													>
-														<span style={{ marginLeft: 5, fontWeight: "500" }}>
+														<span
+															style={{
+																marginLeft: 5,
+																fontWeight: "500",
+																display: "flex",
+																alignItems: "center",
+																gap: "5px",
+																color:
+																	group.id === selectedValue.id
+																		? "rgb(35, 187, 121)"
+																		: "",
+															}}
+														>
+															{group.id === selectedValue.id && (
+																<CheckIcon className="check mr-sm" />
+															)}
 															{group.name}
 														</span>
 													</div>
@@ -605,6 +626,7 @@ function DyanamicDropdown(props) {
 																		? "selected"
 																		: "")
 																}
+																style={{ paddingLeft: "10px" }}
 																key={list.id}
 																onClick={() => {
 																	onChange(list);

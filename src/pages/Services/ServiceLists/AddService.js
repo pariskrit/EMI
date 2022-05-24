@@ -9,6 +9,7 @@ import * as yup from "yup";
 import { makeStyles } from "@material-ui/core/styles";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
+	currentUTCDateTime,
 	generateErrorState,
 	handleSort,
 	handleValidateObj,
@@ -92,7 +93,7 @@ const defaultStateSchema = {
 	modelVersionIntervalId: {},
 	siteAssetId: {},
 	siteDepartmentID: {},
-	scheduledDate: "",
+	scheduledDate: currentUTCDateTime(),
 };
 
 function AddNewServiceDetail({
@@ -205,7 +206,7 @@ function AddNewServiceDetail({
 				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
-				className="medium-application-dailog"
+				className="large-application-dailog"
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
@@ -272,7 +273,14 @@ function AddNewServiceDetail({
 										{ id: 2, name: "modelName" },
 									]}
 									showHeader
-									selectedValue={input["modelID"]}
+									selectedValue={{
+										...input["modelID"],
+										name: !input?.modelID?.name
+											? ""
+											: !input?.modelID?.modelName
+											? input?.modelID?.name
+											: input?.modelID?.name + " " + input?.modelID?.modelName,
+									}}
 									handleSort={handleSort}
 									onChange={(val) => {
 										setInput({
@@ -285,7 +293,7 @@ function AddNewServiceDetail({
 										});
 										setDataSourceAfterModelChange([]);
 									}}
-									selectdValueToshow="name"
+									selectdValueToshow={"name"}
 									label={customCaptions?.model}
 									required
 									isError={errors.modelID === null ? false : true}
@@ -413,9 +421,9 @@ function AddNewServiceDetail({
 									label={"Scheduled Date"}
 									name={"scheduledDate"}
 									value={input.scheduledDate}
-									onChange={(e) =>
-										setInput({ ...input, scheduledDate: e.target.value })
-									}
+									onChange={(e) => {
+										setInput({ ...input, scheduledDate: e.target.value });
+									}}
 									isRequired={true}
 									type="datetime-local"
 									placeholder="Select Date"
@@ -426,7 +434,7 @@ function AddNewServiceDetail({
 					</ADD.InputContainer>
 					{input?.modelID?.modelTemplateType === "A" && (
 						<ADD.InputContainer>
-							<ADD.FullWidthContainer>
+							<ADD.FullWidthContainer style={{ paddingRight: 0 }}>
 								<ErrorInputFieldWrapper
 									errorMessage={
 										errors.siteAssetId === null ? null : errors.siteAssetId
@@ -459,7 +467,7 @@ function AddNewServiceDetail({
 						</ADD.InputContainer>
 					)}
 					<ADD.InputContainer>
-						<ADD.FullWidthContainer>
+						<ADD.FullWidthContainer style={{ paddingRight: 0 }}>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.notificationNumber === null
@@ -480,7 +488,7 @@ function AddNewServiceDetail({
 						</ADD.FullWidthContainer>
 					</ADD.InputContainer>
 					<ADD.InputContainer>
-						<ADD.FullWidthContainer>
+						<ADD.FullWidthContainer style={{ paddingRight: 0 }}>
 							<ADD.NameLabel>{"Notes"}</ADD.NameLabel>
 
 							<ADD.NameInput

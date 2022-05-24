@@ -198,3 +198,9 @@ export function roundedToFixed(input, digits) {
 	var rounded = Math.pow(10, digits);
 	return Math.round(input * rounded) / rounded;
 }
+
+export function currentUTCDateTime() {
+	const now = new Date();
+	now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+	return now.toISOString().slice(0, -1);
+}

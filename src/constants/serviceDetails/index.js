@@ -53,7 +53,10 @@ export const statusOfServices = (status, TasksSkipped) => {
 	}
 };
 
-export const serviceTableHeader = (allowIndividualAssetModels) => {
+export const serviceTableHeader = (
+	allowIndividualAssetModels,
+	customCaptions
+) => {
 	return allowIndividualAssetModels === true
 		? [
 				{ id: 1, name: "Work Order" },
@@ -62,14 +65,14 @@ export const serviceTableHeader = (allowIndividualAssetModels) => {
 				{ id: 5, name: "% Time Under/Over" },
 				{ id: 6, name: "Time (Mins) Under/Over" },
 				{ id: 7, name: "Mins Remaining" },
-				{ id: 8, name: "Model" },
-				{ id: 9, name: "Asset Number" },
-				{ id: 10, name: "Model Type" },
-				{ id: 11, name: "Interval" },
-				{ id: 12, name: "Role" },
+				{ id: 8, name: customCaptions.model },
+				{ id: 9, name: customCaptions.asset + " Number" },
+				{ id: 10, name: customCaptions.modelType },
+				{ id: 11, name: customCaptions.interval },
+				{ id: 12, name: customCaptions.role },
 				{ id: 13, name: "Scheduled Date/Time" },
-				{ id: 14, name: "Current User" },
-				{ id: 15, name: "Service Started" },
+				{ id: 14, name: "Current " + customCaptions.user },
+				{ id: 15, name: customCaptions.service + " Started" },
 		  ]
 		: [
 				{ id: 1, name: "Work Order" },
@@ -78,13 +81,13 @@ export const serviceTableHeader = (allowIndividualAssetModels) => {
 				{ id: 5, name: "% Time Under/Over" },
 				{ id: 6, name: "Time (Mins) Under/Over" },
 				{ id: 7, name: "Mins Remaining" },
-				{ id: 8, name: "Model" },
-				{ id: 10, name: "Model Type" },
-				{ id: 11, name: "Interval" },
-				{ id: 12, name: "Role" },
+				{ id: 8, name: customCaptions.model },
+				{ id: 10, name: customCaptions.modelType },
+				{ id: 11, name: customCaptions.interval },
+				{ id: 12, name: customCaptions.role },
 				{ id: 13, name: "Scheduled Date/Time" },
-				{ id: 14, name: "Current User" },
-				{ id: 15, name: "Service Started" },
+				{ id: 14, name: "Current " + customCaptions.user },
+				{ id: 15, name: customCaptions.service + " Started" },
 		  ];
 };
 export const serviceTableColumns = (allowIndividualAssetModels) => {
@@ -98,7 +101,7 @@ export const serviceTableColumns = (allowIndividualAssetModels) => {
 				"estimatedMinutes",
 				"modelName",
 				"siteAssetName",
-				"modelTemplateType",
+				"typeName",
 				"interval",
 				"role",
 				"scheduledDate",
@@ -113,7 +116,7 @@ export const serviceTableColumns = (allowIndividualAssetModels) => {
 				"minutesOverTime",
 				"estimatedMinutes",
 				"modelName",
-				"modelTemplateType",
+				"typeName",
 				"interval",
 				"role",
 				"scheduledDate",
@@ -140,7 +143,7 @@ export const showAllInDropDown = {
 	name: "Show All",
 };
 
-export const filterByDateOptions = (todayDate) => [
+export const filterByDateOptions = (todayDate, customCaptions) => [
 	{ id: "", name: "Show All", fromDate: "", toDate: "" },
 	{
 		id: 1,
@@ -200,21 +203,21 @@ export const filterByDateOptions = (todayDate) => [
 		id: 4,
 		name: "Last Month",
 		fromDate: convertDateToUTC(
-			new Date(todayDate.getFullYear(), `${todayDate.getMonth() - 1}`)
+			new Date(new Date().setMonth(new Date().getMonth() - 1))
 		),
-		toDate: convertDateToUTC(
-			new Date(todayDate.getFullYear(), `${todayDate.getMonth()}`)
-		),
+		toDate: convertDateToUTC(new Date()),
 	},
 	{
 		id: 5,
 		name: "Last Year",
-		fromDate: convertDateToUTC(new Date(`${todayDate.getFullYear() - 1}`, 0)),
-		toDate: convertDateToUTC(new Date(`${todayDate.getFullYear() - 1}`, 12)),
+		fromDate: convertDateToUTC(
+			new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+		),
+		toDate: convertDateToUTC(new Date()),
 	},
 	{
 		id: 6,
-		name: "Future Services",
+		name: customCaptions?.servicePlural,
 		fromDate: convertDateToUTC(
 			new Date(
 				todayDate.getFullYear(),
