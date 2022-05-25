@@ -26,6 +26,7 @@ import { Tooltip } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { ModelContext } from "contexts/ModelDetailContext";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
+import ColourConstants from "helpers/colourConstants";
 
 const questionTypeOptions = [
 	{ label: "Checkbox", value: "B" },
@@ -62,6 +63,16 @@ const useStyles = makeStyles({
 
 function apiResponse(d) {
 	const question = questionTypeOptions.find((a) => a.value === d.type);
+	const options = d?.options?.map((a, index) => (
+		<span
+			key={a?.id}
+			style={{
+				color: a?.raiseDefect ? ColourConstants.red : "",
+			}}
+		>
+			{d?.options?.length - 1 === index ? a?.name + "" : a?.name + ", "}
+		</span>
+	));
 	const res = {
 		...d,
 		questionType: question.label,
@@ -96,7 +107,7 @@ function apiResponse(d) {
 				</span>
 			) : d.type === "C" || d.type === "O" ? (
 				<>
-					<HtmlTooltip title={d?.options.map((a) => a.name).join(", ")}>
+					<HtmlTooltip title={options}>
 						<p className="max-two-line">
 							<span>
 								{" "}
@@ -105,7 +116,7 @@ function apiResponse(d) {
 								) : (
 									<>
 										<strong>Options : </strong>&nbsp;
-										{d?.options.map((a) => a.name).join(", ")}
+										{options}
 									</>
 								)}
 							</span>
