@@ -245,3 +245,29 @@ div[role="tooltip"] {
 		max-width: 95vw;
 	}
 }
+
+div[role="progressbar"][aria-valuetext="1%"]:not([aria-valuetext="0%"]):not([aria-valuetext="Complete"])
+	> div
+	> div {
+	min-width: 3px;
+}
+div[role="progressbar"][aria-valuetext="2%"]:not([aria-valuetext="0%"]):not([aria-valuetext="Complete"])
+	> div
+	> div {
+	min-width: 3px;
+}
+div[role="progressbar"][aria-valuetext="3%"]:not([aria-valuetext="0%"]):not([aria-valuetext="Complete"])
+	> div
+	> div {
+	min-width: 3.3px;
+}
+div[role="progressbar"][aria-valuetext="4%"]:not([aria-valuetext="0%"]):not([aria-valuetext="Complete"])
+	> div
+	> div {
+	min-width: 3.8px;
+}
+div[role="progressbar"][aria-valuetext="5%"]:not([aria-valuetext="0%"]):not([aria-valuetext="Complete"])
+	> div
+	> div {
+	min-width: 4px;
+}
