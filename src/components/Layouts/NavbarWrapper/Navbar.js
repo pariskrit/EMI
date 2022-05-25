@@ -533,6 +533,7 @@ function Navbar({
 											<div
 												className={`${classes.navListContainer} mobNavListContainer`}
 												key={item.name}
+												onClick={handleDrawerChange}
 											>
 												<ListItem
 													button
