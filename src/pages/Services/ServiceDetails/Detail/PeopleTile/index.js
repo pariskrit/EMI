@@ -7,7 +7,7 @@ import {
 	TableHead,
 	TableRow,
 } from "@material-ui/core";
-import { sortFromDate } from "helpers/utils";
+import { isoDateWithoutTimeZone, sortFromDate } from "helpers/utils";
 
 function PeopleTile({ classes, data = [], customCaptions }) {
 	return (
@@ -23,14 +23,16 @@ function PeopleTile({ classes, data = [], customCaptions }) {
 					</TableHead>
 					<TableBody>
 						{data?.length ? (
-							sortFromDate(data, "startTime")?.map((row) => (
-								<TableRow>
-									<TableCell style={{ width: "170px" }}>{row?.name}</TableCell>
+							sortFromDate(data, "startDate")?.map((row) => (
+								<TableRow key={row?.id}>
 									<TableCell style={{ width: "170px" }}>
-										{row?.startTime}
+										{row?.displayName}
 									</TableCell>
 									<TableCell style={{ width: "170px" }}>
-										{row?.endTime}
+										{isoDateWithoutTimeZone(row?.startDate)}
+									</TableCell>
+									<TableCell style={{ width: "170px" }}>
+										{isoDateWithoutTimeZone(row?.endDate)}
 									</TableCell>
 
 									{/* <TableCell style={{ width: "100px" }}>{changeDate(row.date)}</TableCell> */}
