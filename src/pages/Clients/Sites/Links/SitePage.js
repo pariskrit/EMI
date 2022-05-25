@@ -8,7 +8,12 @@ export default function SitePage() {
 	return (
 		<Site>
 			{routeList.map(({ id, ...route }) => (
-				<RoleRoute key={id} {...route} exact roles={[roles.superAdmin]} />
+				<RoleRoute
+					key={id}
+					{...route}
+					exact
+					roles={[roles.superAdmin, roles.siteUser]}
+				/>
 			))}
 		</Site>
 	);

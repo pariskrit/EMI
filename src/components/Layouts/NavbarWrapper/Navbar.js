@@ -38,7 +38,7 @@ import useDidMountEffect from "hooks/useDidMountEffect";
 import SkeletonNav from "../SkeletonNav";
 
 // Size constants
-const drawerWidth = 240;
+const drawerWidth = 260;
 const minDrawerWidth = 62;
 
 function Navbar({
@@ -57,13 +57,15 @@ function Navbar({
 		application,
 		multiSiteUser,
 		role,
+		site,
+		siteID,
+		siteAppID,
 	} =
 		Object.values(userDetail).length > 0
 			? userDetail
 			: JSON.parse(sessionStorage.getItem("me")) ||
 			  JSON.parse(localStorage.getItem("me")) ||
 			  {};
-
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
 		const storageLocal = JSON.parse(localStorage.getItem("me"));
@@ -202,8 +204,11 @@ function Navbar({
 			color: "#000000",
 		},
 		navListContainer: {
-			display: "flex",
-			justifyContent: "center",
+			// display: "flex",
+			// justifyContent: "center",
+		},
+		nested: {
+			paddingLeft: "72px",
 		},
 		currentItemBackground: {
 			backgroundColor:
@@ -214,7 +219,7 @@ function Navbar({
 		navIconContainer: {
 			display: "flex",
 			justifyContent: "center",
-			paddingRight: 25,
+			paddingRight: 15,
 		},
 		navIcon: {
 			transform: "scale(0.8)",
@@ -316,8 +321,15 @@ function Navbar({
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
-	let activeLink = location.pathname.split("/")[2];
+	const pathname = location.pathname.split("/");
+	let activeLink = pathname[2];
 
+	if (pathname.length > 3) {
+		activeLink =
+			pathname[6] === "applications"
+				? "site-application-settings"
+				: "site-settings";
+	}
 	// Handlers
 	const handleDrawerChange = () => {
 		setOpen(!open);
@@ -515,6 +527,83 @@ function Navbar({
 								{navOptions.map((item) => {
 									// Storing SVG
 									let NavIcon = item.icon;
+
+									if (item.name === "Setting") {
+										return (
+											<div
+												className={`${classes.navListContainer} mobNavListContainer`}
+												key={item.name}
+											>
+												<ListItem
+													button
+													className={
+														activeLink === "site-settings" ||
+														activeLink === "site-application-settings"
+															? classes.currentItemBackground
+															: null
+													}
+												>
+													<ListItemIcon className={classes.navIconContainer}>
+														<NavIcon
+															className={
+																activeLink === "site-settings" ||
+																activeLink === "site-application-settings"
+																	? classes.navIconCurrent
+																	: classes.navIcon
+															}
+															alt={`${item.name} icon`}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														classes={{
+															primary:
+																activeLink === "site-settings" ||
+																activeLink === "site-application-settings"
+																	? classes.listItemTextPrimaryCurrent
+																	: classes.listItemTextPrimary,
+														}}
+														primary={item.name}
+													/>
+												</ListItem>
+												<List component="div" disablePadding>
+													<Link
+														to={`/app/clients/${site?.id}/sites/${siteID}/detail`}
+														className={classes.navLink}
+													>
+														<ListItem button className={clsx(classes.nested)}>
+															<ListItemText
+																classes={{
+																	primary:
+																		activeLink === "site-settings"
+																			? classes.listItemTextPrimaryCurrent
+																			: classes.listItemTextPrimary,
+																}}
+																primary="Site Settings"
+															/>
+														</ListItem>
+													</Link>
+
+													<Link
+														to={`/app/clients/${site?.id}/sites/${siteID}/applications/${siteAppID}/detail`}
+														className={classes.navLink}
+													>
+														<ListItem button className={clsx(classes.nested)}>
+															{" "}
+															<ListItemText
+																classes={{
+																	primary:
+																		activeLink === "site-application-settings"
+																			? classes.listItemTextPrimaryCurrent
+																			: classes.listItemTextPrimary,
+																}}
+																primary="Site Application Settings"
+															/>
+														</ListItem>
+													</Link>
+												</List>
+											</div>
+										);
+									}
 
 									return (
 										<Link

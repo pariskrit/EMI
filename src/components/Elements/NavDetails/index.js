@@ -7,6 +7,7 @@ import ColourConstants from "helpers/colourConstants";
 import SaveHistory from "../SaveHistory";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {
@@ -44,57 +45,50 @@ const NavDetails = ({
 	// Init hooks
 	const classes = useStyles();
 	const [isActive, setActive] = useState(false);
+	const { role, site } = JSON.parse(
+		sessionStorage.getItem("me") || localStorage.getItem("me")
+	);
+	const location = useLocation();
+	const path = location.pathname.split("/");
 
 	// Custom styled separator icon
 	const DefaultSeparator = () => {
 		return <span className={classes.crumbText}>{">"}</span>;
 	};
+
+	let realCrumbs =
+		staticCrumbs?.length > 0 && staticCrumbs.every((crumb) => crumb.name)
+			? staticCrumbs
+			: crumbs;
+
+	// Show Site Name only in crumbs if user is Site Application User
+	if (role === "SiteUser" && path.includes("clients"))
+		realCrumbs = [{ id: 1, name: site?.siteName }];
+
 	return (
 		<div>
 			<Breadcrumbs aria-label="breadcrumb" separator={<DefaultSeparator />}>
-				{staticCrumbs?.length > 0 && staticCrumbs.every((crumb) => crumb.name)
-					? staticCrumbs?.map((crumb, i) =>
-							i === staticCrumbs.length - 1 ? (
-								<Typography
-									key={crumb.id}
-									className={classes.crumbText}
-									color="textPrimary"
-								>
-									{crumb.name}
-								</Typography>
-							) : (
-								<NavLink
-									to={crumb.url}
-									key={crumb.id}
-									className={classes.link}
-									style={{ color: isActive ? "#1164CE" : "#307AD7" }}
-									onMouseDown={() => setActive(true)}
-								>
-									{crumb.name}
-								</NavLink>
-							)
-					  )
-					: crumbs?.map((crumb, i) =>
-							i === crumbs.length - 1 ? (
-								<Typography
-									key={crumb.id}
-									className={classes.crumbText}
-									color="textPrimary"
-								>
-									{crumb.name}
-								</Typography>
-							) : (
-								<NavLink
-									to={crumb.url}
-									key={crumb.id}
-									className={classes.link}
-									style={{ color: isActive ? "#1164CE" : "#307AD7" }}
-									onMouseDown={() => setActive(true)}
-								>
-									{crumb.name}
-								</NavLink>
-							)
-					  )}
+				{realCrumbs?.map((crumb, i) =>
+					i === realCrumbs.length - 1 ? (
+						<Typography
+							key={crumb.id}
+							className={classes.crumbText}
+							color="textPrimary"
+						>
+							{crumb.name}
+						</Typography>
+					) : (
+						<NavLink
+							to={crumb.url}
+							key={crumb.id}
+							className={classes.link}
+							style={{ color: isActive ? "#1164CE" : "#307AD7" }}
+							onMouseDown={() => setActive(true)}
+						>
+							{crumb.name}
+						</NavLink>
+					)
+				)}
 			</Breadcrumbs>
 			<div className="left-section flex-wrap  mb-sm">
 				{status && (

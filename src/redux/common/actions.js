@@ -16,7 +16,7 @@ export const loginWithSiteAppId = (id) => async (dispatch) => {
 	const res = await instance.get(`/api/Users/LoginToSiteApp/${id}`);
 	const data = {
 		...res.data,
-		isAdmin: localStorage.getItem("isAdmin") === "true",
+		isAdmin: false,
 	};
 	const response = await setStorage(data);
 	if (response.role === roles.clientAdmin) {
