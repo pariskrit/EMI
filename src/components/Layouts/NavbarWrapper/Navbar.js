@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import clsx from "clsx";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { useGoogleLogout } from "react-google-login";
@@ -22,6 +22,7 @@ import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as Home } from "assets/icons/home.svg";
 import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
+import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import ColourConstants from "helpers/colourConstants";
@@ -66,6 +67,9 @@ function Navbar({
 			: JSON.parse(sessionStorage.getItem("me")) ||
 			  JSON.parse(localStorage.getItem("me")) ||
 			  {};
+
+	const anchorRef = useRef(null);
+
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
 		const storageLocal = JSON.parse(localStorage.getItem("me"));
@@ -94,6 +98,13 @@ function Navbar({
 
 	const colorBackground =
 		application === null ? ColourConstants.navDrawer : "#" + application?.color;
+
+	const elementProps = anchorRef.current
+		? {
+				top: anchorRef.current.getBoundingClientRect().top,
+				left: anchorRef.current.getBoundingClientRect().right,
+		  }
+		: { top: 255, left: 61 };
 
 	const useStyles = makeStyles((theme) => ({
 		root: {
@@ -207,6 +218,19 @@ function Navbar({
 			// display: "flex",
 			// justifyContent: "center",
 		},
+		settingsContainer: {
+			position: "relative",
+		},
+		settingsOptions: {
+			position: "fixed",
+			zIndex: 2000,
+			right: 0,
+			left: elementProps.left,
+			top: elementProps.top,
+			width: 225,
+			backgroundColor: colorBackground,
+			borderRadius: 2,
+		},
 		nested: {
 			paddingLeft: "72px",
 		},
@@ -215,6 +239,9 @@ function Navbar({
 				application === null
 					? ColourConstants.navCurrentItem
 					: LightenDarkenColor(application?.color, -20),
+		},
+		settings: {
+			paddingRight: "0 !important",
 		},
 		navIconContainer: {
 			display: "flex",
@@ -319,6 +346,8 @@ function Navbar({
 
 	// Setting state
 	const [open, setOpen] = useState(false);
+	const [showSettingPopup, setShowSettingPopup] = useState(false);
+
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
 	const pathname = location.pathname.split("/");
@@ -331,6 +360,10 @@ function Navbar({
 				: "site-settings";
 	}
 	// Handlers
+	const onHoverSettings = () => {
+		setShowSettingPopup((prev) => !prev);
+	};
+
 	const handleDrawerChange = () => {
 		setOpen(!open);
 	};
@@ -443,11 +476,10 @@ function Navbar({
 		// Cause change in redux state
 		setUserDetail(loginUser);
 	};
-
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 	return (
 		<>
-			<div className="drawerDesktop">
+			<div className={`${classes.settingsContainer} drawerDesktop`}>
 				{isLoading ? (
 					<SkeletonNav />
 				) : (
@@ -531,18 +563,20 @@ function Navbar({
 									if (item.name === "Setting") {
 										return (
 											<div
-												className={`${classes.navListContainer} mobNavListContainer`}
+												className={` mobNavListContainer`}
+												onMouseEnter={onHoverSettings}
+												onMouseLeave={onHoverSettings}
 												key={item.name}
-												onClick={handleDrawerChange}
+												ref={anchorRef}
 											>
 												<ListItem
 													button
-													className={
+													className={`${
 														activeLink === "site-settings" ||
 														activeLink === "site-application-settings"
 															? classes.currentItemBackground
 															: null
-													}
+													} ${classes.settings}`}
 												>
 													<ListItemIcon className={classes.navIconContainer}>
 														<NavIcon
@@ -565,43 +599,58 @@ function Navbar({
 														}}
 														primary={item.name}
 													/>
+													<ArrowRightIcon
+														className={
+															activeLink === "site-settings" ||
+															activeLink === "site-application-settings"
+																? classes.navIconCurrent
+																: classes.navIcon
+														}
+													/>
 												</ListItem>
-												<List component="div" disablePadding>
-													<Link
-														to={`/app/clients/${site?.id}/sites/${siteID}/detail`}
-														className={classes.navLink}
-													>
-														<ListItem button className={clsx(classes.nested)}>
-															<ListItemText
-																classes={{
-																	primary:
-																		activeLink === "site-settings"
-																			? classes.listItemTextPrimaryCurrent
-																			: classes.listItemTextPrimary,
-																}}
-																primary="Site Settings"
-															/>
-														</ListItem>
-													</Link>
 
-													<Link
-														to={`/app/clients/${site?.id}/sites/${siteID}/applications/${siteAppID}/detail`}
-														className={classes.navLink}
+												{showSettingPopup && (
+													<List
+														component="div"
+														className={classes.settingsOptions}
+														disablePadding
 													>
-														<ListItem button className={clsx(classes.nested)}>
-															{" "}
-															<ListItemText
-																classes={{
-																	primary:
-																		activeLink === "site-application-settings"
-																			? classes.listItemTextPrimaryCurrent
-																			: classes.listItemTextPrimary,
-																}}
-																primary="Site Application Settings"
-															/>
-														</ListItem>
-													</Link>
-												</List>
+														<Link
+															to={`/app/clients/${site?.id}/sites/${siteID}/detail`}
+															className={classes.navLink}
+														>
+															<ListItem button>
+																<ListItemText
+																	classes={{
+																		primary:
+																			activeLink === "site-settings"
+																				? classes.listItemTextPrimaryCurrent
+																				: classes.listItemTextPrimary,
+																	}}
+																	primary="Site Settings"
+																/>
+															</ListItem>
+														</Link>
+
+														<Link
+															to={`/app/clients/${site?.id}/sites/${siteID}/applications/${siteAppID}/detail`}
+															className={classes.navLink}
+														>
+															<ListItem button>
+																{" "}
+																<ListItemText
+																	classes={{
+																		primary:
+																			activeLink === "site-application-settings"
+																				? classes.listItemTextPrimaryCurrent
+																				: classes.listItemTextPrimary,
+																	}}
+																	primary="Site Application Settings"
+																/>
+															</ListItem>
+														</Link>
+													</List>
+												)}
 											</div>
 										);
 									}
