@@ -46,7 +46,6 @@ const BASE_API_PATH_APPLICATIONS = `${BASE_API_PATH}Applications`;
 //Users
 const BASE_API_PATH_USERSLIST = `${BASE_API_PATH}users`;
 const BASE_API_PATH_CLIENTUSERSITEAPPS = `${BASE_API_PATH}clientusersiteapps`;
-const BASE_API_PATH_CLIENT_USERS = `${BASE_API_PATH}clientusers`;
 const BASE_API_PATH_CLIENT_USER_SITE_APP_SERVICE_DEPARTMENTS = `${BASE_API_PATH}clientusersiteappservicedepartments`;
 const BASE_API_PATH_CLIENT_USER_SITE_APP_SERVICE_ROLES = `${BASE_API_PATH}clientusersiteappserviceroles`;
 const BASE_API_PATH_CLIENT_USER_SITE_APP_SERVICE_MODELS = `${BASE_API_PATH}clientusersiteappservicemodels`;
@@ -274,7 +273,7 @@ export const Apis = {
 
 	//Users
 	ClientUserSiteApps: `${BASE_API_PATH_CLIENTUSERSITEAPPS}`,
-	ClientSites: `${BASE_API_PATH_CLIENT_USERS}`,
+	ClientSites: `${BASE_API_PATH_USER_SITEs}`,
 	ClientUserSites: `${BASE_API_PATH_CLIENT_USER_SITES}`,
 	ClientUserSiteAppServiceDeparments: `${BASE_API_PATH_CLIENT_USER_SITE_APP_SERVICE_DEPARTMENTS}`,
 	ClientUserSiteAppServiceRoles: `${BASE_API_PATH_CLIENT_USER_SITE_APP_SERVICE_ROLES}`,

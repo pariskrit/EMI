@@ -8,35 +8,62 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { usersPath } from "helpers/routePaths";
-import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
-import { addUserToList } from "services/users/usersList";
+import {
+	addClientUsers,
+	addClientUserSiteApps,
+	addUserToList,
+} from "services/users/usersList";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
+import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
+import { getSiteDepartments } from "services/clients/sites/siteDepartments";
+import { getPositions } from "services/clients/sites/siteApplications/userPositions";
 
-const schema = yup.object({
-	firstName: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	lastName: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-	email: yup
-		.string("This field must be a string")
-		.required("This field is required")
-		.email("Invalid email format"),
-	password: yup
-		.string("This field must be a string")
-		.required("This field is required"),
-});
+const schema = (role) =>
+	yup.object({
+		firstName: yup
+			.string("This field must be a string")
+			.required("This field is required"),
+		lastName: yup
+			.string("This field must be a string")
+			.required("This field is required"),
+		email: yup
+			.string("This field must be a string")
+			.required("This field is required")
+			.email("Invalid email format"),
+		department: yup.object({
+			name: yup.string("This field is required").when("role", {
+				is: () => role === "SiteUser",
+				then: yup.string("Must be string").required("This field is required"),
+			}),
+		}),
+		position: yup.object({
+			name: yup.string("This field is required").when("role", {
+				is: () => role === "SiteUser",
+				then: yup.string("Must be string").required("This field is required"),
+			}),
+		}),
+		externalReference: yup.string().nullable(),
+	});
 
 const ADD = AddDialogStyle();
-const defaultData = { firstName: "", lastName: "", email: "", password: "" };
+const defaultData = {
+	firstName: "",
+	lastName: "",
+	email: "",
+	externalReference: "",
+	position: {},
+	department: {},
+};
 const defaultError = {
 	firstName: null,
 	lastName: null,
 	email: null,
-	password: null,
+	department: null,
+	position: null,
+	externalReference: null,
 };
 
 const media = "@media (max-width: 414px)";
@@ -78,6 +105,9 @@ const AddAssetDialog = ({
 	handleAddData,
 	setSearchQuery,
 	getError,
+	role,
+	siteID,
+	siteAppID,
 }) => {
 	let history = useHistory();
 
@@ -85,6 +115,11 @@ const AddAssetDialog = ({
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
+	const { id } = (JSON.parse(sessionStorage.getItem("clientAdminMode")) ||
+		JSON.parse(localStorage.getItem("clientAdminMode"))) ?? { id: null };
+	const isSuperAdmin = role === "SuperAdmin";
+	const isClientAdmin = role === "ClientAdmin";
+	const isSiteUser = role === "SiteUser";
 
 	const closeOverride = () => {
 		handleClose();
@@ -95,68 +130,65 @@ const AddAssetDialog = ({
 	const handleCreateData = async () => {
 		setLoading(true);
 		try {
-			const localChecker = await handleValidateObj(schema, input);
+			const localChecker = await handleValidateObj(schema(role), input);
 			if (!localChecker.some((el) => el.valid === false)) {
-				const newData = await addUser();
-				if (newData.success) {
-					setLoading(false);
-					closeOverride();
+				// 		// Remove search
+				// setSearchQuery("");
+
+				let data = {
+						firstName: input.firstName,
+						lastName: input.lastName,
+						email: input.email,
+					},
+					result = null;
+
+				if (isSiteUser) {
+					data = {
+						...data,
+						siteAppID,
+						departmentID: input.department.id,
+						positionID: input.position.id,
+					};
+					result = await addClientUserSiteApps(data);
+				}
+
+				if (isClientAdmin) {
+					data = {
+						...data,
+						externalReference: input?.externalReference,
+						clientID: id,
+					};
+
+					result = await addClientUsers(data);
+				}
+				if (isSuperAdmin) result = await addUserToList(data);
+
+				if (result.status) {
+					//Adding new user
+					handleAddData(data);
+
+					handleRedirect(result.data);
 				} else {
-					setErrors({ ...errors, ...newData.errors });
-					setLoading(false);
+					getError(result.data?.detail || result?.data || "Cannot add user");
 				}
 			} else {
 				const newErrors = generateErrorState(localChecker);
 				setErrors({ ...errors, ...newErrors });
-				setLoading(false);
 			}
+			setLoading(false);
 		} catch (err) {
 			console.log(err);
 			setLoading(false);
 			closeOverride();
 		}
 	};
-
 	const handleRedirect = (id) => {
 		history.push(`${usersPath}/${id}`);
 	};
 
-	//Add
-	const addUser = async () => {
-		// Remove search
-		setSearchQuery("");
+	const fetchSiteDepartments = async () => await getSiteDepartments(siteID);
 
-		// Attempting to create client
-		try {
-			let data = {
-				firstName: input.firstName,
-				lastName: input.lastName,
-				email: input.email,
-				password: input.password,
-			};
-
-			// Sending create POST to backend
-			let result = await addUserToList(data);
-
-			if (result.status) {
-				//Adding new user
-				handleAddData(data);
-
-				handleRedirect(result.data);
-
-				return { success: true };
-			} else {
-				if (result.data) {
-					getError(result.data);
-					return { success: false };
-				} else {
-					return { success: false, errors: { ...result.data.errors } };
-				}
-			}
-		} catch (err) {
-			throw new Error(err.response);
-		}
-	};
+	const fetchPositions = async () => await getPositions(siteAppID);
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
@@ -203,31 +235,39 @@ const AddAssetDialog = ({
 							<ADD.NameLabel>
 								First name<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
-							<ADD.NameInput
-								error={errors.firstName === null ? false : true}
-								helperText={errors.firstName === null ? null : errors.firstName}
-								fullWidth
-								onChange={(e) =>
-									setInput({ ...input, firstName: e.target.value })
+							<ErrorInputFieldWrapper
+								errorMessage={
+									errors.firstName === null ? null : errors.firstName
 								}
-								onKeyDown={handleEnterPress}
-								variant="outlined"
-							/>
+							>
+								<ADD.NameInput
+									error={errors.firstName === null ? false : true}
+									fullWidth
+									onChange={(e) =>
+										setInput({ ...input, firstName: e.target.value })
+									}
+									onKeyDown={handleEnterPress}
+									variant="outlined"
+								/>
+							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
 							<ADD.NameLabel>
 								Last Name<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
-							<ADD.NameInput
-								error={errors.lastName === null ? false : true}
-								helperText={errors.lastName === null ? null : errors.lastName}
-								fullWidth
-								onChange={(e) =>
-									setInput({ ...input, lastName: e.target.value })
-								}
-								onKeyDown={handleEnterPress}
-								variant="outlined"
-							/>
+							<ErrorInputFieldWrapper
+								errorMessage={errors.lastName === null ? null : errors.lastName}
+							>
+								<ADD.NameInput
+									error={errors.lastName === null ? false : true}
+									fullWidth
+									onChange={(e) =>
+										setInput({ ...input, lastName: e.target.value })
+									}
+									onKeyDown={handleEnterPress}
+									variant="outlined"
+								/>
+							</ErrorInputFieldWrapper>
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
 					<ADD.InputContainer>
@@ -235,32 +275,93 @@ const AddAssetDialog = ({
 							<ADD.NameLabel>
 								Email Address<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
-							<ADD.NameInput
-								error={errors.email === null ? false : true}
-								helperText={errors.email === null ? null : errors.email}
-								fullWidth
-								onChange={(e) => setInput({ ...input, email: e.target.value })}
-								onKeyDown={handleEnterPress}
-								variant="outlined"
-							/>
+							<ErrorInputFieldWrapper
+								errorMessage={errors.email === null ? null : errors.email}
+							>
+								<ADD.NameInput
+									error={errors.email === null ? false : true}
+									fullWidth
+									onChange={(e) =>
+										setInput({ ...input, email: e.target.value })
+									}
+									onKeyDown={handleEnterPress}
+									variant="outlined"
+								/>
+							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
-							<ADD.NameLabel>
-								Password<ADD.RequiredStar>*</ADD.RequiredStar>
-							</ADD.NameLabel>
-							<TextField
-								type="password"
-								error={errors.password === null ? false : true}
-								helperText={errors.password === null ? null : errors.password}
-								fullWidth
-								onChange={(e) =>
-									setInput({ ...input, password: e.target.value })
-								}
-								onKeyDown={handleEnterPress}
-								variant="outlined"
-							/>
+							{isSiteUser ? (
+								<ErrorInputFieldWrapper
+									errorMessage={
+										errors?.position === null ? null : errors?.position
+									}
+								>
+									<DyanamicDropdown
+										label="Positions"
+										dataHeader={[{ id: 1, name: "Name" }]}
+										showHeader
+										onChange={(val) =>
+											setInput((input) => ({ ...input, position: val }))
+										}
+										selectedValue={input.position}
+										columns={[{ name: "name", id: 1 }]}
+										selectdValueToshow="name"
+										required={true}
+										isError={errors?.position ? true : false}
+										fetchData={fetchPositions}
+										width="100%"
+									/>
+								</ErrorInputFieldWrapper>
+							) : null}
+							{isClientAdmin ? (
+								<>
+									<ADD.NameLabel>External Reference</ADD.NameLabel>
+
+									<ADD.NameInput
+										fullWidth
+										onChange={(e) =>
+											setInput({ ...input, externalReference: e.target.value })
+										}
+										onKeyDown={handleEnterPress}
+										variant="outlined"
+									/>
+								</>
+							) : null}
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
+					{isSiteUser ? (
+						<ADD.InputContainer>
+							<ADD.LeftInputContainer>
+								<ErrorInputFieldWrapper
+									errorMessage={
+										errors?.department === null ? null : errors?.department
+									}
+								>
+									<DyanamicDropdown
+										label="Departments"
+										dataHeader={[
+											{ id: 1, name: "Name" },
+											{ id: 2, name: "Description" },
+										]}
+										showHeader
+										onChange={(val) =>
+											setInput((input) => ({ ...input, department: val }))
+										}
+										selectedValue={input.department}
+										columns={[
+											{ name: "name", id: 1 },
+											{ name: "description", id: 2 },
+										]}
+										selectdValueToshow="name"
+										required={true}
+										isError={errors?.department ? true : false}
+										fetchData={fetchSiteDepartments}
+										width="100%"
+									/>
+								</ErrorInputFieldWrapper>
+							</ADD.LeftInputContainer>
+						</ADD.InputContainer>
+					) : null}
 				</div>
 			</DialogContent>
 		</Dialog>

@@ -90,6 +90,7 @@ const UserTable = ({
 	handleDeleteDialogOpen,
 	position,
 	access,
+	count,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -102,7 +103,7 @@ const UserTable = ({
 
 	const { hasMore, loading, gotoTop } = useInfiniteScroll(
 		data,
-		17,
+		count,
 		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
 		page,
 		searchText
@@ -223,7 +224,7 @@ const UserTable = ({
 														},
 														{
 															name: "Delete",
-															handler: handleDeleteDialogOpen,
+															handler: () => handleDeleteDialogOpen(row),
 															isDelete: true,
 															access: "F",
 														},

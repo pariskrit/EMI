@@ -6,9 +6,13 @@ import ColourConstants from "helpers/colourConstants";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import {
+	downloadUserCSVTemplate,
 	getClientAdminUserList,
+	getClientAdminUserListCount,
 	getSiteAppUserList,
+	getSiteAppUserListCount,
 	getUsersList,
+	getUsersListCount,
 } from "services/users/usersList";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ContentStyle from "styles/application/ContentStyle";
@@ -16,13 +20,13 @@ import { Grid } from "@material-ui/core";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 import AddUserDialog from "./AddUserDialog";
-import ImportListDialog from "./ImportListDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import { DefaultPageSize } from "helpers/constants";
 import GeneralButton from "components/Elements/GeneralButton";
 import mainAccess from "helpers/access";
-import RoleWrapper from "components/Modules/RoleWrapper";
+import ImportContainer from "components/Modules/ImportContainer";
+import { Apis } from "services/api";
 
 const AC = ContentStyle();
 
@@ -62,9 +66,11 @@ const useStyles = makeStyles({
 	},
 });
 
+const defaultPageProperties = { pageNo: 1, perPage: DefaultPageSize };
+
 const UsersListContent = ({ getError }) => {
 	const classes = useStyles();
-	const { position, role, siteAppID } =
+	const { position, role, siteAppID, siteID } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const clientUserId =
@@ -76,13 +82,13 @@ const UsersListContent = ({ getError }) => {
 	//Init State
 	const [haveData, setHaveData] = useState(false);
 
-	// const [dataCount, setDataCount] = useState(null);
 	const [modal, setModal] = useState({ import: false, add: false });
 
 	const [deleteID, setDeleteID] = useState(null);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	const [page, setPage] = useState({ pageNo: 1, perPage: DefaultPageSize });
+	const [page, setPage] = useState(defaultPageProperties);
+	const [count, setCount] = useState(null);
 
 	const searchRef = useRef("");
 
@@ -95,27 +101,70 @@ const UsersListContent = ({ getError }) => {
 		setSearchQuery,
 	} = useUserSearch();
 
+	// Csv import and delete Apis for site user, client admin and super admin
+	const apis = {
+		SiteUser: {
+			downloadTemplate: Apis.Applications,
+			upload: `${Apis.Applications}/${siteAppID}/uploadUserList`,
+			import: `${Apis.Applications}/${siteAppID}/importusers`,
+			delete: Apis.ClientUserSiteApps,
+		},
+		ClientAdmin: {
+			downloadTemplate: Apis.Clients,
+			upload: `${Apis.Clients}/${clientUserId}/uploadUserList`,
+			import: `${Apis.Clients}/${clientUserId}/importusers`,
+			delete: Apis.userDetailSites,
+		},
+		SuperAdmin: {
+			downloadTemplate: Apis.UsersList,
+			upload: `${Apis.UsersList}/uploadUserList`,
+			import: `${Apis.UsersList}/importusers`,
+			delete: Apis.UsersList,
+		},
+	};
+
 	const fetchData = useCallback(
-		async (pNo, searchText) => {
+		async (pNo, numberOfDataToGet = null, searchText) => {
 			try {
-				let result = null;
+				let result = null,
+					count = null;
 
 				// user is Site Application User
-				if (siteAppID) result = await getSiteAppUserList(siteAppID);
-
+				if (siteAppID) {
+					result = await getSiteAppUserList(
+						siteAppID,
+						pNo,
+						numberOfDataToGet ?? DefaultPageSize,
+						searchText
+					);
+					count = await getSiteAppUserListCount(siteAppID, searchText);
+				}
 				// user is Client Admin
-				if (role === "ClientAdmin" && !siteAppID)
-					result = await getClientAdminUserList(clientUserId);
+				if (role === "ClientAdmin" && !siteAppID) {
+					result = await getClientAdminUserList(
+						clientUserId,
+						pNo,
+						numberOfDataToGet ?? DefaultPageSize,
+						searchText
+					);
+					count = await getClientAdminUserListCount(clientUserId, searchText);
+				}
 
 				// user is Super Admin
-				if (role === "SuperAdmin")
-					result = await getUsersList(pNo, DefaultPageSize, searchText);
+				if (role === "SuperAdmin") {
+					result = await getUsersList(
+						pNo,
+						numberOfDataToGet ?? DefaultPageSize,
+						searchText
+					);
+					count = await getUsersListCount(searchText);
+				}
 
 				if (result.status) {
 					result = result.data;
 
 					setAllData(result);
-					// setDataCount(result.length);
+					setCount(count.data);
 					return true;
 				} else {
 					// Throwing error if failed
@@ -150,25 +199,56 @@ const UsersListContent = ({ getError }) => {
 	};
 
 	//DELETE
-	const handleDeleteDialogOpen = (id) => {
-		setDeleteID(id);
+	const handleDeleteDialogOpen = (rowData) => {
+		if (role === "ClientAdmin") setDeleteID(rowData.clientUserID);
+
+		if (role === "SuperAdmin") setDeleteID(rowData.id);
+		if (role === "SiteUser") setDeleteID(rowData.clientUserSiteAppID);
 
 		setOpenDeleteDialog(true);
 	};
 
 	const closeDeleteDialog = () => setOpenDeleteDialog(false);
 
-	const handleRemoveData = (id) =>
-		setAllData([...allData.filter((d) => d.id !== id)]);
+	const handleRemoveData = () => {
+		let totalData = null;
+		if (role === "ClientAdmin")
+			totalData = [...allData.filter((data) => data.clientUserID !== deleteID)];
+
+		if (role === "SuperAdmin")
+			totalData = [...allData.filter((data) => data.id !== deleteID)];
+		if (role === "SiteUser")
+			totalData = [
+				...allData.filter((data) => data.clientUserSiteAppID !== deleteID),
+			];
+		setAllData(totalData);
+		fetchData(1, count - 1);
+	};
 
 	//Pagination
 	const handlePage = async (p, prevData) => {
 		try {
-			const response = await getUsersList(
-				p,
-				DefaultPageSize,
-				searchRef.current
-			);
+			let response = null;
+
+			if (role === "SiteUser")
+				response = await getSiteAppUserList(
+					siteAppID,
+					p,
+					DefaultPageSize,
+					searchRef.current
+				);
+
+			if (role === "SuperAdmin")
+				response = await getUsersList(p, DefaultPageSize, searchRef.current);
+
+			if (role === "ClientAdmin")
+				response = await getClientAdminUserList(
+					clientUserId,
+					p,
+					DefaultPageSize,
+					searchRef.current
+				);
+
 			if (response.status) {
 				setPage({ pageNo: p, rowsPerPage: DefaultPageSize });
 				setAllData([...prevData, ...response.data]);
@@ -186,7 +266,6 @@ const UsersListContent = ({ getError }) => {
 	const importSuccess = () => {
 		fetchData(1);
 	};
-
 	const debounce = (func, delay) => {
 		let timer;
 		return function () {
@@ -202,19 +281,27 @@ const UsersListContent = ({ getError }) => {
 	//handle search
 	const handleSearch = useCallback(
 		debounce((value) => {
+			if (value === "") setPage(defaultPageProperties);
+
 			searchRef.current = value;
-			fetchData(1, value);
+			fetchData(1, null, value);
 		}, 500),
 		[]
 	);
 
+	const handleDownloadCsvTemplate = () => {
+		return downloadUserCSVTemplate(apis[role].downloadTemplate);
+	};
 	return (
 		<div className="container">
-			<ImportListDialog
+			<ImportContainer
 				open={modal.import}
 				handleClose={() => setModal((th) => ({ ...th, import: false }))}
 				importSuccess={importSuccess}
-				getError={getError}
+				siteAppID={siteAppID}
+				importApi={apis[role].import}
+				uploadApi={apis[role].upload}
+				handleDownloadTemplate={handleDownloadCsvTemplate}
 			/>
 
 			<AddUserDialog
@@ -223,6 +310,9 @@ const UsersListContent = ({ getError }) => {
 				handleAddData={handleAddData}
 				setSearchQuery={setSearchQuery}
 				getError={getError}
+				role={role}
+				siteID={siteID}
+				siteAppID={siteAppID}
 			/>
 
 			<DeleteDialog
@@ -230,7 +320,7 @@ const UsersListContent = ({ getError }) => {
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteID}
-				deleteEndpoint="/api/users"
+				deleteEndpoint={apis[role].delete}
 				handleRemoveData={handleRemoveData}
 			/>
 
@@ -248,22 +338,20 @@ const UsersListContent = ({ getError }) => {
 						)}
 					</Typography>
 					{haveData ? (
-						<RoleWrapper roles={[role.superAdmin]}>
-							<div className={classes.buttonContainer}>
-								<GeneralButton
-									onClick={() => setModal((th) => ({ ...th, import: true }))}
-									style={{ backgroundColor: "#ed8738" }}
-								>
-									IMPORT FROM LIST
-								</GeneralButton>
-								<GeneralButton
-									onClick={() => setModal((th) => ({ ...th, add: true }))}
-									style={{ backgroundColor: "#23bb79" }}
-								>
-									ADD NEW
-								</GeneralButton>
-							</div>
-						</RoleWrapper>
+						<div className={classes.buttonContainer}>
+							<GeneralButton
+								onClick={() => setModal((th) => ({ ...th, import: true }))}
+								style={{ backgroundColor: "#ed8738" }}
+							>
+								IMPORT FROM LIST
+							</GeneralButton>
+							<GeneralButton
+								onClick={() => setModal((th) => ({ ...th, add: true }))}
+								style={{ backgroundColor: "#23bb79" }}
+							>
+								ADD NEW
+							</GeneralButton>
+						</div>
 					) : null}
 				</div>
 
@@ -285,30 +373,27 @@ const UsersListContent = ({ getError }) => {
 					</AC.SearchContainer>
 				) : null}
 			</div>
-			{
-				// position === null || access !== "N" ? (
-				haveData ? (
-					<UsersListTable
-						data={mainData}
-						headers={["First Name", "Surname", "Email Address", "Phone"]}
-						columns={["firstName", "lastName", "email", "phone"]}
-						setData={setAllData}
-						handleSort={handleSort}
-						searchQuery={searchQuery}
-						searchedData={searchedData}
-						setSearchData={setSearchData}
-						handleDeleteDialogOpen={handleDeleteDialogOpen}
-						searchText={searchRef.current}
-						onPageChange={handlePage}
-						page={page.pageNo}
-						position={position}
-						access={access}
-					/>
-				) : (
-					<CircularProgress />
-				)
-				// ) : null
-			}
+			{haveData ? (
+				<UsersListTable
+					data={mainData}
+					headers={["First Name", "Surname", "Email Address", "Phone"]}
+					columns={["firstName", "lastName", "email", "phone"]}
+					setData={setAllData}
+					handleSort={handleSort}
+					searchQuery={searchQuery}
+					searchedData={searchedData}
+					setSearchData={setSearchData}
+					handleDeleteDialogOpen={handleDeleteDialogOpen}
+					searchText={searchRef.current}
+					onPageChange={handlePage}
+					page={page.pageNo}
+					count={count}
+					position={position}
+					access={access}
+				/>
+			) : (
+				<CircularProgress />
+			)}
 		</div>
 	);
 };
