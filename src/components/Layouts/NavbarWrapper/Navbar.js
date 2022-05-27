@@ -353,8 +353,7 @@ function Navbar({
 	const location = useLocation();
 	const pathname = location.pathname.split("/");
 	let activeLink = pathname[2];
-
-	if (pathname.length > 3) {
+	if (location?.state?.isSettings) {
 		activeLink =
 			pathname[6] === "applications"
 				? "site-application-settings"
@@ -618,7 +617,10 @@ function Navbar({
 														disablePadding
 													>
 														<Link
-															to={`/app/clients/${site?.id}/sites/${siteID}/detail`}
+															to={{
+																pathname: `/app/clients/${site?.id}/sites/${siteID}/detail`,
+																state: { isSettings: true },
+															}}
 															className={classes.navLink}
 														>
 															<ListItem button>
@@ -635,7 +637,10 @@ function Navbar({
 														</Link>
 
 														<Link
-															to={`/app/clients/${site?.id}/sites/${siteID}/applications/${siteAppID}/detail`}
+															to={{
+																pathname: `/app/clients/${site?.id}/sites/${siteID}/applications/${siteAppID}/detail`,
+																state: { isSettings: true },
+															}}
 															className={classes.navLink}
 														>
 															<ListItem button>

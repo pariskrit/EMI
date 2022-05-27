@@ -106,7 +106,13 @@ const ImportContainer = ({
 			setLoading(false);
 		} catch (err) {
 			if (!isCancellled.current) {
-				dispatch(showError(err?.response?.data?.detail || "Failed To Import"));
+				dispatch(
+					showError(
+						err?.response?.data?.detail ||
+							err?.response?.data ||
+							"Failed To Import"
+					)
+				);
 			}
 			return err;
 		} finally {

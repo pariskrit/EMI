@@ -222,7 +222,7 @@ const UsersListContent = ({ getError }) => {
 				...allData.filter((data) => data.clientUserSiteAppID !== deleteID),
 			];
 		setAllData(totalData);
-		fetchData(1, count - 1);
+		fetchData(1);
 	};
 
 	//Pagination
@@ -264,6 +264,7 @@ const UsersListContent = ({ getError }) => {
 	};
 
 	const importSuccess = () => {
+		setPage(defaultPageProperties);
 		fetchData(1);
 	};
 	const debounce = (func, delay) => {
