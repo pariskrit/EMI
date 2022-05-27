@@ -23,7 +23,6 @@ import {
 
 const useStyles = makeStyles((theme) => ({
 	noteContainer: {
-		marginTop: 25,
 		display: "flex",
 		justifyContent: "flex-end",
 	},
