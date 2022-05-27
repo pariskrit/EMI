@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25.854" height="25.854" viewBox="0 0 25.854 25.854">
+  <g id="in-progress" transform="translate(0 -0.5)">
+    <g id="in-progress-icon-green" transform="translate(0 0.5)">
+      <g id="icon">
+        <path id="Fill-1" d="M4,18.532l2.08,1.05,2-3.032L6,15.5Z" transform="translate(1.443 4.911)" fill="#23bb79" fill-rule="evenodd"/>
+        <path id="Fill-2" d="M4,2.55,6,5.582l2.08-1.05L6.08,1.5Z" transform="translate(1.443 -0.139)" fill="#23bb79" fill-rule="evenodd"/>
+        <path id="Fill-3" d="M4.032,12.5,1,14.5l1.05,2.08,3.032-2Z" transform="translate(0.361 3.829)" fill="#23bb79" fill-rule="evenodd"/>
+        <path id="Fill-4" d="M5.082,6.5,2.05,4.5,1,6.58l3.032,2Z" transform="translate(0.361 0.943)" fill="#23bb79" fill-rule="evenodd"/>
+        <path id="Fill-5" d="M0,12.221H4.082V9.5H0Z" transform="translate(0 2.746)" fill="#23bb79" fill-rule="evenodd"/>
+        <path id="Fill-6" d="M9,20.582h2.721V16.5H9Z" transform="translate(3.246 5.271)" fill="#23bb79" fill-rule="evenodd"/>
+        <g id="Group-13" transform="translate(12.246)">
+          <path id="Fill-7" d="M11.449,11.911V3.081a9.622,9.622,0,0,1,2.644.725l-.778,1.38,2.12,1.252.777-1.374a10.011,10.011,0,0,1,1.934,1.977L16.8,7.834,18.026,10l1.348-.8a10.189,10.189,0,0,1,.709,2.7ZM10.225.5H9V14.416H22.607V13.163A12.56,12.56,0,0,0,10.225.5Z" transform="translate(-9 -0.5)" fill="#23bb79" fill-rule="evenodd"/>
+          <path id="Fill-9" d="M14.733,14.3l3.535,2.087,1.225-2.169-3.535-2.087Z" transform="translate(-6.932 3.695)" fill="#23bb79" fill-rule="evenodd"/>
+          <path id="Fill-11" d="M12.17,16l2.041,3.616,2.121-1.252-2.041-3.616Z" transform="translate(-7.856 4.64)" fill="#23bb79" fill-rule="evenodd"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

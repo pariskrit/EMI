@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SaveHistory = ({
 	hideLastLogin = false,
+	hideLastSave = false,
 	hideVersion = true,
 	versionNumber,
 }) => {
@@ -55,10 +56,12 @@ const SaveHistory = ({
 
 	return (
 		<div className={`${classes.historyContainer} mt-sm`}>
-			<div className={classes.historyText}>
-				<Typography className={classes.lastSaved}>Last saved:</Typography>
-				<Typography className={classes.timestampSize}>{lastSave}</Typography>
-			</div>
+			{hideLastSave ? null : (
+				<div className={classes.historyText}>
+					<Typography className={classes.lastSaved}>Last saved:</Typography>
+					<Typography className={classes.timestampSize}>{lastSave}</Typography>
+				</div>
+			)}
 			{hideLastLogin ? null : (
 				<div className={classes.historyText}>
 					<Typography className={classes.lastSaved}>Last login:</Typography>

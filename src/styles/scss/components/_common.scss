@@ -226,23 +226,14 @@ div[role="tooltip"] {
 .dynamic-width-table {
 	max-width: 100vw;
 
-	@media only screen and (max-width: 414px) {
-		max-width: 70vw;
+	@media only screen and (min-width: 0px) and (max-width: 1024px) {
+		max-width: 85vw;
 	}
-	@media only screen and (max-width: 1024px) {
-		max-width: 80vw;
-	}
-	@media only screen and (max-width: 768px) {
-		max-width: 70vw;
-	}
-	@media only screen and (max-width: 1280px) {
-		max-width: 83vw;
-	}
-	@media only screen and (max-width: 1800px) {
+	@media only screen and (min-width: 1025px) and (max-width: 1600px) {
 		max-width: 93vw;
 	}
-	@media only screen and (max-width: 2300px) {
-		max-width: 95vw;
+	@media only screen and (min-width: 1601px) and (max-width: 2400px) {
+		max-width: 94vw;
 	}
 }
 

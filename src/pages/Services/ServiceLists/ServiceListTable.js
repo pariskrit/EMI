@@ -379,7 +379,6 @@ const ServiceListTable = ({
 						style={{ textAlign: "center", padding: "16px 10px" }}
 						className="flex justify-center"
 					>
-						<b>Yay! You have seen it all</b>
 						<span
 							className="link-color ml-md cursor-pointer"
 							onClick={() => gotoTop()}

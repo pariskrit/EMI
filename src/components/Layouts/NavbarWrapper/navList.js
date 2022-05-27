@@ -4,6 +4,8 @@ import { ReactComponent as ClientIcon } from "assets/icons/clientsIcon.svg";
 import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as ServiceIcon } from "assets/icons/services.svg";
+import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
+
 import access from "helpers/access";
 import roles from "helpers/roles";
 import {
@@ -125,7 +127,7 @@ const navList = [
 	{
 		activeName: "Setting",
 		name: "Setting",
-		icon: ModelIcon,
+		icon: SettingsIcon,
 		path: settingPath,
 		access: access.settingsAccess,
 		roles: "",

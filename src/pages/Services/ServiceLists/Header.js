@@ -53,6 +53,7 @@ function Header({ setOpenAddService, setImportCSV, dataLength }) {
 				lastSaved={""}
 				staticCrumbs={[{ id: 1, name: `Services (${dataLength})`, url: "" }]}
 				hideLastLogin
+				hideLastSave
 				hideVersion={true}
 			/>
 			<div className={classes.wrapper}>

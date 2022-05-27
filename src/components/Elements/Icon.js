@@ -1,50 +1,49 @@
 import React from "react";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
-import BlockIcon from "@material-ui/icons/Block";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import AvTimerIcon from "@material-ui/icons/AvTimer";
 import RestoreIcon from "@material-ui/icons/Restore";
-import CancelIcon from "@material-ui/icons/Cancel";
+import { ReactComponent as CancelIcon } from "assets/icons/cancelled.svg";
+import { ReactComponent as StoppedIcon } from "assets/icons/stopped.svg";
+import { ReactComponent as CompleteIcon } from "assets/icons/complete.svg";
+import { ReactComponent as ScheduleIcon } from "assets/icons/Scheduled.svg";
+import { ReactComponent as InProgressIcon } from "assets/icons/in-progress.svg";
+import { ReactComponent as CheckedOutIcon } from "assets/icons/checked-out.svg";
 
-function Icon({ name, fontSize = "14px", className }) {
+function Icon({ name, fontSize = "12px", className }) {
 	switch (name) {
 		case "Stopped":
-			return <CancelIcon style={{ color: "red", fontSize }} />;
+			return <StoppedIcon style={{ fontSize }} />;
 
 		case "Stopped (Tasks Skipped)":
-			return <CancelIcon style={{ color: "red", fontSize }} />;
+			return <StoppedIcon style={{ fontSize }} />;
 
 		case "Scheduled":
-			return <CalendarTodayIcon style={{ fontSize }} />;
+			return <ScheduleIcon style={{ fontSize }} />;
 
 		case "Cancelled":
-			return <BlockIcon style={{ fontSize, color: "red" }} />;
+			return <CancelIcon style={{ fontSize }} />;
 
 		case "Complete":
-			return <CheckCircleIcon style={{ fontSize, color: "#24BA78" }} />;
+			return <CompleteIcon style={{ fontSize }} />;
 
 		case "Complete (Tasks Skipped)":
-			return <CheckCircleIcon style={{ color: "red", fontSize }} />;
+			return <CompleteIcon style={{ fontSize }} />;
 
 		case "Complete (By Paper)":
-			return <CheckCircleIcon style={{ fontSize, color: "#24BA78" }} />;
+			return <CompleteIcon style={{ fontSize }} />;
 
 		case "Checked Out":
-			return <CheckCircleOutlineIcon style={{ fontSize, color: "#24BA78" }} />;
+			return <CheckedOutIcon style={{ fontSize }} />;
 
 		case "In Progress":
-			return <AvTimerIcon style={{ fontSize, color: "#24BA78" }} />;
+			return <InProgressIcon style={{ fontSize }} />;
 
 		case "Restore":
 			return <RestoreIcon className={className} />;
 
 		case "Incomplete":
-			return <CheckCircleIcon style={{ fontSize, color: "#24BA78" }} />;
+			return <CheckedOutIcon style={{ fontSize }} />;
 
 		default:
-			return <HighlightOffIcon />;
+			return "No Such Icon";
 	}
 }
 

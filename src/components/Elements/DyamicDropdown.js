@@ -590,6 +590,7 @@ function DyanamicDropdown(props) {
 															padding: "15px 10px 15px 5px",
 															backgroundColor: "#D8D8D8",
 															cursor: "pointer",
+															borderBottom: `1px solid ${ColourConstants.dropdownheaderBorder}`,
 														}}
 														onClick={() => {
 															onChange(group);
@@ -706,7 +707,6 @@ function DyanamicDropdown(props) {
 								style={{ textAlign: "center", padding: "16px 10px" }}
 								className="flex justify-center"
 							>
-								<b>Yay! You have seen it all</b>
 								<span
 									className="link-color ml-md cursor-pointer"
 									onClick={() => gotoTop()}

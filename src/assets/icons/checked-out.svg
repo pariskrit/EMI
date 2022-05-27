@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="26.161" height="26.161" viewBox="0 0 26.161 26.161">
+  <g id="checked-out" transform="translate(0 -0.878)">
+    <g id="checked-out-icon-green" transform="translate(0 0.878)">
+      <g id="checked-out-2" data-name="checked-out">
+        <path id="Fill-4" d="M14.981,8.057a1.24,1.24,0,0,0-1.683,0L9.329,12.025l-1.2-1.2A1.19,1.19,0,0,0,6.44,12.5l1.048.992,1.056,1.056a1.166,1.166,0,0,0,1.628,0L14.981,9.74a1.24,1.24,0,0,0,0-1.683" transform="translate(2.369 1.777)" fill="#23bb79" fill-rule="evenodd"/>
+        <path id="Fill-1" d="M13.081,3.409a10.55,10.55,0,1,0,10.55,10.55,10.561,10.561,0,0,0-10.55-10.55m0,23.63A13.081,13.081,0,1,1,26.161,13.959,13.1,13.1,0,0,1,13.081,27.039" transform="translate(0 -0.878)" fill="#23bb79" fill-rule="evenodd"/>
+      </g>
+    </g>
+  </g>
+</svg>

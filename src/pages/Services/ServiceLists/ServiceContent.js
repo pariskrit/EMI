@@ -13,6 +13,7 @@ import {
 	convertDateToUTC,
 	debounce,
 	roundedToFixed,
+	MuiFormatDate,
 } from "helpers/utils";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -81,10 +82,7 @@ const formattedData = (data, history) => {
 					gap: 5,
 				}}
 			>
-				<Icon
-					name={statusOfServices(x.status, x.tasksSkipped)}
-					fontSize={"22px"}
-				/>
+				<Icon name={statusOfServices(x.status, x.tasksSkipped)} />
 				{statusOfServices(x.status, x.tasksSkipped)}
 			</span>
 		),
@@ -199,7 +197,15 @@ function ServiceLists({
 	const [selectedTimeframe, setSelectedTimeframe] = useState(
 		timeFrameFromMemory === null ? defaultTimeframe : timeFrameFromMemory
 	);
-	const [customDate, setCustomDate] = useState(defaultCustomDate);
+
+	const [customDate, setCustomDate] = useState(
+		timeFrameFromMemory !== null && timeFrameFromMemory.id === 7
+			? {
+					from: MuiFormatDate(timeFrameFromMemory.fromDate),
+					to: MuiFormatDate(timeFrameFromMemory.toDate),
+			  }
+			: defaultCustomDate
+	);
 	const [openCustomDatePopup, setOpenCustomDatePopup] = useState(false);
 	const [isCustomDateRangeError, setCustomDateRangeError] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState(
@@ -261,11 +267,11 @@ function ServiceLists({
 		// is a timeframe dropdown
 		if (type === "timeframe") {
 			// for Custom Range option open pop up
-			setSelectedTimeframe(selectedItem);
 
 			if (selectedItem.id === 7) {
 				setOpenCustomDatePopup(true);
 			} else {
+				setSelectedTimeframe(selectedItem);
 				sessionStorage.setItem(
 					"service-timeFrame",
 					JSON.stringify(selectedItem)
@@ -289,7 +295,6 @@ function ServiceLists({
 
 	// close Custom Date popup
 	const handleCloseCustomDate = () => {
-		setCustomDate(defaultCustomDate);
 		setOpenCustomDatePopup(false);
 		setCustomDateRangeError(defaultCustomDate);
 	};
@@ -325,10 +330,17 @@ function ServiceLists({
 		setSelectedTimeframe({
 			...selectedTimeframe,
 			...formattedCustomDate,
+			name: "Customized Date",
+			id: 7,
 		});
 		sessionStorage.setItem(
 			"service-timeFrame",
-			JSON.stringify({ ...selectedTimeframe, ...formattedCustomDate })
+			JSON.stringify({
+				...selectedTimeframe,
+				...formattedCustomDate,
+				name: "Customized Date",
+				id: 7,
+			})
 		);
 
 		await fetchServiceList({
@@ -429,6 +441,8 @@ function ServiceLists({
 			setLoading(false);
 		};
 		fetchData();
+		document.body.style.overflowX = "hidden";
+		document.body.style.maxWidth = "100%";
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [siteID]);
 
@@ -606,6 +620,7 @@ function ServiceLists({
 						<DyanamicDropdown
 							dataSource={statusOptions}
 							groupBy={[
+								{ id: "", name: "Show All", statusType: "" },
 								{ id: 1, name: "Complete", statusType: "C" },
 								{ id: 2, name: "Not Complete", statusType: "O" },
 							]}

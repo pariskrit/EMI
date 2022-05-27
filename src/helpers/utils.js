@@ -202,5 +202,21 @@ export function roundedToFixed(input, digits) {
 export function currentUTCDateTime() {
 	const now = new Date();
 	now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+	now.setSeconds(0);
+	now.setMilliseconds(0);
 	return now.toISOString().slice(0, -1);
+}
+
+export function MuiFormatDate(d) {
+	const date = new Date(d);
+	let dd = date.getDate();
+	let mm = date.getMonth() + 1;
+	const yyyy = date.getFullYear();
+	if (dd < 10) {
+		dd = `0${dd}`;
+	}
+	if (mm < 10) {
+		mm = `0${mm}`;
+	}
+	return `${yyyy}-${mm}-${dd}`;
 }

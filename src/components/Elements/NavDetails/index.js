@@ -41,6 +41,7 @@ const NavDetails = ({
 	history,
 	hideLastLogin,
 	hideVersion,
+	hideLastSave = false,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -108,6 +109,7 @@ const NavDetails = ({
 						hideLastLogin={hideLastLogin}
 						versionNumber={state?.version}
 						hideVersion={hideVersion}
+						hideLastSave={hideLastSave}
 					/>
 				)}
 			</div>

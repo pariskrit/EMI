@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { convertDateToUTC } from "helpers/utils";
 
 export const redService = ["T", "X", "N", "S"];
@@ -12,7 +13,7 @@ export const serviceStatus = {
 	P: "Complete (By Paper)",
 	I: "In Progress",
 	O: "Checked Out",
-	H: "Checkout Out",
+	H: "Checked Out",
 };
 
 export const changeStatusReason = [
@@ -44,9 +45,9 @@ export const statusOfServices = (status, TasksSkipped) => {
 		case "I":
 			return "In Progress";
 		case "O":
-			return "Checkout Out";
+			return "Checked Out";
 		case "H":
-			return "Checkout Out";
+			return "Checked Out";
 
 		default:
 			break;
@@ -148,20 +149,8 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 	{
 		id: 1,
 		name: "Today",
-		fromDate: convertDateToUTC(
-			new Date(
-				todayDate.getFullYear(),
-				todayDate.getMonth(),
-				todayDate.getDate()
-			)
-		),
-		toDate: convertDateToUTC(
-			new Date(
-				todayDate.getFullYear(),
-				todayDate.getMonth(),
-				todayDate.getDate() + 1
-			)
-		),
+		fromDate: convertDateToUTC(new Date(dayjs().startOf("day"))),
+		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
 	},
 	{
 		id: 2,
@@ -170,16 +159,10 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 			new Date(
 				todayDate.getFullYear(),
 				todayDate.getMonth(),
-				todayDate.getDate() - 7 - todayDate.getDay() + 1
+				todayDate.getDate() - 7
 			)
 		),
-		toDate: convertDateToUTC(
-			new Date(
-				todayDate.getFullYear(),
-				todayDate.getMonth(),
-				todayDate.getDate() - 7 + 7 - todayDate.getDay() + 1
-			)
-		),
+		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
 	},
 	{
 		id: 3,
@@ -191,33 +174,35 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 				todayDate.getDate() - 14
 			)
 		),
-		toDate: convertDateToUTC(
-			new Date(
-				todayDate.getFullYear(),
-				todayDate.getMonth(),
-				todayDate.getDate()
-			)
-		),
+		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
 	},
 	{
 		id: 4,
 		name: "Last Month",
 		fromDate: convertDateToUTC(
-			new Date(new Date().setMonth(new Date().getMonth() - 1))
+			new Date(
+				todayDate.getFullYear(),
+				todayDate.getMonth(),
+				todayDate.getDate() - 30
+			)
 		),
-		toDate: convertDateToUTC(new Date()),
+		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
 	},
 	{
 		id: 5,
 		name: "Last Year",
 		fromDate: convertDateToUTC(
-			new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+			new Date(
+				todayDate.getFullYear(),
+				todayDate.getMonth(),
+				todayDate.getDate() - 365
+			)
 		),
-		toDate: convertDateToUTC(new Date()),
+		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
 	},
 	{
 		id: 6,
-		name: customCaptions?.servicePlural,
+		name: "Future " + customCaptions?.servicePlural,
 		fromDate: convertDateToUTC(
 			new Date(
 				todayDate.getFullYear(),

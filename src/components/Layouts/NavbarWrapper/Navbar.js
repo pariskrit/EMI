@@ -250,6 +250,7 @@ function Navbar({
 		},
 		navIcon: {
 			transform: "scale(0.8)",
+			filter: "brightness(0)",
 		},
 		navIconCurrent: {
 			transform: "scale(0.8)",
