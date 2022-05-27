@@ -606,6 +606,7 @@ function Navbar({
 																? classes.navIconCurrent
 																: classes.navIcon
 														}
+														style={{ transform: "scale(1.2)" }}
 													/>
 												</ListItem>
 
