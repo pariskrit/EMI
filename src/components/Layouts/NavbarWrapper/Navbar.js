@@ -622,6 +622,7 @@ function Navbar({
 																state: { isSettings: true },
 															}}
 															className={classes.navLink}
+															onClick={onHoverSettings}
 														>
 															<ListItem button>
 																<ListItemText
@@ -642,6 +643,7 @@ function Navbar({
 																state: { isSettings: true },
 															}}
 															className={classes.navLink}
+															onClick={onHoverSettings}
 														>
 															<ListItem button>
 																{" "}
