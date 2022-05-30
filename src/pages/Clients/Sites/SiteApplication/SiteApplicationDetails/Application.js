@@ -94,15 +94,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Application = ({ details, loading }) => {
+const Application = ({ details, loading, customCaptions }) => {
 	// Init hooks
 	const classes = useStyles();
 	const [checkLists, setCheckLists] = useState({});
 	const { appId } = useParams();
 	const dispatch = useDispatch();
-	const me = JSON.parse(
-		sessionStorage.getItem("me") || localStorage.getItem("me")
-	);
 
 	const onraisingDefectCopiesTaskNameChange = async (e) => {
 		const { raisingDefectCopiesTaskName } = checkLists;
@@ -218,9 +215,9 @@ const Application = ({ details, loading }) => {
 									}
 									label={
 										<Typography className={classes.inputText}>
-											Raising a {me.customCaptions?.defect ?? "defect"} copies
-											the {me.customCaptions?.task ?? "task"} name into the{" "}
-											{me.customCaptions?.defect ?? "defect"} description
+											Raising a {customCaptions?.defect ?? "defect"} copies the{" "}
+											{customCaptions?.task ?? "task"} name into the{" "}
+											{customCaptions?.defect ?? "defect"} description
 										</Typography>
 									}
 								/>

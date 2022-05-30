@@ -13,7 +13,12 @@ import RiskRatingImage from "./RiskRatingImage";
 
 function SiteApplicationDetails({
 	appId,
-	state: { details, openConfirmationModal, isActive },
+	state: {
+		details,
+		openConfirmationModal,
+		isActive,
+		defaultCustomCaptionsData,
+	},
 	dispatch,
 	setCrumbs,
 	clientId,
@@ -107,7 +112,11 @@ function SiteApplicationDetails({
 			/>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<Application details={siteAppDetails} loading={isLoading} />
+					<Application
+						details={siteAppDetails}
+						loading={isLoading}
+						customCaptions={defaultCustomCaptionsData}
+					/>
 				</Grid>
 				<Grid item xs={12}>
 					<ServiceOptions details={siteAppDetails} loading={isLoading} />
