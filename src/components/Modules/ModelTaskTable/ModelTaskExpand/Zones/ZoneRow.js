@@ -109,7 +109,14 @@ function ZoneRow({
 							setSiteAssetRefrenceData([]);
 						}}
 						isReadOnly={isReadOnly || selected || row.id === null}
-						fetchData={fetchSiteFromDropDown}
+						fetchData={() =>
+							fetchSiteFromDropDown(
+								row.defaultSiteAssetFilter !== null
+									? row.defaultSiteAssetFilter
+									: ""
+							)
+						}
+						PreloadedSearch={row.defaultSiteAssetFilter}
 					/>
 				</TableCell>
 			) : null}

@@ -36,6 +36,7 @@ const ModelAsset = ({
 }) => {
 	const {
 		customCaptions: { asset, assetPlural, modelTemplate },
+		position: { serviceAccess },
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -159,6 +160,8 @@ const ModelAsset = ({
 				getError={getError}
 				title={asset}
 				handleAddComplete={handleAddComplete}
+				serviceAccess={serviceAccess}
+				fetchModelAsset={fetchModelAsset}
 			/>
 
 			<DeleteDialog

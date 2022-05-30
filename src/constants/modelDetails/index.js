@@ -42,7 +42,7 @@ export const QuestionColumn = [
 
 export const ModelZoneTableHeader = (ModelType, customCaptions) => {
 	if (ModelType === "F")
-		return ["Name", "Image", `Default ${customCaptions.asset}`];
+		return ["Name", "Image", `Default ${customCaptions.asset} Filter`];
 	else return ["Name", "Image"];
 };
 
@@ -51,7 +51,7 @@ export const ModelZoneTableColumn = (ModelType) => {
 		return [
 			{ id: 1, name: "name", style: { width: "33vw" } },
 			{ id: 2, name: "imageURL", style: { width: "33vw" } },
-			{ id: 3, name: "assetName", style: { width: "33vw" } },
+			{ id: 3, name: "defaultSiteAssetFilter", style: { width: "33vw" } },
 		];
 	else
 		return [
@@ -62,7 +62,7 @@ export const ModelZoneTableColumn = (ModelType) => {
 
 export const ModelStageTableHeader = (ModelType, asset) => {
 	if (ModelType === "F")
-		return ["Name", "Image", "Has Zones", `Default ${asset}`];
+		return ["Name", "Image", "Has Zones", `Default ${asset} Filter`];
 	else return ["Name", "Image", "Has Zones"];
 };
 
@@ -72,7 +72,7 @@ export const ModelStageTableColumn = (ModelType) => {
 			{ id: 1, name: "name", style: { width: "35vw" } },
 			{ id: 2, name: "image", style: { width: "35vw" } },
 			{ id: 3, name: "hasZones", style: { width: "10vw" } },
-			{ id: 4, name: "assetName", style: { width: "20vw" } },
+			{ id: 4, name: "defaultSiteAssetFilter", style: { width: "20vw" } },
 		];
 	else
 		return [

@@ -245,7 +245,14 @@ function Row({
 						}
 						handleServierSideSearch={handleServierSideSearch}
 						isServerSide
-						fetchData={fetchFromDropDwn}
+						fetchData={() =>
+							fetchFromDropDwn(
+								x.defaultSiteAssetFilter !== null
+									? x.defaultSiteAssetFilter
+									: ""
+							)
+						}
+						PreloadedSearch={x.defaultSiteAssetFilter}
 					/>
 				</TableCell>
 			)}

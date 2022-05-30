@@ -18,16 +18,42 @@ import {
 } from "services/models/modelDetails/modelAsset";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import { handleSort, handleValidateObj } from "helpers/utils";
+import {
+	handleSort,
+	handleValidateObj,
+	generateErrorState,
+} from "helpers/utils";
 import * as yup from "yup";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
+import { addSiteAsset } from "services/clients/sites/siteAssets";
 
 const ADD = AddDialogStyle();
 
 // Yup validation schema
-const schema = yup.object({
-	asset: yup.number("Asset is Required").required("Asset is Required"),
-});
+const schema = (serviceAcces, assetID) =>
+	yup.object({
+		asset: yup
+			.string("Asset is required")
+			.nullable()
+			.when("assetname", {
+				is: () => serviceAcces !== "F",
+				then: yup.string("Asset is required").required("Asset is required"),
+			}),
+		name: yup
+			.string("This field is required")
+			.nullable()
+			.when("asset", {
+				is: () =>
+					(serviceAcces === "F" && assetID === null) ||
+					(serviceAcces === "F" && assetID === undefined),
+				then: yup.string("Name is required").required("Name is required"),
+			}),
+		description: yup
+			.string()
+			.max(255, "Must be less than or equal to 255 characters ")
+			.nullable(),
+		status: yup.bool().required(),
+	});
 
 const debounce = (func, delay) => {
 	let timer;
@@ -51,22 +77,35 @@ const AddModel = ({
 	editData,
 	fetchModelAsset,
 	isEdit = false,
+	serviceAccess,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [assets, setAsset] = useState([]);
-	const [input, setInput] = useState({ asset: {}, status: true });
+	const [input, setInput] = useState({
+		asset: {},
+		status: true,
+		name: "",
+		description: "",
+	});
 	const [page, setPage] = useState({ pageNo: 1, pageSize: 10 });
 	const [count, setCount] = useState(0);
 	const { position, siteID } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
-	const [errors, setErrors] = useState({});
+	const [errors, setErrors] = useState({
+		asset: null,
+		status: null,
+		name: null,
+		description: null,
+	});
 
 	useEffect(() => {
 		if (isEdit && editData) {
 			setInput({
 				asset: { id: editData?.siteAssetID },
 				status: editData?.isActive,
+				name: "",
+				description: "",
 			});
 		}
 	}, [editData, isEdit]);
@@ -99,18 +138,13 @@ const AddModel = ({
 	};
 
 	const fetchAssetData = async () => {
-		// setLoading(true);
 		await Promise.all([fetchAssets(), fetchAssetCount()]);
-		// setLoading(false);
 	};
 
-	// useEffect(() => {
-	// 	if (open) fetchAssetData();
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [open]);
-
 	const addModelAsset = async () => {
-		const { status, asset } = input;
+		setLoading(true);
+
+		const { status, asset, name, description } = input;
 
 		const data = {
 			ModelID: +modelId,
@@ -118,23 +152,43 @@ const AddModel = ({
 			isActive: status,
 		};
 
-		setLoading(true);
 		try {
-			const localChecker = await handleValidateObj(schema, {
-				asset: asset?.id,
-			});
+			const localChecker = await handleValidateObj(
+				schema(serviceAccess, asset.id, name),
+				{
+					asset: asset?.id,
+					status,
+					name,
+					description,
+				}
+			);
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				if (!isEdit) {
-					let result = await postModelAsset(data);
+					let siteAsset;
+					// add site only if service access is full and assest from dropdown is not selected
+					if (serviceAccess === "F") {
+						if (
+							asset.id === "" ||
+							asset.id === undefined ||
+							asset.id === null
+						) {
+							siteAsset = await addSiteAsset({ siteID, name, description });
+							if (!siteAsset.status) {
+								getError(siteAsset.data.detail || "Failed To add asset");
+								setLoading(false);
+
+								return;
+							}
+						}
+					}
+					let result = await postModelAsset(
+						serviceAccess === "F" && asset.id === undefined && name !== ""
+							? { ...data, SiteAssetID: siteAsset.data }
+							: data
+					);
 					if (result.status) {
-						const assetData = assets.find((x) => x.id === asset.id);
-						handleAddComplete({
-							description: assetData.description,
-							id: result.data,
-							isActive: status,
-							name: assetData.name,
-						});
+						await fetchModelAsset(false);
 						closeOverride();
 					} else {
 						if (result.data?.detail) getError(result.data.detail);
@@ -159,21 +213,27 @@ const AddModel = ({
 				}
 			} else {
 				// show validation errors
-				setErrors({ asset: `${title} is required` });
+				const newError = generateErrorState(localChecker);
+				setErrors({ ...errors, ...newError });
 			}
-			setLoading(false);
 		} catch (e) {
 			console.log(e);
 			return;
 		}
+		setLoading(false);
 	};
 
 	const closeOverride = () => {
 		handleClose();
 		setAsset([]);
-		setErrors({});
+		setErrors({
+			asset: null,
+			status: null,
+			name: null,
+			description: null,
+		});
 		setPage({ pageNo: 1, pageSize: 10 });
-		!isEdit && setInput({ asset: {}, status: true });
+		!isEdit && setInput({ asset: {}, status: true, description: "", name: "" });
 	};
 
 	const pageChange = async (p, prevData) => {
@@ -247,7 +307,14 @@ const AddModel = ({
 									{ id: 2, name: "Description" },
 								]}
 								showHeader
-								onChange={(val) => setInput((th) => ({ ...th, asset: val }))}
+								onChange={(val) =>
+									setInput((th) => ({
+										...th,
+										asset: val,
+										name: "",
+										description: "",
+									}))
+								}
 								selectedValue={input.asset}
 								onPageChange={pageChange}
 								page={page.pageNo}
@@ -273,7 +340,12 @@ const AddModel = ({
 								<EMICheckbox
 									state={input?.status}
 									changeHandler={() => {
-										setInput((th) => ({ ...th, status: !th.status }));
+										setInput((th) => ({
+											...th,
+											status: !th.status,
+											name: "",
+											description: "",
+										}));
 									}}
 								/>
 							}
@@ -281,6 +353,54 @@ const AddModel = ({
 						/>
 					</FormGroup>
 				</div>
+				{serviceAccess === "F" && (
+					<>
+						<Divider />
+
+						<p style={{ textAlign: "center" }}>Or</p>
+						<div>
+							<ADD.NameLabel>
+								Name<ADD.RequiredStar>*</ADD.RequiredStar>
+							</ADD.NameLabel>
+							<ErrorInputFieldWrapper
+								errorMessage={errors?.name === null ? null : errors?.name}
+							>
+								<ADD.NameInput
+									error={errors.name === null ? false : true}
+									variant="outlined"
+									size="medium"
+									value={input.name}
+									onKeyDown={() => {}}
+									onChange={(e) => {
+										setInput({ ...input, name: e.target.value, asset: {} });
+									}}
+								/>
+							</ErrorInputFieldWrapper>
+						</div>
+
+						<div style={{ marginTop: "20px" }}>
+							<ADD.NameLabel>Description</ADD.NameLabel>
+							<ADD.NameInput
+								error={errors.description === null ? false : true}
+								helperText={
+									errors.description === null ? null : errors.description
+								}
+								variant="outlined"
+								size="medium"
+								multiline
+								value={input.description}
+								onKeyDown={() => {}}
+								onChange={(e) => {
+									setInput({
+										...input,
+										description: e.target.value,
+										asset: {},
+									});
+								}}
+							/>
+						</div>
+					</>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

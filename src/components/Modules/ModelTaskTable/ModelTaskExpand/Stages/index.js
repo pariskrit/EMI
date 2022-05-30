@@ -146,10 +146,10 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const fetchFromDropDwn = async () => {
+	const fetchFromDropDwn = async (search) => {
 		if (modelType === "F") {
 			await Promise.all([
-				fetchAssets({ pNo: 1, pSize: 10, search: "" }),
+				fetchAssets({ pNo: 1, pSize: 10, search: search }),
 				getAssetsCount(),
 			]);
 		}

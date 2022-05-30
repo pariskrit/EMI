@@ -122,9 +122,9 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [siteAppID, isReadOnly]);
 
-	const fetchSiteFromDropDown = async () => {
+	const fetchSiteFromDropDown = async (searchTxt) => {
 		return await Promise.all([
-			fetchSiteAssest(siteAppID, 1),
+			fetchSiteAssest(siteAppID, 1, 10, searchTxt),
 			fetchCountAssest(),
 		]);
 	};

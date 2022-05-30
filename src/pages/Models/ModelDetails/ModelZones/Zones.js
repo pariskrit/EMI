@@ -166,7 +166,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 			Name: row.name,
 			imageUrl: row.imageURL,
 			imageName: row.imageKey,
-			defaultSiteAssetID: { id: row.defaultSiteAssetID, name: row.assetName },
+			defaultSiteAssetFilter: row?.defaultSiteAssetFilter,
 		});
 		setZoneToEditData(row);
 		setOpenAddNewZone(true);
@@ -184,19 +184,20 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 						: [],
 				],
 				{
-					path: "defaultSiteAssetID",
+					path: "defaultSiteAssetFilter",
 					op: "replace",
-					value: data.defaultSiteAssetID,
+					value: data.defaultSiteAssetFilter,
 				},
 			].filter((x) => JSON.stringify(x) !== "[]")
 		);
 	};
 
 	const createModalZone = async (input) => {
+		console.log(input);
 		return await addNewModelZone({
 			Name: input.Name,
 			ModelVersionID: input.ModelVersionID,
-			defaultSiteAssetID: input.defaultSiteAssetID,
+			defaultSiteAssetFilter: input.defaultSiteAssetFilter,
 		});
 	};
 

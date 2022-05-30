@@ -121,6 +121,7 @@ function DyanamicDropdown(props) {
 		errorMessage = "",
 		hasGroup,
 		groupBy,
+		PreloadedSearch,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -277,19 +278,15 @@ function DyanamicDropdown(props) {
 		if (parentEl) parentEl.classList.add("active");
 		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
 		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
+
+		// if search value passed from props filter searched value from dropdown
+		if (PreloadedSearch) {
+			focusRef.current.value = PreloadedSearch;
+			onFilter(PreloadedSearch);
+		}
 		focusRef.current.focus();
 		setDropActive(true);
 
-		// setDropUpward(
-		// 	window.innerHeight - event.target.getBoundingClientRect().bottom < 300
-		// 		? false
-		// 		: true
-		// );
-		// setDropSideway(
-		// 	window.innerWidth - event.target.getBoundingClientRect().right < 150
-		// 		? false
-		// 		: true
-		// );
 		if (dropdownExpandEl) {
 			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();

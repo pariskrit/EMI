@@ -32,18 +32,6 @@ const useStyles = makeStyles({
 		borderColor: ColourConstants.tableBorder,
 		borderWidth: 1,
 		borderRadius: 0,
-		// [mediaMobile]: {
-		// 	maxWidth: "87vw",
-		// 	overflowX: "auto",
-		// },
-		// [mediaIpadpro]: {
-		// 	maxWidth: "87vw",
-		// 	overflowX: "auto",
-		// },
-		// [mediaIpad]: {
-		// 	maxWidth: "85vw",
-		// 	overflowX: "auto",
-		// },
 		[mediaMobile]: {
 			tableLayout: "auto",
 		},
