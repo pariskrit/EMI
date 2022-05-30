@@ -12,7 +12,7 @@ export default function SitePage() {
 					key={id}
 					{...route}
 					exact
-					roles={[roles.superAdmin, roles.siteUser]}
+					roles={[roles.superAdmin, roles.siteUser, roles.clientAdmin]}
 				/>
 			))}
 		</Site>

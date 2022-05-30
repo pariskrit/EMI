@@ -224,6 +224,8 @@ const UsersListContent = ({ getError }) => {
 				...allData.filter((data) => data.clientUserSiteAppID !== deleteID),
 			];
 		setAllData(totalData);
+		setPage(defaultPageProperties);
+
 		fetchData(1);
 	};
 

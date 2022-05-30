@@ -319,7 +319,7 @@ const SiteAppPage = () => {
 						key={route.id}
 						path={siteAppPath + route.path}
 						exact
-						roles={[roles.superAdmin, roles.siteUser]}
+						roles={[roles.superAdmin, roles.siteUser, roles.clientAdmin]}
 					/>
 				))}
 			</SiteApplication>
