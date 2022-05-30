@@ -172,7 +172,7 @@ function Portal({ setUserDetail }) {
 						<CircularProgress />
 					</Grid>
 				) : (
-					applicationList.map((application) => (
+					applicationList?.map((application) => (
 						<SingleApplication
 							data={application}
 							key={application.id}

@@ -46,7 +46,7 @@ const NavDetails = ({
 	// Init hooks
 	const classes = useStyles();
 	const [isActive, setActive] = useState(false);
-	const { role, site } = JSON.parse(
+	const { site, isSiteUser, role } = JSON.parse(
 		sessionStorage.getItem("me") || localStorage.getItem("me")
 	);
 	const location = useLocation();
@@ -63,7 +63,7 @@ const NavDetails = ({
 			: crumbs;
 
 	// Show Site Name only in crumbs if user is Site Application User
-	if (role === "SiteUser" && path.includes("clients"))
+	if ((role === "SiteUser" || isSiteUser) && path.includes("clients"))
 		realCrumbs = [{ id: 1, name: site?.siteName }];
 
 	return (

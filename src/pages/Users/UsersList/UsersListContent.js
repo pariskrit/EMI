@@ -70,7 +70,7 @@ const defaultPageProperties = { pageNo: 1, perPage: DefaultPageSize };
 
 const UsersListContent = ({ getError }) => {
 	const classes = useStyles();
-	const { position, role, siteAppID, siteID } =
+	const { position, role, siteAppID, siteID, isSiteUser } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const clientUserId =
@@ -200,10 +200,12 @@ const UsersListContent = ({ getError }) => {
 
 	//DELETE
 	const handleDeleteDialogOpen = (rowData) => {
-		if (role === "ClientAdmin") setDeleteID(rowData.clientUserID);
+		if (role === "ClientAdmin" && !isSiteUser)
+			setDeleteID(rowData.clientUserID);
 
 		if (role === "SuperAdmin") setDeleteID(rowData.id);
-		if (role === "SiteUser") setDeleteID(rowData.clientUserSiteAppID);
+		if (role === "SiteUser" || isSiteUser)
+			setDeleteID(rowData.clientUserSiteAppID);
 
 		setOpenDeleteDialog(true);
 	};
@@ -212,12 +214,12 @@ const UsersListContent = ({ getError }) => {
 
 	const handleRemoveData = () => {
 		let totalData = null;
-		if (role === "ClientAdmin")
+		if (role === "ClientAdmin" && !isSiteUser)
 			totalData = [...allData.filter((data) => data.clientUserID !== deleteID)];
 
 		if (role === "SuperAdmin")
 			totalData = [...allData.filter((data) => data.id !== deleteID)];
-		if (role === "SiteUser")
+		if (role === "SiteUser" || isSiteUser)
 			totalData = [
 				...allData.filter((data) => data.clientUserSiteAppID !== deleteID),
 			];
@@ -230,7 +232,7 @@ const UsersListContent = ({ getError }) => {
 		try {
 			let response = null;
 
-			if (role === "SiteUser")
+			if (role === "SiteUser" || isSiteUser)
 				response = await getSiteAppUserList(
 					siteAppID,
 					p,
@@ -241,7 +243,7 @@ const UsersListContent = ({ getError }) => {
 			if (role === "SuperAdmin")
 				response = await getUsersList(p, DefaultPageSize, searchRef.current);
 
-			if (role === "ClientAdmin")
+			if (role === "ClientAdmin" && !isSiteUser)
 				response = await getClientAdminUserList(
 					clientUserId,
 					p,
@@ -312,6 +314,7 @@ const UsersListContent = ({ getError }) => {
 				setSearchQuery={setSearchQuery}
 				getError={getError}
 				role={role}
+				isSiteUser={isSiteUser}
 				siteID={siteID}
 				siteAppID={siteAppID}
 			/>

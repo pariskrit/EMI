@@ -21,7 +21,7 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
 
-const schema = (role) =>
+const schema = (isSiteUser, role) =>
 	yup.object({
 		firstName: yup
 			.string("This field must be a string")
@@ -35,13 +35,13 @@ const schema = (role) =>
 			.email("Invalid email format"),
 		department: yup.object({
 			name: yup.string("This field is required").when("role", {
-				is: () => role === "SiteUser",
+				is: () => role === "SiteUser" || isSiteUser,
 				then: yup.string("Must be string").required("This field is required"),
 			}),
 		}),
 		position: yup.object({
 			name: yup.string("This field is required").when("role", {
-				is: () => role === "SiteUser",
+				is: () => role === "SiteUser" || isSiteUser,
 				then: yup.string("Must be string").required("This field is required"),
 			}),
 		}),
@@ -108,6 +108,7 @@ const AddAssetDialog = ({
 	role,
 	siteID,
 	siteAppID,
+	isSiteUser,
 }) => {
 	let history = useHistory();
 
@@ -118,8 +119,8 @@ const AddAssetDialog = ({
 	const { id } = (JSON.parse(sessionStorage.getItem("clientAdminMode")) ||
 		JSON.parse(localStorage.getItem("clientAdminMode"))) ?? { id: null };
 	const isSuperAdmin = role === "SuperAdmin";
-	const isClientAdmin = role === "ClientAdmin";
-	const isSiteUser = role === "SiteUser";
+	const isClientAdmin = role === "ClientAdmin" && !isSiteUser;
+	const isSiteAppUser = role === "SiteUser" || isSiteUser;
 
 	const closeOverride = () => {
 		handleClose();
@@ -130,7 +131,10 @@ const AddAssetDialog = ({
 	const handleCreateData = async () => {
 		setLoading(true);
 		try {
-			const localChecker = await handleValidateObj(schema(role), input);
+			const localChecker = await handleValidateObj(
+				schema(isSiteUser, role),
+				input
+			);
 			if (!localChecker.some((el) => el.valid === false)) {
 				// 		// Remove search
 				// setSearchQuery("");
@@ -142,7 +146,7 @@ const AddAssetDialog = ({
 					},
 					result = null;
 
-				if (isSiteUser) {
+				if (isSiteAppUser) {
 					data = {
 						...data,
 						siteAppID,
@@ -290,7 +294,7 @@ const AddAssetDialog = ({
 							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
-							{isSiteUser ? (
+							{isSiteAppUser ? (
 								<ErrorInputFieldWrapper
 									errorMessage={
 										errors?.position === null ? null : errors?.position
@@ -329,7 +333,7 @@ const AddAssetDialog = ({
 							) : null}
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
-					{isSiteUser ? (
+					{isSiteAppUser ? (
 						<ADD.InputContainer>
 							<ADD.LeftInputContainer>
 								<ErrorInputFieldWrapper
