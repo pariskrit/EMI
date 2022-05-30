@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -6,7 +6,16 @@ import TextField from "@material-ui/core/TextField";
 import ColourConstants from "helpers/colourConstants";
 import AccordionBox from "components/Layouts/AccordionBox";
 import Divider from "@material-ui/core/Divider";
-import { CircularProgress } from "@material-ui/core";
+import {
+	CircularProgress,
+	FormControlLabel,
+	FormGroup,
+} from "@material-ui/core";
+import EMICheckbox from "components/Elements/EMICheckbox";
+import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const useStyles = makeStyles((theme) => ({
 	detailsContainer: {
@@ -79,11 +88,50 @@ const useStyles = makeStyles((theme) => ({
 		borderWidth: 1,
 		borderStyle: "solid",
 	},
+	tickInput: {
+		marginLeft: "16px",
+		marginTop: "40px",
+	},
 }));
 
 const Application = ({ details, loading }) => {
 	// Init hooks
 	const classes = useStyles();
+	const [checkLists, setCheckLists] = useState({});
+	const { appId } = useParams();
+	const dispatch = useDispatch();
+	const me = JSON.parse(
+		sessionStorage.getItem("me") || localStorage.getItem("me")
+	);
+
+	const onraisingDefectCopiesTaskNameChange = async (e) => {
+		const { raisingDefectCopiesTaskName } = checkLists;
+		setCheckLists({
+			...checkLists,
+			raisingDefectCopiesTaskName: !raisingDefectCopiesTaskName,
+		});
+		const result = await patchApplicationDetail(appId, [
+			{
+				op: "replace",
+				path: "raisingDefectCopiesTaskName",
+				value: !raisingDefectCopiesTaskName,
+			},
+		]);
+
+		if (!result.status) {
+			dispatch(showError(result.data.detail));
+		}
+	};
+
+	useEffect(() => {
+		if (Object.keys(details).length > 0) {
+			const { raisingDefectCopiesTaskName } = details;
+
+			setCheckLists({
+				raisingDefectCopiesTaskName,
+			});
+		}
+	}, [details]);
 
 	if (loading) {
 		return (
@@ -156,6 +204,27 @@ const Application = ({ details, loading }) => {
 							</div>
 
 							<Divider className={classes.dividerStyle} />
+						</div>
+					</Grid>
+					<Grid item xs={6}>
+						<div className={classes.tickInput}>
+							<FormGroup className={classes.tickboxSpacing}>
+								<FormControlLabel
+									control={
+										<EMICheckbox
+											state={checkLists.raisingDefectCopiesTaskName ?? false}
+											changeHandler={onraisingDefectCopiesTaskNameChange}
+										/>
+									}
+									label={
+										<Typography className={classes.inputText}>
+											Raising a {me.customCaptions?.defect ?? "defect"} copies
+											the {me.customCaptions?.task ?? "task"} name into the{" "}
+											{me.customCaptions?.defect ?? "defect"} description
+										</Typography>
+									}
+								/>
+							</FormGroup>
 						</div>
 					</Grid>
 				</Grid>

@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 function ServiceOptions({ details, setError, loading }) {
 	const classes = useStyles();
-	const [checkLists, setCheckLists] = useState({});
 	const { appId } = useParams();
+	const [checkLists, setCheckLists] = useState({});
 
 	const onServiceUserConfirmationChange = async (e) => {
 		const { showServiceUserConfirmation } = checkLists;
@@ -52,25 +52,6 @@ function ServiceOptions({ details, setError, loading }) {
 				op: "replace",
 				path: "showServiceUserConfirmation",
 				value: !showServiceUserConfirmation,
-			},
-		]);
-
-		if (!result.status) {
-			setError(result.data.detail);
-		}
-	};
-
-	const onraisingDefectCopiesTaskNameChange = async (e) => {
-		const { raisingDefectCopiesTaskName } = checkLists;
-		setCheckLists({
-			...checkLists,
-			raisingDefectCopiesTaskName: !raisingDefectCopiesTaskName,
-		});
-		const result = await patchApplicationDetail(appId, [
-			{
-				op: "replace",
-				path: "raisingDefectCopiesTaskName",
-				value: !raisingDefectCopiesTaskName,
 			},
 		]);
 
@@ -106,13 +87,12 @@ function ServiceOptions({ details, setError, loading }) {
 		if (Object.keys(details).length > 0) {
 			const {
 				raisingDefectCopiesTaskName,
-				showServiceUserConfirmation,
+
 				userConfirmationMessage,
 			} = details;
 
 			setCheckLists({
 				raisingDefectCopiesTaskName,
-				showServiceUserConfirmation,
 				userConfirmationMessage,
 			});
 		}
@@ -128,11 +108,11 @@ function ServiceOptions({ details, setError, loading }) {
 
 	return (
 		<div className={classes.detailsContainer}>
-			<AccordionBox title="Service Options">
+			<AccordionBox title="User Confirmation Statement">
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<Typography gutterBottom className={classes.labelText}>
-							User Confirmation Message
+							Message
 							<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextAreaInputField
@@ -156,24 +136,6 @@ function ServiceOptions({ details, setError, loading }) {
 									label={
 										<Typography className={classes.inputText}>
 											Enable confirm user screen
-										</Typography>
-									}
-								/>
-							</FormGroup>
-						</div>
-						<div className={classes.tickInputContainer}>
-							<FormGroup className={classes.tickboxSpacing}>
-								<FormControlLabel
-									control={
-										<EMICheckbox
-											state={checkLists.raisingDefectCopiesTaskName ?? false}
-											changeHandler={onraisingDefectCopiesTaskNameChange}
-										/>
-									}
-									label={
-										<Typography className={classes.inputText}>
-											Raising a defect copies the task name into the defect
-											description
 										</Typography>
 									}
 								/>
