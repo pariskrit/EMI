@@ -13,6 +13,9 @@ export default function ProgressBars({
 	labelColor,
 	width,
 	isLabelVisible = true,
+	animateOnRender = false,
+	transitionDuration = "0s",
+	customLabel = undefined,
 }) {
 	return (
 		<ProgressBar
@@ -27,6 +30,9 @@ export default function ProgressBars({
 			labelColor={labelColor}
 			width={width}
 			isLabelVisible={isLabelVisible}
+			animateOnRender={animateOnRender}
+			transitionDuration={transitionDuration}
+			customLabel={customLabel}
 		/>
 	);
 }

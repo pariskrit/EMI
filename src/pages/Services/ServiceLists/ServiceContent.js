@@ -89,11 +89,8 @@ const formattedData = (data, history) => {
 		percentageComplete: (
 			<span style={{ width: "100%" }}>
 				<ProgressBar
-					value={
-						x.percentageComplete === 100
-							? "Complete"
-							: roundedToFixed(x?.percentageComplete, 0)
-					}
+					value={roundedToFixed(x?.percentageComplete, 0)}
+					customLabel={x?.percentageComplete === 100 ? "Complete" : undefined}
 					height="30px"
 					width={
 						x.percentageComplete === 0 || x.percentageComplete > 20
