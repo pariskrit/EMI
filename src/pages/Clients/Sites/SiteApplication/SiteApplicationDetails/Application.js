@@ -89,8 +89,10 @@ const useStyles = makeStyles((theme) => ({
 		borderStyle: "solid",
 	},
 	tickInput: {
-		marginLeft: "16px",
 		marginTop: "40px",
+	},
+	tickbox_label: {
+		marginLeft: "0 !important",
 	},
 }));
 
@@ -220,6 +222,7 @@ const Application = ({ details, loading, customCaptions }) => {
 											{customCaptions?.defect ?? "defect"} description
 										</Typography>
 									}
+									className={classes.tickbox_label}
 								/>
 							</FormGroup>
 						</div>

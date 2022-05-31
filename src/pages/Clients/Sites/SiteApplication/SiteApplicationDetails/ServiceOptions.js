@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
 	cardContent: {
 		maxWidth: "fit-content",
 	},
+	tickbox_label: {
+		marginLeft: "0 !important",
+	},
 }));
 function ServiceOptions({ details, setError, loading }) {
 	const classes = useStyles();
@@ -138,6 +141,7 @@ function ServiceOptions({ details, setError, loading }) {
 											Enable confirm user screen
 										</Typography>
 									}
+									className={classes.tickbox_label}
 								/>
 							</FormGroup>
 						</div>
