@@ -105,13 +105,21 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 			let result = await getSiteAssets(me?.siteID, p.pNo, p.pSize, p.search);
 			if (result.status) {
 				if (!isMounted.aborted)
-					setStages((th) => ({
-						...th,
-						assets:
-							p.pNo === 1 && !p.search
-								? [...result.data]
-								: [...th.assets, ...result.data],
-					}));
+					if (p.search) {
+						setStages((th) => ({
+							...th,
+							assets:
+								p.pNo === 1 && !p.search ? [...result.data] : [...result.data],
+						}));
+					} else {
+						setStages((th) => ({
+							...th,
+							assets:
+								p.pNo === 1 && !p.search
+									? [...result.data]
+									: [...th.assets, ...result.data],
+						}));
+					}
 			} else {
 				errorResponse(result);
 			}

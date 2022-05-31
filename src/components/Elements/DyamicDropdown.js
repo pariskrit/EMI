@@ -380,41 +380,75 @@ function DyanamicDropdown(props) {
 
 	const handleApiCall = async () => {
 		if (isReadOnly || originalFilteredList?.length !== 0) return;
+
 		setLoading(true);
 		try {
 			const response = await fetchData();
-			setFilteredList((prev) =>
-				[
-					...prev,
-					...(Array.isArray(response?.data) ? response?.data ?? [] : []),
-					...(dataSource ?? []),
-				]
-					.filter((x) => Boolean(x))
-					.reduce((acc, current) => {
-						const x = acc.find((item) => item.id === current.id);
-						if (!x) {
-							return acc.concat([current]);
-						} else {
-							return acc;
-						}
-					}, [])
-			);
-			setOriginalFilteredList((prev) =>
-				[
-					...prev,
-					...(Array.isArray(response?.data) ? response?.data ?? [] : []),
-					...(dataSource || []),
-				]
-					.filter((x) => Boolean(x))
-					.reduce((acc, current) => {
-						const x = acc.find((item) => item.id === current.id);
-						if (!x) {
-							return acc.concat([current]);
-						} else {
-							return acc;
-						}
-					}, [])
-			);
+			if (PreloadedSearch) {
+				setFilteredList((prev) =>
+					[
+						...(Array.isArray(response?.data) ? response?.data ?? [] : []),
+						...(dataSource ?? []),
+					]
+						.filter((x) => Boolean(x))
+						.reduce((acc, current) => {
+							const x = acc.find((item) => item.id === current.id);
+							if (!x) {
+								return acc.concat([current]);
+							} else {
+								return acc;
+							}
+						}, [])
+				);
+				setOriginalFilteredList((prev) =>
+					[
+						...(Array.isArray(response?.data) ? response?.data ?? [] : []),
+						...(dataSource || []),
+					]
+						.filter((x) => Boolean(x))
+						.reduce((acc, current) => {
+							const x = acc.find((item) => item.id === current.id);
+							if (!x) {
+								return acc.concat([current]);
+							} else {
+								return acc;
+							}
+						}, [])
+				);
+			} else {
+				setFilteredList((prev) =>
+					[
+						...prev,
+						...(Array.isArray(response?.data) ? response?.data ?? [] : []),
+						...(dataSource ?? []),
+					]
+						.filter((x) => Boolean(x))
+						.reduce((acc, current) => {
+							const x = acc.find((item) => item.id === current.id);
+							if (!x) {
+								return acc.concat([current]);
+							} else {
+								return acc;
+							}
+						}, [])
+				);
+				setOriginalFilteredList((prev) =>
+					[
+						...prev,
+						...(Array.isArray(response?.data) ? response?.data ?? [] : []),
+						...(dataSource || []),
+					]
+						.filter((x) => Boolean(x))
+						.reduce((acc, current) => {
+							const x = acc.find((item) => item.id === current.id);
+							if (!x) {
+								return acc.concat([current]);
+							} else {
+								return acc;
+							}
+						}, [])
+				);
+			}
 		} catch (error) {
 			console.log(error);
 		} finally {

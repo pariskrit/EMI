@@ -101,16 +101,29 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 				search
 			);
 			if (!isMounted.aborted) {
-				setSiteAssest((prev) =>
-					[...prev, ...(response?.data || [])].reduce((acc, current) => {
-						const x = acc.find((item) => item.id === current.id);
-						if (!x) {
-							return acc.concat([current]);
-						} else {
-							return acc;
-						}
-					}, [])
-				);
+				if (search) {
+					setSiteAssest((prev) =>
+						[...(response?.data || [])].reduce((acc, current) => {
+							const x = acc.find((item) => item.id === current.id);
+							if (!x) {
+								return acc.concat([current]);
+							} else {
+								return acc;
+							}
+						}, [])
+					);
+				} else {
+					setSiteAssest((prev) =>
+						[...prev, ...(response?.data || [])].reduce((acc, current) => {
+							const x = acc.find((item) => item.id === current.id);
+							if (!x) {
+								return acc.concat([current]);
+							} else {
+								return acc;
+							}
+						}, [])
+					);
+				}
 			}
 		} catch (error) {
 			dispatch(error?.response?.data || "Coulnd not fetch site asset");
