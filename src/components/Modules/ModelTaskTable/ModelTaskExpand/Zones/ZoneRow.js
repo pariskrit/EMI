@@ -117,6 +117,7 @@ function ZoneRow({
 							)
 						}
 						PreloadedSearch={row.defaultSiteAssetFilter}
+						cacheDropDownData={false}
 					/>
 				</TableCell>
 			) : null}

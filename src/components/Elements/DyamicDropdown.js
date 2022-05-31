@@ -122,6 +122,7 @@ function DyanamicDropdown(props) {
 		hasGroup,
 		groupBy,
 		PreloadedSearch,
+		cacheDropDownData = true,
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -133,6 +134,7 @@ function DyanamicDropdown(props) {
 	const [uniqueId] = useState(Math.random() * Date.now());
 	const scrollRef = useRef(true);
 	const focusRef = useRef(false);
+	const preloadSearch = useRef(false);
 
 	useEffect(() => {
 		setFilteredList(dataSource);
@@ -144,30 +146,36 @@ function DyanamicDropdown(props) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dataSource]);
 
-	const handleOutsideClick = useCallback((event) => {
-		let specifiedElement = document.getElementsByClassName(
-			"dropdown-expand active"
-		)[0];
-		let dropbox = document.getElementsByClassName("dropbox active")[0];
-		let isClickInside =
-			specifiedElement?.contains(event.target) ||
-			dropbox?.contains(event.target);
-		let parentEl = document.getElementsByClassName("dropdown active")[0];
-		if (!isClickInside) {
-			//setDropActive(false);
-			if (dropbox) dropbox.classList.remove("active");
-			if (parentEl) parentEl.classList.remove("active");
-			if (specifiedElement) {
-				specifiedElement.classList.remove("active");
-
-				specifiedElement.style.position = "fixed";
-			}
-			const dailogContent = document.getElementsByClassName(
-				"MuiDialogContent-root"
+	const handleOutsideClick = useCallback(
+		(event) => {
+			let specifiedElement = document.getElementsByClassName(
+				"dropdown-expand active"
 			)[0];
-			if (dailogContent) dailogContent.style.overflow = "auto";
-		}
-	}, []);
+			let dropbox = document.getElementsByClassName("dropbox active")[0];
+			let isClickInside =
+				specifiedElement?.contains(event.target) ||
+				dropbox?.contains(event.target);
+			let parentEl = document.getElementsByClassName("dropdown active")[0];
+			if (!isClickInside) {
+				if (!cacheDropDownData) {
+					setFilteredList([]);
+					setOriginalFilteredList([]);
+				}
+				if (dropbox) dropbox.classList.remove("active");
+				if (parentEl) parentEl.classList.remove("active");
+				if (specifiedElement) {
+					specifiedElement.classList.remove("active");
+
+					specifiedElement.style.position = "fixed";
+				}
+				const dailogContent = document.getElementsByClassName(
+					"MuiDialogContent-root"
+				)[0];
+				if (dailogContent) dailogContent.style.overflow = "auto";
+			}
+		},
+		[cacheDropDownData]
+	);
 
 	const handleWindowScroll = () => {
 		let specifiedElement = document.getElementsByClassName(
@@ -229,6 +237,16 @@ function DyanamicDropdown(props) {
 		dropdownlistner
 	);
 
+	useEffect(() => {
+		// if search value passed from props filter searched value from dropdown
+		if (PreloadedSearch && dropActive && preloadSearch.current === false) {
+			focusRef.current.value = PreloadedSearch;
+			onFilter(PreloadedSearch);
+			preloadSearch.current = true;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [PreloadedSearch, dropActive]);
+
 	// search
 	const onFilter = async (val) => {
 		setsearchText(val);
@@ -278,11 +296,8 @@ function DyanamicDropdown(props) {
 		if (parentEl) parentEl.classList.add("active");
 		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
 		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
-
-		// if search value passed from props filter searched value from dropdown
-		if (PreloadedSearch) {
-			focusRef.current.value = PreloadedSearch;
-			onFilter(PreloadedSearch);
+		if (PreloadedSearch && focusRef.current.value === "") {
+			onFilter("");
 		}
 		focusRef.current.focus();
 		setDropActive(true);
@@ -350,6 +365,7 @@ function DyanamicDropdown(props) {
 		setCurrentTableSort(["name", "asc"]);
 		onChange({});
 		setsearchText("");
+		focusRef.current.value = "";
 		setFilteredList(dataSource);
 		onClear();
 		e.stopPropagation();
@@ -363,7 +379,6 @@ function DyanamicDropdown(props) {
 	};
 
 	const handleApiCall = async () => {
-		// console.log("originalFilteredList", originalFilteredList);
 		if (isReadOnly || originalFilteredList?.length !== 0) return;
 		setLoading(true);
 		try {

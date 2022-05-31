@@ -253,6 +253,7 @@ function Row({
 							)
 						}
 						PreloadedSearch={x.defaultSiteAssetFilter}
+						cacheDropDownData={false}
 					/>
 				</TableCell>
 			)}
