@@ -120,7 +120,8 @@ const AddAssetDialog = ({
 		JSON.parse(localStorage.getItem("clientAdminMode"))) ?? { id: null };
 	const isSuperAdmin = role === "SuperAdmin";
 	const isClientAdmin = role === "ClientAdmin" && !isSiteUser;
-	const isSiteAppUser = role === "SiteUser" || isSiteUser;
+	const isSiteAppUser =
+		role === "SiteUser" || (role === "ClientAdmin" && isSiteUser);
 
 	const closeOverride = () => {
 		handleClose();

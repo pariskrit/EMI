@@ -39,7 +39,7 @@ const UserDetail = ({
 	const handleApiCall = async (path, value) => {
 		setUpdating({ [path]: { isUpdating: true } });
 
-		if (path === "externalRef") {
+		if (path === "externalReference") {
 			try {
 				const result = await apis.patchExternalReferenceAPI(id, [
 					{ op: "replace", path, value },
@@ -225,12 +225,12 @@ const UserDetail = ({
 						<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
 							<Typography>External Reference Number </Typography>
 							<TextField
-								name="externalRef"
+								name="externalReference"
 								variant="outlined"
 								fullWidth
-								value=""
+								value={inputData?.externalReference || ""}
 								onChange={(e) =>
-									handleInputChange("externalRef", e.target.value)
+									handleInputChange("externalReference", e.target.value)
 								}
 								onBlur={(e) => handleUpdateData(e)}
 								onFocus={(e) =>
@@ -239,9 +239,9 @@ const UserDetail = ({
 										value: e.target.value,
 									})
 								}
-								disabled={isUpdating["externalRef"]?.isUpdating}
+								disabled={isUpdating["externalReference"]?.isUpdating}
 								InputProps={{
-									endAdornment: isUpdating["externalRef"]?.isUpdating ? (
+									endAdornment: isUpdating["externalReference"]?.isUpdating ? (
 										<Facebook size={20} color="#A79EB4" />
 									) : null,
 								}}
@@ -368,7 +368,7 @@ const UserDetail = ({
 								name="externalRef"
 								variant="outlined"
 								fullWidth
-								value=""
+								value={inputData?.externalReference || ""}
 								onChange={(e) =>
 									handleInputChange("externalRef", e.target.value)
 								}
