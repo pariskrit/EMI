@@ -70,7 +70,7 @@ const defaultPageProperties = { pageNo: 1, perPage: DefaultPageSize };
 
 const UsersListContent = ({ getError }) => {
 	const classes = useStyles();
-	const { position, role, siteAppID, siteID, isSiteUser } =
+	const { position, role, siteAppID, siteID, isSiteUser, customCaptions } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const clientUserId =
@@ -319,6 +319,7 @@ const UsersListContent = ({ getError }) => {
 				isSiteUser={isSiteUser}
 				siteID={siteID}
 				siteAppID={siteAppID}
+				customCaptions={customCaptions}
 			/>
 
 			<DeleteDialog

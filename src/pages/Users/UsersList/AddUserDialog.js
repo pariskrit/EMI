@@ -109,6 +109,7 @@ const AddAssetDialog = ({
 	siteID,
 	siteAppID,
 	isSiteUser,
+	customCaptions,
 }) => {
 	let history = useHistory();
 
@@ -217,7 +218,11 @@ const AddAssetDialog = ({
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					{<ADD.HeaderText>Add New User</ADD.HeaderText>}
+					{
+						<ADD.HeaderText>
+							Add New {customCaptions?.user ?? "User"}
+						</ADD.HeaderText>
+					}
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -229,7 +234,7 @@ const AddAssetDialog = ({
 						className={classes.createButton}
 						disabled={loading}
 					>
-						Add User
+						Add {customCaptions?.user ?? "User"}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
@@ -238,7 +243,7 @@ const AddAssetDialog = ({
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
 							<ADD.NameLabel>
-								First name<ADD.RequiredStar>*</ADD.RequiredStar>
+								First Name<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ErrorInputFieldWrapper
 								errorMessage={
@@ -302,7 +307,7 @@ const AddAssetDialog = ({
 									}
 								>
 									<DyanamicDropdown
-										label="Positions"
+										label={customCaptions?.position ?? "Position"}
 										dataHeader={[{ id: 1, name: "Name" }]}
 										showHeader
 										onChange={(val) =>
@@ -343,7 +348,7 @@ const AddAssetDialog = ({
 									}
 								>
 									<DyanamicDropdown
-										label="Departments"
+										label={customCaptions?.department ?? "Department"}
 										dataHeader={[
 											{ id: 1, name: "Name" },
 											{ id: 2, name: "Description" },
