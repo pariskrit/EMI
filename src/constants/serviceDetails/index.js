@@ -127,21 +127,16 @@ export const serviceTableColumns = (allowIndividualAssetModels) => {
 };
 
 export const defaultTimeframe = {
-	id: 3,
-	name: "Last Fortnight",
-	fromDate: convertDateToUTC(
-		new Date(
-			new Date().getFullYear(),
-			new Date().getMonth(),
-			new Date().getDate() - 14
-		)
-	),
-	toDate: convertDateToUTC(new Date()),
+	id: "",
+	name: "Show All",
+	fromDate: "",
+	toDate: "",
 };
 
 export const showAllInDropDown = {
-	id: "",
-	name: "Show All",
+	id: 2,
+	name: "Not Complete",
+	statusType: "O",
 };
 
 export const filterByDateOptions = (todayDate, customCaptions) => [

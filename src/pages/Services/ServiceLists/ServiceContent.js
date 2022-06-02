@@ -181,6 +181,17 @@ function ServiceLists({
 		setSearchQuery,
 	} = useUserSearch();
 
+	// gets localstoarge || sessionStorage data
+	const {
+		customCaptions,
+		siteAppID,
+		siteID,
+		application: { allowIndividualAssetModels },
+		site: { siteDepartmentID, siteDepartmentName },
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+
 	// init state
 	const [openAddService, setOpenAddService] = useState(false);
 	const [countOFService, setCountOfService] = useState(0);
@@ -209,7 +220,9 @@ function ServiceLists({
 		statusFromMemory === null ? showAllInDropDown : statusFromMemory
 	);
 	const [selectedDepartment, setSelectedDepartment] = useState(
-		departmentFromMemory === null ? showAllInDropDown : departmentFromMemory
+		departmentFromMemory === null
+			? { id: siteDepartmentID, name: siteDepartmentName }
+			: departmentFromMemory
 	);
 	const [dataForFetchingService, setDataForFetchingService] = useState({
 		pageNumber: 1,
@@ -220,16 +233,6 @@ function ServiceLists({
 	});
 
 	const searchRef = useRef("");
-
-	// gets localstoarge || sessionStorage data
-	const {
-		customCaptions,
-		siteAppID,
-		siteID,
-		application: { allowIndividualAssetModels },
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
 
 	// handling onChange for the 3 dropdowns
 	const onDropdownChange = async (type, selectedItem) => {
