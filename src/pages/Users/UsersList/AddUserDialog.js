@@ -33,6 +33,7 @@ const schema = (isSiteUser, role) =>
 			.string("This field must be a string")
 			.required("This field is required")
 			.email("Invalid email format"),
+		phone: yup.string("This field must be a string").nullable(),
 		department: yup.object({
 			name: yup.string("This field is required").when("role", {
 				is: () => role === "SiteUser" || isSiteUser,
@@ -53,6 +54,7 @@ const defaultData = {
 	firstName: "",
 	lastName: "",
 	email: "",
+	phone: "",
 	externalReference: "",
 	position: {},
 	department: {},
@@ -61,6 +63,7 @@ const defaultError = {
 	firstName: null,
 	lastName: null,
 	email: null,
+	phone: null,
 	department: null,
 	position: null,
 	externalReference: null,
@@ -121,8 +124,7 @@ const AddAssetDialog = ({
 		JSON.parse(localStorage.getItem("clientAdminMode"))) ?? { id: null };
 	const isSuperAdmin = role === "SuperAdmin";
 	const isClientAdmin = role === "ClientAdmin" && !isSiteUser;
-	const isSiteAppUser =
-		role === "SiteUser" || (role === "ClientAdmin" && isSiteUser);
+	const isSiteAppUser = role === "SiteUser" || isSiteUser;
 
 	const closeOverride = () => {
 		handleClose();
@@ -154,6 +156,8 @@ const AddAssetDialog = ({
 						siteAppID,
 						departmentID: input.department.id,
 						positionID: input.position.id,
+						phone: input.phone,
+						externalReference: input.externalReference,
 					};
 					result = await addClientUserSiteApps(data);
 				}
@@ -301,31 +305,26 @@ const AddAssetDialog = ({
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
 							{isSiteAppUser ? (
-								<ErrorInputFieldWrapper
-									errorMessage={
-										errors?.position === null ? null : errors?.position
-									}
-								>
-									<DyanamicDropdown
-										label={customCaptions?.position ?? "Position"}
-										dataHeader={[{ id: 1, name: "Name" }]}
-										showHeader
-										onChange={(val) =>
-											setInput((input) => ({ ...input, position: val }))
-										}
-										selectedValue={input.position}
-										columns={[{ name: "name", id: 1 }]}
-										selectdValueToshow="name"
-										required={true}
-										isError={errors?.position ? true : false}
-										fetchData={fetchPositions}
-										width="100%"
-									/>
-								</ErrorInputFieldWrapper>
+								<>
+									<ADD.NameLabel>Phone</ADD.NameLabel>
+									<ErrorInputFieldWrapper
+										errorMessage={errors.phone === null ? null : errors.phone}
+									>
+										<ADD.NameInput
+											error={errors.phone === null ? false : true}
+											fullWidth
+											onChange={(e) =>
+												setInput({ ...input, phone: e.target.value })
+											}
+											onKeyDown={handleEnterPress}
+											variant="outlined"
+										/>
+									</ErrorInputFieldWrapper>
+								</>
 							) : null}
 							{isClientAdmin ? (
 								<>
-									<ADD.NameLabel>External Reference</ADD.NameLabel>
+									<ADD.NameLabel>Reference</ADD.NameLabel>
 
 									<ADD.NameInput
 										fullWidth
@@ -340,37 +339,78 @@ const AddAssetDialog = ({
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
 					{isSiteAppUser ? (
-						<ADD.InputContainer>
-							<ADD.LeftInputContainer>
-								<ErrorInputFieldWrapper
-									errorMessage={
-										errors?.department === null ? null : errors?.department
-									}
-								>
-									<DyanamicDropdown
-										label={customCaptions?.department ?? "Department"}
-										dataHeader={[
-											{ id: 1, name: "Name" },
-											{ id: 2, name: "Description" },
-										]}
-										showHeader
-										onChange={(val) =>
-											setInput((input) => ({ ...input, department: val }))
+						<>
+							<ADD.InputContainer>
+								<ADD.LeftInputContainer>
+									<ErrorInputFieldWrapper
+										errorMessage={
+											errors?.department === null ? null : errors?.department
 										}
-										selectedValue={input.department}
-										columns={[
-											{ name: "name", id: 1 },
-											{ name: "description", id: 2 },
-										]}
-										selectdValueToshow="name"
-										required={true}
-										isError={errors?.department ? true : false}
-										fetchData={fetchSiteDepartments}
-										width="100%"
+									>
+										<DyanamicDropdown
+											label={customCaptions?.department ?? "Department"}
+											dataHeader={[
+												{ id: 1, name: "Name" },
+												{ id: 2, name: "Description" },
+											]}
+											showHeader
+											onChange={(val) =>
+												setInput((input) => ({ ...input, department: val }))
+											}
+											selectedValue={input.department}
+											columns={[
+												{ name: "name", id: 1 },
+												{ name: "description", id: 2 },
+											]}
+											selectdValueToshow="name"
+											required={true}
+											isError={errors?.department ? true : false}
+											fetchData={fetchSiteDepartments}
+											width="100%"
+										/>
+									</ErrorInputFieldWrapper>
+								</ADD.LeftInputContainer>
+								<ADD.RightInputContainer>
+									{isSiteAppUser ? (
+										<ErrorInputFieldWrapper
+											errorMessage={
+												errors?.position === null ? null : errors?.position
+											}
+										>
+											<DyanamicDropdown
+												label={customCaptions?.position ?? "Position"}
+												dataHeader={[{ id: 1, name: "Name" }]}
+												showHeader
+												onChange={(val) =>
+													setInput((input) => ({ ...input, position: val }))
+												}
+												selectedValue={input.position}
+												columns={[{ name: "name", id: 1 }]}
+												selectdValueToshow="name"
+												required={true}
+												isError={errors?.position ? true : false}
+												fetchData={fetchPositions}
+												width="100%"
+											/>
+										</ErrorInputFieldWrapper>
+									) : null}
+								</ADD.RightInputContainer>
+							</ADD.InputContainer>
+							<ADD.InputContainer>
+								<ADD.LeftInputContainer>
+									<ADD.NameLabel>Reference</ADD.NameLabel>
+
+									<ADD.NameInput
+										fullWidth
+										onChange={(e) =>
+											setInput({ ...input, externalReference: e.target.value })
+										}
+										onKeyDown={handleEnterPress}
+										variant="outlined"
 									/>
-								</ErrorInputFieldWrapper>
-							</ADD.LeftInputContainer>
-						</ADD.InputContainer>
+								</ADD.LeftInputContainer>
+							</ADD.InputContainer>
+						</>
 					) : null}
 				</div>
 			</DialogContent>

@@ -254,10 +254,10 @@ const UsersListContent = ({ getError }) => {
 				);
 
 			if (response.status) {
+				let response2 = { data: [...prevData, ...response.data] };
 				setPage({ pageNo: p, rowsPerPage: DefaultPageSize });
 				setAllData([...prevData, ...response.data]);
-				response.data = [...prevData, ...response.data];
-				return response;
+				return response2;
 			} else {
 				throw new Error(response);
 			}
@@ -266,7 +266,6 @@ const UsersListContent = ({ getError }) => {
 			return err;
 		}
 	};
-
 	const importSuccess = () => {
 		setPage(defaultPageProperties);
 		fetchData(1);
@@ -297,6 +296,13 @@ const UsersListContent = ({ getError }) => {
 	const handleDownloadCsvTemplate = () => {
 		return downloadUserCSVTemplate(apis[role].downloadTemplate);
 	};
+
+	const apiByRole =
+		role === "SiteUser" || (role === "ClientAdmin" && isSiteUser)
+			? apis["SiteUser"]
+			: role === "ClientAdmin" && !isSiteUser
+			? apis["ClientAdmin"]
+			: apis["SuperAdmin"];
 	return (
 		<div className="container">
 			<ImportContainer
@@ -327,7 +333,7 @@ const UsersListContent = ({ getError }) => {
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteID}
-				deleteEndpoint={apis[role].delete}
+				deleteEndpoint={apiByRole.delete}
 				handleRemoveData={handleRemoveData}
 			/>
 

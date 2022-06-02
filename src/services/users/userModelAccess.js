@@ -38,6 +38,15 @@ export const getClientUserSiteApps = async (id) => {
 	}
 };
 
+export const updateClientUserSite = async (id, payload) => {
+	try {
+		let response = await API.patch(`${Apis.ClientUserSites}/${id}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const checkUserDepartments = async (payload) => {
 	try {
 		let response = await API.post(

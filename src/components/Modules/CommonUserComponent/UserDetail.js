@@ -6,6 +6,10 @@ import { Grid, TextField, Typography } from "@material-ui/core";
 
 import Roles from "helpers/roles";
 import RoleWrapper from "../RoleWrapper";
+import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
+import { getSiteDepartments } from "services/clients/sites/siteDepartments";
+import { updateClientUserSite } from "services/users/userModelAccess";
 import { useParams } from "react-router-dom";
 
 const media = "@media(max-width: 414px)";
@@ -36,6 +40,10 @@ const UserDetail = ({
 	// const [userDetail, setUserDetail] = useState({});
 	const [isUpdating, setUpdating] = useState(false);
 	const [inputValueOnFocus, setInputValueOnFocus] = useState({});
+	const { customCaptions, siteID, isSiteUser, role } = JSON.parse(
+		sessionStorage.getItem("me") || localStorage.getItem("me")
+	);
+	const { id: userId } = useParams();
 
 	//Handle Update
 	const handleApiCall = async (path, value) => {
@@ -84,18 +92,25 @@ const UserDetail = ({
 		setUpdating(false);
 	};
 
-	const handleInputChange = (name, value) => {
+	const handleInputChange = async (name, value) => {
 		setErrors({ ...errors, [name]: null });
-
-		// setData((detail) => ({
-		// 	...detail,
-		// 	[name]: value,
-		// }));
 
 		setInputData((detail) => ({
 			...detail,
 			[name]: value,
 		}));
+
+		if (name === "department") {
+			const response = await updateClientUserSite(userId, [
+				{ op: "replace", path: "SiteDepartmentID", value: value.id },
+			]);
+
+			if (!response.status) {
+				getError(
+					response.data?.detail || response.data || "Cannot update department"
+				);
+			}
+		}
 	};
 
 	const handleUpdateData = (e) => {
@@ -104,6 +119,8 @@ const UserDetail = ({
 		}
 		handleApiCall(e.target.name, e.target.value);
 	};
+
+	const userIsSiteUser = role === "SiteUser" || isSiteUser;
 	return (
 		<AccordionBox title={title} noExpand={true}>
 			<div className={classes.desktopViewUserDetail}>
@@ -243,6 +260,35 @@ const UserDetail = ({
 								}}
 							/>
 						</RoleWrapper>
+					</Grid>
+					<Grid item sm={6}>
+						{userIsSiteUser && (
+							<ErrorInputFieldWrapper
+								errorMessage={
+									errors?.department === null ? null : errors?.department
+								}
+							>
+								<DyanamicDropdown
+									label={customCaptions?.department ?? "Department"}
+									dataHeader={[
+										{ id: 1, name: "Name" },
+										{ id: 2, name: "Description" },
+									]}
+									showHeader
+									onChange={(val) => handleInputChange("department", val)}
+									selectedValue={inputData.department || ""}
+									columns={[
+										{ name: "name", id: 1 },
+										{ name: "description", id: 2 },
+									]}
+									selectdValueToshow="name"
+									required={true}
+									isError={errors?.department ? true : false}
+									fetchData={() => getSiteDepartments(siteID)}
+									width="100%"
+								/>
+							</ErrorInputFieldWrapper>
+						)}
 					</Grid>
 				</Grid>
 			</div>
