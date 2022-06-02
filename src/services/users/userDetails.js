@@ -69,7 +69,7 @@ const patchUserDetails = async (id, data) => {
 // #region patch notes
 const patchExternalReference = async (id, data) => {
 	try {
-		let response = await API.patch(`${Apis.UserDetailReference}/${id}`, data);
+		let response = await API.patch(`${Apis.userDetailSites}/${id}`, data);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

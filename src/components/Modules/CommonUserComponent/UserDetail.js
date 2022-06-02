@@ -6,6 +6,7 @@ import { Grid, TextField, Typography } from "@material-ui/core";
 
 import Roles from "helpers/roles";
 import RoleWrapper from "../RoleWrapper";
+import { useParams } from "react-router-dom";
 
 const media = "@media(max-width: 414px)";
 
@@ -28,6 +29,7 @@ const UserDetail = ({
 	apis,
 	inputData,
 	setInputData,
+	clientUserId = null,
 }) => {
 	const classes = useStyles();
 
@@ -41,12 +43,11 @@ const UserDetail = ({
 
 		if (path === "externalReference") {
 			try {
-				const result = await apis.patchExternalReferenceAPI(id, [
+				const result = await apis.patchExternalReferenceAPI(clientUserId, [
 					{ op: "replace", path, value },
 				]);
 				if (result.status) {
 					localStorage.setItem("userCrumbs", JSON.stringify(result.data));
-					return true;
 				} else {
 					throw new Error(result);
 				}
@@ -57,7 +58,6 @@ const UserDetail = ({
 				if (err?.response?.data?.errors?.name) {
 					getError(err.response.data.errors.name[0]);
 				}
-				return err;
 			}
 		} else {
 			try {
@@ -67,11 +67,7 @@ const UserDetail = ({
 				if (result.status) {
 					localStorage.setItem("userCrumbs", JSON.stringify(result.data));
 					setInputData(result.data);
-					setUpdating(false);
-					return true;
 				} else {
-					setUpdating(false);
-
 					const err = result.data.errors;
 					setErrors({ ...errors, ...err });
 					throw new Error(result);
@@ -83,9 +79,9 @@ const UserDetail = ({
 				if (err?.response?.data?.errors?.name) {
 					getError(err.response.data.errors.name[0]);
 				}
-				return err;
 			}
 		}
+		setUpdating(false);
 	};
 
 	const handleInputChange = (name, value) => {

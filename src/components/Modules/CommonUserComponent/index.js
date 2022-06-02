@@ -88,6 +88,7 @@ const UserDetails = ({
 							getError={getError}
 							apis={apis}
 							id={+data?.userID || +id}
+							clientUserId={data.clientUserID ?? data.id}
 							inputData={inputData}
 							setInputData={setInputData}
 						/>
