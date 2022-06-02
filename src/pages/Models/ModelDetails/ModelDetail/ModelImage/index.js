@@ -1,5 +1,5 @@
 import AccordionBox from "components/Layouts/AccordionBox";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ImageUpload from "components/Elements/ImageUpload";
 import {
 	updateModel,
@@ -9,6 +9,7 @@ import DeleteDialog from "../DeleteDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import ImageViewer from "components/Elements/ImageViewer";
+import { ModelContext } from "contexts/ModelDetailContext";
 
 function ModelImage({ imageUrl, modelId, isReadOnly, thumbnailURL }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -19,8 +20,9 @@ function ModelImage({ imageUrl, modelId, isReadOnly, thumbnailURL }) {
 
 	const [openImage, setOPenImage] = useState(false);
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
+	const [, dispatch] = useContext(ModelContext);
 
-	const dispatch = useDispatch();
+	const reduxDispatch = useDispatch();
 
 	const onImageDrop = async (e) => {
 		setIsUploading(true);
@@ -34,15 +36,22 @@ function ModelImage({ imageUrl, modelId, isReadOnly, thumbnailURL }) {
 				);
 				setUploadPercentCompleted(() => percentCompleted);
 				// do whatever you like with the percentage complete
-				// maybe dispatch an action that will update a progress bar or something
+				// maybe reduxDispatch an action that will update a progress bar or something
 			},
 		});
 
 		if (response.status) {
 			setImage(response.data.imageURL);
 			setThumbnailImg(response.data.thumbnailURL);
+			dispatch({
+				type: "SET_IMAGE",
+				payload: {
+					imageURL: response.data.imageURL,
+					thumbnailURL: response.data.thumbnailURL,
+				},
+			});
 		} else {
-			dispatch(showError("Could not upload image"));
+			reduxDispatch(showError("Could not upload image"));
 		}
 		setIsUploading(false);
 		setUploadPercentCompleted(0);
@@ -61,8 +70,15 @@ function ModelImage({ imageUrl, modelId, isReadOnly, thumbnailURL }) {
 		if (response.status) {
 			setImage(null);
 			setThumbnailImg(null);
+			dispatch({
+				type: "SET_IMAGE",
+				payload: {
+					imageURL: null,
+					thumbnailURL: null,
+				},
+			});
 		} else {
-			dispatch(showError("Could not delete"));
+			reduxDispatch(showError("Could not delete"));
 		}
 		setIsDeleting(false);
 

@@ -55,6 +55,16 @@ function reducer(state, action) {
 					activeModelVersion: payload,
 				},
 			};
+
+		case "SET_IMAGE":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					imageURL: payload.imageURL,
+					thumbnailURL: payload.thumbnailURL,
+				},
+			};
 		case "TOGGLE_ADD":
 			return {
 				...state,
