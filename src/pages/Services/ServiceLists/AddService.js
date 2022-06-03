@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -19,7 +19,7 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getPublishedModel } from "services/models/modelList";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { getModelIntervals } from "services/models/modelDetails/modelIntervals";
-import { getModelRolesList } from "services/models/modelDetails/modelRoles";
+import { getModelRolesListByInterval } from "services/models/modelDetails/modelRoles";
 import { showError } from "redux/common/actions";
 import { getModelAsset } from "services/models/modelDetails/modelAsset";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
@@ -115,9 +115,57 @@ function AddNewServiceDetail({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [intervals, setIntervals] = useState([]);
+	const [roles, setRoles] = useState([]);
+
 	const [dataSourceAfterModelChange, setDataSourceAfterModelChange] = useState(
 		[]
 	);
+
+	const modelId = input?.modelID?.activeModelVersionID;
+	const intervalId = input?.modelVersionIntervalId?.id;
+
+	// attempting to fetch interval when model is selected
+	useEffect(() => {
+		if (modelId) {
+			const fetchInterval = async () => {
+				const response = await getModelIntervals(modelId);
+				if (response.status) {
+					setIntervals(response.data);
+
+					// automatically select role if role list contains single data
+					if (response.data.length === 1) {
+						setInput((prev) => ({
+							...prev,
+							modelVersionIntervalId: response.data[0],
+						}));
+					}
+				}
+			};
+			fetchInterval();
+		}
+	}, [modelId]);
+
+	// attempting to fetch role when interval is selected
+	useEffect(() => {
+		if (intervalId) {
+			const fetchInterval = async () => {
+				const response = await getModelRolesListByInterval(intervalId);
+				if (response.status) {
+					setRoles(response.data);
+
+					// automatically select role if role list contains single data
+					if (response.data.length === 1) {
+						setInput((prev) => ({
+							...prev,
+							modelVersionRoleId: response.data[0],
+						}));
+					}
+				}
+			};
+			fetchInterval();
+		}
+	}, [intervalId]);
 
 	const closeOverride = () => {
 		// Clearing input state and errors
@@ -312,7 +360,7 @@ function AddNewServiceDetail({
 								}
 							>
 								<DyanamicDropdown
-									dataSource={dataSourceAfterModelChange}
+									dataSource={intervals}
 									isServerSide={false}
 									width="100%"
 									placeholder="Select Interval"
@@ -321,16 +369,17 @@ function AddNewServiceDetail({
 									selectedValue={input["modelVersionIntervalId"]}
 									handleSort={handleSort}
 									onChange={(val) => {
-										setInput({ ...input, modelVersionIntervalId: val });
+										setInput({
+											...input,
+											modelVersionIntervalId: val,
+											modelVersionRoleId: {},
+										});
 									}}
 									selectdValueToshow="name"
 									label={customCaptions?.interval}
 									required
 									isError={
 										errors.modelVersionIntervalId === null ? false : true
-									}
-									fetchData={() =>
-										getModelIntervals(input?.modelID?.activeModelVersionID)
 									}
 									isReadOnly={
 										input?.modelID?.activeModelVersionID === null ||
@@ -349,7 +398,7 @@ function AddNewServiceDetail({
 								}
 							>
 								<DyanamicDropdown
-									dataSource={dataSourceAfterModelChange}
+									dataSource={roles}
 									isServerSide={false}
 									width="100%"
 									placeholder="Select Role"
@@ -364,12 +413,9 @@ function AddNewServiceDetail({
 									label={customCaptions?.role}
 									required
 									isError={errors.modelVersionRoleId === null ? false : true}
-									fetchData={() =>
-										getModelRolesList(input?.modelID?.activeModelVersionID)
-									}
 									isReadOnly={
-										input?.modelID?.activeModelVersionID === null ||
-										input?.modelID?.activeModelVersionID === undefined
+										input?.modelVersionIntervalId?.id === null ||
+										input?.modelVersionIntervalId?.id === undefined
 									}
 								/>
 							</ErrorInputFieldWrapper>

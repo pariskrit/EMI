@@ -14,6 +14,17 @@ const getModelRolesList = async (modelVersionId) => {
 	}
 };
 
+const getModelRolesListByInterval = async (modelVersionIntervalID) => {
+	try {
+		let response = await API.get(
+			`${Apis.ModelRoles}/byInterval/${modelVersionIntervalID}`
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
 const addModelRole = async (payload) => {
 	try {
 		let response = await API.post(`${Apis.ModelRoles}`, payload);
@@ -41,4 +52,10 @@ const getSiteAppRoles = async (siteAppId) => {
 	}
 };
 
-export { getModelRolesList, getSiteAppRoles, addModelRole, editModelRole };
+export {
+	getModelRolesList,
+	getSiteAppRoles,
+	addModelRole,
+	editModelRole,
+	getModelRolesListByInterval,
+};
