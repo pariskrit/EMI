@@ -110,11 +110,6 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 	// );
 
 	const handleInputChange = (name, value) => {
-		if (name === "licenseType") {
-			if (value?.label !== clientDetail?.licenseType?.label) {
-				changeClientDetails("licenseType", value.value);
-			}
-		}
 		setClientDetail((detail) => ({
 			...detail,
 			[name]: value,
@@ -124,16 +119,6 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 	// OnBlur Company Name and Liscenses count
 	const handleApiCall = (name, value) => {
 		if (changedState[`${name}`] !== value) changeClientDetails(name, value);
-	};
-
-	const disabledLicenses = () => {
-		if (clientDetail?.licenseType?.label === "Total Users") {
-			return false;
-		}
-		if (clientDetail?.licenseType?.label === "Concurrent Users") {
-			return false;
-		}
-		return true;
 	};
 
 	return (
@@ -164,39 +149,7 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 							value={clientDetail.name || ""}
 						/>
 					</Grid>
-					<Grid item sm={6}>
-						<Typography className={classes.labelText}>
-							Licence Type<span style={{ color: "#E31212" }}>*</span>
-						</Typography>
-						<Dropdown
-							options={clientOptions}
-							selectedValue={clientDetail.licenseType}
-							onChange={(value) => handleInputChange("licenseType", value)}
-							label=""
-							required={true}
-							width="100%"
-						/>
-					</Grid>
-					<Grid item sm={6}>
-						<Typography className={classes.labelText}>
-							Total Licence Count<span style={{ color: "#E31212" }}>*</span>
-						</Typography>
-						<TextField
-							name="licenses"
-							disabled={disabledLicenses()}
-							type="number"
-							variant="outlined"
-							fullWidth
-							InputProps={{
-								classes: {
-									input: classes.inputText,
-								},
-							}}
-							value={clientDetail.licenses || ""} // String to integer using '+'
-							onChange={(e) => handleInputChange("licenses", +e.target.value)}
-							onBlur={(e) => handleApiCall("licenses", +e.target.value)}
-						/>
-					</Grid>
+
 					<Grid item sm={6}>
 						<Typography className={classes.labelText}>
 							Registered By<span style={{ color: "#E31212" }}>*</span>

@@ -16,6 +16,7 @@ import { fetchClientDetail, resetClient } from "redux/clientDetail/actions";
 import { showError } from "redux/common/actions";
 import "./style.scss";
 import { clientsPath } from "helpers/routePaths";
+import License from "./License";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -43,7 +44,6 @@ const ClientDetails = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[]
 	);
-
 	return (
 		<div className="client-details">
 			<div className="flex justify-between">
@@ -82,7 +82,7 @@ const ClientDetails = ({
 							getError={getError}
 						/>
 					</Grid>
-					<Grid item lg={6} md={6} xs={12}>
+					<Grid item lg={6} xs={12}>
 						<CompanyLogo
 							clientDetail={clientDetail}
 							clientId={+id}
@@ -92,7 +92,16 @@ const ClientDetails = ({
 						<RegionAndSites clientId={+id} getError={getError} />
 						<ClientDocuments clientId={+id} getError={getError} />
 					</Grid>
-					<Grid item lg={6} md={6} xs={12}>
+					<Grid item lg={6} xs={12}>
+						<License
+							data={{
+								licenseType: clientDetail.licenseType,
+								licenses: clientDetail.licenses,
+							}}
+							getError={getError}
+							clientId={+id}
+							isLoading={clientDetailLoading}
+						/>
 						<ClientApplication clientId={+id} getError={getError} />
 						<KeyContacts clientId={+id} />
 						<ClientNotes clientId={+id} getError={getError} />

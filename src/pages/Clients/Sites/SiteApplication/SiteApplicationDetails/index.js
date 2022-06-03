@@ -68,9 +68,6 @@ function SiteApplicationDetails({
 				name: details.data.application.name,
 			},
 		]);
-		if (siteResult?.data?.licenseType === 3) {
-			setShowLicenseTile(true);
-		}
 	};
 
 	const changeStatus = async () => {
@@ -104,6 +101,10 @@ function SiteApplicationDetails({
 				showServiceUserConfirmation: details.data.showServiceUserConfirmation,
 				userConfirmationMessage: details.data.userConfirmationMessage,
 				raisingDefectCopiesTaskName: details.data.raisingDefectCopiesTaskName,
+				clientLicenseType: details.data.clientLicenseType,
+				clientLicenses: details.data.clientLicenses,
+				siteLicenseType: details.data.siteLicenseType,
+				siteLicenses: details.data.siteLicenses,
 			});
 			setIsLoading(false);
 			fetchSiteDetails();
@@ -111,7 +112,6 @@ function SiteApplicationDetails({
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [details]);
-
 	return (
 		<>
 			<ConfirmChangeDialog
@@ -129,11 +129,12 @@ function SiteApplicationDetails({
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<ServiceOptions details={siteAppDetails} loading={isLoading} />
+					<License details={siteAppDetails} />
 				</Grid>
 				<Grid item xs={12}>
-					{showLicenseTile ? <License details={siteAppDetails} /> : null}
+					<ServiceOptions details={siteAppDetails} loading={isLoading} />
 				</Grid>
+
 				<Grid item xs={12}>
 					<KeyContacts
 						details={details}

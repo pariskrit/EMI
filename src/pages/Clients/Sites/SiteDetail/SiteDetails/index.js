@@ -6,13 +6,11 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Dropdown from "components/Elements/Dropdown";
-import { siteOptions } from "helpers/constants";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { showError } from "redux/common/actions";
 import { fetchSiteDetail, setNavCrumbs } from "redux/siteDetail/actions";
-import { getClientDetails } from "services/clients/clientDetailScreen";
 import {
 	getListOfRegions,
 	updateSiteDetails,
@@ -39,14 +37,13 @@ const SiteDetails = ({
 	siteDetails,
 	handlefetchSiteDetail,
 	setCrumbs,
+	fetchClient,
 }) => {
 	const classes = useStyles();
 	const { clientId } = useParams();
 	const [newSiteDetails, setNewSiteDetails] = useState({});
 	const [listOfRegions, setListOfRegions] = useState([]);
 	const [selectedRegion, setSelectedRegion] = useState({});
-	const [clientLicenseType, setClientLicenseType] = useState(0);
-	const [selectedLicenseType, setSelectedLicenseType] = useState({});
 	const [newInput, setNewInput] = useState({});
 	const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 	const [isUpdating, setUpdating] = useState(false);
@@ -74,20 +71,6 @@ const SiteDetails = ({
 
 	const onCloseConfirmationDialog = () => setOpenConfirmationDialog(false);
 
-	const onLicenseInputChange = (value) => {
-		if (value.label === selectedLicenseType.label) {
-			setSelectedLicenseType({ value });
-			return;
-		}
-
-		setSelectedLicenseType({
-			value,
-			newInput: { label: "licenseType", value: value.value },
-		});
-
-		setOpenConfirmationDialog(true);
-	};
-
 	const onRegionInputChange = (value) => {
 		const { regionName } = siteDetails;
 
@@ -109,11 +92,7 @@ const SiteDetails = ({
 	const handleConfirmDropdown = async () => {
 		setUpdating(true);
 
-		const newInput =
-			selectedLicenseType?.newInput?.label === "licenseType"
-				? selectedLicenseType?.newInput
-				: selectedRegion?.newInput;
-		const response = await updateSiteDetails(siteId, newInput);
+		const response = await updateSiteDetails(siteId, selectedRegion?.newInput);
 
 		if (!response.status) {
 			setError(response.data.detail);
@@ -147,22 +126,28 @@ const SiteDetails = ({
 			return;
 		}
 
-		if (result.status) {
-			localStorage.setItem(
-				"crumbs",
-				JSON.stringify({
-					clientName: result.data.clientName,
-					siteName: result.data.name,
-				})
-			);
+		try {
+			if (result.status) {
+				localStorage.setItem(
+					"crumbs",
+					JSON.stringify({
+						clientName: result.data.clientName,
+						siteName: result.data.name,
+					})
+				);
 
-			setNewSiteDetails(result.data);
-			setNewInput(result.data);
-			fetchListOfRegions(result.data.regionName);
-			fetchClient(result.data.licenseType);
-		} else {
-			setError(result.data.detail);
+				setNewSiteDetails(result.data);
+				setNewInput(result.data);
+				fetchListOfRegions(result.data.regionName);
+				fetchClient(result.data.licenseType, result.data.licenses);
+			} else {
+				setError(result.data.detail);
+			}
+		} catch (error) {
+			setError(error.message || "Somethin went wrong");
 		}
+
+		setIsLoading(false);
 	};
 
 	const fetchListOfRegions = async (regionName) => {
@@ -177,27 +162,6 @@ const SiteDetails = ({
 				value: { label: regionName, value: indexOfSelectedRegion },
 			});
 		}
-	};
-
-	const fetchClient = async (licenseType) => {
-		const result = await getClientDetails(clientId);
-
-		if (result.status) {
-			setClientLicenseType(result.data.licenseType);
-
-			if (result.data.licenseType === 3) {
-				const licenseName = siteOptions.find(
-					(option) => option.value === licenseType
-				);
-				setSelectedLicenseType({
-					value: {
-						label: licenseName.label,
-						value: licenseName.value,
-					},
-				});
-			}
-		}
-		setIsLoading(false);
 	};
 
 	useEffect(() => {
@@ -336,51 +300,6 @@ const SiteDetails = ({
 										/>
 									</div>
 								</Grid>
-								<Grid item sm={6}>
-									<div className={classes.siteContainer}>
-										<Typography variant="subtitle2">
-											Licence Type<span className={classes.required}>*</span>
-										</Typography>
-										<Dropdown
-											options={siteOptions}
-											selectedValue={selectedLicenseType.value}
-											label=""
-											required={true}
-											width="auto"
-											onChange={(value) => onLicenseInputChange(value)}
-											disabled={clientLicenseType !== 3}
-										/>
-									</div>
-								</Grid>
-								<Grid item sm={6}>
-									<div className={classes.siteContainer}>
-										<Typography variant="subtitle2">
-											Total Licence Count
-											<span className={classes.required}>*</span>
-										</Typography>
-										<TextField
-											name="licenses"
-											InputProps={{
-												endAdornment: isUpdating["licenses"]?.isUpdating ? (
-													<Facebook size={20} color="#A79EB4" />
-												) : null,
-											}}
-											disabled={
-												(![0, 1].includes(selectedLicenseType.value) &&
-													clientLicenseType === 3) ||
-												isUpdating["licenses"]?.isUpdating
-											}
-											fullWidth
-											type="number"
-											variant="outlined"
-											value={newSiteDetails?.licenses || ""}
-											onChange={onInputChange}
-											onBlur={onUpdateInput}
-											onFocus={setSelectedInputValue}
-											onKeyDown={onEnterKeyPress}
-										/>
-									</div>
-								</Grid>
 							</Grid>
 						</div>
 						{/* Mobile View */}
@@ -470,45 +389,6 @@ const SiteDetails = ({
 											onBlur={onUpdateInput}
 											onFocus={setSelectedInputValue}
 											onKeyDown={onEnterKeyPress}
-										/>
-									</div>
-								</Grid>
-								<Grid item xs={12}>
-									<div className={classes.siteContainer}>
-										<Typography variant="subtitle2">
-											Licence Type<span className={classes.required}>*</span>
-										</Typography>
-										<Dropdown
-											options={siteOptions}
-											selectedValue={selectedLicenseType}
-											label=""
-											required={true}
-											width="auto"
-											onChange={(value) => onLicenseInputChange(value)}
-											disabled={clientLicenseType !== 3}
-										/>
-									</div>
-								</Grid>
-								<Grid item xs={12}>
-									<div className={classes.siteContainer}>
-										<Typography variant="subtitle2">
-											Total Licence Count
-											<span className={classes.required}>*</span>
-										</Typography>
-										<TextField
-											name="licenses"
-											fullWidth
-											type="number"
-											variant="outlined"
-											value={newSiteDetails?.licenses || ""}
-											onChange={onInputChange}
-											onBlur={onUpdateInput}
-											onFocus={setSelectedInputValue}
-											onKeyDown={onEnterKeyPress}
-											disabled={
-												![0, 1].includes(selectedLicenseType.value) &&
-												clientLicenseType === 3
-											}
 										/>
 									</div>
 								</Grid>
