@@ -11,6 +11,8 @@ const BASE_API_PATH_SITE_ASSET_REFERENCES = `${BASE_API_PATH}SiteAssetReferences
 const BASE_API_PATH_SITEDETAILS = `${BASE_API_PATH}sites`;
 const BASE_API_PATH_LIST_OF_REGIONS = `${BASE_API_PATH}Regions`;
 const BASE_API_PATH_SITE_APPKEYCONTACTS = `${BASE_API_PATH}siteappkeycontacts/Site`;
+const BASE_API_PATH_SITE_APP_KEY_CONTACTS = `${BASE_API_PATH}SiteAppKeyContacts`;
+
 const BASE_API_PATH_SITE_APPLICATIONS = `${BASE_API_PATH}siteapps`;
 const BASE_API_PATH_SITES_LOCATIONS = `${BASE_API_PATH}SiteLocations`;
 const BASE_API_PATH_SITES_DEPARTMENTS = `${BASE_API_PATH}SiteDepartments`;
@@ -176,6 +178,7 @@ export const Apis = {
 
 	//siteappkeycontacts
 	KeyContacts: `${BASE_API_PATH_SITE_APPKEYCONTACTS}`,
+	sitekeycontacts: `${BASE_API_PATH_SITE_APP_KEY_CONTACTS}`,
 
 	//site applications
 	Applications: `${BASE_API_PATH_SITE_APPLICATIONS}`,

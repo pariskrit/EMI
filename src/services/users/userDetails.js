@@ -30,6 +30,36 @@ export const getClientUserSiteAppDetail = async (id) => {
 	}
 };
 
+export const getClientUserSiteAppList = async ({
+	siteAppId,
+	pageNumber = 1,
+	pageSize = 10,
+	search = "",
+}) => {
+	try {
+		let response = await API.get(
+			`${Apis.ClientUserSiteApps}?siteAppId=${siteAppId}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export const getClientUserSiteAppListCount = async ({
+	siteAppId,
+	search = "",
+}) => {
+	try {
+		let response = await API.get(
+			`${Apis.ClientUserSiteApps}/count?siteAppId=${siteAppId}&search=${search}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 //endnd
 
 //#region notes

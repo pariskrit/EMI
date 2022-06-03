@@ -4,12 +4,16 @@ import Application from "./Application";
 import License from "./License";
 import ServiceOptions from "./ServiceOptions";
 import { getSiteDetails } from "services/clients/sites/siteDetails";
-import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import {
+	getSiteAppKeyContacts,
+	patchApplicationDetail,
+} from "services/clients/sites/siteApplications/siteApplicationDetails";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import { connect } from "react-redux";
 import { setNavCrumbs } from "redux/siteDetail/actions";
 import { clientsPath, siteDetailPath } from "helpers/routePaths";
 import RiskRatingImage from "./RiskRatingImage";
+import KeyContacts from "./KeyContacts";
 
 function SiteApplicationDetails({
 	appId,
@@ -23,23 +27,29 @@ function SiteApplicationDetails({
 	setCrumbs,
 	clientId,
 }) {
+	console.log(details);
 	const [showLicenseTile, setShowLicenseTile] = useState(false);
 	const [siteAppDetails, setSiteAppDetails] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [keyContacts, setKeyContacts] = useState([]);
 
 	const closeConfirmationModal = () =>
 		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: false });
 
 	const fetchSiteDetails = async () => {
-		const siteResult = await getSiteDetails(details.data.siteID);
+		const [siteResult, keyContactResult] = await Promise.all([
+			getSiteDetails(details.data.siteID),
+			getSiteAppKeyContacts(details.data?.id),
+		]);
+		setKeyContacts(keyContactResult.data);
 
 		localStorage.setItem(
 			"crumbs",
 			JSON.stringify({
-				clientName: siteResult.data.clientName,
-				siteName: siteResult.data.name,
-				applicationName: details.data.application.name,
+				clientName: siteResult.data?.clientName,
+				siteName: siteResult.data?.name,
+				applicationName: details.data?.application?.name,
 			})
 		);
 		setCrumbs([
@@ -123,6 +133,13 @@ function SiteApplicationDetails({
 				</Grid>
 				<Grid item xs={12}>
 					{showLicenseTile ? <License details={siteAppDetails} /> : null}
+				</Grid>
+				<Grid item xs={12}>
+					<KeyContacts
+						details={details}
+						data={keyContacts}
+						loading={isLoading}
+					/>
 				</Grid>
 				<Grid item xs={12}>
 					<RiskRatingImage details={details} loading={isLoading} />

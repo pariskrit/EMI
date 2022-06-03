@@ -44,9 +44,41 @@ const DeleteDefectRiskRatingImage = async (id, payload) => {
 	}
 };
 
+const getSiteAppKeyContacts = async (siteAppId) => {
+	try {
+		let response = await API.get(
+			`${Apis.sitekeycontacts}/SiteApp/${siteAppId}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const addSiteAppKeyContact = async (payload) => {
+	try {
+		let response = await API.post(`${Apis.sitekeycontacts}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const deleteSiteAppKeyContact = async (payload) => {
+	try {
+		let response = await API.delete(`${Apis.sitekeycontacts}/${payload}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getSiteApplicationDetail,
 	patchApplicationDetail,
 	uploadDefectRiskRatingImage,
 	DeleteDefectRiskRatingImage,
+	getSiteAppKeyContacts,
+	deleteSiteAppKeyContact,
+	addSiteAppKeyContact,
 };

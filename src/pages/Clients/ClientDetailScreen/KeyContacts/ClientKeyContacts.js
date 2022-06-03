@@ -76,7 +76,7 @@ const ClientKeyContacts = ({ clientId }) => {
 				) : (
 					<DataTable
 						data={data}
-						tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
+						tableHeaders={["Name", "Application", "Site", "Phone", "Email"]}
 					/>
 				)}
 			</AccordionBox>
