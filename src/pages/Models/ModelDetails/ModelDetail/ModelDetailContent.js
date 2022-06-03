@@ -198,9 +198,7 @@ function ModelDetailContent({
 							<Notes
 								data={modelDetailsData.modelNotes}
 								modelId={modelDefaultId}
-								isReadOnly={
-									isReadOnly || state?.modelDetail?.isPublished || isEditOnly
-								}
+								isReadOnly={isReadOnly || isEditOnly}
 							/>
 						</Grid>
 						<Grid item lg={6} md={6} xs={12}>
@@ -221,9 +219,7 @@ function ModelDetailContent({
 								classes={classes}
 								modelId={modelDefaultId}
 								documents={modelDetailsData.modelDocuments}
-								isReadOnly={
-									isReadOnly || state?.modelDetail?.isPublished || isEditOnly
-								}
+								isReadOnly={isReadOnly || isEditOnly}
 							/>
 						</Grid>
 					</Grid>

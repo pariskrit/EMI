@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AccordionBox from "components/Layouts/AccordionBox";
 import DropUploadBox from "components/Elements/DropUploadBox";
 import { Apis } from "services/api";
@@ -30,6 +30,7 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [documentError, setDocumentError] = useState("");
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
+	const cancelFileUpload = useRef(null);
 
 	const dispatch = useDispatch();
 
@@ -123,6 +124,7 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 								getError={setDocumentError}
 								uploadPercentCompleted={uploadPercentCompleted}
 								setUploadPercentCompleted={setUploadPercentCompleted}
+								cancelFileUpload={cancelFileUpload}
 								showProgress
 							/>
 							<p className={classes.documentError}>{documentError}</p>

@@ -163,6 +163,7 @@ const DropUpload = ({
 		// Attempting file upload
 		try {
 			// Attempting upload
+
 			await axios.put(uploadURL, file, {
 				onUploadProgress: (progressEvent) => {
 					let percentCompleted = Math.floor(
