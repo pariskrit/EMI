@@ -11,8 +11,11 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import { updateClientUserSite } from "services/users/userModelAccess";
 import { useParams } from "react-router-dom";
+import AddDialogStyle from "styles/application/AddDialogStyle";
 
 const media = "@media(max-width: 414px)";
+
+const ADD = AddDialogStyle();
 
 const useStyles = makeStyles(() => ({
 	desktopViewUserDetail: {
@@ -126,9 +129,9 @@ const UserDetail = ({
 			<div className={classes.desktopViewUserDetail}>
 				<Grid container spacing={5}>
 					<Grid item sm={6}>
-						<Typography>
+						<ADD.InputLabel>
 							First Name <span style={{ color: "#E31212" }}>*</span>
-						</Typography>
+						</ADD.InputLabel>
 						<TextField
 							name="firstName"
 							variant="outlined"
@@ -155,9 +158,9 @@ const UserDetail = ({
 						/>
 					</Grid>
 					<Grid item sm={6}>
-						<Typography>
+						<ADD.InputLabel>
 							Last Name <span style={{ color: "#E31212" }}>*</span>
-						</Typography>
+						</ADD.InputLabel>
 						<TextField
 							name="lastName"
 							variant="outlined"
@@ -184,9 +187,9 @@ const UserDetail = ({
 						/>
 					</Grid>
 					<Grid item sm={6}>
-						<Typography>
+						<ADD.InputLabel>
 							Email Address <span style={{ color: "#E31212" }}>*</span>
-						</Typography>
+						</ADD.InputLabel>
 						<TextField
 							name="email"
 							variant="outlined"
@@ -211,7 +214,7 @@ const UserDetail = ({
 						/>
 					</Grid>
 					<Grid item sm={6}>
-						<Typography>Mobile Number</Typography>
+						<ADD.InputLabel>Mobile Number</ADD.InputLabel>
 						<TextField
 							name="phone"
 							variant="outlined"
@@ -236,7 +239,7 @@ const UserDetail = ({
 
 					<Grid item sm={6}>
 						<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
-							<Typography>External Reference Number </Typography>
+							<ADD.InputLabel>External Reference Number </ADD.InputLabel>
 							<TextField
 								name="externalReference"
 								variant="outlined"
@@ -295,9 +298,9 @@ const UserDetail = ({
 			<div className={classes.mobileViewUserDetail}>
 				<Grid container spacing={5}>
 					<Grid item xs={12}>
-						<Typography>
+						<ADD.InputLabel>
 							First Name <span style={{ color: "#E31212" }}>*</span>
-						</Typography>
+						</ADD.InputLabel>
 						<TextField
 							name="firstName"
 							variant="outlined"
@@ -324,9 +327,9 @@ const UserDetail = ({
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<Typography>
+						<ADD.InputLabel>
 							Last Name <span style={{ color: "#E31212" }}>*</span>
-						</Typography>
+						</ADD.InputLabel>
 						<TextField
 							name="lastName"
 							variant="outlined"
@@ -353,9 +356,9 @@ const UserDetail = ({
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<Typography>
+						<ADD.InputLabel>
 							Email Address <span style={{ color: "#E31212" }}>*</span>
-						</Typography>
+						</ADD.InputLabel>
 						<TextField
 							name="email"
 							variant="outlined"
@@ -380,7 +383,7 @@ const UserDetail = ({
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<Typography>Mobile Number</Typography>
+						<ADD.InputLabel>Mobile Number</ADD.InputLabel>
 						<TextField
 							name="phone"
 							variant="outlined"
@@ -405,7 +408,7 @@ const UserDetail = ({
 
 					<Grid item xs={12}>
 						<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
-							<Typography>External Reference Number </Typography>
+							<ADD.InputLabel>External Reference Number </ADD.InputLabel>
 							<TextField
 								name="externalRef"
 								variant="outlined"
