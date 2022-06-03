@@ -30,6 +30,7 @@ const useStyles = makeStyles(() => ({
 const UserDetail = ({
 	title,
 	errors,
+	data,
 	setErrors,
 	getError,
 	id,
@@ -39,7 +40,6 @@ const UserDetail = ({
 	clientUserId = null,
 }) => {
 	const classes = useStyles();
-
 	// const [userDetail, setUserDetail] = useState({});
 	const [isUpdating, setUpdating] = useState(false);
 	const [inputValueOnFocus, setInputValueOnFocus] = useState({});
@@ -104,8 +104,12 @@ const UserDetail = ({
 		}));
 
 		if (name === "department") {
-			const response = await updateClientUserSite(userId, [
-				{ op: "replace", path: "SiteDepartmentID", value: value.id },
+			const response = await updateClientUserSite(data.clientUserSiteID, [
+				{
+					op: "replace",
+					path: "SiteDepartmentID",
+					value: value.id,
+				},
 			]);
 
 			if (!response.status) {
@@ -432,6 +436,35 @@ const UserDetail = ({
 								}}
 							/>
 						</RoleWrapper>
+					</Grid>
+					<Grid item xs={12}>
+						{userIsSiteUser && (
+							<ErrorInputFieldWrapper
+								errorMessage={
+									errors?.department === null ? null : errors?.department
+								}
+							>
+								<DyanamicDropdown
+									label={customCaptions?.department ?? "Department"}
+									dataHeader={[
+										{ id: 1, name: "Name" },
+										{ id: 2, name: "Description" },
+									]}
+									showHeader
+									onChange={(val) => handleInputChange("department", val)}
+									selectedValue={inputData.department || ""}
+									columns={[
+										{ name: "name", id: 1 },
+										{ name: "description", id: 2 },
+									]}
+									selectdValueToshow="name"
+									required={true}
+									isError={errors?.department ? true : false}
+									fetchData={() => getSiteDepartments(siteID)}
+									width="100%"
+								/>
+							</ErrorInputFieldWrapper>
+						)}
 					</Grid>
 				</Grid>
 			</div>
