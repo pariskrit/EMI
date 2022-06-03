@@ -123,6 +123,7 @@ function DyanamicDropdown(props) {
 		groupBy,
 		PreloadedSearch,
 		cacheDropDownData = true,
+		dropDownActiveWidth = "500px",
 	} = props;
 	const [dropActive, setDropActive] = useState(false);
 	const [filteredList, setFilteredList] = useState([]);
@@ -542,6 +543,7 @@ function DyanamicDropdown(props) {
 					"dropdown-expand": true,
 					// active: dropActive,
 				})}
+				style={{ width: dropDownActiveWidth }}
 			>
 				<div className="search-box flex justify-between">
 					<div className="input-field flex">

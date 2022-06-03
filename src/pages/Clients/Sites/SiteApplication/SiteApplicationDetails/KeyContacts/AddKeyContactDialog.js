@@ -145,6 +145,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler, siteAppId }) => {
 			onClose={closeOverride}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
+			className="application-dailog"
 		>
 			{isUpdating ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -209,6 +210,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler, siteAppId }) => {
 						page={page.pageNo}
 						count={count}
 						showHeader
+						dropDownActiveWidth={"580px"}
 					/>
 				</ErrorInputFieldWrapper>
 			</DialogContent>

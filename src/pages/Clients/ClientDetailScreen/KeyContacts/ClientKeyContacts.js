@@ -48,8 +48,16 @@ const ClientKeyContacts = ({ clientId }) => {
 					return;
 				}
 				if (result.status) {
-					result = result.data;
-					handleSort(result, setData, "name", "asc");
+					result = result.data.map((x) => ({
+						id: x.id,
+						aname: x?.name,
+						bsite: x?.site,
+						capplication: x?.application,
+						demail: x?.email,
+						ephone: x?.phone,
+					}));
+
+					handleSort(result, setData, "aname", "asc");
 				} else {
 					//Throw error if failed to fetch
 					throw new Error(`Error: Status ${result.status}`);
@@ -76,7 +84,7 @@ const ClientKeyContacts = ({ clientId }) => {
 				) : (
 					<DataTable
 						data={data}
-						tableHeaders={["Name", "Application", "Site", "Phone", "Email"]}
+						tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
 					/>
 				)}
 			</AccordionBox>
