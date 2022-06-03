@@ -261,7 +261,7 @@ function DyanamicDropdown(props) {
 					columns
 						.map((i) => i.name)
 						.some((col) => {
-							return item[col].match(new RegExp(val, "gi"));
+							return item[col]?.match(new RegExp(val, "gi"));
 						})
 				);
 				setFilteredList(searchedList);
