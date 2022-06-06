@@ -66,12 +66,18 @@ const SingleComponent = (route) => {
 
 		// if success, adding data to state
 		if (result.status) {
-			setAllData(isSuperAdmin ? result.data : result.data[0]);
-			setInputData(isSuperAdmin ? result.data : result.data[0]);
-			localStorage.setItem(
-				"userCrumbs",
-				JSON.stringify(isSuperAdmin ? result.data : result.data[0])
-			);
+			const mainData = isSuperAdmin
+				? result.data
+				: {
+						...result.data[0],
+						department: {
+							id: result.data[0].siteDepartmentID,
+							name: result.data[0].siteDepartmentName,
+						},
+				  };
+			setAllData(mainData);
+			setInputData(mainData);
+			localStorage.setItem("userCrumbs", JSON.stringify(mainData));
 		} else {
 			dispatch(showError(result?.data?.detail || "Could not get User details"));
 		}

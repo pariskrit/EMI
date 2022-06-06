@@ -46,7 +46,6 @@ const UserDetail = ({
 	const { customCaptions, siteID, isSiteUser, role } = JSON.parse(
 		sessionStorage.getItem("me") || localStorage.getItem("me")
 	);
-	const { id: userId } = useParams();
 
 	//Handle Update
 	const handleApiCall = async (path, value) => {
@@ -96,8 +95,8 @@ const UserDetail = ({
 	};
 
 	const handleInputChange = async (name, value) => {
+		const tempDepartment = inputData.department;
 		setErrors({ ...errors, [name]: null });
-
 		setInputData((detail) => ({
 			...detail,
 			[name]: value,
@@ -113,6 +112,10 @@ const UserDetail = ({
 			]);
 
 			if (!response.status) {
+				setInputData((detail) => ({
+					...detail,
+					[name]: tempDepartment,
+				}));
 				getError("Cannot update department");
 			}
 		}
