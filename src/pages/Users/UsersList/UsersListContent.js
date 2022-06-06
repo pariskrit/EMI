@@ -352,12 +352,14 @@ const UsersListContent = ({ getError }) => {
 					</Typography>
 					{haveData ? (
 						<div className={classes.buttonContainer}>
-							<GeneralButton
-								onClick={() => setModal((th) => ({ ...th, import: true }))}
-								style={{ backgroundColor: "#ed8738" }}
-							>
-								IMPORT FROM LIST
-							</GeneralButton>
+							{role !== "SuperAdmin" && (
+								<GeneralButton
+									onClick={() => setModal((th) => ({ ...th, import: true }))}
+									style={{ backgroundColor: "#ed8738" }}
+								>
+									IMPORT FROM LIST
+								</GeneralButton>
+							)}
 							<GeneralButton
 								onClick={() => setModal((th) => ({ ...th, add: true }))}
 								style={{ backgroundColor: "#23bb79" }}
