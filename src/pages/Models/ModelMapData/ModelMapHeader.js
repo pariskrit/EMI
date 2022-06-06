@@ -108,11 +108,17 @@ const ModelMapHeader = ({
 			if (res.status) {
 				history.push(modelsPath + "/" + res.data.modelVersionID);
 			} else {
-				if (res?.data?.detail) getError(res?.data?.detail);
-				setLoading(false);
-				fetchData();
+				if (res?.data?.detail) {
+					getError(res?.data?.detail || "Completion of model import failed");
+					setLoading(false);
+				} else {
+					getError("Completion of model import failed");
+					setLoading(false);
+				}
 			}
 		} catch (e) {
+			getError("Completion of model import failed");
+			setLoading(false);
 			return;
 		}
 	};
