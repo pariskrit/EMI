@@ -367,8 +367,7 @@ function Navbar({
 	};
 
 	const handleSavePath = (settingType) => {
-		localStorage.setItem("settingType", settingType);
-		onHoverSettings();
+		sessionStorage.setItem("settingType", settingType);
 	};
 
 	const handleDrawerChange = () => {
@@ -485,7 +484,7 @@ function Navbar({
 	};
 
 	const removeSettingsPathFromLocalStorage = () => {
-		if (settingPath) localStorage.removeItem("settingType");
+		if (settingPath) sessionStorage.removeItem("settingType");
 	};
 
 	useEffect(() => {
