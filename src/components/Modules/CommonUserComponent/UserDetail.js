@@ -113,9 +113,7 @@ const UserDetail = ({
 			]);
 
 			if (!response.status) {
-				getError(
-					response.data?.detail || response.data || "Cannot update department"
-				);
+				getError("Cannot update department");
 			}
 		}
 	};

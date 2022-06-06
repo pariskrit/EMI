@@ -221,5 +221,9 @@ export function MuiFormatDate(d) {
 	return `${yyyy}-${mm}-${dd}`;
 }
 
-export const getLocalStorageData = (type) =>
-	JSON.parse(sessionStorage.getItem(type) || localStorage.getItem(type));
+export const getLocalStorageData = (type) => {
+	const storage = JSON.stringify(
+		sessionStorage.getItem(type) || localStorage.getItem(type)
+	);
+	return JSON.parse(storage);
+};

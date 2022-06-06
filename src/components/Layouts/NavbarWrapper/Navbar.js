@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { useGoogleLogout } from "react-google-login";
@@ -37,6 +37,7 @@ import roles from "helpers/roles";
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
 import useDidMountEffect from "hooks/useDidMountEffect";
 import SkeletonNav from "../SkeletonNav";
+import { getLocalStorageData } from "helpers/utils";
 
 // Size constants
 const drawerWidth = 260;
@@ -349,19 +350,25 @@ function Navbar({
 	const [open, setOpen] = useState(false);
 	const [showSettingPopup, setShowSettingPopup] = useState(false);
 
+	const settingPath = getLocalStorageData("settingType");
+
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
 	const pathname = location.pathname.split("/");
 	let activeLink = pathname[2];
-	if (location?.state?.isSettings) {
-		activeLink =
-			pathname[6] === "applications"
-				? "site-application-settings"
-				: "site-settings";
+
+	if (settingPath) {
+		activeLink = settingPath;
 	}
+
 	// Handlers
 	const onHoverSettings = () => {
 		setShowSettingPopup((prev) => !prev);
+	};
+
+	const handleSavePath = (settingType) => {
+		localStorage.setItem("settingType", settingType);
+		onHoverSettings();
 	};
 
 	const handleDrawerChange = () => {
@@ -476,6 +483,15 @@ function Navbar({
 		// Cause change in redux state
 		setUserDetail(loginUser);
 	};
+
+	const removeSettingsPathFromLocalStorage = () => {
+		if (settingPath) localStorage.removeItem("settingType");
+	};
+
+	useEffect(() => {
+		return removeSettingsPathFromLocalStorage;
+	}, []);
+
 	const lgLogo = application === null ? LargeLogo : application?.logoURL;
 	return (
 		<>
@@ -622,7 +638,7 @@ function Navbar({
 																state: { isSettings: true },
 															}}
 															className={classes.navLink}
-															onClick={onHoverSettings}
+															onClick={() => handleSavePath("site-settings")}
 														>
 															<ListItem button>
 																<ListItemText
@@ -643,7 +659,9 @@ function Navbar({
 																state: { isSettings: true },
 															}}
 															className={classes.navLink}
-															onClick={onHoverSettings}
+															onClick={() =>
+																handleSavePath("site-application-settings")
+															}
 														>
 															<ListItem button>
 																{" "}
@@ -669,6 +687,7 @@ function Navbar({
 											to={item.path}
 											className={classes.navLink}
 											key={item.name}
+											onClick={removeSettingsPathFromLocalStorage}
 										>
 											<div
 												className={`${classes.navListContainer} mobNavListContainer`}
