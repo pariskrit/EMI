@@ -62,6 +62,7 @@ const UserRolesTable = ({
 	onEdit,
 	onDelete,
 	isLoading,
+	defectPlural,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -126,7 +127,7 @@ const UserRolesTable = ({
 								})}
 							>
 								<AT.CellContainer>
-									Can Raise Defects?
+									Can Raise {defectPlural}?
 									{currentTableSort[0] === "canRegisterDefects" &&
 									currentTableSort[1] === "desc" ? (
 										<AT.DefaultArrow fill="#FFFFFF" />

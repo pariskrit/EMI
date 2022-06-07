@@ -26,7 +26,7 @@ function DefectStatuses({ appId, setError }) {
 		{
 			showAdd,
 			details: { data },
-			defaultCustomCaptionsData: { position, positionPlural },
+			defaultCustomCaptionsData,
 		},
 		dispatch,
 	] = useContext(SiteContext);
@@ -102,7 +102,7 @@ function DefectStatuses({ appId, setError }) {
 	return (
 		<>
 			<DeleteDialog
-				entityName={data?.positionCC || position}
+				entityName={data?.positionCC || defaultCustomCaptionsData?.position}
 				open={openDeleteDialog}
 				closeHandler={closeDeleteDialog}
 				deleteID={deleteId}
@@ -118,25 +118,32 @@ function DefectStatuses({ appId, setError }) {
 				handleEditData={handleEditData}
 				setError={setError}
 				isEdit={isEdit}
-				header={data?.positionCC || position}
+				header={data?.positionCC || defaultCustomCaptionsData?.position}
+				customCaptions={defaultCustomCaptionsData}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={data?.positionPluralCC || positionPlural}
+					header={
+						data?.positionPluralCC || defaultCustomCaptionsData?.positionPlural
+					}
 					dataCount={allData.length}
 					description={`Create and manage ${
-						data?.positionPluralCC || positionPlural
+						data?.positionPluralCC || defaultCustomCaptionsData?.positionPlural
 					}`}
 				/>
 				<SearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header={data?.positionPluralCC || positionPlural}
+					header={
+						data?.positionPluralCC || defaultCustomCaptionsData?.positionPlural
+					}
 				/>
 				<MobileSearchField
 					searchQuery={searchQuery}
 					setSearchQuery={handleSearch}
-					header={data?.positionPluralCC || positionPlural}
+					header={
+						data?.positionPluralCC || defaultCustomCaptionsData?.positionPlural
+					}
 				/>
 			</div>
 			<CommonApplicationTable
@@ -161,13 +168,13 @@ function DefectStatuses({ appId, setError }) {
 				headers={[
 					"Name",
 					"Allow Publish",
-					"Assets Models",
-					"Services",
-					"Defects",
-					"Defect Exports",
-					"Notice Boards",
-					"Feedback",
-					"Users",
+					defaultCustomCaptionsData?.modelTemplatePlural,
+					defaultCustomCaptionsData?.servicePlural,
+					defaultCustomCaptionsData?.defectPlural,
+					defaultCustomCaptionsData?.defect + " Exports",
+					defaultCustomCaptionsData?.tutorialPlural,
+					defaultCustomCaptionsData?.feedbackPlural,
+					defaultCustomCaptionsData?.userPlural,
 					"Reporting",
 					"Settings",
 				]}

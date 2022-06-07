@@ -126,7 +126,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 	const {
 		showAdd,
 		details: { data },
-		defaultCustomCaptionsData: { role, rolePlural },
+		defaultCustomCaptionsData: { role, rolePlural, defectPlural },
 	} = state;
 	return (
 		<div className="container">
@@ -137,6 +137,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 				handleAddData={handleAddData}
 				getError={getError}
 				header={data?.roleCC || role}
+				defectPlural={defectPlural}
 			/>
 
 			<DeleteDialog
@@ -155,6 +156,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 				handleEditData={handleEditData}
 				getError={getError}
 				header={data?.roleCC || role}
+				defectPlural={defectPlural}
 			/>
 
 			<CommonBody {...{ haveData }}>
@@ -188,6 +190,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 						onDelete={handleDeleteDialogOpen}
 						searchQuery={searchQuery}
 						isLoading={loading}
+						defectPlural={defectPlural}
 					/>
 				</>
 			</CommonBody>

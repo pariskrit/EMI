@@ -91,14 +91,14 @@ const defaultStateSchema = {
 	userAccess: "N",
 };
 
-const listOfInputs = [
-	{ label: "Asset Models Access", name: "modelAccess" },
-	{ label: "Services Access", name: "serviceAccess" },
-	{ label: "Defects Access", name: "defectAccess" },
-	{ label: "Defect Exports Access", name: "defectExportAccess" },
-	{ label: "Notice Boards Access", name: "noticeboardAccess" },
-	{ label: "Feedback Access", name: "feedbackAccess" },
-	{ label: "Users Access", name: "userAccess" },
+const listOfInputs = (cc) => [
+	{ label: cc?.modelTemplatePlural + " Access", name: "modelAccess" },
+	{ label: cc?.servicePlural + " Access", name: "serviceAccess" },
+	{ label: cc?.defectPlural + " Access", name: "defectAccess" },
+	{ label: cc?.defect + " Exports Access", name: "defectExportAccess" },
+	{ label: cc?.tutorialPlural + " Access", name: "noticeboardAccess" },
+	{ label: cc?.feedbackPlural + " Access", name: "feedbackAccess" },
+	{ label: cc?.userPlural + " Access", name: "userAccess" },
 	{ label: "Reporting & Analytics Access", name: "analyticsAccess" },
 	{ label: "Settings", name: "settingsAccess" },
 ];
@@ -113,6 +113,7 @@ const AddDialog = ({
 	handleEditData,
 	isEdit = false,
 	header,
+	customCaptions,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -359,7 +360,7 @@ const AddDialog = ({
 								}}
 							/>
 						</Grid>
-						{listOfInputs.map((field, i) => (
+						{listOfInputs(customCaptions).map((field, i) => (
 							<Grid item xs={6} key={field.label}>
 								<ADD.InputLabel>
 									{field.label}
@@ -402,7 +403,7 @@ const AddDialog = ({
 								}
 								label={
 									<Typography style={{ fontSize: "14px" }}>
-										Allow change skipped task status
+										Allow change skipped {customCaptions?.task} status
 									</Typography>
 								}
 							/>
@@ -422,7 +423,7 @@ const AddDialog = ({
 								}
 								label={
 									<Typography style={{ fontSize: "14px" }}>
-										Allow Publication of AModel Template
+										Allow Publication of {customCaptions?.modelTemplate}
 									</Typography>
 								}
 							/>

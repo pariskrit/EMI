@@ -33,6 +33,7 @@ const EditRoleDialog = ({
 	handleEditData,
 	getError,
 	header,
+	defectPlural,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -201,7 +202,7 @@ const EditRoleDialog = ({
 											});
 										}}
 									/>
-									Can Role register defects?
+									Can Raise {defectPlural}?
 								</AED.CheckboxLabel>
 							</AED.CheckboxContainer>
 						</AED.InputContainer>
