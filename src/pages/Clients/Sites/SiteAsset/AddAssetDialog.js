@@ -122,7 +122,7 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 				<DialogTitle id="alert-dialog-title">
 					{
 						<ADD.HeaderText>
-							Add Site {customCaptions?.asset ?? "Asset"}
+							Add {customCaptions?.asset ?? "Asset"}
 						</ADD.HeaderText>
 					}
 				</DialogTitle>

@@ -319,7 +319,7 @@ const FunctionalLocations = ({
 										fullWidth
 										variant="outlined"
 										name="name"
-										label="Name"
+										label={customCaptions?.assetReference ?? "Name"}
 										onChange={handleChange}
 										value={input.name}
 										error={errors.name === null ? false : true}
@@ -347,7 +347,7 @@ const FunctionalLocations = ({
 										fullWidth
 										variant="outlined"
 										name="plannerGroup"
-										label="Planner Group"
+										label={customCaptions?.assetPlannerGroup ?? "Planner Group"}
 										onChange={handleChange}
 										value={input.plannerGroup}
 										error={errors.plannerGroup === null ? false : true}
@@ -362,7 +362,7 @@ const FunctionalLocations = ({
 										fullWidth
 										variant="outlined"
 										name="workCenter"
-										label="Work Center"
+										label={customCaptions?.assetMainWorkCenter ?? "Work Center"}
 										onChange={handleChange}
 										value={input.workCenter}
 										error={errors.workCenter === null ? false : true}
