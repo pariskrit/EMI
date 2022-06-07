@@ -21,10 +21,10 @@ const schema = yup.object({
 		.required("This field is required"),
 	plannerGroup: yup
 		.string("This field must be a string")
-		.required("This field is required"),
+		.max(50, "Maximum 50 characters"),
 	workCenter: yup
 		.string("This field must be a string")
-		.required("This field is required"),
+		.max(50, "Maximum 50 characters"),
 });
 
 const defaultInputSchema = {
