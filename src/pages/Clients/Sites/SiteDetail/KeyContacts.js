@@ -11,7 +11,7 @@ const KeyContacts = ({ contactsList, isLoading }) => {
 			<SimpleDataTable
 				isLoading={isLoading}
 				data={contactsList}
-				tableHeaders={["Name", "Product", "Email", "Phone"]}
+				tableHeaders={["Name", "Application", "Email", "Phone"]}
 			/>
 		</AccordionBox>
 	);
