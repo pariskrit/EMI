@@ -24,6 +24,7 @@ const UserDetails = ({
 	inputData,
 	setInputData,
 	role,
+	isDetailsRoute,
 }) => {
 	const { id } = useParams();
 
@@ -87,10 +88,11 @@ const UserDetails = ({
 							setErrors={setErrors}
 							getError={getError}
 							apis={apis}
-							id={+data?.userID || +id}
+							id={(+data?.userID || +id) ?? data.id}
 							clientUserId={data.clientUserID ?? data.id}
 							inputData={inputData}
 							setInputData={setInputData}
+							isDetailsRoute={isDetailsRoute}
 						/>
 					</Grid>
 					<Grid item xs={12}>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Facebook } from "react-spinners-css";
 import { makeStyles } from "@material-ui/core/styles";
 import AccordionBox from "components/Layouts/AccordionBox";
-import { Grid, TextField, Typography } from "@material-ui/core";
+import { Grid, TextField } from "@material-ui/core";
 
 import Roles from "helpers/roles";
 import RoleWrapper from "../RoleWrapper";
@@ -10,7 +10,6 @@ import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import { updateClientUserSite } from "services/users/userModelAccess";
-import { useParams } from "react-router-dom";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 
 const media = "@media(max-width: 414px)";
@@ -38,6 +37,7 @@ const UserDetail = ({
 	inputData,
 	setInputData,
 	clientUserId = null,
+	isDetailsRoute,
 }) => {
 	const classes = useStyles();
 	// const [userDetail, setUserDetail] = useState({});
@@ -140,8 +140,9 @@ const UserDetail = ({
 						<TextField
 							name="firstName"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
-							disabled={isUpdating["firstName"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["firstName"]?.isUpdating}
 							onChange={(e) => handleInputChange("firstName", e.target.value)}
 							onBlur={(e) => handleUpdateData(e)}
 							onFocus={(e) =>
@@ -159,6 +160,9 @@ const UserDetail = ({
 								endAdornment: isUpdating["firstName"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
@@ -169,6 +173,7 @@ const UserDetail = ({
 						<TextField
 							name="lastName"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
 							value={inputData?.lastName || ""}
 							onChange={(e) => handleInputChange("lastName", e.target.value)}
@@ -183,11 +188,14 @@ const UserDetail = ({
 							helperText={
 								errors["lastName"] === null ? null : errors["lastName"]
 							}
-							disabled={isUpdating["lastName"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["lastName"]?.isUpdating}
 							InputProps={{
 								endAdornment: isUpdating["lastName"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
@@ -198,6 +206,7 @@ const UserDetail = ({
 						<TextField
 							name="email"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
 							value={inputData?.email || ""}
 							onChange={(e) => handleInputChange("email", e.target.value)}
@@ -210,11 +219,14 @@ const UserDetail = ({
 							}
 							error={errors["email"] === null ? false : true}
 							helperText={errors["email"] === null ? null : errors["email"]}
-							disabled={isUpdating["email"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["email"]?.isUpdating}
 							InputProps={{
 								endAdornment: isUpdating["email"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
@@ -223,6 +235,7 @@ const UserDetail = ({
 						<TextField
 							name="phone"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
 							value={inputData?.phone || ""}
 							onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -233,71 +246,83 @@ const UserDetail = ({
 									value: e.target.value,
 								})
 							}
-							disabled={isUpdating["phone"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["phone"]?.isUpdating}
 							InputProps={{
 								endAdornment: isUpdating["phone"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
 
-					<Grid item sm={6}>
-						<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
-							<ADD.InputLabel>External Reference Number </ADD.InputLabel>
-							<TextField
-								name="externalReference"
-								variant="outlined"
-								fullWidth
-								value={inputData?.externalReference || ""}
-								onChange={(e) =>
-									handleInputChange("externalReference", e.target.value)
-								}
-								onBlur={(e) => handleUpdateData(e)}
-								onFocus={(e) =>
-									setInputValueOnFocus({
-										label: e.target.name,
-										value: e.target.value,
-									})
-								}
-								disabled={isUpdating["externalReference"]?.isUpdating}
-								InputProps={{
-									endAdornment: isUpdating["externalReference"]?.isUpdating ? (
-										<Facebook size={20} color="#A79EB4" />
-									) : null,
-								}}
-							/>
-						</RoleWrapper>
-					</Grid>
-					<Grid item sm={6}>
-						{userIsSiteUser && (
-							<ErrorInputFieldWrapper
-								errorMessage={
-									errors?.department === null ? null : errors?.department
-								}
-							>
-								<DyanamicDropdown
-									label={customCaptions?.department ?? "Department"}
-									dataHeader={[
-										{ id: 1, name: "Name" },
-										{ id: 2, name: "Description" },
-									]}
-									showHeader
-									onChange={(val) => handleInputChange("department", val)}
-									selectedValue={inputData.department || ""}
-									columns={[
-										{ name: "name", id: 1 },
-										{ name: "description", id: 2 },
-									]}
-									selectdValueToshow="name"
-									required={true}
-									isError={errors?.department ? true : false}
-									fetchData={() => getSiteDepartments(siteID)}
-									width="100%"
-								/>
-							</ErrorInputFieldWrapper>
-						)}
-					</Grid>
+					{isDetailsRoute && (
+						<>
+							<Grid item sm={6}>
+								<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
+									<ADD.InputLabel>External Reference Number </ADD.InputLabel>
+									<TextField
+										name="externalReference"
+										variant="outlined"
+										className={classes.input}
+										fullWidth
+										value={inputData?.externalReference || ""}
+										onChange={(e) =>
+											handleInputChange("externalReference", e.target.value)
+										}
+										onBlur={(e) => handleUpdateData(e)}
+										onFocus={(e) =>
+											setInputValueOnFocus({
+												label: e.target.name,
+												value: e.target.value,
+											})
+										}
+										disabled={isUpdating["externalReference"]?.isUpdating}
+										InputProps={{
+											endAdornment: isUpdating["externalReference"]
+												?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
+											style: {
+												color: "rgba(0, 0, 0, 0.87)",
+											},
+										}}
+									/>
+								</RoleWrapper>
+							</Grid>
+							<Grid item sm={6}>
+								{userIsSiteUser && (
+									<ErrorInputFieldWrapper
+										errorMessage={
+											errors?.department === null ? null : errors?.department
+										}
+									>
+										<DyanamicDropdown
+											label={customCaptions?.department ?? "Department"}
+											dataHeader={[
+												{ id: 1, name: "Name" },
+												{ id: 2, name: "Description" },
+											]}
+											showHeader
+											onChange={(val) => handleInputChange("department", val)}
+											selectedValue={inputData.department || ""}
+											columns={[
+												{ name: "name", id: 1 },
+												{ name: "description", id: 2 },
+											]}
+											selectdValueToshow="name"
+											required={true}
+											isError={errors?.department ? true : false}
+											fetchData={() => getSiteDepartments(siteID)}
+											width="100%"
+										/>
+									</ErrorInputFieldWrapper>
+								)}
+							</Grid>
+						</>
+					)}
 				</Grid>
 			</div>
 			<div className={classes.mobileViewUserDetail}>
@@ -309,8 +334,9 @@ const UserDetail = ({
 						<TextField
 							name="firstName"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
-							disabled={isUpdating["firstName"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["firstName"]?.isUpdating}
 							onChange={(e) => handleInputChange("firstName", e.target.value)}
 							onBlur={(e) => handleUpdateData(e)}
 							onFocus={(e) =>
@@ -328,6 +354,9 @@ const UserDetail = ({
 								endAdornment: isUpdating["firstName"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
@@ -338,6 +367,7 @@ const UserDetail = ({
 						<TextField
 							name="lastName"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
 							value={inputData?.lastName || ""}
 							onChange={(e) => handleInputChange("lastName", e.target.value)}
@@ -352,11 +382,14 @@ const UserDetail = ({
 							helperText={
 								errors["lastName"] === null ? null : errors["lastName"]
 							}
-							disabled={isUpdating["lastName"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["lastName"]?.isUpdating}
 							InputProps={{
 								endAdornment: isUpdating["lastName"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
@@ -367,6 +400,7 @@ const UserDetail = ({
 						<TextField
 							name="email"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
 							value={inputData?.email || ""}
 							onChange={(e) => handleInputChange("email", e.target.value)}
@@ -379,11 +413,14 @@ const UserDetail = ({
 							}
 							error={errors["email"] === null ? false : true}
 							helperText={errors["email"] === null ? null : errors["email"]}
-							disabled={isUpdating["email"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["email"]?.isUpdating}
 							InputProps={{
 								endAdornment: isUpdating["email"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
@@ -392,6 +429,7 @@ const UserDetail = ({
 						<TextField
 							name="phone"
 							variant="outlined"
+							className={classes.input}
 							fullWidth
 							value={inputData?.phone || ""}
 							onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -402,71 +440,82 @@ const UserDetail = ({
 									value: e.target.value,
 								})
 							}
-							disabled={isUpdating["phone"]?.isUpdating}
+							disabled={isDetailsRoute || isUpdating["phone"]?.isUpdating}
 							InputProps={{
 								endAdornment: isUpdating["phone"]?.isUpdating ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+								style: {
+									color: "rgba(0, 0, 0, 0.87)",
+								},
 							}}
 						/>
 					</Grid>
 
-					<Grid item xs={12}>
-						<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
-							<ADD.InputLabel>External Reference Number </ADD.InputLabel>
-							<TextField
-								name="externalRef"
-								variant="outlined"
-								fullWidth
-								value={inputData?.externalReference || ""}
-								onChange={(e) =>
-									handleInputChange("externalRef", e.target.value)
-								}
-								onBlur={(e) => handleUpdateData(e)}
-								onFocus={(e) =>
-									setInputValueOnFocus({
-										label: e.target.name,
-										value: e.target.value,
-									})
-								}
-								disabled={isUpdating["externalRef"]?.isUpdating}
-								InputProps={{
-									endAdornment: isUpdating["externalRef"]?.isUpdating ? (
-										<Facebook size={20} color="#A79EB4" />
-									) : null,
-								}}
-							/>
-						</RoleWrapper>
-					</Grid>
-					<Grid item xs={12}>
-						{userIsSiteUser && (
-							<ErrorInputFieldWrapper
-								errorMessage={
-									errors?.department === null ? null : errors?.department
-								}
-							>
-								<DyanamicDropdown
-									label={customCaptions?.department ?? "Department"}
-									dataHeader={[
-										{ id: 1, name: "Name" },
-										{ id: 2, name: "Description" },
-									]}
-									showHeader
-									onChange={(val) => handleInputChange("department", val)}
-									selectedValue={inputData.department || ""}
-									columns={[
-										{ name: "name", id: 1 },
-										{ name: "description", id: 2 },
-									]}
-									selectdValueToshow="name"
-									required={true}
-									isError={errors?.department ? true : false}
-									fetchData={() => getSiteDepartments(siteID)}
-									width="100%"
-								/>
-							</ErrorInputFieldWrapper>
-						)}
-					</Grid>
+					{isDetailsRoute && (
+						<>
+							<Grid item xs={12}>
+								<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>
+									<ADD.InputLabel>External Reference Number </ADD.InputLabel>
+									<TextField
+										name="externalRef"
+										variant="outlined"
+										className={classes.input}
+										fullWidth
+										value={inputData?.externalReference || ""}
+										onChange={(e) =>
+											handleInputChange("externalRef", e.target.value)
+										}
+										onBlur={(e) => handleUpdateData(e)}
+										onFocus={(e) =>
+											setInputValueOnFocus({
+												label: e.target.name,
+												value: e.target.value,
+											})
+										}
+										disabled={isUpdating["externalRef"]?.isUpdating}
+										InputProps={{
+											endAdornment: isUpdating["externalRef"]?.isUpdating ? (
+												<Facebook size={20} color="#A79EB4" />
+											) : null,
+											style: {
+												color: "rgba(0, 0, 0, 0.87)",
+											},
+										}}
+									/>
+								</RoleWrapper>
+							</Grid>
+							<Grid item xs={12}>
+								{userIsSiteUser && (
+									<ErrorInputFieldWrapper
+										errorMessage={
+											errors?.department === null ? null : errors?.department
+										}
+									>
+										<DyanamicDropdown
+											label={customCaptions?.department ?? "Department"}
+											dataHeader={[
+												{ id: 1, name: "Name" },
+												{ id: 2, name: "Description" },
+											]}
+											showHeader
+											onChange={(val) => handleInputChange("department", val)}
+											selectedValue={inputData.department || ""}
+											columns={[
+												{ name: "name", id: 1 },
+												{ name: "description", id: 2 },
+											]}
+											selectdValueToshow="name"
+											required={true}
+											isError={errors?.department ? true : false}
+											fetchData={() => getSiteDepartments(siteID)}
+											width="100%"
+										/>
+									</ErrorInputFieldWrapper>
+								)}
+							</Grid>
+						</>
+					)}
 				</Grid>
 			</div>
 		</AccordionBox>

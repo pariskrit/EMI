@@ -211,6 +211,7 @@ const SingleComponent = (route) => {
 							setInputData={setInputData}
 							showExternalReferenceNumber={route.showExternalReferenceNumber}
 							role={role}
+							isDetailsRoute={route.name === "Details" && role !== "SuperAdmin"}
 						/>
 					}
 				</div>

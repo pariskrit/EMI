@@ -29,7 +29,7 @@ const routes = [
 	},
 	{
 		id: 100,
-		name: "Details",
+		name: "Profile",
 		path: userProfilePath,
 		component: CommonUserComponent,
 		showHistory: true,
