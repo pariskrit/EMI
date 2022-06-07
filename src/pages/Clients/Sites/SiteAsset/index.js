@@ -14,6 +14,7 @@ import { siteScreenNavigation } from "helpers/constants";
 import ImportListDialog from "./ImportListDialog";
 import { showError } from "redux/common/actions";
 import { DefaultPageSize } from "helpers/constants";
+import { getLocalStorageData } from "helpers/utils";
 
 const SiteAsset = ({ fetchCrumbs, getError }) => {
 	const history = useHistory();
@@ -23,6 +24,24 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 	const [count, setCount] = useState(null);
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
+
+	const { role, isSiteUser, customCaptions } = getLocalStorageData("me");
+	let navigation = siteScreenNavigation;
+
+	// User is Site User
+	if (role === "SiteUser" || isSiteUser)
+		navigation = [
+			{ name: "Details", url: siteScreenNavigation[0].url },
+			{ name: customCaptions?.assetPlural, url: siteScreenNavigation[1].url },
+			{
+				name: customCaptions?.departmentPlural,
+				url: siteScreenNavigation[2].url,
+			},
+			{
+				name: customCaptions?.locationPlural,
+				url: siteScreenNavigation[3].url,
+			},
+		];
 
 	const fetchSiteAssets = async (pNo) => {
 		try {
@@ -112,18 +131,9 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 				fetchSiteAssets={fetchSiteAssets}
 			/>
 
-			{/* <Assets
-				data={data}
-				count={count}
-				siteId={id}
-				isLoading={isLoading}
-				fetchAsset={fetchAset}
-				getError={getError}
-				setData={setData}
-			/> */}
 			<SiteWrapper
-				current="Assets"
-				navigation={siteScreenNavigation}
+				current={customCaptions?.assetPlural ?? "Assets"}
+				navigation={navigation}
 				onNavClick={(urlToGo) =>
 					history.push(`/app/clients/${clientId}/sites/${id}${urlToGo}`)
 				}
@@ -141,6 +151,8 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 						isLoading={isLoading}
 						fetchAsset={fetchAset}
 						getError={getError}
+						isSiteUser={role === "SiteUser" || isSiteUser}
+						customCaptions={customCaptions}
 					/>
 				)}
 			/>

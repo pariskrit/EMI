@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { fetchSiteDetail } from "redux/siteDetail/actions";
 import { siteScreenNavigation } from "helpers/constants";
 import { showError } from "redux/common/actions";
+import { getLocalStorageData } from "helpers/utils";
 
 const SiteLocationsScreen = ({ handlefetchSiteDetail, getError }) => {
 	const { id, clientId } = useParams();
@@ -17,6 +18,23 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail, getError }) => {
 	const [modal, setModal] = useState({ add: false });
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsloading] = useState(true);
+	const { role, isSiteUser, customCaptions } = getLocalStorageData("me");
+	let navigation = siteScreenNavigation;
+
+	// User is Site User
+	if (role === "SiteUser" || isSiteUser)
+		navigation = [
+			{ name: "Details", url: siteScreenNavigation[0].url },
+			{ name: customCaptions?.assetPlural, url: siteScreenNavigation[1].url },
+			{
+				name: customCaptions?.departmentPlural,
+				url: siteScreenNavigation[2].url,
+			},
+			{
+				name: customCaptions?.locationPlural,
+				url: siteScreenNavigation[3].url,
+			},
+		];
 
 	const fetchSiteDepartments = async () => {
 		try {
@@ -68,8 +86,8 @@ const SiteLocationsScreen = ({ handlefetchSiteDetail, getError }) => {
 			/>
 
 			<SiteWrapper
-				current="Locations"
-				navigation={siteScreenNavigation}
+				current={customCaptions?.locationPlural ?? "Locations"}
+				navigation={navigation}
 				onNavClick={(urlToGo) =>
 					history.push(`/app/clients/${clientId}/sites/${id}${urlToGo}`)
 				}

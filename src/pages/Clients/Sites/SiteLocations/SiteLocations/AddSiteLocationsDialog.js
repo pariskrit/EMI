@@ -6,7 +6,11 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { handleValidateObj, generateErrorState } from "helpers/utils";
+import {
+	handleValidateObj,
+	generateErrorState,
+	getLocalStorageData,
+} from "helpers/utils";
 import { addSiteLocations } from "services/clients/sites/siteLocations";
 
 // Init styled components
@@ -58,6 +62,7 @@ const AddLocationsDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const { customCaptions } = getLocalStorageData("me");
 
 	// Handlers
 	const closeOverride = () => {
@@ -165,7 +170,11 @@ const AddLocationsDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add Location</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								Add {customCaptions?.location ?? "Location"}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -176,7 +185,7 @@ const AddLocationsDialog = ({
 							variant="contained"
 							className={classes.createButton}
 						>
-							Add Location
+							Add {customCaptions?.location ?? "Location"}
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>

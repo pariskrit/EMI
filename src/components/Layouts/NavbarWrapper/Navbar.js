@@ -368,6 +368,7 @@ function Navbar({
 
 	const handleSavePath = (settingType) => {
 		sessionStorage.setItem("settingType", settingType);
+		onHoverSettings();
 	};
 
 	const handleDrawerChange = () => {

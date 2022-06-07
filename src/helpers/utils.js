@@ -222,8 +222,14 @@ export function MuiFormatDate(d) {
 }
 
 export const getLocalStorageData = (type) => {
-	const storage = JSON.stringify(
-		sessionStorage.getItem(type) || localStorage.getItem(type)
-	);
-	return JSON.parse(storage);
+	let storage = sessionStorage.getItem(type) || localStorage.getItem(type);
+
+	try {
+		return JSON.parse(storage);
+	} catch (error) {
+		storage = JSON.stringify(
+			sessionStorage.getItem(type) || localStorage.getItem(type)
+		);
+		return JSON.parse(storage);
+	}
 };

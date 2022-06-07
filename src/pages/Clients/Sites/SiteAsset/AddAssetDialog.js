@@ -6,7 +6,11 @@ import {
 	LinearProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import {
+	generateErrorState,
+	getLocalStorageData,
+	handleValidateObj,
+} from "helpers/utils";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
 
@@ -61,6 +65,7 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
+	const { customCaptions } = getLocalStorageData("me");
 
 	const closeOverride = () => {
 		handleClose();
@@ -115,7 +120,11 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					{<ADD.HeaderText>Add Site Assets</ADD.HeaderText>}
+					{
+						<ADD.HeaderText>
+							Add Site {customCaptions?.asset ?? "Asset"}
+						</ADD.HeaderText>
+					}
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -127,7 +136,7 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 						className={classes.createButton}
 						disabled={loading}
 					>
-						Add Asset
+						Add {customCaptions?.asset ?? "Asset"}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
 			</ADD.ActionContainer>
@@ -136,7 +145,8 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
 							<ADD.NameLabel>
-								Asset<ADD.RequiredStar>*</ADD.RequiredStar>
+								{customCaptions?.asset ?? "Asset"}
+								<ADD.RequiredStar>*</ADD.RequiredStar>
 							</ADD.NameLabel>
 							<ADD.NameInput
 								error={errors.name === null ? false : true}

@@ -9,7 +9,11 @@ import {
 } from "@material-ui/core";
 import CurveButton from "components/Elements/CurveButton";
 import ColourConstants from "helpers/colourConstants";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import {
+	generateErrorState,
+	getLocalStorageData,
+	handleValidateObj,
+} from "helpers/utils";
 import { editSiteAsset } from "services/clients/sites/siteAssets";
 import { getSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 import EditDialogStyle from "styles/application/EditDialogStyle";
@@ -78,6 +82,7 @@ const EditAssetDialog = ({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [isAddNew, setIsAddNew] = useState(false);
 	const [functionalLocations, setFunctionalLocations] = useState([]);
+	const { customCaptions } = getLocalStorageData("me");
 
 	useEffect(() => {
 		if (open && editData !== null) {
@@ -223,7 +228,7 @@ const EditAssetDialog = ({
 			{loading ? <LinearProgress /> : null}
 			<ET.ActionContainer>
 				<DialogTitle id="alert-dialog-title">
-					<ET.HeaderText>Edit Asset</ET.HeaderText>
+					<ET.HeaderText>Edit {customCaptions?.asset ?? "Asset"}</ET.HeaderText>
 				</DialogTitle>
 				<ET.ButtonContainer>
 					<ET.CancelButton onClick={closeOverride} variant="contained">
@@ -240,7 +245,8 @@ const EditAssetDialog = ({
 						<ET.LeftInputContainer>
 							<div className={classes.inputContainer}>
 								<ET.NameLabel>
-									Asset<ET.RequiredStar>*</ET.RequiredStar>
+									{customCaptions?.asset ?? "Asset"}
+									<ET.RequiredStar>*</ET.RequiredStar>
 								</ET.NameLabel>
 								<TextField
 									name="name"
@@ -283,7 +289,8 @@ const EditAssetDialog = ({
 
 				<div className={classes.headContainer}>
 					<div className={classes.header}>
-						Functional Locations ({functionalLocations.length})
+						{customCaptions?.assetReferencePlural ?? "Functional Locations"} (
+						{functionalLocations.length})
 					</div>
 
 					<Typography className={classes.infoText}>

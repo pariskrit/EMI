@@ -8,6 +8,7 @@ import ContentStyle from "styles/application/ContentStyle";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import EditDialog from "./EditModal";
 import "./site.scss";
+import { getLocalStorageData } from "helpers/utils";
 
 const AC = ContentStyle();
 
@@ -18,6 +19,7 @@ const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
 	const [selectedID, setSelectedID] = useState(null);
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const { customCaptions } = getLocalStorageData("me");
 
 	useEffect(() => {
 		setDepartments(data);
@@ -89,9 +91,11 @@ const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
 
 			<div className="detailsContainer">
 				<DetailsPanel
-					header={"Departments"}
+					header={customCaptions?.departmentPlural ?? "Departments"}
 					dataCount={departments.length}
-					description="Create and manage departments"
+					description={`Create and manage ${
+						customCaptions?.departmentPlural ?? "departments"
+					}`}
 				/>
 				<AC.SearchContainer>
 					<AC.SearchInner className="applicationSearchBtn">
@@ -103,7 +107,9 @@ const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
 								<AC.SearchInput
 									value={searchQuery}
 									onChange={handleSearch}
-									label="Search Departments"
+									label={`Search ${
+										customCaptions?.departmentPlural ?? "Departments"
+									}`}
 								/>
 							</Grid>
 						</Grid>

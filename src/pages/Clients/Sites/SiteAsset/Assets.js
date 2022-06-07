@@ -24,7 +24,16 @@ const debounce = (func, delay) => {
 
 const AC = ContentStyle();
 
-const Assets = ({ data, count, siteId, isLoading, fetchAsset, getError }) => {
+const Assets = ({
+	data,
+	count,
+	siteId,
+	isLoading,
+	fetchAsset,
+	getError,
+	isSiteUser,
+	customCaptions,
+}) => {
 	const [assets, setAsset] = useState([]);
 	const [modal, setModal] = useState({ delete: false, edit: false });
 	const [assetId, setId] = useState(null);
@@ -133,9 +142,11 @@ const Assets = ({ data, count, siteId, isLoading, fetchAsset, getError }) => {
 			<div>
 				<div className="detailsContainer">
 					<DetailsPanel
-						header={"Assets"}
+						header={isSiteUser ? customCaptions?.assetPlural : "Assets"}
 						dataCount={total}
-						description="Create and manage assets that can be assigned in zone maintenance"
+						description={`Create and manage ${
+							isSiteUser ? customCaptions?.assetPlural : "assets"
+						} that can be assigned in zone maintenance`}
 					/>
 
 					<AC.SearchContainer>
@@ -147,7 +158,11 @@ const Assets = ({ data, count, siteId, isLoading, fetchAsset, getError }) => {
 								<Grid item>
 									<AC.SearchInput
 										onChange={(e) => handleSearch(e.target.value)}
-										label="Search"
+										label={
+											isSiteUser
+												? `Search ${customCaptions?.assetPlural}`
+												: "Search Assets"
+										}
 									/>
 								</Grid>
 							</Grid>
@@ -157,7 +172,10 @@ const Assets = ({ data, count, siteId, isLoading, fetchAsset, getError }) => {
 				<ClientSiteTable
 					data={assets}
 					columns={["name", "description"]}
-					headers={["Asset", "Description"]}
+					headers={[
+						isSiteUser ? customCaptions?.asset : "Asset",
+						"Description",
+					]}
 					onEdit={handleEdit}
 					onDelete={(id) => {
 						setModal((th) => ({ ...th, delete: true }));

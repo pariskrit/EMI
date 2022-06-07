@@ -3,7 +3,11 @@ import { Grid, makeStyles, TextField, Typography } from "@material-ui/core";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import {
+	generateErrorState,
+	getLocalStorageData,
+	handleValidateObj,
+} from "helpers/utils";
 import useOutsideClick from "hooks/useOutsideClick";
 import {
 	deleteSiteAssetReferences,
@@ -101,6 +105,7 @@ const FunctionalLocations = ({
 	const [isEdit, setIsEdit] = useState(false);
 	const [input, setInput] = useState(defaultInputSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const { customCaptions } = getLocalStorageData("me");
 
 	// Click outside the component and set to false
 
@@ -251,7 +256,7 @@ const FunctionalLocations = ({
 										fullWidth
 										variant="outlined"
 										name="name"
-										label="Name"
+										label={customCaptions?.assetReference ?? "Name"}
 										onChange={handleChange}
 										value={input.name}
 										error={errors.name === null ? false : true}
@@ -280,7 +285,7 @@ const FunctionalLocations = ({
 										fullWidth
 										variant="outlined"
 										name="plannerGroup"
-										label="Planner Group"
+										label={customCaptions?.assetPlannerGroup ?? "Planner Group"}
 										onChange={handleChange}
 										value={input.plannerGroup}
 										error={errors.plannerGroup === null ? false : true}
@@ -295,7 +300,7 @@ const FunctionalLocations = ({
 										fullWidth
 										variant="outlined"
 										name="workCenter"
-										label="Work Center"
+										label={customCaptions?.assetMainWorkCenter ?? "Work Center"}
 										onChange={handleChange}
 										value={input.workCenter}
 										error={errors.workCenter === null ? false : true}

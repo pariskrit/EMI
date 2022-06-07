@@ -5,7 +5,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { handleValidateObj, generateErrorState } from "helpers/utils";
+import {
+	handleValidateObj,
+	generateErrorState,
+	getLocalStorageData,
+} from "helpers/utils";
 import { addSiteDepartments } from "services/clients/sites/siteDepartments";
 
 // Init styled components
@@ -58,6 +62,7 @@ const AddDepartmentDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const { customCaptions } = getLocalStorageData("me");
 
 	// Handlers
 	const closeOverride = () => {
@@ -166,7 +171,11 @@ const AddDepartmentDialog = ({
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>Add Department</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								Add {customCaptions?.department ?? "Department"}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<ADD.CancelButton onClick={closeOverride} variant="contained">
@@ -177,7 +186,7 @@ const AddDepartmentDialog = ({
 							variant="contained"
 							className={classes.createButton}
 						>
-							Add Department
+							Add {customCaptions?.department ?? "Department"}
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
 				</ADD.ActionContainer>

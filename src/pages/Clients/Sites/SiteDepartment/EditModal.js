@@ -4,7 +4,11 @@ import React, { useState, useEffect } from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import { handleValidateObj, generateErrorState } from "helpers/utils";
+import {
+	handleValidateObj,
+	generateErrorState,
+	getLocalStorageData,
+} from "helpers/utils";
 import { editSiteDepartments } from "services/clients/sites/siteDepartments";
 
 // Init styled components
@@ -27,6 +31,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const { customCaptions } = getLocalStorageData("me");
 
 	// Handlers
 	const closeOverride = () => {
@@ -149,7 +154,11 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 
 				<AED.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<AED.HeaderText>Edit Department</AED.HeaderText>}
+						{
+							<AED.HeaderText>
+								Edit {customCaptions?.department ?? "Department"}
+							</AED.HeaderText>
+						}
 					</DialogTitle>
 					<AED.ButtonContainer>
 						<AED.CancelButton onClick={closeHandler} variant="contained">
