@@ -7,7 +7,11 @@ import {
 	TableHead,
 	TableRow,
 } from "@material-ui/core";
-import { isoDateWithoutTimeZone, sortFromDate } from "helpers/utils";
+import {
+	dateDifference,
+	isoDateWithoutTimeZone,
+	sortFromDate,
+} from "helpers/utils";
 
 function PeopleTile({ classes, data = [], customCaptions }) {
 	return (
@@ -19,6 +23,7 @@ function PeopleTile({ classes, data = [], customCaptions }) {
 							<TableCell style={{ width: "170px" }}>User</TableCell>
 							<TableCell>Start Time</TableCell>
 							<TableCell>End Time</TableCell>
+							<TableCell>Total Time</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -34,8 +39,9 @@ function PeopleTile({ classes, data = [], customCaptions }) {
 									<TableCell style={{ width: "170px" }}>
 										{isoDateWithoutTimeZone(row?.endDate)}
 									</TableCell>
-
-									{/* <TableCell style={{ width: "100px" }}>{changeDate(row.date)}</TableCell> */}
+									<TableCell style={{ width: "170px" }}>
+										{dateDifference(row?.endDate, row?.startDate)}
+									</TableCell>
 								</TableRow>
 							))
 						) : (

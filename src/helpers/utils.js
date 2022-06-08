@@ -233,3 +233,26 @@ export const getLocalStorageData = (type) => {
 		return JSON.parse(storage);
 	}
 };
+
+export const dateDifference = (end, start) => {
+	if (end === null || start === null) return "";
+	// get total seconds between the times
+	let delta = Math.abs(new Date(end) - new Date(start)) / 1000;
+
+	// calculate (and subtract)  days
+	let days = Math.floor(delta / 86400);
+	delta -= days * 86400;
+
+	// calculate (and subtract)  hours
+	let hours = Math.floor(delta / 3600) % 24;
+	delta -= hours * 3600;
+
+	// calculate (and subtract)  minutes
+	let minutes = Math.floor(delta / 60) % 60;
+
+	return `${days === 0 ? "" : days === 1 ? `${days} day` : `${days} days`} ${
+		hours === 0 ? "" : hours === 1 ? `${hours} hr` : `${hours} hrs`
+	} ${
+		minutes === 0 ? "" : minutes === 1 ? `${minutes} min` : `${minutes} mins`
+	} `;
+};
