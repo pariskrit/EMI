@@ -253,6 +253,10 @@ export const dateDifference = (end, start) => {
 	return `${days === 0 ? "" : days === 1 ? `${days} day` : `${days} days`} ${
 		hours === 0 ? "" : hours === 1 ? `${hours} hr` : `${hours} hrs`
 	} ${
-		minutes === 0 ? "" : minutes === 1 ? `${minutes} min` : `${minutes} mins`
+		minutes === 0
+			? "0 mins"
+			: minutes === 1
+			? `${minutes} min`
+			: `${minutes} mins`
 	} `;
 };
