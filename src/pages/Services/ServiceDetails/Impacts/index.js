@@ -14,11 +14,11 @@ import {
 } from "services/services/impacts";
 import CommonTable from "./CommonTable";
 import { dateDifference } from "helpers/utils";
-const { customCaptions } = getLocalStorageData("me");
-const allData = [
+
+const getAllData = (customCaptions) => [
 	{
 		id: 1,
-		title: customCaptions.pauseReasonPlural ?? "Pause Reasons",
+		title: customCaptions?.pauseReasonPlural ?? "Pause Reasons",
 		data: [],
 		columns: [
 			"userName",
@@ -31,15 +31,15 @@ const allData = [
 	},
 	{
 		id: 2,
-		title: customCaptions.stopReasonPlural ?? "Stop Reasons",
+		title: customCaptions?.stopReasonPlural ?? "Stop Reasons",
 		data: [],
 		columns: ["displayName", "endDate", "stopReason", "otherReason"],
 		headers: ["User", "End Time", "Reason", "Other Reason"],
 	},
 	{
 		id: 3,
-		title: `Missing ${customCaptions.partPlural ?? "Part"} And ${
-			customCaptions.toolPlural ?? "Tools"
+		title: `Missing ${customCaptions?.partPlural ?? "Part"} And ${
+			customCaptions?.toolPlural ?? "Tools"
 		}`,
 		data: [],
 		columns: ["userName", "toolName", "quantity", "reasonName", "otherReason"],
@@ -53,7 +53,7 @@ const allData = [
 	},
 	{
 		id: 4,
-		title: `Skipped ${customCaptions.taskPlural ?? "Tasks"}`,
+		title: `Skipped ${customCaptions?.taskPlural ?? "Tasks"}`,
 		data: [],
 		columns: [
 			"stageName",
@@ -75,7 +75,9 @@ const allData = [
 
 function Impacts() {
 	const { id } = useParams();
-	const [data, setData] = useState(allData);
+	const { customCaptions } = getLocalStorageData("me");
+
+	const [data, setData] = useState(getAllData(customCaptions));
 	const [loading, setLoading] = useState(true);
 	const dispatch = useDispatch();
 
@@ -90,7 +92,11 @@ function Impacts() {
 
 		if (response.some((res) => !res.status)) {
 			const errorTileIndex = response.findIndex((res) => !res.status);
-			dispatch(showError("Could not fetch " + allData[errorTileIndex].title));
+			dispatch(
+				showError(
+					response[errorTileIndex].data?.detail || "Could not fetch data"
+				)
+			);
 		}
 		const pause = response[0].data
 			? response[0].data.map((pause) => ({
@@ -107,8 +113,8 @@ function Impacts() {
 					endDate: isoDateWithoutTimeZone(stop.endDate + "Z"),
 			  }))
 			: [];
-		setData(
-			allData.map((d, index) => ({
+		setData((prev) =>
+			prev.map((d, index) => ({
 				...d,
 				data: index === 0 ? pause : index === 1 ? stop : response[index].data,
 			}))
