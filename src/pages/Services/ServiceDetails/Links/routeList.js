@@ -5,6 +5,7 @@ import {
 	serviceTimes,
 } from "helpers/routePaths";
 import ServiceDetailContent from "../Detail";
+import Impacts from "../Impacts";
 import Defects from "../Defects";
 
 const routeList = (detail, customCaptions) => [
@@ -25,7 +26,7 @@ const routeList = (detail, customCaptions) => [
 		ModelName: "Impacts",
 		name: "Impacts",
 		path: serviceImpact,
-		component: ServiceDetailContent,
+		component: Impacts,
 		showSave: false,
 		showChangeStatus: false,
 		showSaveChanges: false,
