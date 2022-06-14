@@ -254,6 +254,7 @@ const DefectListTable = ({
 											width: headers[i]?.width || "auto",
 											minWidth: headers[i]?.minWidth || "auto",
 											maxWidth: "500px",
+											whiteSpace: "normal",
 										}}
 									>
 										<AT.CellContainer key={col}>
