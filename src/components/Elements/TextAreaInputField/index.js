@@ -23,6 +23,7 @@ function TextAreaInputField({
 	onKeyPress,
 	onBlur,
 	disabled,
+	...props
 }) {
 	const classes = useStyles();
 
@@ -35,6 +36,7 @@ function TextAreaInputField({
 			onChange={onChange}
 			disabled={disabled}
 			className={classes.textInput}
+			{...props}
 		/>
 	);
 }

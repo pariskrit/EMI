@@ -5,6 +5,7 @@ import { ReactComponent as UserIcon } from "assets/icons/usersIcon.svg";
 import { ReactComponent as ModelIcon } from "assets/icons/modelsIcon.svg";
 import { ReactComponent as ServiceIcon } from "assets/icons/services.svg";
 import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
+import { ReactComponent as DefectsIcon } from "assets/icons/defects.svg";
 
 import access from "helpers/access";
 import roles from "helpers/roles";
@@ -58,12 +59,12 @@ const navList = [
 		roles: "",
 	},
 	{
-		activeName: "Users",
-		name: "Users",
-		icon: UserIcon,
-		path: usersPath,
-		access: access.userAccess,
-		roles: [roles.superAdmin, roles.clientAdmin, roles.siteUser],
+		activeName: "Services",
+		name: "Services",
+		icon: ServiceIcon,
+		path: servicesPath,
+		access: access.serviceAccess,
+		roles: "",
 	},
 	{
 		activeName: "Analytics",
@@ -74,17 +75,9 @@ const navList = [
 		roles: [roles.superAdmin, roles.clientAdmin],
 	},
 	{
-		activeName: "Services",
-		name: "Services",
-		icon: ServiceIcon,
-		path: servicesPath,
-		access: access.serviceAccess,
-		roles: "",
-	},
-	{
 		activeName: "Defects",
 		name: "Defects",
-		icon: ModelIcon,
+		icon: DefectsIcon,
 		path: defectsPath,
 		access: access.defectAccess,
 		roles: "",
@@ -123,7 +116,14 @@ const navList = [
 		access: access.noticeboardAccess,
 		roles: "",
 	},
-
+	{
+		activeName: "Users",
+		name: "Users",
+		icon: UserIcon,
+		path: usersPath,
+		access: access.userAccess,
+		roles: [roles.superAdmin, roles.clientAdmin, roles.siteUser],
+	},
 	{
 		activeName: "Setting",
 		name: "Setting",

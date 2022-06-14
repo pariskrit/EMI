@@ -152,3 +152,7 @@ export const statusOptions = [
 ];
 
 export const statusTypeClassification = { 1: "C", 2: "O" };
+
+export const DEFECTS_STORAGE_STATUS = "defects-status";
+export const DEFECTS_STORAGE_DEPARTMENT = "defects-department";
+export const DEFECTS_STORAGE_TIMEFRAME = "defects-timeFrame";

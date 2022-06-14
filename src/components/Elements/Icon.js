@@ -6,6 +6,7 @@ import { ReactComponent as CompleteIcon } from "assets/icons/complete.svg";
 import { ReactComponent as ScheduleIcon } from "assets/icons/Scheduled.svg";
 import { ReactComponent as InProgressIcon } from "assets/icons/in-progress.svg";
 import { ReactComponent as CheckedOutIcon } from "assets/icons/checked-out.svg";
+import { ReactComponent as SafteryCritical } from "assets/icons/safety-critical.svg";
 
 function Icon({ name, fontSize = "12px", className }) {
 	switch (name) {
@@ -41,6 +42,8 @@ function Icon({ name, fontSize = "12px", className }) {
 
 		case "Incomplete":
 			return <CheckedOutIcon style={{ fontSize }} />;
+		case "SafteryCritical":
+			return <SafteryCritical style={{ fontSize }} />;
 
 		default:
 			return "No Such Icon";

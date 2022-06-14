@@ -1,7 +1,7 @@
 import React from "react";
 
-const Defects = () => {
-	return <h1>Defects Page</h1>;
+const DefectsPage = (props) => {
+	return <div>{props.children}</div>;
 };
 
-export default Defects;
+export default DefectsPage;

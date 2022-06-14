@@ -130,6 +130,9 @@ const BASE_API_PATH_SERVICES = `${BASE_API_PATH}services`;
 // Services Notes
 const BASE_API_PATH_SERVICES_NOTES = `${BASE_API_PATH}ServiceNotes`;
 
+// Defects
+const BASE_API_PATH_DEFECTS = `${BASE_API_PATH}Defects`;
+
 export const Apis = {
 	// register email
 	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
@@ -287,4 +290,7 @@ export const Apis = {
 	// Services
 	Services: `${BASE_API_PATH_SERVICES}`,
 	ServiceNotes: `${BASE_API_PATH_SERVICES_NOTES}`,
+
+	// Defects
+	Defects: `${BASE_API_PATH_DEFECTS}`,
 };
