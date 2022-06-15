@@ -37,7 +37,9 @@ function Defects({ state, customCaptions, siteAppID, serviceId }) {
 								</Link>
 							),
 							audio: (
-								<>{x?.audio ? <AudioPlayer audioSource={x?.audio} /> : ""}</>
+								<>
+									{x?.audioURL ? <AudioPlayer audioSource={x?.audioURL} /> : ""}
+								</>
 							),
 							defectStatusName: (
 								<span

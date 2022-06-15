@@ -84,63 +84,66 @@ function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
 											<TableCell key={i}>{row[col]}</TableCell>
 										))}
 									</TableRow>
-									<TableRow>
-										<TableCell colSpan={8}>
-											<AT.TableContainer
-												style={{ maxWidth: "90vw", overflowX: "auto" }}
-											>
-												<Table aria-label="Table">
-													<AT.TableHead>
-														<TableRow className={classes.tableHead}>
-															<TableCell
-																style={{
-																	width: "auto",
-																	paddingLeft: "20px",
-																}}
-																className={clsx(classes.nameRow, {
-																	[classes.tableHeadRow]: true,
-																})}
-															>
-																<AT.CellContainer className="flex justify-between">
-																	{customCaptions?.defect} Images
-																</AT.CellContainer>
-															</TableCell>
-														</TableRow>
-													</AT.TableHead>
-													<TableBody>
-														<TableRow>
-															<div
-																style={{
-																	display: "flex",
-																	gap: 30,
-																	padding: "20px",
-																}}
-															>
-																{row.images.length !== 0
-																	? row.images?.map((img) => (
-																			<img
-																				key={img.id}
-																				style={{
-																					width: 150,
-																					height: 150,
-																					cursor: "pointer",
-																				}}
-																				src={img.imageURL}
-																				alt=""
-																				onClick={() => {
-																					setImageToview(img.imageURL);
-																					setOpenImageViewer(true);
-																				}}
-																			/>
-																	  ))
-																	: "No any Images"}{" "}
-															</div>
-														</TableRow>
-													</TableBody>
-												</Table>
-											</AT.TableContainer>
-										</TableCell>
-									</TableRow>
+									{row.images?.length > 0 && (
+										<TableRow>
+											<TableCell colSpan={8}>
+												<AT.TableContainer
+													style={{ maxWidth: "90vw", overflowX: "auto" }}
+												>
+													<Table aria-label="Table">
+														<AT.TableHead>
+															<TableRow className={classes.tableHead}>
+																<TableCell
+																	style={{
+																		width: "auto",
+																		paddingLeft: "20px",
+																	}}
+																	className={clsx(classes.nameRow, {
+																		[classes.tableHeadRow]: true,
+																	})}
+																>
+																	<AT.CellContainer className="flex justify-between">
+																		{customCaptions?.defect} Images
+																	</AT.CellContainer>
+																</TableCell>
+															</TableRow>
+														</AT.TableHead>
+														<TableBody>
+															<TableRow>
+																<div
+																	style={{
+																		display: "flex",
+																		gap: 30,
+																		padding: "20px",
+																	}}
+																>
+																	{row.images.length !== 0
+																		? row.images?.map((img) => (
+																				<img
+																					key={img.id}
+																					style={{
+																						width: 150,
+																						height: 150,
+																						cursor: "pointer",
+																						objectFit: "contain",
+																					}}
+																					src={img.imageURL}
+																					alt=""
+																					onClick={() => {
+																						setImageToview(img.imageURL);
+																						setOpenImageViewer(true);
+																					}}
+																				/>
+																		  ))
+																		: "No any Images"}{" "}
+																</div>
+															</TableRow>
+														</TableBody>
+													</Table>
+												</AT.TableContainer>
+											</TableCell>
+										</TableRow>
+									)}
 								</React.Fragment>
 							))
 						) : (

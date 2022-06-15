@@ -22,7 +22,7 @@ const ServiceDetailNavigation = (id, detail, customCaptions) => {
 			url: links + serviceImpact,
 		},
 		{
-			name: `Defects`,
+			name: customCaptions?.defectPlural,
 			url: links + serviceDefects,
 		},
 		{

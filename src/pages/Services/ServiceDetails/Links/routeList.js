@@ -35,8 +35,8 @@ const routeList = (detail, customCaptions) => [
 	},
 	{
 		id: 3,
-		ModelName: "Defects",
-		name: "Defects",
+		ModelName: customCaptions?.defectPlural,
+		name: customCaptions?.defectPlural,
 		path: serviceDefects,
 		component: Defects,
 		showSave: false,

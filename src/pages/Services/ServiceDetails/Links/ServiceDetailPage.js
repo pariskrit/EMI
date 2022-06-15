@@ -16,7 +16,7 @@ const ServicesDetails = ({ access }) => {
 			<ServicesDetailsPage>
 				{(serviceDetail) => (
 					<Switch>
-						{routeList(customCaptions, serviceDetail).map((route) => (
+						{routeList(serviceDetail, customCaptions).map((route) => (
 							<Route
 								key={route.id}
 								render={(props) => (
