@@ -26,8 +26,16 @@ const getAllData = (customCaptions) => [
 			"endDate",
 			"pauseMinutes",
 			"pauseReasonName",
+			"otherReason",
 		],
-		headers: ["User", "Start Time", "End Time", "Total Duration", "Reason"],
+		headers: [
+			"User",
+			"Start Time",
+			"End Time",
+			"Total Duration",
+			"Reason",
+			"Other Reason",
+		],
 	},
 	{
 		id: 2,
@@ -45,7 +53,9 @@ const getAllData = (customCaptions) => [
 		columns: ["userName", "toolName", "quantity", "reasonName", "otherReason"],
 		headers: [
 			"User",
-			"Name of the Part/Tool",
+			`Name of the ${customCaptions?.part ?? "part"} / ${
+				customCaptions?.tool ?? "tool"
+			}`,
 			"Quantity",
 			"Reason",
 			"Other Reason",
@@ -55,14 +65,13 @@ const getAllData = (customCaptions) => [
 		id: 4,
 		title: `Skipped ${customCaptions?.taskPlural ?? "Tasks"}`,
 		data: [],
-		columns: [
-			"stageName",
-			"zoneName",
-			"actionName",
-			"taskName",
-			"skipReasonName",
+		columns: ["stageName", "zoneName", "taskActionName", "skipReasonName"],
+		headers: [
+			customCaptions?.stage,
+			customCaptions?.zone,
+			customCaptions?.task,
+			"Reason",
 		],
-		headers: ["Stage", "Zone", "Action", "Task", "Reason"],
 	},
 	{
 		id: 5,
@@ -113,10 +122,24 @@ function Impacts() {
 					endDate: isoDateWithoutTimeZone(stop.endDate + "Z"),
 			  }))
 			: [];
+
+		const skippedTasks = response[3].data
+			? response[3].data.map((skip) => ({
+					...skip,
+					taskActionName: `${skip?.actionName} ${skip?.taskName}`,
+			  }))
+			: [];
 		setData((prev) =>
 			prev.map((d, index) => ({
 				...d,
-				data: index === 0 ? pause : index === 1 ? stop : response[index].data,
+				data:
+					index === 0
+						? pause
+						: index === 1
+						? stop
+						: index === 3
+						? skippedTasks
+						: response[index].data,
 			}))
 		);
 		setLoading(false);
