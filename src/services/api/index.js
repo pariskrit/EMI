@@ -132,6 +132,8 @@ const BASE_API_PATH_SERVICES_NOTES = `${BASE_API_PATH}ServiceNotes`;
 
 // Defects
 const BASE_API_PATH_DEFECTS = `${BASE_API_PATH}Defects`;
+const BASE_API_PATH_DEFECT_NOTES = `${BASE_API_PATH}DefectNotes`;
+const BASE_API_PATH_DEFECT_IMAGES = `${BASE_API_PATH}DefectImages`;
 
 export const Apis = {
 	// register email
@@ -293,4 +295,6 @@ export const Apis = {
 
 	// Defects
 	Defects: `${BASE_API_PATH_DEFECTS}`,
+	DefectNotes: `${BASE_API_PATH_DEFECT_NOTES}`,
+	DefectImages: `${BASE_API_PATH_DEFECT_IMAGES}`,
 };

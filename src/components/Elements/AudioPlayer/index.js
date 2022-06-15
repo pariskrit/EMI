@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-function AudioPlayer({ audioSource = "" }) {
+function AudioPlayer({ audioSource = "", style = {} }) {
 	useEffect(() => {
 		//check audio percentage and update time accordingly
 		const audioPlayer = document.querySelector(".audio-player");
@@ -110,7 +110,7 @@ function AudioPlayer({ audioSource = "" }) {
 			<div className="rt-container">
 				<div className="col-rt-12">
 					<div className="Scriptcontent">
-						<div className="audio-player">
+						<div className="audio-player" style={style}>
 							<div className="controls">
 								<div className="play-container">
 									<div className="toggle-play play"></div>

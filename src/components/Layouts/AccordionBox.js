@@ -10,6 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import CurveButton from "components/Elements/CurveButton";
+import Icon from "components/Elements/Icon";
+import { getLocalStorageData } from "helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
 	logoAccordion: {
@@ -26,6 +28,19 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: "bold",
 		fontSize: "17px",
 	},
+	summary: {
+		alignItems: "center",
+		justifyContent: "space-between",
+		marginRight: "70px !important",
+	},
+	critical: {
+		color: ColourConstants.red,
+		margin: "0 !important",
+	},
+	criticalPara: {
+		fontWeight: "600 !important",
+		marginLeft: "5px",
+	},
 }));
 
 function AccordionBox({
@@ -39,8 +54,10 @@ function AccordionBox({
 	defaultExpanded = true,
 	accordionClass = "",
 	style = { marginTop: "10px" },
+	showSafetyCritical = false,
 }) {
 	const classes = useStyles();
+	const { customCaptions } = getLocalStorageData("me");
 
 	return (
 		<Accordion
@@ -61,8 +78,17 @@ function AccordionBox({
 				}
 				aria-controls="panel1a-content"
 				id="panel1a-header"
+				classes={{ content: classes.summary }}
 			>
 				<Typography className={classes.sectionHeading}>{title}</Typography>
+				{showSafetyCritical && (
+					<p className={classes.critical}>
+						<Icon name="SafteryCritical" />
+						<span className={classes.criticalPara}>
+							{customCaptions?.safetyCritical}
+						</span>
+					</p>
+				)}
 			</AccordionSummary>
 			<AccordionDetails className={accordianDetailsCss}>
 				{children}

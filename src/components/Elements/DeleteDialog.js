@@ -54,10 +54,9 @@ const DeleteDialog = ({
 				throw new Error(result);
 			}
 		} catch (err) {
+			if (err?.response?.status === 404) getError("could not delete");
 			// TODO: real error handling
-			if (err?.response?.data?.detail) {
-				getError(err.response.data.detail);
-			}
+			else getError(err?.response?.data?.detail || err?.response.data);
 
 			return false;
 		}

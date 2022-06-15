@@ -83,6 +83,9 @@ const ProvidedAsset = ({
 	noBottomDivider,
 	isRec,
 	deleteEndpoint,
+	deleteName = "logo",
+	isLogo = true,
+	imageId = null,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -119,11 +122,11 @@ const ProvidedAsset = ({
 			<DeleteDialog
 				open={openDialog}
 				closeHandler={closeDialogHandler}
-				entityName="logo"
+				entityName={deleteName}
 				deleteEndpoint={deleteEndpoint}
-				deleteID={id}
+				deleteID={imageId ?? id}
 				handleRemoveData={deleteLogo}
-				isLogo={true}
+				isLogo={isLogo}
 			/>
 			<div className={classes.assetParentContainer}>
 				<Divider className={classes.dividerStyle} />

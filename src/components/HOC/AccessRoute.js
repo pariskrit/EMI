@@ -15,6 +15,7 @@ const AccessRoute = ({ component: Component, access, condition, ...rest }) => {
 				position?.[access] === "F" ||
 				position?.[access] === "E" ||
 				position?.[access] === "R" ||
+				position?.[access] === "N" ||
 				condition ? (
 					<Component
 						{...props}

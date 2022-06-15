@@ -440,12 +440,14 @@ function Navbar({
 						return false;
 					}
 				} else {
-					if (access === "F" || access === "E" || access === "R") return true;
+					if (access === "F" || access === "E" || access === "R" || "N")
+						return true;
 					else return false;
 				}
 				// If the user is Site Application User
 			} else {
-				if (access === "F" || access === "E" || access === "R") return true;
+				if (access === "F" || access === "E" || access === "R" || "N")
+					return true;
 				else return false;
 			}
 		})

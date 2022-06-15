@@ -93,7 +93,7 @@ const ClientLogo = ({
 
 	return (
 		<div className={classes.logoContainer}>
-			<AccordionBox title="Company Logo (1)">
+			<AccordionBox title="Company Logo">
 				{showUpload ? (
 					<DropUploadBox
 						uploadReturn={onLogoUpload}
