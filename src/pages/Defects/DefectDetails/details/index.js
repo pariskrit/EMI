@@ -138,7 +138,7 @@ function Details({ details, siteAppID, captions, defectId }) {
 						value={input?.details}
 						onChange={handleInputChange}
 						name="details"
-						onKeyDown={handleEnterPress}
+						onBlur={handleUpdateInput}
 					/>
 				</Grid>
 
