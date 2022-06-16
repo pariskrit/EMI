@@ -23,7 +23,7 @@
 .audio-player .play-container {
 	background: #24ba78;
 	border-radius: 50%;
-	width: 60px;
+	min-width: 40px;
 	height: 40px;
 	margin-top: 4px;
 }
@@ -143,8 +143,8 @@
 	border-radius: 8px;
 }
 .audio-player .controls .volume-container:hover .volume-slider {
-	top: -55px;
-	width: 120px;
+	top: -40px;
+	width: 80px;
 }
 
 .icono-volumeHigh:after,
@@ -275,6 +275,7 @@
 [class*="icono-"]:before {
 	content: "";
 	pointer-events: none;
+	box-sizing: unset;
 }
 [class*="icono-"][class*="Circle"] {
 	border-radius: 50%;
