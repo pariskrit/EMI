@@ -262,3 +262,7 @@ div[role="progressbar"][aria-valuetext="5%"]:not([aria-valuetext="0%"]):not([ari
 	> div {
 	min-width: 4px;
 }
+
+.MuiAccordion-rounded {
+	border-radius: 4px !important;
+}

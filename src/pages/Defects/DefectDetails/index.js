@@ -133,17 +133,15 @@ function DefectsDetails() {
 				<Grid item xs={12} lg={6}>
 					<DefectImages defectId={id} captions={customCaptions} />
 				</Grid>
-				<Grid container spacing={2} item xs={12} lg={6}>
+				<Grid container spacing={0} item xs={12} lg={6}>
 					{details?.audioURL && (
-						<Grid item xs={12}>
+						<Grid item xs={12} spacing={0}>
 							<Audio src={details?.audioURL} defectId={id} />
 						</Grid>
 					)}
 
-					<Grid item xs={12}>
-						<div style={{ marginTop: "8px" }}>
-							<Notes defectId={id} />
-						</div>
+					<Grid item xs={12} spacing={0}>
+						<Notes defectId={id} />
 					</Grid>
 				</Grid>
 			</Grid>
