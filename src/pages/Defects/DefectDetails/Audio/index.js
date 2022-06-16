@@ -43,7 +43,7 @@ function Audio({ src, defectId }) {
 				defaultExpanded
 				accordianDetailsCss={classes.container}
 			>
-				<AudioPlayer audioSource={src} />
+				<AudioPlayer audioSource={src} width="90%" />
 				<DeleteIcon
 					className={classes.deleteButton}
 					alt="Delete icon"

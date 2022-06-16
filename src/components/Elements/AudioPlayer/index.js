@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-function AudioPlayer({ audioSource = "", style = {} }) {
+function AudioPlayer({ audioSource = "", width = "350px" }) {
 	useEffect(() => {
 		//check audio percentage and update time accordingly
 		const audioPlayer = document.querySelector(".audio-player");
@@ -93,6 +93,7 @@ function AudioPlayer({ audioSource = "", style = {} }) {
 				seconds % 60
 			).padStart(2, 0)}`;
 		}
+
 		return () => {
 			audioPlayer
 				.querySelector(".volume-button")
@@ -106,11 +107,11 @@ function AudioPlayer({ audioSource = "", style = {} }) {
 	}, [audioSource]);
 
 	return (
-		<section>
+		<section style={{ width }}>
 			<div className="rt-container">
 				<div className="col-rt-12">
 					<div className="Scriptcontent">
-						<div className="audio-player" style={style}>
+						<div className="audio-player">
 							<div className="controls">
 								<div className="play-container">
 									<div className="toggle-play play"></div>
