@@ -141,7 +141,9 @@ function DefectsDetails() {
 					)}
 
 					<Grid item xs={12}>
-						<Notes defectId={id} />
+						<div style={{ marginTop: "8px" }}>
+							<Notes defectId={id} />
+						</div>
 					</Grid>
 				</Grid>
 			</Grid>
