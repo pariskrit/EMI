@@ -127,7 +127,7 @@ function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
 																						cursor: "pointer",
 																						objectFit: "contain",
 																					}}
-																					src={img.imageURL}
+																					src={img.thumbnailURL}
 																					alt=""
 																					onClick={() => {
 																						setImageToview(img.imageURL);
