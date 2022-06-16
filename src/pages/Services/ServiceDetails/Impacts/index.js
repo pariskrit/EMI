@@ -14,6 +14,7 @@ import {
 } from "services/services/impacts";
 import CommonTable from "./CommonTable";
 import { dateDifference } from "helpers/utils";
+import { serviceStatus } from "constants/serviceDetails";
 
 const getAllData = (customCaptions) => [
 	{
@@ -50,13 +51,10 @@ const getAllData = (customCaptions) => [
 			customCaptions?.toolPlural ?? "Tools"
 		}`,
 		data: [],
-		columns: ["userName", "toolName", "quantity", "reasonName", "otherReason"],
+		columns: ["userName", "partOrTool", "reasonName", "otherReason"],
 		headers: [
 			"User",
-			`Name of the ${customCaptions?.part ?? "part"} / ${
-				customCaptions?.tool ?? "tool"
-			}`,
-			"Quantity",
+			`${customCaptions?.part ?? "part"} / ${customCaptions?.tool ?? "tool"}`,
 			"Reason",
 			"Other Reason",
 		],
@@ -77,7 +75,12 @@ const getAllData = (customCaptions) => [
 		id: 5,
 		title: "Status Changes",
 		data: [],
-		columns: ["createdDateTime", "userName", "status", "otherReason"],
+		columns: [
+			"createdDateTime",
+			"userName",
+			"status",
+			"changeStatusReasonName",
+		],
 		headers: ["Time", "User", "New Status", "Reason"],
 	},
 ];
@@ -122,6 +125,12 @@ function Impacts() {
 					endDate: isoDateWithoutTimeZone(stop.endDate + "Z"),
 			  }))
 			: [];
+		const missingPartTool = response[2].data
+			? response[2].data.map((part) => ({
+					...part,
+					partOrTool: (part.partName || part.toolName) ?? "",
+			  }))
+			: [];
 
 		const skippedTasks = response[3].data
 			? response[3].data.map((skip) => ({
@@ -129,19 +138,22 @@ function Impacts() {
 					taskActionName: `${skip?.actionName} ${skip?.taskName}`,
 			  }))
 			: [];
-		setData((prev) =>
-			prev.map((d, index) => ({
-				...d,
-				data:
-					index === 0
-						? pause
-						: index === 1
-						? stop
-						: index === 3
-						? skippedTasks
-						: response[index].data,
-			}))
-		);
+
+		const status = response[4].data
+			? response[4].data.map((status) => ({
+					...status,
+					createdDateTime: isoDateWithoutTimeZone(status.createdDateTime + "Z"),
+					status: serviceStatus[status.status],
+			  }))
+			: [];
+
+		setData((prev) => [
+			{ ...prev[0], data: pause },
+			{ ...prev[1], data: stop },
+			{ ...prev[2], data: missingPartTool },
+			{ ...prev[3], data: skippedTasks },
+			{ ...prev[4], data: status },
+		]);
 		setLoading(false);
 	}, [dispatch, id]);
 
