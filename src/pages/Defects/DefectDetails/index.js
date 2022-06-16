@@ -134,14 +134,11 @@ function DefectsDetails() {
 					<DefectImages defectId={id} captions={customCaptions} />
 				</Grid>
 				<Grid container spacing={2} item xs={12} lg={6}>
-					{/* {details?.audioURL && ( */}
-					<Grid item xs={12}>
-						<Audio
-							src="https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
-							defectId={id}
-						/>
-					</Grid>
-					{/* )} */}
+					{details?.audioURL && (
+						<Grid item xs={12}>
+							<Audio src={details?.audioURL} defectId={id} />
+						</Grid>
+					)}
 
 					<Grid item xs={12}>
 						<Notes defectId={id} />
