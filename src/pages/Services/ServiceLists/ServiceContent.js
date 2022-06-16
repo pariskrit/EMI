@@ -8,7 +8,6 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import SearchField from "components/Elements/SearchField/SearchField";
 import {
-	handleSort,
 	isoDateWithoutTimeZone,
 	convertDateToUTC,
 	debounce,
@@ -193,6 +192,10 @@ function ServiceLists({
 		JSON.parse(localStorage.getItem("me"));
 
 	// init state
+	const [currentTableSort, setCurrentTableSort] = useState([
+		"scheduledDate",
+		"asc",
+	]);
 	const [openAddService, setOpenAddService] = useState(false);
 	const [countOFService, setCountOfService] = useState(0);
 	const [openImportCSV, setImportCSV] = useState(false);
@@ -250,6 +253,8 @@ function ServiceLists({
 				status: selectedStatus.id,
 				fromDate: selectedTimeframe.fromDate,
 				toDate: selectedTimeframe.toDate,
+				sortField: currentTableSort[0],
+				sort: currentTableSort[1],
 			});
 		}
 		// is a status dropdown and the selectedItem is different from the previously selected
@@ -262,6 +267,8 @@ function ServiceLists({
 				siteDepartmentID: selectedDepartment?.id,
 				fromDate: selectedTimeframe.fromDate,
 				toDate: selectedTimeframe.toDate,
+				sortField: currentTableSort[0],
+				sort: currentTableSort[1],
 			});
 		}
 		// is a timeframe dropdown
@@ -282,6 +289,8 @@ function ServiceLists({
 					status: selectedStatus.id,
 					fromDate: selectedItem.fromDate,
 					toDate: selectedItem.toDate,
+					sortField: currentTableSort[0],
+					sort: currentTableSort[1],
 				});
 			}
 		}
@@ -349,6 +358,8 @@ function ServiceLists({
 			status: selectedStatus.id,
 			fromDate: formattedCustomDate.fromDate,
 			toDate: formattedCustomDate.toDate,
+			sortField: currentTableSort[0],
+			sort: currentTableSort[1],
 		});
 		setSearching(false);
 
@@ -363,6 +374,8 @@ function ServiceLists({
 			siteDepartmentID = "",
 			fromDate = "",
 			toDate = "",
+			sortField = "",
+			sort = "",
 		}) => {
 			try {
 				const response = await Promise.all([
@@ -377,6 +390,8 @@ function ServiceLists({
 						siteDepartmentID,
 						fromDate,
 						toDate,
+						sortField,
+						sort,
 					}),
 					getCountOfServiceList({
 						statusType:
@@ -432,6 +447,8 @@ function ServiceLists({
 					status: selectedStatus.id,
 					fromDate: selectedTimeframe.fromDate,
 					toDate: selectedTimeframe.toDate,
+					sortField: currentTableSort[0],
+					sort: currentTableSort[1],
 				}),
 				getSiteDepartmentsInService(siteID),
 			]);
@@ -448,26 +465,31 @@ function ServiceLists({
 
 	// searching for services
 	const handleSearch = useCallback(
-		debounce(async (value, department, status, fromDate, toDate) => {
-			setSearching(true);
-			searchRef.current = value;
-			await fetchServiceList({
-				search: value,
-				siteDepartmentID: department,
-				status: status,
-				fromDate: fromDate,
-				toDate: toDate,
-			});
-			if (!value || value === "")
-				setDataForFetchingService({
-					pageNumber: 1,
-					pageSize: DefaultPageSize,
-					search: "",
-					sortField: "",
-					sort: "",
+		debounce(
+			async (value, department, status, fromDate, toDate, sortField, sort) => {
+				setSearching(true);
+				searchRef.current = value;
+				await fetchServiceList({
+					search: value,
+					siteDepartmentID: department,
+					status: status,
+					fromDate: fromDate,
+					toDate: toDate,
+					sortField,
+					sort,
 				});
-			setSearching(false);
-		}, 500),
+				if (!value || value === "")
+					setDataForFetchingService({
+						pageNumber: 1,
+						pageSize: DefaultPageSize,
+						search: "",
+						sortField: "",
+						sort: "",
+					});
+				setSearching(false);
+			},
+			500
+		),
 		[]
 	);
 
@@ -518,6 +540,8 @@ function ServiceLists({
 						siteDepartmentID: selectedDepartment?.id,
 						fromDate: selectedTimeframe.fromDate,
 						toDate: selectedTimeframe.toDate,
+						sortField: currentTableSort[0],
+						sort: currentTableSort[1],
 					})
 				}
 				setDataForFetchingService={setDataForFetchingService}
@@ -544,6 +568,8 @@ function ServiceLists({
 						siteDepartmentID: selectedDepartment?.id,
 						fromDate: selectedTimeframe.fromDate,
 						toDate: selectedTimeframe.toDate,
+						sortField: currentTableSort[0],
+						sort: currentTableSort[1],
 					});
 					setDataForFetchingService({
 						pageNumber: 1,
@@ -570,6 +596,8 @@ function ServiceLists({
 						siteDepartmentID: selectedDepartment?.id,
 						fromDate: selectedTimeframe.fromDate,
 						toDate: selectedTimeframe.toDate,
+						sortField: currentTableSort[0],
+						sort: currentTableSort[1],
 					})
 				}
 				setDataForFetchingService={setDataForFetchingService}
@@ -609,7 +637,9 @@ function ServiceLists({
 								selectedDepartment.id,
 								selectedStatus.id,
 								selectedTimeframe.fromDate,
-								selectedTimeframe.toDate
+								selectedTimeframe.toDate,
+								currentTableSort[0],
+								currentTableSort[1]
 							);
 						}}
 					/>
@@ -697,7 +727,6 @@ function ServiceLists({
 						)}
 						columns={serviceTableColumns(allowIndividualAssetModels)}
 						setData={setAllData}
-						handleSort={handleSort}
 						searchQuery={searchRef.current}
 						formattedData={formattedData}
 						searchedData={searchedData}
@@ -713,8 +742,23 @@ function ServiceLists({
 							fromDate: selectedTimeframe.fromDate,
 							toDate: selectedTimeframe.toDate,
 						}}
+						handleSort={async (sortField, sortOrder) => {
+							setSearching(true);
+							await fetchServiceList({
+								search: searchRef.current,
+								siteDepartmentID: selectedDepartment?.id,
+								status: selectedStatus.id,
+								fromDate: selectedTimeframe.fromDate,
+								toDate: selectedTimeframe.toDate,
+								sort: sortOrder,
+								sortField,
+							});
+							setSearching(false);
+						}}
 						setDataForFetchingService={setDataForFetchingService}
 						siteAppID={siteAppID}
+						currentTableSort={currentTableSort}
+						setCurrentTableSort={setCurrentTableSort}
 					/>
 				</div>
 			</div>

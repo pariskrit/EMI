@@ -10,7 +10,6 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import SearchField from "components/Elements/SearchField/SearchField";
 import {
-	handleSort,
 	isoDateWithoutTimeZone,
 	convertDateToUTC,
 	debounce,
@@ -157,6 +156,7 @@ function DefectsLists({
 	} = getLocalStorageData("me");
 
 	// init state
+	const [currentTableSort, setCurrentTableSort] = useState(["", "asc"]);
 	const [openAddDefect, setOpenAddDefect] = useState(false);
 	const [countOFDefects, setCountOfDefect] = useState(0);
 	const [loading, setLoading] = useState(true);
@@ -180,7 +180,9 @@ function DefectsLists({
 	const [openCustomDatePopup, setOpenCustomDatePopup] = useState(false);
 	const [isCustomDateRangeError, setCustomDateRangeError] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState(
-		statusFromMemory === null ? { id: "", name: "Show All" } : statusFromMemory
+		statusFromMemory === null
+			? { id: "O", name: "All Outstanding", statusType: "O" }
+			: statusFromMemory
 	);
 	const [selectedDepartment, setSelectedDepartment] = useState(
 		departmentFromMemory === null
@@ -213,6 +215,8 @@ function DefectsLists({
 				defectStatusID: selectedStatus.id,
 				fromDate: selectedTimeframe.fromDate,
 				toDate: selectedTimeframe.toDate,
+				sortField: currentTableSort[0],
+				sortOrder: currentTableSort[1],
 			});
 		}
 		// is a status dropdown and the selectedItem is different from the previously selected
@@ -228,6 +232,8 @@ function DefectsLists({
 				siteDepartmentID: selectedDepartment?.id,
 				fromDate: selectedTimeframe.fromDate,
 				toDate: selectedTimeframe.toDate,
+				sortField: currentTableSort[0],
+				sortOrder: currentTableSort[1],
 			});
 		}
 		// is a timeframe dropdown
@@ -248,6 +254,8 @@ function DefectsLists({
 					defectStatusID: selectedStatus.id,
 					fromDate: selectedItem.fromDate,
 					toDate: selectedItem.toDate,
+					sortField: currentTableSort[0],
+					sortOrder: currentTableSort[1],
 				});
 			}
 		}
@@ -315,6 +323,8 @@ function DefectsLists({
 			defectStatusID: selectedStatus.id,
 			fromDate: formattedCustomDate.fromDate,
 			toDate: formattedCustomDate.toDate,
+			sortField: currentTableSort[0],
+			sortOrder: currentTableSort[1],
 		});
 		setSearching(false);
 
@@ -329,19 +339,33 @@ function DefectsLists({
 			siteDepartmentID = "",
 			fromDate = "",
 			toDate = "",
+			sortField = "",
+			sortOrder = "",
 		}) => {
 			try {
 				const response = await Promise.all([
 					getDefectsList({
-						defectStatusID,
+						defectStatusType: ["C", "N", "O"].includes(defectStatusID)
+							? defectStatusID
+							: "",
+						defectStatusID: ["C", "N", "O"].includes(defectStatusID)
+							? ""
+							: defectStatusID,
 						siteAppId: siteAppID,
 						search,
 						siteDepartmentID,
 						fromDate,
 						toDate,
+						sortField,
+						sortOrder,
 					}),
 					getCountOfDefectsList({
-						defectStatusID,
+						defectStatusType: ["C", "N", "O"].includes(defectStatusID)
+							? defectStatusID
+							: "",
+						defectStatusID: ["C", "N", "O"].includes(defectStatusID)
+							? ""
+							: defectStatusID,
 						siteAppId: siteAppID,
 						search,
 						siteDepartmentID,
@@ -396,6 +420,8 @@ function DefectsLists({
 					defectStatusID: selectedStatus.id,
 					fromDate: selectedTimeframe.fromDate,
 					toDate: selectedTimeframe.toDate,
+					sortField: currentTableSort[0],
+					sortOrder: currentTableSort[1],
 				}),
 				getSiteDepartmentsInService(siteID),
 				getDefectStatuses(siteAppID),
@@ -404,7 +430,15 @@ function DefectsLists({
 				setSiteDepartments([{ id: "", name: "Show All" }, ...response2.data]);
 			}
 			if (response3.status) {
-				setDefectsStatus([{ id: "", name: "Show All" }, ...response3.data]);
+				setDefectsStatus([
+					{ id: "", name: "Show All" },
+					...response3.data.map((x) => {
+						if (x.type === "C") return { ...x, groupBy: "All Complete" };
+						else if (x.type === "N")
+							return { ...x, groupBy: "All Notification Raised" };
+						return { ...x, groupBy: "All Outstanding" };
+					}),
+				]);
 			}
 			setLoading(false);
 		};
@@ -416,26 +450,39 @@ function DefectsLists({
 
 	// searching for services
 	const handleSearch = useCallback(
-		debounce(async (value, department, defectStatusID, fromDate, toDate) => {
-			setSearching(true);
-			searchRef.current = value;
-			await fetchDefectList({
-				search: value,
-				siteDepartmentID: department,
-				defectStatusID: defectStatusID,
-				fromDate: fromDate,
-				toDate: toDate,
-			});
-			if (!value || value === "")
-				setDataForFetchingDefect({
-					pageNumber: 1,
-					pageSize: DefaultPageSize,
-					search: "",
-					sortField: "",
-					sort: "",
+		debounce(
+			async (
+				value,
+				department,
+				defectStatusID,
+				fromDate,
+				toDate,
+				sortField,
+				sortOrder
+			) => {
+				setSearching(true);
+				searchRef.current = value;
+				await fetchDefectList({
+					search: value,
+					siteDepartmentID: department,
+					defectStatusID: defectStatusID,
+					fromDate: fromDate,
+					toDate: toDate,
+					sortField,
+					sortOrder,
 				});
-			setSearching(false);
-		}, 500),
+				if (!value || value === "")
+					setDataForFetchingDefect({
+						pageNumber: 1,
+						pageSize: DefaultPageSize,
+						search: "",
+						sortField: "",
+						sort: "",
+					});
+				setSearching(false);
+			},
+			500
+		),
 		[]
 	);
 
@@ -481,6 +528,7 @@ function DefectsLists({
 				open={openAddDefect}
 				closeHandler={() => setOpenAddDefect(false)}
 				siteAppId={siteAppID}
+				siteId={siteID}
 				title={"Add " + customCaptions?.defect}
 				createProcessHandler={addNewDefect}
 				customCaptions={customCaptions}
@@ -492,6 +540,8 @@ function DefectsLists({
 						siteDepartmentID: selectedDepartment?.id,
 						fromDate: selectedTimeframe.fromDate,
 						toDate: selectedTimeframe.toDate,
+						sortField: currentTableSort[0],
+						sortOrder: currentTableSort[1],
 					})
 				}
 				setDataForFetchingDefect={setDataForFetchingDefect}
@@ -531,7 +581,9 @@ function DefectsLists({
 								selectedDepartment.id,
 								selectedStatus.id,
 								selectedTimeframe.fromDate,
-								selectedTimeframe.toDate
+								selectedTimeframe.toDate,
+								currentTableSort[0],
+								currentTableSort[1]
 							);
 						}}
 					/>
@@ -554,6 +606,13 @@ function DefectsLists({
 							icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
 							required={false}
 							showBorderColor
+							groupBy={[
+								{ id: "", name: "Show All", statusType: "" },
+								{ id: "C", name: "All Complete", statusType: "C" },
+								{ id: "N", name: "All Notification Raised", statusType: "N" },
+								{ id: "O", name: "All Outstanding", statusType: "O" },
+							]}
+							hasGroup
 						/>
 					</Grid>
 					<Grid item lg={3} md={6} xs={12}>
@@ -610,7 +669,19 @@ function DefectsLists({
 						headers={DefectTableHeader(customCaptions)}
 						columns={DefectTableColumns()}
 						setData={setAllData}
-						handleSort={handleSort}
+						handleSort={async (sortField, sortOrder) => {
+							setSearching(true);
+							await fetchDefectList({
+								search: searchRef.current,
+								siteDepartmentID: selectedDepartment?.id,
+								defectStatusID: selectedStatus.id,
+								fromDate: selectedTimeframe.fromDate,
+								toDate: selectedTimeframe.toDate,
+								sortField: sortField,
+								sortOrder: sortOrder,
+							});
+							setSearching(false);
+						}}
 						searchQuery={searchRef.current}
 						formattedData={formattedData}
 						searchedData={searchedData}
@@ -626,6 +697,8 @@ function DefectsLists({
 							toDate: selectedTimeframe.toDate,
 						}}
 						setDataForFetchingDefect={setDataForFetchingDefect}
+						currentTableSort={currentTableSort}
+						setCurrentTableSort={setCurrentTableSort}
 						siteAppID={siteAppID}
 					/>
 				</div>

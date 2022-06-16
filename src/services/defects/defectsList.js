@@ -14,10 +14,11 @@ export const getDefectsList = async ({
 	toDate = "",
 	siteDepartmentID = "",
 	defectStatusID = "",
+	defectStatusType = "",
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Defects}?siteAppId=${siteAppId}&fromDate=${fromDate}&toDate=${toDate}&siteDepartmentID=${siteDepartmentID}&defectStatusID=${defectStatusID}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}&sortField=${sortField}&sortOrder=${sortOrder}`
+			`${Apis.Defects}?siteAppId=${siteAppId}&fromDate=${fromDate}&toDate=${toDate}&siteDepartmentID=${siteDepartmentID}&defectStatusID=${defectStatusID}&defectStatusType=${defectStatusType}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}&sortField=${sortField}&sortOrder=${sortOrder}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -32,10 +33,11 @@ export const getCountOfDefectsList = async ({
 	toDate = "",
 	siteDepartmentID = "",
 	defectStatusID = "",
+	defectStatusType = "",
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Defects}/count?siteAppId=${siteAppId}&fromDate=${fromDate}&toDate=${toDate}&siteDepartmentID=${siteDepartmentID}&defectStatusID=${defectStatusID}&search=${search}`
+			`${Apis.Defects}/count?siteAppId=${siteAppId}&fromDate=${fromDate}&toDate=${toDate}&siteDepartmentID=${siteDepartmentID}&defectStatusID=${defectStatusID}&defectStatusType=${defectStatusType}&search=${search}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {

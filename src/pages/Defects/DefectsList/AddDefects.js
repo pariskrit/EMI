@@ -28,12 +28,13 @@ import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import ColourConstants from "helpers/colourConstants";
+import { getSiteAssets } from "services/clients/sites/siteAssets";
 
 // Init styled components
 const ADD = AddDialogStyle();
 
 // Yup validation schema
-const schema = (modelTemplateType) =>
+const schema = () =>
 	yup.object({
 		details: yup
 			.string("This field must be a string")
@@ -52,13 +53,7 @@ const schema = (modelTemplateType) =>
 			.required("The field is required"),
 		siteAssetId: yup
 			.string("This field is required")
-			.nullable()
-			.when("modelID", {
-				is: () => modelTemplateType === "A",
-				then: yup
-					.string("This field is required")
-					.required("This field is required"),
-			}),
+			.required("The field is required"),
 		workOrder: yup.string("This field must be a string").nullable(),
 		modelVersionStageID: yup.string("This field must be a string").nullable(),
 		modelVersionZoneID: yup.string("This field must be a string").nullable(),
@@ -102,6 +97,7 @@ function AddNewDefectDetail({
 	open,
 	closeHandler,
 	siteAppId,
+	siteId,
 	title,
 	createProcessHandler,
 	customCaptions,
@@ -287,6 +283,42 @@ function AddNewDefectDetail({
 						<ADD.RightInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
+									errors.siteAssetId === null ? null : errors.siteAssetId
+								}
+							>
+								<DyanamicDropdown
+									dataSource={dataSourceAfterModelChange}
+									isServerSide={false}
+									width="100%"
+									placeholder={"Select " + customCaptions?.asset}
+									dataHeader={[{ id: 1, name: "Asset" }]}
+									columns={[{ id: 1, name: "name" }]}
+									selectedValue={input["siteAssetId"]}
+									handleSort={handleSort}
+									onChange={(val) => {
+										setInput({ ...input, siteAssetId: val });
+									}}
+									selectdValueToshow="name"
+									label={customCaptions?.asset}
+									isError={errors.siteAssetId === null ? false : true}
+									fetchData={() =>
+										input?.modelID?.modelTemplateType === "A"
+											? getModelAsset(input?.modelID?.id)
+											: getSiteAssets(siteId, 1, 100)
+									}
+									required
+									isReadOnly={
+										input?.modelID?.id === null ||
+										input?.modelID?.id === undefined
+									}
+								/>
+							</ErrorInputFieldWrapper>
+						</ADD.RightInputContainer>
+					</ADD.InputContainer>
+					<ADD.InputContainer>
+						<ADD.LeftInputContainer>
+							<ErrorInputFieldWrapper
+								errorMessage={
 									errors.defectTypeID === null ? null : errors.defectTypeID
 								}
 							>
@@ -313,10 +345,9 @@ function AddNewDefectDetail({
 									fetchData={() => getDefectTypes(siteAppId)}
 								/>
 							</ErrorInputFieldWrapper>
-						</ADD.RightInputContainer>
-					</ADD.InputContainer>
-					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
+						</ADD.LeftInputContainer>
+
+						<ADD.RightInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.defectRiskRatingID === null
@@ -342,9 +373,10 @@ function AddNewDefectDetail({
 									fetchData={() => getDefectRiskRatings(siteAppId)}
 								/>
 							</ErrorInputFieldWrapper>
-						</ADD.LeftInputContainer>
-
-						<ADD.RightInputContainer>
+						</ADD.RightInputContainer>
+					</ADD.InputContainer>
+					<ADD.InputContainer>
+						<ADD.LeftInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.defectStatusID === null ? null : errors.defectStatusID
@@ -368,10 +400,9 @@ function AddNewDefectDetail({
 									fetchData={() => getDefectStatuses(siteAppId)}
 								/>
 							</ErrorInputFieldWrapper>
-						</ADD.RightInputContainer>
-					</ADD.InputContainer>
-					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
+						</ADD.LeftInputContainer>
+
+						<ADD.RightInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.workOrder === null ? null : errors.workOrder
@@ -387,9 +418,10 @@ function AddNewDefectDetail({
 									isRequired={false}
 								/>
 							</ErrorInputFieldWrapper>
-						</ADD.LeftInputContainer>
-
-						<ADD.RightInputContainer>
+						</ADD.RightInputContainer>
+					</ADD.InputContainer>
+					<ADD.InputContainer>
+						<ADD.LeftInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.modelVersionStageID === null
@@ -416,17 +448,17 @@ function AddNewDefectDetail({
 									selectdValueToshow="name"
 									label={customCaptions?.stage}
 									isError={errors.modelVersionStageID === null ? false : true}
-									fetchData={() => getModelStage(input?.modelID?.id)}
+									fetchData={() =>
+										getModelStage(input?.modelID?.activeModelVersionID)
+									}
 									isReadOnly={
 										input?.modelID?.id === null ||
 										input?.modelID?.id === undefined
 									}
 								/>
 							</ErrorInputFieldWrapper>
-						</ADD.RightInputContainer>
-					</ADD.InputContainer>
-					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
+						</ADD.LeftInputContainer>
+						<ADD.RightInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.modelVersionZoneID === null
@@ -449,7 +481,9 @@ function AddNewDefectDetail({
 									selectdValueToshow="name"
 									label={customCaptions?.zone}
 									isError={errors.modelVersionZoneID === null ? false : true}
-									fetchData={() => getModelZonesList(input?.modelID?.id)}
+									fetchData={() =>
+										getModelZonesList(input?.modelID?.activeModelVersionID)
+									}
 									isReadOnly={
 										input?.modelVersionStageID?.id === null ||
 										input?.modelVersionStageID?.id === undefined ||
@@ -457,40 +491,6 @@ function AddNewDefectDetail({
 									}
 								/>
 							</ErrorInputFieldWrapper>
-						</ADD.LeftInputContainer>
-						<ADD.RightInputContainer>
-							{input?.modelID?.modelTemplateType === "A" ? (
-								<ErrorInputFieldWrapper
-									errorMessage={
-										errors.siteAssetId === null ? null : errors.siteAssetId
-									}
-								>
-									<DyanamicDropdown
-										dataSource={dataSourceAfterModelChange}
-										isServerSide={false}
-										width="100%"
-										placeholder={"Select " + customCaptions?.asset}
-										dataHeader={[{ id: 1, name: "Asset" }]}
-										columns={[{ id: 1, name: "name" }]}
-										selectedValue={input["siteAssetId"]}
-										handleSort={handleSort}
-										onChange={(val) => {
-											setInput({ ...input, siteAssetId: val });
-										}}
-										selectdValueToshow="name"
-										label={customCaptions?.asset}
-										isError={errors.siteAssetId === null ? false : true}
-										fetchData={() => getModelAsset(input?.modelID?.id)}
-										required
-										isReadOnly={
-											input?.modelID?.id === null ||
-											input?.modelID?.id === undefined
-										}
-									/>
-								</ErrorInputFieldWrapper>
-							) : (
-								""
-							)}
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
 					<ADD.InputContainer>

@@ -102,13 +102,14 @@ const DefectListTable = ({
 	department,
 	date,
 	setDataForFetchingDefect,
+	currentTableSort,
+	setCurrentTableSort,
 }) => {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
 
 	// Init State
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [scrollEvent, setScrollEvent] = useState(window);
@@ -123,11 +124,15 @@ const DefectListTable = ({
 		searchText,
 		scrollEvent,
 		{
-			defectStatusID: status,
+			defectStatusType: ["C", "N", "O"].includes(status) ? status : "",
+			status: ["C", "N", "O"].includes(status) ? "" : status,
 			siteDepartmentID: department,
 			fromDate: date.fromDate,
 			toDate: date.toDate,
+			sortField: currentTableSort[0],
+			sortOrder: currentTableSort[1],
 			page,
+			search: searchText,
 		}
 	);
 
@@ -155,7 +160,6 @@ const DefectListTable = ({
 				siteAppId: siteAppID,
 				pageNumber: p,
 				pageSize: DefaultPageSize,
-				search: searchText,
 				...name,
 			});
 			if (response.status) {
@@ -177,15 +181,15 @@ const DefectListTable = ({
 		// Flipping current method
 		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
 
-		// Sorting table
-		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
-		else handleSort(searchedData, setSearchData, field, newMethod);
+		// // Sorting table
+		// if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
+		// else handleSort(searchedData, setSearchData, field, newMethod);
 
-		// Sorting searched table if present
-		if (searchQuery !== "") {
-			handleSort(searchedData, setSearchData, field, newMethod);
-		}
-
+		// // Sorting searched table if present
+		// if (searchQuery !== "") {
+		// 	handleSort(searchedData, setSearchData, field, newMethod);
+		// }
+		handleSort(field, newMethod);
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};

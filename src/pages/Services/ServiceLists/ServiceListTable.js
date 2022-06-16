@@ -103,13 +103,14 @@ const ServiceListTable = ({
 	department,
 	date,
 	setDataForFetchingService,
+	currentTableSort,
+	setCurrentTableSort,
 }) => {
 	// Init hooks
 	const classes = useStyles();
 	const history = useHistory();
 
 	// Init State
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [scrollEvent, setScrollEvent] = useState(window);
@@ -127,9 +128,12 @@ const ServiceListTable = ({
 			statusType:
 				status === 2 || status === 1 ? statusTypeClassification[status] : "",
 			status: status === 2 || status === 1 ? "" : status,
+			sortField: currentTableSort[0],
+			sort: currentTableSort[1],
 			siteDepartmentID: department,
 			fromDate: date.fromDate,
 			toDate: date.toDate,
+			search: searchText,
 			page,
 		}
 	);
@@ -159,7 +163,6 @@ const ServiceListTable = ({
 				siteAppId: siteAppID,
 				pageNumber: p,
 				pageSize: DefaultPageSize,
-				search: searchText,
 				...name,
 			});
 			if (response.status) {
@@ -181,14 +184,7 @@ const ServiceListTable = ({
 		// Flipping current method
 		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
 
-		// Sorting table
-		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
-		else handleSort(searchedData, setSearchData, field, newMethod);
-
-		// Sorting searched table if present
-		if (searchQuery !== "") {
-			handleSort(searchedData, setSearchData, field, newMethod);
-		}
+		handleSort(field, newMethod);
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
