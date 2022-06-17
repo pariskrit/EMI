@@ -80,7 +80,6 @@ export const modelDetailsPath = modelsPath + "/:id";
 export const modelImport = "/app/model/import";
 export const analyticsPath = "/app/analytics";
 
-export const feedbackPath = "/app/feedback";
 export const analysisPath = "/app/analysis";
 export const noticeboardPath = "/app/noticeboards";
 export const settingPath = "/app/setting";
@@ -106,3 +105,7 @@ export const serviceTimes = "/service-times";
 // Defects List
 export const defectsPath = "/app/defects";
 export const defectsDetailsPath = defectsPath + "/:id";
+
+// Feedback
+export const feedbackPath = "/app/feedback";
+export const FeedbackDetailsPath = feedbackPath + "/:id";

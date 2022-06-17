@@ -9,13 +9,13 @@ import UsersPage from "pages/Users/Links/UsersPage";
 import ModelsPage from "./Models/Links/ModelsPage";
 import ServicesPage from "./Services/Links/ServicesPage";
 import DefectsPage from "./Defects/Links/DefectsPage";
+import FeedbackPage from "./Feedback/Links/FeedbackPage";
 import ApplicationPortal from "./ApplicationPortal";
 import {
 	analysisPath,
 	analyticsPath,
 	applicationPortalPath,
 	defectExportPath,
-	feedbackPath,
 	noticeboardPath,
 	settingPath,
 } from "helpers/routePaths";
@@ -23,7 +23,6 @@ import AccessRoute from "components/HOC/AccessRoute";
 import access from "helpers/access";
 import role from "helpers/roles";
 import Analysis from "./Analysis";
-import Feedback from "./Feedback";
 import Noticeboards from "./Noticeboards";
 import AccessRoleRoute from "components/HOC/AccessRoleRoute";
 
@@ -46,6 +45,7 @@ const MainApp = ({ location }) => {
 				<ModelsPage />
 				<ServicesPage />
 				<DefectsPage />
+				<FeedbackPage />
 
 				<AccessRoleRoute
 					type={"access"}
@@ -66,12 +66,6 @@ const MainApp = ({ location }) => {
 					exact
 					component={Analysis}
 					access={access.analysisAccess}
-				/>
-				<AccessRoute
-					path={feedbackPath}
-					exact
-					component={Feedback}
-					access={access.feedbackAccess}
 				/>
 				<AccessRoute
 					path={noticeboardPath}

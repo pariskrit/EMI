@@ -153,6 +153,13 @@ export const statusOptions = [
 
 export const statusTypeClassification = { 1: "C", 2: "O" };
 
+// defects storage
 export const DEFECTS_STORAGE_STATUS = "defects-status";
 export const DEFECTS_STORAGE_DEPARTMENT = "defects-department";
 export const DEFECTS_STORAGE_TIMEFRAME = "defects-timeFrame";
+
+// feedback storage
+export const FEEDBACK_STORAGE_STATUS = "feedback-status";
+export const FEEDBACK_STORAGE_DEPARTMENT = "feedback-department";
+export const FEEDBACK_STORAGE_TIMEFRAME = "feedback-timeFrame";
+export const FEEDBACK_STORAGE_MY_FEEDBACK = "feedback-myfeedback";

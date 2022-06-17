@@ -1,7 +1,7 @@
 import React from "react";
 
-const Feedback = () => {
-	return <h1>Feedback page</h1>;
+const FeedbackPage = (props) => {
+	return <div>{props.children}</div>;
 };
 
-export default Feedback;
+export default FeedbackPage;
