@@ -84,8 +84,13 @@ function Details({ details, siteAppID, captions, defectId }) {
 				name: details.riskRatingName,
 			},
 		});
-		setInput({ details: details.details, workOrder: details.workOrder });
+		setInput({
+			details: details.details,
+			workOrder: details.workOrder,
+			tasks: `${details.actionName} ${details.taskName}`,
+		});
 	}, [details]);
+	console.log(input);
 	return (
 		<AccordionBox
 			title="Details"
@@ -93,55 +98,53 @@ function Details({ details, siteAppID, captions, defectId }) {
 			showSafetyCritical={details.safetyCritical}
 		>
 			<Grid container spacing={2}>
-				<Grid container item xs={12} md={6}>
-					<Grid item xs={12}>
-						<DyanamicDropdown
-							isServerSide={false}
-							width="100%"
-							placeholder={`Select ${captions?.type}`}
-							dataHeader={[{ id: 1, name: "Type" }]}
-							columns={[{ id: 1, name: "name" }]}
-							selectedValue={selectedDropdown.type}
-							onChange={(val) => handleDropdownChange(val, "type")}
-							selectdValueToshow="name"
-							label={captions?.defectType}
-							required
-							fetchData={() => getDefectTypes(siteAppID)}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<div style={{ marginTop: "20px" }}>
-							<DyanamicDropdown
-								isServerSide={false}
-								width="100%"
-								placeholder={`Select ${captions?.riskRating}`}
-								dataHeader={[{ id: 1, name: "Role" }]}
-								columns={[{ id: 1, name: "name" }]}
-								selectedValue={selectedDropdown.riskRating}
-								onChange={(val) => handleDropdownChange(val, "riskRating")}
-								selectdValueToshow="name"
-								label={captions?.riskRating}
-								required
-								fetchData={() => getDefectRiskRatings(siteAppID)}
-							/>
-						</div>
-					</Grid>
-				</Grid>
 				<Grid item xs={12} md={6}>
-					<Add.InputLabel>
-						{captions?.defect} Details <Add.RequiredStar>*</Add.RequiredStar>
-					</Add.InputLabel>
-
-					<TextAreaInputField
-						minRows={9}
-						style={{ width: "100%" }}
-						value={input?.details}
-						onChange={handleInputChange}
-						name="details"
-						onBlur={handleUpdateInput}
+					<TextFieldContainer
+						label={captions?.model ?? "Model"}
+						name={"modelModel"}
+						value={details?.modelModel}
+						isDisabled={true}
 					/>
 				</Grid>
-
+				<Grid item xs={12} md={6}>
+					<TextFieldContainer
+						label={`${captions?.asset ?? "Asset"}`}
+						name={"siteAssetName"}
+						value={details?.siteAssetName}
+						isDisabled={true}
+						isRequired={true}
+					/>
+				</Grid>
+				<Grid item xs={12} md={6}>
+					<DyanamicDropdown
+						isServerSide={false}
+						width="100%"
+						placeholder={`Select ${captions?.type}`}
+						dataHeader={[{ id: 1, name: "Type" }]}
+						columns={[{ id: 1, name: "name" }]}
+						selectedValue={selectedDropdown.type}
+						onChange={(val) => handleDropdownChange(val, "type")}
+						selectdValueToshow="name"
+						label={captions?.defectType}
+						required
+						fetchData={() => getDefectTypes(siteAppID)}
+					/>
+				</Grid>
+				<Grid item xs={12} md={6}>
+					<DyanamicDropdown
+						isServerSide={false}
+						width="100%"
+						placeholder={`Select ${captions?.riskRating}`}
+						dataHeader={[{ id: 1, name: "Role" }]}
+						columns={[{ id: 1, name: "name" }]}
+						selectedValue={selectedDropdown.riskRating}
+						onChange={(val) => handleDropdownChange(val, "riskRating")}
+						selectdValueToshow="name"
+						label={captions?.riskRating}
+						required
+						fetchData={() => getDefectRiskRatings(siteAppID)}
+					/>
+				</Grid>
 				<Grid item xs={12} md={6}>
 					<TextFieldContainer
 						label="Notification Number"
@@ -155,27 +158,11 @@ function Details({ details, siteAppID, captions, defectId }) {
 				</Grid>
 				<Grid item xs={12} md={6}>
 					<TextFieldContainer
-						label={captions?.model ?? "Model"}
-						name={"modelModel"}
-						value={details?.modelModel}
-						isDisabled={true}
-					/>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<TextFieldContainer
-						label={`${captions?.asset ?? "Asset"} Number`}
-						name={"siteAssetName"}
-						value={details?.siteAssetName}
-						isDisabled={true}
-						isRequired={false}
-					/>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<TextFieldContainer
 						label={captions?.stage ?? "Stage"}
 						name={"stageName"}
 						value={details?.stageName}
 						isDisabled={true}
+						isRequired={false}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -184,14 +171,31 @@ function Details({ details, siteAppID, captions, defectId }) {
 						name={"zoneName"}
 						value={details?.zoneName}
 						isDisabled={true}
+						isRequired={false}
 					/>
 				</Grid>
 				<Grid item xs={6}>
 					<TextFieldContainer
 						label={captions?.task ?? "Task"}
 						name={"taskName"}
-						value={details?.taskName}
+						value={input?.tasks}
 						isDisabled={true}
+						isRequired={false}
+					/>
+				</Grid>
+
+				<Grid item xs={12}>
+					<Add.InputLabel>
+						{captions?.defect} Details <Add.RequiredStar>*</Add.RequiredStar>
+					</Add.InputLabel>
+
+					<TextAreaInputField
+						minRows={9}
+						style={{ width: "100%" }}
+						value={input?.details}
+						onChange={handleInputChange}
+						name="details"
+						onBlur={handleUpdateInput}
 					/>
 				</Grid>
 			</Grid>

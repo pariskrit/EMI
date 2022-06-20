@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 		borderColor: ColourConstants.commonBorder,
 		borderWidth: 1,
 		borderStyle: "solid",
+		cursor: "pointer",
 	},
 	linkContainer: {
 		display: "flex",
@@ -86,6 +87,7 @@ const ProvidedAsset = ({
 	deleteName = "logo",
 	isLogo = true,
 	imageId = null,
+	onImageClick = null,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -137,7 +139,12 @@ const ProvidedAsset = ({
 						[classes.imageAssetContainerRec]: isRec,
 					})}
 				>
-					<img src={src} alt={alt} className={classes.assetImage} />
+					<img
+						src={src}
+						alt={alt}
+						className={classes.assetImage}
+						onClick={onImageClick}
+					/>
 				</div>
 
 				<div className={classes.linkContainer}>

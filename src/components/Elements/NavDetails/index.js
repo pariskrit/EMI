@@ -58,7 +58,8 @@ const NavDetails = ({
 	};
 
 	let realCrumbs =
-		staticCrumbs?.length > 0 && staticCrumbs.every((crumb) => crumb.name)
+		staticCrumbs?.length > 0 &&
+		staticCrumbs.every((crumb) => crumb.name !== false)
 			? staticCrumbs
 			: crumbs;
 
