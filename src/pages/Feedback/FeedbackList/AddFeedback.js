@@ -137,14 +137,17 @@ function AddNewFeedbackDetail({
 							feedbackClassificationID: {
 								...response.data,
 								id: response.data.defaultFeedbackClassificationID,
+								name: response.data.defaultFeedbackClassificationName,
 							},
 							feedbackStatusID: {
 								...response.data,
 								id: response.data.defaultFeedbackStatusID,
+								name: response.data.defaultFeedbackStatusName,
 							},
 							feedbackPriorityID: {
 								...response.data,
 								id: response.data.defaultFeedbackPriorityID,
+								name: response.data.defaultFeedbackPriorityName,
 							},
 						}));
 					}
@@ -574,6 +577,7 @@ function AddNewFeedbackDetail({
 										setInput({
 											...input,
 											modelVersionStageID: val,
+											modelVersionZoneID: {},
 										});
 									}}
 									selectdValueToshow="name"
@@ -617,7 +621,10 @@ function AddNewFeedbackDetail({
 									}
 									isReadOnly={
 										input?.modelID?.id === null ||
-										input?.modelID?.id === undefined
+										input?.modelID?.id === undefined ||
+										input?.modelVersionStageID?.id === null ||
+										input?.modelVersionStageID?.id === undefined ||
+										input?.modelVersionStageID?.hasZones === false
 									}
 								/>
 							</ErrorInputFieldWrapper>

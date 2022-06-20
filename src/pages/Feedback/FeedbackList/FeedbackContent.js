@@ -186,9 +186,7 @@ function FeedbackLists({
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [siteDepartments, setSiteDepartments] = useState([]);
 	const [feedbackStatus, setFeedbackStatus] = useState([]);
-	const [selectedMyFeedback, setSelectedMyFeedback] = useState(
-		myFeedbackFromMemory === null ? true : myFeedbackFromMemory
-	);
+	const [selectedMyFeedback, setSelectedMyFeedback] = useState(true);
 	const [selectedTimeframe, setSelectedTimeframe] = useState(
 		timeFrameFromMemory === null ? defaultTimeframe : timeFrameFromMemory
 	);
@@ -440,6 +438,7 @@ function FeedbackLists({
 			selectedTimeframe.fromDate,
 			selectedTimeframe.toDate,
 			dataForFetchingFeedback.pageNumber,
+			selectedMyFeedback,
 		]
 	);
 
@@ -634,7 +633,7 @@ function FeedbackLists({
 							setSelectedMyFeedback((th) => checked);
 							await fetchFeedbackList({
 								search: searchRef.current,
-								siteDepartmentID: selectedDepartment.id?.id,
+								siteDepartmentID: selectedDepartment?.id,
 								feedbackStatusID: selectedStatus.id,
 								fromDate: selectedTimeframe.fromDate,
 								toDate: selectedTimeframe.toDate,
