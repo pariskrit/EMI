@@ -97,11 +97,12 @@ function Dropdown(props) {
 	};
 	const onFilter = (val) => {
 		let filteredSearchList = [];
-		originalFilteredList.map((x) => {
-			if (x.label.toLowerCase().includes(val.toLowerCase()))
-				filteredSearchList.push(x);
-			return x;
-		});
+		originalFilteredList &&
+			originalFilteredList.map((x) => {
+				if (x.label.toLowerCase().includes(val.toLowerCase()))
+					filteredSearchList.push(x);
+				return x;
+			});
 		setFilteredList(filteredSearchList);
 	};
 	const handleDrpdwnClick = (event) => {

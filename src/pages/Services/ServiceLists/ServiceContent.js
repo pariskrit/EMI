@@ -376,6 +376,7 @@ function ServiceLists({
 			toDate = "",
 			sortField = "",
 			sort = "",
+			shouldCount = true,
 		}) => {
 			try {
 				const response = await Promise.all([
@@ -393,22 +394,23 @@ function ServiceLists({
 						sortField,
 						sort,
 					}),
-					getCountOfServiceList({
-						statusType:
-							status === 2 || status === 1
-								? statusTypeClassification[status]
-								: "",
-						status: status === 2 || status === 1 ? "" : status,
-						siteAppId: siteAppID,
-						search,
-						siteDepartmentID,
-						fromDate,
-						toDate,
-					}),
+					shouldCount &&
+						getCountOfServiceList({
+							statusType:
+								status === 2 || status === 1
+									? statusTypeClassification[status]
+									: "",
+							status: status === 2 || status === 1 ? "" : status,
+							siteAppId: siteAppID,
+							search,
+							siteDepartmentID,
+							fromDate,
+							toDate,
+						}),
 				]);
 				if (response[0].status) {
 					setAllData(response[0].data);
-					setCountOfService(response[1].data);
+					response[1].status && setCountOfService(response[1].data);
 					setDataForFetchingService((prev) => ({ ...prev, pageNumber: 1 }));
 				} else {
 					dispatch(
@@ -752,6 +754,7 @@ function ServiceLists({
 								toDate: selectedTimeframe.toDate,
 								sort: sortOrder,
 								sortField,
+								shouldCount: false,
 							});
 							setSearching(false);
 						}}

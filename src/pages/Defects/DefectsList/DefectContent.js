@@ -341,6 +341,7 @@ function DefectsLists({
 			toDate = "",
 			sortField = "",
 			sortOrder = "",
+			shouldCount = true,
 		}) => {
 			try {
 				const response = await Promise.all([
@@ -359,23 +360,24 @@ function DefectsLists({
 						sortField,
 						sortOrder,
 					}),
-					getCountOfDefectsList({
-						defectStatusType: ["C", "N", "O"].includes(defectStatusID)
-							? defectStatusID
-							: "",
-						defectStatusID: ["C", "N", "O"].includes(defectStatusID)
-							? ""
-							: defectStatusID,
-						siteAppId: siteAppID,
-						search,
-						siteDepartmentID,
-						fromDate,
-						toDate,
-					}),
+					shouldCount &&
+						getCountOfDefectsList({
+							defectStatusType: ["C", "N", "O"].includes(defectStatusID)
+								? defectStatusID
+								: "",
+							defectStatusID: ["C", "N", "O"].includes(defectStatusID)
+								? ""
+								: defectStatusID,
+							siteAppId: siteAppID,
+							search,
+							siteDepartmentID,
+							fromDate,
+							toDate,
+						}),
 				]);
 				if (response[0].status) {
 					setAllData(response[0].data);
-					setCountOfDefect(response[1].data);
+					response[1].status && setCountOfDefect(response[1].data);
 					setDataForFetchingDefect((prev) => ({ ...prev, pageNumber: 1 }));
 				} else {
 					dispatch(
@@ -679,6 +681,7 @@ function DefectsLists({
 								toDate: selectedTimeframe.toDate,
 								sortField: sortField,
 								sortOrder: sortOrder,
+								shouldCount: false,
 							});
 							setSearching(false);
 						}}

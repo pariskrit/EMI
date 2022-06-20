@@ -370,6 +370,7 @@ function FeedbackLists({
 			myFeedback = true,
 			sortField,
 			sortOrder,
+			shouldCount = true,
 		}) => {
 			try {
 				const response = await Promise.all([
@@ -389,20 +390,21 @@ function FeedbackLists({
 						sortField,
 						sortOrder,
 					}),
-					getCountOfFeedbackList({
-						feedbackStatusID: ["C", "O"].includes(feedbackStatusID)
-							? ""
-							: feedbackStatusID,
-						statusType: ["C", "O"].includes(feedbackStatusID)
-							? feedbackStatusID
-							: "",
-						siteAppId: siteAppID,
-						search,
-						siteDepartmentID,
-						fromDate,
-						toDate,
-						myFeedback,
-					}),
+					shouldCount &&
+						getCountOfFeedbackList({
+							feedbackStatusID: ["C", "O"].includes(feedbackStatusID)
+								? ""
+								: feedbackStatusID,
+							statusType: ["C", "O"].includes(feedbackStatusID)
+								? feedbackStatusID
+								: "",
+							siteAppId: siteAppID,
+							search,
+							siteDepartmentID,
+							fromDate,
+							toDate,
+							myFeedback,
+						}),
 				]);
 				if (response[0].status) {
 					setAllData(response[0].data);
@@ -740,6 +742,7 @@ function FeedbackLists({
 								myFeedback: selectedMyFeedback,
 								sortField: sortField,
 								sortOrder: sort,
+								shouldCount: false,
 							});
 							setSearching(false);
 						}}
