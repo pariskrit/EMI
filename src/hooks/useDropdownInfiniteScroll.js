@@ -14,22 +14,31 @@ function useInfiniteScroll(
 	const dataRef = useRef(data);
 	const countRef = useRef(count);
 	const pageRef = useRef(page);
+	const prevPageRef = useRef(0);
 
 	useMemo(() => {
 		dataRef.current = data;
 		countRef.current = count;
 		pageRef.current = page;
 	}, [data, count, page]);
+
 	useEffect(() => {
 		setHasMore(true);
 		pageRef.current = 1;
 	}, [searchText]);
 
+	useEffect(() => {
+		prevPageRef.current = page === 1 ? 0 : prevPageRef.current;
+	}, [page]);
+
 	const fetchMoreData = async () => {
 		if (countRef.current / pageRef.current < DefaultPageSize) {
 			setHasMore(false);
 			return;
-		} else {
+		}
+
+		if (prevPageRef.current !== pageRef.current) {
+			prevPageRef.current = pageRef.current;
 			setLoading(true);
 			await fetchData(pageRef.current, dataRef.current);
 			setLoading(false);
