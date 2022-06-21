@@ -87,7 +87,7 @@ function Details({ details, siteAppID, captions, defectId }) {
 		setInput({
 			details: details.details,
 			workOrder: details.workOrder,
-			tasks: `${details.actionName} ${details.taskName}`,
+			tasks: `${details.actionName ?? ""} ${details.taskName ?? ""}`,
 		});
 	}, [details]);
 	console.log(input);

@@ -211,7 +211,7 @@ function Dropdown(props) {
 						: (event) => {
 								handleDrpdwnClick(event);
 								!isReadOnly &&
-									originalFilteredList.length === 0 &&
+									originalFilteredList?.length === 0 &&
 									handleApiCall();
 						  }
 				}

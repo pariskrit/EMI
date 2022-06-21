@@ -5,6 +5,7 @@ function AudioPlayer({ audioSource = "", width = "350px" }) {
 		//check audio percentage and update time accordingly
 		const audioPlayer = document.querySelector(".audio-player");
 		const audio = new Audio(audioSource);
+		const playBtn = audioPlayer?.querySelector(".controls .toggle-play");
 
 		const loadedMetaData = () => {
 			audioPlayer.querySelector(
@@ -18,11 +19,15 @@ function AudioPlayer({ audioSource = "", width = "350px" }) {
 		const durationandCurrentTime = setInterval(() => {
 			const progressBar = audioPlayer.querySelector(".progress");
 			progressBar.style.width =
-				(audio.currentTime / audio.duration) * 100 + "%";
+				Math.floor((audio.currentTime / audio.duration) * 100) + "%";
 			audioPlayer.querySelector(
 				".time .current"
 			).textContent = getTimeCodeFromNum(audio.currentTime);
-		}, 500);
+			if (progressBar.style.width === "100%") {
+				playBtn.classList.add("play");
+				playBtn.classList.remove("pause");
+			}
+		}, 1000);
 
 		//click on timeline to skip around
 		const timeline = audioPlayer?.querySelector(".timeline");
@@ -47,7 +52,6 @@ function AudioPlayer({ audioSource = "", width = "350px" }) {
 			volumeSlider.addEventListener("click", volumeSettings, false);
 
 		//toggle between playing and pausing on button click
-		const playBtn = audioPlayer?.querySelector(".controls .toggle-play");
 		const playSetting = () => {
 			if (audio.paused) {
 				playBtn.classList.remove("play");
