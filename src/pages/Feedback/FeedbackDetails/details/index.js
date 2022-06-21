@@ -69,7 +69,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 		if (!response.status)
 			dispatch(
 				showError(
-					response.data.detail || response.data || "Could not update defect"
+					response.data?.detail || response.data || "Could not update defect"
 				)
 			);
 	};
@@ -209,7 +209,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						}}
 						selectdValueToshow="name"
 						label={captions?.position}
-						required
 						fetchData={() => getPositions(siteAppID)}
 					/>
 				</Grid>
@@ -223,7 +222,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						onChange={(val) => handleDropdownChange(val, "department")}
 						selectdValueToshow="name"
 						label={captions?.department}
-						required
 						fetchData={() => getSiteDepartmentsInService(siteId)}
 					/>
 				</Grid>
@@ -237,7 +235,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						onChange={(val) => handleDropdownChange(val, "user")}
 						selectdValueToshow="name"
 						label={captions?.user}
-						required
 						dataSource={dropdownOptions.users}
 						isReadOnly={!selectedDropdown.position?.id}
 						fetchData={() => fetchPositionUser(selectedDropdown.position?.id)}
@@ -278,10 +275,12 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						placeholder={`Select ${captions?.model}`}
 						columns={[{ id: 1, name: "name" }]}
 						selectedValue={selectedDropdown.model}
-						onChange={(val) => handleDropdownChange(val, "model")}
+						onChange={(val) => {
+							handleDropdownChange(val, "model");
+							setSelectedDropdown((prev) => ({ ...prev, stage: {}, zone: {} }));
+						}}
 						selectdValueToshow="name"
 						label={captions?.model}
-						required
 						fetchData={() => getPublishedModel(siteAppID)}
 					/>
 				</Grid>
@@ -299,7 +298,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						page={page.pageNo}
 						count={count}
 						handleServierSideSearch={handleServerSideSearch}
-						required
 						fetchData={fetchSiteAsset}
 						onPageChange={pageChange}
 					/>
@@ -311,11 +309,13 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						placeholder={`Select ${captions?.stage}`}
 						columns={[{ id: 1, name: "name" }]}
 						selectedValue={selectedDropdown.stage}
-						onChange={(val) => handleDropdownChange(val, "stage")}
+						onChange={(val) => {
+							handleDropdownChange(val, "stage");
+							setSelectedDropdown((prev) => ({ ...prev, zone: {} }));
+						}}
 						selectdValueToshow="name"
 						label={captions?.stage}
 						isReadOnly={!selectedDropdown.model?.id}
-						required
 						fetchData={() =>
 							getModelStage(selectedDropdown.model?.activeModelVersionID)
 						}
@@ -331,8 +331,9 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						onChange={(val) => handleDropdownChange(val, "zone")}
 						selectdValueToshow="name"
 						label={captions?.zone}
-						isReadOnly={!selectedDropdown.model?.id}
-						required
+						isReadOnly={
+							!selectedDropdown.model?.id || !selectedDropdown.stage.hasZones
+						}
 						fetchData={() =>
 							getModelZonesList(selectedDropdown.model?.activeModelVersionID)
 						}
@@ -344,6 +345,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						name={"task"}
 						value={details?.taskName}
 						isDisabled={true}
+						isRequired={false}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>

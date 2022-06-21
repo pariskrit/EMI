@@ -1,5 +1,6 @@
 import { CircularProgress, Grid, makeStyles } from "@material-ui/core";
 import ImageUpload from "components/Elements/ImageUpload";
+import ImageViewer from "components/Elements/ImageViewer";
 import AccordionBox from "components/Layouts/AccordionBox";
 import ProvidedAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
 import { BASE_API_PATH } from "helpers/constants";
@@ -24,6 +25,8 @@ function DefectImages({ feedbackId, captions }) {
 	const [isUploading, setIsUploading] = useState(false);
 	const [progressData, setProgressData] = useState(0);
 	const [loading, setLoading] = useState(true);
+	const [openImageViewer, setOpenImageViewer] = useState(false);
+	const [imagetoView, setImageToview] = useState("");
 	const dispatch = useDispatch();
 
 	const handleImageUpload = async (e) => {
@@ -51,6 +54,11 @@ function DefectImages({ feedbackId, captions }) {
 	const handleDeleteImage = (id) =>
 		setImages(images.filter((img) => img.id !== id));
 
+	const handleOpenImageViewer = (imgUrl) => {
+		setOpenImageViewer(true);
+		setImageToview(imgUrl);
+	};
+
 	const fetchDefectImages = useCallback(async () => {
 		const response = await getFeedbackImages(feedbackId);
 
@@ -66,43 +74,51 @@ function DefectImages({ feedbackId, captions }) {
 	}, [fetchDefectImages]);
 
 	return (
-		<AccordionBox
-			title={`${captions?.feedback} Images (${images.length})`}
-			defaultExpanded
-		>
-			{loading ? (
-				<CircularProgress />
-			) : (
-				<Grid container spacing={2}>
-					{images.map((img) => (
-						<Grid item xs={12} key={img.id} className={classes.image}>
-							<ProvidedAsset
-								src={img.thumbnailURL}
-								alt={img.imageKey}
-								deleteName="Image"
-								noBottomDivider
-								deleteLogo={handleDeleteImage}
-								deleteEndpoint={`${BASE_API_PATH}feedbackimages`}
-								imageId={img.id}
-								isLogo={false}
-							/>
-						</Grid>
-					))}
+		<>
+			<ImageViewer
+				open={openImageViewer}
+				onClose={() => setOpenImageViewer(false)}
+				imgSource={imagetoView}
+			/>
+			<AccordionBox
+				title={`${captions?.feedback} Images (${images.length})`}
+				defaultExpanded
+			>
+				{loading ? (
+					<CircularProgress />
+				) : (
+					<Grid container spacing={2}>
+						{images.map((img) => (
+							<Grid item xs={12} key={img.id} className={classes.image}>
+								<ProvidedAsset
+									src={img.thumbnailURL}
+									alt={img.imageKey}
+									deleteName="Image"
+									noBottomDivider
+									deleteLogo={handleDeleteImage}
+									deleteEndpoint={`${BASE_API_PATH}feedbackimages`}
+									imageId={img.id}
+									isLogo={false}
+									onImageClick={() => handleOpenImageViewer(img?.imageURL)}
+								/>
+							</Grid>
+						))}
 
-					{images.length < 6 ? (
-						<Grid item xs={12}>
-							<ImageUpload
-								imageUrl={null}
-								imageName=""
-								onDrop={handleImageUpload}
-								isUploading={isUploading}
-								uploadPercentCompleted={progressData}
-							/>
-						</Grid>
-					) : null}
-				</Grid>
-			)}
-		</AccordionBox>
+						{images.length < 6 ? (
+							<Grid item xs={12}>
+								<ImageUpload
+									imageUrl={null}
+									imageName=""
+									onDrop={handleImageUpload}
+									isUploading={isUploading}
+									uploadPercentCompleted={progressData}
+								/>
+							</Grid>
+						) : null}
+					</Grid>
+				)}
+			</AccordionBox>
+		</>
 	);
 }
 
