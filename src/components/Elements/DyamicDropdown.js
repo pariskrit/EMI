@@ -186,7 +186,7 @@ function DyanamicDropdown(props) {
 			//specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
 			if (
 				window.innerWidth - specifiedElement.getBoundingClientRect().right <
-				150
+				50
 			) {
 				specifiedElement.style.left = "unset";
 				specifiedElement.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
@@ -209,9 +209,27 @@ function DyanamicDropdown(props) {
 	useEffect(() => {
 		window.addEventListener("click", handleOutsideClick);
 		window.addEventListener("scroll", handleWindowScroll);
+		const dailogContent = document.getElementsByClassName(
+			"MuiDialogContent-root"
+		)[0];
+		if (dailogContent) {
+			dailogContent.addEventListener("scroll", handleWindowScroll);
+		}
+		const tableWrapper = document.getElementById(
+			"table-scroll-wrapper-container"
+		);
+		if (tableWrapper) {
+			tableWrapper.addEventListener("scroll", handleWindowScroll);
+		}
 		return () => {
 			window.removeEventListener("click", handleOutsideClick);
 			window.removeEventListener("scroll", handleWindowScroll);
+			if (dailogContent) {
+				dailogContent.removeEventListener("scroll", handleWindowScroll);
+			}
+			if (tableWrapper) {
+				tableWrapper.addEventListener("scroll", handleWindowScroll);
+			}
 		};
 	}, [handleOutsideClick]);
 
@@ -288,12 +306,12 @@ function DyanamicDropdown(props) {
 		setCurrentTableSort([field, newMethod]);
 	};
 
-	const handleDrpdwnClick = (event) => {
+	const handleDrpdwnClick = (target) => {
 		if (isReadOnly) return;
 		removeActiveDropdown();
-		let el = event.target.closest(".dropbox");
+		let el = target.closest(".dropbox");
 		if (el) el.classList.add("active");
-		const parentEl = event.target.closest(".dropdown");
+		const parentEl = target.closest(".dropdown");
 		if (parentEl) parentEl.classList.add("active");
 		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
 		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
@@ -309,11 +327,7 @@ function DyanamicDropdown(props) {
 			dropdownExpandEl.style.bottom = "unset";
 			dropdownExpandEl.style.top =
 				window.innerHeight - el?.getBoundingClientRect().bottom < 300
-					? `${
-							dropdownPos.top -
-							dropdownExpandEl.scrollHeight +
-							DROPDOWN_TOP_OFFSET
-					  }px`
+					? `${dropdownPos.top - dropdownExpandEl.scrollHeight + 53}px`
 					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
 			if (
@@ -342,10 +356,10 @@ function DyanamicDropdown(props) {
 			setdropdownlistner(document.getElementById(uniqueId));
 			scrollRef.current = false;
 		}
-		const dailogContent = document.getElementsByClassName(
-			"MuiDialogContent-root"
-		)[0];
-		if (dailogContent) dailogContent.style.overflow = "visible";
+		// const dailogContent = document.getElementsByClassName(
+		// 	"MuiDialogContent-root"
+		// )[0];
+		// if (dailogContent) dailogContent.style.overflow = "visible";
 	};
 
 	const removeActiveDropdown = () => {
@@ -469,9 +483,11 @@ function DyanamicDropdown(props) {
 			<div
 				className={`dropbox ${dropActive ? "active" : ""}`}
 				style={{ width: "100%" }}
-				onClick={(event) => {
-					handleDrpdwnClick(event);
-					handleApiCall();
+				onClick={async (event) => {
+					const target = event.target;
+					handleDrpdwnClick(target);
+					await handleApiCall();
+					handleDrpdwnClick(target);
 				}}
 			>
 				<div

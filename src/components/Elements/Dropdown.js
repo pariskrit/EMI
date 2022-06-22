@@ -38,9 +38,27 @@ function Dropdown(props) {
 	useEffect(() => {
 		window.addEventListener("click", handleOutsideClick);
 		window.addEventListener("scroll", handleWindowScroll);
+		const dailogContent = document.getElementsByClassName(
+			"MuiDialogContent-root"
+		)[0];
+		if (dailogContent) {
+			dailogContent.addEventListener("scroll", handleWindowScroll);
+		}
+		const tableWrapper = document.getElementById(
+			"table-scroll-wrapper-container"
+		);
+		if (tableWrapper) {
+			tableWrapper.addEventListener("scroll", handleWindowScroll);
+		}
 		return () => {
 			window.removeEventListener("click", handleOutsideClick);
 			window.removeEventListener("scroll", handleWindowScroll);
+			if (dailogContent) {
+				dailogContent.removeEventListener("scroll", handleWindowScroll);
+			}
+			if (tableWrapper) {
+				tableWrapper.addEventListener("scroll", handleWindowScroll);
+			}
 		};
 	}, []);
 
@@ -76,7 +94,7 @@ function Dropdown(props) {
 			//specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
 			if (
 				window.innerWidth - specifiedElement.getBoundingClientRect().right <
-				150
+				50
 			) {
 				specifiedElement.style.left = "unset";
 				specifiedElement.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
@@ -84,6 +102,7 @@ function Dropdown(props) {
 				specifiedElement.style.right = "unset";
 				specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
 			}
+
 			let parentEl = document.getElementsByClassName("dropdown active")[0];
 			if (window.innerHeight - parentEl.getBoundingClientRect().bottom < 300) {
 				specifiedElement.style.top = "unset";
@@ -132,11 +151,7 @@ function Dropdown(props) {
 			dropdownExpandEl.style.bottom = "unset";
 			dropdownExpandEl.style.top =
 				window.innerHeight - el?.getBoundingClientRect().bottom < 300
-					? `${
-							dropdownPos.top -
-							dropdownExpandEl.scrollHeight +
-							DROPDOWN_TOP_OFFSET
-					  }px`
+					? `${dropdownPos.top - dropdownExpandEl.scrollHeight + 53}px`
 					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
 			if (
@@ -158,10 +173,10 @@ function Dropdown(props) {
 				}px`;
 			}
 		}
-		const dailogContent = document.getElementsByClassName(
-			"MuiDialogContent-root"
-		)[0];
-		if (dailogContent) dailogContent.style.overflow = "visible";
+		// const dailogContent = document.getElementsByClassName(
+		// 	"MuiDialogContent-root"
+		// )[0];
+		// if (dailogContent) dailogContent.style.overflow = "visible";
 	};
 
 	const removeActiveDropdown = () => {
