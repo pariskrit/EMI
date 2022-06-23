@@ -134,6 +134,7 @@ const BASE_API_PATH_SERVICES_NOTES = `${BASE_API_PATH}ServiceNotes`;
 const BASE_API_PATH_DEFECTS = `${BASE_API_PATH}Defects`;
 const BASE_API_PATH_DEFECT_NOTES = `${BASE_API_PATH}DefectNotes`;
 const BASE_API_PATH_DEFECT_IMAGES = `${BASE_API_PATH}DefectImages`;
+const BASE_API_PATH_DEFECT_PARTS = `${BASE_API_PATH}DefectParts`;
 
 // Feedback
 const BASE_API_PATH_FEEDBACK = `${BASE_API_PATH}Feedback`;
@@ -302,6 +303,7 @@ export const Apis = {
 	Defects: `${BASE_API_PATH_DEFECTS}`,
 	DefectNotes: `${BASE_API_PATH_DEFECT_NOTES}`,
 	DefectImages: `${BASE_API_PATH_DEFECT_IMAGES}`,
+	DefectParts: `${BASE_API_PATH_DEFECT_PARTS}`,
 
 	// Feedback
 	Feedback: `${BASE_API_PATH_FEEDBACK}`,

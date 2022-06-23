@@ -29,9 +29,27 @@ export const getDefectImages = async (id) => {
 	}
 };
 
+export const getDefectParts = async (id) => {
+	try {
+		let response = await API.get(`${Apis.DefectParts}?defectId=${id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const addDefectNotes = async (payload) => {
 	try {
 		let response = await API.post(`${Apis.DefectNotes}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export const addDefectPart = async (payload) => {
+	try {
+		let response = await API.post(`${Apis.DefectParts}`, payload);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

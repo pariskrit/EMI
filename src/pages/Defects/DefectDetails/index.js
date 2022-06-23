@@ -13,6 +13,7 @@ import ChangeStatusPopup from "./ChangeStatusPopup";
 import ColourConstants from "helpers/colourConstants";
 import Details from "./details";
 import Audio from "./Audio";
+import Parts from "./Parts";
 
 const AT = ActionButtonStyle();
 const media = "@media (max-width: 414px)";
@@ -54,7 +55,7 @@ const useStyles = makeStyles({
 function DefectsDetails() {
 	const classes = useStyles();
 	const { id } = useParams();
-	const { customCaptions, siteAppID } = getLocalStorageData("me");
+	const { customCaptions, siteAppID, application } = getLocalStorageData("me");
 	const [showChangeStatus, setShowChangeStatus] = useState(false);
 	const [details, setDetails] = useState({});
 	const [loading, setLoading] = useState(true);
@@ -133,16 +134,18 @@ function DefectsDetails() {
 				<Grid item xs={12} lg={6}>
 					<DefectImages defectId={id} captions={customCaptions} />
 				</Grid>
-				<Grid container spacing={0} item xs={12} lg={6}>
-					{details?.audioURL && (
-						<Grid item xs={12} spacing={0}>
-							<Audio src={details?.audioURL} defectId={id} />
-						</Grid>
-					)}
-
+				{details?.audioURL && (
 					<Grid item xs={12} spacing={0}>
-						<Notes defectId={id} />
+						<Audio src={details?.audioURL} defectId={id} />
 					</Grid>
+				)}
+				{application?.showDefectParts && (
+					<Grid item xs={12} lg={6}>
+						<Parts captions={customCaptions} defectId={id} />
+					</Grid>
+				)}
+				<Grid item xs={12} lg={6}>
+					<Notes defectId={id} />
 				</Grid>
 			</Grid>
 		</div>
