@@ -82,7 +82,7 @@ function AddNewNoticeBoardDetail({
 	customCaptions,
 	setSearchQuery,
 	fetchData,
-	setDataForFetchingFeedback,
+	setDataForFetchingNoticeBoard,
 	siteID,
 	data,
 	isEdit = false,
@@ -156,7 +156,7 @@ function AddNewNoticeBoardDetail({
 				const newData = await createProcessHandler(payload);
 
 				if (newData.status === true) {
-					setDataForFetchingFeedback({
+					setDataForFetchingNoticeBoard({
 						pageNumber: 1,
 						pageSize: DefaultPageSize,
 						search: "",
