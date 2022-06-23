@@ -575,6 +575,7 @@ function DefectsLists({
 					<SearchField
 						searchQuery={dataForFetchingDefect?.search}
 						setSearchQuery={(e) => {
+							e.persist();
 							setDataForFetchingDefect((prev) => ({
 								...prev,
 								search: e.target.value,

@@ -141,6 +141,9 @@ const BASE_API_PATH_FEEDBACK = `${BASE_API_PATH}Feedback`;
 const BASE_API_PATH_FEEDBACK_NOTES = `${BASE_API_PATH}FeedbackNotes`;
 const BASE_API_PATH_FEEDBACK_IMAGES = `${BASE_API_PATH}FeedbackImages`;
 
+// NoticeBoards
+const BASE_API_PATH_NOTICE_BOARDS = `${BASE_API_PATH}Noticeboards`;
+
 export const Apis = {
 	// register email
 	RegisterEmail: `${BASE_API_PATH_REGISTER_USER_EMAIL}`,
@@ -309,4 +312,7 @@ export const Apis = {
 	Feedback: `${BASE_API_PATH_FEEDBACK}`,
 	FeedbackNotes: `${BASE_API_PATH_FEEDBACK_NOTES}`,
 	FeedbackImages: `${BASE_API_PATH_FEEDBACK_IMAGES}`,
+
+	// NoticeBoards
+	NoticeBoards: `${BASE_API_PATH_NOTICE_BOARDS}`,
 };

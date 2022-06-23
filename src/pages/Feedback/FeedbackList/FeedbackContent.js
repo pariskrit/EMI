@@ -608,6 +608,7 @@ function FeedbackLists({
 					<SearchField
 						searchQuery={dataForFetchingFeedback?.search}
 						setSearchQuery={(e) => {
+							e.persist();
 							setDataForFetchingFeedback((prev) => ({
 								...prev,
 								search: e.target.value,

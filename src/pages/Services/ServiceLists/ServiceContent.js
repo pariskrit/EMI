@@ -675,6 +675,7 @@ function ServiceLists({
 					<SearchField
 						searchQuery={dataForFetchingService?.search}
 						setSearchQuery={(e) => {
+							e.persist();
 							setDataForFetchingService((prev) => ({
 								...prev,
 								search: e.target.value,

@@ -1,7 +1,7 @@
 import React from "react";
 
-const Noticeboards = () => {
-	return <h1>Noticeboards</h1>;
+const NoticeBoardskPage = (props) => {
+	return <div>{props.children}</div>;
 };
 
-export default Noticeboards;
+export default NoticeBoardskPage;

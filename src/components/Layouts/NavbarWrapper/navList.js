@@ -7,6 +7,7 @@ import { ReactComponent as ServiceIcon } from "assets/icons/services.svg";
 import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
 import { ReactComponent as DefectsIcon } from "assets/icons/defects.svg";
 import { ReactComponent as FeedbackIcon } from "assets/icons/feedback.svg";
+import { ReactComponent as NoticeboardsIcon } from "assets/icons/noticeboards.svg";
 
 import access from "helpers/access";
 import roles from "helpers/roles";
@@ -112,7 +113,7 @@ const navList = [
 	{
 		activeName: "Noticeboards",
 		name: "Noticeboards",
-		icon: ModelIcon,
+		icon: NoticeboardsIcon,
 		path: noticeboardPath,
 		access: access.noticeboardAccess,
 		roles: "",
