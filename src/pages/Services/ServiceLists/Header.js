@@ -1,10 +1,22 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
+import { Tooltip } from "@material-ui/core";
 import NavDetails from "components/Elements/NavDetails";
 import Icon from "components/Elements/Icon";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
 const AT = ActionButtonStyle();
+
+const HtmlTooltip = withStyles((theme) => ({
+	tooltip: {
+		backgroundColor: "#f5f5f9",
+		color: "rgba(0, 0, 0, 0.87)",
+		maxWidth: 220,
+		fontSize: theme.typography.pxToRem(12),
+		border: "1px solid #dadde9",
+	},
+}))(Tooltip);
 
 const media = "@media (max-width: 414px)";
 
@@ -42,7 +54,14 @@ const useStyles = makeStyles({
 	},
 });
 
-function Header({ setOpenAddService, setImportCSV, dataLength }) {
+function Header({
+	setOpenAddService,
+	setImportCSV,
+	setOpenMultipleChnageStatusPopup,
+	dataLength,
+	MultipleChangeStatusDisabled,
+	customCaptions,
+}) {
 	// Init hooks
 	const classes = useStyles();
 
@@ -58,6 +77,30 @@ function Header({ setOpenAddService, setImportCSV, dataLength }) {
 			/>
 			<div className={classes.wrapper}>
 				<div className={classes.buttons}>
+					{MultipleChangeStatusDisabled ? (
+						<HtmlTooltip
+							title={`The status of your selected ${customCaptions.servicePlural} can not be changed as they are not the same status`}
+						>
+							<div>
+								<AT.GeneralButton
+									className={classes.importButton}
+									onClick={() => setOpenMultipleChnageStatusPopup(true)}
+									disabled={MultipleChangeStatusDisabled}
+								>
+									Change Status
+								</AT.GeneralButton>
+							</div>
+						</HtmlTooltip>
+					) : (
+						<AT.GeneralButton
+							className={classes.importButton}
+							onClick={() => setOpenMultipleChnageStatusPopup(true)}
+							disabled={MultipleChangeStatusDisabled}
+						>
+							Change Status
+						</AT.GeneralButton>
+					)}
+
 					<AT.GeneralButton
 						className={classes.importButton}
 						onClick={() => setImportCSV(true)}

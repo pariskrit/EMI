@@ -18,6 +18,7 @@ import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import { getServicesList } from "services/services/serviceLists";
 import { DefaultPageSize, statusTypeClassification } from "helpers/constants";
+import EMICheckbox from "components/Elements/EMICheckbox";
 
 // Init styled components
 const AT = TableStyle();
@@ -105,6 +106,7 @@ const ServiceListTable = ({
 	setDataForFetchingService,
 	currentTableSort,
 	setCurrentTableSort,
+	handleSelectService,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -210,7 +212,10 @@ const ServiceListTable = ({
 											currentTableSort[0] !== columns[index],
 									})}
 								>
-									<AT.CellContainer className="flex justify-between">
+									<AT.CellContainer
+										className="flex justify-between"
+										style={index === 0 ? { marginLeft: "38px" } : {}}
+									>
 										{header.name}
 										{
 											<div className="arrow">
@@ -246,9 +251,31 @@ const ServiceListTable = ({
 									<AT.DataCell key={col}>
 										<AT.CellContainer key={col}>
 											<AT.TableBodyText>
-												{col === "modelName"
-													? row[col] + " " + row["model"]
-													: row[col]}
+												{col === "workOrder" ? (
+													<span
+														style={{
+															display: "flex",
+															flexDirection: "space-around",
+															alignItems: "center",
+															gap: 10,
+														}}
+													>
+														{" "}
+														<EMICheckbox
+															// state={false}
+															changeHandler={({ target: { checked } }) => {
+																handleSelectService(data[index], checked);
+															}}
+														/>
+														{col === "modelName"
+															? row[col] + " " + row["model"]
+															: row[col]}
+													</span>
+												) : col === "modelName" ? (
+													row[col] + " " + row["model"]
+												) : (
+													row[col]
+												)}
 											</AT.TableBodyText>
 
 											{arr.length === i + 1 ? (

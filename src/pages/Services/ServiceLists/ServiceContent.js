@@ -51,6 +51,7 @@ import { useUserSearch } from "hooks/useUserSearch";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import StatusChangePopup from "./StatusChangePopup";
 import { changeDate } from "helpers/date";
+import MultipleChangeStatusPopup from "./MultipleChangeStatusPopup";
 
 const useStyles = makeStyles({
 	loading: {
@@ -203,7 +204,12 @@ function ServiceLists({
 	const [isSearching, setSearching] = useState(false);
 	const [deleteID, setDeleteID] = useState(null);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [selectedServices, setSelectedServices] = useState([]);
 	const [openChnageStatusPopup, setOpenChnageStatusPopup] = useState(false);
+	const [
+		openMultipleChnageStatusPopup,
+		setOpenMultipleChnageStatusPopup,
+	] = useState(false);
 	const [siteDepartments, setSiteDepartments] = useState([]);
 	const [selectedTimeframe, setSelectedTimeframe] = useState(
 		timeFrameFromMemory === null ? defaultTimeframe : timeFrameFromMemory
@@ -523,6 +529,23 @@ function ServiceLists({
 		setCountOfService((prev) => prev - 1);
 	};
 
+	// select Service for Multiple change status
+	const handleSelectService = (service) => {
+		if (selectedServices.findIndex((x) => x.id === service.id) === -1) {
+			setSelectedServices((prev) => [...prev, service]);
+		} else {
+			setSelectedServices((prev) => prev.filter((x) => x.id !== service.id));
+		}
+	};
+
+	// disable change status button if services selected with different status
+	const isMultipleServiceDisable = () => {
+		if (selectedServices.length === 0) return true;
+		return !selectedServices.every(
+			(x) => x.status === selectedServices[0].status
+		);
+	};
+
 	const mainData = searchQuery.length === 0 ? allData : allData;
 
 	if (loading) return <CircularProgress />;
@@ -548,6 +571,25 @@ function ServiceLists({
 				}
 				setDataForFetchingService={setDataForFetchingService}
 				serviceId={deleteID}
+			/>
+			<MultipleChangeStatusPopup
+				onClose={() => setOpenMultipleChnageStatusPopup(false)}
+				open={openMultipleChnageStatusPopup}
+				status={selectedServices[0]?.status}
+				siteAppID={siteAppID}
+				services={selectedServices.map((x) => x.id)}
+				fetchData={() =>
+					fetchServiceList({
+						search: searchRef.current,
+						status: selectedStatus?.id,
+						siteDepartmentID: selectedDepartment?.id,
+						fromDate: selectedTimeframe.fromDate,
+						toDate: selectedTimeframe.toDate,
+						sortField: currentTableSort[0],
+						sort: currentTableSort[1],
+					})
+				}
+				setSelectedServices={setSelectedServices}
 			/>
 
 			<DeleteDialog
@@ -615,6 +657,9 @@ function ServiceLists({
 			/>
 			<div className="container">
 				<Header
+					setOpenMultipleChnageStatusPopup={setOpenMultipleChnageStatusPopup}
+					MultipleChangeStatusDisabled={isMultipleServiceDisable()}
+					customCaptions={customCaptions}
 					setOpenAddService={setOpenAddService}
 					setImportCSV={setImportCSV}
 					dataLength={countOFService}
@@ -762,6 +807,7 @@ function ServiceLists({
 						siteAppID={siteAppID}
 						currentTableSort={currentTableSort}
 						setCurrentTableSort={setCurrentTableSort}
+						handleSelectService={handleSelectService}
 					/>
 				</div>
 			</div>

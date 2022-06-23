@@ -32,6 +32,15 @@ export const changeServiceStatus = async (serviceId, payload) => {
 	}
 };
 
+export const changeMultipleServiceStatus = async (payload) => {
+	try {
+		let response = await API.post(`${Apis.Services}/changestatus`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const resetServiceStatus = async (serviceId, payload) => {
 	try {
 		let response = await API.post(
