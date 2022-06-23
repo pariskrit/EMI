@@ -121,6 +121,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
 						fullWidth
 						onChange={(e) => setInput({ ...input, quantity: e.target.value })}
 						onKeyDown={handleEnterPress}
+						type="number"
 						autoFocus
 					/>
 				</div>
