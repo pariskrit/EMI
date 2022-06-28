@@ -75,7 +75,7 @@ const formattedData = (data, history) => {
 	return data.map((x) => ({
 		...x,
 		modelName: x.modelModel ? x.modelName + " " + x.modelModel : x.modelName,
-		taskName: x?.actionName ? x?.taskName + " " + x?.actionName : x?.taskName,
+		taskName: x?.actionName ? x?.actionName + " " + x?.taskName : x?.taskName,
 		defectStatusName: (
 			<span
 				style={{
