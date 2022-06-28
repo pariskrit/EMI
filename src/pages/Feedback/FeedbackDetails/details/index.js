@@ -53,10 +53,18 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 	const dispatch = useDispatch();
 
 	const handleDropdownChange = async (value, type) => {
-		setSelectedDropdown({
-			...selectedDropdown,
+		setSelectedDropdown((prev) => ({
+			...prev,
 			[type]: value,
-		});
+		}));
+
+		if (type === "position")
+			setSelectedDropdown((prev) => ({ ...prev, user: {} }));
+		if (type === "model")
+			setSelectedDropdown((prev) => ({
+				...prev,
+				model: { ...prev.model, name: `${value.name} ${value.modelName}` },
+			}));
 
 		const response = await updateFeedback(feedbackId, [
 			{
@@ -142,7 +150,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 			setSiteAsset(response.data);
 		}
 	};
-
 	useEffect(() => {
 		setSelectedDropdown({
 			department: {
@@ -171,7 +178,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 			},
 			model: {
 				id: details.modelID,
-				name: details.modelName,
+				name: `${details?.modelName} ${details?.model}`,
 				activeModelVersionID: details.activeModelVersionID,
 			},
 			stage: {
@@ -188,7 +195,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 			changeRequired: details.changeRequired,
 		});
 	}, [details]);
-
 	return (
 		<AccordionBox
 			title="Details"
@@ -205,7 +211,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						selectedValue={selectedDropdown.position}
 						onChange={(val) => {
 							handleDropdownChange(val, "position");
-							setSelectedDropdown({ ...selectedDropdown, user: {} });
 						}}
 						selectdValueToshow="name"
 						label={captions?.position}
@@ -273,7 +278,15 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						isServerSide={false}
 						width="100%"
 						placeholder={`Select ${captions?.model}`}
-						columns={[{ id: 1, name: "name" }]}
+						columns={[
+							{ id: 1, name: "name" },
+							{ id: 2, name: "modelName" },
+						]}
+						dataHeader={[
+							{ id: 1, name: "Name" },
+							{ id: 2, name: "Model" },
+						]}
+						showHeader
 						selectedValue={selectedDropdown.model}
 						onChange={(val) => {
 							handleDropdownChange(val, "model");
