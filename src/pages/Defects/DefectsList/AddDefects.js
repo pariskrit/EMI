@@ -172,6 +172,7 @@ function AddNewDefectDetail({
 						sort: "",
 					});
 					await fetchData();
+					setIsUpdating(false);
 					closeOverride();
 				} else {
 					setIsUpdating(false);

@@ -321,6 +321,8 @@ function Navbar({
 			transform: "scale(0.35)",
 			fill: "#FFFFFF",
 			marginTop: "-15px",
+			// width: "31.976px",
+			// height: "28.357px",
 		},
 
 		innerBottomNav: {
@@ -814,6 +816,7 @@ function Navbar({
 												<LogoutIcon
 													alt="Logout Button"
 													className={classes.navIcon}
+													style={{ width: "31.976px", height: "28.357px" }}
 												/>
 											)}
 										</ListItemIcon>
