@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 		width: 500,
 	},
 	createButton: {
-		// width: "auto",
+		width: "auto",
 	},
 });
 
@@ -95,14 +95,15 @@ function AddNewNoticeBoardDetail({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [Focus, setFocus] = useState(false);
 
 	useEffect(() => {
 		if (data) {
 			setInput({
 				name: data.name,
-				description: data.description,
+				description: data.description || "",
 				file: data.documentURL ? data.name : null,
-				link: data.link,
+				link: data.link || "",
 				siteDepartmentID: {
 					id: data.siteDepartmentID,
 					name: data.siteDepartmentName,
@@ -207,6 +208,9 @@ function AddNewNoticeBoardDetail({
 
 		if (value === data[name]) return;
 		setIsUpdating(true);
+		if (name === "link") {
+			setInput({ ...input, file: null });
+		}
 
 		try {
 			response =
@@ -228,7 +232,8 @@ function AddNewNoticeBoardDetail({
 							"Failed to edit  " + customCaptions?.tutorial
 					)
 				);
-				setInput((prev) => ({ ...prev, [name]: data[name] }));
+				if (name !== "link")
+					setInput((prev) => ({ ...prev, [name]: data[name] }));
 			}
 		} catch (error) {
 		} finally {
@@ -401,15 +406,16 @@ function AddNewNoticeBoardDetail({
 									onChange={(e) => {
 										setInput({ ...input, expiryDate: e.target.value });
 									}}
-									onBlur={() =>
+									onBlur={() => {
+										setFocus(false);
 										handleBlurField(
 											"expiryDate",
 											new Date(new Date(input?.expiryDate).getTime()).toJSON()
-										)
-									}
+										);
+									}}
+									onFocus={() => setFocus(true)}
 									isRequired={false}
-									type="datetime-local"
-									placeholder="Select Date"
+									type={input?.expiryDate || Focus ? "datetime-local" : "text"}
 									error={errors.expiryDate === null ? false : true}
 								/>
 							</ErrorInputFieldWrapper>
@@ -445,6 +451,7 @@ function AddNewNoticeBoardDetail({
 									label={customCaptions?.department}
 									isError={errors.siteDepartmentID === null ? false : true}
 									fetchData={() => getSiteDepartmentsInService(siteID)}
+									showClear
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.RightInputContainer>

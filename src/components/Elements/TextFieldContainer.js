@@ -21,6 +21,7 @@ function TextFieldContainer({
 	onChange,
 	className = null,
 	onBlur = () => {},
+	onFocus = () => {},
 	isFetching = false,
 	isDisabled = false,
 	onKeyDown,
@@ -52,6 +53,7 @@ function TextFieldContainer({
 				}}
 				onChange={onChange}
 				onBlur={onBlur}
+				onFocus={onFocus}
 				disabled={isFetching || isDisabled}
 				onKeyDown={onKeyDown}
 				value={value ?? ""}

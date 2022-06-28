@@ -381,7 +381,7 @@ function DyanamicDropdown(props) {
 		onChange({});
 		setsearchText("");
 		focusRef.current.value = "";
-		setFilteredList(dataSource);
+		setFilteredList(originalFilteredList);
 		onClear();
 		e.stopPropagation();
 	};
