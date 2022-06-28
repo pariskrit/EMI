@@ -132,20 +132,25 @@ function DefectsDetails() {
 					/>
 				</Grid>
 				<Grid item xs={12} lg={6}>
-					<DefectImages defectId={id} captions={customCaptions} />
+					<Grid item xs={12}>
+						<DefectImages defectId={id} captions={customCaptions} />
+					</Grid>
+
+					<Grid item xs={12} style={{ marginTop: "16px" }}>
+						<Notes defectId={id} />
+					</Grid>
 				</Grid>
-				{details?.audioURL && (
-					<Grid item xs={12} spacing={0}>
-						<Audio src={details?.audioURL} defectId={id} />
-					</Grid>
-				)}
-				{application?.showDefectParts && (
-					<Grid item xs={12} lg={6}>
-						<Parts captions={customCaptions} defectId={id} />
-					</Grid>
-				)}
 				<Grid item xs={12} lg={6}>
-					<Notes defectId={id} />
+					{details?.audioURL && (
+						<Grid item xs={12} style={{ marginBottom: "16px" }}>
+							<Audio src={details?.audioURL} defectId={id} />
+						</Grid>
+					)}
+					{application?.showDefectParts && (
+						<Grid item xs={12}>
+							<Parts captions={customCaptions} defectId={id} />
+						</Grid>
+					)}
 				</Grid>
 			</Grid>
 		</div>

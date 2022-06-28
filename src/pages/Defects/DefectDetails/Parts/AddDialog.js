@@ -20,9 +20,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	description: yup
-		.string("This field must be a string")
-		.required("This field is required"),
+	description: yup.string().nullable(),
 });
 
 const ADD = AddDialogStyle();
@@ -68,6 +66,7 @@ const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
 
 			setIsUpdating(false);
 		} catch (err) {
+			console.log(err);
 			setIsUpdating(false);
 			closeOverride();
 		}
@@ -139,8 +138,6 @@ const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
 				<div style={{ marginBottom: "10px" }}>
 					<TextField
 						label="Description"
-						error={errors.description === null ? false : true}
-						helperText={errors.description === null ? null : errors.description}
 						fullWidth
 						onChange={(e) =>
 							setInput({ ...input, description: e.target.value })
