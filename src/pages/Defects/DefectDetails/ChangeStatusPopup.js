@@ -14,6 +14,7 @@ import { showError } from "redux/common/actions";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
 import { updateDefect } from "services/defects/details";
 import AddDialogStyle from "styles/application/AddDialogStyle";
+import { handleSort } from "helpers/utils";
 
 const ADD = AddDialogStyle();
 
@@ -134,6 +135,7 @@ function ChangeStatusPopup({ open, onClose, setDetails }) {
 					columns={[{ name: "name", id: 1 }]}
 					dataHeader={[{ name: "Name", id: 1 }]}
 					showHeader
+					handleSort={handleSort}
 				/>
 			</DialogContent>
 		</Dialog>

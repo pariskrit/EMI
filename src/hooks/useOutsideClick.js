@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 // ref - node to which outside click shouldnt work or click shouldnt invoke the outside click function
 // setDrop - function what happens on outside click
-// parentRef - parentNode or other node where click shouldnt do anythink
+// parentRef - parentNode or other node where click shouldn't do anything
 function useOutsideClick(ref, setDrop, parentRef) {
 	/**
 	 * Alert if clicked on outside of element

@@ -175,7 +175,7 @@ const ClientTable = ({
 												{
 													name: "Edit",
 													handler: () => {
-														history.push(`/client/${row.id}`);
+														history.push(`${clientsPath}/${row.id}`);
 													},
 													isDelete: false,
 												},
