@@ -7,6 +7,7 @@ import {
 import ServiceDetailContent from "../Detail";
 import Impacts from "../Impacts";
 import Defects from "../Defects";
+import Times from "../Times";
 import ConditionMonitor from "../ConditionMonitor";
 
 const routeList = (detail, customCaptions) => [
@@ -63,7 +64,7 @@ const routeList = (detail, customCaptions) => [
 		ModelName: "Times",
 		name: "Times",
 		path: serviceTimes,
-		component: ServiceDetailContent,
+		component: Times,
 		showSave: false,
 		showChangeStatus: false,
 		showSaveChanges: false,

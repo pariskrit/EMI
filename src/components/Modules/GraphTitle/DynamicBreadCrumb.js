@@ -7,12 +7,12 @@ import ColourConstants from "helpers/colourConstants";
 const useStyles = makeStyles({
 	header: {
 		color: ColourConstants.commonText,
-		fontSize: 25,
+		fontSize: 20,
 		fontWeight: "bold",
 	},
 	normalLink: {
 		color: ColourConstants.activeLink,
-		fontSize: 20,
+		fontSize: 14,
 		textDecoration: "underline",
 		"&:hover": {
 			cursor: "pointer",
@@ -20,13 +20,12 @@ const useStyles = makeStyles({
 	},
 	activeLink: {
 		color: ColourConstants.commonText,
-		fontSize: 20,
+		fontSize: 14,
 		"&:hover": {
 			textDecoration: "none",
 		},
 	},
 	crumbText: {
-		fontWeight: "bold",
 		fontSize: "20px",
 		color: ColourConstants.commonText,
 	},
