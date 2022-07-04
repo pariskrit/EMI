@@ -30,6 +30,7 @@
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "^3.4.4",
 		"react-spinners-css": "^1.2.2",
+		"recharts": "^2.1.12",
 		"styled-components": "^5.2.1",
 		"yup": "^0.32.8"
 	},

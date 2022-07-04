@@ -63,8 +63,8 @@ const SingleComponent = ({ access, customCaptions, siteAppID, ...route }) => {
 				showSave={route.showSave}
 				showPasteTask={showPaste}
 				showChangeStatus={
-					state.serviceDetail.status === "S" ||
-					state.serviceDetail.status === "T"
+					(route.showChangeStatus && state.serviceDetail.status === "S") ||
+					(route.showChangeStatus && state.serviceDetail.status === "T")
 						? true
 						: false
 				}

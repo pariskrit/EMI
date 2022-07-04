@@ -209,3 +209,62 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 	},
 	{ id: 7, name: "Custom Range..." },
 ];
+
+export const serviceMonitorQuestionHeader = (customCaptions, modelType) =>
+	modelType === "F"
+		? [
+				{
+					id: 1,
+					name: customCaptions.stage,
+				},
+				{
+					id: 2,
+					name: customCaptions.zone,
+				},
+				{
+					id: 3,
+					name: customCaptions.task,
+				},
+				{
+					id: 4,
+					name: customCaptions.question,
+				},
+				{
+					id: 5,
+					name: customCaptions.asset,
+				},
+		  ]
+		: [
+				{
+					id: 1,
+					name: customCaptions.stage,
+				},
+				{
+					id: 2,
+					name: customCaptions.zone,
+				},
+				{
+					id: 3,
+					name: customCaptions.task,
+				},
+				{
+					id: 4,
+					name: customCaptions.question,
+				},
+		  ];
+
+export const serviceMonitorQuestionCols = (modelType) =>
+	modelType === "F"
+		? [
+				{ id: 1, name: "stageName" },
+				{ id: 2, name: "zoneName" },
+				{ id: 3, name: "taskName" },
+				{ id: 4, name: "question" },
+				{ id: 5, name: "siteAssetName" },
+		  ]
+		: [
+				{ id: 1, name: "stageName" },
+				{ id: 2, name: "zoneName" },
+				{ id: 3, name: "taskName" },
+				{ id: 4, name: "question" },
+		  ];

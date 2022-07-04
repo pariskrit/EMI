@@ -7,6 +7,7 @@ import {
 import ServiceDetailContent from "../Detail";
 import Impacts from "../Impacts";
 import Defects from "../Defects";
+import ConditionMonitor from "../ConditionMonitor";
 
 const routeList = (detail, customCaptions) => [
 	{
@@ -50,7 +51,7 @@ const routeList = (detail, customCaptions) => [
 		ModelName: "Condition Monitoring",
 		name: "Condition Monitoring",
 		path: serviceConditionMonitorning,
-		component: ServiceDetailContent,
+		component: ConditionMonitor,
 		showSave: false,
 		showChangeStatus: false,
 		showSaveChanges: false,

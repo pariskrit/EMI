@@ -593,6 +593,7 @@ function DyanamicDropdown(props) {
 									})}
 									style={{
 										minWidth: header.minWidth || "150px",
+										width: header.width || "",
 									}}
 								>
 									<span>{header.name}</span>
