@@ -227,12 +227,18 @@ function Times() {
 						dataKey="actualMinutes"
 						fill="#e27352"
 						onClick={handleBarClick}
-					/>
+						barSize={60}
+					>
+						<LabelList dataKey="actualMinutes" position="right" />
+					</Bar>
 					<Bar
 						dataKey="estimatedMinutes"
 						fill="#b9995a"
 						onClick={handleBarClick}
-					/>
+						barSize={60}
+					>
+						<LabelList dataKey="estimatedMinutes" position="right" />
+					</Bar>
 				</BarChart>
 			) : (
 				<BarChart
