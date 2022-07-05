@@ -106,6 +106,7 @@ const ServiceListTable = ({
 	setDataForFetchingService,
 	currentTableSort,
 	setCurrentTableSort,
+	selectedServices,
 	handleSelectService,
 }) => {
 	// Init hooks
@@ -262,7 +263,11 @@ const ServiceListTable = ({
 													>
 														{" "}
 														<EMICheckbox
-															// state={false}
+															state={
+																selectedServices.findIndex(
+																	(d) => d.id === data[index].id
+																) !== -1
+															}
 															changeHandler={({ target: { checked } }) => {
 																handleSelectService(data[index], checked);
 															}}

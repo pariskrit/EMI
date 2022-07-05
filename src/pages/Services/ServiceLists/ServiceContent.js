@@ -188,9 +188,8 @@ function ServiceLists({
 		siteID,
 		application: { allowIndividualAssetModels },
 		site: { siteDepartmentID, siteDepartmentName },
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
 
 	// init state
 	const [currentTableSort, setCurrentTableSort] = useState([
@@ -206,10 +205,8 @@ function ServiceLists({
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [selectedServices, setSelectedServices] = useState([]);
 	const [openChnageStatusPopup, setOpenChnageStatusPopup] = useState(false);
-	const [
-		openMultipleChnageStatusPopup,
-		setOpenMultipleChnageStatusPopup,
-	] = useState(false);
+	const [openMultipleChnageStatusPopup, setOpenMultipleChnageStatusPopup] =
+		useState(false);
 	const [siteDepartments, setSiteDepartments] = useState([]);
 	const [selectedTimeframe, setSelectedTimeframe] = useState(
 		timeFrameFromMemory === null ? defaultTimeframe : timeFrameFromMemory
@@ -295,11 +292,13 @@ function ServiceLists({
 					status: selectedStatus.id,
 					fromDate: selectedItem.fromDate,
 					toDate: selectedItem.toDate,
+
 					sortField: currentTableSort[0],
 					sort: currentTableSort[1],
 				});
 			}
 		}
+		setSelectedServices([]);
 		setSearching(false);
 	};
 
@@ -806,6 +805,7 @@ function ServiceLists({
 						}}
 						setDataForFetchingService={setDataForFetchingService}
 						siteAppID={siteAppID}
+						selectedServices={selectedServices}
 						currentTableSort={currentTableSort}
 						setCurrentTableSort={setCurrentTableSort}
 						handleSelectService={handleSelectService}
