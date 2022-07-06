@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 
 import {
 	BarChart,
-	ResponsiveContainer,
 	Bar,
 	XAxis,
 	YAxis,
@@ -287,8 +286,8 @@ function Times() {
 				</BarChart>
 			) : (
 				<BarChart
-					width={1575}
-					height={1000}
+					width={1400}
+					height={800}
 					data={chartData?.data}
 					margin={{
 						top: 5,
