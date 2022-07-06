@@ -61,6 +61,7 @@ function Header({
 	dataLength,
 	MultipleChangeStatusDisabled,
 	customCaptions,
+	selectedServices,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -77,7 +78,7 @@ function Header({
 			/>
 			<div className={classes.wrapper}>
 				<div className={classes.buttons}>
-					{MultipleChangeStatusDisabled ? (
+					{MultipleChangeStatusDisabled && selectedServices.length > 0 ? (
 						<HtmlTooltip
 							title={`The status of your selected ${customCaptions.servicePlural} can not be changed as they are not the same status`}
 						>

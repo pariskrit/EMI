@@ -662,6 +662,7 @@ function ServiceLists({
 					setOpenAddService={setOpenAddService}
 					setImportCSV={setImportCSV}
 					dataLength={countOFService}
+					selectedServices={selectedServices}
 				/>
 				<div
 					className="detailsContainer"
