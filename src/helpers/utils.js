@@ -260,3 +260,8 @@ export const dateDifference = (end, start) => {
 			: `${minutes} mins`
 	} `;
 };
+
+export function toRoundoff(number) {
+	const toSingle = Number.isInteger(number) ? number : number.toFixed(1);
+	return toSingle;
+}

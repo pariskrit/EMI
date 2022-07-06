@@ -1,11 +1,13 @@
 import { makeStyles } from "@material-ui/core";
 import GraphTitle from "components/Modules/GraphTitle";
-import { getLocalStorageData } from "helpers/utils";
+import { getLocalStorageData, toRoundoff } from "helpers/utils";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+
 import {
 	BarChart,
+	ResponsiveContainer,
 	Bar,
 	XAxis,
 	YAxis,
@@ -56,6 +58,27 @@ function Times() {
 		T: customCaptions?.taskPlural,
 	};
 
+	const [showToolTip, setShowTooltip] = useState(false);
+	const [toolTipPosition, setToolTipPosition] = useState({});
+
+	function handleMouseEnter(data, i, e) {
+		setShowTooltip(true);
+
+		if (isTask) {
+			setToolTipPosition({
+				x: e.clientX - 200,
+				y: e.clientY + window.scrollY - 300,
+			});
+		} else {
+			setToolTipPosition({ x: e.clientX - 100, y: e.clientY });
+		}
+	}
+
+	function handleMouseLeave() {
+		setShowTooltip(false);
+		setToolTipPosition({});
+	}
+
 	const handleBarClick = async (data, index, e) => {
 		if (chartData.depth === "T") return;
 
@@ -85,7 +108,7 @@ function Times() {
 		}
 		if (response.status) {
 			if (response.data.depth === "T") setIsTask(true);
-			setChartData(response.data);
+			setChartData(modifyChartData(response));
 		} else {
 			dispatch(
 				showError(
@@ -108,15 +131,29 @@ function Times() {
 				{ id: 1, name: customCaptions.zonePlural, depth: "Z" },
 			]);
 		}
-		setChartData(response.data);
+		setChartData(modifyChartData(response));
 		setIsTask(false);
+	};
+
+	const modifyChartData = (chartData) => {
+		return {
+			...chartData.data,
+			data: chartData.data.data.map((d) => {
+				return {
+					...d,
+					actualMinutes: toRoundoff(d.actualMinutes),
+					estimatedMinutes: toRoundoff(d.estimatedMinutes),
+					name: d?.actionName ? `${d.actionName} ${d.name}` : `${d.name}`,
+				};
+			}),
+		};
 	};
 
 	const fetchServiceTimes = useCallback(async () => {
 		const response = await getServiceTimes(id);
 
 		if (response.status) {
-			setChartData(response.data);
+			setChartData(modifyChartData(response));
 		} else {
 			dispatch(
 				showError(
@@ -130,8 +167,8 @@ function Times() {
 		fetchServiceTimes();
 	}, [fetchServiceTimes]);
 
-	const CustomTooltip = ({ active, payload, label }) => {
-		if (active && payload && payload.length) {
+	const CustomTooltip = ({ active, payload, label, showToolTip }) => {
+		if (active && payload && payload.length && showToolTip) {
 			return (
 				<div className={classes.customTooltip}>
 					<div className={classes.toolTipLabel}>
@@ -160,9 +197,8 @@ function Times() {
 
 		return null;
 	};
-	console.log(chartData);
 	return (
-		<div style={{ height: "100vh" }}>
+		<div style={{ minHeight: "100vh" }}>
 			<div style={{ marginBottom: 20 }}>
 				<GraphTitle
 					hasBreadCrumb
@@ -178,7 +214,7 @@ function Times() {
 					height={
 						chartData?.data?.length < 5 ? 600 : chartData?.data?.length * 150
 					}
-					data={chartData.data}
+					data={chartData?.data}
 					margin={{
 						top: 10,
 						right: 30,
@@ -193,16 +229,20 @@ function Times() {
 						label={{
 							value: depthNames[chartData.depth],
 							angle: -90,
-							dx: -60,
+							dx: -130,
 						}}
 						dataKey="name"
 						scale="point"
 						type="category"
 						padding={{ top: 80, bottom: 80 }}
+						width={200}
 					/>
 					<XAxis label={{ value: "Total Minutes", dy: 30 }} type="number" />
 
-					<Tooltip content={<CustomTooltip />} />
+					<Tooltip
+						content={<CustomTooltip showToolTip={showToolTip} />}
+						position={toolTipPosition}
+					/>
 					<Legend
 						layout="vertical"
 						align="right"
@@ -221,6 +261,7 @@ function Times() {
 								color: "#b9995a",
 							},
 						]}
+						wrapperStyle={{ right: 0 }}
 					/>
 					<CartesianGrid horizontal={false} />
 					<Bar
@@ -228,6 +269,8 @@ function Times() {
 						fill="#e27352"
 						onClick={handleBarClick}
 						barSize={60}
+						onMouseEnter={handleMouseEnter}
+						onMouseLeave={handleMouseLeave}
 					>
 						<LabelList dataKey="actualMinutes" position="right" />
 					</Bar>
@@ -235,6 +278,8 @@ function Times() {
 						dataKey="estimatedMinutes"
 						fill="#b9995a"
 						onClick={handleBarClick}
+						onMouseEnter={handleMouseEnter}
+						onMouseLeave={handleMouseLeave}
 						barSize={60}
 					>
 						<LabelList dataKey="estimatedMinutes" position="right" />
@@ -243,8 +288,8 @@ function Times() {
 			) : (
 				<BarChart
 					width={1575}
-					height={800}
-					data={chartData.data}
+					height={1000}
+					data={chartData?.data}
 					margin={{
 						top: 5,
 						right: 30,
@@ -267,7 +312,10 @@ function Times() {
 						type="number"
 					/>
 
-					<Tooltip content={<CustomTooltip />} />
+					<Tooltip
+						position={toolTipPosition}
+						content={<CustomTooltip showToolTip={showToolTip} />}
+					/>
 
 					<Legend
 						layout="vertical"
@@ -287,6 +335,7 @@ function Times() {
 								color: "#b9995a",
 							},
 						]}
+						wrapperStyle={{ right: 0 }}
 					/>
 					<CartesianGrid vertical={false} />
 					<Bar
@@ -294,6 +343,8 @@ function Times() {
 						fill="#e27352"
 						onClick={handleBarClick}
 						barSize={60}
+						onMouseEnter={handleMouseEnter}
+						onMouseLeave={handleMouseLeave}
 					>
 						<LabelList dataKey="actualMinutes" position="top" />
 					</Bar>
@@ -301,6 +352,8 @@ function Times() {
 						dataKey="estimatedMinutes"
 						fill="#b9995a"
 						onClick={handleBarClick}
+						onMouseEnter={handleMouseEnter}
+						onMouseLeave={handleMouseLeave}
 						barSize={60}
 					>
 						<LabelList dataKey="estimatedMinutes" position="top" />
