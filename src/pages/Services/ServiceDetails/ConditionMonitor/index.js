@@ -14,19 +14,23 @@ import {
 } from "recharts";
 import { makeStyles } from "@material-ui/core/styles";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import { handleSort } from "helpers/utils";
+import {
+	handleSort,
+	isoDateWithoutTimeZone,
+	sortFromDate,
+} from "helpers/utils";
 import { showError } from "redux/common/actions";
 import {
 	getConditionMonitorGraphDetail,
 	getConditionMonitorQuestion,
 } from "services/services/serviceConditionMonitor";
 import ColourConstants from "helpers/colourConstants";
-import { changeDate } from "helpers/date";
 import {
 	serviceMonitorQuestionCols,
 	serviceMonitorQuestionHeader,
 } from "constants/serviceDetails";
 import GraphTitle from "components/Modules/GraphTitle";
+import { changeDate } from "helpers/date";
 
 const useStyles = makeStyles({
 	loading: {
@@ -47,6 +51,10 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 	const [selectedQuestion, setSelectedQuestion] = useState({});
 	const [grapghDetail, setGraphDetail] = useState([]);
 	const [isLoading, setLoading] = useState(false);
+	const [tooltipPosition, settooltipPosition] = useState({
+		active: false,
+		position: {},
+	});
 
 	// side effect fetching chart details when question from dropdown is selected
 	useEffect(() => {
@@ -59,7 +67,7 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 						selectedQuestion.id
 					);
 					if (response.status) {
-						setGraphDetail(response.data);
+						setGraphDetail(sortFromDate(response.data, "date"));
 					} else {
 						dispatch(
 							showError(
@@ -78,6 +86,10 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 			fetchGraphDetails();
 		}
 	}, [selectedQuestion, serviceId, dispatch]);
+
+	const dateFormatter = (date) => {
+		return changeDate(date);
+	};
 
 	return (
 		<div style={{ marginTop: "25px" }}>
@@ -136,7 +148,7 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 									height={500}
 									data={grapghDetail.map((x) => ({
 										...x,
-										date: changeDate(x.date),
+										date: +new Date(x.date).getTime(),
 										value: x.valueNumeric,
 									}))}
 									margin={{
@@ -146,15 +158,30 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 										bottom: 5,
 									}}
 								>
-									<CartesianGrid strokeDasharray="3 3" />
-									<XAxis dataKey="date" />
-									<YAxis />
-									<Tooltip />
+									<CartesianGrid strokeDasharray="3 3" vertical={false} />
+									<XAxis
+										dataKey="date"
+										hasTick
+										scale="time"
+										type="number"
+										domain={["dataMin", "dataMax"]}
+										tickFormatter={dateFormatter}
+									/>
+									<YAxis hasTick />
+									<Tooltip
+										formatter={(value) => [value, "value"]}
+										labelFormatter={(val) => isoDateWithoutTimeZone(val)}
+										cursor={false}
+										wrapperStyle={{
+											display: tooltipPosition?.active ? "" : "none",
+										}}
+										position={tooltipPosition}
+									/>
 									<ReferenceLine
 										y={selectedQuestion?.maxValue}
 										stroke={ColourConstants.activeLink}
 									>
-										<Label value="Maximun" position="top" />
+										<Label value="Maximum" position="top" />
 									</ReferenceLine>
 									<ReferenceLine
 										y={selectedQuestion?.minValue}
@@ -167,10 +194,25 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 										type="linear"
 										dataKey="value"
 										stroke={ColourConstants.orange}
-										dot={{ strokeWidth: 2, r: 5, fill: ColourConstants.orange }}
-										activeDot={{ strokeWidth: 2, r: 8 }}
+										dot={{ strokeWidth: 2, r: 7, fill: ColourConstants.orange }}
 										isAnimationActive={false}
 										key={`data-${selectedQuestion.id}-line`}
+										activeDot={{
+											onMouseOver: (e, val) => {
+												settooltipPosition({
+													active: true,
+													position: { x: val.cx, y: val.cy },
+												});
+											},
+											onMouseLeave: (e) => {
+												settooltipPosition({
+													active: false,
+													position: {},
+												});
+											},
+											strokeWidth: 0,
+											r: 5,
+										}}
 									/>
 								</LineChart>
 							</ResponsiveContainer>
