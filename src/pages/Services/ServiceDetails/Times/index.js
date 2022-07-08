@@ -365,9 +365,11 @@ function Times() {
 
 							{chartData.data?.map((entry, index) => (
 								<Cell
+									stroke={"#3f51b5"}
+									strokeWidth={isMouseHover === index ? 1 : 0}
 									cursor="pointer"
 									key={`cell-${index}`}
-									fill={isMouseHover === index ? "#9f9f9cdb" : "#e27352"}
+									fill={isMouseHover === index ? "#afbbff33" : "#e27352"}
 								/>
 							))}
 						</Bar>
@@ -386,9 +388,11 @@ function Times() {
 							/>
 							{chartData.data?.map((entry, index) => (
 								<Cell
+									stroke={"#3f51b5"}
+									strokeWidth={isMouseHover === index ? 1 : 0}
 									cursor="pointer"
 									key={`cell-${index}`}
-									fill={isMouseHover === index ? "#9f9f9cdb" : "#b9995a"}
+									fill={isMouseHover === index ? "#afbbff33" : "#b9995a"}
 								/>
 							))}
 						</Bar>
