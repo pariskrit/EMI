@@ -14,6 +14,8 @@ import {
 	Tooltip,
 	Legend,
 	LabelList,
+	ResponsiveContainer,
+	Cell,
 } from "recharts";
 import { showError } from "redux/common/actions";
 import { getServiceTimes } from "services/services/serviceTimes";
@@ -46,6 +48,7 @@ function Times() {
 	const [chartData, setChartData] = useState({});
 	const [stage, setStage] = useState(null);
 	const [isTask, setIsTask] = useState(false);
+	const [isMouseHover, setIsMouseHover] = useState(null);
 	const [crumbs, setCrumbs] = useState([
 		{ id: 1, name: customCaptions.stagePlural },
 	]);
@@ -62,6 +65,7 @@ function Times() {
 
 	function handleMouseEnter(data, i, e) {
 		setShowTooltip(true);
+		setIsMouseHover(i);
 
 		if (isTask) {
 			setToolTipPosition({
@@ -69,12 +73,14 @@ function Times() {
 				y: e.clientY + window.scrollY - 300,
 			});
 		} else {
-			setToolTipPosition({ x: e.clientX - 100, y: e.clientY });
+			setToolTipPosition({ x: e.clientX - 100, y: e.clientY - 250 });
 		}
 	}
 
 	function handleMouseLeave() {
 		setShowTooltip(false);
+		setIsMouseHover(null);
+
 		setToolTipPosition({});
 	}
 
@@ -107,6 +113,7 @@ function Times() {
 		}
 		if (response.status) {
 			if (response.data.depth === "T") setIsTask(true);
+
 			setChartData(modifyChartData(response));
 		} else {
 			dispatch(
@@ -133,7 +140,6 @@ function Times() {
 		setChartData(modifyChartData(response));
 		setIsTask(false);
 	};
-
 	const modifyChartData = (chartData) => {
 		return {
 			...chartData.data,
@@ -197,7 +203,7 @@ function Times() {
 		return null;
 	};
 	return (
-		<div style={{ minHeight: "100vh" }}>
+		<div style={{ height: "70vh" }}>
 			<div style={{ marginBottom: 20 }}>
 				<GraphTitle
 					hasBreadCrumb
@@ -209,7 +215,7 @@ function Times() {
 
 			{isTask ? (
 				<BarChart
-					width={1575}
+					width={1400}
 					height={
 						chartData?.data?.length < 5 ? 600 : chartData?.data?.length * 150
 					}
@@ -236,7 +242,11 @@ function Times() {
 						padding={{ top: 80, bottom: 80 }}
 						width={200}
 					/>
-					<XAxis label={{ value: "Total Minutes", dy: 30 }} type="number" />
+					<XAxis
+						label={{ value: "Total Minutes", dy: 30 }}
+						type="number"
+						domain={[0, "dataMax + 2"]}
+					/>
 
 					<Tooltip
 						content={<CustomTooltip showToolTip={showToolTip} />}
@@ -267,7 +277,7 @@ function Times() {
 						dataKey="actualMinutes"
 						fill="#e27352"
 						onClick={handleBarClick}
-						barSize={60}
+						barSize={45}
 						onMouseEnter={handleMouseEnter}
 						onMouseLeave={handleMouseLeave}
 					>
@@ -279,85 +289,111 @@ function Times() {
 						onClick={handleBarClick}
 						onMouseEnter={handleMouseEnter}
 						onMouseLeave={handleMouseLeave}
-						barSize={60}
+						barSize={45}
 					>
 						<LabelList dataKey="estimatedMinutes" position="right" />
 					</Bar>
 				</BarChart>
 			) : (
-				<BarChart
-					width={1400}
-					height={800}
-					data={chartData?.data}
-					margin={{
-						top: 5,
-						right: 30,
-						left: 20,
-						bottom: 30,
-					}}
-					barSize={20}
-					barGap={0}
-				>
-					<XAxis
-						label={{ value: depthNames[chartData.depth], dy: 30 }}
-						dataKey="name"
-						scale="point"
-						type="category"
-						padding={{ left: 80, right: 80 }}
-						width={10}
-					/>
-					<YAxis
-						label={{ value: "Total Minutes", angle: -90, dx: -30 }}
-						type="number"
-					/>
-
-					<Tooltip
-						position={toolTipPosition}
-						content={<CustomTooltip showToolTip={showToolTip} />}
-					/>
-
-					<Legend
-						layout="vertical"
-						align="right"
-						verticalAlign="top"
-						payload={[
-							{
-								id: "1",
-								value: "Actual",
-								type: "square",
-								color: "#e27352",
-							},
-							{
-								id: "2",
-								value: "Estimated",
-								type: "square",
-								color: "#b9995a",
-							},
-						]}
-						wrapperStyle={{ right: 0 }}
-					/>
-					<CartesianGrid vertical={false} />
-					<Bar
-						dataKey="actualMinutes"
-						fill="#e27352"
-						onClick={handleBarClick}
-						barSize={60}
-						onMouseEnter={handleMouseEnter}
-						onMouseLeave={handleMouseLeave}
+				<ResponsiveContainer height="100%" width="100%">
+					<BarChart
+						width={1400}
+						height={800}
+						data={chartData?.data}
+						margin={{
+							top: 8,
+							right: 30,
+							left: 20,
+							bottom: 30,
+						}}
+						barSize={20}
+						barGap={0}
 					>
-						<LabelList dataKey="actualMinutes" position="top" />
-					</Bar>
-					<Bar
-						dataKey="estimatedMinutes"
-						fill="#b9995a"
-						onClick={handleBarClick}
-						onMouseEnter={handleMouseEnter}
-						onMouseLeave={handleMouseLeave}
-						barSize={60}
-					>
-						<LabelList dataKey="estimatedMinutes" position="top" />
-					</Bar>
-				</BarChart>
+						<XAxis
+							label={{ value: depthNames[chartData.depth], dy: 30 }}
+							dataKey="name"
+							scale="point"
+							type="category"
+							padding={{ left: 80, right: 80 }}
+							width={10}
+						/>
+						<YAxis
+							label={{ value: "Total Minutes", angle: -90, dx: -30 }}
+							type="number"
+						/>
+
+						<Tooltip
+							position={toolTipPosition}
+							content={<CustomTooltip showToolTip={showToolTip} />}
+						/>
+
+						<Legend
+							layout="vertical"
+							align="right"
+							verticalAlign="top"
+							payload={[
+								{
+									id: "1",
+									value: "Actual",
+									type: "square",
+									color: "#e27352",
+								},
+								{
+									id: "2",
+									value: "Estimated",
+									type: "square",
+									color: "#b9995a",
+								},
+							]}
+							wrapperStyle={{ right: 0 }}
+						/>
+						<CartesianGrid vertical={false} />
+
+						<Bar
+							dataKey="actualMinutes"
+							onClick={handleBarClick}
+							barSize={60}
+							cursor="pointer"
+							onMouseEnter={handleMouseEnter}
+							onMouseLeave={handleMouseLeave}
+						>
+							<LabelList
+								dataKey="actualMinutes"
+								position="top"
+								fill="#000000"
+							/>
+
+							{chartData.data?.map((entry, index) => (
+								<Cell
+									cursor="pointer"
+									key={`cell-${index}`}
+									fill={isMouseHover === index ? "#9f9f9cdb" : "#e27352"}
+								/>
+							))}
+						</Bar>
+						<Bar
+							dataKey="estimatedMinutes"
+							onClick={handleBarClick}
+							cursor="pointer"
+							onMouseEnter={handleMouseEnter}
+							onMouseLeave={handleMouseLeave}
+							barSize={60}
+						>
+							<LabelList
+								dataKey="estimatedMinutes"
+								position="top"
+								fill="#000000"
+							/>
+							{chartData.data?.map((entry, index) => (
+								<Cell
+									cursor="pointer"
+									key={`cell-${index}`}
+									fill={isMouseHover === index ? "#9f9f9cdb" : "#b9995a"}
+								/>
+							))}
+						</Bar>
+					</BarChart>
+				</ResponsiveContainer>
 			)}
 		</div>
 	);

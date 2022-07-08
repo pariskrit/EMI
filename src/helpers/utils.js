@@ -262,6 +262,6 @@ export const dateDifference = (end, start) => {
 };
 
 export function toRoundoff(number) {
-	const toSingle = Number.isInteger(number) ? number : number.toFixed(1);
+	const toSingle = Number.isInteger(number) ? number : +number.toFixed(1);
 	return toSingle;
 }
