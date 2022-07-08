@@ -167,8 +167,9 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 										type="number"
 										domain={["dataMin", "dataMax"]}
 										tickFormatter={dateFormatter}
+										padding={{ left: 30, right: 30 }}
 									/>
-									<YAxis hasTick />
+									<YAxis hasTick padding={{ top: 30, bottom: 30 }} />
 									<Tooltip
 										formatter={(value) => [value, "value"]}
 										labelFormatter={(val) =>
