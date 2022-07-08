@@ -53,7 +53,6 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 	const [isLoading, setLoading] = useState(false);
 	const [tooltipPosition, settooltipPosition] = useState({
 		active: false,
-		position: {},
 	});
 
 	// side effect fetching chart details when question from dropdown is selected
@@ -88,8 +87,10 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 	}, [selectedQuestion, serviceId, dispatch]);
 
 	const dateFormatter = (date) => {
-		return changeDate(date);
+		return changeDate(new Date(new Date(date) + "Z"));
 	};
+
+	console.log(tooltipPosition);
 
 	return (
 		<div style={{ marginTop: "25px" }}>
@@ -153,7 +154,7 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 									}))}
 									margin={{
 										top: 20,
-										right: 50,
+										right: 20,
 										left: 20,
 										bottom: 5,
 									}}
@@ -170,12 +171,12 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 									<YAxis hasTick />
 									<Tooltip
 										formatter={(value) => [value, "value"]}
-										labelFormatter={(val) => isoDateWithoutTimeZone(val)}
-										cursor={false}
+										labelFormatter={(val) =>
+											isoDateWithoutTimeZone(new Date(new Date(val) + "Z"))
+										}
 										wrapperStyle={{
-											display: tooltipPosition?.active ? "" : "none",
+											opacity: tooltipPosition?.active ? 1 : 0,
 										}}
-										position={tooltipPosition}
 									/>
 									<ReferenceLine
 										y={selectedQuestion?.maxValue}
@@ -199,19 +200,19 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 										key={`data-${selectedQuestion.id}-line`}
 										activeDot={{
 											onMouseOver: (e, val) => {
-												settooltipPosition({
+												settooltipPosition((prev) => ({
 													active: true,
-													position: { x: val.cx, y: val.cy },
-												});
+												}));
 											},
 											onMouseLeave: (e) => {
-												settooltipPosition({
+												settooltipPosition((prev) => ({
 													active: false,
-													position: {},
-												});
+												}));
 											},
-											strokeWidth: 0,
-											r: 5,
+
+											strokeWidth: 40,
+											stroke: "transparent",
+											r: 7,
 										}}
 									/>
 								</LineChart>
