@@ -4,6 +4,7 @@ import {
 	serviceImpact,
 	servicesPath,
 	serviceTimes,
+	serviceReport,
 } from "helpers/routePaths";
 /**
  * NOTE: This is currently a helper. In production, this data may come from either the API
@@ -32,6 +33,10 @@ const ServiceDetailNavigation = (id, detail, customCaptions) => {
 		{
 			name: `Times`,
 			url: links + serviceTimes,
+		},
+		{
+			name: `${customCaptions?.service} Report`,
+			url: links + serviceReport,
 		},
 		// {
 		// 	name: `${customCaptions?.assetPlural} (${detail?.assetCount || 0})`,

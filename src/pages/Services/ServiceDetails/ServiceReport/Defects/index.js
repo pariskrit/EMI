@@ -1,14 +1,21 @@
-import React, { useState } from "react";
-import TableStyle from "styles/application/TableStyle";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
-import ColourConstants from "helpers/colourConstants";
+import { makeStyles, Typography } from "@material-ui/core";
+import TableStyle from "styles/application/TableStyle";
 import clsx from "clsx";
-import ImageViewer from "components/Elements/ImageViewer";
-
-const AT = TableStyle();
+import ColourConstants from "helpers/colourConstants";
 
 const useStyles = makeStyles({
+	tableHead: {
+		backgroundColor: ColourConstants.tableBackground,
+	},
+	headerText: {
+		fontSize: 21,
+		marginTop: 10,
+	},
+	first: {
+		fontWeight: 500,
+	},
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -19,43 +26,16 @@ const useStyles = makeStyles({
 		borderRightStyle: "solid",
 		borderRightWidth: "1px",
 	},
-	selectedTableHeadRow: {
-		borderBottomColor: ColourConstants.tableBorder,
-		borderBottomStyle: "solid",
-		borderBottomWidth: 1,
-		backgroundColor: ColourConstants.tableBackgroundSelected,
-		fontWeight: "bold",
-		color: "#FFFFFF",
-	},
-	nameRow: {
-		width: "200px",
-		height: "10px",
-		lineHeight: "1rem",
-	},
-	clientsRow: {
-		width: "20%",
-	},
-	dataCell: {
-		height: 40,
-	},
-	imageRow: {
-		display: "flex",
-	},
 });
+const AT = TableStyle();
 
-function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
+const Defects = ({ headers, customCaptions, data, columns }) => {
 	const classes = useStyles();
-
-	const [openImageViewer, setOpenImageViewer] = useState(false);
-	const [imagetoView, setImageToview] = useState("");
-
 	return (
-		<>
-			<ImageViewer
-				open={openImageViewer}
-				onClose={() => setOpenImageViewer(false)}
-				imgSource={imagetoView}
-			/>
+		<div>
+			<Typography className={classes.headerText} component="h1" gutterBottom>
+				<strong>{customCaptions.service} Defects</strong>
+			</Typography>
 			<AT.TableContainer>
 				<Table aria-label="Table">
 					<AT.TableHead>
@@ -68,7 +48,9 @@ function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
 										[classes.tableHeadRow]: true,
 									})}
 								>
-									<AT.CellContainer>{header.name}</AT.CellContainer>
+									<AT.CellContainer className="flex justify-between">
+										{header.name}
+									</AT.CellContainer>
 								</TableCell>
 							))}
 						</TableRow>
@@ -122,15 +104,11 @@ function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
 																					style={{
 																						width: 150,
 																						height: 150,
-																						cursor: "pointer",
+																						// cursor: "pointer",
 																						objectFit: "contain",
 																					}}
 																					src={img.thumbnailURL}
 																					alt=""
-																					onClick={() => {
-																						setImageToview(img.imageURL);
-																						setOpenImageViewer(true);
-																					}}
 																				/>
 																		  ))
 																		: "No any Images"}{" "}
@@ -158,8 +136,8 @@ function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
 					</TableBody>
 				</Table>
 			</AT.TableContainer>
-		</>
+		</div>
 	);
-}
+};
 
-export default ServiceDefectsTable;
+export default Defects;

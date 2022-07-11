@@ -137,31 +137,6 @@ function ServiceInformation({ classes, detail, customCaptions }) {
 							</span>
 						</Typography>
 					</Grid>
-					<Grid item lg={6} md={6} xs={12}>
-						<div
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "start",
-								justifyContent: "center",
-								gap: 10,
-							}}
-						>
-							<Typography
-								className={classess.labelText}
-								style={{ marginBottom: 5 }}
-							>
-								Service Report:{" "}
-								<span className={classess.smallTxt}>
-									{" "}
-									For full summary please download the service report below.
-								</span>
-							</Typography>
-							<CurveButton onClick={() => {}}>
-								Download Service Report
-							</CurveButton>
-						</div>
-					</Grid>
 				</Grid>
 			</div>
 		</AccordionBox>

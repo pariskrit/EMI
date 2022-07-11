@@ -11,13 +11,13 @@ import React from "react";
 const useStyles = makeStyles((theme) => ({
 	tableHead: {
 		backgroundColor: "#D2D2D9",
-		border: "1px solid",
+		border: "0.5px solid",
 	},
 	noDataTableRow: {
 		borderBottom: "none !important",
 	},
 	tableBody: {
-		border: "1px solid",
+		border: "0.5px solid",
 	},
 }));
 

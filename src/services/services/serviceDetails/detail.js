@@ -71,6 +71,17 @@ export const getServiceNotes = async (serviceId) => {
 	}
 };
 
+export const getCompletedService = async (serviceId) => {
+	try {
+		let response = await API.get(
+			`${Apis.Services}/${serviceId}/completedService`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const deleteServiceNotes = async (serviceId) => {
 	try {
 		let response = await API.delete(`${Apis.ServiceNotes}/${serviceId}`);

@@ -101,6 +101,7 @@ export const serviceImpact = "/service-impacts";
 export const serviceDefects = "/service-defects";
 export const serviceConditionMonitorning = "/service-condition-monitoring";
 export const serviceTimes = "/service-times";
+export const serviceReport = "/service-report";
 
 // Defects List
 export const defectsPath = "/app/defects";

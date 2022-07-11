@@ -2,12 +2,14 @@ import {
 	serviceConditionMonitorning,
 	serviceDefects,
 	serviceImpact,
+	serviceReport,
 	serviceTimes,
 } from "helpers/routePaths";
 import ServiceDetailContent from "../Detail";
 import Impacts from "../Impacts";
 import Defects from "../Defects";
 import Times from "../Times";
+import ServiceReport from "../ServiceReport";
 import ConditionMonitor from "../ConditionMonitor";
 
 const routeList = (detail, customCaptions) => [
@@ -65,6 +67,18 @@ const routeList = (detail, customCaptions) => [
 		name: "Times",
 		path: serviceTimes,
 		component: Times,
+		showSave: false,
+		showChangeStatus: false,
+		showSaveChanges: false,
+		showPasteTask: false,
+		showVersion: false,
+	},
+	{
+		id: 6,
+		ModelName: `${customCaptions?.service} Report`,
+		name: `${customCaptions?.service} Report`,
+		path: serviceReport,
+		component: ServiceReport,
 		showSave: false,
 		showChangeStatus: false,
 		showSaveChanges: false,
