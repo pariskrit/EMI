@@ -39,7 +39,7 @@ const ServiceStages = ({ tasks, formatQuestion }) => {
 			return {
 				...task,
 				completedDate: task.completedDate ? (
-					isoDateWithoutTimeZone(task.completedDate)
+					isoDateWithoutTimeZone(task.completedDate + "Z")
 				) : (
 					<span style={{ color: "red", fontSize: "15px" }}>Skipped</span>
 				),

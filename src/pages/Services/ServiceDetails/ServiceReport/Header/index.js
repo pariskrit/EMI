@@ -52,7 +52,7 @@ const useStyles = makeStyles({
 		},
 	},
 	keyHeading: {
-		width: "120px",
+		width: "150px",
 	},
 });
 

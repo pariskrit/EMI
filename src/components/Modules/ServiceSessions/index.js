@@ -89,7 +89,7 @@ export default function ServiceReport({ completedService: rows, roleName }) {
 		return questions.map((q) => {
 			return {
 				...q,
-				date: isoDateWithoutTimeZone(q.date),
+				date: isoDateWithoutTimeZone(q.date + "Z"),
 				response: setQuestionResponse(q),
 			};
 		});
@@ -123,7 +123,8 @@ export default function ServiceReport({ completedService: rows, roleName }) {
 										{row.displayName}
 									</TableCell>
 									<TableCell align="center">
-										{row.startDate && isoDateWithoutTimeZone(row?.startDate)}
+										{row.startDate &&
+											isoDateWithoutTimeZone(row?.startDate + "Z")}
 									</TableCell>
 									<TableCell align="center">
 										{row.endDate && isoDateWithoutTimeZone(row?.endDate + "Z")}
@@ -149,14 +150,16 @@ export default function ServiceReport({ completedService: rows, roleName }) {
 									</TableCell>
 								</TableRow>
 
-								<TableRow>
-									<TableCell colSpan={18}>
-										<ServiceStages
-											tasks={row?.tasks}
-											formatQuestion={formatQuestion}
-										/>
-									</TableCell>
-								</TableRow>
+								{row?.tasks.length > 0 && (
+									<TableRow>
+										<TableCell colSpan={18}>
+											<ServiceStages
+												tasks={row?.tasks}
+												formatQuestion={formatQuestion}
+											/>
+										</TableCell>
+									</TableRow>
+								)}
 
 								<TableRow>
 									<TableCell colSpan={10}>
