@@ -146,13 +146,29 @@ function AddNewModelTask({
 					// }
 					if (modelRoles.status) {
 						setModelRoles(modelRoles.data);
-						setApiRoles(
-							modelRoles.data.map((role) => ({
-								...role,
-								id: null,
-								modelVersionRoleID: role.id,
-							}))
-						);
+
+						if (modelRoles.data.length === 1) {
+							let firstData = modelRoles.data[0];
+
+							firstData = {
+								...firstData,
+								modelVersionRoleID: firstData.id,
+							};
+
+							setApiRoles([firstData]);
+							setInput({
+								...input,
+								roles: [firstData.id],
+							});
+						} else {
+							setApiRoles(
+								modelRoles.data.map((role) => ({
+									...role,
+									id: null,
+									modelVersionRoleID: role.id,
+								}))
+							);
+						}
 					}
 					// if (siteActions.status) {
 					// 	// setActions(
@@ -180,7 +196,6 @@ function AddNewModelTask({
 					}
 				} catch (error) {
 					dispatch(showError(error?.response?.data));
-					console.log(error);
 				} finally {
 					setIsUpdating(false);
 				}
@@ -260,7 +275,7 @@ function AddNewModelTask({
 	const handleCheckListClick = (id, clickedData) => {
 		const roleToFind = apiRoles.find((r) => r.modelVersionRoleID === id);
 
-		if (roleToFind.id === null) {
+		if (roleToFind?.id === null) {
 			setInput({
 				...input,
 				roles: [...input.roles, roleToFind.modelVersionRoleID],
