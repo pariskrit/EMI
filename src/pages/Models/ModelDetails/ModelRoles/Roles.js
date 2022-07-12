@@ -19,7 +19,14 @@ import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 
 const AC = ContentStyle();
 
-function Roles({ modelId, state, dispatch, access, isMounted }) {
+function Roles({
+	modelId,
+	state,
+	dispatch,
+	access,
+	isMounted,
+	modelDefaultId,
+}) {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -39,7 +46,7 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 	const handleSearch = (searchtxt) => {
 		if (searchtxt !== "") {
 			const searchedList = data.filter((item) =>
-				["name", "mappedRoleName"].some((col) => {
+				["name", "mappedRoleName", "siteDepartmentName"].some((col) => {
 					return item[col]?.match(new RegExp(searchtxt, "gi"));
 				})
 			);
@@ -87,13 +94,16 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 	//open edit dialogue
 	const handleEditDialogOpen = (roleToEdit) => {
 		roleToEdit = filteredData?.find((x) => x.id === roleToEdit);
+		console.log("fdsfsdfds", roleToEdit);
 		setRoleToEditData({
 			name: roleToEdit?.name,
 			roleID: roleToEdit?.mappedRoleID,
+			siteDepartmentID: roleToEdit?.siteDepartmentID,
 		});
 		setRoleToEditId({
 			id: roleToEdit?.id,
 			mappedRoleName: roleToEdit?.mappedRoleName,
+			siteDepartmentName: roleToEdit?.siteDepartmentName,
 		});
 		setopenEditModelRoleDialog(true);
 	};
@@ -116,6 +126,11 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 		payload = [
 			{ op: "replace", path: "roleID", value: payload?.roleID },
 			{ op: "replace", path: "name", value: payload?.name },
+			{
+				op: "replace",
+				path: "siteDepartmentID",
+				value: payload?.siteDepartmentID,
+			},
 		];
 		return await editModelRole(roleToEditId?.id, payload);
 	};
@@ -131,6 +146,7 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 				createProcessHandler={createModalRole}
 				fetchModelRoles={() => fetchModelRoles(false)}
 				customCaptions={customCaptions}
+				modelId={modelDefaultId}
 			/>
 			<AddModelRoleDialog
 				open={openEditModelRoleDialog}
@@ -142,7 +158,9 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 				fetchModelRoles={() => fetchModelRoles(false)}
 				createProcessHandler={PatchModelRole}
 				mappedRoleName={roleToEditId?.mappedRoleName}
+				mappedDepartmentName={roleToEditId?.siteDepartmentName}
 				customCaptions={customCaptions}
+				modelId={modelDefaultId}
 			/>
 			<DeleteDialog
 				entityName={`${customCaptions?.role}`}
@@ -180,12 +198,16 @@ function Roles({ modelId, state, dispatch, access, isMounted }) {
 					</div>
 					<AutoFitContentInScreen containsTable>
 						<RoleListTable
-							columns={["name", "mappedRoleName"]}
+							columns={["name", "mappedRoleName", "siteDepartmentName"]}
 							headers={[
 								{ id: 1, name: "Name" },
 								{
 									id: 2,
 									name: `Map To ${customCaptions?.service} ${customCaptions?.role}`,
+								},
+								{
+									id: 3,
+									name: `${customCaptions.department}`,
 								},
 							]}
 							data={filteredData}

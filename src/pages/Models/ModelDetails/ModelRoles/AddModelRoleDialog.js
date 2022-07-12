@@ -12,9 +12,13 @@ import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
-import { getSiteAppRoles } from "services/models/modelDetails/modelRoles";
+import {
+	getModelDepartment,
+	getSiteAppRoles,
+} from "services/models/modelDetails/modelRoles";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -28,6 +32,9 @@ const schema = yup.object({
 	roleID: yup
 		.string("Map to Service Role is Required")
 		.required("Map to Service Role is Required"),
+	siteDepartmentID: yup
+		.string("Department name is Required")
+		.required("Department name is Required"),
 });
 
 const useStyles = makeStyles({
@@ -42,10 +49,11 @@ const useStyles = makeStyles({
 });
 
 // Default state schemas
-const defaultErrorSchema = { roleID: null, name: null };
+const defaultErrorSchema = { roleID: null, name: null, siteDepartmentID: null };
 const defaultStateSchema = {
 	roleID: {},
 	name: "",
+	siteDepartmentID: {},
 };
 
 function AddNewModelRole({
@@ -59,6 +67,8 @@ function AddNewModelRole({
 	mappedRoleName,
 	customCaptions,
 	showSave,
+	modelId,
+	mappedDepartmentName,
 }) {
 	// Init hooks
 	const classes = useStyles();
@@ -68,6 +78,7 @@ function AddNewModelRole({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [department, setDepartments] = useState([]);
 	// const [siteRoles, setSiteRoles] = useState([]);
 
 	// get model types for dropdown
@@ -95,9 +106,29 @@ function AddNewModelRole({
 			setInput({
 				...data,
 				roleID: { label: mappedRoleName, value: data?.roleID },
+				siteDepartmentID: {
+					name: mappedDepartmentName,
+					id: data?.siteDepartmentID,
+					siteDepartmentID: data?.siteDepartmentID,
+				},
 			});
 		}
-	}, [data, open, mappedRoleName]);
+	}, [data, open, mappedRoleName, mappedDepartmentName]);
+
+	useEffect(() => {
+		if (open) {
+			async function getDepartments() {
+				const response = await getModelDepartment(modelId);
+				let finalData = response.data.map((x) => ({
+					...x,
+					id: x.siteDepartmentID,
+				}));
+				setDepartments(finalData);
+			}
+
+			getDepartments();
+		}
+	}, [open]);
 
 	//display error popup
 	const displayError = (errorMessage, response) =>
@@ -122,7 +153,9 @@ function AddNewModelRole({
 			const payload = {
 				...input,
 				roleID: input?.roleID?.value,
+				siteDepartmentID: input?.siteDepartmentID?.siteDepartmentID,
 			};
+
 			const localChecker = await handleValidateObj(schema, payload);
 
 			// Attempting API call if no local validaton errors
@@ -242,6 +275,34 @@ function AddNewModelRole({
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.RightInputContainer>
+					</ADD.InputContainer>
+
+					<ADD.InputContainer>
+						<ADD.LeftInputContainer>
+							<ErrorInputFieldWrapper
+								errorMessage={
+									errors.siteDepartmentID === null
+										? null
+										: errors.siteDepartmentID
+								}
+							>
+								<DyanamicDropdown
+									dataHeader={[{ id: 1, name: "Name" }]}
+									columns={[{ id: 1, name: "name" }]}
+									selectdValueToshow={"name"}
+									dataSource={department}
+									selectedValue={input?.siteDepartmentID}
+									onChange={(e) => {
+										setInput((prev) => ({ ...prev, siteDepartmentID: e }));
+									}}
+									label={customCaptions.department}
+									placeholder="Select Department"
+									required={true}
+									width="100%"
+									isError={errors.siteDepartmentID === null ? false : true}
+								/>
+							</ErrorInputFieldWrapper>
+						</ADD.LeftInputContainer>
 					</ADD.InputContainer>
 				</DialogContent>
 			</Dialog>
