@@ -26,7 +26,7 @@ function Defects({ state, customCaptions, siteAppID, serviceId }) {
 							...x,
 							number: (
 								<Link
-									onClick={() => history.push(`/app/defects/${x.id}`)}
+									onClick={() => window.open(`/app/defects/${x.id}`)}
 									style={{
 										color: ColourConstants.activeLink,
 										cursor: "pointer",
