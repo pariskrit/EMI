@@ -157,6 +157,39 @@ function DetailTile({
 					isReadOnly={true}
 					fetchData={() => getPublishedModel(serviceDetails.siteAppID)}
 				/>
+
+				<div style={{ marginBottom: 14 }}></div>
+				{serviceDetails?.modelTemplateType === "A" ? (
+					<DyanamicDropdown
+						isServerSide={false}
+						width="100%"
+						placeholder="Select Asset"
+						dataHeader={[{ id: 1, name: "Asset" }]}
+						columns={[{ id: 1, name: "name" }]}
+						// dataSource={dropDownDatas?.actions}
+						selectedValue={{
+							name: serviceDetails.siteAssetName,
+							// id: serviceDetails.modelID,
+						}}
+						handleSort={handleSort}
+						onChange={(val) =>
+							handleDropDopChnage(
+								val,
+								"siteAssetID",
+								"siteAssetID",
+								"siteAssetName"
+							)
+						}
+						selectdValueToshow="name"
+						label={customCaptions?.asset}
+						required
+						isReadOnly={isReadOnly || updating["siteAssetID"] === true}
+						fetchData={() => getModelAsset(serviceDetails.modelID)}
+					/>
+				) : (
+					""
+				)}
+
 				<div style={{ marginBottom: 14 }}></div>
 				<DyanamicDropdown
 					isServerSide={false}
@@ -223,36 +256,7 @@ function DetailTile({
 					type="datetime-local"
 					// onKeyDown={onEnterPress}
 				/>
-				{serviceDetails?.modelTemplateType === "A" ? (
-					<DyanamicDropdown
-						isServerSide={false}
-						width="100%"
-						placeholder="Select Asset"
-						dataHeader={[{ id: 1, name: "Asset" }]}
-						columns={[{ id: 1, name: "name" }]}
-						// dataSource={dropDownDatas?.actions}
-						selectedValue={{
-							name: serviceDetails.siteAssetName,
-							// id: serviceDetails.modelID,
-						}}
-						handleSort={handleSort}
-						onChange={(val) =>
-							handleDropDopChnage(
-								val,
-								"siteAssetID",
-								"siteAssetID",
-								"siteAssetName"
-							)
-						}
-						selectdValueToshow="name"
-						label={customCaptions?.asset}
-						required
-						isReadOnly={isReadOnly || updating["siteAssetID"] === true}
-						fetchData={() => getModelAsset(serviceDetails.modelID)}
-					/>
-				) : (
-					""
-				)}
+
 				<div style={{ marginBottom: 14 }}></div>
 				<TextFieldContainer
 					label={"WONN (Work Order Notification Number)"}
