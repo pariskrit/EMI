@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import GraphTitle from "components/Modules/GraphTitle";
 import { getLocalStorageData, toRoundoff } from "helpers/utils";
 import React, { useCallback, useEffect, useState } from "react";
@@ -203,7 +203,7 @@ function Times() {
 		return null;
 	};
 	return (
-		<div style={{ height: "70vh" }}>
+		<div>
 			<div style={{ marginBottom: 20 }}>
 				<GraphTitle
 					hasBreadCrumb
@@ -237,7 +237,6 @@ function Times() {
 							dx: -130,
 						}}
 						dataKey="name"
-						scale="point"
 						type="category"
 						padding={{ top: 80, bottom: 80 }}
 						width={200}
@@ -251,6 +250,7 @@ function Times() {
 					<Tooltip
 						content={<CustomTooltip showToolTip={showToolTip} />}
 						position={toolTipPosition}
+						cursor={{ fill: "transparent" }}
 					/>
 					<Legend
 						layout="vertical"
@@ -295,109 +295,111 @@ function Times() {
 					</Bar>
 				</BarChart>
 			) : (
-				<ResponsiveContainer height="100%" width="100%">
-					<BarChart
-						width={1400}
-						height={800}
-						data={chartData?.data}
-						margin={{
-							top: 8,
-							right: 30,
-							left: 20,
-							bottom: 30,
-						}}
-						barSize={20}
-						barGap={0}
-					>
-						<XAxis
-							label={{ value: depthNames[chartData.depth], dy: 30 }}
-							dataKey="name"
-							scale="point"
-							type="category"
-							padding={{ left: 80, right: 80 }}
-							width={10}
-						/>
-						<YAxis
-							label={{ value: "Total Minutes", angle: -90, dx: -30 }}
-							type="number"
-						/>
-
-						<Tooltip
-							position={toolTipPosition}
-							content={<CustomTooltip showToolTip={showToolTip} />}
-						/>
-
-						<Legend
-							layout="vertical"
-							align="right"
-							verticalAlign="top"
-							payload={[
-								{
-									id: "1",
-									value: "Actual",
-									type: "square",
-									color: "#e27352",
-								},
-								{
-									id: "2",
-									value: "Estimated",
-									type: "square",
-									color: "#b9995a",
-								},
-							]}
-							wrapperStyle={{ right: 0 }}
-						/>
-						<CartesianGrid vertical={false} />
-
-						<Bar
-							dataKey="actualMinutes"
-							onClick={handleBarClick}
-							barSize={60}
-							cursor="pointer"
-							onMouseEnter={handleMouseEnter}
-							onMouseLeave={handleMouseLeave}
+				<div style={{ height: "65vh", width: "90vw" }}>
+					<ResponsiveContainer height="100%" width="100%">
+						<BarChart
+							width={500}
+							height={500}
+							data={chartData?.data}
+							margin={{
+								top: 8,
+								right: 30,
+								left: 20,
+								bottom: 30,
+							}}
+							barSize={20}
+							barGap={0}
 						>
-							<LabelList
+							<XAxis
+								label={{ value: depthNames[chartData.depth], dy: 30 }}
+								dataKey="name"
+								scale="point"
+								type="category"
+								padding={{ left: 80, right: 80 }}
+								width={10}
+							/>
+							<YAxis
+								label={{ value: "Total Minutes", angle: -90, dx: -30 }}
+								type="number"
+							/>
+
+							<Tooltip
+								position={toolTipPosition}
+								content={<CustomTooltip showToolTip={showToolTip} />}
+							/>
+
+							<Legend
+								layout="vertical"
+								align="right"
+								verticalAlign="top"
+								payload={[
+									{
+										id: "1",
+										value: "Actual",
+										type: "square",
+										color: "#e27352",
+									},
+									{
+										id: "2",
+										value: "Estimated",
+										type: "square",
+										color: "#b9995a",
+									},
+								]}
+								wrapperStyle={{ right: 0 }}
+							/>
+							<CartesianGrid vertical={false} />
+
+							<Bar
 								dataKey="actualMinutes"
-								position="top"
-								fill="#000000"
-							/>
+								onClick={handleBarClick}
+								barSize={60}
+								cursor="pointer"
+								onMouseEnter={handleMouseEnter}
+								onMouseLeave={handleMouseLeave}
+							>
+								<LabelList
+									dataKey="actualMinutes"
+									position="top"
+									fill="#000000"
+								/>
 
-							{chartData.data?.map((entry, index) => (
-								<Cell
-									stroke={"#3f51b5"}
-									strokeWidth={isMouseHover === index ? 1 : 0}
-									cursor="pointer"
-									key={`cell-${index}`}
-									fill={isMouseHover === index ? "#afbbff33" : "#e27352"}
-								/>
-							))}
-						</Bar>
-						<Bar
-							dataKey="estimatedMinutes"
-							onClick={handleBarClick}
-							cursor="pointer"
-							onMouseEnter={handleMouseEnter}
-							onMouseLeave={handleMouseLeave}
-							barSize={60}
-						>
-							<LabelList
+								{chartData.data?.map((entry, index) => (
+									<Cell
+										stroke={"#3f51b5"}
+										strokeWidth={isMouseHover === index ? 1 : 0}
+										cursor="pointer"
+										key={`cell-${index}`}
+										fill={isMouseHover === index ? "#afbbff33" : "#e27352"}
+									/>
+								))}
+							</Bar>
+							<Bar
 								dataKey="estimatedMinutes"
-								position="top"
-								fill="#000000"
-							/>
-							{chartData.data?.map((entry, index) => (
-								<Cell
-									stroke={"#3f51b5"}
-									strokeWidth={isMouseHover === index ? 1 : 0}
-									cursor="pointer"
-									key={`cell-${index}`}
-									fill={isMouseHover === index ? "#afbbff33" : "#b9995a"}
+								onClick={handleBarClick}
+								cursor="pointer"
+								onMouseEnter={handleMouseEnter}
+								onMouseLeave={handleMouseLeave}
+								barSize={60}
+							>
+								<LabelList
+									dataKey="estimatedMinutes"
+									position="top"
+									fill="#000000"
 								/>
-							))}
-						</Bar>
-					</BarChart>
-				</ResponsiveContainer>
+								{chartData.data?.map((entry, index) => (
+									<Cell
+										stroke={"#3f51b5"}
+										strokeWidth={isMouseHover === index ? 1 : 0}
+										cursor="pointer"
+										key={`cell-${index}`}
+										fill={isMouseHover === index ? "#afbbff33" : "#b9995a"}
+									/>
+								))}
+							</Bar>
+						</BarChart>
+					</ResponsiveContainer>
+				</div>
 			)}
 		</div>
 	);
