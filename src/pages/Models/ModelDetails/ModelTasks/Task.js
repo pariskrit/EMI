@@ -130,9 +130,8 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		position,
 		application: { showOperatingMode },
 		customCaptions,
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
 
 	const fetchData = useCallback(
 		async (
@@ -457,14 +456,15 @@ const dymanicTableHeader = (operatingModeShown, customCaptions) => {
 				{ id: 6, name: customCaptions?.rolePlural, isSort: true },
 				{ id: 7, name: "Est Mins", isSort: true },
 				{ id: 9, name: "Order Added", isSort: true },
+				{ id: 10, name: "Notes", isSort: true },
 				{
-					id: 10,
+					id: 11,
 					name: customCaptions?.intervalPlural,
 					isSort: true,
 					width: "100px",
 				},
-				{ id: 11, name: customCaptions?.stagePlural, isSort: true },
-				{ id: 12, name: customCaptions?.zonePlural, isSort: true },
+				{ id: 12, name: customCaptions?.stagePlural, isSort: true },
+				{ id: 13, name: customCaptions?.zonePlural, isSort: true },
 			],
 			columns: [
 				"hasTaskImages",
@@ -480,6 +480,7 @@ const dymanicTableHeader = (operatingModeShown, customCaptions) => {
 				"roles",
 				"estimatedMinutes",
 				"taskGroupID",
+				"notes",
 				"intervals",
 				"stages",
 				"zones",
@@ -511,14 +512,15 @@ const dymanicTableHeader = (operatingModeShown, customCaptions) => {
 			{ id: 6, name: customCaptions?.rolePlural, isSort: true },
 			{ id: 7, name: "Est Mins", isSort: true },
 			{ id: 9, name: "Order Added", isSort: true },
+			{ id: 10, name: "Notes", isSort: true },
 			{
-				id: 10,
+				id: 11,
 				name: customCaptions?.intervalPlural,
 				isSort: true,
 				width: "100px",
 			},
-			{ id: 11, name: customCaptions?.stagePlural, isSort: true },
-			{ id: 12, name: customCaptions?.zonePlural, isSort: true },
+			{ id: 12, name: customCaptions?.stagePlural, isSort: true },
+			{ id: 13, name: customCaptions?.zonePlural, isSort: true },
 		],
 		columns: [
 			"hasTaskImages",
@@ -533,6 +535,7 @@ const dymanicTableHeader = (operatingModeShown, customCaptions) => {
 			"roles",
 			"estimatedMinutes",
 			"taskGroupID",
+			"notes",
 			"intervals",
 			"stages",
 			"zones",

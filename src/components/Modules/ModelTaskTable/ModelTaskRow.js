@@ -79,7 +79,7 @@ const ModelTaskRow = ({
 	const [state, ModelCtxDispatch] = useContext(ModelContext);
 	const { taskError, taskInfo, stageList } = taskState;
 
-	const toolTipColumn = ["intervals", "zones", "stages", "roles"];
+	const toolTipColumn = ["intervals", "zones", "stages", "roles", "notes"];
 
 	const history = useHistory();
 
