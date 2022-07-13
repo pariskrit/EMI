@@ -5,10 +5,13 @@ import { serviceStatus } from "constants/serviceDetails";
 import ProgressBar from "components/Elements/ProgressBar";
 import CurveButton from "components/Elements/CurveButton";
 import { makeStyles } from "@material-ui/styles";
+import Button from "@material-ui/core/Button";
 import clsx from "clsx";
 import Icon from "components/Elements/Icon";
 import { roundedToFixed } from "helpers/utils";
+import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
+const AT = ActionButtonStyle();
 const useStyles = makeStyles((theme) => ({
 	labelText: {
 		fontFamily: "Roboto Condensed",
@@ -38,9 +41,18 @@ const useStyles = makeStyles((theme) => ({
 		display: "inline-flex",
 		gap: 6,
 	},
+	resetButton: {
+		backgroundColor: "#ED8738",
+		marginTop: "-7px",
+	},
 }));
 
-function ServiceInformation({ classes, detail, customCaptions }) {
+function ServiceInformation({
+	classes,
+	detail,
+	customCaptions,
+	setOpenChnageStatusPopup,
+}) {
 	const classess = useStyles();
 
 	return (
@@ -48,22 +60,45 @@ function ServiceInformation({ classes, detail, customCaptions }) {
 			<div className={classes.inputContainer}>
 				<Grid container spacing={5}>
 					<Grid item lg={5} md={6} xs={12}>
-						<Typography
-							className={clsx(classess.labelText, classess.customLabelTxt)}
-						>
-							Status:{" "}
-							<span style={{ display: "inline-flex", gap: 3 }}>
-								<span>
-									<Icon
-										name={serviceStatus[detail?.status]}
-										fontSize={"18px"}
-									/>
-								</span>
-								<span className={classess.smallTxt}>
-									{serviceStatus[detail?.status]}
-								</span>
-							</span>
-						</Typography>
+						<Grid container wrap="nowrap">
+							<Grid item>
+								<Typography
+									className={clsx(classess.labelText, classess.customLabelTxt)}
+								>
+									Status:{" "}
+									<span style={{ display: "inline-flex", gap: 3 }}>
+										<span>
+											<Icon
+												name={serviceStatus[detail?.status]}
+												fontSize={"18px"}
+											/>
+										</span>
+										<span
+											className={classess.smallTxt}
+											style={{ whiteSpace: "nowrap" }}
+										>
+											{serviceStatus[detail?.status]}
+										</span>
+									</span>
+								</Typography>
+							</Grid>
+
+							<Grid item>
+								<Typography>
+									{"I" === "I" && (
+										<span style={{ marginLeft: 30 }}>
+											<AT.GeneralButton
+												className={classess.resetButton}
+												onClick={() => setOpenChnageStatusPopup(true)}
+											>
+												Reset {customCaptions?.service}
+											</AT.GeneralButton>
+										</span>
+									)}
+								</Typography>
+							</Grid>
+						</Grid>
+
 						<Typography className={classess.labelText}>
 							Percentage Completed:{" "}
 							<span

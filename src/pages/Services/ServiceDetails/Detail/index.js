@@ -13,6 +13,7 @@ import {
 import PeopleTile from "./PeopleTile";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import StatusChangePopup from "../../ServiceLists/StatusChangePopup";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -62,6 +63,7 @@ function ServiceDetail({
 	const [notes, setNotes] = useState([]);
 	const [peoples, setPeoples] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [openChnageStatusPopup, setOpenChnageStatusPopup] = useState(false);
 
 	useEffect(() => {
 		const fetchDetails = async () => {
@@ -101,6 +103,15 @@ function ServiceDetail({
 				}
 				status={state}
 			/>
+			<StatusChangePopup
+				open={openChnageStatusPopup}
+				onClose={() => setOpenChnageStatusPopup(false)}
+				serviceId={{ id: serviceId, changeTostatus: "R" }}
+				siteAppID={siteAppID}
+				title="Change Status to Reset"
+				fetchData={() => dispatch({ type: "SET_SERVICE_STATUS", payload: "T" })}
+			/>
+
 			<div className={classes.detailContainer}>
 				<Grid container spacing={2}>
 					<Grid item lg={6} md={6} xs={12}>
@@ -124,6 +135,7 @@ function ServiceDetail({
 							serviceId={serviceId}
 							dispatch={dispatch}
 							state={state.serviceDetail}
+							setOpenChnageStatusPopup={setOpenChnageStatusPopup}
 						/>
 						<PeopleTile data={peoples} classes={classes} />
 						<Notes serviceId={serviceId} data={notes} />

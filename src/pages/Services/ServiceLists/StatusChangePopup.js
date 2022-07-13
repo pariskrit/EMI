@@ -84,13 +84,14 @@ function ChangeStatusPopup({
 								status: serviceId.changeTostatus,
 								otherReason: otherReason,
 						  });
-				if (!response.status)
+				console.log("my response", response);
+				if (!response.status) {
 					dispatch(
 						showError(
 							response?.data?.detail || "Could Not Update Service Status"
 						)
 					);
-				else {
+				} else {
 					setDataForFetchingService({
 						pageNumber: 1,
 						pageSize: DefaultPageSize,
