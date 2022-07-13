@@ -40,6 +40,9 @@ const useStyles = makeStyles({
 		width: "14px",
 		height: "14px",
 	},
+	label: {
+		margin: 0,
+	},
 });
 
 function Times() {
@@ -176,6 +179,7 @@ function Times() {
 		if (active && payload && payload.length && showToolTip) {
 			return (
 				<div className={classes.customTooltip}>
+					<b className={classes.label}>{label}</b>
 					<div className={classes.toolTipLabel}>
 						<p
 							className={classes.colorBox}
