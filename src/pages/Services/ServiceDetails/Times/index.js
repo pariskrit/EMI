@@ -306,7 +306,7 @@ function Times() {
 							height={500}
 							data={chartData?.data}
 							margin={{
-								top: 8,
+								top: 20,
 								right: 30,
 								left: 20,
 								bottom: 30,
