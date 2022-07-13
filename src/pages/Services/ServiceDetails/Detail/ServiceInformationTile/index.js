@@ -85,7 +85,7 @@ function ServiceInformation({
 
 							<Grid item>
 								<Typography>
-									{"I" === "I" && (
+									{detail?.status === "I" && (
 										<span style={{ marginLeft: 30 }}>
 											<AT.GeneralButton
 												className={classess.resetButton}

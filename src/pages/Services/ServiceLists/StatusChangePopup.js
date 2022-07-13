@@ -84,7 +84,6 @@ function ChangeStatusPopup({
 								status: serviceId.changeTostatus,
 								otherReason: otherReason,
 						  });
-				console.log("my response", response);
 				if (!response.status) {
 					dispatch(
 						showError(
