@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
@@ -14,7 +14,6 @@ import { modelsPath } from "helpers/routePaths";
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { Link } from "@material-ui/core";
-import { isoDateWithoutTimeZone } from "helpers/utils";
 
 // Init styled components
 const AT = TableStyle();
@@ -72,9 +71,6 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
-	greater: {
-		color: "red",
-	},
 });
 
 const UserTable = ({
@@ -90,27 +86,6 @@ const UserTable = ({
 }) => {
 	// Init hooks
 	const classes = useStyles();
-	const [convertedData, setConvertedData] = useState([]);
-
-	useEffect(() => {
-		let newData = data.map((item) => {
-			let currentDate = new Date();
-			let apiDate = isoDateWithoutTimeZone(
-				item?.reviewDate ? item.reviewDate + "Z" : item.reviewDate
-			);
-			let isGreater =
-				currentDate > new Date(item?.reviewDate ? item?.reviewDate + "Z" : "");
-			return {
-				...item,
-				reviewDate: (
-					<span className={`${isGreater ? classes.greater : ""}`}>
-						{apiDate?.split(" ")[0]}
-					</span>
-				),
-			};
-		});
-		setConvertedData(newData);
-	}, [data]);
 
 	// Init State
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -159,8 +134,8 @@ const UserTable = ({
 					</TableRow>
 				</AT.TableHead>
 				<TableBody className={classes.tableBody}>
-					{convertedData.length ? (
-						convertedData.map((row, index) => (
+					{data.length ? (
+						data.map((row, index) => (
 							<TableRow key={row.id}>
 								{columns.map((col, i, arr) => {
 									return (

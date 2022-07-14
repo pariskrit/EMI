@@ -6,8 +6,6 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import DropdownContainer from "components/Elements/DropdownContainer";
-import { convertDateToUTC } from "helpers/utils";
-import { materialUiDate } from "helpers/date";
 
 const inputDetails = [
 	{ id: 1, label: "Make", name: "name" },
@@ -42,8 +40,6 @@ function Details({
 	const [apiStatus, setApiStatus] = useState({});
 	const [isInputChanged, setInputChanged] = useState(false);
 	const [selectedDropdownInput, setSelectedDropdownInput] = useState({});
-	const [reviewDate, setReviewDate] = useState("");
-	const [oldReviewDate, setOldReviewDate] = useState("");
 
 	const dispatch = useDispatch();
 
@@ -58,31 +54,10 @@ function Details({
 		]);
 	};
 
-	const handleReviewDateBlur = async (name, e) => {
-		try {
-			const response = await updateModel(id, [
-				{
-					op: "replace",
-					path: name,
-					value: convertDateToUTC(new Date(e.target.value)),
-				},
-			]);
-			if (!response.status) {
-				dispatch(showError("Error: Could not update the review date"));
-				setReviewDate(oldReviewDate);
-			} else {
-				setOldReviewDate(reviewDate);
-			}
-		} catch (error) {
-			dispatch(
-				showError(error?.data?.detail || "Error: Could not update input")
-			);
-		}
-	};
-
 	const onUpdateInput = async (e) => {
 		const inputName = e.target.name;
 		const value = e.target.value;
+
 		if (!isInputChanged[inputName]) {
 			return;
 		}
@@ -130,9 +105,11 @@ function Details({
 
 	const onDropdownInputChange = async (name, type) => {
 		setSelectedDropdownInput({ ...selectedDropdownInput, [name]: type });
+
 		const response = await updateModel(id, [
 			{ op: "replace", path: name, value: type.value },
 		]);
+
 		if (!response.status) {
 			dispatch(showError("Error: Could not update input"));
 		}
@@ -184,14 +161,7 @@ function Details({
 		}
 	}, [data, details, modifyApiData]);
 
-	useEffect(() => {
-		let newDate = data?.details?.reviewDate
-			? materialUiDate(new Date(data?.details?.reviewDate + "Z"))
-			: data?.details?.reviewDate;
-		setOldReviewDate(newDate);
-		setReviewDate(newDate);
-	}, [data]);
-
+	console.log(details);
 	return (
 		<AccordionBox title="Details">
 			<div className={classes.inputContainer}>
@@ -227,17 +197,6 @@ function Details({
 						/>
 					)
 				)}
-				<TextFieldContainer
-					placeholder="Select Date"
-					type="date"
-					label={"Review Date"}
-					name={"reviewDate"}
-					value={reviewDate}
-					onChange={(e) => setReviewDate(e.target.value)}
-					onBlur={(e) => handleReviewDateBlur("reviewDate", e)}
-					isRequired={false}
-					isDisabled={!data.details.isPublished}
-				/>
 			</div>
 		</AccordionBox>
 	);
