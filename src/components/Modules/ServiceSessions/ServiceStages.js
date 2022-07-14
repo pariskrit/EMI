@@ -8,9 +8,8 @@ import {
 	Typography,
 } from "@material-ui/core";
 import { isoDateWithoutTimeZone } from "helpers/utils";
-import CommonTable from "pages/Services/ServiceDetails/Impacts/CommonTable";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
+import Icon from "components/Elements/Icon";
 
 const useStyles = makeStyles((theme) => ({
 	headerText: {
@@ -30,68 +29,95 @@ const useStyles = makeStyles((theme) => ({
 	// },
 }));
 
-const ServiceStages = ({ tasks, formatQuestion }) => {
+const ServiceStages = ({ tasks, customCaptions, formatQuestion }) => {
 	const classes = useStyles();
-	const [taskData, setTaskData] = useState([]);
-
-	useEffect(() => {
-		const mappedData = tasks.map((task) => {
-			return {
-				...task,
-				completedDate: task.completedDate ? (
-					isoDateWithoutTimeZone(task.completedDate + "Z")
-				) : (
-					<span style={{ color: "red", fontSize: "15px" }}>Skipped</span>
-				),
-			};
-		});
-		setTaskData(mappedData);
-	}, [tasks]);
-
 	return (
 		<>
-			<Typography className={classes.headerText}>Service Stages</Typography>
-			{taskData?.map((task) => (
+			<Typography className={classes.headerText}>
+				Service Stages {tasks[0]["header"]}
+			</Typography>
+			{tasks?.map((task) => (
 				<>
-					<Typography className={classes.headerText}>
-						{task?.zoneName}
-					</Typography>
+					<Typography className={classes.headerText}>{task?.name}</Typography>
 					<Table
 						className={classes.tableContainer}
 						style={{ marginBottom: "10px" }}
 					>
 						<TableHead className={classes.tableHead}>
 							<TableRow>
-								{["Action Name", "Task Name", "Completion Date"].map(
-									(header) => (
-										<TableCell key={header} style={{ width: "33%" }}>
-											{header}
-										</TableCell>
-									)
-								)}
+								{[
+									"Action Name",
+									"Task Name",
+									"Completion Date",
+									customCaptions.safetyCritical,
+								].map((header) => (
+									<TableCell key={header} style={{ width: "25%" }}>
+										{header}
+									</TableCell>
+								))}
 							</TableRow>
 						</TableHead>
 						<TableBody className={classes.tableBody}>
-							<TableRow>
-								{["actionName", "taskName", "completedDate"].map((column) => (
-									<TableCell key={column}>{task[column]}</TableCell>
+							{task?.data
+								?.map((task) => {
+									return {
+										...task,
+										completedDate: task.completedDate ? (
+											isoDateWithoutTimeZone(task.completedDate + "Z")
+										) : (
+											<span style={{ color: "red", fontSize: "15px" }}>
+												Skipped
+											</span>
+										),
+										showCritical: task.safetyCritical ? (
+											<span style={{ marginLeft: "10px" }}>
+												<Icon name="SafteryCritical" />
+											</span>
+										) : (
+											""
+										),
+									};
+								})
+								.map((t) => (
+									<>
+										<TableRow>
+											{[
+												"actionName",
+												"taskName",
+												"completedDate",
+												"showCritical",
+											].map((column) => (
+												<TableCell key={column}>{t[column]}</TableCell>
+											))}
+										</TableRow>
+
+										{t?.questions &&
+											formatQuestion(t?.questions).map((q) => (
+												<TableRow
+													style={{
+														backgroundColor: "rgb(214, 212, 212,0.6)",
+													}}
+												>
+													<TableCell></TableCell>
+													<TableCell>{q?.caption}</TableCell>
+													{
+														<TableCell colSpan={2}>
+															<div
+																style={{
+																	border: q?.response ? "1px solid" : "none",
+																	width: "100%",
+																	minHeight: "30px",
+																	padding: "5px",
+																}}
+															>
+																{q?.response ? q.response : ""}
+															</div>
+														</TableCell>
+													}
+												</TableRow>
+											))}
+									</>
 								))}
-							</TableRow>
-							{task?.questions && (
-								<TableRow>
-									<TableCell colSpan={18}>
-										<CommonTable
-											columns={["caption", "response", "date"]}
-											headers={[
-												"QuestionCaption",
-												"Question Response",
-												"Question Response date",
-											]}
-											data={formatQuestion(task.questions)}
-										/>
-									</TableCell>
-								</TableRow>
-							)}
 						</TableBody>
 					</Table>
 				</>

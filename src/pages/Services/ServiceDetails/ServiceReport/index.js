@@ -60,64 +60,67 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 
 	return (
 		<div className={classes.reportContainer}>
-			<Grid item xs={12}>
-				<Header state={state.serviceDetail} customCaptions={customCaptions} />
-			</Grid>
-			<Grid item xs={12}>
-				<Notes data={notes} />
-			</Grid>
-			<Grid item xs={12}>
-				<ServiceSession
-					completedService={completedService}
-					roleName={state.serviceDetail.role}
-				/>
-			</Grid>
-			<Grid item xs={12}>
-				<Defects
-					data={defects}
-					columns={[
-						"number",
-						"taskName",
-						"stageName",
-						"zoneName",
-						"defectTypeName",
-						"riskRatingName",
-						"createdUserName",
-						"details",
-					]}
-					customCaptions={customCaptions}
-					headers={[
-						{ id: 1, name: "Number" },
-						{
-							id: 2,
-							name: customCaptions?.task,
-						},
-						{
-							id: 3,
-							name: customCaptions?.stage,
-						},
-						{
-							id: 4,
-							name: customCaptions?.zone,
-						},
-						{
-							id: 5,
-							name: customCaptions?.defectType,
-						},
-						{
-							id: 8,
-							name: customCaptions?.riskRating,
-						},
-						{
-							id: 6,
-							name: customCaptions?.user,
-						},
-						{
-							id: 7,
-							name: `${customCaptions.defect} Details`,
-						},
-					]}
-				/>
+			<Grid container spacing={2}>
+				<Grid item xs={12}>
+					<Header state={state.serviceDetail} customCaptions={customCaptions} />
+				</Grid>
+				<Grid item xs={12}>
+					<Notes data={notes} />
+				</Grid>
+				<Grid item xs={12}>
+					<ServiceSession
+						completedService={completedService}
+						roleName={state.serviceDetail.role}
+						customCaptions={customCaptions}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<Defects
+						data={defects}
+						columns={[
+							"number",
+							"taskName",
+							"stageName",
+							"zoneName",
+							"defectTypeName",
+							"riskRatingName",
+							"createdUserName",
+							"details",
+						]}
+						customCaptions={customCaptions}
+						headers={[
+							{ id: 1, name: "Number" },
+							{
+								id: 2,
+								name: customCaptions?.task,
+							},
+							{
+								id: 3,
+								name: customCaptions?.stage,
+							},
+							{
+								id: 4,
+								name: customCaptions?.zone,
+							},
+							{
+								id: 5,
+								name: customCaptions?.defectType,
+							},
+							{
+								id: 8,
+								name: customCaptions?.riskRating,
+							},
+							{
+								id: 6,
+								name: customCaptions?.user,
+							},
+							{
+								id: 7,
+								name: `${customCaptions.defect} Details`,
+							},
+						]}
+					/>
+				</Grid>
 			</Grid>
 		</div>
 	);

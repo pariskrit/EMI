@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import { isoDateWithoutTimeZone } from "helpers/utils";
 import clsx from "clsx";
+import { serviceStatus } from "constants/serviceDetails";
 
 const media = "@media (max-width: 768px)";
 const useStyles = makeStyles({
@@ -61,6 +62,8 @@ const Header = ({ state, customCaptions }) => {
 	const date = isoDateWithoutTimeZone(
 		state.scheduledDate ? state.scheduledDate + "Z" : state.scheduledDate
 	);
+
+	console.log("ssssssssssss", state);
 	return (
 		<>
 			<Typography className={classes.headerText} component="h1" gutterBottom>
@@ -104,27 +107,27 @@ const Header = ({ state, customCaptions }) => {
 						<span className={clsx(classes.headings, classes.keyHeading)}>
 							{customCaptions.service} Status
 						</span>
-						<span className={classes.headings}>{state.status}</span>
+						<span className={classes.headings}>
+							{serviceStatus[state?.status]}
+						</span>
 					</div>
 					<div className={classes.list}>
 						<span className={clsx(classes.headings, classes.keyHeading)}>
 							{customCaptions.model} Version
 						</span>
-						<span className={classes.headings}>
-							{state.activeModelVersionID}
-						</span>
+						<span className={classes.headings}>{state?.modelVersion}</span>
 					</div>
 					<div className={classes.list}>
 						<span className={clsx(classes.headings, classes.keyHeading)}>
 							{customCaptions.asset}
 						</span>
-						<span className={classes.headings}>{state.siteAssetName}</span>
+						<span className={classes.headings}>{state?.siteAssetName}</span>
 					</div>
 				</div>
 				<div className={classes.first}>
 					<div className={classes.list}>
 						<span className={clsx(classes.headings, classes.keyHeading)}>
-							{customCaptions.service} Completion Date
+							Completion Date
 						</span>
 						<span className={classes.headings}>{date}</span>
 					</div>

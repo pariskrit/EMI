@@ -10,7 +10,6 @@ import { TableContainer, Typography } from "@material-ui/core";
 import { formatAMPM, isoDateWithoutTimeZone } from "helpers/utils";
 import { changeDate } from "helpers/date";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import ServiceStages from "./ServiceStages";
 import clsx from "clsx";
 
@@ -54,7 +53,12 @@ const useStyles = makeStyles({
 	},
 });
 
-export default function ServiceReport({ completedService: rows, roleName }) {
+export default function ServiceReport({
+	completedService: rows,
+	roleName,
+	customCaptions,
+}) {
+	console.log(rows);
 	function setQuestionResponse(question) {
 		switch (question.type) {
 			case "S":
@@ -71,9 +75,13 @@ export default function ServiceReport({ completedService: rows, roleName }) {
 				return formatAMPM(question?.valueDate);
 
 			case "O":
+				return commaSeperateValues(question?.options);
+
 			case "C":
 			case "B":
-				return commaSeperateValues(question?.options);
+				return question?.valueBoolean
+					? question?.checkboxCaption
+					: commaSeperateValues(question?.options);
 
 			default:
 				return question?.valueBoolean;
@@ -86,30 +94,55 @@ export default function ServiceReport({ completedService: rows, roleName }) {
 	}
 
 	function formatQuestion(questions) {
-		return questions.map((q) => {
+		return questions?.map((q) => {
 			return {
 				...q,
-				date: isoDateWithoutTimeZone(q.date + "Z"),
+				date: q.date ? isoDateWithoutTimeZone(q.date + "Z") : "",
 				response: setQuestionResponse(q),
 			};
 		});
 	}
 
+	const groupBySize = (data) => {
+		const groupbyData = data.reduce((group, current) => {
+			const { zoneName } = current;
+			if (zoneName) {
+				group[zoneName] = group[zoneName] ?? [];
+				group[zoneName].push(current);
+			}
+			return group;
+		}, {});
+
+		let newArray = [];
+
+		if (groupbyData) {
+			newArray = Object.keys(groupbyData).map((key) => {
+				let newdict = { name: "", data: [] };
+				return {
+					...newdict,
+					name: key,
+					header: groupbyData[key][0]["stageName"],
+					data: groupbyData[key],
+				};
+			});
+		}
+		return newArray;
+	};
+
 	const classes = useStyles();
 	return (
 		<>
-			<Typography className={classes.headerText}>Service Sessions</Typography>
 			<TableContainer>
 				<Table aria-label="collapsible table">
 					<TableHead className={classes.tableHead}>
 						<TableRow>
 							<TableCell>User</TableCell>
-							<TableCell align="center">Start Date</TableCell>
-							<TableCell align="center">End Date</TableCell>
+							<TableCell align="center">Session Start Date</TableCell>
+							<TableCell align="center">Session End Date</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows.map((row) => (
+						{rows?.map((row) => (
 							<React.Fragment>
 								<TableRow
 									key={row.id}
@@ -131,59 +164,66 @@ export default function ServiceReport({ completedService: rows, roleName }) {
 									</TableCell>
 								</TableRow>
 
-								<TableRow>
-									<TableCell colSpan={10}>
-										<Typography className={classes.headerText}>
-											Start Questions
-										</Typography>
-										<CommonTable
-											headers={[
-												"QuestionCaption",
-												"Question Response",
-												"Question Response date",
-											]}
-											columns={["caption", "response", "date"]}
-											data={formatQuestion(
-												row?.questions?.filter((d) => d?.timing === "B")
-											)}
-										/>
-									</TableCell>
-								</TableRow>
+								{row?.questions?.filter((d) => d?.timing === "B")?.length >
+									0 && (
+									<TableRow>
+										<TableCell colSpan={10}>
+											<Typography className={classes.headerText}>
+												Start Questions
+											</Typography>
+											<CommonTable
+												headers={[
+													"Question",
+													"Question Response",
+													"Question Response date",
+												]}
+												columns={["caption", "response", "date"]}
+												data={formatQuestion(
+													row?.questions?.filter((d) => d?.timing === "B")
+												)}
+											/>
+										</TableCell>
+									</TableRow>
+								)}
 
-								{row?.tasks.length > 0 && (
+								{row?.tasks.length > 0 && groupBySize(row?.tasks).length > 0 && (
 									<TableRow>
 										<TableCell colSpan={18}>
 											<ServiceStages
-												tasks={row?.tasks}
+												tasks={groupBySize(row?.tasks)}
+												customCaptions={customCaptions}
 												formatQuestion={formatQuestion}
 											/>
 										</TableCell>
 									</TableRow>
 								)}
 
-								<TableRow>
-									<TableCell colSpan={10}>
-										<Typography className={classes.headerText}>
-											End Questions
-										</Typography>
-										<CommonTable
-											headers={[
-												"QuestionCaption",
-												"Question Response",
-												"Question Response date",
-											]}
-											columns={["caption", "response", "date"]}
-											data={formatQuestion(
-												row?.questions?.filter((d) => d?.timing === "E")
-											)}
-										/>
-									</TableCell>
-								</TableRow>
+								{row?.question?.filter((d) => d?.timing === "E")?.length >
+									0 && (
+									<TableRow>
+										<TableCell colSpan={10}>
+											<Typography className={classes.headerText}>
+												End Questions
+											</Typography>
+											<CommonTable
+												headers={[
+													"Question",
+													"Question Response",
+													"Question Response date",
+												]}
+												columns={["caption", "response", "date"]}
+												data={formatQuestion(
+													row?.questions?.filter((d) => d?.timing === "E")
+												)}
+											/>
+										</TableCell>
+									</TableRow>
+								)}
 
 								{row.endDate && (
 									<React.Fragment>
 										<Typography className={classes.headerText}>
-											End of service session{" "}
+											End of {customCaptions?.service} session{" "}
 										</Typography>
 										<TableRow>
 											<TableCell colSpan={10}>
@@ -259,21 +299,17 @@ export default function ServiceReport({ completedService: rows, roleName }) {
 
 													{row.signatureURL && (
 														<Grid item xs={6}>
-															<Box
-																sx={{
-																	height: 200,
-																	width: 200,
-																}}
-															>
+															<div>
 																<img
 																	src={row.signatureURL}
 																	style={{
 																		width: "100%",
 																		height: "100%",
+																		objectFit: "contain",
 																	}}
 																	alt="signature"
 																/>
-															</Box>
+															</div>
 														</Grid>
 													)}
 												</Grid>

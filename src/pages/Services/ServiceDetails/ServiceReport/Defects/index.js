@@ -34,7 +34,9 @@ const Defects = ({ headers, customCaptions, data, columns }) => {
 	return (
 		<div>
 			<Typography className={classes.headerText} component="h1" gutterBottom>
-				<strong>{customCaptions.service} Defects</strong>
+				<strong>
+					{customCaptions.service} {customCaptions?.defect}
+				</strong>
 			</Typography>
 			<AT.TableContainer>
 				<Table aria-label="Table">
