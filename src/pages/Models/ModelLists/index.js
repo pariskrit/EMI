@@ -329,6 +329,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 									"Serial Number Range",
 									"Latest Version",
 									"Active Version",
+									"Review Date",
 							  ]
 							: [
 									// customCaptions?.make,
@@ -338,6 +339,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 									"Serial Number Range",
 									"Latest Version",
 									"Active Version",
+									"Review Date",
 							  ]
 					}
 					columns={
@@ -349,6 +351,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 									"serialNumberRange",
 									"devModelVersion",
 									"activeModelVersion",
+									"reviewDate",
 							  ]
 							: [
 									["name"],
@@ -357,6 +360,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 									"serialNumberRange",
 									"devModelVersion",
 									"activeModelVersion",
+									"reviewDate",
 							  ]
 					}
 					setData={setFilteredData}
