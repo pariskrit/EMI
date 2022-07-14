@@ -128,7 +128,7 @@ function AddNewModelRole({
 
 			getDepartments();
 		}
-	}, [open]);
+	}, [open, modelId]);
 
 	//display error popup
 	const displayError = (errorMessage, response) =>

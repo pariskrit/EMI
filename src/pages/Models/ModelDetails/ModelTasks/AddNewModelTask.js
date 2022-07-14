@@ -116,16 +116,12 @@ function AddNewModelTask({
 				try {
 					const response = await Promise.all([
 						getOperatingModes(siteId),
-						// getSystems(siteId),
 						getModelRolesList(modelId),
-						// getActions(siteId),
 						getSiteApplicationDetail(siteId),
 					]);
 					const [
 						operatingModes,
-						// systems,
-						modelRoles,
-						// siteActions,
+						modelRolesResponse,
 						siteApplications,
 					] = response;
 					if (operatingModes.status) {
@@ -136,19 +132,12 @@ function AddNewModelTask({
 							}))
 						);
 					}
-					// if (systems.status) {
-					// 	setSystems(
-					// 		systems.data.map((list) => ({
-					// 			label: list.name,
-					// 			value: list.id,
-					// 		}))
-					// 	);
-					// }
-					if (modelRoles.status) {
-						setModelRoles(modelRoles.data);
 
-						if (modelRoles.data.length === 1) {
-							let firstData = modelRoles.data[0];
+					if (modelRolesResponse.status) {
+						setModelRoles(modelRolesResponse.data);
+
+						if (modelRolesResponse.data.length === 1) {
+							let firstData = modelRolesResponse.data[0];
 
 							firstData = {
 								...firstData,
@@ -156,13 +145,13 @@ function AddNewModelTask({
 							};
 
 							setApiRoles([firstData]);
-							setInput({
-								...input,
+							setInput((prev) => ({
+								...prev,
 								roles: [firstData.id],
-							});
+							}));
 						} else {
 							setApiRoles(
-								modelRoles.data.map((role) => ({
+								modelRolesResponse.data.map((role) => ({
 									...role,
 									id: null,
 									modelVersionRoleID: role.id,
@@ -170,28 +159,19 @@ function AddNewModelTask({
 							);
 						}
 					}
-					// if (siteActions.status) {
-					// 	// setActions(
-					// 	// 	siteActions.data.map((list) => ({
-					// 	// 		label: list.name,
-					// 	// 		value: list.id,
-					// 	// 	}))
-					// 	// );
-					// }
-
 					if (siteApplications.status) {
 						const tempOperatingMode = operatingModes.data.find(
 							(mode) => mode.id === siteApplications.data.defaultOperatingModeID
 						);
 
 						if (tempOperatingMode) {
-							setInput({
-								...input,
+							setInput((prev) => ({
+								...prev,
 								operatingModeID: {
 									label: tempOperatingMode?.name,
 									value: tempOperatingMode?.id,
 								},
-							});
+							}));
 						}
 					}
 				} catch (error) {
