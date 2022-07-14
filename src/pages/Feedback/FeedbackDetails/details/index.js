@@ -63,7 +63,10 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 		if (type === "model")
 			setSelectedDropdown((prev) => ({
 				...prev,
-				model: { ...prev.model, name: `${value.name} ${value.modelName}` },
+				model: {
+					...prev.model,
+					name: `${value.name} ${value.modelName ? value.modelName : ""}`,
+				},
 			}));
 
 		const response = await updateFeedback(feedbackId, [
@@ -178,7 +181,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 			},
 			model: {
 				id: details.modelID,
-				name: `${details?.modelName} ${details?.model}`,
+				name: `${details?.modelName} ${details?.model ? details.model : ""}`,
 				activeModelVersionID: details.activeModelVersionID,
 			},
 			stage: {
