@@ -110,6 +110,7 @@ function ServiceDetail({
 				siteAppID={siteAppID}
 				title="Change Status to Reset"
 				fetchData={() => dispatch({ type: "SET_SERVICE_STATUS", payload: "T" })}
+				setDataForFetchingService={() => {}}
 			/>
 
 			<div className={classes.detailContainer}>
