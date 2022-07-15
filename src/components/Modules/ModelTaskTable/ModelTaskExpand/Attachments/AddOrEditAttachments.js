@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import AttachmentUpload from "./AttachmentUpload.js";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
+import { Restaurant } from "@material-ui/icons";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -68,6 +69,7 @@ function AddOrEditAttachment({
 	fetchData,
 	isEdit,
 }) {
+	console.log(data);
 	// Init hooks
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -79,7 +81,9 @@ function AddOrEditAttachment({
 
 	useEffect(() => {
 		if (data) {
-			setInput(data);
+			const { filename, ...rest } = data;
+			console.log(rest, filename, data);
+			setInput(rest);
 		}
 	}, [data]);
 
@@ -99,12 +103,16 @@ function AddOrEditAttachment({
 		setErrors(defaultErrorSchema);
 
 		// cleaned Input
+		console.log("xxxxxx", input);
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
-				const newData = await createProcessHandler(input);
+				const newData = await createProcessHandler({
+					...input,
+					filename: input?.file?.name ? input?.file?.name : data.filename,
+				});
 				if (newData.status) {
 					await fetchData();
 					setIsUpdating(false);
@@ -123,12 +131,12 @@ function AddOrEditAttachment({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
 			dispatch(
 				showError(err?.response?.data?.title || "Could not add new attachment")
 			);
+			console.log(err);
 		}
 	};
 
@@ -211,6 +219,9 @@ function AddOrEditAttachment({
 							<AttachmentUpload
 								onDrop={handleDropDocument}
 								file={input.file}
+								filename={
+									input?.file?.name ? input?.file?.name : data?.filename
+								}
 								removeImage={() => setInput({ ...input, file: null })}
 							/>
 						</ErrorInputFieldWrapper>

@@ -20,7 +20,7 @@ import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { ModelContext } from "contexts/ModelDetailContext";
-import { getFormattedLink } from "helpers/utils";
+import { formatBytes, getFormattedLink } from "helpers/utils";
 import { pasteModelTaskDocument } from "services/models/modelDetails/modelTasks/pasteApi";
 import GeneralButton from "components/Elements/GeneralButton";
 
@@ -53,6 +53,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						response?.data?.map((a) => {
 							return {
 								...a,
+								filesize: formatBytes(a?.filesize),
 								name: (
 									<Link
 										style={{ color: ColourConstants.activeLink }}
@@ -74,6 +75,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 					setOriginalAttachments(
 						response?.data?.map((a) => ({
 							...a,
+							filesize: formatBytes(a?.filesize),
 							name: (
 								<Link
 									style={{ color: ColourConstants.activeLink }}
@@ -215,6 +217,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				name: newPermit.name,
 				documentKey: response?.data?.key ?? null,
 				link: newPermit?.link !== "" ? newPermit.link : null,
+				filename: newPermit?.filename || null,
 			});
 		} else {
 			return { status: false, data: { detail: "File Upload Failed" } };
@@ -268,6 +271,11 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				op: "replace",
 				path: "documentKey",
 				value: response?.data?.key ?? payload?.file,
+			},
+			{
+				op: "replace",
+				path: "filename",
+				value: payload.filename,
 			},
 		]);
 	};
@@ -348,6 +356,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 					name: selectedID?.name?.props?.children,
 					link: selectedID?.link === null ? "" : selectedID?.link,
 					file: selectedID?.documentKey,
+					filename: selectedID?.filename,
 				}}
 				createProcessHandler={editAttachment}
 				fetchData={() => fetchAttachments(false)}
@@ -390,8 +399,11 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 
 			<DragAndDropTable
 				data={attachments}
-				headers={["Name"]}
-				columns={[{ id: 2, name: "name", style: { width: "100vw" } }]}
+				headers={["Name", "FileSize"]}
+				columns={[
+					{ id: 2, name: "name", style: { width: "50vw" } },
+					{ id: 3, name: "filesize", width: { width: "50vw" } },
+				]}
 				handleDragEnd={handleDragEnd}
 				menuData={[
 					{

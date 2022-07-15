@@ -75,9 +75,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ImageUpload = ({ onDrop, file, disabled = false, removeImage }) => {
+const ImageUpload = ({
+	onDrop,
+	file,
+	disabled = false,
+	removeImage,
+	filename,
+}) => {
 	// Init hooks
 	const classes = useStyles();
+	console.log("fileeeeeeeeee", file);
 
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({
 		onDrop,
@@ -111,7 +118,9 @@ const ImageUpload = ({ onDrop, file, disabled = false, removeImage }) => {
 			)}
 			{file && (
 				<aside className={classes.imageContainerMain}>
-					<Typography className="new-link">{file?.name ?? file}</Typography>
+					<Typography className="new-link">
+						{filename ? filename : file.name}
+					</Typography>
 					<DeleteIcon className={classes.deleteIcon} onClick={removeImage} />
 				</aside>
 			)}
