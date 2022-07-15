@@ -23,7 +23,6 @@ import { getModelRolesListByInterval } from "services/models/modelDetails/modelR
 import { showError } from "redux/common/actions";
 import { getModelAsset } from "services/models/modelDetails/modelAsset";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
-import { getAvailabeleModelDeparments } from "services/models/modelDetails/details";
 import { DefaultPageSize } from "helpers/constants";
 
 // Init styled components
@@ -191,7 +190,7 @@ function AddNewServiceDetail({
 			modelVersionIntervalId: input?.modelVersionIntervalId?.id,
 			modelVersionRoleId: input?.modelVersionRoleId?.id,
 			siteAssetId: input?.siteAssetId?.siteAssetID,
-			siteDepartmentID: input?.siteDepartmentID?.siteDepartmentID,
+			siteDepartmentID: input?.modelVersionRoleId?.siteDepartmentID,
 			note: input?.note || null,
 			notificationNumber: input?.notificationNumber || null,
 			scheduledDate: input?.scheduledDate
@@ -240,7 +239,6 @@ function AddNewServiceDetail({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
 
@@ -403,8 +401,15 @@ function AddNewServiceDetail({
 									isServerSide={false}
 									width="100%"
 									placeholder="Select Role"
-									dataHeader={[{ id: 1, name: "Role" }]}
-									columns={[{ id: 1, name: "name" }]}
+									showHeader
+									dataHeader={[
+										{ id: 1, name: "Role" },
+										{ id: 2, name: "Department" },
+									]}
+									columns={[
+										{ id: 1, name: "name" },
+										{ id: 2, name: "siteDepartmentName" },
+									]}
 									selectedValue={input["modelVersionRoleId"]}
 									handleSort={handleSort}
 									onChange={(val) => {
@@ -424,6 +429,27 @@ function AddNewServiceDetail({
 					</ADD.InputContainer>
 					<ADD.InputContainer>
 						<ADD.LeftInputContainer>
+							<ErrorInputFieldWrapper
+								errorMessage={
+									errors.scheduledDate === null ? null : errors.scheduledDate
+								}
+							>
+								<TextFieldContainer
+									label={"Scheduled Date"}
+									name={"scheduledDate"}
+									value={input.scheduledDate}
+									onChange={(e) => {
+										setInput({ ...input, scheduledDate: e.target.value });
+									}}
+									isRequired={true}
+									type="datetime-local"
+									placeholder="Select Date"
+									error={errors.scheduledDate === null ? false : true}
+								/>
+							</ErrorInputFieldWrapper>
+						</ADD.LeftInputContainer>
+
+						{/* <ADD.LeftInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.siteDepartmentID === null
@@ -456,30 +482,43 @@ function AddNewServiceDetail({
 									}
 								/>
 							</ErrorInputFieldWrapper>
-						</ADD.LeftInputContainer>
+						</ADD.LeftInputContainer> */}
 
-						<ADD.RightInputContainer>
-							<ErrorInputFieldWrapper
-								errorMessage={
-									errors.scheduledDate === null ? null : errors.scheduledDate
-								}
-							>
-								<TextFieldContainer
-									label={"Scheduled Date"}
-									name={"scheduledDate"}
-									value={input.scheduledDate}
-									onChange={(e) => {
-										setInput({ ...input, scheduledDate: e.target.value });
-									}}
-									isRequired={true}
-									type="datetime-local"
-									placeholder="Select Date"
-									error={errors.scheduledDate === null ? false : true}
-								/>
-							</ErrorInputFieldWrapper>
-						</ADD.RightInputContainer>
+						{input?.modelID?.modelTemplateType === "A" && (
+							<ADD.RightInputContainer>
+								<ErrorInputFieldWrapper
+									errorMessage={
+										errors.siteAssetId === null ? null : errors.siteAssetId
+									}
+								>
+									<DyanamicDropdown
+										dataSource={dataSourceAfterModelChange}
+										isServerSide={false}
+										width="100%"
+										placeholder="Select Asset"
+										dataHeader={[{ id: 1, name: "Asset" }]}
+										columns={[{ id: 1, name: "name" }]}
+										selectedValue={input["siteAssetId"]}
+										handleSort={handleSort}
+										onChange={(val) => {
+											setInput({ ...input, siteAssetId: val });
+										}}
+										selectdValueToshow="name"
+										label={customCaptions?.asset}
+										isError={errors.siteAssetId === null ? false : true}
+										fetchData={() => getModelAsset(input?.modelID?.id)}
+										required
+										isReadOnly={
+											input?.modelID?.id === null ||
+											input?.modelID?.id === undefined
+										}
+									/>
+								</ErrorInputFieldWrapper>
+							</ADD.RightInputContainer>
+						)}
 					</ADD.InputContainer>
-					{input?.modelID?.modelTemplateType === "A" && (
+
+					{/* {input?.modelID?.modelTemplateType === "A" && (
 						<ADD.InputContainer>
 							<ADD.FullWidthContainer style={{ paddingRight: 0 }}>
 								<ErrorInputFieldWrapper
@@ -512,7 +551,8 @@ function AddNewServiceDetail({
 								</ErrorInputFieldWrapper>
 							</ADD.FullWidthContainer>
 						</ADD.InputContainer>
-					)}
+					)} */}
+
 					<ADD.InputContainer>
 						<ADD.FullWidthContainer style={{ paddingRight: 0 }}>
 							<ErrorInputFieldWrapper

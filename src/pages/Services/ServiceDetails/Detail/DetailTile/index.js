@@ -193,10 +193,17 @@ function DetailTile({
 				<div style={{ marginBottom: 14 }}></div>
 				<DyanamicDropdown
 					isServerSide={false}
+					showHeader
 					width="100%"
 					placeholder="Select Role"
-					dataHeader={[{ id: 1, name: "Role" }]}
-					columns={[{ id: 1, name: "name" }]}
+					dataHeader={[
+						{ id: 1, name: "Role" },
+						{ id: 2, name: "Department" },
+					]}
+					columns={[
+						{ id: 1, name: "name" },
+						{ id: 2, name: "siteDepartmentName" },
+					]}
 					// dataSource={dropDownDatas?.actions}
 					selectedValue={{
 						name: serviceDetails.role,
