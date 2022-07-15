@@ -44,6 +44,8 @@ function Details({
 	const [apiStatus, setApiStatus] = useState({});
 	const [isInputChanged, setInputChanged] = useState(false);
 	const [selectedDropdownInput, setSelectedDropdownInput] = useState({});
+	const [reviewDate, setReviewDate] = useState("");
+	const [oldReviewDate, setOldReviewDate] = useState("");
 
 	const dispatch = useDispatch();
 
@@ -89,7 +91,6 @@ function Details({
 	const onUpdateInput = async (e) => {
 		const inputName = e.target.name;
 		const value = e.target.value;
-
 		if (!isInputChanged[inputName]) {
 			return;
 		}
@@ -137,11 +138,9 @@ function Details({
 
 	const onDropdownInputChange = async (name, type) => {
 		setSelectedDropdownInput({ ...selectedDropdownInput, [name]: type });
-
 		const response = await updateModel(id, [
 			{ op: "replace", path: name, value: type.value },
 		]);
-
 		if (!response.status) {
 			dispatch(showError("Error: Could not update input"));
 		}
@@ -193,7 +192,14 @@ function Details({
 		}
 	}, [data, details, modifyApiData]);
 
-	console.log(details);
+	useEffect(() => {
+		let newDate = data?.details?.reviewDate
+			? materialUiDate(new Date(data?.details?.reviewDate + "Z"))
+			: data?.details?.reviewDate;
+		setOldReviewDate(newDate);
+		setReviewDate(newDate);
+	}, [data]);
+
 	return (
 		<AccordionBox title="Details">
 			<div className={classes.inputContainer}>
@@ -229,6 +235,17 @@ function Details({
 						/>
 					)
 				)}
+				<TextFieldContainer
+					placeholder="Select Date"
+					type="date"
+					label={"Review Date"}
+					name={"reviewDate"}
+					value={reviewDate}
+					onChange={(e) => setReviewDate(e.target.value)}
+					onBlur={(e) => handleReviewDateBlur("reviewDate", e)}
+					isRequired={false}
+					isDisabled={!data.details.isPublished}
+				/>
 			</div>
 		</AccordionBox>
 	);
