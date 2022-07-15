@@ -71,6 +71,9 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
+	greater: {
+		color: ColourConstants.red,
+	},
 });
 
 const UserTable = ({

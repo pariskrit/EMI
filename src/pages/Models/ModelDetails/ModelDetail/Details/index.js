@@ -6,6 +6,9 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import DropdownContainer from "components/Elements/DropdownContainer";
+import { convertDateToUTC } from "helpers/utils";
+import { materialUiDate } from "helpers/date";
+import withMount from "components/HOC/withMount";
 
 const inputDetails = [
 	{ id: 1, label: "Make", name: "name" },
@@ -33,6 +36,7 @@ function Details({
 	isReadOnly,
 	Ctxdispatch,
 	application,
+	isMounted,
 }) {
 	const { id } = useParams();
 	const [details, setDetails] = useState([]);
@@ -52,6 +56,34 @@ function Details({
 					: detail
 			),
 		]);
+	};
+
+	const handleReviewDateBlur = async (name, e) => {
+		try {
+			const response = await updateModel(id, [
+				{
+					op: "replace",
+					path: name,
+					value: convertDateToUTC(new Date(e.target.value)),
+				},
+			]);
+
+			if (!response.status) {
+				if (!isMounted.aborted) {
+					dispatch(showError("Error: Could not update the review date"));
+					setReviewDate(oldReviewDate);
+				}
+			} else {
+				Ctxdispatch({
+					type: "UPDATE_REVIEWDATE",
+					payload: reviewDate,
+				});
+			}
+		} catch (error) {
+			dispatch(
+				showError(error?.data?.detail || "Error: Could not update input")
+			);
+		}
 	};
 
 	const onUpdateInput = async (e) => {
@@ -202,4 +234,4 @@ function Details({
 	);
 }
 
-export default Details;
+export default withMount(Details);

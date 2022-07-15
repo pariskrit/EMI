@@ -33,6 +33,15 @@ function reducer(state, action) {
 				},
 			};
 
+		case "UPDATE_REVIEWDATE":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					reviewDate: action.payload,
+				},
+			};
+
 		case "SET_ISPUBLISHED":
 			return {
 				...state,
@@ -107,8 +116,8 @@ function reducer(state, action) {
 				...state,
 				modelDetail: {
 					...state.modelDetail,
-					enableIntervalAutoInclude: !state.modelDetail
-						.enableIntervalAutoInclude,
+					enableIntervalAutoInclude:
+						!state.modelDetail.enableIntervalAutoInclude,
 				},
 			};
 		case "DISABLE_PASTE_TASK":
