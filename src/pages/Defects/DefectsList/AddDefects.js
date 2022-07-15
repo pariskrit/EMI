@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -29,6 +29,7 @@ import { getModelZonesList } from "services/models/modelDetails/modelZones";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import ColourConstants from "helpers/colourConstants";
 import { getSiteAssets } from "services/clients/sites/siteAssets";
+import { getModelDeparments } from "services/models/modelDetails/details";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -57,6 +58,9 @@ const schema = () =>
 		workOrder: yup.string("This field must be a string").nullable(),
 		modelVersionStageID: yup.string("This field must be a string").nullable(),
 		modelVersionZoneID: yup.string("This field must be a string").nullable(),
+		siteDepartmentID: yup
+			.string("The field is required")
+			.required("The field is required"),
 	});
 
 const useStyles = makeStyles({
@@ -80,6 +84,7 @@ const defaultErrorSchema = {
 	defectRiskRatingID: null,
 	modelVersionStageID: null,
 	modelVersionZoneID: null,
+	siteDepartmentID: null,
 };
 const defaultStateSchema = {
 	details: "",
@@ -91,6 +96,7 @@ const defaultStateSchema = {
 	siteAssetId: {},
 	modelVersionStageID: {},
 	modelVersionZoneID: {},
+	siteDepartmentID: {},
 };
 
 function AddNewDefectDetail({
@@ -113,6 +119,7 @@ function AddNewDefectDetail({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [departments, setDepartments] = useState([]);
 	const [dataSourceAfterModelChange, setDataSourceAfterModelChange] = useState(
 		[]
 	);
@@ -123,6 +130,30 @@ function AddNewDefectDetail({
 		setErrors(defaultErrorSchema);
 		closeHandler();
 	};
+
+	useEffect(() => {
+		const fetchDepartments = async () => {
+			try {
+				const response = await getModelDeparments(input?.modelID?.id);
+				if (response.status) {
+					let newDatas = response.data.map((d) => {
+						return {
+							id: d.modelDepartmentID,
+							name: d.name,
+						};
+					});
+					setDepartments(newDatas);
+				} else {
+					dispatch(showError("Failed to get departments."));
+				}
+			} catch (error) {
+				dispatch(showError("Failed to get departments."));
+			}
+		};
+		if (input?.modelID?.id) {
+			fetchDepartments();
+		}
+	}, [input.modelID.id, dispatch]);
 
 	const handleCreateProcess = async () => {
 		// clear search data
@@ -138,6 +169,7 @@ function AddNewDefectDetail({
 		const cleanInput = {
 			...input,
 			modelID: input?.modelID?.id,
+			siteDepartmentID: input?.siteDepartmentID?.id,
 			defectTypeID: input?.defectTypeID?.id,
 			defectRiskRatingID: input?.defectRiskRatingID?.id,
 			defectStatusID: input?.defectStatusID?.id,
@@ -269,6 +301,7 @@ function AddNewDefectDetail({
 											siteAssetId: {},
 											modelVersionStageID: {},
 											modelVersionZoneID: {},
+											siteDepartmentID: {},
 										});
 										setDataSourceAfterModelChange([]);
 									}}
@@ -284,29 +317,26 @@ function AddNewDefectDetail({
 						<ADD.RightInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
-									errors.siteAssetId === null ? null : errors.siteAssetId
+									errors.siteDepartmentID === null
+										? null
+										: errors.siteDepartmentID
 								}
 							>
 								<DyanamicDropdown
-									dataSource={dataSourceAfterModelChange}
+									dataSource={departments}
 									isServerSide={false}
 									width="100%"
-									placeholder={"Select " + customCaptions?.asset}
-									dataHeader={[{ id: 1, name: "Asset" }]}
+									placeholder={"Select " + customCaptions?.department}
+									dataHeader={[{ id: 1, name: "Department" }]}
 									columns={[{ id: 1, name: "name" }]}
-									selectedValue={input["siteAssetId"]}
+									selectedValue={{ ...input["siteDepartmentID"] }}
 									handleSort={handleSort}
 									onChange={(val) => {
-										setInput({ ...input, siteAssetId: val });
+										setInput({ ...input, siteDepartmentID: val });
 									}}
 									selectdValueToshow="name"
-									label={customCaptions?.asset}
-									isError={errors.siteAssetId === null ? false : true}
-									fetchData={() =>
-										input?.modelID?.modelTemplateType === "A"
-											? getModelAsset(input?.modelID?.id)
-											: getSiteAssets(siteId, 1, 100)
-									}
+									label={customCaptions?.department}
+									isError={errors.siteDepartmentID === null ? false : true}
 									required
 									isReadOnly={
 										input?.modelID?.id === null ||
@@ -347,31 +377,37 @@ function AddNewDefectDetail({
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
-
 						<ADD.RightInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
-									errors.defectRiskRatingID === null
-										? null
-										: errors.defectRiskRatingID
+									errors.siteAssetId === null ? null : errors.siteAssetId
 								}
 							>
 								<DyanamicDropdown
+									dataSource={dataSourceAfterModelChange}
 									isServerSide={false}
 									width="100%"
-									placeholder={"Select " + customCaptions?.riskRating}
-									dataHeader={[{ id: 1, name: "Risk Rating" }]}
+									placeholder={"Select " + customCaptions?.asset}
+									dataHeader={[{ id: 1, name: "Asset" }]}
 									columns={[{ id: 1, name: "name" }]}
-									selectedValue={input["defectRiskRatingID"]}
+									selectedValue={input["siteAssetId"]}
 									handleSort={handleSort}
 									onChange={(val) => {
-										setInput({ ...input, defectRiskRatingID: val });
+										setInput({ ...input, siteAssetId: val });
 									}}
 									selectdValueToshow="name"
-									label={customCaptions?.riskRating}
+									label={customCaptions?.asset}
+									isError={errors.siteAssetId === null ? false : true}
+									fetchData={() =>
+										input?.modelID?.modelTemplateType === "A"
+											? getModelAsset(input?.modelID?.id)
+											: getSiteAssets(siteId, 1, 100)
+									}
 									required
-									isError={errors.defectRiskRatingID === null ? false : true}
-									fetchData={() => getDefectRiskRatings(siteAppId)}
+									isReadOnly={
+										input?.modelID?.id === null ||
+										input?.modelID?.id === undefined
+									}
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.RightInputContainer>
@@ -402,21 +438,30 @@ function AddNewDefectDetail({
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
-
 						<ADD.RightInputContainer>
 							<ErrorInputFieldWrapper
 								errorMessage={
-									errors.workOrder === null ? null : errors.workOrder
+									errors.defectRiskRatingID === null
+										? null
+										: errors.defectRiskRatingID
 								}
 							>
-								<TextFieldContainer
-									label={"Notification Number"}
-									name={"workOrder"}
-									value={input?.workOrder}
-									onChange={(e) =>
-										setInput({ ...input, workOrder: e.target.value })
-									}
-									isRequired={false}
+								<DyanamicDropdown
+									isServerSide={false}
+									width="100%"
+									placeholder={"Select " + customCaptions?.riskRating}
+									dataHeader={[{ id: 1, name: "Risk Rating" }]}
+									columns={[{ id: 1, name: "name" }]}
+									selectedValue={input["defectRiskRatingID"]}
+									handleSort={handleSort}
+									onChange={(val) => {
+										setInput({ ...input, defectRiskRatingID: val });
+									}}
+									selectdValueToshow="name"
+									label={customCaptions?.riskRating}
+									required
+									isError={errors.defectRiskRatingID === null ? false : true}
+									fetchData={() => getDefectRiskRatings(siteAppId)}
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.RightInputContainer>
@@ -493,6 +538,25 @@ function AddNewDefectDetail({
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.RightInputContainer>
+					</ADD.InputContainer>
+					<ADD.InputContainer>
+						<ADD.LeftInputContainer>
+							<ErrorInputFieldWrapper
+								errorMessage={
+									errors.workOrder === null ? null : errors.workOrder
+								}
+							>
+								<TextFieldContainer
+									label={"Notification Number"}
+									name={"workOrder"}
+									value={input?.workOrder}
+									onChange={(e) =>
+										setInput({ ...input, workOrder: e.target.value })
+									}
+									isRequired={false}
+								/>
+							</ErrorInputFieldWrapper>
+						</ADD.LeftInputContainer>
 					</ADD.InputContainer>
 					<ADD.InputContainer>
 						<ADD.FullWidthContainer style={{ paddingRight: 0 }}>

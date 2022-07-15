@@ -9,6 +9,7 @@ import { showError } from "redux/common/actions";
 import { getDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
 import { getDefectTypes } from "services/clients/sites/siteApplications/defectTypes";
 import { updateDefect } from "services/defects/details";
+import { getModelDeparments } from "services/models/modelDetails/details";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 
 const Add = AddDialogStyle();
@@ -17,22 +18,32 @@ function Details({ details, siteAppID, captions, defectId }) {
 	const [selectedDropdown, setSelectedDropdown] = useState({
 		type: {},
 		riskRating: {},
+		department: {},
 	});
 	const [input, setInput] = useState("");
 	const [isInputChanged, setIsInputChanged] = useState(false);
 	const dispatch = useDispatch();
+	const [departments, setDepartments] = useState([]);
 
 	const handleDropdownChange = async (value, type) => {
+		let path = null;
 		if (type === "type") {
+			path = "defectTypeID";
 			setSelectedDropdown({ ...selectedDropdown, type: value });
 		}
 
-		if (type === "riskRating")
+		if (type === "riskRating") {
+			path = "defectRiskRatingID";
 			setSelectedDropdown({ ...selectedDropdown, riskRating: value });
+		}
 
+		if (type === "department") {
+			path = "siteDepartmentID";
+			setSelectedDropdown({ ...selectedDropdown, department: value });
+		}
 		const response = await updateDefect(defectId, [
 			{
-				path: type === "type" ? "defectTypeID" : "defectRiskRatingID",
+				path,
 				op: "replace",
 				value: value.id,
 			},
@@ -77,11 +88,37 @@ function Details({ details, siteAppID, captions, defectId }) {
 	};
 
 	useEffect(() => {
+		const fetchDepartmentData = async () => {
+			try {
+				const response = await getModelDeparments(details?.modelID);
+				if (response.status) {
+					let newDatas = response.data.map((d) => {
+						return {
+							id: d.modelDepartmentID,
+							name: d.name,
+						};
+					});
+					setDepartments(newDatas);
+				} else {
+					dispatch(showError("Failed to get departments"));
+				}
+			} catch (error) {
+				dispatch(showError("Failed to get departments"));
+			}
+		};
+		fetchDepartmentData();
+	}, [details.modelID, dispatch]);
+
+	useEffect(() => {
 		setSelectedDropdown({
 			type: { id: details.defectTypeID, name: details.defectTypeName },
 			riskRating: {
 				id: details.defectRiskRatingID,
 				name: details.riskRatingName,
+			},
+			department: {
+				id: details.siteDepartmentID,
+				name: details.siteDepartmentName,
 			},
 		});
 		setInput({
@@ -90,7 +127,6 @@ function Details({ details, siteAppID, captions, defectId }) {
 			tasks: `${details.actionName ?? ""} ${details.taskName ?? ""}`,
 		});
 	}, [details]);
-	console.log(input);
 	return (
 		<AccordionBox
 			title="Details"
@@ -107,14 +143,21 @@ function Details({ details, siteAppID, captions, defectId }) {
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
-					<TextFieldContainer
-						label={`${captions?.asset ?? "Asset"}`}
-						name={"siteAssetName"}
-						value={details?.siteAssetName}
-						isDisabled={true}
-						isRequired={true}
+					<DyanamicDropdown
+						dataSource={departments}
+						isServerSide={false}
+						width="100%"
+						placeholder={`Select ${captions?.department}`}
+						dataHeader={[{ id: 1, name: "Department" }]}
+						columns={[{ id: 1, name: "name" }]}
+						selectedValue={selectedDropdown.department}
+						onChange={(val) => handleDropdownChange(val, "department")}
+						selectdValueToshow="name"
+						label={captions?.department}
+						required
 					/>
 				</Grid>
+
 				<Grid item xs={12} md={6}>
 					<DyanamicDropdown
 						isServerSide={false}
@@ -128,6 +171,25 @@ function Details({ details, siteAppID, captions, defectId }) {
 						label={captions?.defectType}
 						required
 						fetchData={() => getDefectTypes(siteAppID)}
+					/>
+				</Grid>
+				<Grid item xs={12} md={6}>
+					<TextFieldContainer
+						label={`${captions?.asset ?? "Asset"}`}
+						name={"siteAssetName"}
+						value={details?.siteAssetName}
+						isDisabled={true}
+						isRequired={true}
+					/>
+				</Grid>
+
+				<Grid item xs={12} md={6}>
+					<TextFieldContainer
+						label={captions?.stage ?? "Stage"}
+						name={"stageName"}
+						value={details?.stageName}
+						isDisabled={true}
+						isRequired={false}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -154,15 +216,6 @@ function Details({ details, siteAppID, captions, defectId }) {
 						onBlur={handleUpdateInput}
 						isRequired={true}
 						onKeyDown={handleEnterPress}
-					/>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<TextFieldContainer
-						label={captions?.stage ?? "Stage"}
-						name={"stageName"}
-						value={details?.stageName}
-						isDisabled={true}
-						isRequired={false}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
