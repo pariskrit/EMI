@@ -105,9 +105,8 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 			setAllData([
 				...result?.data?.map((res) => ({
 					...res,
-					type: defectStatusTypes.find((type) => type.value === res.type)[
-						"label"
-					],
+					type: defectStatusTypes.find((type) => type.value === res.type)
+						?.label,
 				})),
 			]);
 		}

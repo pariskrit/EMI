@@ -65,7 +65,6 @@ export const modelScreenNavigation = ({
 
 export const defectStatusTypes = [
 	{ label: "Outstanding", value: "O" },
-	{ label: "Notification Raised", value: "N" },
 	{ label: "Complete", value: "C" },
 ];
 

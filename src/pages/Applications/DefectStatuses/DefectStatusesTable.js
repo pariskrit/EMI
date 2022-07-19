@@ -80,7 +80,6 @@ const DefectStatusesTable = ({
 	// Init hooks
 	const classes = useStyles();
 
-
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -171,9 +170,8 @@ const DefectStatusesTable = ({
 									<AT.CellContainer>
 										<AT.TableBodyText>
 											{
-												defectStatusTypes.find((type) => type.value === d.type)[
-													"label"
-												]
+												defectStatusTypes.find((type) => type.value === d.type)
+													?.label
 											}
 										</AT.TableBodyText>
 
