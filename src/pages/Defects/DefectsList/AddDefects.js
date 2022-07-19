@@ -18,7 +18,7 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getPublishedModel } from "services/models/modelList";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { showError } from "redux/common/actions";
-import { getModelAsset } from "services/models/modelDetails/modelAsset";
+import { getAvailableModelAsset } from "services/models/modelDetails/modelAsset";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import { getDefectTypes } from "services/clients/sites/siteApplications/defectTypes";
 import { getDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
@@ -28,7 +28,6 @@ import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import ColourConstants from "helpers/colourConstants";
-import { getSiteAssets } from "services/clients/sites/siteAssets";
 import { getModelDeparments } from "services/models/modelDetails/details";
 
 // Init styled components
@@ -123,6 +122,7 @@ function AddNewDefectDetail({
 	const [dataSourceAfterModelChange, setDataSourceAfterModelChange] = useState(
 		[]
 	);
+	const [modelAsset, setModelAsset] = useState([]);
 
 	const closeOverride = () => {
 		// Clearing input state and errors
@@ -130,6 +130,30 @@ function AddNewDefectDetail({
 		setErrors(defaultErrorSchema);
 		closeHandler();
 	};
+
+	useEffect(() => {
+		if (input?.modelID?.id) {
+			async function getAssets() {
+				try {
+					let response = await getAvailableModelAsset(input?.modelID?.id);
+					if (response.status) {
+						let newData = response.data.map((d) => {
+							return {
+								...d,
+								id: d?.siteAssetID,
+							};
+						});
+						setModelAsset(newData);
+					} else {
+						dispatch(showError("Failed to get Assets"));
+					}
+				} catch (error) {
+					dispatch(showError("Failed to get Assets"));
+				}
+			}
+			getAssets();
+		}
+	}, [input?.modelID?.id]);
 
 	useEffect(() => {
 		const fetchDepartments = async () => {
@@ -154,6 +178,8 @@ function AddNewDefectDetail({
 			fetchDepartments();
 		}
 	}, [input.modelID.id, dispatch]);
+
+	useEffect(() => {});
 
 	const handleCreateProcess = async () => {
 		// clear search data
@@ -384,7 +410,7 @@ function AddNewDefectDetail({
 								}
 							>
 								<DyanamicDropdown
-									dataSource={dataSourceAfterModelChange}
+									dataSource={modelAsset}
 									isServerSide={false}
 									width="100%"
 									placeholder={"Select " + customCaptions?.asset}
@@ -398,11 +424,6 @@ function AddNewDefectDetail({
 									selectdValueToshow="name"
 									label={customCaptions?.asset}
 									isError={errors.siteAssetId === null ? false : true}
-									fetchData={() =>
-										input?.modelID?.modelTemplateType === "A"
-											? getModelAsset(input?.modelID?.id)
-											: getSiteAssets(siteId, 1, 100)
-									}
 									required
 									isReadOnly={
 										input?.modelID?.id === null ||
@@ -476,7 +497,6 @@ function AddNewDefectDetail({
 								}
 							>
 								<DyanamicDropdown
-									dataSource={dataSourceAfterModelChange}
 									isServerSide={false}
 									width="100%"
 									placeholder={"Select " + customCaptions?.stage}

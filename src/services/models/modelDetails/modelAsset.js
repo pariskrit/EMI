@@ -12,7 +12,6 @@ const getModelAsset = async (modelId) => {
 	}
 };
 
-
 const getModelAvailableAsset = async (modelId) => {
 	try {
 		let response = await API.get(
