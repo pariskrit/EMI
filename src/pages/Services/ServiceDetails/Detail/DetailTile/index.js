@@ -5,7 +5,7 @@ import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { getModelAsset } from "services/models/modelDetails/modelAsset";
+import { getModelAvailableAsset } from "services/models/modelDetails/modelAsset";
 import { getModelIntervals } from "services/models/modelDetails/modelIntervals";
 import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import { getPublishedModel } from "services/models/modelList";
@@ -24,12 +24,44 @@ function DetailTile({
 	const reduxDispatch = useDispatch();
 	const [serviceDetails, setServiceDetail] = useState({});
 	const [updating, setUpdating] = useState({});
+	const [modelAssest, setModelAssest] = useState([]);
 
 	useEffect(() => {
 		if (detail) {
 			setServiceDetail(detail);
 		}
 	}, [detail]);
+	useEffect(() => {
+		const fetchAssetData = async () => {
+			try {
+				const response = await getModelAvailableAsset(detail.modelID);
+				if (response.status) {
+					let newData = response.data.map((d) => {
+						return {
+							...d,
+							id: d.siteAssetID,
+						};
+					});
+					setModelAssest(newData);
+				} else {
+					reduxDispatch(
+						showError(
+							response?.data?.detail || "Error while getting the assest data "
+						)
+					);
+				}
+			} catch (error) {
+				reduxDispatch(
+					showError(
+						error?.data?.detail || "Error while getting the assest data"
+					)
+				);
+			}
+		};
+		if (detail?.modelID) {
+			fetchAssetData();
+		}
+	}, [detail.modelID, reduxDispatch]);
 
 	const handleDropDopChnage = async (val, field, actualField, otherField) => {
 		if (+val.id === +serviceDetails[field]) return;
@@ -161,6 +193,7 @@ function DetailTile({
 				<div style={{ marginBottom: 14 }}></div>
 				{serviceDetails?.modelTemplateType === "A" ? (
 					<DyanamicDropdown
+						dataSource={modelAssest}
 						isServerSide={false}
 						width="100%"
 						placeholder="Select Asset"
@@ -169,7 +202,7 @@ function DetailTile({
 						// dataSource={dropDownDatas?.actions}
 						selectedValue={{
 							name: serviceDetails.siteAssetName,
-							// id: serviceDetails.modelID,
+							id: serviceDetails.siteAssetID,
 						}}
 						handleSort={handleSort}
 						onChange={(val) =>
@@ -184,7 +217,6 @@ function DetailTile({
 						label={customCaptions?.asset}
 						required
 						isReadOnly={isReadOnly || updating["siteAssetID"] === true}
-						fetchData={() => getModelAsset(serviceDetails.modelID)}
 					/>
 				) : (
 					""

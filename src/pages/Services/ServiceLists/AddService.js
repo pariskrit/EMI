@@ -21,7 +21,7 @@ import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { getModelIntervals } from "services/models/modelDetails/modelIntervals";
 import { getModelRolesListByInterval } from "services/models/modelDetails/modelRoles";
 import { showError } from "redux/common/actions";
-import { getModelAsset } from "services/models/modelDetails/modelAsset";
+import { getModelAvailableAsset } from "services/models/modelDetails/modelAsset";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import { DefaultPageSize } from "helpers/constants";
 
@@ -116,6 +116,7 @@ function AddNewServiceDetail({
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [intervals, setIntervals] = useState([]);
 	const [roles, setRoles] = useState([]);
+	const [modelAssest, setModelAssest] = useState([]);
 
 	const [dataSourceAfterModelChange, setDataSourceAfterModelChange] = useState(
 		[]
@@ -123,6 +124,7 @@ function AddNewServiceDetail({
 
 	const modelId = input?.modelID?.activeModelVersionID;
 	const intervalId = input?.modelVersionIntervalId?.id;
+	const modelAssestID = input?.modelID?.id;
 
 	// attempting to fetch interval when model is selected
 	useEffect(() => {
@@ -144,6 +146,24 @@ function AddNewServiceDetail({
 			fetchInterval();
 		}
 	}, [modelId]);
+
+	useEffect(() => {
+		if (modelAssestID) {
+			const fetchAssetData = async () => {
+				const response = await getModelAvailableAsset(modelAssestID);
+				if (response.status) {
+					let newData = response.data.map((d) => {
+						return {
+							...d,
+							id: d.siteAssetID,
+						};
+					});
+					setModelAssest(newData);
+				}
+			};
+			fetchAssetData();
+		}
+	}, [modelAssestID]);
 
 	// attempting to fetch role when interval is selected
 	useEffect(() => {
@@ -492,7 +512,7 @@ function AddNewServiceDetail({
 									}
 								>
 									<DyanamicDropdown
-										dataSource={dataSourceAfterModelChange}
+										dataSource={modelAssest}
 										isServerSide={false}
 										width="100%"
 										placeholder="Select Asset"
@@ -506,7 +526,6 @@ function AddNewServiceDetail({
 										selectdValueToshow="name"
 										label={customCaptions?.asset}
 										isError={errors.siteAssetId === null ? false : true}
-										fetchData={() => getModelAsset(input?.modelID?.id)}
 										required
 										isReadOnly={
 											input?.modelID?.id === null ||

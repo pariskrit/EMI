@@ -12,6 +12,17 @@ const getModelAsset = async (modelId) => {
 	}
 };
 
+const getModelAvailableAsset = async (modelId) => {
+	try {
+		let response = await API.get(
+			`${Apis.ModelAssets}/available?modelId=${modelId}`
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
 const postModelAsset = async (data) => {
 	try {
 		let response = await API.post(`${Apis.ModelAssets}`, data);
@@ -48,4 +59,5 @@ export {
 	postModelAsset,
 	getSearchedSiteAssets,
 	patchmodelAssest,
+	getModelAvailableAsset,
 };
