@@ -40,8 +40,6 @@ import DefectRiskRatings from "../DefectRiskRatings";
 import UserPositions from "../UserPositions";
 import RoleRoute from "components/HOC/RoleRoute";
 
-const { customCaptions } = JSON.parse(localStorage?.getItem("me"));
-
 const routes = [
 	{
 		id: 46,
@@ -133,7 +131,7 @@ const routes = [
 	},
 	{
 		id: 48,
-		name: `${customCaptions?.model} Definitions`,
+		name: "Model Definitions",
 		path: siteAppModelStatusesPath,
 		component: SiteAppModelStatuses,
 		showAdd: true,
@@ -142,7 +140,7 @@ const routes = [
 	},
 	{
 		id: 49,
-		name: `${customCaptions?.model} Definitions`,
+		name: "Model Definitions",
 		path: siteAppModelTypesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -158,7 +156,7 @@ const routes = [
 
 	{
 		id: 59,
-		name: `${customCaptions?.task} Definitions`,
+		name: "Task Definitions",
 		path: siteAppOperationModesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -175,7 +173,7 @@ const routes = [
 	},
 	{
 		id: 55,
-		name: `${customCaptions?.feedback} Definitions`,
+		name: "Feedback Definitions",
 		path: siteAppFeedbackClassificationsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -192,7 +190,7 @@ const routes = [
 	},
 	{
 		id: 57,
-		name: `${customCaptions?.feedback} Definitions`,
+		name: "Feedback Definitions",
 		path: siteAppFeedbackStatuses,
 		component: SiteAppFeedbackStatuses,
 		showAdd: true,
@@ -201,7 +199,7 @@ const routes = [
 	},
 	{
 		id: 47,
-		name: `${customCaptions?.task} Definitions`,
+		name: "Task Definitions",
 		path: siteAppTaskActionsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -216,7 +214,7 @@ const routes = [
 	},
 	{
 		id: 63,
-		name: `${customCaptions?.task} Definitions`,
+		name: "Task Definitions",
 		path: siteAppTaskSystemsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -231,7 +229,7 @@ const routes = [
 	},
 	{
 		id: 64,
-		name: `${customCaptions?.task} Definitions`,
+		name: "Task Definitions",
 		path: siteAppLubricantsPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -243,7 +241,7 @@ const routes = [
 	},
 	{
 		id: 54,
-		name: `${customCaptions?.defect} Definitions`,
+		name: "Defect Definitions",
 		path: siteAppDefectTypesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -258,7 +256,7 @@ const routes = [
 	},
 	{
 		id: 56,
-		name: `${customCaptions?.feedback} Definitions`,
+		name: "Feedback Definitions",
 		path: siteAppFeedbackPrioritiesPath,
 		component: SingleColumnTableCommonComponent,
 		showAdd: true,
@@ -275,7 +273,7 @@ const routes = [
 	},
 	{
 		id: 60,
-		name: `${customCaptions?.user} Definitions`,
+		name: "User Definitions",
 		path: siteAppUserRolesPath,
 		component: UserRoles,
 		showAdd: true,
@@ -284,7 +282,7 @@ const routes = [
 	},
 	{
 		id: 53,
-		name: `${customCaptions?.defect} Definitions`,
+		name: "Defect Definitions",
 		path: siteAppDefectStatusPath,
 		component: DefectStatuses,
 		showAdd: true,
@@ -293,7 +291,7 @@ const routes = [
 	},
 	{
 		id: 52,
-		name: `${customCaptions?.defect} Definitions`,
+		name: "Defect Definitions",
 		path: siteAppDefectRiskRatingsPath,
 		component: DefectRiskRatings,
 		showHistory: true,
@@ -302,7 +300,7 @@ const routes = [
 	},
 	{
 		id: 109,
-		name: `${customCaptions?.user} Definitions`,
+		name: "User Definitions",
 		path: siteAppPositionsPath,
 		component: UserPositions,
 		showAdd: true,
