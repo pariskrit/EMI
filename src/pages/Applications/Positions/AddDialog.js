@@ -342,6 +342,33 @@ const AddPositionDialog = ({
 							</ADD.LeftInputContainer>
 							{/* USERS INPUT */}
 							<ADD.RightInputContainer>
+								{/* FEEDBACK INPUT */}
+								<ADD.InputLabel>
+									Feedback Access<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.InputLabel>
+								<TextField
+									error={errors.feedback === null ? false : true}
+									helperText={errors.feedback === null ? null : errors.feedback}
+									fullWidth={true}
+									select
+									value={input.feedback}
+									onChange={(e) => {
+										setInput({ ...input, feedback: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(PositionAccessTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{PositionAccessTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
+							</ADD.RightInputContainer>
+						</ADD.InputContainer>
+
+						<ADD.InputContainer>
+							{/* USERS INPUT */}
+							<ADD.LeftInputContainer>
 								<ADD.InputLabel>
 									Users Access<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.InputLabel>
@@ -363,63 +390,8 @@ const AddPositionDialog = ({
 										</MenuItem>
 									))}
 								</TextField>
-							</ADD.RightInputContainer>
-						</ADD.InputContainer>
-
-						<ADD.InputContainer>
-							{/* FEEDBACK INPUT */}
-							<ADD.LeftInputContainer>
-								<ADD.InputLabel>
-									Feedback Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.feedback === null ? false : true}
-									helperText={errors.feedback === null ? null : errors.feedback}
-									fullWidth={true}
-									select
-									value={input.feedback}
-									onChange={(e) => {
-										setInput({ ...input, feedback: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
 							</ADD.LeftInputContainer>
-							{/* SETTINGS INPUT */}
 							<ADD.RightInputContainer>
-								<ADD.InputLabel>
-									Settings<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.settings === null ? false : true}
-									helperText={errors.settings === null ? null : errors.settings}
-									fullWidth={true}
-									select
-									value={input.settings}
-									onChange={(e) => {
-										setInput({ ...input, settings: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.RightInputContainer>
-						</ADD.InputContainer>
-
-						<ADD.InputContainer>
-							{/* Analytics INPUT */}
-							<ADD.LeftInputContainer>
 								<ADD.InputLabel>
 									Analytics Access
 									<ADD.RequiredStar>*</ADD.RequiredStar>
@@ -446,13 +418,36 @@ const AddPositionDialog = ({
 										</MenuItem>
 									))}
 								</TextField>
-							</ADD.LeftInputContainer>
+							</ADD.RightInputContainer>
 						</ADD.InputContainer>
-
 						<ADD.InputContainer>
-							{/* ALLOW CHANGE SKIPPED TASKS INPUT */}
 							<ADD.LeftInputContainer>
+								<ADD.InputLabel>
+									Settings<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.InputLabel>
+								<TextField
+									error={errors.settings === null ? false : true}
+									helperText={errors.settings === null ? null : errors.settings}
+									fullWidth={true}
+									select
+									value={input.settings}
+									onChange={(e) => {
+										setInput({ ...input, settings: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(PositionAccessTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{PositionAccessTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
+							</ADD.LeftInputContainer>
+
+							{/* ALLOW CHANGE SKIPPED TASKS INPUT */}
+							<ADD.RightInputContainer>
 								<FormControlLabel
+									style={{ marginTop: "30px", marginLeft: "0px" }}
 									control={
 										<EMICheckbox
 											changeHandler={() => {
@@ -469,7 +464,7 @@ const AddPositionDialog = ({
 										</Typography>
 									}
 								/>
-							</ADD.LeftInputContainer>
+							</ADD.RightInputContainer>
 						</ADD.InputContainer>
 					</div>
 				</ADD.DialogContent>

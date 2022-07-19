@@ -96,10 +96,10 @@ const listOfInputs = (cc) => [
 	{ label: cc?.servicePlural + " Access", name: "serviceAccess" },
 	{ label: cc?.defectPlural + " Access", name: "defectAccess" },
 	{ label: cc?.tutorialPlural + " Access", name: "noticeboardAccess" },
-	{ label: cc?.userPlural + " Access", name: "userAccess" },
 	{ label: cc?.feedbackPlural + " Access", name: "feedbackAccess" },
-	{ label: "Settings", name: "settingsAccess" },
+	{ label: cc?.userPlural + " Access", name: "userAccess" },
 	{ label: "Analytics Access", name: "analyticsAccess" },
+	{ label: "Settings", name: "settingsAccess" },
 ];
 
 const AddDialog = ({
@@ -371,9 +371,9 @@ const AddDialog = ({
 								</TextField>
 							</Grid>
 						))}
-						<Grid item xs={6}></Grid>
 						<Grid item xs={6}>
 							<FormControlLabel
+								style={{ marginTop: "30px", marginLeft: "0px" }}
 								control={
 									<EMICheckbox
 										state={input.allowPublish}

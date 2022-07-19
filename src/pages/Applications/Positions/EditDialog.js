@@ -398,35 +398,8 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 									))}
 								</TextField>
 							</AED.LeftInputContainer>
-							{/* USERS INPUT */}
+							{/* FEEDBACK ACCESS */}
 							<AED.RightInputContainer>
-								<AED.InputLabel>
-									Users Access<AED.RequiredStar>*</AED.RequiredStar>
-								</AED.InputLabel>
-
-								<TextField
-									error={errors.users === null ? false : true}
-									helperText={errors.users === null ? null : errors.users}
-									fullWidth={true}
-									select
-									value={input.users}
-									onChange={(e) => {
-										setInput({ ...input, users: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</AED.RightInputContainer>
-						</AED.InputContainer>
-
-						<AED.InputContainer>
-							{/* FEEDBACK INPUT */}
-							<AED.LeftInputContainer>
 								<AED.InputLabel>
 									Feedback Access<AED.RequiredStar>*</AED.RequiredStar>
 								</AED.InputLabel>
@@ -448,21 +421,21 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 										</MenuItem>
 									))}
 								</TextField>
-							</AED.LeftInputContainer>
-							{/* SETTINGS INPUT */}
-							<AED.RightInputContainer>
+							</AED.RightInputContainer>
+						</AED.InputContainer>
+						<AED.InputContainer>
+							<AED.LeftInputContainer>
 								<AED.InputLabel>
-									Settings<AED.RequiredStar>*</AED.RequiredStar>
+									Users Access<AED.RequiredStar>*</AED.RequiredStar>
 								</AED.InputLabel>
-
 								<TextField
-									error={errors.settings === null ? false : true}
-									helperText={errors.settings === null ? null : errors.settings}
+									error={errors.users === null ? false : true}
+									helperText={errors.users === null ? null : errors.users}
 									fullWidth={true}
 									select
-									value={input.settings}
+									value={input.users}
 									onChange={(e) => {
-										setInput({ ...input, settings: e.target.value });
+										setInput({ ...input, users: e.target.value });
 									}}
 									variant="outlined"
 								>
@@ -472,12 +445,8 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 										</MenuItem>
 									))}
 								</TextField>
-							</AED.RightInputContainer>
-						</AED.InputContainer>
-
-						<AED.InputContainer>
-							{/* Reporting & Analytics INPUT */}
-							<AED.LeftInputContainer>
+							</AED.LeftInputContainer>
+							<AED.RightInputContainer>
 								<AED.InputLabel>
 									Analytics Access
 									<AED.RequiredStar>*</AED.RequiredStar>
@@ -504,12 +473,38 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 										</MenuItem>
 									))}
 								</TextField>
-							</AED.LeftInputContainer>
+							</AED.RightInputContainer>
 						</AED.InputContainer>
 
 						<AED.InputContainer>
+							{/* USER ACCESS */}
 							<AED.LeftInputContainer>
+								<AED.InputLabel>
+									Settings<AED.RequiredStar>*</AED.RequiredStar>
+								</AED.InputLabel>
+
+								<TextField
+									error={errors.settings === null ? false : true}
+									helperText={errors.settings === null ? null : errors.settings}
+									fullWidth={true}
+									select
+									value={input.settings}
+									onChange={(e) => {
+										setInput({ ...input, settings: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(PositionAccessTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{PositionAccessTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
+							</AED.LeftInputContainer>
+
+							<AED.RightInputContainer>
 								<FormControlLabel
+									style={{ marginTop: "30px", marginLeft: "0px" }}
 									control={
 										<EMICheckbox
 											changeHandler={() => {
@@ -527,7 +522,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 										</Typography>
 									}
 								/>
-							</AED.LeftInputContainer>
+							</AED.RightInputContainer>
 						</AED.InputContainer>
 					</div>
 				</AED.DialogContent>
