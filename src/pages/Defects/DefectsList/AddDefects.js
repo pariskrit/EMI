@@ -18,7 +18,7 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getPublishedModel } from "services/models/modelList";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { showError } from "redux/common/actions";
-import { getAvailableModelAsset } from "services/models/modelDetails/modelAsset";
+import { getModelAvailableAsset } from "services/models/modelDetails/modelAsset";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import { getDefectTypes } from "services/clients/sites/siteApplications/defectTypes";
 import { getDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
@@ -135,7 +135,7 @@ function AddNewDefectDetail({
 		if (input?.modelID?.id) {
 			async function getAssets() {
 				try {
-					let response = await getAvailableModelAsset(input?.modelID?.id);
+					let response = await getModelAvailableAsset(input?.modelID?.id);
 					if (response.status) {
 						let newData = response.data.map((d) => {
 							return {
