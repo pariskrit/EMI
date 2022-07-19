@@ -18,7 +18,6 @@ import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getPublishedModel } from "services/models/modelList";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { showError } from "redux/common/actions";
-import { getModelAsset } from "services/models/modelDetails/modelAsset";
 import { DefaultPageSize } from "helpers/constants";
 import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
@@ -27,10 +26,11 @@ import ColourConstants from "helpers/colourConstants";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
 import { getSiteDepartmentsInService } from "services/services/serviceLists";
 import { getFeedbackClassifications } from "services/clients/sites/siteApplications/feedbackClassifications";
-import { getClientUserSiteAppList } from "services/users/userDetails";
 import { getDefaultFeedbackClassifications } from "services/clients/sites/siteApplications/feedbackClassifications";
 import { getFeedbackStatuses } from "services/clients/sites/siteApplications/feedbackStatuses";
 import { getFeedbackPriorities } from "services/clients/sites/siteApplications/feedbackPriorities";
+import { getModelAvailableAsset } from "services/models/modelDetails/modelAsset";
+import { getPositionUsers } from "services/feedback/feedbackdetails";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -118,12 +118,14 @@ function AddNewFeedbackDetail({
 	const dispatch = useDispatch();
 
 	// Init state
+	const [availableModel, setAvailableModel] = useState([]);
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [dataSourceAfterModelChange, setDataSourceAfterModelChange] = useState(
 		[]
 	);
+	const [positionUsers, setPositionUsers] = useState([]);
 
 	useEffect(() => {
 		if (open) {
@@ -236,13 +238,51 @@ function AddNewFeedbackDetail({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
 
 			dispatch(showError("Failed to add new feedback"));
 		}
 	};
+
+	const modelid = input?.modelID?.id;
+
+	useEffect(() => {
+		const fetchModelAvailableAssest = async (id) => {
+			const response = await getModelAvailableAsset(id);
+			if (response.status) {
+				let newDatas = response.data.map((d) => {
+					return {
+						...d,
+						id: d.siteAssetID,
+					};
+				});
+				setAvailableModel(newDatas);
+			} else dispatch(showError("Could not fetch Users"));
+		};
+		if (modelid) {
+			fetchModelAvailableAssest(modelid);
+		}
+	}, [modelid, dispatch]);
+
+	const positionUserId = input?.assignPositionID?.id;
+
+	useEffect(() => {
+		const fetchPositionUser = async () => {
+			const response = await getPositionUsers(positionUserId);
+
+			if (response.status) {
+				let newDatas = response.data.map((d) => {
+					return {
+						...d,
+						id: d.userID,
+					};
+				});
+				setPositionUsers(newDatas);
+			} else dispatch(showError("Could not fetch Users"));
+		};
+		if (positionUserId) fetchPositionUser();
+	}, [positionUserId, dispatch]);
 
 	return (
 		<div>
@@ -302,6 +342,7 @@ function AddNewFeedbackDetail({
 										setInput({
 											...input,
 											assignPositionID: val,
+											assignUserID: {},
 										});
 									}}
 									selectdValueToshow={"name"}
@@ -352,6 +393,7 @@ function AddNewFeedbackDetail({
 								}
 							>
 								<DyanamicDropdown
+									dataSource={positionUsers}
 									isServerSide={false}
 									width="100%"
 									placeholder={"Select " + customCaptions?.user}
@@ -371,9 +413,6 @@ function AddNewFeedbackDetail({
 									selectdValueToshow={"name"}
 									label={customCaptions?.user}
 									isError={errors.assignUserID === null ? false : true}
-									fetchData={() =>
-										getClientUserSiteAppList({ siteAppId, pageSize: 100 })
-									}
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
@@ -533,7 +572,7 @@ function AddNewFeedbackDetail({
 								}
 							>
 								<DyanamicDropdown
-									dataSource={dataSourceAfterModelChange}
+									dataSource={availableModel}
 									isServerSide={false}
 									width="100%"
 									placeholder={"Select " + customCaptions?.asset}
@@ -547,7 +586,6 @@ function AddNewFeedbackDetail({
 									selectdValueToshow="name"
 									label={customCaptions?.asset}
 									isError={errors.siteAssetID === null ? false : true}
-									fetchData={() => getModelAsset(input?.modelID?.id)}
 									isReadOnly={
 										input?.modelID?.id === null ||
 										input?.modelID?.id === undefined

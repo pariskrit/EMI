@@ -18,6 +18,7 @@ import {
 	getPositionUsers,
 	updateFeedback,
 } from "services/feedback/feedbackdetails";
+import { getModelAvailableAsset } from "services/models/modelDetails/modelAsset";
 import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
 import { getPublishedModel } from "services/models/modelList";
@@ -45,10 +46,11 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 	});
 	const [input, setInput] = useState("");
 	const [isInputChanged, setIsInputChanged] = useState(false);
-	const [dropdownOptions, setDropdownOptions] = useState({});
 	const [page, setPage] = useState({ pageNo: 1, pageSize: 12 });
 	const [siteAsset, setSiteAsset] = useState([]);
 	const [count, setCount] = useState(null);
+	const [positionUsers, setPositionUsers] = useState([]);
+	const [availableModel, setAvailableModel] = useState([]);
 
 	const dispatch = useDispatch();
 
@@ -66,16 +68,48 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 				model: {
 					...prev.model,
 					name: `${value.name} ${value.modelName ? value.modelName : ""}`,
+					id: value.id,
+					modelTemplateType: value.modelTemplateType,
 				},
+				asset: {},
 			}));
 
-		const response = await updateFeedback(feedbackId, [
+		let payload = [
 			{
 				path: dropdownIdNames[type],
 				op: "replace",
 				value: value.id,
 			},
-		]);
+		];
+		if (type === "position") {
+			payload = [
+				{
+					path: dropdownIdNames[type],
+					op: "replace",
+					value: value.id,
+				},
+				{
+					path: "assignUserID",
+					op: "replace",
+					value: null,
+				},
+			];
+		} else if (type === "model") {
+			payload = [
+				{
+					path: dropdownIdNames[type],
+					op: "replace",
+					value: value.id,
+				},
+				{
+					path: "siteAssetID",
+					op: "replace",
+					value: null,
+				},
+			];
+		}
+
+		const response = await updateFeedback(feedbackId, payload);
 
 		if (!response.status)
 			dispatch(
@@ -93,7 +127,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 	const handleUpdateInput = async (e) => {
 		if (!isInputChanged) return;
 
-		const response = await await updateFeedback(feedbackId, [
+		const response = await updateFeedback(feedbackId, [
 			{
 				path: e.target.name,
 				op: "replace",
@@ -132,27 +166,44 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 		[]
 	);
 
-	const fetchPositionUser = async () => {
-		const response = await getPositionUsers(selectedDropdown.position?.id);
+	const positionUserID = selectedDropdown?.position?.id;
+	const modelid = selectedDropdown?.model?.id;
 
-		if (response.status)
-			setDropdownOptions({
-				users: response.data.map((res) => ({
-					id: res.userID,
-					name: res.displayName,
-				})),
-			});
-		else dispatch(showError("Could not fetch Users"));
-	};
+	useEffect(() => {
+		const fetchModelAvailableAssest = async (id) => {
+			const response = await getModelAvailableAsset(id);
+			if (response.status) {
+				let newDatas = response.data.map((d) => {
+					return {
+						...d,
+						id: d.siteAssetID,
+					};
+				});
+				setAvailableModel(newDatas);
+			} else dispatch(showError("Could not fetch Users"));
+		};
+		fetchModelAvailableAssest(modelid || details.modelID);
+	}, [modelid, dispatch, details.modelID]);
 
-	const fetchSiteAsset = async () => {
-		const response = await getSiteAssets(siteId, 1, 12);
-		const response2 = await getSiteAssetsCount(siteId);
-		if (response.status) {
-			setCount(response2.data);
-			setSiteAsset(response.data);
-		}
-	};
+	useEffect(() => {
+		const fetchPositionUser = async () => {
+			const response = await getPositionUsers(
+				positionUserID || details.assignPositionID
+			);
+
+			if (response.status) {
+				let newDatas = response.data.map((d) => {
+					return {
+						id: d.userID,
+						name: d.displayName,
+					};
+				});
+				setPositionUsers(newDatas);
+			} else dispatch(showError("Could not fetch Users"));
+		};
+		fetchPositionUser();
+	}, [positionUserID, dispatch, details.assignPositionID]);
+
 	useEffect(() => {
 		setSelectedDropdown({
 			department: {
@@ -183,6 +234,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 				id: details.modelID,
 				name: `${details?.modelName} ${details?.model ? details.model : ""}`,
 				activeModelVersionID: details.activeModelVersionID,
+				modelTemplateType: details.modelType,
 			},
 			stage: {
 				id: details.modelVersionStageID,
@@ -198,6 +250,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 			changeRequired: details.changeRequired,
 		});
 	}, [details]);
+
 	return (
 		<AccordionBox
 			title="Details"
@@ -235,6 +288,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 				</Grid>
 				<Grid item xs={12} md={6}>
 					<DyanamicDropdown
+						dataSource={positionUsers}
 						isServerSide={false}
 						width="100%"
 						placeholder={`Select ${captions?.user}`}
@@ -243,9 +297,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						onChange={(val) => handleDropdownChange(val, "user")}
 						selectdValueToshow="name"
 						label={captions?.user}
-						dataSource={dropdownOptions.users}
 						isReadOnly={!selectedDropdown.position?.id}
-						fetchData={() => fetchPositionUser(selectedDropdown.position?.id)}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -293,7 +345,12 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						selectedValue={selectedDropdown.model}
 						onChange={(val) => {
 							handleDropdownChange(val, "model");
-							setSelectedDropdown((prev) => ({ ...prev, stage: {}, zone: {} }));
+							setSelectedDropdown((prev) => ({
+								...prev,
+								stage: {},
+								zone: {},
+								asset: {},
+							}));
 						}}
 						selectdValueToshow="name"
 						label={captions?.model}
@@ -302,7 +359,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 				</Grid>
 				<Grid item xs={12} md={6}>
 					<DyanamicDropdown
-						dataSource={siteAsset}
+						dataSource={availableModel}
 						isServerSide
 						width="100%"
 						placeholder={`Select ${captions?.asset}`}
@@ -314,7 +371,6 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						page={page.pageNo}
 						count={count}
 						handleServierSideSearch={handleServerSideSearch}
-						fetchData={fetchSiteAsset}
 						onPageChange={pageChange}
 					/>
 				</Grid>
@@ -327,7 +383,11 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						selectedValue={selectedDropdown.stage}
 						onChange={(val) => {
 							handleDropdownChange(val, "stage");
-							setSelectedDropdown((prev) => ({ ...prev, zone: {} }));
+							setSelectedDropdown((prev) => ({
+								...prev,
+								zone: {},
+								assest: {},
+							}));
 						}}
 						selectdValueToshow="name"
 						label={captions?.stage}
