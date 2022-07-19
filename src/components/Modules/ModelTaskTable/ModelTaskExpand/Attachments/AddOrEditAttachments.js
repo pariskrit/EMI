@@ -69,7 +69,6 @@ function AddOrEditAttachment({
 	fetchData,
 	isEdit,
 }) {
-	console.log(data);
 	// Init hooks
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -82,7 +81,6 @@ function AddOrEditAttachment({
 	useEffect(() => {
 		if (data) {
 			const { filename, ...rest } = data;
-			console.log(rest, filename, data);
 			setInput(rest);
 		}
 	}, [data]);
@@ -102,16 +100,13 @@ function AddOrEditAttachment({
 		// Clearing errors before attempted create
 		setErrors(defaultErrorSchema);
 
-		// cleaned Input
-		console.log("xxxxxx", input);
-
 		try {
 			const localChecker = await handleValidateObj(schema, input);
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
 				const newData = await createProcessHandler({
 					...input,
-					filename: input?.file?.name ? input?.file?.name : data.filename,
+					filename: input?.file?.name ? input?.file?.name : data?.filename,
 				});
 				if (newData.status) {
 					await fetchData();
@@ -136,7 +131,6 @@ function AddOrEditAttachment({
 			dispatch(
 				showError(err?.response?.data?.title || "Could not add new attachment")
 			);
-			console.log(err);
 		}
 	};
 

@@ -43,6 +43,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 
 	const dispatch = useDispatch();
 
+	console.log(attachments);
 	const fetchAttachments = async (showLoading = true) => {
 		!isMounted.aborted && showLoading && setLoading(true);
 		try {
@@ -53,7 +54,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						response?.data?.map((a) => {
 							return {
 								...a,
-								filesize: formatBytes(a?.filesize),
+								filesize: a.filesize > 0 ? formatBytes(a?.filesize) : "0 B",
 								name: (
 									<Link
 										style={{ color: ColourConstants.activeLink }}
