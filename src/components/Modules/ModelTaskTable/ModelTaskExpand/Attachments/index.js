@@ -54,7 +54,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						response?.data?.map((a) => {
 							return {
 								...a,
-								filesize: a.filesize > 0 ? formatBytes(a?.filesize) : "0 B",
+								filesize: a.filesize > 0 ? formatBytes(a?.filesize) : " ",
 								name: (
 									<Link
 										style={{ color: ColourConstants.activeLink }}
