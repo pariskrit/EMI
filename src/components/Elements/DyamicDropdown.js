@@ -501,7 +501,14 @@ function DyanamicDropdown(props) {
 					}}
 				>
 					<div className="caption-label">
-						<Typography className="label">
+						<Typography
+							className="label"
+							style={{
+								display: "flex",
+								alignItems: "center",
+								columnGap: "10px",
+							}}
+						>
 							<span>
 								{label}
 								{required && <span className="required">*</span>}
