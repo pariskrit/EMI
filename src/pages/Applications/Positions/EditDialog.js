@@ -31,9 +31,7 @@ const schema = yup.object({
 	defects: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	defectExports: yup
-		.string("This field must be a string")
-		.required("This field is required"),
+
 	noticeBoards: yup
 		.string("This field must be a string")
 		.required("This field is required"),
@@ -49,9 +47,6 @@ const schema = yup.object({
 	settings: yup
 		.string("This field must be a string")
 		.required("This field is required"),
-	changeSkippedTasks: yup
-		.string("This field must be a string")
-		.required("This field is required"),
 	allowPublish: yup
 		.string("This field must be a string")
 		.required("This field is required"),
@@ -63,13 +58,11 @@ const defaultErrorSchema = {
 	assetModel: null,
 	services: null,
 	defects: null,
-	defectExports: null,
 	noticeBoards: null,
 	feedback: null,
 	users: null,
 	reportingAnalytics: null,
 	settings: null,
-	changeSkippedTasks: null,
 	allowPublish: null,
 };
 const defaultStateSchema = {
@@ -77,13 +70,11 @@ const defaultStateSchema = {
 	assetModel: "N",
 	services: "N",
 	defects: "N",
-	defectExports: "N",
 	noticeBoards: "N",
 	feedback: "N",
 	users: "N",
 	reportingAnalytics: "N",
 	settings: "N",
-	changeSkippedTasks: false,
 	allowPublish: false,
 };
 
@@ -181,18 +172,8 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 					},
 					{
 						op: "replace",
-						path: "defectExportAccess",
-						value: input.defectExports,
-					},
-					{
-						op: "replace",
 						path: "analyticsAccess",
 						value: input.reportingAnalytics,
-					},
-					{
-						op: "replace",
-						path: "allowChangeSkippedTaskStatus",
-						value: input.changeSkippedTasks,
 					},
 					{
 						op: "replace",
@@ -216,9 +197,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 					settingsAccess: input.settings,
 					serviceAccess: input.services,
 					defectAccess: input.defects,
-					defectExportAccess: input.defectExports,
 					analyticsAccess: input.reportingAnalytics,
-					allowChangeSkippedTaskStatus: input.changeSkippedTasks,
 					allowPublish: input.allowPublish,
 				});
 
@@ -257,13 +236,11 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 				assetModel: data.modelAccess,
 				services: data.serviceAccess,
 				defects: data.defectAccess,
-				defectExports: data.defectExportAccess,
 				noticeBoards: data.noticeboardAccess,
 				feedback: data.feedbackAccess,
 				users: data.userAccess,
 				reportingAnalytics: data.analyticsAccess,
 				settings: data.settingsAccess,
-				changeSkippedTasks: data.allowChangeSkippedTaskStatus,
 				allowPublish: data.allowPublish,
 			});
 		}
@@ -395,35 +372,8 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 						</AED.InputContainer>
 
 						<AED.InputContainer>
-							{/* DEFECT EXPORTS INPUT */}
-							<AED.LeftInputContainer>
-								<AED.InputLabel>
-									Defect Exports Access<AED.RequiredStar>*</AED.RequiredStar>
-								</AED.InputLabel>
-
-								<TextField
-									error={errors.defectExports === null ? false : true}
-									helperText={
-										errors.defectExports === null ? null : errors.defectExports
-									}
-									fullWidth={true}
-									select
-									value={input.defectExports}
-									onChange={(e) => {
-										setInput({ ...input, defectExports: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</AED.LeftInputContainer>
-
 							{/* NOTICE BOARDS INPUT */}
-							<AED.RightInputContainer>
+							<AED.LeftInputContainer>
 								<AED.InputLabel>
 									Notice Boards Access<AED.RequiredStar>*</AED.RequiredStar>
 								</AED.InputLabel>
@@ -438,6 +388,30 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 									value={input.noticeBoards}
 									onChange={(e) => {
 										setInput({ ...input, noticeBoards: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(PositionAccessTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{PositionAccessTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
+							</AED.LeftInputContainer>
+							{/* USERS INPUT */}
+							<AED.RightInputContainer>
+								<AED.InputLabel>
+									Users Access<AED.RequiredStar>*</AED.RequiredStar>
+								</AED.InputLabel>
+
+								<TextField
+									error={errors.users === null ? false : true}
+									helperText={errors.users === null ? null : errors.users}
+									fullWidth={true}
+									select
+									value={input.users}
+									onChange={(e) => {
+										setInput({ ...input, users: e.target.value });
 									}}
 									variant="outlined"
 								>
@@ -475,64 +449,6 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 									))}
 								</TextField>
 							</AED.LeftInputContainer>
-
-							{/* USERS INPUT */}
-							<AED.RightInputContainer>
-								<AED.InputLabel>
-									Users Access<AED.RequiredStar>*</AED.RequiredStar>
-								</AED.InputLabel>
-
-								<TextField
-									error={errors.users === null ? false : true}
-									helperText={errors.users === null ? null : errors.users}
-									fullWidth={true}
-									select
-									value={input.users}
-									onChange={(e) => {
-										setInput({ ...input, users: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</AED.RightInputContainer>
-						</AED.InputContainer>
-
-						<AED.InputContainer>
-							{/* Reporting & Analytics INPUT */}
-							<AED.LeftInputContainer>
-								<AED.InputLabel>
-									Reporting & Analytics Access
-									<AED.RequiredStar>*</AED.RequiredStar>
-								</AED.InputLabel>
-
-								<TextField
-									error={errors.reportingAnalytics === null ? false : true}
-									helperText={
-										errors.reportingAnalytics === null
-											? null
-											: errors.reportingAnalytics
-									}
-									fullWidth={true}
-									select
-									value={input.reportingAnalytics}
-									onChange={(e) => {
-										setInput({ ...input, reportingAnalytics: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</AED.LeftInputContainer>
-
 							{/* SETTINGS INPUT */}
 							<AED.RightInputContainer>
 								<AED.InputLabel>
@@ -560,28 +476,39 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 						</AED.InputContainer>
 
 						<AED.InputContainer>
-							{/* ALLOW CHANGE SKIPPED TASKS INPUT */}
+							{/* Reporting & Analytics INPUT */}
 							<AED.LeftInputContainer>
-								<FormControlLabel
-									control={
-										<EMICheckbox
-											changeHandler={() => {
-												setInput({
-													...input,
-													changeSkippedTasks: !input.changeSkippedTasks,
-												});
-											}}
-											state={input.changeSkippedTasks}
-										/>
+								<AED.InputLabel>
+									Analytics Access
+									<AED.RequiredStar>*</AED.RequiredStar>
+								</AED.InputLabel>
+
+								<TextField
+									error={errors.reportingAnalytics === null ? false : true}
+									helperText={
+										errors.reportingAnalytics === null
+											? null
+											: errors.reportingAnalytics
 									}
-									label={
-										<Typography style={{ fontSize: "14px" }}>
-											Allow change skipped task status
-										</Typography>
-									}
-								/>
+									fullWidth={true}
+									select
+									value={input.reportingAnalytics}
+									onChange={(e) => {
+										setInput({ ...input, reportingAnalytics: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(PositionAccessTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{PositionAccessTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
 							</AED.LeftInputContainer>
-							<AED.RightInputContainer>
+						</AED.InputContainer>
+
+						<AED.InputContainer>
+							<AED.LeftInputContainer>
 								<FormControlLabel
 									control={
 										<EMICheckbox
@@ -600,7 +527,7 @@ const EditPositionDialog = ({ open, closeHandler, data, handleEditData }) => {
 										</Typography>
 									}
 								/>
-							</AED.RightInputContainer>
+							</AED.LeftInputContainer>
 						</AED.InputContainer>
 					</div>
 				</AED.DialogContent>

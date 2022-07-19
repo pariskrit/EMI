@@ -314,35 +314,8 @@ const AddPositionDialog = ({
 						</ADD.InputContainer>
 
 						<ADD.InputContainer>
-							{/* DEFECT EXPORTS INPUT */}
-							<ADD.LeftInputContainer>
-								<ADD.InputLabel>
-									Defect Exports Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.defectExports === null ? false : true}
-									helperText={
-										errors.defectExports === null ? null : errors.defectExports
-									}
-									fullWidth={true}
-									select
-									value={input.defectExports}
-									onChange={(e) => {
-										setInput({ ...input, defectExports: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.LeftInputContainer>
-
 							{/* NOTICE BOARDS INPUT */}
-							<ADD.RightInputContainer>
+							<ADD.LeftInputContainer>
 								<ADD.InputLabel>
 									Notice Boards Access<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.InputLabel>
@@ -357,6 +330,30 @@ const AddPositionDialog = ({
 									value={input.noticeBoards}
 									onChange={(e) => {
 										setInput({ ...input, noticeBoards: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(PositionAccessTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{PositionAccessTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
+							</ADD.LeftInputContainer>
+							{/* USERS INPUT */}
+							<ADD.RightInputContainer>
+								<ADD.InputLabel>
+									Users Access<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.InputLabel>
+
+								<TextField
+									error={errors.users === null ? false : true}
+									helperText={errors.users === null ? null : errors.users}
+									fullWidth={true}
+									select
+									value={input.users}
+									onChange={(e) => {
+										setInput({ ...input, users: e.target.value });
 									}}
 									variant="outlined"
 								>
@@ -394,64 +391,6 @@ const AddPositionDialog = ({
 									))}
 								</TextField>
 							</ADD.LeftInputContainer>
-
-							{/* USERS INPUT */}
-							<ADD.RightInputContainer>
-								<ADD.InputLabel>
-									Users Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.users === null ? false : true}
-									helperText={errors.users === null ? null : errors.users}
-									fullWidth={true}
-									select
-									value={input.users}
-									onChange={(e) => {
-										setInput({ ...input, users: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.RightInputContainer>
-						</ADD.InputContainer>
-
-						<ADD.InputContainer>
-							{/* Reporting & Analytics INPUT */}
-							<ADD.LeftInputContainer>
-								<ADD.InputLabel>
-									Reporting & Analytics Access
-									<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.reportingAnalytics === null ? false : true}
-									helperText={
-										errors.reportingAnalytics === null
-											? null
-											: errors.reportingAnalytics
-									}
-									fullWidth={true}
-									select
-									value={input.reportingAnalytics}
-									onChange={(e) => {
-										setInput({ ...input, reportingAnalytics: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.LeftInputContainer>
-
 							{/* SETTINGS INPUT */}
 							<ADD.RightInputContainer>
 								<ADD.InputLabel>
@@ -479,27 +418,40 @@ const AddPositionDialog = ({
 						</ADD.InputContainer>
 
 						<ADD.InputContainer>
+							{/* Analytics INPUT */}
+							<ADD.LeftInputContainer>
+								<ADD.InputLabel>
+									Analytics Access
+									<ADD.RequiredStar>*</ADD.RequiredStar>
+								</ADD.InputLabel>
+
+								<TextField
+									error={errors.reportingAnalytics === null ? false : true}
+									helperText={
+										errors.reportingAnalytics === null
+											? null
+											: errors.reportingAnalytics
+									}
+									fullWidth={true}
+									select
+									value={input.reportingAnalytics}
+									onChange={(e) => {
+										setInput({ ...input, reportingAnalytics: e.target.value });
+									}}
+									variant="outlined"
+								>
+									{Object.keys(PositionAccessTypes).map((key) => (
+										<MenuItem key={key} value={key}>
+											{PositionAccessTypes[key]}
+										</MenuItem>
+									))}
+								</TextField>
+							</ADD.LeftInputContainer>
+						</ADD.InputContainer>
+
+						<ADD.InputContainer>
 							{/* ALLOW CHANGE SKIPPED TASKS INPUT */}
 							<ADD.LeftInputContainer>
-								<FormControlLabel
-									control={
-										<EMICheckbox
-											changeHandler={() => {
-												setInput({
-													...input,
-													changeSkippedTasks: !input.changeSkippedTasks,
-												});
-											}}
-										/>
-									}
-									label={
-										<Typography style={{ fontSize: "14px" }}>
-											Allow change skipped task status
-										</Typography>
-									}
-								/>
-							</ADD.LeftInputContainer>
-							<ADD.RightInputContainer>
 								<FormControlLabel
 									control={
 										<EMICheckbox
@@ -517,7 +469,7 @@ const AddPositionDialog = ({
 										</Typography>
 									}
 								/>
-							</ADD.RightInputContainer>
+							</ADD.LeftInputContainer>
 						</ADD.InputContainer>
 					</div>
 				</ADD.DialogContent>

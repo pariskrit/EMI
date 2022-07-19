@@ -158,7 +158,6 @@ function DefectStatuses({ appId, setError }) {
 					"modelAccess",
 					"serviceAccess",
 					"defectAccess",
-					"defectExportAccess",
 					"noticeboardAccess",
 					"feedbackAccess",
 					"userAccess",
@@ -171,11 +170,10 @@ function DefectStatuses({ appId, setError }) {
 					defaultCustomCaptionsData?.modelTemplatePlural,
 					defaultCustomCaptionsData?.servicePlural,
 					defaultCustomCaptionsData?.defectPlural,
-					defaultCustomCaptionsData?.defect + " Exports",
 					defaultCustomCaptionsData?.tutorialPlural,
 					defaultCustomCaptionsData?.feedbackPlural,
 					defaultCustomCaptionsData?.userPlural,
-					"Reporting",
+					"Analytics",
 					"Settings",
 				]}
 				setSearch={setSearchData}

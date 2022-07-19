@@ -95,12 +95,11 @@ const listOfInputs = (cc) => [
 	{ label: cc?.modelTemplatePlural + " Access", name: "modelAccess" },
 	{ label: cc?.servicePlural + " Access", name: "serviceAccess" },
 	{ label: cc?.defectPlural + " Access", name: "defectAccess" },
-	{ label: cc?.defect + " Exports Access", name: "defectExportAccess" },
 	{ label: cc?.tutorialPlural + " Access", name: "noticeboardAccess" },
-	{ label: cc?.feedbackPlural + " Access", name: "feedbackAccess" },
 	{ label: cc?.userPlural + " Access", name: "userAccess" },
-	{ label: "Reporting & Analytics Access", name: "analyticsAccess" },
+	{ label: cc?.feedbackPlural + " Access", name: "feedbackAccess" },
 	{ label: "Settings", name: "settingsAccess" },
+	{ label: "Analytics Access", name: "analyticsAccess" },
 ];
 
 const AddDialog = ({
@@ -168,13 +167,11 @@ const AddDialog = ({
 			modelAccess: input.modelAccess,
 			serviceAccess: input.serviceAccess,
 			defectAccess: input.defectAccess,
-			defectExportAccess: input.defectExportAccess,
 			noticeboardAccess: input.noticeboardAccess,
-			feedbackAccess: input.feedbackAccess,
 			userAccess: input.userAccess,
-			analyticsAccess: input.analyticsAccess,
+			feedbackAccess: input.feedbackAccess,
 			settingsAccess: input.settingsAccess,
-			allowChangeSkippedTaskStatus: input.allowChangeSkippedTaskStatus,
+			analyticsAccess: input.analyticsAccess,
 			allowPublish: input.allowPublish,
 		};
 
@@ -243,20 +240,11 @@ const AddDialog = ({
 				path: "defectAccess",
 				value: input.defectAccess,
 			},
-			{
-				op: "replace",
-				path: "defectExportAccess",
-				value: input.defectExportAccess,
-			},
+
 			{
 				op: "replace",
 				path: "analyticsAccess",
 				value: input.analyticsAccess,
-			},
-			{
-				op: "replace",
-				path: "allowChangeSkippedTaskStatus",
-				value: input.allowChangeSkippedTaskStatus,
 			},
 			{
 				op: "replace",
@@ -267,18 +255,15 @@ const AddDialog = ({
 		if (result.status) {
 			handleEditData({
 				id: dataToEdit.id,
-
 				name: input.name,
 				modelAccess: positionAccessTypes[input.modelAccess],
 				serviceAccess: positionAccessTypes[input.serviceAccess],
 				defectAccess: positionAccessTypes[input.defectAccess],
-				defectExportAccess: positionAccessTypes[input.defectExportAccess],
 				noticeboardAccess: positionAccessTypes[input.noticeboardAccess],
 				feedbackAccess: positionAccessTypes[input.feedbackAccess],
 				userAccess: positionAccessTypes[input.userAccess],
 				analyticsAccess: positionAccessTypes[input.analyticsAccess],
 				settingsAccess: positionAccessTypes[input.settingsAccess],
-				allowChangeSkippedTaskStatus: input.allowChangeSkippedTaskStatus,
 				allowPublish: input.allowPublish,
 			});
 
@@ -303,13 +288,11 @@ const AddDialog = ({
 				modelAccess: dataToEdit.modelAccess[0],
 				serviceAccess: dataToEdit.serviceAccess[0],
 				defectAccess: dataToEdit.defectAccess[0],
-				defectExportAccess: dataToEdit.defectExportAccess[0],
 				noticeboardAccess: dataToEdit.noticeboardAccess[0],
 				feedbackAccess: dataToEdit.feedbackAccess[0],
 				userAccess: dataToEdit.userAccess[0],
 				analyticsAccess: dataToEdit.analyticsAccess[0],
 				settingsAccess: dataToEdit.settingsAccess[0],
-				allowChangeSkippedTaskStatus: dataToEdit.allowChangeSkippedTaskStatus,
 				allowPublish: dataToEdit.allowPublish,
 			});
 		}
@@ -388,26 +371,7 @@ const AddDialog = ({
 								</TextField>
 							</Grid>
 						))}
-						<Grid item xs={6}>
-							<FormControlLabel
-								control={
-									<EMICheckbox
-										state={input.allowChangeSkippedTaskStatus}
-										changeHandler={() => {
-											setInput({
-												...input,
-												allowChangeSkippedTaskStatus: !input.allowChangeSkippedTaskStatus,
-											});
-										}}
-									/>
-								}
-								label={
-									<Typography style={{ fontSize: "14px" }}>
-										Allow change skipped {customCaptions?.task} status
-									</Typography>
-								}
-							/>
-						</Grid>
+						<Grid item xs={6}></Grid>
 						<Grid item xs={6}>
 							<FormControlLabel
 								control={

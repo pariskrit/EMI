@@ -208,29 +208,6 @@ const PositionsTable = ({
 						</TableCell>
 						<TableCell
 							onClick={() => {
-								handleSortClick("defectExportAccess");
-							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
-								[classes.selectedTableHeadRow]:
-									currentTableSort[0] === "defectExportAccess",
-								[classes.tableHeadRow]:
-									currentTableSort[0] !== "defectExportAccess",
-							})}
-						>
-							<AT.CellContainer>
-								<div className={classes.headerName}>Defect Exports</div>
-								<div className={classes.arrowContainer}>
-									{currentTableSort[0] === "defectExportAccess" &&
-									currentTableSort[1] === "desc" ? (
-										<AT.DefaultArrow fill="#FFFFFF" />
-									) : (
-										<AT.DescArrow fill="#FFFFFF" />
-									)}
-								</div>
-							</AT.CellContainer>
-						</TableCell>
-						<TableCell
-							onClick={() => {
 								handleSortClick("noticeboardAccess");
 							}}
 							className={clsx(classes.generalRow, classes.rowWithRightRow, {
@@ -309,7 +286,7 @@ const PositionsTable = ({
 							})}
 						>
 							<AT.CellContainer>
-								<div className={classes.headerName}>Reporting</div>
+								<div className={classes.headerName}>Analytics</div>
 								<div className={classes.arrowContainer}>
 									{currentTableSort[0] === "analyticsAccess" &&
 									currentTableSort[1] === "desc" ? (
@@ -377,13 +354,6 @@ const PositionsTable = ({
 								<AT.CellContainer>
 									<AT.TableBodyText>
 										{PositionAccessTypes[d.defectAccess]}
-									</AT.TableBodyText>
-								</AT.CellContainer>
-							</AT.DataCell>
-							<AT.DataCell className={classes.generalRow}>
-								<AT.CellContainer>
-									<AT.TableBodyText>
-										{PositionAccessTypes[d.defectExportAccess]}
 									</AT.TableBodyText>
 								</AT.CellContainer>
 							</AT.DataCell>
