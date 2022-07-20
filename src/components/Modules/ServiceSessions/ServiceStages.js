@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 function dynamicWidth(i) {
 	if (i === 0) {
 		return {
-			width: "25%",
+			width: "10%",
 		};
 	}
 	return {
