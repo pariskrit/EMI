@@ -613,7 +613,6 @@ function DefectsLists({
 							groupBy={[
 								{ id: "", name: "Show All", statusType: "" },
 								{ id: "C", name: "All Complete", statusType: "C" },
-								{ id: "N", name: "All Notification Raised", statusType: "N" },
 								{ id: "O", name: "All Outstanding", statusType: "O" },
 							]}
 							hasGroup
