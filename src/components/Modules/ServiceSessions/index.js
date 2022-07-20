@@ -58,7 +58,6 @@ export default function ServiceReport({
 	roleName,
 	customCaptions,
 }) {
-	console.log(rows);
 	function setQuestionResponse(question) {
 		switch (question.type) {
 			case "S":
@@ -103,30 +102,47 @@ export default function ServiceReport({
 		});
 	}
 
-	const groupBySize = (data) => {
-		const groupbyData = data.reduce((group, current) => {
+	const groupByZone = (Zonedata) => {
+		let zoneGroupedData = Zonedata.reduce((group, current) => {
 			const { zoneName } = current;
 			if (zoneName) {
 				group[zoneName] = group[zoneName] ?? [];
 				group[zoneName].push(current);
+			} else {
+				group["empty"] = group["empty"] ?? [];
+				group["empty"].push(current);
 			}
 			return group;
 		}, {});
 
-		let newArray = [];
+		return Object.keys(zoneGroupedData).map((key) => {
+			let zoneObject = {};
+			return {
+				...zoneObject,
+				zonename: key === "empty" ? null : key,
+				zoneData: zoneGroupedData[key],
+			};
+		});
+	};
 
-		if (groupbyData) {
-			newArray = Object.keys(groupbyData).map((key) => {
-				let newdict = { name: "", data: [] };
-				return {
-					...newdict,
-					name: key,
-					header: groupbyData[key][0]["stageName"],
-					data: groupbyData[key],
-				};
-			});
-		}
-		return newArray;
+	const groupByStage = (data) => {
+		let stageGroupedData = data.reduce((group, current) => {
+			const { stageName } = current;
+			if (stageName) {
+				group[stageName] = group[stageName] ?? [];
+				group[stageName].push(current);
+			}
+			return group;
+		}, {});
+
+		return Object.keys(stageGroupedData).map((key) => {
+			let stageObject = {};
+			return {
+				...stageObject,
+				stagename: key,
+				stageData: groupByZone(stageGroupedData[key]),
+			};
+		});
 	};
 
 	const classes = useStyles();
@@ -134,16 +150,16 @@ export default function ServiceReport({
 		<>
 			<TableContainer>
 				<Table aria-label="collapsible table">
-					<TableHead className={classes.tableHead}>
-						<TableRow>
-							<TableCell>User</TableCell>
-							<TableCell align="center">Session Start Date</TableCell>
-							<TableCell align="center">Session End Date</TableCell>
-						</TableRow>
-					</TableHead>
 					<TableBody>
 						{rows?.map((row) => (
 							<React.Fragment>
+								<span style={{ fontWeight: "800px", marginTop: "-10px" }}>
+									{`Session Started by ${row?.displayName} at ${
+										row.startDate &&
+										isoDateWithoutTimeZone(row?.startDate + "Z")
+									}
+									`}
+								</span>
 								<TableRow
 									key={row.id}
 									sx={{ "& > *": { borderBottom: "unset" } }}
@@ -186,11 +202,11 @@ export default function ServiceReport({
 									</TableRow>
 								)}
 
-								{row?.tasks.length > 0 && groupBySize(row?.tasks).length > 0 && (
+								{row?.tasks.length > 0 && groupByStage(row?.tasks).length > 0 && (
 									<TableRow>
 										<TableCell colSpan={18}>
 											<ServiceStages
-												tasks={groupBySize(row?.tasks)}
+												tasks={groupByStage(row?.tasks)}
 												customCaptions={customCaptions}
 												formatQuestion={formatQuestion}
 											/>
@@ -305,6 +321,8 @@ export default function ServiceReport({
 																	style={{
 																		width: "100%",
 																		height: "100%",
+																		maxHeight: "400px",
+																		maxWidth: "600px",
 																		objectFit: "contain",
 																	}}
 																	alt="signature"
