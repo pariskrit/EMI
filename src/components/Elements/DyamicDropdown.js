@@ -2,7 +2,7 @@ import Typography from "@material-ui/core/Typography";
 import CheckIcon from "@material-ui/icons/Check";
 import PropTypes from "prop-types";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
+import { ReactComponent as ArrowIcon } from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
@@ -557,7 +557,7 @@ function DyanamicDropdown(props) {
 							<em style={{ opacity: "0.7" }}>{placeholder}</em>
 						)}
 					</span>
-					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
+					<ArrowIcon className="arrow-down" />
 				</div>
 			</div>
 			{/* {dropActive && ( */}
@@ -581,7 +581,7 @@ function DyanamicDropdown(props) {
 						/>
 					</div>
 
-					<img alt="Expand icon" src={ArrowIcon} className="arrow-down" />
+					<ArrowIcon className="arrow-down" />
 				</div>
 				<div className="dropdown-content">
 					{showHeader && (
