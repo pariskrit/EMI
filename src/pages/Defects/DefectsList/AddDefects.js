@@ -28,7 +28,8 @@ import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import ColourConstants from "helpers/colourConstants";
-import { getModelDeparments } from "services/models/modelDetails/details";
+import { getSiteAssets } from "services/clients/sites/siteAssets";
+import { getAvailabeleModelDeparments } from "services/models/modelDetails/details";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -158,12 +159,12 @@ function AddNewDefectDetail({
 	useEffect(() => {
 		const fetchDepartments = async () => {
 			try {
-				const response = await getModelDeparments(input?.modelID?.id);
+				const response = await getAvailabeleModelDeparments(input?.modelID?.id);
 				if (response.status) {
 					let newDatas = response.data.map((d) => {
 						return {
-							id: d.modelDepartmentID,
-							name: d.name,
+							...d,
+							id: d.siteDepartmentID,
 						};
 					});
 					setDepartments(newDatas);
@@ -178,8 +179,6 @@ function AddNewDefectDetail({
 			fetchDepartments();
 		}
 	}, [input.modelID.id, dispatch]);
-
-	useEffect(() => {});
 
 	const handleCreateProcess = async () => {
 		// clear search data

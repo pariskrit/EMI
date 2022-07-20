@@ -9,7 +9,7 @@ import { showError } from "redux/common/actions";
 import { getDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
 import { getDefectTypes } from "services/clients/sites/siteApplications/defectTypes";
 import { updateDefect } from "services/defects/details";
-import { getModelDeparments } from "services/models/modelDetails/details";
+import { getAvailabeleModelDeparments } from "services/models/modelDetails/details";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 
 const Add = AddDialogStyle();
@@ -90,12 +90,12 @@ function Details({ details, siteAppID, captions, defectId }) {
 	useEffect(() => {
 		const fetchDepartmentData = async () => {
 			try {
-				const response = await getModelDeparments(details?.modelID);
+				const response = await getAvailabeleModelDeparments(details?.modelID);
 				if (response.status) {
 					let newDatas = response.data.map((d) => {
 						return {
-							id: d.modelDepartmentID,
-							name: d.name,
+							...d,
+							id: d.siteDepartmentID,
 						};
 					});
 					setDepartments(newDatas);
