@@ -7,6 +7,7 @@ const initialState = {
 	isActive: false,
 	defaultCustomCaptionsData: {},
 	apiErrorPresent: true,
+	loading: true,
 	// haveData: false,
 };
 
@@ -55,6 +56,12 @@ function reducer(state, action) {
 				defaultCustomCaptionsData: action.payload,
 			};
 		}
+
+		case "LOADING_COMPLETED":
+			return {
+				...state,
+				loading: false,
+			};
 
 		default:
 			return state;

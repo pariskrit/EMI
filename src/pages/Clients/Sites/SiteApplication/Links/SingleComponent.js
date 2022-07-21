@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { SiteContext } from "contexts/SiteApplicationContext";
 import CommonHeaderWrapper from "components/Modules/CommonHeaderWrapper";
 import SiteApplicationNavigation from "constants/navigation/siteAppNavigation";
-import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
-import { getDefaultCustomCaptions } from "services/clients/sites/siteApplications/customCaptions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ContentStyle from "styles/application/ContentStyle";
 import { clientsPath, siteDetailPath } from "helpers/routePaths";
@@ -19,7 +17,6 @@ const SingleComponent = (route) => {
 	} = route;
 
 	const [state, dispatch] = useContext(SiteContext);
-	const [loading, setLoading] = useState(true);
 
 	const navigation = SiteApplicationNavigation(
 		clientId,
@@ -34,72 +31,6 @@ const SingleComponent = (route) => {
 
 	const openConfirmationModal = () =>
 		dispatch({ type: "TOGGLE_CONFIRMATION_MODAL", payload: true });
-
-	const fetchSiteApplicationDetails = async () => {
-		const result = await getSiteApplicationDetail(appId);
-
-		if (result.status) {
-			dispatch({
-				type: "SET_SITE_APP_DETAIL",
-				payload: result,
-			});
-
-			dispatch({
-				type: "TOGGLE_ISACTIVE",
-				payload: result.data.isActive,
-			});
-
-			return result.data;
-		}
-	};
-
-	const fetchDefaultCustomCaptionsData = async (applicationId) => {
-		try {
-			let result = await getDefaultCustomCaptions(applicationId);
-			if (result.status) {
-				let nullReplaced = result.data;
-
-				Object.keys(nullReplaced).forEach((el) => {
-					if (el.indexOf("CC") !== -1 && nullReplaced[el] === null) {
-						nullReplaced[el] = "";
-					} else {
-						return;
-					}
-				});
-
-				dispatch({
-					type: "DEFAULT_CUSTOM_CAPTIONS_DATA",
-					payload: {
-						...nullReplaced,
-						statusChange: "Status Change",
-						statusChangePlural: "Status Changes",
-					},
-				});
-			} else {
-				// If error, throwing to catch
-				throw new Error(result);
-			}
-		} catch (err) {
-			return false;
-		}
-	};
-
-	const fetchData = async () => {
-		if (
-			location.pathname.split("/")[8] === "detail" ||
-			Object.keys(state.details).length === 0
-		) {
-			const response = await fetchSiteApplicationDetails();
-			await fetchDefaultCustomCaptionsData(response?.applicationID);
-		}
-
-		setLoading(false);
-	};
-
-	useEffect(() => {
-		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	let crumbState = [];
 
@@ -120,7 +51,7 @@ const SingleComponent = (route) => {
 
 	return (
 		<>
-			{loading ? (
+			{state.loading ? (
 				<AC.SpinnerContainer>
 					<CircularProgress />
 				</AC.SpinnerContainer>
