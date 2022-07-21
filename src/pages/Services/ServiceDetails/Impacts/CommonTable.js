@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function CommonTable({ data = [], headers = [], columns = [] }) {
+	console.log("Headers", headers, data);
 	const classes = useStyles();
 
 	const style = { width: Math.floor(100 / headers.length) + "%" };
@@ -45,7 +46,7 @@ function CommonTable({ data = [], headers = [], columns = [] }) {
 					</TableRow>
 				) : (
 					data?.map((row) => (
-						<TableRow key={row.id}>
+						<TableRow key={row.createdDateTime + row.userName}>
 							{columns.map((column) => (
 								<TableCell key={column}>{row[column]}</TableCell>
 							))}

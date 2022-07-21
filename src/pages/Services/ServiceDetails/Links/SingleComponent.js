@@ -49,7 +49,6 @@ const SingleComponent = ({ access, customCaptions, siteAppID, ...route }) => {
 			: [route.showAdd, access === "F", !state?.modelDetail?.isPublished].every(
 					(x) => x === true
 			  );
-
 	return (
 		<div>
 			<ServiceWrapper

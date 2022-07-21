@@ -23,6 +23,7 @@ const CommonHeaderWrapper = ({
 	applicationName,
 	current,
 }) => {
+	console.log("last saved", lastSaved);
 	return (
 		<>
 			<CommonHeader

@@ -169,6 +169,7 @@ function Impacts() {
 		<div style={{ margin: "30px 0" }}>
 			{data.map((element) => (
 				<AccordionBox
+					key={element.id}
 					title={`${element.title} (${element.data?.length ?? 0})`}
 					style={{ margin: "20px 0" }}
 				>
