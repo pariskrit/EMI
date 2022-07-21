@@ -8,11 +8,17 @@ export const handleSort = (
 ) => {
 	let sorted = [...currentState];
 
-	sorted.sort((a, b) =>
-		a[sortField]?.toString().localeCompare(b[sortField]?.toString())
-	);
+	if (sortMethod === "asc") {
+		sorted.sort((a, b) =>
+			a[sortField]?.toString().localeCompare(b[sortField]?.toString())
+		);
+	}
 
-	if (sortMethod === "desc") sorted = sorted.reverse();
+	if (sortMethod === "desc") {
+		sorted.sort((a, b) =>
+			b[sortField]?.toString().localeCompare(a[sortField]?.toString())
+		);
+	}
 
 	stateSetter(sorted);
 
