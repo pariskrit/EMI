@@ -137,7 +137,7 @@ function Times() {
 			response = await getServiceTimes(id, stage.id);
 			setCrumbs([
 				{ id: 1, name: stage?.name, depth: "S" },
-				{ id: 1, name: customCaptions.zonePlural, depth: "Z" },
+				{ id: 2, name: customCaptions.zonePlural, depth: "Z" },
 			]);
 		}
 		setChartData(modifyChartData(response));
