@@ -115,3 +115,14 @@ export const uncheckUserModels = async (id) => {
 		return getAPIResponse(err?.response);
 	}
 };
+
+export const deleteAtTickAll = async (id) => {
+	try {
+		let response = await API.delete(
+			`${Apis.ClientUserSiteApps}/${id}/servicemodels`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};

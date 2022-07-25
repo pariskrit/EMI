@@ -11,6 +11,7 @@ import {
 	checkUserDepartments,
 	checkUserModels,
 	checkUserRoles,
+	deleteAtTickAll,
 	getClientSites,
 	getClientUserSiteAppAccess,
 	getClientUserSiteApps,
@@ -21,6 +22,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { useCallback } from "react";
 
 const useStyles = makeStyles({
 	dropdown: {
@@ -97,7 +99,7 @@ function UserModelAccess({ data }) {
 					clientUserSiteAppID: selectedApplication.clientUserSiteAppID || id,
 					siteDepartmentID: checkedItem.id,
 			  });
-		if (response.status)
+		if (response.status) {
 			setDepartments([
 				...departments.map((department) =>
 					department.id === checkedItem.id
@@ -109,7 +111,8 @@ function UserModelAccess({ data }) {
 						: { ...department, isDisabled: false }
 				),
 			]);
-		else {
+			await fetchModelDepartmentRole(id);
+		} else {
 			setDepartments([
 				...departments.map((department) => ({
 					...department,
@@ -128,10 +131,11 @@ function UserModelAccess({ data }) {
 					: { ...role, isDisabled: true }
 			),
 		];
+
 		setRoles(updatedRoles);
 
 		const response = checkedItem.checked
-			? await uncheckUserRoles(checkedItem.idToDelete)
+			? await uncheckUserRoles(checkedItem.id)
 			: await checkUserRoles({
 					clientUserSiteAppID: selectedApplication.clientUserSiteAppID || id,
 					roleID: checkedItem.id,
@@ -149,9 +153,17 @@ function UserModelAccess({ data }) {
 						: { ...role, isDisabled: false }
 				),
 			]);
+			await fetchModelDepartmentRole(id);
 		} else {
 			setRoles([...roles.map((role) => ({ ...role, isDisabled: false }))]);
 			displayError(response);
+		}
+	};
+
+	const tickAllModel = async () => {
+		const response = await deleteAtTickAll(id);
+		if (response.status) {
+			await fetchModelDepartmentRole(id);
 		}
 	};
 
@@ -171,11 +183,11 @@ function UserModelAccess({ data }) {
 		setModels(updatedModel);
 
 		const response = checkedItem.checked
-			? await uncheckUserModels(checkedItem.idToDelete)
-			: await checkUserModels({
+			? await checkUserModels({
 					clientUserSiteAppID: selectedApplication.clientUserSiteAppID || id,
 					modelID: checkedItem.id,
-			  });
+			  })
+			: await uncheckUserModels(checkedItem?.idToDelete);
 
 		if (response.status) {
 			setModels([
@@ -253,7 +265,7 @@ function UserModelAccess({ data }) {
 				response.data.models.map((model) => ({
 					...model,
 					name: `${model.name} ${model.modelName}`,
-					checked: model.clientUserSiteAppServiceModels?.length > 0,
+					checked: model.clientUserSiteAppServiceModels?.length <= 0,
 					idToDelete:
 						model.clientUserSiteAppServiceModels?.length > 0
 							? model.clientUserSiteAppServiceModels[0]?.id
@@ -373,6 +385,7 @@ function UserModelAccess({ data }) {
 								customCaptions?.rolePlural,
 							]}
 							handleCheck={handleModelChange}
+							tickAllModel={tickAllModel}
 							dispatch={dispatch}
 							name={`${firstName} ${lastName}`}
 						/>
