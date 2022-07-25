@@ -599,7 +599,6 @@ function AddNewDefectDetail({
 											errors.details === null
 												? ""
 												: "1px solid " + ColourConstants.red,
-										fontFamily: "Roboto Condensed",
 										fontSize: "16px",
 										borderRadius: "5px",
 									}}
