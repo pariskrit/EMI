@@ -53,6 +53,7 @@ function reducer(state, action) {
 						? ColourConstants.orange
 						: ColourConstants.green,
 					activeModelVersion: state.modelDetail.version,
+					reviewDate: payload.reviewDate,
 				},
 			};
 		case "REVERT_VERSION":

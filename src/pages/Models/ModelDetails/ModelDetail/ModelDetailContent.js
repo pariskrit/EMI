@@ -149,6 +149,13 @@ function ModelDetailContent({
 			fetchAllData();
 	}, [fetchAllData, modelDetailsData]);
 
+	useEffect(() => {
+		setModelDetailsData({
+			...modelDetailsData,
+			details: state?.modelDetail,
+		});
+	}, [state.modelDetail]);
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}

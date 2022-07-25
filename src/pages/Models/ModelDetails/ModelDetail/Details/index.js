@@ -194,7 +194,7 @@ function Details({
 
 	useEffect(() => {
 		let newDate = data?.details?.reviewDate
-			? materialUiDate(new Date(data?.details?.reviewDate + "Z"))
+			? materialUiDate(new Date(data?.details?.reviewDate))
 			: data?.details?.reviewDate;
 		setOldReviewDate(newDate);
 		setReviewDate(newDate);

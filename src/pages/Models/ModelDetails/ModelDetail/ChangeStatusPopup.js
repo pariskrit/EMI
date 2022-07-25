@@ -15,15 +15,21 @@ import { showError } from "redux/common/actions";
 import { updateModel } from "services/models/modelDetails/details";
 import { useParams } from "react-router-dom";
 import { ModelContext } from "contexts/ModelDetailContext";
+import TextFieldContainer from "components/Elements/TextFieldContainer";
+import { convertDateToUTC } from "helpers/utils";
+import { handleSort } from "helpers/utils";
 
 const ADD = AddDialogStyle();
 
 const useStyles = makeStyles({
 	dialogContent: {
-		width: 500,
+		width: "500px",
 	},
 	createButton: {
 		width: "auto",
+	},
+	reviewDate: {
+		width: "322px",
 	},
 });
 
@@ -35,34 +41,52 @@ function ChangeStatusPopup({ open, onClose }) {
 	const dispatch = useDispatch();
 	const [, modelDispatch] = useContext(ModelContext);
 	const { id } = useParams();
+	const [reviewDate, setReviewDate] = useState("");
 
 	const handleCreateProcess = async () => {
 		if (selectedModelStatus?.id === undefined) {
 			return;
 		}
-		setIsUpdating(true);
-		try {
-			const response = await updateModel(id, [
+		let payload = [
+			{
+				op: "replace",
+				path: "ModelStatusID",
+				value: selectedModelStatus.id,
+			},
+		];
+		if (reviewDate) {
+			payload = [
 				{
 					op: "replace",
 					path: "ModelStatusID",
 					value: selectedModelStatus.id,
 				},
-			]);
+				{
+					op: "replace",
+					path: "reviewDate",
+					value: convertDateToUTC(new Date(reviewDate)),
+				},
+			];
+		}
+		setIsUpdating(true);
+		try {
+			const response = await updateModel(id, payload);
 			if (!response.status)
 				dispatch(showError(response.data || "Could Not Update Model Status"));
-			else
+			else {
 				modelDispatch({
 					type: "SET_ISPUBLISHED",
 					payload: {
 						isPublished: response?.data?.isPublished,
 						modelStatusName: selectedModelStatus.name,
+						reviewDate: response?.data?.reviewDate,
 					},
 				});
+			}
 
 			onClose();
 		} catch (error) {
-			console.log(error);
+			dispatch(showError(error.message || "Could Not Update Model Status"));
 		}
 
 		setIsUpdating(false);
@@ -93,6 +117,7 @@ function ChangeStatusPopup({ open, onClose }) {
 	useEffect(() => {
 		if (open) {
 			fetchModelStatuses();
+			setReviewDate("");
 		}
 
 		if (!open) {
@@ -136,6 +161,7 @@ function ChangeStatusPopup({ open, onClose }) {
 
 			<DialogContent className={classes.dialogContent}>
 				<DyanamicDropdown
+					width="100%"
 					dataSource={modelStatuses}
 					onChange={onModelStatusChange}
 					selectedValue={selectedModelStatus}
@@ -149,8 +175,23 @@ function ChangeStatusPopup({ open, onClose }) {
 						{ name: "Publish", id: 2 },
 					]}
 					showHeader
+					handleSort={handleSort}
 				/>
 			</DialogContent>
+			{selectedModelStatus.publish === "Yes" && (
+				<DialogContent className={classes.dialogContent}>
+					<TextFieldContainer
+						style={{ width: "300px" }}
+						placeholder="Select Date"
+						type="date"
+						label={"Review Date"}
+						name={"reviewDate"}
+						value={reviewDate}
+						onChange={(e) => setReviewDate(e.target.value)}
+						isRequired={false}
+					/>
+				</DialogContent>
+			)}
 		</Dialog>
 	);
 }
