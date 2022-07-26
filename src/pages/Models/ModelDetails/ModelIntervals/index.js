@@ -17,6 +17,7 @@ import EditDialog from "./EditDialog";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { updateModel } from "services/models/modelDetails/details";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import TabTitle from "components/Elements/TabTitle";
 
 function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +44,7 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 			taskListNoPlural,
 			modelTemplate,
 		},
+		application,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -198,6 +200,9 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 	}
 	return (
 		<div>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${interval} | ${application.name}`}
+			/>
 			<AddDialog
 				open={state.showAdd}
 				closeHandler={onCloseAddDialog}

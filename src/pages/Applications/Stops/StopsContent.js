@@ -15,6 +15,7 @@ import ActionButtons from "./ActionButtons";
 import AddStopDialog from "./AddDialog";
 import EditStopDialog from "./EditDialog";
 import { applicationListPath } from "helpers/routePaths";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const AC = ContentStyle();
@@ -218,6 +219,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 
 	return (
 		<div className="container">
+			<TabTitle title={`${applicationName} Stop Reasons`} />
 			{/* Start of dialogs */}
 			<AddStopDialog
 				open={openAddDialog}

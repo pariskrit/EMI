@@ -14,6 +14,7 @@ import { getSiteApplicationDetail } from "services/clients/sites/siteApplication
 import FeedbackStatusTypes from "helpers/feedbackStatusTypes";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import API from "helpers/api";
+import TabTitle from "components/Elements/TabTitle";
 
 const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 	const {
@@ -166,6 +167,9 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 	if (is404 === false) {
 		return (
 			<div>
+				<TabTitle
+					title={`${state.details.data.application.name} ${state.defaultCustomCaptionsData?.feedbackStatus}`}
+				/>
 				<DefaultDialog
 					open={model.default}
 					closeHandler={() => setModel((th) => ({ ...th, default: false }))}

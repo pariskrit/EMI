@@ -19,6 +19,7 @@ import "./siteDetails.scss";
 import { Facebook } from "react-spinners-css";
 import AccordionBox from "components/Layouts/AccordionBox";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles((theme) => ({
 	required: {
@@ -175,6 +176,7 @@ const SiteDetails = ({
 
 	return (
 		<>
+			{newSiteDetails.name && <TabTitle title={`${newSiteDetails.name}`} />}
 			<ConfirmChangeDialog
 				open={openConfirmationDialog}
 				isUpdating={isUpdating}

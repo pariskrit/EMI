@@ -16,6 +16,7 @@ import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
 import withMount from "components/HOC/withMount";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import TabTitle from "components/Elements/TabTitle";
 
 const AC = ContentStyle();
 
@@ -38,7 +39,7 @@ function Roles({
 
 	const reduxDispatch = useDispatch();
 
-	const { position, customCaptions } =
+	const { position, customCaptions, application } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
@@ -137,6 +138,9 @@ function Roles({
 
 	return (
 		<div>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${customCaptions.role} | ${application.name}`}
+			/>
 			<AddModelRoleDialog
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "TOGGLE_ADD", payload: false })}

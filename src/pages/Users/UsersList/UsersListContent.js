@@ -27,6 +27,7 @@ import GeneralButton from "components/Elements/GeneralButton";
 import mainAccess from "helpers/access";
 import ImportContainer from "components/Modules/ImportContainer";
 import { Apis } from "services/api";
+import TabTitle from "components/Elements/TabTitle";
 
 const AC = ContentStyle();
 
@@ -70,7 +71,15 @@ const defaultPageProperties = { pageNo: 1, perPage: DefaultPageSize };
 
 const UsersListContent = ({ getError }) => {
 	const classes = useStyles();
-	const { position, role, siteAppID, siteID, isSiteUser, customCaptions } =
+	const {
+		position,
+		role,
+		siteAppID,
+		siteID,
+		isSiteUser,
+		customCaptions,
+		application,
+	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 	const clientUserId =
@@ -305,6 +314,12 @@ const UsersListContent = ({ getError }) => {
 			: apis["SuperAdmin"];
 	return (
 		<div className="container">
+			{!application ? (
+				<TabTitle title="Users" />
+			) : (
+				<TabTitle title={`${customCaptions?.user} | ${application?.name}`} />
+			)}
+
 			<ImportContainer
 				open={modal.import}
 				handleClose={() => setModal((th) => ({ ...th, import: false }))}

@@ -19,6 +19,7 @@ import {
 	ModelStageTableColumn,
 	ModelStageTableHeader,
 } from "constants/modelDetails";
+import TabTitle from "components/Elements/TabTitle";
 
 const modelState = { id: null, open: false };
 
@@ -27,6 +28,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 		customCaptions: { stage, stagePlural, modelTemplate, asset },
 		siteAppID,
 		siteID,
+		application,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -147,6 +149,9 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 
 	return (
 		<>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${stage} | ${application.name}`}
+			/>
 			<ImageViewer
 				open={openImage}
 				onClose={() => {

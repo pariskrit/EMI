@@ -30,6 +30,7 @@ import { withStyles } from "@material-ui/core/styles";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import SearchField from "components/Elements/SearchField/SearchField";
+import TabTitle from "components/Elements/TabTitle";
 // import useLazyLoad from "hooks/useLazyLoad";
 
 const HtmlTooltip = withStyles((theme) => ({
@@ -73,6 +74,7 @@ const ModelQuestion = ({
 }) => {
 	const {
 		customCaptions: { question, questionPlural, rolePlural, modelTemplate },
+		application,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -458,6 +460,9 @@ const ModelQuestion = ({
 
 	return (
 		<>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${question} | ${application.name}`}
+			/>
 			{isSearching && <LinearProgress className={classes.loading} />}
 			<AddEditModel
 				open={state.showAdd}

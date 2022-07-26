@@ -9,6 +9,8 @@ import EditDialog from "./EditModal";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import "../SiteDepartment/site.scss";
 import { getLocalStorageData } from "helpers/utils";
+import { useSelector } from "react-redux";
+import TabTitle from "components/Elements/TabTitle";
 
 const AC = ContentStyle();
 
@@ -70,8 +72,11 @@ const SiteLocationsContent = ({ data, setData, isLoading, getError }) => {
 		setLocations(result);
 	};
 
+	const siteDetail = useSelector((state) => state.siteDetailData.siteDetails);
+
 	return (
 		<div>
+			<TabTitle title={`${siteDetail?.name} Locations`} />
 			<DeleteDialog
 				entityName="Location"
 				open={openDeleteDialog}

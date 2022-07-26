@@ -13,7 +13,7 @@ import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { handleSort } from "helpers/utils";
-
+import TabTitle from "components/Elements/TabTitle";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import { applicationListPath } from "helpers/routePaths";
@@ -311,6 +311,7 @@ const ApplicationListContent = ({ isMounted }) => {
 
 	return (
 		<div className="container">
+			<TabTitle title="Applications" />
 			<AddApplicationDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}

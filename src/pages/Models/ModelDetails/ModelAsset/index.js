@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import AddModel from "./AddModel";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import TabTitle from "components/Elements/TabTitle";
 
 const AC = ContentStyle();
 
@@ -37,6 +38,7 @@ const ModelAsset = ({
 	const {
 		customCaptions: { asset, assetPlural, modelTemplate },
 		position: { serviceAccess },
+		application,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -152,6 +154,9 @@ const ModelAsset = ({
 
 	return (
 		<>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${asset} | ${application.name}`}
+			/>
 			{isEditingActive && <LinearProgress className={classes.loading} />}
 			<AddModel
 				open={state.showAdd}

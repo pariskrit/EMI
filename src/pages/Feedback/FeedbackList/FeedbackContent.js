@@ -55,6 +55,7 @@ import {
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { getFeedbackStatuses } from "services/clients/sites/siteApplications/feedbackStatuses";
 import ErrorIcon from "@material-ui/icons/Error";
+import TabTitle from "components/Elements/TabTitle";
 
 const HtmlTooltip = withStyles((theme) => ({
 	tooltip: {
@@ -173,6 +174,7 @@ function FeedbackLists({
 		siteID,
 		site: { siteDepartmentID, siteDepartmentName },
 		id,
+		application,
 		position: { id: positionId },
 	} = getLocalStorageData("me");
 
@@ -549,6 +551,7 @@ function FeedbackLists({
 
 	return (
 		<>
+			<TabTitle title={`${customCaptions.feedback} | ${application.name}`} />
 			{isSearching && <LinearProgress className={classes.loading} />}
 
 			<DeleteDialog

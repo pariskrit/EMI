@@ -21,6 +21,7 @@ import {
 	ModelZoneTableColumn,
 	ModelZoneTableHeader,
 } from "constants/modelDetails";
+import TabTitle from "components/Elements/TabTitle";
 
 function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
@@ -37,7 +38,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 	const [openImage, setOPenImage] = useState(false);
 	const [ImageToOpen, setImageToOpen] = useState(null);
 
-	const { customCaptions, siteAppID, siteID } =
+	const { customCaptions, siteAppID, siteID, application } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
@@ -203,6 +204,9 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 
 	return (
 		<div>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${customCaptions.zone} | ${application.name}`}
+			/>
 			<ImageViewer
 				open={openImage}
 				onClose={() => {

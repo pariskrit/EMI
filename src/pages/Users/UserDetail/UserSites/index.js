@@ -1,5 +1,6 @@
 import { CircularProgress } from "@material-ui/core";
 import DetailsPanel from "components/Elements/DetailsPanel";
+import TabTitle from "components/Elements/TabTitle";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -14,6 +15,9 @@ function UserSite() {
 	const [loading, setLoading] = useState(true);
 
 	const dispatch = useDispatch();
+	const { application, firstName, lastName } = JSON.parse(
+		sessionStorage.getItem("me") || localStorage.getItem("me")
+	);
 
 	const fetchUserSites = useCallback(async () => {
 		try {
@@ -45,6 +49,7 @@ function UserSite() {
 
 	return (
 		<div>
+			<TabTitle title={`${firstName} ${lastName} | ${application.name}`} />
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={`Sites`}

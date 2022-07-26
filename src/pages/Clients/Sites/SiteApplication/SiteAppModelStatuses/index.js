@@ -12,6 +12,7 @@ import { getModelStatuses } from "services/clients/sites/siteApplications/modelS
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import { useSearch } from "hooks/useSearch";
+import TabTitle from "components/Elements/TabTitle";
 
 const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 	const [confirmDefault, setConfirmDefault] = useState([null, null]);
@@ -143,10 +144,16 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	console.log(state);
 	const mainData = searchQuery.length === 0 ? allData : searchedData;
 
 	return (
 		<div>
+			<TabTitle
+				title={`${data?.application?.name} ${
+					data?.application?.modelStatuses ? data.application.modelStatuses : ""
+				}`}
+			/>
 			<AddStatusDialog
 				open={state.showAdd}
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}

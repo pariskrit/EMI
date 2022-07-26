@@ -12,6 +12,7 @@ import ChangeStatusPopup from "./ChangeStatusPopup";
 import ColourConstants from "helpers/colourConstants";
 import Details from "./details";
 import { getFeedbackDetails } from "services/feedback/feedbackdetails";
+import TabTitle from "components/Elements/TabTitle";
 
 const AT = ActionButtonStyle();
 const media = "@media (max-width: 414px)";
@@ -53,7 +54,12 @@ const useStyles = makeStyles({
 function FeedbackDetails() {
 	const classes = useStyles();
 	const { id } = useParams();
-	const { customCaptions, siteAppID, siteID } = getLocalStorageData("me");
+	const {
+		customCaptions,
+		siteAppID,
+		siteID,
+		application,
+	} = getLocalStorageData("me");
 	const [showChangeStatus, setShowChangeStatus] = useState(false);
 	const [details, setDetails] = useState({});
 	const [loading, setLoading] = useState(true);
@@ -76,6 +82,9 @@ function FeedbackDetails() {
 
 	return (
 		<div className="container">
+			<TabTitle
+				title={`${customCaptions.feedback} ${details.number} | ${application.name}`}
+			/>
 			<ChangeStatusPopup
 				open={showChangeStatus}
 				onClose={handleToggleChangeStatus}

@@ -15,8 +15,9 @@ import ImportListDialog from "./ImportListDialog";
 import { showError } from "redux/common/actions";
 import { DefaultPageSize } from "helpers/constants";
 import { getLocalStorageData } from "helpers/utils";
+import TabTitle from "components/Elements/TabTitle";
 
-const SiteAsset = ({ fetchCrumbs, getError }) => {
+const SiteAsset = ({ fetchCrumbs, getError, siteDetails }) => {
 	const history = useHistory();
 	const { id, clientId } = useParams();
 	const [modal, setModal] = useState({ import: false, add: false });
@@ -117,6 +118,7 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 
 	return (
 		<>
+			<TabTitle title={`${siteDetails?.name} Assets`} />
 			<AddAssetDialog
 				open={modal.add}
 				handleClose={() => setModal((th) => ({ ...th, add: false }))}
@@ -160,9 +162,13 @@ const SiteAsset = ({ fetchCrumbs, getError }) => {
 	);
 };
 
+const mapStateToProps = ({ siteDetailData: { siteDetails } }) => ({
+	siteDetails,
+});
+
 const mapDispatchToProps = (dispatch) => ({
 	fetchCrumbs: (id, clientId) => dispatch(fetchSiteDetail(id, clientId)),
 	getError: (msg) => dispatch(showError(msg)),
 });
 
-export default connect(null, mapDispatchToProps)(SiteAsset);
+export default connect(mapStateToProps, mapDispatchToProps)(SiteAsset);

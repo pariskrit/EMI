@@ -32,6 +32,7 @@ import { showError } from "redux/common/actions";
 import { useHistory } from "react-router-dom";
 import withMount from "components/HOC/withMount";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles({
 	dragDropContainer: {
@@ -67,6 +68,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			servicePlural,
 			questionPlural,
 		},
+		application,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -817,6 +819,9 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	const isReadOnly = access === "R" || state?.modelDetail?.isPublished;
 	return (
 		<>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${service} | ${application.name}`}
+			/>
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={`${service} Layout`}

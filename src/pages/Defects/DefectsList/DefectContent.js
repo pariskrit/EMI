@@ -50,6 +50,7 @@ import {
 	postNewDefect,
 } from "services/defects/defectsList";
 import { DefectTableColumns, DefectTableHeader } from "constants/DefectDetails";
+import TabTitle from "components/Elements/TabTitle";
 
 const HtmlTooltip = withStyles((theme) => ({
 	tooltip: {
@@ -153,6 +154,7 @@ function DefectsLists({
 		customCaptions,
 		siteAppID,
 		siteID,
+		application,
 		site: { siteDepartmentID, siteDepartmentName },
 	} = getLocalStorageData("me");
 
@@ -517,6 +519,7 @@ function DefectsLists({
 
 	return (
 		<>
+			<TabTitle title={`${customCaptions.defect} | ${application.name}`} />
 			{isSearching && <LinearProgress className={classes.loading} />}
 
 			<DeleteDialog

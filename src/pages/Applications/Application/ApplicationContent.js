@@ -12,7 +12,6 @@ import ColourDetails from "./ColourDetails";
 import API from "helpers/api";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-
 import "./application2.css";
 import NavDetails from "components/Elements/NavDetails";
 import { applicationListPath } from "helpers/routePaths";
@@ -25,6 +24,7 @@ import {
 	uploadSmallAppLogo,
 	uploadWaterMark,
 } from "services/applications/detailsScreen/application";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const AC = ContentStyle();
@@ -319,6 +319,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 	} else {
 		return (
 			<div className="applicationContentContainer container">
+				<TabTitle title={data.name} />
 				<AC.TopContainer className="applicationNav">
 					<NavDetails
 						staticCrumbs={[

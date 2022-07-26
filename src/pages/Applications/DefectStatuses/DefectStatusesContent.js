@@ -13,6 +13,7 @@ import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 import Grid from "@material-ui/core/Grid";
 import { handleSort } from "helpers/utils";
+import TabTitle from "components/Elements/TabTitle";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -285,7 +286,7 @@ const DefectStatusesContent = ({ navigation, id, setIs404, state }) => {
 
 	return (
 		<div className="container">
-			{/* START DIALOGS */}
+			<TabTitle title={`${applicationName} Defect Statuses`} />
 			<AddDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}

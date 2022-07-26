@@ -20,6 +20,7 @@ import { loginSocialAccount, loginUser } from "redux/auth/actions";
 import { useMsal } from "@azure/msal-react";
 import ErrorIcon from "@material-ui/icons/Error";
 import { Link } from "react-router-dom";
+import TabTitle from "components/Elements/TabTitle";
 
 // Yup validation schema
 const schema = yup.object({
@@ -355,6 +356,7 @@ const Login = ({
 
 	return (
 		<Grid container component="main" className={classes.root}>
+			<TabTitle title="EMI3" />
 			<CssBaseline />
 			<Grid item xs={false} sm={false} md={7} className={classes.image} />
 			<Grid

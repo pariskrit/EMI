@@ -11,6 +11,7 @@ import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
 import { useSearch } from "hooks/useSearch";
 import { getPauses } from "services/clients/sites/siteApplications/pauses";
+import TabTitle from "components/Elements/TabTitle";
 
 const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	const [modal, setModal] = useState({ edit: false, delete: false });
@@ -191,6 +192,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	if (is404 === false) {
 		return (
 			<div>
+				<TabTitle title={`${data.application.name} ${pauseReason}`} />
 				<AddDialog
 					open={showAdd}
 					closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}

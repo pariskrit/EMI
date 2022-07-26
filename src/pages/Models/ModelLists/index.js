@@ -29,6 +29,7 @@ import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 import RoleWrapper from "components/Modules/RoleWrapper";
 import AccessWrapper from "components/Modules/AccessWrapper";
 import roles from "helpers/roles";
+import TabTitle from "components/Elements/TabTitle";
 
 const AC = ContentStyle();
 
@@ -216,6 +217,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	}, []);
 	return (
 		<div className="container">
+			<TabTitle title={`${customCaptions.model} | ${application.name}`} />
 			<CommonModal
 				open={openAddNewModal}
 				closeHandler={() => setOpenAddNewModal(false)}

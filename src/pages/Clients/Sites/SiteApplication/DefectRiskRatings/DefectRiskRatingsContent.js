@@ -14,6 +14,7 @@ import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DefaultDialog from "components/Elements/DefaultDialog";
+import TabTitle from "components/Elements/TabTitle";
 
 const DefectRiskRatingsContent = ({
 	id,
@@ -248,6 +249,7 @@ const DefectRiskRatingsContent = ({
 
 	return (
 		<div className="container">
+			<TabTitle title={`${data.application.name} ${riskRatingPlural}`} />
 			{/* DIALOGS */}
 			<AddDialog
 				open={showAdd}

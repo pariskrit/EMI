@@ -10,7 +10,11 @@ import { siteScreenNavigation } from "helpers/constants";
 import { showError } from "redux/common/actions";
 import { getLocalStorageData } from "helpers/utils";
 
-const SiteDepartmentsScreen = ({ handlefetchSiteDetail, getError }) => {
+const SiteDepartmentsScreen = ({
+	handlefetchSiteDetail,
+	getError,
+	siteDetails,
+}) => {
 	const { id, clientId } = useParams();
 	const history = useHistory();
 	const [data, setData] = useState([]);

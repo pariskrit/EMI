@@ -12,6 +12,7 @@ import { showError } from "redux/common/actions";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
 import AddEditDialog from "./AddEditDialog";
 import { Apis } from "services/api";
+import TabTitle from "components/Elements/TabTitle";
 
 function DefectStatuses({ appId, setError }) {
 	const {
@@ -101,6 +102,9 @@ function DefectStatuses({ appId, setError }) {
 
 	return (
 		<>
+			<TabTitle
+				title={`${data.application.name} ${defaultCustomCaptionsData?.position}`}
+			/>
 			<DeleteDialog
 				entityName={data?.positionCC || defaultCustomCaptionsData?.position}
 				open={openDeleteDialog}

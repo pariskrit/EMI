@@ -23,6 +23,8 @@ import withMount from "components/HOC/withMount";
 import NewVersionPopUp from "./NewVersionPopUp";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
+import TabTitle from "components/Elements/TabTitle";
+import { modelDetail } from "helpers/routePaths";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -65,6 +67,7 @@ function ModelDetailContent({
 	access,
 	isMounted,
 }) {
+	console.log(state);
 	const classes = useStyles();
 	const [isLoading, setIsLoading] = useState(true);
 	const [modelDetailsData, setModelDetailsData] = useState({
@@ -166,6 +169,11 @@ function ModelDetailContent({
 
 	return (
 		<>
+			{state && application.name && (
+				<TabTitle
+					title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} | ${application.name}`}
+				/>
+			)}
 			<ConfirmChangeDialog
 				open={state.showConfirmationPopup}
 				closeHandler={closeConfirmationPopup}

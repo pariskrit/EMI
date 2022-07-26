@@ -19,6 +19,7 @@ import withMount from "components/HOC/withMount";
 import { getModelMapData } from "services/models/modelMap";
 import ColourConstants from "helpers/colourConstants";
 import useSuperAdminExclude from "hooks/useSuperAdminExclude";
+import TabTitle from "components/Elements/TabTitle";
 
 const modalInitial = { data: {}, loading: false };
 
@@ -66,6 +67,9 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 	} = match;
 	useSuperAdminExclude();
 	const [modelData, setModelData] = useState(modalInitial);
+	const { customCaptions, application } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	const [dropDowns, setDropDown] = useState({
 		locations: [],
@@ -257,6 +261,9 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 
 	return (
 		<div>
+			<TabTitle
+				title={`Import  ${customCaptions.model} | ${application.name}`}
+			/>
 			{dropDownLoading ? <LinearProgress className={classes.loading} /> : null}
 			<ModelMapHeader
 				name={`${modelData.data.name} (${modelData.data.model})`}

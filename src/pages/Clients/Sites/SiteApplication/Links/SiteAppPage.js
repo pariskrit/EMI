@@ -114,11 +114,11 @@ const route = (customCaption) => {
 				part: "partCC",
 				defaultPart: "part",
 				tool: "toolCC",
-				defaultTool: "tool",
+				default: "tool",
 			},
 			pluralCaption: {
 				tool: "toolPluralCC",
-				defaultTool: "toolPlural",
+				default: "toolPlural",
 			},
 			api: differentAPIs.MissingPartAPIs,
 		},

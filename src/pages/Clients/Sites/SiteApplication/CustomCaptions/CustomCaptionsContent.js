@@ -8,6 +8,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import SearchField from "components/Elements/SearchField/SearchField";
 import MobileSearchField from "components/Elements/SearchField/MobileSearchField";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const AC = ContentStyle();
@@ -89,6 +90,9 @@ const CustomCaptionsContent = ({ id, state, dispatch }) => {
 
 	return (
 		<div>
+			<TabTitle
+				title={`${state.details.data.application.name} Custom Captions`}
+			/>
 			{/* Spinner should start here */}
 			{haveData ? (
 				<>

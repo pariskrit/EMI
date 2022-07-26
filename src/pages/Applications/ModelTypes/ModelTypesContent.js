@@ -16,6 +16,7 @@ import { handleSort } from "helpers/utils";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import SingleHeadTable from "components/Modules/SingleHeadTable";
 import { applicationListPath } from "helpers/routePaths";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const AC = ContentStyle();
@@ -221,6 +222,7 @@ const ModelTypesContent = ({ navigation, id, setIs404, state }) => {
 
 	return (
 		<div className="container">
+			<TabTitle title={`${applicationName} Model Types`} />
 			{/* Start dialogs */}
 			<AddModelTypeDialog
 				open={openAddDialog}

@@ -13,6 +13,7 @@ import { getDefectStatuses } from "services/clients/sites/siteApplications/defec
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import AddDialog from "./AddDialog";
 import EditDialog from "./EditDialog";
+import TabTitle from "components/Elements/TabTitle";
 
 function DefectStatuses({ appId, setError, state, dispatch }) {
 	const {
@@ -121,6 +122,7 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 
 	return (
 		<>
+			<TabTitle title={`${data.application.name} ${defectStatusPlural}`} />
 			<DefaultDialog
 				open={openDefaultDialog}
 				closeHandler={closeDefaultDialog}

@@ -14,6 +14,7 @@ import ColourConstants from "helpers/colourConstants";
 import Details from "./details";
 import Audio from "./Audio";
 import Parts from "./Parts";
+import TabTitle from "components/Elements/TabTitle";
 
 const AT = ActionButtonStyle();
 const media = "@media (max-width: 414px)";
@@ -78,6 +79,9 @@ function DefectsDetails() {
 
 	return (
 		<div className="container">
+			<TabTitle
+				title={`${customCaptions.defect} ${details?.number} | ${application.name}`}
+			/>
 			<ChangeStatusPopup
 				open={showChangeStatus}
 				onClose={handleToggleChangeStatus}

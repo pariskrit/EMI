@@ -17,6 +17,7 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 import RolesTable from "./RolesTable";
 import { applicationListPath } from "helpers/routePaths";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const AC = ContentStyle();
@@ -220,6 +221,7 @@ const RolesContent = ({ navigation, id, setIs404, state }) => {
 
 	return (
 		<div className="container">
+			<TabTitle title={`${applicationName} Roles`} />
 			{/* Start dialogs */}
 			<AddRoleDialog
 				open={openAddDialog}

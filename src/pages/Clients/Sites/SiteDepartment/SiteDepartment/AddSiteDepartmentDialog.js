@@ -11,6 +11,7 @@ import {
 	getLocalStorageData,
 } from "helpers/utils";
 import { addSiteDepartments } from "services/clients/sites/siteDepartments";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -63,6 +64,9 @@ const AddDepartmentDialog = ({
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const { customCaptions } = getLocalStorageData("me");
+	const { application, firstName, lastName } = JSON.parse(
+		sessionStorage.getItem("me") || localStorage.getItem("me")
+	);
 
 	// Handlers
 	const closeOverride = () => {
@@ -159,6 +163,7 @@ const AddDepartmentDialog = ({
 
 	return (
 		<div>
+			<TabTitle title={`${firstName} ${lastName} | ${application?.name}`} />
 			<Dialog
 				fullWidth={true}
 				maxWidth="md"

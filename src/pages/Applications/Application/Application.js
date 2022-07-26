@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import ApplicationContent from "./ApplicationContent";
 import applicationNavigation from "constants/navigation/applicationNavigation";
 
-function Application() {
+function Application({ title }) {
 	// Init params
 	const { id } = useParams();
 
@@ -14,7 +14,12 @@ function Application() {
 	// Rendering application content with Navbar. Otherwise, 404 error
 	if (is404 === false) {
 		return (
-			<ApplicationContent navigation={navigation} id={id} setIs404={setIs404} />
+			<ApplicationContent
+				navigation={navigation}
+				id={id}
+				setIs404={setIs404}
+				title={title}
+			/>
 		);
 	} else {
 		return <p>404: Application id {id} does not exist.</p>;

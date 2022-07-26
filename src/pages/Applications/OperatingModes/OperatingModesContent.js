@@ -17,6 +17,7 @@ import { handleSort } from "helpers/utils";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import { applicationListPath } from "helpers/routePaths";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const AC = ContentStyle();
@@ -298,6 +299,7 @@ const OperatingModesContent = ({ navigation, id, setIs404, state }) => {
 
 	return (
 		<div className="container">
+			<TabTitle title={`${applicationName} Operating Modes`} />
 			{/* START DIALOGS */}
 			<AddDialog
 				open={openAddDialog}

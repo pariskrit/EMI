@@ -29,6 +29,7 @@ import { useHistory } from "react-router-dom";
 import SearchTask from "./SearchTask";
 import { checkIfVisibleInViewPort } from "helpers/utils";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles({
 	loading: {
@@ -128,10 +129,11 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 
 	const {
 		position,
-		application: { showOperatingMode },
+		application: { showOperatingMode, name },
 		customCaptions,
-	} = JSON.parse(sessionStorage.getItem("me")) ||
-	JSON.parse(localStorage.getItem("me"));
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	const fetchData = useCallback(
 		async (
@@ -388,6 +390,9 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div>
+			<TabTitle
+				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${customCaptions.task} | ${name}`}
+			/>
 			{isPasting ? <LinearProgress className={classes.loading} /> : null}
 			<AddNewModelTask
 				open={state.showAdd}

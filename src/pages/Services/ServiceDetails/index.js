@@ -4,11 +4,15 @@ import { CircularProgress } from "@material-ui/core";
 import PageNotFound from "components/Elements/PageNotFound";
 import { getServiceDetails } from "services/services/serviceDetails/detail";
 import { ServiceContext } from "contexts/ServiceDetailContext";
+import TabTitle from "components/Elements/TabTitle";
 
 function ServicesDetails(props) {
 	const [state, dispatch] = useContext(ServiceContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isError, setIsError] = useState(false);
+	const { customCaptions, application } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	const { id } = useParams();
 
@@ -33,7 +37,14 @@ function ServicesDetails(props) {
 	if (isError) {
 		return <PageNotFound message="Service Not Found" />;
 	}
-	return <>{props.children(state.serviceDetail)}</>;
+	return (
+		<>
+			<TabTitle
+				title={`${customCaptions.serviceWorkOrder} | ${application.name}`}
+			/>
+			{props.children(state.serviceDetail)}
+		</>
+	);
 }
 
 export default ServicesDetails;

@@ -17,6 +17,7 @@ import { showError } from "redux/common/actions";
 import "./style.scss";
 import { clientsPath } from "helpers/routePaths";
 import License from "./License";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles((theme) => ({
 	detailContainer: {
@@ -46,6 +47,7 @@ const ClientDetails = ({
 	);
 	return (
 		<div className="client-details">
+			<TabTitle title={clientDetail.name} />
 			<div className="flex justify-between">
 				<NavDetails
 					staticCrumbs={[

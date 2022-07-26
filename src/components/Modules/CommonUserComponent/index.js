@@ -6,6 +6,7 @@ import UserNotes from "./UserNotes";
 import UserDetail from "./UserDetail";
 import Roles from "helpers/roles";
 import RoleWrapper from "../RoleWrapper";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles({
 	detailContainer: {
@@ -38,6 +39,7 @@ const UserDetails = ({
 		email: null,
 	});
 	const [notes, setNotes] = useState([]);
+	const me = JSON.parse(localStorage.getItem("me"));
 
 	//NOTES
 	//FETCH NOTES
@@ -78,6 +80,19 @@ const UserDetails = ({
 	return (
 		<>
 			<div className={classes.detailContainer}>
+				<TabTitle
+					title={`${
+						!id
+							? "My Profile"
+							: !me?.application
+							? data?.firstName + " " + data?.lastName
+							: data?.firstName +
+							  " " +
+							  data?.lastName +
+							  " " +
+							  me?.application?.name
+					}`}
+				/>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<UserDetail

@@ -13,6 +13,7 @@ import roles from "helpers/roles";
 import { setMeStorage } from "helpers/storage";
 import { connect } from "react-redux";
 import { authSlice } from "redux/auth/reducers";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles((theme) => ({
 	header: {
@@ -120,6 +121,7 @@ function Portal({ setUserDetail }) {
 
 	return (
 		<div>
+			<TabTitle title="Application Portal" />
 			<Grid container spacing={2} className={styles.header} alignItems="center">
 				<Grid item xs={12}>
 					<Typography variant="h6" component="h1" gutterBottom>

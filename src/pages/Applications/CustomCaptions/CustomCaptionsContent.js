@@ -9,10 +9,10 @@ import DetailsPanel from "components/Elements/DetailsPanel";
 import Grid from "@material-ui/core/Grid";
 import CustomCaptionsTable from "./CustomCaptionsTable";
 import "./customCaptions.css";
-
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import { applicationListPath } from "helpers/routePaths";
+import TabTitle from "components/Elements/TabTitle";
 
 // Init styled components
 const AC = ContentStyle();
@@ -125,6 +125,7 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 
 	return (
 		<div className="container">
+			<TabTitle title={`${applicationName} CustomCaptions`} />
 			<div className="topContainerCustomCaptions">
 				<NavDetails
 					staticCrumbs={[

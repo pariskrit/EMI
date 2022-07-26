@@ -16,6 +16,7 @@ import { handleSort } from "helpers/utils";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import withMount from "components/HOC/withMount";
+import TabTitle from "components/Elements/TabTitle";
 // Init styled components
 const AC = ContentStyle();
 
@@ -231,6 +232,7 @@ const ClientListContent = ({ isMounted }) => {
 
 	return (
 		<div className="clientListContentContainer">
+			<TabTitle title="Clients" />
 			<AddClientDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}

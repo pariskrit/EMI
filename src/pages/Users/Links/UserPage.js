@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 import UserModelAccess from "../UserDetail/UserModelAccess";
 import UserSite from "../UserDetail/UserSites";
+import TabTitle from "components/Elements/TabTitle";
 
 const routes = [
 	{

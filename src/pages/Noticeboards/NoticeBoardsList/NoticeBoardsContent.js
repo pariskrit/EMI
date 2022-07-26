@@ -29,6 +29,7 @@ import {
 	NoticeBoardsTableColumns,
 	NoticeBoardsTableHeader,
 } from "constants/NoticeBoards";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles({
 	loading: {
@@ -78,7 +79,12 @@ function NoticeBoardsList() {
 	} = useUserSearch();
 
 	// gets localstoarge || sessionStorage data
-	const { customCaptions, siteAppID, siteID } = getLocalStorageData("me");
+	const {
+		customCaptions,
+		siteAppID,
+		siteID,
+		application,
+	} = getLocalStorageData("me");
 
 	// init state
 	const [currentTableSort, setCurrentTableSort] = useState(["", "asc"]);
@@ -256,6 +262,7 @@ function NoticeBoardsList() {
 
 	return (
 		<>
+			<TabTitle title={`${customCaptions.tutorial} | ${application.name}`} />
 			{isSearching && <LinearProgress className={classes.loading} />}
 
 			<DeleteDialog

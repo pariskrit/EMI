@@ -14,6 +14,7 @@ import EditDialog from "./EditDialog";
 
 // Show Default
 import DefaultDialog from "components/Elements/DefaultDialog";
+import TabTitle from "components/Elements/TabTitle";
 
 const CommonContent = ({
 	id,
@@ -53,7 +54,7 @@ const CommonContent = ({
 	// Show Default
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [confirmDefault, setConfirmDefault] = useState([null, null]);
-	const [defaultData, setDefaultData] = useState(null);
+	const [defaultData, setDefaultData] = useState({});
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
@@ -267,6 +268,16 @@ const CommonContent = ({
 
 	return (
 		<div>
+			{state && (
+				<TabTitle
+					title={`${state?.details.data.application.name} ${
+						state?.defaultCustomCaptionsData[pluralCaption.default]
+							? state.defaultCustomCaptionsData[pluralCaption.default]
+							: ""
+					}`}
+				/>
+			)}
+
 			{/* Start of dialogs */}
 			<AddDialog
 				open={state.showAdd}

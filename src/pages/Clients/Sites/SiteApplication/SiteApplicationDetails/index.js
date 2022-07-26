@@ -14,6 +14,7 @@ import { setNavCrumbs } from "redux/siteDetail/actions";
 import { clientsPath, siteDetailPath } from "helpers/routePaths";
 import RiskRatingImage from "./RiskRatingImage";
 import KeyContacts from "./KeyContacts";
+import TabTitle from "components/Elements/TabTitle";
 
 function SiteApplicationDetails({
 	appId,
@@ -27,7 +28,6 @@ function SiteApplicationDetails({
 	setCrumbs,
 	clientId,
 }) {
-	console.log(details);
 	const [showLicenseTile, setShowLicenseTile] = useState(false);
 	const [siteAppDetails, setSiteAppDetails] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -114,6 +114,7 @@ function SiteApplicationDetails({
 	}, [details]);
 	return (
 		<>
+			<TabTitle title={`${details.data.application.name}`} />
 			<ConfirmChangeDialog
 				open={openConfirmationModal}
 				closeHandler={closeConfirmationModal}

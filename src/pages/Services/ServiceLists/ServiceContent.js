@@ -52,6 +52,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 import StatusChangePopup from "./StatusChangePopup";
 import { changeDate } from "helpers/date";
 import MultipleChangeStatusPopup from "./MultipleChangeStatusPopup";
+import TabTitle from "components/Elements/TabTitle";
 
 const useStyles = makeStyles({
 	loading: {
@@ -186,10 +187,11 @@ function ServiceLists({
 		customCaptions,
 		siteAppID,
 		siteID,
-		application: { allowIndividualAssetModels },
+		application: { allowIndividualAssetModels, name },
 		site: { siteDepartmentID, siteDepartmentName },
-	} = JSON.parse(sessionStorage.getItem("me")) ||
-	JSON.parse(localStorage.getItem("me"));
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	// init state
 	const [currentTableSort, setCurrentTableSort] = useState([
@@ -205,8 +207,10 @@ function ServiceLists({
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [selectedServices, setSelectedServices] = useState([]);
 	const [openChnageStatusPopup, setOpenChnageStatusPopup] = useState(false);
-	const [openMultipleChnageStatusPopup, setOpenMultipleChnageStatusPopup] =
-		useState(false);
+	const [
+		openMultipleChnageStatusPopup,
+		setOpenMultipleChnageStatusPopup,
+	] = useState(false);
 	const [siteDepartments, setSiteDepartments] = useState([]);
 	const [selectedTimeframe, setSelectedTimeframe] = useState(
 		timeFrameFromMemory === null ? defaultTimeframe : timeFrameFromMemory
@@ -551,6 +555,7 @@ function ServiceLists({
 
 	return (
 		<>
+			<TabTitle title={`${customCaptions.service} | ${name}`} />
 			{isSearching && <LinearProgress className={classes.loading} />}
 			<StatusChangePopup
 				open={openChnageStatusPopup}

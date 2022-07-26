@@ -12,6 +12,7 @@ import EditDialog from "./EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
 import UserRolesTable from "./UserRolesTable";
+import TabTitle from "components/Elements/TabTitle";
 
 const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 	const [haveData, setHaveData] = useState(false);
@@ -130,6 +131,9 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 	} = state;
 	return (
 		<div className="container">
+			<TabTitle
+				title={`${state.details.data.application.name} ${state.defaultCustomCaptionsData?.role}`}
+			/>
 			<AddDialog
 				open={showAdd}
 				closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
