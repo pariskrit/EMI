@@ -381,6 +381,17 @@ function UserModelAccess({ data }) {
 							name={`${firstName} ${lastName}`}
 							departmentChangeLoading={departmentChangeLoading}
 						/>
+						<Roles
+							data={roles}
+							captions={[
+								customCaptions?.rolePlural,
+								customCaptions?.servicePlural,
+							]}
+							handleCheck={handleRoleChange}
+							name={`${firstName} ${lastName}`}
+						/>
+					</Grid>
+					<Grid item xs={12} md={6}>
 						<Models
 							data={models}
 							allowAllModels={allowAllModels}
@@ -397,18 +408,6 @@ function UserModelAccess({ data }) {
 							dispatch={dispatch}
 							name={`${firstName} ${lastName}`}
 							tickAllLoading={tickAllLoading}
-						/>
-					</Grid>
-					<Grid item xs={12} md={6}>
-						<Roles
-							data={roles}
-							captions={[
-								customCaptions?.rolePlural,
-								customCaptions?.servicePlural,
-							]}
-							handleCheck={handleRoleChange}
-							name={`${firstName} ${lastName}`}
-							roleChangeLoading={roleChangeLoading}
 						/>
 					</Grid>
 				</Grid>
