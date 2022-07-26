@@ -6,7 +6,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import Departments from "./Departments";
 import Models from "./Models";
 import Roles from "./Roles";
-import { getName } from "helpers/utils";
+import { coalesc } from "helpers/utils";
 import { CircularProgress } from "@material-ui/core";
 import {
 	checkUserDepartments,
@@ -276,7 +276,7 @@ function UserModelAccess({ data }) {
 			setModels(
 				response.data.models.map((model) => ({
 					...model,
-					name: `${model.name} ${getName(model.modelName)}`,
+					name: `${model.name} ${coalesc(model.modelName)}`,
 					checked: model.clientUserSiteAppServiceModels?.length <= 0,
 					idToDelete:
 						model.clientUserSiteAppServiceModels?.length > 0

@@ -281,6 +281,6 @@ export function formatBytes(bytes, decimals = 2) {
 
 	return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
-export const getName = (name) => {
-	return name ? name : "";
+export const coalesc = (val) => {
+	return val ?? "";
 };
