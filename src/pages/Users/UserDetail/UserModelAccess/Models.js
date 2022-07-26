@@ -3,6 +3,27 @@ import CheckboxContainer from "components/Modules/CheckboxContainer";
 import React from "react";
 import GeneralButton from "components/Elements/GeneralButton";
 import { LinearProgress } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+	main: {
+		display: "flex",
+		flexDirection: "column",
+		gap: "15px",
+		flex: "1",
+	},
+	buttonDiv: {
+		display: "flex",
+		gap: "5rem",
+		justifyContent: "space-between",
+	},
+	button: {
+		backgroundColor: "#23bb79",
+		height: "2rem",
+		width: "6rem",
+		marginTop: "-6px",
+	},
+}));
 
 function Models({
 	data,
@@ -12,35 +33,18 @@ function Models({
 	name,
 	tickAllLoading,
 }) {
+	const classes = useStyles();
 	return (
 		<AccordionBox title={captions[0] ?? "Models"} style={{ marginTop: "15px" }}>
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					gap: "15px",
-					flex: "1",
-				}}
-			>
+			<div className={classes.main}>
 				{tickAllLoading && <LinearProgress />}
-				<div
-					style={{
-						display: "flex",
-						gap: "5rem",
-						justifyContent: "space-between",
-					}}
-				>
+				<div className={classes.buttonDiv}>
 					<em>
 						{name} can perform {captions[1] ?? "Services"} for the following{" "}
 						{captions[0] ?? "Models"}
 					</em>
 					<GeneralButton
-						style={{
-							backgroundColor: "#23bb79",
-							height: "2rem",
-							width: "6rem",
-							marginTop: "-6px",
-						}}
+						className={classes.button}
 						onClick={() => {
 							tickAllModel();
 						}}

@@ -6,6 +6,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import Departments from "./Departments";
 import Models from "./Models";
 import Roles from "./Roles";
+import { getName } from "helpers/utils";
 import { CircularProgress } from "@material-ui/core";
 import {
 	checkUserDepartments,
@@ -123,6 +124,7 @@ function UserModelAccess({ data }) {
 					isDisabled: false,
 				})),
 			]);
+			setDepartmentChangeLoading(false);
 			displayError(response);
 		}
 	};
@@ -162,6 +164,7 @@ function UserModelAccess({ data }) {
 			setRoleChangeLoading(false);
 		} else {
 			setRoles([...roles.map((role) => ({ ...role, isDisabled: false }))]);
+			setRoleChangeLoading(false);
 			displayError(response);
 		}
 	};
@@ -221,6 +224,7 @@ function UserModelAccess({ data }) {
 						: { ...model, isDisabled: false }
 				),
 			]);
+
 			displayError(response);
 		}
 	};
@@ -272,7 +276,7 @@ function UserModelAccess({ data }) {
 			setModels(
 				response.data.models.map((model) => ({
 					...model,
-					name: `${model.name} ${model.modelName}`,
+					name: `${model.name} ${getName(model.modelName)}`,
 					checked: model.clientUserSiteAppServiceModels?.length <= 0,
 					idToDelete:
 						model.clientUserSiteAppServiceModels?.length > 0
@@ -389,6 +393,7 @@ function UserModelAccess({ data }) {
 								customCaptions?.servicePlural,
 							]}
 							handleCheck={handleRoleChange}
+							roleChangeLoading={roleChangeLoading}
 							name={`${firstName} ${lastName}`}
 						/>
 					</Grid>
