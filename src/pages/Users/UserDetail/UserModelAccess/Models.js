@@ -13,9 +13,22 @@ function Models({
 }) {
 	return (
 		<AccordionBox title={captions[0] ?? "Models"} style={{ marginTop: "15px" }}>
-			<div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					gap: "15px",
+					flex: "1",
+				}}
+			>
 				{tickAllLoading && <LinearProgress />}
-				<div style={{ display: "flex", gap: "5rem" }}>
+				<div
+					style={{
+						display: "flex",
+						gap: "5rem",
+						justifyContent: "space-between",
+					}}
+				>
 					<em>
 						{name} can perform {captions[1] ?? "Services"} for the following{" "}
 						{captions[0] ?? "Models"}

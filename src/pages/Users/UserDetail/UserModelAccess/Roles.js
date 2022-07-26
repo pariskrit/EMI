@@ -7,7 +7,12 @@ function Roles({ data, captions, handleCheck, name, roleChangeLoading }) {
 	return (
 		<AccordionBox title={captions[0] ?? "Roles"}>
 			<div style={{ width: "100%" }}>
-				{roleChangeLoading && <LinearProgress />}
+				{roleChangeLoading && (
+					<div className="mb-sm">
+						<LinearProgress />
+					</div>
+				)}
+
 				<div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
 					<em>
 						{name} can perform {captions[1] ?? "Services"} for the following{" "}
