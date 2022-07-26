@@ -52,22 +52,10 @@ const getSiteAppRoles = async (siteAppId) => {
 	}
 };
 
-const getModelDepartment = async (modelId) => {
-	try {
-		let response = await API.get(
-			`${Apis.ModelDepartments}/available?modelId=${modelId}`
-		);
-		return getAPIResponse(response);
-	} catch (error) {
-		return getAPIResponse(error?.response);
-	}
-};
-
 export {
 	getModelRolesList,
 	getSiteAppRoles,
 	addModelRole,
 	editModelRole,
 	getModelRolesListByInterval,
-	getModelDepartment,
 };

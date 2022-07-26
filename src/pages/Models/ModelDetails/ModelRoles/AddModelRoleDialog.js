@@ -12,10 +12,8 @@ import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
-import {
-	getModelDepartment,
-	getSiteAppRoles,
-} from "services/models/modelDetails/modelRoles";
+import { getSiteAppRoles } from "services/models/modelDetails/modelRoles";
+import { getAvailabeleModelDeparments } from "services/models/modelDetails/details";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
@@ -118,7 +116,7 @@ function AddNewModelRole({
 	useEffect(() => {
 		if (open) {
 			async function getDepartments() {
-				const response = await getModelDepartment(modelId);
+				const response = await getAvailabeleModelDeparments(modelId);
 				let finalData = response.data.map((x) => ({
 					...x,
 					id: x.siteDepartmentID,

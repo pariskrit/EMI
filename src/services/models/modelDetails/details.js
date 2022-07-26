@@ -31,7 +31,9 @@ export const getModelTypes = async (id) => {
 
 export const getModelDeparments = async (id) => {
 	try {
-		let response = await API.get(`${Apis.ModelDepartments}?modelId=${id}`);
+		let response = await API.get(
+			`${Apis.ModelVersionDepartments}?modelVersionId=${id}`
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -41,7 +43,7 @@ export const getModelDeparments = async (id) => {
 export const getAvailabeleModelDeparments = async (id) => {
 	try {
 		let response = await API.get(
-			`${Apis.ModelDepartments}/available?modelId=${id}`
+			`${Apis.ModelVersionDepartments}/available?modelVersionId=${id}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -148,7 +150,7 @@ export const deleteDocument = async (id) => {
 
 export const addModelDepartment = async (payload) => {
 	try {
-		let response = await API.post(`${Apis.ModelDepartments}`, payload);
+		let response = await API.post(`${Apis.ModelVersionDepartments}`, payload);
 
 		return getAPIResponse(response);
 	} catch (err) {
@@ -158,7 +160,7 @@ export const addModelDepartment = async (payload) => {
 
 export const deleteModelDepartment = async (id) => {
 	try {
-		let response = await API.delete(`${Apis.ModelDepartments}/${id}`);
+		let response = await API.delete(`${Apis.ModelVersionDepartments}/${id}`);
 
 		return getAPIResponse(response);
 	} catch (err) {

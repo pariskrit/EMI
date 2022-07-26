@@ -201,6 +201,7 @@ function ModelDetailContent({
 								customCaptions={customCaptions}
 								modelId={modelDefaultId}
 								isReadOnly={isReadOnly}
+								isPublished={state?.modelDetail?.isPublished}
 							/>
 							<Notes
 								data={modelDetailsData.modelNotes}

@@ -30,10 +30,12 @@ function Departments({
 	customCaptions,
 	modelId,
 	isReadOnly,
+	isPublished,
 }) {
 	const classes = useStyles();
 	const [tickInputLists, setTickInputLists] = useState([]);
 	const [isDisabled, setIsDisabled] = useState({});
+
 	const dispatch = useDispatch();
 
 	const onTickInputClick = async (data) => {
@@ -43,11 +45,12 @@ function Departments({
 
 		let prevData = [...tickInputLists];
 
-		setIsDisabled({ [data.id]: true });
+		setIsDisabled((prev) => ({ ...prev, [data.id]: true }));
+
 		let response = data.checked
 			? await deleteModelDepartment(data.deleteId)
 			: await addModelDepartment({
-					modelID: modelId,
+					modelVersionId: modelId,
 					siteDepartmentID: data.id,
 			  });
 
@@ -56,8 +59,8 @@ function Departments({
 
 			dispatch(showError(response.data || "Could not check input box"));
 		} else {
-			setTickInputLists([
-				...tickInputLists.map((input) =>
+			setTickInputLists((prev) => [
+				...prev.map((input) =>
 					input.id === data.id
 						? {
 								...input,
@@ -69,7 +72,7 @@ function Departments({
 			]);
 		}
 
-		setIsDisabled({});
+		setIsDisabled((prev) => ({ ...prev, [data.id]: false }));
 	};
 
 	useEffect(() => {
@@ -102,7 +105,7 @@ function Departments({
 						key={detail.id}
 						state={detail}
 						handleCheck={onTickInputClick}
-						isDisabled={isDisabled[detail.id]}
+						isDisabled={isPublished ? true : isDisabled[detail.id]}
 					/>
 				))}
 			</div>
