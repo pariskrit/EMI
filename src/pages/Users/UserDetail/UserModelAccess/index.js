@@ -22,7 +22,6 @@ import {
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { useCallback } from "react";
 
 const useStyles = makeStyles({
 	dropdown: {
@@ -45,6 +44,9 @@ const useStyles = makeStyles({
 function UserModelAccess({ data }) {
 	const classes = useStyles();
 	const [isLoading, setLoading] = useState(true);
+	const [tickAllLoading, setTickAllLoading] = useState(false);
+	const [departmentChangeLoading, setDepartmentChangeLoading] = useState(false);
+	const [roleChangeLoading, setRoleChangeLoading] = useState(false);
 	const [allowAllModels, setAllowAllModels] = useState(false);
 	const [sites, setSites] = useState([]);
 	const [selectedSite, setSelectedSite] = useState({});
@@ -92,7 +94,7 @@ function UserModelAccess({ data }) {
 			),
 		];
 		setDepartments(updatedDepartment);
-
+		setDepartmentChangeLoading(true);
 		const response = checkedItem.checked
 			? await uncheckUserDepartments(checkedItem.idToDelete)
 			: await checkUserDepartments({
@@ -112,6 +114,7 @@ function UserModelAccess({ data }) {
 				),
 			]);
 			await fetchModelDepartmentRole(id);
+			setDepartmentChangeLoading(false);
 		} else {
 			setDepartments([
 				...departments.map((department) => ({
@@ -133,9 +136,10 @@ function UserModelAccess({ data }) {
 		];
 
 		setRoles(updatedRoles);
+		setRoleChangeLoading(true);
 
 		const response = checkedItem.checked
-			? await uncheckUserRoles(checkedItem.id)
+			? await uncheckUserRoles(checkedItem?.idToDelete)
 			: await checkUserRoles({
 					clientUserSiteAppID: selectedApplication.clientUserSiteAppID || id,
 					roleID: checkedItem.id,
@@ -154,6 +158,7 @@ function UserModelAccess({ data }) {
 				),
 			]);
 			await fetchModelDepartmentRole(id);
+			setRoleChangeLoading(false);
 		} else {
 			setRoles([...roles.map((role) => ({ ...role, isDisabled: false }))]);
 			displayError(response);
@@ -161,9 +166,11 @@ function UserModelAccess({ data }) {
 	};
 
 	const tickAllModel = async () => {
+		setTickAllLoading(true);
 		const response = await deleteAtTickAll(id);
 		if (response.status) {
 			await fetchModelDepartmentRole(id);
+			setTickAllLoading(false);
 		}
 	};
 
@@ -372,6 +379,7 @@ function UserModelAccess({ data }) {
 							]}
 							handleCheck={handleDepartmentChange}
 							name={`${firstName} ${lastName}`}
+							departmentChangeLoading={departmentChangeLoading}
 						/>
 						<Models
 							data={models}
@@ -388,6 +396,7 @@ function UserModelAccess({ data }) {
 							tickAllModel={tickAllModel}
 							dispatch={dispatch}
 							name={`${firstName} ${lastName}`}
+							tickAllLoading={tickAllLoading}
 						/>
 					</Grid>
 					<Grid item xs={12} md={6}>
@@ -399,6 +408,7 @@ function UserModelAccess({ data }) {
 							]}
 							handleCheck={handleRoleChange}
 							name={`${firstName} ${lastName}`}
+							roleChangeLoading={roleChangeLoading}
 						/>
 					</Grid>
 				</Grid>
