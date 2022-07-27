@@ -67,6 +67,11 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appId]);
 
+	useEffect(() => {
+		handleGetData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	const onEditClick = (id) => {
 		let index = allData.findIndex((el) => el.id === id);
 
@@ -139,12 +144,6 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		}
 	};
 
-	useEffect(() => {
-		handleGetData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	console.log(state);
 	const mainData = searchQuery.length === 0 ? allData : searchedData;
 
 	return (

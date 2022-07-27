@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { SiteContext } from "contexts/SiteApplicationContext";
 import CommonHeaderWrapper from "components/Modules/CommonHeaderWrapper";
 import SiteApplicationNavigation from "constants/navigation/siteAppNavigation";

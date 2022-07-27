@@ -34,6 +34,40 @@ const RoleRoute = ({
 	);
 };
 
+export const RoleRoutes = ({
+	component: Component,
+	roles,
+	access,
+	condition,
+	routeInfo,
+	...rest
+}) => {
+	const { role, position } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+	const history = useHistory();
+	return (
+		<Route
+			{...rest}
+			render={(props) =>
+				roles.includes(role) || condition ? (
+					<Component
+						{...routeInfo}
+						{...props}
+						history={history}
+						role={role}
+						access={position?.[access]}
+					/>
+				) : history.length > 1 ? (
+					history.goBack()
+				) : (
+					history.push("/app/me")
+				)
+			}
+		/>
+	);
+};
+
 RoleRoute.defaultProps = {
 	roles: [],
 	access: "",

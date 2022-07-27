@@ -117,7 +117,7 @@ function AddNewModelRole({
 		if (open) {
 			async function getDepartments() {
 				const response = await getAvailabeleModelDeparments(modelId);
-				let finalData = response.data.map((x) => ({
+				let finalData = response.data?.map((x) => ({
 					...x,
 					id: x.siteDepartmentID,
 				}));
