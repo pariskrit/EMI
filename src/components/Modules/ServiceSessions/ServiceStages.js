@@ -37,16 +37,23 @@ const useStyles = makeStyles((theme) => ({
 function dynamicWidth(i) {
 	if (i === 0) {
 		return {
-			width: "20%",
+			width: "25%",
 		};
 	}
+
 	return {
-		width: "auto",
+		width: "50%",
 	};
 }
 
-const ServiceStages = ({ tasks, customCaptions, formatQuestion }) => {
+const ServiceStages = ({
+	tasks,
+	formatQuestion,
+	customCaptions,
+	completedBy = "",
+}) => {
 	const classes = useStyles();
+
 	return (
 		<>
 			{tasks?.map((task) => (
@@ -66,13 +73,15 @@ const ServiceStages = ({ tasks, customCaptions, formatQuestion }) => {
 							>
 								<TableHead className={classes.tableHead}>
 									<TableRow>
-										{["Action Name", "Task Name", "Completion Date"].map(
-											(header, i) => (
-												<TableCell key={header} style={dynamicWidth(i)}>
-													{header}
-												</TableCell>
-											)
-										)}
+										{[
+											customCaptions?.task,
+											"Completed By",
+											"Completion Date",
+										].map((header, i) => (
+											<TableCell key={header} style={dynamicWidth(i)}>
+												{header}
+											</TableCell>
+										))}
 									</TableRow>
 								</TableHead>
 								<TableBody className={classes.tableBody}>
@@ -97,16 +106,17 @@ const ServiceStages = ({ tasks, customCaptions, formatQuestion }) => {
 															</span>
 														)}
 														<span style={{ marginLeft: "20px" }}>
-															{zone.actionName}
+															{zone.actionName} {zone.taskName}
 														</span>
 													</span>
 												),
+												completedBy,
 											};
 										})
 										.map((t) => (
 											<>
 												<TableRow>
-													{["actionName", "taskName", "completedDate"].map(
+													{["actionName", "completedBy", "completedDate"].map(
 														(column, i) => (
 															<TableCell key={column}>{t[column]}</TableCell>
 														)

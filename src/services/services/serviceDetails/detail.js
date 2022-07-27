@@ -99,3 +99,14 @@ export const getServicePeopleList = async (serviceId) => {
 		return getAPIResponse(err?.response);
 	}
 };
+
+export const getIncompleteService = async (serviceId) => {
+	try {
+		let response = await API.get(
+			`${Apis.Services}/${serviceId}/incompleteTasks`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};

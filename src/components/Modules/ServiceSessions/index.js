@@ -1,14 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import CommonTable from "../../../pages/Services/ServiceDetails/Impacts/CommonTable";
 import { TableContainer, Typography } from "@material-ui/core";
-import { formatAMPM, isoDateWithoutTimeZone } from "helpers/utils";
-import { changeDate } from "helpers/date";
+import { dateDifference, isoDateWithoutTimeZone } from "helpers/utils";
 import Grid from "@material-ui/core/Grid";
 import ServiceStages from "./ServiceStages";
 import clsx from "clsx";
@@ -57,94 +55,9 @@ export default function ServiceReport({
 	completedService: rows,
 	roleName,
 	customCaptions,
+	formatQuestion,
+	groupByStage,
 }) {
-	function setQuestionResponse(question) {
-		switch (question.type) {
-			case "S":
-			case "L":
-				return question?.valueString;
-
-			case "N":
-				return question?.valueNumeric;
-
-			case "D":
-				return changeDate(question?.valueDate);
-
-			case "T":
-				return formatAMPM(question?.valueDate);
-
-			case "O":
-				return commaSeperateValues(question?.options);
-
-			case "C":
-			case "B":
-				return question?.valueBoolean
-					? question?.checkboxCaption
-					: commaSeperateValues(question?.options);
-
-			default:
-				return question?.valueBoolean;
-		}
-	}
-
-	function commaSeperateValues(options) {
-		let values = options?.map((op) => op?.name);
-		return values.join(", ");
-	}
-
-	function formatQuestion(questions) {
-		return questions?.map((q) => {
-			return {
-				...q,
-				date: q.date ? isoDateWithoutTimeZone(q.date + "Z") : "",
-				response: setQuestionResponse(q),
-			};
-		});
-	}
-
-	const groupByZone = (Zonedata) => {
-		let zoneGroupedData = Zonedata.reduce((group, current) => {
-			const { zoneName } = current;
-			if (zoneName) {
-				group[zoneName] = group[zoneName] ?? [];
-				group[zoneName].push(current);
-			} else {
-				group["empty"] = group["empty"] ?? [];
-				group["empty"].push(current);
-			}
-			return group;
-		}, {});
-
-		return Object.keys(zoneGroupedData).map((key) => {
-			let zoneObject = {};
-			return {
-				...zoneObject,
-				zonename: key === "empty" ? null : key,
-				zoneData: zoneGroupedData[key],
-			};
-		});
-	};
-
-	const groupByStage = (data) => {
-		let stageGroupedData = data.reduce((group, current) => {
-			const { stageName } = current;
-			if (stageName) {
-				group[stageName] = group[stageName] ?? [];
-				group[stageName].push(current);
-			}
-			return group;
-		}, {});
-
-		return Object.keys(stageGroupedData).map((key) => {
-			let stageObject = {};
-			return {
-				...stageObject,
-				stagename: key,
-				stageData: groupByZone(stageGroupedData[key]),
-			};
-		});
-	};
-
 	const classes = useStyles();
 	return (
 		<>
@@ -179,7 +92,6 @@ export default function ServiceReport({
 										{row.endDate && isoDateWithoutTimeZone(row?.endDate + "Z")}
 									</TableCell>
 								</TableRow>
-
 								{row?.questions?.filter((d) => d?.timing === "B")?.length >
 									0 && (
 									<TableRow>
@@ -201,14 +113,45 @@ export default function ServiceReport({
 										</TableCell>
 									</TableRow>
 								)}
-
 								{row?.tasks.length > 0 && groupByStage(row?.tasks).length > 0 && (
 									<TableRow>
 										<TableCell colSpan={18}>
 											<ServiceStages
+												completedBy={row?.displayName}
 												tasks={groupByStage(row?.tasks)}
 												customCaptions={customCaptions}
 												formatQuestion={formatQuestion}
+											/>
+										</TableCell>
+									</TableRow>
+								)}
+
+								{row?.pauses.length > 0 && (
+									<TableRow>
+										<TableCell colSpan={18}>
+											<CommonTable
+												headers={[
+													"Pause",
+													"Pause Subcategory",
+													"other Reasons",
+													"Start Date",
+													"End Date",
+													"Duration",
+												]}
+												columns={[
+													"pauseReason",
+													"pauseSubcategory",
+													"pauseOtherReason",
+													"startDate",
+													"endDate",
+													"duration",
+												]}
+												data={row.pauses?.map((x) => ({
+													...x,
+													startDate: isoDateWithoutTimeZone(x.startDate + "Z"),
+													endDate: isoDateWithoutTimeZone(x.endDate + "Z"),
+													duration: dateDifference(x.endDate, x.startDate),
+												}))}
 											/>
 										</TableCell>
 									</TableRow>
@@ -235,7 +178,6 @@ export default function ServiceReport({
 										</TableCell>
 									</TableRow>
 								)}
-
 								{row.endDate && (
 									<React.Fragment>
 										<Typography className={classes.headerText}>

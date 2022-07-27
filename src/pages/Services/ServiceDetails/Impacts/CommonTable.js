@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function CommonTable({ data = [], headers = [], columns = [] }) {
-	console.log("Headers", headers, data);
 	const classes = useStyles();
 
 	const style = { width: Math.floor(100 / headers.length) + "%" };
