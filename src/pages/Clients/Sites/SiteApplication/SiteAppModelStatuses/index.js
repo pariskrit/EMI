@@ -151,8 +151,8 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		<div>
 			<TabTitle
 				title={`${data?.application?.name} ${
-					data?.application?.modelStatuses ? data.application.modelStatuses : ""
-				}`}
+					data?.application?.modelCC || defaultCustomCaptionsData?.model
+				} Statuses `}
 			/>
 			<AddStatusDialog
 				open={state.showAdd}
