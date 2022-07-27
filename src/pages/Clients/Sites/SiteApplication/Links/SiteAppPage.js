@@ -40,6 +40,7 @@ import DefectRiskRatings from "../DefectRiskRatings";
 import UserPositions from "../UserPositions";
 import RoleRoute from "components/HOC/RoleRoute";
 import { Switch } from "react-router-dom";
+import { Route } from "react-router-dom/cjs/react-router-dom.min";
 
 const route = (customCaption) => {
 	return [
@@ -321,21 +322,25 @@ const route = (customCaption) => {
 const SiteAppPage = () => {
 	return (
 		<SiteApplicationContext>
-			<SiteApplication>
-				{(customCaption) => (
-					<Switch>
-						{route(customCaption).map((route) => (
-							<RoleRoute
-								component={(props) => <SingleComponent {...route} {...props} />}
-								key={route.id}
-								path={siteAppPath + route.path}
-								exact
-								roles={[roles.superAdmin, roles.siteUser, roles.clientAdmin]}
-							/>
-						))}
-					</Switch>
-				)}
-			</SiteApplication>
+			<Route path={siteAppPath}>
+				<SiteApplication>
+					{(customCaption) => (
+						<Switch>
+							{route(customCaption).map((route) => (
+								<RoleRoute
+									component={(props) => (
+										<SingleComponent {...route} {...props} />
+									)}
+									key={route.id}
+									path={siteAppPath + route.path}
+									exact
+									roles={[roles.superAdmin, roles.siteUser, roles.clientAdmin]}
+								/>
+							))}
+						</Switch>
+					)}
+				</SiteApplication>
+			</Route>
 		</SiteApplicationContext>
 	);
 };
