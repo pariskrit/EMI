@@ -554,7 +554,9 @@ function DyanamicDropdown(props) {
 						) : selectedValue && selectedValue[selectdValueToshow] ? (
 							selectedValue[selectdValueToshow]
 						) : (
-							<em style={{ opacity: "0.7" }}>{placeholder}</em>
+							<em style={{ opacity: placeholder !== "none" ? "0.7" : "0" }}>
+								{placeholder}
+							</em>
 						)}
 					</span>
 					<ArrowIcon className="arrow-down" />

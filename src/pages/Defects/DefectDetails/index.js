@@ -111,6 +111,9 @@ function DefectsDetails() {
 								: ColourConstants.red,
 					}}
 					hideVersion={true}
+					showCreatedByAt
+					time={details.createdDateTime}
+					userName={details.createdUserName}
 				/>
 				<div className={classes.wrapper}>
 					<div className={classes.buttons}>

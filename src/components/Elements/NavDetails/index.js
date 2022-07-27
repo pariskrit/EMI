@@ -8,6 +8,7 @@ import SaveHistory from "../SaveHistory";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import CreatedByAt from "../CreatedByAt";
 
 const useStyles = makeStyles((theme) => ({
 	crumbText: {
@@ -42,6 +43,9 @@ const NavDetails = ({
 	hideLastLogin,
 	hideVersion,
 	hideLastSave = false,
+	showCreatedByAt = false,
+	time,
+	userName,
 }) => {
 	// Init hooks
 	const classes = useStyles();
@@ -113,6 +117,7 @@ const NavDetails = ({
 						hideLastSave={hideLastSave}
 					/>
 				)}
+				{showCreatedByAt && <CreatedByAt time={time} userName={userName} />}
 			</div>
 		</div>
 	);
