@@ -35,7 +35,7 @@ function Models({
 }) {
 	const classes = useStyles();
 	return (
-		<AccordionBox title={captions[0] ?? "Models"} style={{ marginTop: "15px" }}>
+		<AccordionBox title={captions[0] ?? "Models"}>
 			<div className={classes.main}>
 				{tickAllLoading && <LinearProgress />}
 				<div className={classes.buttonDiv}>
