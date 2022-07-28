@@ -150,7 +150,7 @@ function Roles({
 				createProcessHandler={createModalRole}
 				fetchModelRoles={() => fetchModelRoles(false)}
 				customCaptions={customCaptions}
-				modelId={modelDefaultId}
+				modelId={modelId}
 			/>
 			<AddModelRoleDialog
 				open={openEditModelRoleDialog}
@@ -164,7 +164,7 @@ function Roles({
 				mappedRoleName={roleToEditId?.mappedRoleName}
 				mappedDepartmentName={roleToEditId?.siteDepartmentName}
 				customCaptions={customCaptions}
-				modelId={modelDefaultId}
+				modelId={modelId}
 			/>
 			<DeleteDialog
 				entityName={`${customCaptions?.role}`}

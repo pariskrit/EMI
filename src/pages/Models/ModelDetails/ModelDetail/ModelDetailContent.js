@@ -111,7 +111,7 @@ function ModelDetailContent({
 
 	const fetchAllData = useCallback(async () => {
 		const res = await Promise.all([
-			getModelDeparments(modelDefaultId),
+			getModelDeparments(modelId),
 			getModelNotes(modelDefaultId),
 			getModelDocuments(modelDefaultId),
 			getModelTypes(position.siteAppID),

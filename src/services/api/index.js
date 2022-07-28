@@ -96,7 +96,6 @@ const BASE_API_PATH_MODEL_VERSION_INTERVAL_INCLUDES = `${BASE_API_PATH}modelvers
 
 const BASE_API_PATH_MODEL_INTERVALS_TASK_LIST_NOS = `${BASE_API_PATH}ModelIntervalTaskListNos`;
 //ModelDetails
-const BASE_API_PATH_MODEL_DEPARTMENTS = `${BASE_API_PATH}ModelDepartments`;
 const BASE_API_PATH_MODEL_VERSION_DEPARTMENTS = `${BASE_API_PATH}ModelVersionDepartments`;
 const BASE_API_PATH_MODEL_NOTES = `${BASE_API_PATH}ModelNotes`;
 const BASE_API_PATH_MODEL_DOCUMENTS = `${BASE_API_PATH}ModelDocuments`;
@@ -271,7 +270,6 @@ export const Apis = {
 	ModelQuestionOption: `${BASE_API_PATH_MODEL_QUESTION_OPTION}`,
 	ModelAssets: `${BASE_API_PATH_MODEL_ASSETS}`,
 	ModelRoles: `${BASE_API_PATH_MODEL_ROLES}`,
-	ModelDepartments: `${BASE_API_PATH_MODEL_DEPARTMENTS}`,
 	ModelVersionDepartments: `${BASE_API_PATH_MODEL_VERSION_DEPARTMENTS}`,
 	ModelNotes: `${BASE_API_PATH_MODEL_NOTES}`,
 	ModelDocuments: `${BASE_API_PATH_MODEL_DOCUMENTS}`,
