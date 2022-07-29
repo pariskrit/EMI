@@ -19,7 +19,7 @@ import AddDialogStyle from "styles/application/AddDialogStyle";
 
 const Add = AddDialogStyle();
 
-function Details({ details, siteAppID, captions, defectId }) {
+function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 	const [selectedDropdown, setSelectedDropdown] = useState({
 		type: {},
 		riskRating: {},
@@ -91,8 +91,16 @@ function Details({ details, siteAppID, captions, defectId }) {
 
 	const handleUpdateInput = async (e) => {
 		if (!isInputChanged) return;
+		if (
+			e.target.name === "details" &&
+			(input[e.target.name] === "" || input[e.target.name] === "\n")
+		) {
+			fetchDefect();
+			setInput({ ...input, [e.target.name]: details[e.target.name] });
+			return;
+		}
 
-		const response = await await updateDefect(defectId, [
+		const response = await updateDefect(defectId, [
 			{
 				path: e.target.name,
 				op: "replace",
@@ -236,10 +244,11 @@ function Details({ details, siteAppID, captions, defectId }) {
 				</Grid>
 				<Grid item xs={12} md={6}>
 					<TextFieldContainer
-						label={"Work Order Number"}
+						label={captions.serviceWorkOrder}
 						name={"modelModel"}
 						value={details?.serviceWorkOrder}
 						isDisabled={true}
+						isRequired={false}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -383,9 +392,32 @@ function Details({ details, siteAppID, captions, defectId }) {
 						value={input?.workOrder}
 						onChange={handleInputChange}
 						onBlur={handleUpdateInput}
-						isRequired={true}
 						onKeyDown={handleEnterPress}
+						isRequired={false}
 					/>
+				</Grid>
+				<Grid item xs={12} md={12}>
+					<Add.InputContainer>
+						<Add.FullWidthContainer style={{ paddingRight: 0 }}>
+							<Add.NameLabel>
+								{`${captions.defect} Details`}
+								<Add.RequiredStar>*</Add.RequiredStar>
+							</Add.NameLabel>
+
+							<TextAreaInputField
+								value={input?.details}
+								name="details"
+								onChange={handleInputChange}
+								onBlur={handleUpdateInput}
+								minRows={5}
+								style={{
+									width: "100%",
+									fontSize: "16px",
+									borderRadius: "5px",
+								}}
+							/>
+						</Add.FullWidthContainer>
+					</Add.InputContainer>
 				</Grid>
 			</Grid>
 		</AccordionBox>

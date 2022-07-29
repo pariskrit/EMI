@@ -136,6 +136,7 @@ function DefectsDetails() {
 						siteAppID={siteAppID}
 						captions={customCaptions}
 						defectId={id}
+						fetchDefect={fetchDefect}
 					/>
 				</Grid>
 				<Grid item xs={12} lg={6}>

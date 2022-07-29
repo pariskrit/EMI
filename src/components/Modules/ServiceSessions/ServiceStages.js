@@ -37,13 +37,9 @@ const useStyles = makeStyles((theme) => ({
 function dynamicWidth(i) {
 	if (i === 0) {
 		return {
-			width: "25%",
+			width: "40vw",
 		};
 	}
-
-	return {
-		width: "50%",
-	};
 }
 
 const ServiceStages = ({
@@ -130,8 +126,15 @@ const ServiceStages = ({
 																backgroundColor: "rgba(214, 212, 212,0.6)",
 															}}
 														>
-															<TableCell></TableCell>
-															<TableCell>{q?.caption}</TableCell>
+															<TableCell>
+																{" "}
+																<span
+																	style={{ opacity: 0, marginLeft: "10px" }}
+																>
+																	<Icon name="SafteryCritical" />
+																</span>
+																{q?.caption}
+															</TableCell>
 															{
 																<TableCell colSpan={2}>
 																	<div

@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
 		width: 800,
 		outline: "none",
 		padding: "10px",
-		fontFamily: `"Roboto", "Helvetica", "Arial",sans-serif`,
+		fontFamily: `"Roboto Condensed", "Helvetica", "Arial",sans-serif`,
 		[media]: {
 			width: "100%",
 		},

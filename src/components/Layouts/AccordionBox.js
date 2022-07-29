@@ -10,7 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import ColourConstants from "helpers/colourConstants";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import CurveButton from "components/Elements/CurveButton";
-import Icon from "components/Elements/Icon";
+import SafteryCritical from "assets/icons/safety-critical.svg";
+
 import { getLocalStorageData } from "helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +84,7 @@ function AccordionBox({
 				<Typography className={classes.sectionHeading}>{title}</Typography>
 				{showSafetyCritical && (
 					<p className={classes.critical}>
-						<Icon name="SafteryCritical" />
+						<img src={SafteryCritical} alt="" />
 						<span className={classes.criticalPara}>
 							{customCaptions?.safetyCritical}
 						</span>
