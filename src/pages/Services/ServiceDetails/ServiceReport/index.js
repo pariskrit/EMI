@@ -75,29 +75,38 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 	function setQuestionResponse(question) {
 		switch (question.type) {
 			case "S":
+				return question?.valueString || "";
+
 			case "L":
-				return question?.valueString;
+				return question?.valueString || "";
 
 			case "N":
-				return question?.valueNumeric;
+				return question?.valueNumeric || "";
 
 			case "D":
-				return changeDate(question?.valueDate);
+				return question?.valueDate ? changeDate(question?.valueDate) : "";
 
 			case "T":
-				return formatAMPM(question?.valueDate);
+				return question?.valueData ? formatAMPM(question?.valueDate) : "";
 
 			case "O":
-				return commaSeperateValues(question?.options);
+				return question?.options ? commaSeperateValues(question?.options) : "";
+
+			case "B":
+				return question?.valueBoolean + "" ?? "";
 
 			case "C":
-			case "B":
-				return question?.valueBoolean
-					? question?.checkboxCaption
-					: commaSeperateValues(question?.options);
+				return question?.options ? commaSeperateValues(question?.options) : "";
+			// case "C":
+			// case "B":
+			// 	return question?.valueBoolean
+			// 		? question?.checkboxCaption || ""
+			// 		: question?.options
+			// 		? commaSeperateValues(question?.options)
+			// 		: "";
 
 			default:
-				return question?.valueBoolean;
+				return question?.valueBoolean || "";
 		}
 	}
 
@@ -181,6 +190,18 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 						groupByStage={groupByStage}
 					/>
 				</Grid>
+				{IncompletedService.length > 0 && (
+					<Grid item xs={12}>
+						<Typography className={classes.stageheader}>
+							{`Incomplete ${customCaptions.taskPlural}`}
+						</Typography>
+						<ServiceStages
+							tasks={groupByStage(IncompletedService)}
+							customCaptions={customCaptions}
+							formatQuestion={formatQuestion}
+						/>
+					</Grid>
+				)}
 				<Grid item xs={12}>
 					<Defects
 						data={defects}
@@ -228,18 +249,6 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 						]}
 					/>
 				</Grid>
-				{IncompletedService.length > 0 && (
-					<Grid item xs={12}>
-						<Typography className={classes.stageheader}>
-							Incompleted Services
-						</Typography>
-						<ServiceStages
-							tasks={groupByStage(IncompletedService)}
-							customCaptions={customCaptions}
-							formatQuestion={formatQuestion}
-						/>
-					</Grid>
-				)}
 			</Grid>
 		</div>
 	);

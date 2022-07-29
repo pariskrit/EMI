@@ -40,6 +40,10 @@ function dynamicWidth(i) {
 			width: "40vw",
 		};
 	}
+
+	if (i === 1) {
+		return { width: "30vw" };
+	}
 }
 
 const ServiceStages = ({
@@ -75,6 +79,11 @@ const ServiceStages = ({
 											"Completion Date",
 										].map((header, i) => (
 											<TableCell key={header} style={dynamicWidth(i)}>
+												{i === 0 && (
+													<span style={{ opacity: 0, marginLeft: "20px" }}>
+														<Icon name="SafteryCritical" />
+													</span>
+												)}
 												{header}
 											</TableCell>
 										))}
@@ -85,13 +94,9 @@ const ServiceStages = ({
 										?.map((zone) => {
 											return {
 												...zone,
-												completedDate: zone.completedDate ? (
-													isoDateWithoutTimeZone(zone.completedDate + "Z")
-												) : (
-													<span style={{ color: "red", fontSize: "15px" }}>
-														Skipped
-													</span>
-												),
+												completedDate: zone.completedDate
+													? isoDateWithoutTimeZone(zone.completedDate + "Z")
+													: "",
 												actionName: (
 													<span style={{ marginRight: "10px" }}>
 														{zone.safetyCritical ? (
@@ -133,7 +138,9 @@ const ServiceStages = ({
 																>
 																	<Icon name="SafteryCritical" />
 																</span>
-																{q?.caption}
+																<span style={{ marginLeft: "12px" }}>
+																	{q?.caption}
+																</span>
 															</TableCell>
 															{
 																<TableCell colSpan={2}>

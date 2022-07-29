@@ -21,6 +21,18 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+function dynamicWidth(i) {
+	if (i === 0) {
+		return {
+			width: "40vw",
+		};
+	}
+
+	if (i === 1) {
+		return { width: "30vw" };
+	}
+}
+
 function CommonTable({ data = [], headers = [], columns = [] }) {
 	const classes = useStyles();
 
@@ -29,8 +41,8 @@ function CommonTable({ data = [], headers = [], columns = [] }) {
 		<Table className={classes.tableContainer}>
 			<TableHead className={classes.tableHead}>
 				<TableRow>
-					{headers.map((header) => (
-						<TableCell key={header} style={style}>
+					{headers.map((header, i) => (
+						<TableCell key={header} style={dynamicWidth(i)}>
 							{header}
 						</TableCell>
 					))}

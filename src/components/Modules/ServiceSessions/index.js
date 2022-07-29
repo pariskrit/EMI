@@ -133,7 +133,7 @@ export default function ServiceReport({
 												headers={[
 													"Pause",
 													"Pause Subcategory",
-													"other Reasons",
+													"Other Reasons",
 													"Start Date",
 													"End Date",
 													"Duration",
