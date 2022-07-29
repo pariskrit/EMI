@@ -159,7 +159,9 @@ function AddNewDefectDetail({
 	useEffect(() => {
 		const fetchDepartments = async () => {
 			try {
-				const response = await getAvailabeleModelDeparments(input?.modelID?.id);
+				const response = await getAvailabeleModelDeparments(
+					input?.modelID?.activeModelVersionID
+				);
 				if (response.status) {
 					let newDatas = response.data.map((d) => {
 						return {
@@ -175,10 +177,10 @@ function AddNewDefectDetail({
 				dispatch(showError("Failed to get departments."));
 			}
 		};
-		if (input?.modelID?.id) {
+		if (input?.modelID?.activeModelVersionID) {
 			fetchDepartments();
 		}
-	}, [input.modelID.id, dispatch]);
+	}, [input.modelID.activeModelVersionID, dispatch]);
 
 	const handleCreateProcess = async () => {
 		// clear search data

@@ -125,7 +125,9 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 	useEffect(() => {
 		const fetchDepartmentData = async () => {
 			try {
-				const response = await getAvailabeleModelDeparments(details?.modelID);
+				const response = await getAvailabeleModelDeparments(
+					details?.activeModelVersionID
+				);
 				if (response.status) {
 					let newDatas = response.data.map((d) => {
 						return {
@@ -142,7 +144,7 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 			}
 		};
 		fetchDepartmentData();
-	}, [details.modelID, dispatch]);
+	}, [details.activeModelVersionID, dispatch]);
 
 	useEffect(() => {
 		setSelectedDropdown({
