@@ -42,7 +42,10 @@ function CommonTable({ data = [], headers = [], columns = [] }) {
 			<TableHead className={classes.tableHead}>
 				<TableRow>
 					{headers.map((header, i) => (
-						<TableCell key={header} style={dynamicWidth(i)}>
+						<TableCell
+							key={header}
+							style={headers.length === 3 ? dynamicWidth(i) : style}
+						>
 							{header}
 						</TableCell>
 					))}
