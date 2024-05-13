@@ -15,6 +15,8 @@ import EditDialog from "./EditDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import TabTitle from "components/Elements/TabTitle";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const DefectRiskRatingsContent = ({
 	id,
@@ -33,6 +35,7 @@ const DefectRiskRatingsContent = ({
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [confirmDefault, setConfirmDefault] = useState([null, null]);
+	const errorDispatch = useDispatch();
 
 	const [allData, setAllData] = useState([]);
 	const [searchedData, setSearchData] = useState([]);
@@ -70,7 +73,7 @@ const DefectRiskRatingsContent = ({
 			}
 		} catch (err) {
 			//Error Handling
-			console.log(err);
+			errorDispatch(showError("Failed to load defect risk ratings."));
 			return false;
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -94,17 +97,13 @@ const DefectRiskRatingsContent = ({
 				}
 			} catch (err) {
 				// TODO: real error handling
-				console.log(err);
+				errorDispatch(showError("Failed to fetch application details."));
 				return false;
 			}
 		};
 
 		// Getting application and updating state
-		getApplicationData()
-			.then(() => {
-				console.log("application name updated");
-			})
-			.catch((err) => console.log(err));
+		getApplicationData();
 		// eslint-disable-next-line
 	}, []);
 
@@ -114,7 +113,9 @@ const DefectRiskRatingsContent = ({
 				//Rendering data
 				setHaveData(true);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				errorDispatch(showError("Failed to load defect risk ratings."))
+			);
 	}, [handleGetData]);
 
 	//Handlers
@@ -217,8 +218,7 @@ const DefectRiskRatingsContent = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
-
+			errorDispatch(showError("Failed to update default defect risk ratings."));
 			return false;
 		}
 	};
@@ -245,6 +245,7 @@ const DefectRiskRatingsContent = ({
 		showAdd,
 		details: { data },
 		defaultCustomCaptionsData: { riskRating, riskRatingPlural, safetyCritical },
+		isReadOnly,
 	} = state;
 
 	return (
@@ -312,6 +313,7 @@ const DefectRiskRatingsContent = ({
 					</div>
 
 					<CommonApplicationTable
+						isReadOnly={isReadOnly}
 						data={allData}
 						setData={setAllData}
 						setSearch={setSearchData}

@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import ColourConstants from "helpers/colourConstants";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import PopupMenu from "components/Elements/PopupMenu";
-import clsx from "clsx";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { Typography } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { modelImport } from "helpers/routePaths";
 
 // Init styled components
@@ -21,7 +20,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	container: {
 		margin: "18px 0",
 	},
@@ -68,12 +67,15 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
-});
+	cellContainerHeight: {
+		height: "46px",
+	},
+}));
 
-function ModalAwaitingImports({ modelImportData }) {
+function ModalAwaitingImports({ modelImportData, customCaptions, isReadOnly }) {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Init State
 	const [modelsToImport, setModelsToImport] = useState([]);
@@ -122,25 +124,25 @@ function ModalAwaitingImports({ modelImportData }) {
 						component="h1"
 						gutterBottom
 					>
-						<strong>Models To Import</strong>
+						<strong> {customCaptions?.modelPlural} To Import</strong>
 					</Typography>
 					<AT.TableContainer component={Paper} elevation={0}>
 						<Table aria-label="Table">
 							<AT.TableHead>
 								<TableRow className={classes.tableHead}>
 									<TableCell
-										className={clsx(classes.nameRow, {
+										className={cx(classes.nameRow, {
 											[classes.tableHeadRow]: true,
 										})}
 									>
-										<AT.CellContainer>Make</AT.CellContainer>
+										<AT.CellContainer>{customCaptions?.make}</AT.CellContainer>
 									</TableCell>
 									<TableCell
-										className={clsx(classes.nameRow, {
+										className={cx(classes.nameRow, {
 											[classes.tableHeadRow]: true,
 										})}
 									>
-										<AT.CellContainer>Model</AT.CellContainer>
+										<AT.CellContainer>{customCaptions?.model}</AT.CellContainer>
 									</TableCell>
 								</TableRow>
 							</AT.TableHead>
@@ -150,7 +152,7 @@ function ModalAwaitingImports({ modelImportData }) {
 										<TableCell
 											component="th"
 											scope="row"
-											className={clsx(classes.dataCell, classes.nameRow, {
+											className={cx(classes.dataCell, classes.nameRow, {
 												[classes.lastCell]: index === modelsToImport.length - 1,
 											})}
 										>
@@ -161,57 +163,59 @@ function ModalAwaitingImports({ modelImportData }) {
 										<TableCell
 											component="th"
 											scope="row"
-											className={clsx(classes.dataCell, classes.nameRow, {
+											className={cx(classes.dataCell, classes.nameRow, {
 												[classes.lastCell]: index === modelsToImport.length - 1,
 											})}
 										>
-											<AT.CellContainer>
+											<AT.CellContainer className={classes.cellContainerHeight}>
 												<AT.TableBodyText>{row.model}</AT.TableBodyText>
 
-												<AT.DotMenu
-													onClick={(e) => {
-														setAnchorEl(
-															anchorEl === e.currentTarget
-																? null
-																: e.currentTarget
-														);
-														setSelectedData(
-															anchorEl === e.currentTarget ? null : index
-														);
-													}}
-												>
-													<AT.TableMenuButton>
-														<MenuIcon />
-													</AT.TableMenuButton>
-
-													<PopupMenu
-														index={index}
-														selectedData={selectedData}
-														anchorEl={anchorEl}
-														isLast={index === modelsToImport.length - 1}
-														id={row.id}
-														clickAwayHandler={() => {
-															setAnchorEl(null);
-															setSelectedData(null);
+												{!isReadOnly && (
+													<AT.DotMenu
+														onClick={(e) => {
+															setAnchorEl(
+																anchorEl === e.currentTarget
+																	? null
+																	: e.currentTarget
+															);
+															setSelectedData(
+																anchorEl === e.currentTarget ? null : index
+															);
 														}}
-														menuData={[
-															{
-																name: "Import",
-																handler: () => {
-																	history.push(`${modelImport}/${row.id}`);
+													>
+														<AT.TableMenuButton>
+															<MenuIcon />
+														</AT.TableMenuButton>
+
+														<PopupMenu
+															index={index}
+															selectedData={selectedData}
+															anchorEl={anchorEl}
+															isLast={index === modelsToImport.length - 1}
+															id={row.id}
+															clickAwayHandler={() => {
+																setAnchorEl(null);
+																setSelectedData(null);
+															}}
+															menuData={[
+																{
+																	name: "Import",
+																	handler: () => {
+																		navigate(`${modelImport}/${row.id}`);
+																	},
+																	isDelete: false,
 																},
-																isDelete: false,
-															},
-															{
-																name: "Delete",
-																handler: () => {
-																	handleDeleteDialogOpen(row.id);
+																{
+																	name: "Delete",
+																	handler: () => {
+																		handleDeleteDialogOpen(row.id);
+																	},
+																	isDelete: true,
 																},
-																isDelete: true,
-															},
-														]}
-													/>
-												</AT.DotMenu>
+															]}
+														/>
+													</AT.DotMenu>
+												)}
 											</AT.CellContainer>
 										</TableCell>
 									</TableRow>

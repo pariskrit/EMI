@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import "./style.css";
-
+import { makeStyles } from "tss-react/mui";
 import DynamicRow from "./DynamicRow";
-import { CircularProgress, makeStyles } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import {
 	getModelIntervals,
 	getServiceLayoutData,
@@ -17,7 +17,7 @@ import {
 } from "services/models/modelDetails/modelservicelayout";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import FilterListIcon from "@material-ui/icons/FilterList";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import {
 	modifyResponseData,
 	getUpdatedServiceLayoutAfterDragAndDrop,
@@ -25,16 +25,27 @@ import {
 	storePositions,
 	checkIfPosAreadyExists,
 } from "./helpers";
-import { getModelRolesList } from "services/models/modelDetails/modelRoles";
+import {
+	getModelRolesList,
+	getModelRolesListByInterval,
+} from "services/models/modelDetails/modelRoles";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import withMount from "components/HOC/withMount";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import TabTitle from "components/Elements/TabTitle";
+import { coalesc } from "helpers/utils";
+import { getModelVersionArrangements } from "services/models/modelDetails/modelIntervals";
+import {
+	QUESTION,
+	QUESTIONPLURAL,
+	TASK,
+	TASKPLURAL,
+} from "constants/modelDetails";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dragDropContainer: {
 		margin: "25px 0",
 	},
@@ -44,7 +55,7 @@ const useStyles = makeStyles({
 		alignItems: "center",
 		gap: "40px",
 	},
-});
+}));
 function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	const [allServiceLayoutData, setAllServiceLayoutData] = useState([]);
 	const [originalServiceLayoutData, setOriginalServiceLayoutData] = useState(
@@ -52,6 +63,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	);
 	const [roles, setRoles] = useState([]);
 	const [selectedRole, setSelectedRole] = useState({});
+	const [selectedArrangement, setSelectedArrangement] = useState({});
 	const [intervals, setIntervals] = useState([]);
 	const [selectedInterval, setSelectedInterval] = useState({});
 	const [loading, setIsLoading] = useState({ dropdown: false, all: true });
@@ -67,6 +79,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			zonePlural,
 			servicePlural,
 			questionPlural,
+			arrangement,
 		},
 		application,
 	} =
@@ -81,16 +94,16 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	const reduxDispatch = useDispatch();
 	const [positions, setPositions] = useState([]);
 	const [isFirstRender, setIsFirstRender] = useState(true);
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes } = useStyles();
+	const location = useLocation();
+
 	const serviceLayoutData =
 		JSON.parse(localStorage.getItem("serviceLayoutData")) ?? {};
 
-	const taskIdToHighlight = history.location.state?.state?.ModelVersionTaskID;
-	const questionIdToHighlight =
-		history.location.state?.state?.ModelVersionQuestionID;
-	const taskQuestionIdToHighlight =
-		history.location.state?.modelVersionTaskQuestionID;
+	const taskIdToHighlight = location.state?.ModelVersionTaskID;
+	const questionIdToHighlight = location.state?.ModelVersionQuestionID;
+	const taskQuestionIdToHighlight = location.state?.modelVersionTaskQuestionID;
+
 	const onDropdownChange = async (type, list) => {
 		if (Object.values(list).length === 0) {
 			return;
@@ -102,30 +115,51 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		const selectedRoleNotEmpty = Object.values(selectedRole).length !== 0;
 		const selectedIntervalNotEmpty =
 			Object.values(selectedInterval).length !== 0;
+		const selectedArrangementNotEmpty =
+			Object.values(selectedArrangement).length !== 0;
 		const serviceLayoutDataBackup = { ...serviceLayoutData };
 		setIsFirstRender(true);
 		if (type === "role") {
 			setSelectedRole(list);
 
-			if (selectedIntervalNotEmpty) {
+			if (selectedIntervalNotEmpty || selectedArrangementNotEmpty) {
 				response = await getServiceLayoutDataByRoleAndInterval(
 					modelId,
-					selectedInterval.id,
-					list.id
+					selectedInterval?.id ?? "",
+					list.id,
+					selectedArrangement?.id ?? ""
 				);
 			} else {
 				response = await getServiceLayoutDataByRole(modelId, list.id);
 			}
 		}
+		if (type === "arrangement") {
+			setSelectedArrangement(list);
+			response = await getServiceLayoutDataByRoleAndInterval(
+				modelId,
+				selectedInterval?.id ?? "",
+				selectedRole?.id ?? "",
+				list.id
+			);
+		}
 
 		if (type === "interval") {
 			setSelectedInterval(list);
+			let reqData = null;
+			let res = await getModelRolesListByInterval(list.id);
+			if (res.status) {
+				reqData = res.data;
+			}
 
-			if (selectedRoleNotEmpty) {
+			if (
+				reqData.length > 0 &&
+				(selectedRoleNotEmpty || selectedArrangementNotEmpty)
+			) {
 				response = await getServiceLayoutDataByRoleAndInterval(
 					modelId,
 					list.id,
-					selectedRole.id
+					selectedRole?.id ?? "",
+					selectedArrangement?.id ?? ""
 				);
 			} else {
 				response = await getServiceLayoutDataByInterval(modelId, list.id);
@@ -146,7 +180,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				"serviceLayoutData",
 				JSON.stringify(serviceLayoutDataBackup)
 			);
-			console.log("error");
 		}
 
 		setIsLoading({ all: false, dropdown: false });
@@ -173,17 +206,16 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		const isIntervalType = type === "interval";
 		const isIntervalEmpty = Object.values(selectedInterval).length === 0;
 		const isRoleEmpty = Object.values(selectedRole).length === 0;
+		const isArrangementEmpty = Object.values(selectedArrangement).length === 0;
 
-		if (
-			Object.values(selectedInterval).length === 0 &&
-			Object.values(selectedRole).length === 0
-		) {
-			return;
-		}
+		// if (isIntervalEmpty && isRoleEmpty && isArrangementEmpty) {
+		// 	return;
+		// }
 
 		if (
 			(isIntervalType && isIntervalEmpty) ||
-			(!isIntervalType && isRoleEmpty)
+			(type === "role" && isRoleEmpty) ||
+			(type === "arrangement" && isArrangementEmpty)
 		) {
 			return;
 		}
@@ -194,9 +226,15 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		setIsLoading({ ...loading, dropdown: true });
 		let response = null,
 			modifiedResponse = null;
-		if (type === "interval" && !isRoleEmpty) {
+		// if (type === "interval" && !isRoleEmpty) {
+		if (type === "interval" && (!isRoleEmpty || !isArrangementEmpty)) {
 			setSelectedInterval({});
-			response = await getServiceLayoutDataByRole(modelId, selectedRole.id);
+			response = await getServiceLayoutDataByRoleAndInterval(
+				modelId,
+				"",
+				selectedRole?.id ?? "",
+				selectedArrangement?.id ?? ""
+			);
 
 			modifiedResponse = modifyResponseData(
 				response.data,
@@ -213,16 +251,17 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			setOriginalServiceLayoutData(response.data);
 			setAllServiceLayoutData(modifiedResponse);
 			setPositions(storePositions(modifiedResponse));
-			console.log(hideTaskQuestions);
 			localStorage.setItem(
 				"serviceLayoutData",
 				JSON.stringify({ ...serviceLayoutData, interval: null })
 			);
-		} else if (type === "role" && !isIntervalEmpty) {
+		} else if (type === "role" && (!isIntervalEmpty || !isArrangementEmpty)) {
 			setSelectedRole({});
-			response = await getServiceLayoutDataByInterval(
+			response = await getServiceLayoutDataByRoleAndInterval(
 				modelId,
-				selectedInterval.id
+				selectedInterval?.id ?? "",
+				"",
+				selectedArrangement?.id ?? ""
 			);
 
 			modifiedResponse = modifyResponseData(
@@ -244,6 +283,33 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				"serviceLayoutData",
 				JSON.stringify({ ...serviceLayoutData, role: null })
 			);
+		} else if (type === "arrangement") {
+			setSelectedArrangement({});
+			response = await getServiceLayoutDataByRoleAndInterval(
+				modelId,
+				selectedInterval?.id ?? "",
+				selectedRole?.id ?? "",
+				""
+			);
+			modifiedResponse = modifyResponseData(
+				response.data,
+				hideTaskQuestions,
+				null,
+				null,
+				null
+			);
+			setCounts({
+				zoneCount: response.data.zoneCount,
+				stageCount: response.data.stageCount,
+				taskCount: response.data.taskCount,
+			});
+			setAllServiceLayoutData(modifiedResponse);
+			setPositions(storePositions(modifiedResponse));
+			setOriginalServiceLayoutData(response.data);
+			localStorage.setItem(
+				"serviceLayoutData",
+				JSON.stringify({ ...serviceLayoutData, arrangement: null })
+			);
 		} else {
 			if (isIntervalEmpty) {
 				setSelectedRole({});
@@ -264,7 +330,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	const setPositionForPayload = (e, list, totalList) => {
 		const { destination, source } = e;
 		const indexOfFirstTask = totalList.findIndex(
-			(task) => task.value.type === "task"
+			(task) => task.value.type === TASK
 		);
 		let tempList = destination.index < list.length - 1 ? list : totalList;
 
@@ -300,7 +366,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 		if (destination.index > source.index) {
 			tempList = destination.index < list.length - 1 ? list : totalList;
-
 			result =
 				(tempList[destination.index]?.value.pos +
 					tempList[destination.index + 1]?.value.pos) /
@@ -340,25 +405,40 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			let response = null;
 			const intervalIsEmpty = Object.values(selectedInterval).length === 0;
 			const roleIsEmpty = Object.values(selectedRole).length === 0;
+			const arrangementIsEmpty =
+				Object.values(selectedArrangement).length === 0;
 
-			if (intervalIsEmpty && !roleIsEmpty)
-				response = await getServiceLayoutDataByRole(modelId, selectedRole.id);
-
-			if (roleIsEmpty && !intervalIsEmpty)
-				response = await getServiceLayoutDataByInterval(
-					modelId,
-					selectedInterval.id
-				);
-
-			if (!intervalIsEmpty && !roleIsEmpty)
+			if (intervalIsEmpty && roleIsEmpty && arrangementIsEmpty)
+				response = await getServiceLayoutData(modelId);
+			else {
 				response = await getServiceLayoutDataByRoleAndInterval(
 					modelId,
-					selectedInterval.id,
-					selectedRole.id
+					selectedInterval?.id ?? "",
+					selectedRole?.id ?? "",
+					selectedArrangement?.id ?? ""
 				);
+			}
 
-			if (intervalIsEmpty && roleIsEmpty)
-				response = await getServiceLayoutData(modelId);
+			// if (intervalIsEmpty && !roleIsEmpty)
+			// 	response = await getServiceLayoutDataByRole(modelId, selectedRole.id);
+
+			// if (roleIsEmpty && !intervalIsEmpty)
+			// 	response = await getServiceLayoutDataByInterval(
+			// 		modelId,
+			// 		selectedInterval.id
+			// 	);
+
+			// if (!intervalIsEmpty && !roleIsEmpty)
+			// 	response = await getServiceLayoutDataByRoleAndInterval(
+			// 		modelId,
+			// 		selectedInterval.id,
+			// 		selectedRole.id,
+
+			// 	);
+
+			// else{
+			// 	response = await
+			// }
 
 			setOriginalServiceLayoutData(response.data);
 			setAllServiceLayoutData(
@@ -422,7 +502,6 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 			updateTree(result, tempData[2].value, tempData[2].value, patchQuestions);
 		}
-
 		// reorder questions and tasks inside of a stage
 		if (
 			result.type === "stageQuestionsAndTasks" ||
@@ -434,18 +513,18 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				(stage) => stage.value.id === +stageId
 			);
 			let filteredQuestions = selectedStage.children.value.filter(
-				(data) => data.value.type === "question"
+				(data) => data.value.type === QUESTION
 			);
 
 			let filteredTasks = selectedStage.children.value.filter(
-				(data) => data.value.type === "task"
+				(data) => data.value.type === TASK
 			);
 			let questionsAndTasks = [...filteredQuestions, ...filteredTasks];
 			/// to allow drag and drop to questions list only or tasks list only.
 			if (
-				(dragItemType === "question" &&
+				(dragItemType === QUESTION &&
 					result.destination.index < filteredQuestions.length) ||
-				(dragItemType === "task" &&
+				(dragItemType === TASK &&
 					result.destination.index > filteredQuestions.length - 1 &&
 					result.destination.index < questionsAndTasks.length)
 			) {
@@ -458,9 +537,9 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 
 				updateTree(
 					result,
-					dragItemType === "question" ? filteredQuestions : filteredTasks,
+					dragItemType === QUESTION ? filteredQuestions : filteredTasks,
 					totalList,
-					dragItemType === "question" ? patchQuestions : patchTaskStages
+					dragItemType === QUESTION ? patchQuestions : patchTaskStages
 				);
 				const updatedTempData = {
 					...tempData[1],
@@ -479,7 +558,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			);
 
 			let filteredTasks = selectedStage.children.value.filter(
-				(data) => data.value.type === "task"
+				(data) => data.value.type === TASK
 			);
 
 			/// to allow drag and drop task item to tasks list only.
@@ -514,20 +593,21 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			const selectedZone = selectedStage.children.value.find(
 				(data) => data.value.id === +zoneId
 			);
+
 			const filteredQuestions = selectedZone.children.value.filter(
-				(data) => data.value.type === "question"
+				(data) => data.value.type === QUESTION
 			);
 
 			let filteredTasks = selectedStage.children.value.filter(
-				(data) => data.value.type === "task"
+				(data) => data.value.type === TASK
 			);
 
 			// to allow drag and drop to questions list only or tasks list only.
 
 			if (
-				(dragItemType === "question" &&
+				(dragItemType === QUESTION &&
 					result.destination.index < filteredQuestions.length) ||
-				(dragItemType === "task" &&
+				(dragItemType === TASK &&
 					result.destination.index > filteredQuestions.length - 1)
 			) {
 				const totalList = [...selectedZone.children.value];
@@ -549,9 +629,9 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 				};
 				updateTree(
 					result,
-					dragItemType === "question" ? filteredQuestions : filteredTasks,
+					dragItemType === QUESTION ? filteredQuestions : filteredTasks,
 					totalList,
-					dragItemType === "question" ? patchQuestions : patchTaskZones
+					dragItemType === QUESTION ? patchQuestions : patchTaskZones
 				);
 				const updatedTempData = {
 					...tempData[1],
@@ -563,7 +643,7 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			}
 		}
 		//if the list contains only tasks or questions
-		if (result.type === "tasks" || result.type === "questions") {
+		if (result.type === TASKPLURAL || result.type === QUESTIONPLURAL) {
 			const apiFunctions = {
 				tasks: patchTaskStages,
 				questions: patchTaskQuestions,
@@ -667,9 +747,16 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		}
 	};
 	const fetchServiceLayoutData = useCallback(async () => {
+		let isIntervalId = null;
+		if (selectedInterval.id) {
+			isIntervalId = getModelRolesListByInterval(selectedInterval.id);
+		} else {
+			isIntervalId = getModelRolesList(modelId);
+		}
 		const [response, response2, response3] = await Promise.all([
 			getServiceLayoutData(modelId),
-			getModelRolesList(modelId),
+			// getModelRolesList(modelId),
+			isIntervalId,
 			getModelIntervals(modelId),
 		]);
 
@@ -682,9 +769,9 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					questionIdToHighlight,
 					taskQuestionIdToHighlight
 				);
+				setAllServiceLayoutData(modifiedResponse);
 				setRoles(response2.data);
 				setIntervals(response3.data);
-				setAllServiceLayoutData(modifiedResponse);
 				setOriginalServiceLayoutData(response.data);
 				setCounts({
 					zoneCount: response.data.zoneCount,
@@ -708,8 +795,10 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		taskIdToHighlight,
 		taskQuestionIdToHighlight,
 		questionIdToHighlight,
-		isMounted,
+		isMounted?.aborted,
+		selectedInterval.id,
 	]);
+
 	const reFetchServicelayout = async () => {
 		const response = await getServiceLayoutData(modelId);
 
@@ -736,44 +825,70 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	};
 
 	const fetchServiceLayoutUsingLocalStorage = useCallback(async () => {
+		let isIntervalId = null;
+		if (selectedInterval.id) {
+			isIntervalId = getModelRolesListByInterval(selectedInterval.id);
+		} else {
+			isIntervalId = getModelRolesList(modelId);
+		}
 		const [response, response2] = await Promise.all([
-			getModelRolesList(modelId),
+			isIntervalId,
 			getModelIntervals(modelId),
 		]);
 
 		setRoles(response.data);
 		setIntervals(response2.data);
-		if (serviceLayoutData["role"] && serviceLayoutData["interval"]) {
+		if (
+			serviceLayoutData["role"] ||
+			serviceLayoutData["interval"] ||
+			serviceLayoutData["arrangement"]
+		) {
 			const response = await getServiceLayoutDataByRoleAndInterval(
 				modelId,
-				serviceLayoutData["interval"].id,
-				serviceLayoutData["role"].id
+				serviceLayoutData["interval"]?.id ?? "",
+				serviceLayoutData["role"]?.id ?? "",
+				serviceLayoutData?.["arrangement"]?.id ?? ""
 			);
-			setSelectedInterval(serviceLayoutData["interval"]);
-			setSelectedRole(serviceLayoutData["role"]);
+			serviceLayoutData["role"] && setSelectedRole(serviceLayoutData["role"]);
+			serviceLayoutData["interval"] &&
+				setSelectedInterval(serviceLayoutData["interval"]);
+			serviceLayoutData["arrangement"] &&
+				setSelectedArrangement(serviceLayoutData["arrangement"]);
 			initialDataSetup(response, serviceLayoutData["hideTask"]);
-		}
-		if (serviceLayoutData["role"] && !serviceLayoutData["interval"]) {
-			onDropdownChange("role", serviceLayoutData?.role);
-		}
-
-		if (serviceLayoutData["interval"] && !serviceLayoutData["role"]) {
-			onDropdownChange("interval", serviceLayoutData?.interval);
 		}
 
 		if (serviceLayoutData["hideTask"])
 			setHideTaskQuestions(serviceLayoutData["hideTask"]);
 
+		// if (serviceLayoutData["role"] && !serviceLayoutData["interval"]) {
+		// 	onDropdownChange("role", serviceLayoutData?.role);
+		// }
+
+		// if (serviceLayoutData["interval"] && !serviceLayoutData["role"]) {
+		// 	onDropdownChange("interval", serviceLayoutData?.interval);
+		// }
+
 		setIsLoading((loading) => ({ dropdown: false, all: false }));
 	}, []);
+
 	useEffect(() => {
 		if (
 			allServiceLayoutData.length === 0 &&
-			!serviceLayoutData["role"] &&
-			!serviceLayoutData["interval"]
-		)
+			!serviceLayoutData?.role &&
+			!serviceLayoutData?.interval &&
+			!serviceLayoutData?.arrangement
+		) {
 			fetchServiceLayoutData();
+		}
+	}, [
+		fetchServiceLayoutData,
+		allServiceLayoutData,
+		serviceLayoutData.role,
+		serviceLayoutData.interval,
+		serviceLayoutData.arrangement,
+	]);
 
+	useEffect(() => {
 		let timer = null;
 		const hasIdToHighlight =
 			taskIdToHighlight || questionIdToHighlight || taskQuestionIdToHighlight;
@@ -789,13 +904,12 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 		if (allServiceLayoutData.length > 0 && isFirstRender) {
 			timer = setTimeout(() => {
 				setIsFirstRender(false);
-			}, 1);
+			}, 500);
 		}
 
 		return () => clearTimeout(timer);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
-		fetchServiceLayoutData,
 		allServiceLayoutData,
 		taskIdToHighlight,
 		questionIdToHighlight,
@@ -803,7 +917,11 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	]);
 
 	useEffect(() => {
-		if (serviceLayoutData["role"] || serviceLayoutData["interval"])
+		if (
+			serviceLayoutData["role"] ||
+			serviceLayoutData["interval"] ||
+			serviceLayoutData["arrangement"]
+		)
 			fetchServiceLayoutUsingLocalStorage();
 
 		localStorage.setItem(
@@ -811,6 +929,43 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 			JSON.stringify({ ...serviceLayoutData, modelId: modelId })
 		);
 	}, []);
+
+	useEffect(() => {
+		async function apiCall() {
+			if (selectedInterval?.id) {
+				let response = await getModelRolesListByInterval(selectedInterval?.id);
+				if (response.status) {
+					setRoles(response.data);
+					let isInterval = response.data.some(
+						(data) => data.id === selectedRole.id
+					);
+					if (!isInterval) {
+						setSelectedRole({});
+					}
+				}
+			} else if (selectedRole?.id) {
+				let response = await getModelRolesList(modelId);
+				if (response.status) {
+					setRoles(response.data);
+				}
+			} else {
+				return;
+			}
+		}
+		apiCall();
+	}, [selectedInterval, modelId]);
+
+	useEffect(() => {
+		dispatch({
+			type: "SET_SERVICE_LAYOUT_DETAILS",
+			payload: {
+				modelVersionId: modelId,
+				modelVersionRoleId: selectedRole?.id,
+				modelVersionIntervalId: selectedInterval?.id,
+				modelVersionArrangementId: selectedArrangement?.id,
+			},
+		});
+	}, [selectedRole, selectedArrangement, selectedInterval, modelId]);
 
 	if (loading.all) {
 		return <CircularProgress />;
@@ -820,13 +975,15 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 	return (
 		<>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${service} | ${application.name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${service} Layout | ${application.name}`}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={`${service} Layout`}
 					countStyle={{ fontWeight: "normal", fontSize: "15px" }}
-					dataCount={`${counts.stageCount} Stages / ${counts.zoneCount} Zones  / ${counts.taskCount} Tasks`}
+					dataCount={`${counts.stageCount} ${stagePlural} / ${counts.zoneCount} ${zonePlural}  / ${counts.taskCount} ${taskPlural}`}
 					description={`Manage the order that ${taskPlural} appear within the specified ${stagePlural} and ${zonePlural} for ${servicePlural}`}
 				/>
 				<div
@@ -883,6 +1040,29 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 					onClear={() => handleClearDropdown("role")}
 					showBorderColor
 				/>
+				{/* checking if modelType is "F" i.e. facility based model */}
+				{(application?.showArrangements ||
+					state?.modelDetail?.arrangementCount) &&
+					state?.modelDetail?.modelType !== "F" && (
+						<DyanamicDropdown
+							columns={[{ name: "name", id: 1, minWidth: "130px" }]}
+							columnsMinWidths={[140, 140, 140, 140, 140]}
+							showHeader={false}
+							placeholder={`Select ${arrangement}`}
+							width="50%"
+							onChange={(list) => onDropdownChange("arrangement", list)}
+							selectdValueToshow="name"
+							selectedValue={selectedArrangement || "hello"}
+							label={`Filter by ${arrangement}`}
+							isServerSide={false}
+							showClear={true}
+							icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
+							required={false}
+							onClear={() => handleClearDropdown("arrangement")}
+							showBorderColor
+							fetchData={() => getModelVersionArrangements(modelId)}
+						/>
+					)}
 			</div>
 			<div className={classes.dragDropContainer}>
 				<AutoFitContentInScreen>
@@ -897,6 +1077,8 @@ function ServiceLayoutUI({ state, dispatch, access, modelId, isMounted }) {
 										key={data.id}
 										isDragDisabled={isReadOnly}
 										firstRender={isFirstRender}
+										taskIdToHighlight={taskIdToHighlight}
+										taskQuestionIdToHighlight={taskQuestionIdToHighlight}
 									/>
 								))}
 							</DragDropContext>

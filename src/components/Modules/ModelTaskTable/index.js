@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import ColourConstants from "helpers/colourConstants";
-import { handleSort, sortData } from "helpers/utils";
 import ModelTaskRow from "./ModelTaskRow";
 import TaskDetailContext from "contexts/TaskDetailContext";
+import modelTaskScroller from "helpers/modelTaskScroller";
 
 // Init styled components
 const AT = TableStyle();
@@ -18,7 +20,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	table: {
 		borderStyle: "solid",
 		fontFamily: "Roboto Condensed",
@@ -67,9 +69,11 @@ const useStyles = makeStyles({
 		color: ColourConstants.commonText,
 		opacity: "50%",
 	},
-});
+}));
 
 const ModelTaskTable = ({
+	currentTableSort,
+	setCurrentTableSort,
 	data,
 	handleDelete,
 	handleEdit,
@@ -85,25 +89,38 @@ const ModelTaskTable = ({
 	access,
 	isDataLoading,
 	originalData,
+	handleSortClick,
 }) => {
-	const classes = useStyles();
-	const [currentTableSort, setCurrentTableSort] = useState([]);
+	const { classes, cx } = useStyles();
+	const [updatedField, setUpdatedField] = useState({ data: "" });
+	// const observer = new IntersectionObserver(
+	// 	(entries) => {
+	// 		entries.forEach((entry) => {
+	// 			if (entry.isIntersecting) {
+	// 				entry.target.click();
+	// 				setTimeout(() => {
+	// 					entry.target.scrollIntoView({
+	// 						behavior: "smooth",
+	// 						block: "center",
+	// 					});
+	// 				}, 500);
 
-	const handleSortClick = (field) => {
-		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+	// 				observer.unobserve(entry.target);
+	// 			}
+	// 		});
+	// 	},
+	// 	{ threshold: 0.1 }
+	// );
 
-		// Sorting table
-		handleSort(data, setData, field, newMethod);
-
-		// Updating header state
-		setCurrentTableSort([field, newMethod]);
-	};
-
-	// useDidMountEffect(() => {
-	// 	handleSortClick(currentTableSort[0]);
-	// }, [currentTableSort[0]]);
-
+	useEffect(() => {
+		const newElement = document.getElementById(
+			`taskExpandable${updatedField.data}`
+		);
+		if (updatedField.data && newElement && !isDataLoading) {
+			setUpdatedField({});
+			modelTaskScroller(newElement);
+		}
+	}, [data, updatedField.data, isDataLoading]);
 	return (
 		<Table aria-label="Table" className={classes.table}>
 			<AT.TableHead className={classes.taskHeader}>
@@ -115,7 +132,7 @@ const ModelTaskTable = ({
 								header?.isSort && handleSortClick(columns[index]);
 							}}
 							style={{ width: header?.width || "auto" }}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === columns[index],
 								[classes.tableHeadRow]: currentTableSort[0] !== columns[index],
@@ -151,31 +168,30 @@ const ModelTaskTable = ({
 				</TableRow>
 			</AT.TableHead>
 			<TableBody>
-				{data.length !== 0 ? (
-					sortData(data, currentTableSort[0], currentTableSort[1]).map(
-						(row, index) => (
-							<TaskDetailContext key={row.id}>
-								<ModelTaskRow
-									key={row.id}
-									row={row}
-									index={index}
-									handleEdit={handleEdit}
-									handleDelete={handleDelete}
-									handleCopy={handleCopy}
-									handleCopyTaskQuestion={handleCopyTaskQuestion}
-									classes={classes}
-									columns={columns}
-									data={data}
-									modelId={modelId}
-									customCaptions={customCaptions}
-									access={access}
-									totalTaskCount={totalTaskCount}
-									fetchData={fetchData}
-									originalRow={originalData[index]}
-								/>
-							</TaskDetailContext>
-						)
-					)
+				{data.length !== 0 && !isDataLoading ? (
+					data.map((row, index) => (
+						<TaskDetailContext key={row.id}>
+							<ModelTaskRow
+								key={row.id}
+								row={row}
+								index={index}
+								handleEdit={handleEdit}
+								handleDelete={handleDelete}
+								handleCopy={handleCopy}
+								handleCopyTaskQuestion={handleCopyTaskQuestion}
+								classes={classes}
+								columns={columns}
+								data={data}
+								modelId={modelId}
+								customCaptions={customCaptions}
+								access={access}
+								totalTaskCount={totalTaskCount}
+								fetchData={fetchData}
+								originalRow={originalData[index]}
+								updatedFieldFunc={setUpdatedField}
+							/>
+						</TaskDetailContext>
+					))
 				) : (
 					<TableRow>
 						{headers.map((head, i) => {

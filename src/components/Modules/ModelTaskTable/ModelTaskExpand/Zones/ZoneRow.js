@@ -1,4 +1,4 @@
-import { TableCell, TableRow } from "@material-ui/core";
+import { TableCell, TableRow } from "@mui/material";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { handleSort } from "helpers/utils";

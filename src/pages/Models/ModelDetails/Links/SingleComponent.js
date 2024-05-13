@@ -1,23 +1,43 @@
 import React from "react";
 import { ModelContext } from "contexts/ModelDetailContext";
-import ModelWrapper from "../commonModelHeader";
+import ModelWrapper from "pages/Models/ModelDetails/commonModelHeader";
 import ModelDetailNavigation from "constants/navigation/modelDetailNavigation";
+import { modelServiceLayout } from "helpers/routePaths";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-const SingleComponent = ({ access, customCaptions, ...route }) => {
+const SingleComponent = ({
+	access,
+	customCaptions,
+	showArrangements,
+	position,
+	...route
+}) => {
 	const [state, dispatch] = React.useContext(ModelContext);
-	const {
-		match: {
-			params: { id },
-		},
-	} = route;
-
+	const navigate = useNavigate();
+	const location = useLocation();
+	const { id } = useParams();
+	const [currentTaskTableSort, setCurrenTaskTableSort] = React.useState([
+		"scheduledDate",
+		"asc",
+	]);
+	const [taskListImportSuccess, setTaskListImportSuccess] =
+		React.useState(false);
 	const navigation = ModelDetailNavigation(
 		id,
 		state.modelDetail,
-		customCaptions
+		customCaptions,
+		showArrangements
 	);
 	if (state?.modelDetail?.modelType === "F") {
 		navigation.splice(1, 1);
+	}
+
+	if (state?.modelDetail?.modelType === "F") {
+		navigation.splice(1, 1);
+	} else {
+		if (!showArrangements) {
+			navigation.splice(2, 1);
+		}
 	}
 
 	const openAddModel = () => dispatch({ type: "TOGGLE_ADD", payload: true });
@@ -57,6 +77,8 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 		state.modelDetail?.isPublished &&
 		state.modelDetail?.version !== state.modelDetail?.activeModelVersion;
 
+	const showPrint = route.path === modelServiceLayout;
+
 	return (
 		<div>
 			<ModelWrapper
@@ -76,17 +98,22 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 				}
 				showRevert={showRevert}
 				showSaveChanges={route.showSaveChanges}
-				showVersion={route.showVersion}
+				showVersion={route.showVersion && position?.modelAccess !== "R"}
+				showSwitch={route?.showSwitch}
 				onClickSave={openSaveModel}
 				onClickVersion={openClickVersion}
 				onCLickedSaveChanges={openClickSaveChanges}
 				onClickPasteTask={openPasteTaskModel}
 				onClickShowChangeStatus={openChangeStatusModel}
 				onClickRevert={openConfirmationPopup}
-				onNavClick={(path) => route.history.push(path)}
+				onNavClick={(path) => navigate(path)}
 				isPasteTaskDisabled={state.isPasteTaskDisabled}
 				isQuestionTaskDisabled={state.isQuestionTaskDisabled}
 				customCaptions={customCaptions}
+				showPrint={showPrint}
+				modelID={id}
+				currentTaskTableSort={currentTaskTableSort}
+				onTaskListImportSuccess={setTaskListImportSuccess}
 			/>
 			{
 				<route.component
@@ -94,9 +121,11 @@ const SingleComponent = ({ access, customCaptions, ...route }) => {
 					dispatch={dispatch}
 					modelId={id}
 					access={access}
-					history={route.history}
+					history={location}
 					modelDefaultId={state?.modelDetail?.modelID}
 					isPublished={state?.modelDetail?.isPublished}
+					getCurrentTaskTableSort={setCurrenTaskTableSort}
+					isTaskListImportSuccess={taskListImportSuccess}
 				/>
 			}
 		</div>

@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import { Button } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+import ColourConstants from "helpers/colourConstants";
+import { Button } from "@mui/material";
+
+const useStyles = makeStyles()((theme) => ({
 	curveButton: {
 		borderRadius: 50,
 		padding: "6px 26px",
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 const CurveButton = ({ onClick, children, style }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
 		<Button onClick={onClick} className={classes.curveButton} style={style}>
 			{children}

@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import TableStyle from "styles/application/TableStyle";
-import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
-import clsx from "clsx";
+
 import ImageViewer from "components/Elements/ImageViewer";
 
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -41,10 +43,10 @@ const useStyles = makeStyles({
 	imageRow: {
 		display: "flex",
 	},
-});
+}));
 
 function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const [openImageViewer, setOpenImageViewer] = useState(false);
 	const [imagetoView, setImageToview] = useState("");
@@ -64,7 +66,7 @@ function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
 								<TableCell
 									key={header.id}
 									style={{ width: header?.width || "auto" }}
-									className={clsx(classes.nameRow, {
+									className={cx(classes.nameRow, {
 										[classes.tableHeadRow]: true,
 									})}
 								>
@@ -96,7 +98,7 @@ function ServiceDefectsTable({ data, headers, columns, customCaptions }) {
 																		width: "auto",
 																		paddingLeft: "20px",
 																	}}
-																	className={clsx(classes.nameRow, {
+																	className={cx(classes.nameRow, {
 																		[classes.tableHeadRow]: true,
 																	})}
 																>

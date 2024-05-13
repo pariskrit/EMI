@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { styled } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { styled } from "@mui/styles";
 import TableStyle from "styles/application/TableStyle";
-import TableRow from "@material-ui/core/TableRow";
-import TextField from "@material-ui/core/TextField";
+import TableRow from "@mui/material/TableRow";
+import TextField from "@mui/material/TextField";
 
 import { Facebook } from "react-spinners-css";
 
@@ -13,7 +15,7 @@ import { ReactComponent as CaptionIcon } from "assets/icons/custom-caption.svg";
 // Init styled components
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	root: {
 		"& .MuiFormLabel-root": {
 			color: "#CCCCCC",
@@ -32,7 +34,7 @@ const useStyles = makeStyles({
 		paddingRight: 15,
 		paddingLeft: 15,
 	},
-});
+}));
 
 const CustomCaptionRow = ({
 	singularKey,
@@ -43,9 +45,10 @@ const CustomCaptionRow = ({
 	pluralDefault,
 	handleUpdateCustomCaption,
 	indents,
+	isReseller,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState("");
@@ -62,13 +65,21 @@ const CustomCaptionRow = ({
 	);
 
 	// Handlers
-	const handleUpdate = (input, original, key) => {
+	const handleUpdate = (input, original, key, param) => {
 		// Clearing errors (if present)
 		setErrors({ ...errors, ...{ [key]: null } });
 
 		// Instant return if no new input
 		if (input === original) {
 			return;
+		}
+		if (input === "") {
+			if (param === "singular") {
+				setSingularInput(original);
+			}
+			if (param === "plural") {
+				setPluralInput(original);
+			}
 		}
 
 		setIsUpdating(key);
@@ -120,12 +131,18 @@ const CustomCaptionRow = ({
 			<AT.DataCell className={classes.inputCell}>
 				<AT.CellContainer>
 					<TextField
+						sx={{
+							"& .MuiInputBase-input.Mui-disabled": {
+								WebkitTextFillColor: "#000000",
+							},
+						}}
 						className={`${classes.root} inputCustomCaptionRow`}
 						InputProps={{
 							endAdornment:
 								isUpdating === singularKey ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+							readOnly: isReseller,
 						}}
 						InputLabelProps={{ shrink: false }}
 						variant="outlined"
@@ -136,15 +153,25 @@ const CustomCaptionRow = ({
 							errors[singularKey] === null ? null : errors[singularKey]
 						}
 						label={singularInput !== "" ? null : singularDefault}
-						disabled={isUpdating === singularKey ? true : false}
+						disabled={isUpdating === singularKey}
 						value={singularInput}
 						onChange={(e) => setSingularInput(e.target.value)}
 						onBlur={() => {
-							handleUpdate(singularInput, singularValue, singularKey);
+							handleUpdate(
+								singularInput,
+								singularValue,
+								singularKey,
+								"singular"
+							);
 						}}
 						onKeyDown={(e) => {
 							if (e.key === "Enter")
-								handleUpdate(singularInput, singularValue, singularKey);
+								handleUpdate(
+									singularInput,
+									singularValue,
+									singularKey,
+									"singular"
+								);
 						}}
 					/>
 				</AT.CellContainer>
@@ -153,12 +180,18 @@ const CustomCaptionRow = ({
 			<AT.DataCell className={classes.inputCell}>
 				<AT.CellContainer>
 					<TextField
+						sx={{
+							"& .MuiInputBase-input.Mui-disabled": {
+								WebkitTextFillColor: "#000000",
+							},
+						}}
 						className={`${classes.root} inputCustomCaptionRow`}
 						InputProps={{
 							endAdornment:
 								isUpdating === pluralKey ? (
 									<Facebook size={20} color="#A79EB4" />
 								) : null,
+							readOnly: isReseller,
 						}}
 						InputLabelProps={{ shrink: false }}
 						variant="outlined"
@@ -167,15 +200,15 @@ const CustomCaptionRow = ({
 						error={errors[pluralKey] === null ? false : true}
 						helperText={errors[pluralKey] === null ? null : errors[pluralKey]}
 						label={pluralInput !== "" ? null : pluralDefault}
-						disabled={isUpdating === pluralKey ? true : false}
+						disabled={isUpdating === pluralKey}
 						value={pluralInput}
 						onChange={(e) => setPluralInput(e.target.value)}
 						onBlur={() => {
-							handleUpdate(pluralInput, pluralValue, pluralKey);
+							handleUpdate(pluralInput, pluralValue, pluralKey, "plural");
 						}}
 						onKeyDown={(e) => {
 							if (e.key === "Enter")
-								handleUpdate(pluralInput, pluralValue, pluralKey);
+								handleUpdate(pluralInput, pluralValue, pluralKey, "plural");
 						}}
 					/>
 				</AT.CellContainer>

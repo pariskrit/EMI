@@ -1,13 +1,17 @@
-import { CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import DataTable from "components/Modules/SimpleDataTable";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 import { getClientKeyContacts } from "services/clients/clientDetailScreen";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	keyContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -34,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ClientKeyContacts = ({ clientId }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [data, setData] = useState([]);
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const fetchKeyContacts = async () => {
@@ -51,21 +56,22 @@ const ClientKeyContacts = ({ clientId }) => {
 					result = result.data.map((x) => ({
 						id: x.id,
 						aname: x?.name,
-						bsite: x?.site,
-						capplication: x?.application,
-						demail: x?.email,
-						ephone: x?.phone,
+						bregion: x?.region,
+						csite: x?.site,
+						dapplication: x?.application,
+						eemail: x?.email,
 					}));
 
 					handleSort(result, setData, "aname", "asc");
 				} else {
 					//Throw error if failed to fetch
+					dispatch(showError(`Failed to fetch key contacts.`));
 					throw new Error(`Error: Status ${result.status}`);
 				}
 				setIsLoading(false);
 			} catch (error) {
-				console.log(error);
 				setIsLoading(false);
+				dispatch(showError(`Failed to fetch key contacts.`));
 				return error;
 			}
 		};
@@ -84,7 +90,7 @@ const ClientKeyContacts = ({ clientId }) => {
 				) : (
 					<DataTable
 						data={data}
-						tableHeaders={["Name", "Site", "Application", "Email", "Phone"]}
+						tableHeaders={["Name", "Region", "Site", "Application", "Email"]}
 					/>
 				)}
 			</AccordionBox>

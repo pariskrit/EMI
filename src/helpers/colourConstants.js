@@ -1,4 +1,6 @@
 const ColourConstants = {
+	// delete dialog hover color
+	deleteDialogHover: "#d5d5d5",
 	activeLink: "#307AD7",
 	deleteLink: "#E21313",
 
@@ -23,7 +25,7 @@ const ColourConstants = {
 	navCurrentItem: "#D98D24",
 
 	navButtonOnHover: "#404149",
-
+	navButtonTextColor: "#000000",
 	uploaderBorder: "",
 	uploaderIcon: "#307AD7",
 
@@ -34,6 +36,8 @@ const ColourConstants = {
 	red: "#E31212",
 	orange: "#ED8738",
 	green: "#23BB79",
+	tableRowExpand: "#307AD7",
+	tableRowNormal: "#FFFFFF",
 };
 
 export default ColourConstants;

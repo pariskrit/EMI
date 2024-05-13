@@ -5,16 +5,18 @@ import {
 	TextField,
 	Typography,
 	CircularProgress,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+import UserRoles from "helpers/roles";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
-import Dropdown from "components/Elements/Dropdown";
 import ColourConstants from "helpers/colourConstants";
 import { changeDate } from "helpers/date";
 import AccordionBox from "components/Layouts/AccordionBox";
-import { clientOptions } from "helpers/constants";
+import { clientOptions, shareModelsOptions } from "helpers/constants";
 import { updateClientDetails } from "services/clients/clientDetailScreen";
+import Dropdown from "components/Elements/Dropdown";
 
 // const debounce = (func, delay) => {
 // 	let timer;
@@ -28,7 +30,7 @@ import { updateClientDetails } from "services/clients/clientDetailScreen";
 // 	};
 // };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	detailContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -58,22 +60,35 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ClientDetail = ({ clientId, clientData, getError, loading }) => {
-	const classes = useStyles();
+const ClientDetail = ({
+	clientId,
+	clientData,
+	getError,
+	loading,
+	role,
+	adminType,
+}) => {
+	const { classes, cx } = useStyles();
 	const [clientDetail, setClientDetail] = useState({});
 	const [changedState, setChange] = useState({});
 	// This state is used to check current state data with pervious
 
 	useEffect(() => {
 		const licenseType = clientOptions.find(
-			(x) => x.value === clientData.licenseType
+			(x) => x.value === (clientData?.licenseType ?? clientData[0]?.licenseType)
+		);
+
+		const shareModelType = shareModelsOptions.find(
+			(x) => x.value === (clientData?.shareModels ?? clientData[0]?.shareModels)
 		);
 		const data = {
-			name: clientData.name,
+			name: clientData?.name ?? clientData[0]?.name,
 			licenseType,
-			licenses: clientData.licenses,
-			registeredBy: clientData.registeredBy,
-			registeredDate: clientData.registeredDate,
+			licenses: clientData?.licenses ?? clientData[0]?.licenses,
+			registeredBy: clientData?.registeredBy ?? clientData[0]?.registeredBy,
+			registeredDate:
+				clientData?.registeredDate ?? clientData[0]?.registeredDate,
+			shareModels: shareModelType,
 		};
 		setClientDetail(data);
 		setChange(data);
@@ -116,6 +131,17 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 		}));
 	};
 
+	// handling license type dropdown input change and call update api function
+	const handleShareModelChange = (path, value) => {
+		setClientDetail((detail) => ({
+			...detail,
+			[path]: value,
+		}));
+
+		const { value: modelShareValue } = value;
+		handleApiCall("shareModels", modelShareValue);
+	};
+
 	// OnBlur Company Name and Liscenses count
 	const handleApiCall = (name, value) => {
 		if (changedState[`${name}`] !== value) changeClientDetails(name, value);
@@ -136,6 +162,11 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 							Company Name<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
+							sx={{
+								"& .MuiInputBase-input.Mui-disabled": {
+									WebkitTextFillColor: "#000000",
+								},
+							}}
 							name="name"
 							variant="outlined"
 							fullWidth
@@ -155,6 +186,11 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 							Registered By<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
+							sx={{
+								"& .MuiInputBase-input.Mui-disabled": {
+									WebkitTextFillColor: "#000000",
+								},
+							}}
 							value={clientDetail.registeredBy || ""}
 							variant="outlined"
 							fullWidth
@@ -171,6 +207,11 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 							Registration Date<span style={{ color: "#E31212" }}>*</span>
 						</Typography>
 						<TextField
+							sx={{
+								"& .MuiInputBase-input.Mui-disabled": {
+									WebkitTextFillColor: "#000000",
+								},
+							}}
 							id="date"
 							variant="outlined"
 							fullWidth
@@ -199,6 +240,23 @@ const ClientDetail = ({ clientId, clientData, getError, loading }) => {
 								),
 							}}
 							InputLabelProps={{ shrink: true }}
+						/>
+					</Grid>
+
+					<Grid item xs={6}>
+						<Typography className={classes.labelText}>
+							Model Sharing<span style={{ color: "#E31212" }}>*</span>
+						</Typography>
+						<Dropdown
+							options={shareModelsOptions}
+							selectedValue={clientDetail.shareModels}
+							onChange={(value) => {
+								handleShareModelChange("shareModels", value);
+							}}
+							label=""
+							required={true}
+							disabled={role !== UserRoles.superAdmin}
+							width="100%"
 						/>
 					</Grid>
 				</Grid>

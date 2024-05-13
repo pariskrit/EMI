@@ -1,16 +1,16 @@
-import { CircularProgress, Link } from "@material-ui/core";
+import { CircularProgress, Link } from "@mui/material";
 import AudioPlayer from "components/Elements/AudioPlayer";
 import ColourConstants from "helpers/colourConstants";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useLocation, useOutletContext } from "react-router-dom";
 import { showError } from "redux/common/actions";
 import { getServiceDefects } from "services/services/serviceDefects/defects";
 import DefectsListTable from "./DefectsListTable";
 
 function Defects({ state, customCaptions, siteAppID, serviceId }) {
 	const dispatch = useDispatch();
-	const history = useHistory();
+	const location = useLocation();
 
 	const [defects, setDefects] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -67,7 +67,7 @@ function Defects({ state, customCaptions, siteAppID, serviceId }) {
 			}
 			setLoading(false);
 		})();
-	}, [dispatch, serviceId, history]);
+	}, [dispatch, serviceId, location]);
 
 	if (loading) {
 		return <CircularProgress />;

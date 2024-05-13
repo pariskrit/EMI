@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "tss-react/mui";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import CircularProgress from "@mui/material/CircularProgress";
 import { ReactComponent as UploadIcon } from "assets/icons/uploadIcon.svg";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import axios, { CancelToken, isCancel } from "axios";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	dragContainer: {
 		padding: 25,
 		borderStyle: "dashed",
@@ -64,7 +66,8 @@ const DropUpload = ({
 	cancelFileUpload,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
+	const dispatch = useDispatch();
 
 	const [localLoading, setLocalLoading] = useState(false);
 
@@ -115,9 +118,15 @@ const DropUpload = ({
 			// Getting upload url and attempting upload
 			// NOTE: currently handling single file
 			getUploadLink(fileName).then((uploadDetails) =>
-				uploadFile(acceptedFiles[0], uploadDetails.url).then((res) => {
-					uploadReturn(uploadDetails.key, acceptedFiles[0].path);
-				})
+				uploadFile(acceptedFiles[0], uploadDetails.url, uploadDetails).then(
+					(res) => {
+						if (uploadDetails?.key) {
+							uploadReturn(uploadDetails.key, acceptedFiles[0].path, res);
+						} else {
+							setFilesUploading(false);
+						}
+					}
+				)
 			);
 		},
 		// eslint-disable-next-line
@@ -145,7 +154,7 @@ const DropUpload = ({
 				return uploadLink.data;
 			} else {
 				// Printing failure
-				console.log(uploadLink);
+
 				showProgress && setLocalLoading(false);
 
 				throw new Error(`Unable to get link`);
@@ -153,13 +162,13 @@ const DropUpload = ({
 		} catch (err) {
 			showProgress && setLocalLoading(false);
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError(err?.response?.data?.detail || "Failed to upload."));
 
-			return false;
+			return err?.response?.data?.detail || false;
 		}
 	};
 
-	const uploadFile = async (file, uploadURL) => {
+	const uploadFile = async (file, uploadURL, message) => {
 		// Attempting file upload
 		try {
 			// Attempting upload
@@ -178,11 +187,10 @@ const DropUpload = ({
 					? new CancelToken((cancel) => (cancelFileUpload.current = cancel))
 					: null,
 			});
-
 			return true;
 		} catch (err) {
 			if (isCancel(err)) {
-				console.log(err.message);
+				dispatch(showError(err?.message || "File upload cancelled."));
 			}
 			// TODO: real error handling
 			// if (showProgress) {
@@ -190,7 +198,9 @@ const DropUpload = ({
 			// 		source.cancel("Operation cancellled");
 			// 	}
 			// }
-			console.log(err);
+			const errorMsg =
+				(!uploadURL ? message : err?.message) || "Failed to upload file.";
+			dispatch(showError(errorMsg));
 			return false;
 		}
 	};
@@ -212,7 +222,9 @@ const DropUpload = ({
 
 						<Typography className={classes.dropText}>
 							Drag and drop some files here, or{" "}
-							<Link className={classes.imgLink}>browse</Link>
+							<Link className={classes.imgLink} underline="none">
+								browse
+							</Link>
 						</Typography>
 					</div>
 				)}

@@ -37,6 +37,7 @@ const differentUserAPIs = {
 		postAPI: postUserProfile,
 		postPasswordResetAPI: postPasswordReset,
 		patchSwitchAPI: patchSwitchUserProfile,
+		deleteNoteAPI: `${BASE_API_PATH}clientusernotes`,
 		// patchAPI: patchUser,
 		// postAPI: postPassword,
 	},

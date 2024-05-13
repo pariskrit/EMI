@@ -7,9 +7,11 @@
 // 	LinearProgress,
 // 	Radio,
 // 	RadioGroup,
-// } from "@material-ui/core";
+// } from "@mui/material";
 // import * as yup from "yup";
-// import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from '@mui/styles';
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 // import AddDialogStyle from "styles/application/AddDialogStyle";
 // import { generateErrorState, handleValidateObj } from "helpers/utils";
 // import Dropdown from "components/Elements/Dropdown";
@@ -26,14 +28,14 @@
 // 	name: yup.string("This field must be a string").required("Name is required"),
 // });
 
-// const useStyles = makeStyles({
+// const useStyles =  makeStyles()((theme) =>({
 // 	dialogContent: {
 // 		width: 500,
 // 	},
 // 	createButton: {
 // 		width: "auto",
 // 	},
-// });
+// }))
 
 // // Default state schemas
 // const defaultErrorSchema = {
@@ -58,7 +60,7 @@
 // 	createProcessHandler,
 // }) {
 // 	// Init hooks
-// 	const classes = useStyles();
+// 	const { classes,cx } = useStyles()
 // 	const dispatch = useDispatch();
 
 // 	// Init state

@@ -1,6 +1,6 @@
 import React from "react";
-import { TableCell, TableRow, Tooltip } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { TableCell, TableRow, Tooltip } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import "./style.scss";
 const HtmlTooltip = withStyles((theme) => ({
 	tooltip: {

@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import { makeStyles } from "tss-react/mui";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import ColourConstants from "helpers/colourConstants";
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 		[media]: {
@@ -67,7 +67,7 @@ const useStyles = makeStyles({
 	inputContainer: {
 		width: "100%",
 	},
-});
+}));
 
 const DefaultDialog = ({
 	open,
@@ -77,7 +77,7 @@ const DefaultDialog = ({
 	handleDefaultUpdate,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -115,6 +115,12 @@ const DefaultDialog = ({
 							onClick={closeHandler}
 							variant="contained"
 							className={classes.cancelButton}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
 						>
 							Cancel
 						</Button>
@@ -122,6 +128,12 @@ const DefaultDialog = ({
 							className={classes.confirmButon}
 							variant="contained"
 							onClick={handleUpdateClick}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
 						>
 							Confirm
 						</Button>

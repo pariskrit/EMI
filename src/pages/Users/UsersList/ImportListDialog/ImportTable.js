@@ -6,7 +6,7 @@ import {
 	TableRow,
 	TableHead,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 const ImportTable = ({ data, title }) => {
 	if (data.length === 0) {
 		return null;

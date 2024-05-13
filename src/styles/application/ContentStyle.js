@@ -1,5 +1,5 @@
-import { styled } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
+import { styled } from "@mui/styles";
+import TextField from "@mui/material/TextField";
 
 const ContentStyle = () => {
 	return {

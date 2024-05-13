@@ -1,17 +1,14 @@
-import { TextField, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import { TextField, Typography } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import React from "react";
 import { Facebook } from "react-spinners-css";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	labelText: {
 		fontFamily: "Roboto Condensed",
 		fontWeight: "bold",
 		fontSize: "14px",
 		marginBottom: "5px",
-	},
-	inputText: {
-		color: "#000000de",
 	},
 }));
 function TextFieldContainer({
@@ -30,7 +27,7 @@ function TextFieldContainer({
 	error = false,
 	placeholder = "",
 }) {
-	const classes = useStyles();
+	const { classes } = useStyles();
 
 	return (
 		<div className={className} style={{ width: "100%", marginBottom: "14px" }}>
@@ -44,12 +41,14 @@ function TextFieldContainer({
 				variant="outlined"
 				fullWidth
 				InputProps={{
-					classes: {
-						input: classes.inputText,
-					},
 					endAdornment: isFetching ? (
 						<Facebook size={20} color="#A79EB4" />
 					) : null,
+				}}
+				sx={{
+					"& .MuiInputBase-input.Mui-disabled": {
+						WebkitTextFillColor: "#000000",
+					},
 				}}
 				onChange={onChange}
 				onBlur={onBlur}

@@ -20,7 +20,6 @@ const inputDetails = [
 		name: "serialNumberRange",
 		isRequired: false,
 	},
-
 	{
 		id: 5,
 		label: "Developer Name",
@@ -103,14 +102,20 @@ function Details({
 		if (!response.status) {
 			dispatch(
 				showError(
-					response.data.detail ||
-						response.data.errors.name[0] ||
+					response?.data?.detail ||
+						response?.data?.errors?.name?.[0] ||
 						"Error: Could not update input"
 				)
 			);
 			setDetails(oldDetails);
 		} else {
 			setOldDetails(details);
+			!response?.data?.arrangementsExist &&
+				dispatch(
+					showError(
+						`Please review your ${customCaptions["asset"]} ${customCaptions["arrangementPlural"]}. Some  ${customCaptions["assetPlural"]} contain an invalid ${customCaptions["arrangement"]} configuration for this new published version.`
+					)
+				);
 		}
 
 		setApiStatus({ ...apiStatus, [inputName]: "idle" });
@@ -127,6 +132,12 @@ function Details({
 				},
 			});
 		}
+		if (
+			(response.status && inputName === "name") ||
+			(response.status && inputName === "serialNumberRange")
+		) {
+			Ctxdispatch({ type: "SERIAL_NUMBER_RANGE", payload: value });
+		}
 		setInputChanged({});
 	};
 
@@ -136,13 +147,24 @@ function Details({
 		}
 	};
 
-	const onDropdownInputChange = async (name, type) => {
-		setSelectedDropdownInput({ ...selectedDropdownInput, [name]: type });
+	const onDropdownInputChange = async (name, types) => {
+		setSelectedDropdownInput({ ...selectedDropdownInput, [name]: types });
 		const response = await updateModel(id, [
-			{ op: "replace", path: name, value: type.value },
+			{ op: "replace", path: name, value: types.value },
 		]);
+
+		if (name === "modelTypeID") {
+			Ctxdispatch({ type: "CHANGE_MODEL_TYPE", payload: types });
+		}
 		if (!response.status) {
 			dispatch(showError("Error: Could not update input"));
+		} else {
+			!response?.data?.arrangementsExist &&
+				dispatch(
+					showError(
+						`Please review your ${customCaptions["asset"]} ${customCaptions["arrangementPlural"]}. Some  ${customCaptions["assetPlural"]} contain an invalid ${customCaptions["arrangement"]} configuration for this new published version.`
+					)
+				);
 		}
 	};
 
@@ -150,9 +172,10 @@ function Details({
 		(data) =>
 			isReadOnly
 				? []
-				: data.map((type) => ({ label: type?.name, value: type.id })),
+				: data?.map((type) => ({ label: type?.name, value: type.id })),
 		[isReadOnly]
 	);
+
 	const modifyApiData = useCallback(
 		(details, modelTypes) =>
 			inputDetails
@@ -167,7 +190,12 @@ function Details({
 				)
 				.map((input) => ({
 					...input,
-					label: customCaptions[input.label.toLowerCase()] ?? input.label,
+					label:
+						customCaptions[
+							input.label === "Serial Number Range"
+								? "serialNumberRange"
+								: input.label.toLowerCase()
+						] ?? input.label,
 					value:
 						input.name === "modelTypeID"
 							? modifyDropdownData(modelTypes)
@@ -179,7 +207,11 @@ function Details({
 	useEffect(() => {
 		if (details.length === 0) {
 			const { details, modelTypes } = data;
-			const inputProps = modifyApiData(details, modelTypes);
+
+			const localmodelTypes = Array.isArray(modelTypes)
+				? modelTypes
+				: [modelTypes];
+			const inputProps = modifyApiData(details, localmodelTypes);
 			setDetails(inputProps);
 			setOldDetails(inputProps);
 
@@ -224,6 +256,11 @@ function Details({
 										: input.label
 									: input.label
 							}
+							sx={{
+								"& .MuiInputBase-input.Mui-disabled": {
+									WebkitTextFillColor: "#000000",
+								},
+							}}
 							name={input.name}
 							value={input.value}
 							onChange={onInputChange}
@@ -241,6 +278,11 @@ function Details({
 					label={"Review Date"}
 					name={"reviewDate"}
 					value={reviewDate}
+					sx={{
+						"& .MuiInputBase-input.Mui-disabled": {
+							WebkitTextFillColor: "#000000",
+						},
+					}}
 					onChange={(e) => setReviewDate(e.target.value)}
 					onBlur={(e) => handleReviewDateBlur("reviewDate", e)}
 					isRequired={false}

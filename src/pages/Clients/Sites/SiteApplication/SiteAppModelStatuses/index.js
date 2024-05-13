@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import API from "helpers/api";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -34,9 +34,12 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		setSearchData,
 	} = useSearch();
 
+	const errorDispatch = useDispatch();
+
 	const {
 		details: { data },
 		defaultCustomCaptionsData,
+		isReadOnly,
 	} = state;
 
 	const handleGetData = useCallback(async () => {
@@ -61,7 +64,13 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 		} catch (err) {
 			// TODO: real error handling
 			setLoading(false);
-			console.log(err);
+			errorDispatch(
+				showError(
+					`Failed to fetch ${
+						data?.application?.modelCC || defaultCustomCaptionsData?.model
+					} statuses.`
+				)
+			);
 			return false;
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,8 +147,13 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
-
+			errorDispatch(
+				showError(
+					`Failed to update default ${
+						data?.application?.modelCC || defaultCustomCaptionsData?.model
+					} statuses.`
+				)
+			);
 			return false;
 		}
 	};
@@ -159,7 +173,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				applicationID={appId}
 				handleAddData={handleAddData}
 				getError={getError}
-				header={data?.modelCC || defaultCustomCaptionsData.model}
+				header={data?.modelCC || defaultCustomCaptionsData?.model}
 			/>
 			<EditStatusDialog
 				open={modal.edit}
@@ -167,7 +181,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				closeHandler={() => setModal((th) => ({ ...th, edit: false }))}
 				handleEditData={handleEditData}
 				getError={getError}
-				header={data?.modelCC || defaultCustomCaptionsData.model}
+				header={data?.modelCC || defaultCustomCaptionsData?.model}
 			/>
 			<DefaultDialog
 				open={modal.default}
@@ -224,6 +238,7 @@ const SiteAppModelStatuses = ({ state, dispatch, appId, getError }) => {
 				onDefault={onDefaultClick}
 				searchQuery={searchQuery}
 				isLoading={loading}
+				isReadOnly={isReadOnly}
 			/>
 		</div>
 	);

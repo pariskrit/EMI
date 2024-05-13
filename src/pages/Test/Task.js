@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import SettingsIcon from "@material-ui/icons/Settings";
-import WarningIcon from "@material-ui/icons/Warning";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-import NoteAddIcon from "@material-ui/icons/NoteAdd";
-import ImageIcon from "@material-ui/icons/Image";
-import BuildIcon from "@material-ui/icons/Build";
+import SettingsIcon from "@mui/icons-material/Settings";
+import WarningIcon from "@mui/icons-material/Warning";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import ImageIcon from "@mui/icons-material/Image";
+import BuildIcon from "@mui/icons-material/Build";
 import API from "helpers/api";
 
 function Task() {
@@ -13,9 +13,8 @@ function Task() {
 			const response = await API.get(
 				"/api/ModelVersionTasks?modelVersionId=" + modelVersionId
 			);
-			console.log(response.data);
 		} catch (error) {
-			console.log(error);
+			return;
 		}
 	};
 

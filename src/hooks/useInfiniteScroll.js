@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 
 function useInfiniteScroll(
 	data,
@@ -17,6 +17,7 @@ function useInfiniteScroll(
 	const pageRef = useRef(page);
 	const prevPageRef = useRef(0);
 	const extraInfo = useRef(extra);
+	const searchInfo = useRef(searchText);
 	const threshold = 1;
 
 	useMemo(() => {
@@ -24,9 +25,11 @@ function useInfiniteScroll(
 		countRef.current = count;
 		pageRef.current = page;
 		extraInfo.current = extra;
-	}, [data, count, page, extra]);
+		searchInfo.current = searchText;
+	}, [data, count, page, extra, searchText]);
 
 	useEffect(() => {
+		setHasMore(true);
 		prevPageRef.current = page === 1 ? 0 : prevPageRef.current;
 	}, [page]);
 
@@ -36,14 +39,19 @@ function useInfiniteScroll(
 	}, [searchText]);
 
 	const fetchMoreData = async () => {
-		if (countRef.current / pageRef.current < DefaultPageSize) {
+		if (countRef.current / pageRef.current < defaultPageSize()) {
 			setHasMore(false);
 			return;
 		}
 		if (prevPageRef.current !== pageRef.current) {
 			prevPageRef.current = pageRef.current;
 			setLoading(true);
-			await fetchData(pageRef.current, dataRef.current, extraInfo.current);
+			await fetchData(
+				pageRef.current,
+				dataRef.current,
+				extraInfo.current,
+				searchInfo.current
+			);
 			setLoading(false);
 		}
 	};

@@ -5,13 +5,15 @@ import {
 	DialogTitle,
 	Divider,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import ImageUpload from "components/Elements/ImageUpload";
-import clsx from "clsx";
+
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
@@ -32,13 +34,14 @@ const schema = yup.object({
 		.mixed()
 		.test("fileType", "Unsupported File Format", (value) =>
 			SUPPORTED_FORMATS.includes(value.type)
-		),
+		)
+		.nullable(),
 	imageUrl: yup.string(),
 	imageName: yup.string(),
 	defaultSiteAssetFilter: yup.string().nullable(),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: "100%",
 	},
@@ -63,7 +66,7 @@ const useStyles = makeStyles({
 		width: "100%",
 		maxWidth: "100%",
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -93,7 +96,7 @@ function AddNewModelTask({
 	modelType,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -187,7 +190,7 @@ function AddNewModelTask({
 				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
-				className={clsx("large-application-dailog")}
+				className={cx("large-application-dailog")}
 			>
 				{isUpdating ? <LinearProgress /> : null}
 				<ADD.ActionContainer>

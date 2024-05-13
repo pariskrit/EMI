@@ -1,0 +1,61 @@
+#serviceganttchartid {
+	svg {
+		g {
+			rect {
+				stroke: transparent;
+			}
+		}
+	}
+}
+svg g:nth-child(3) {
+	rect {
+		stroke: transparent !important;
+	}
+}
+svg g:nth-child(7) {
+	rect:not(:first-child) {
+		fill: #05a7f2 !important;
+		stroke: #48c2fb !important;
+		stroke-width: 1px;
+	}
+}
+
+.MuiTableRow-root:not(:last-child) {
+	border-bottom: 2px solid #e8e8e8 !important;
+}
+
+#chartContainer,
+#tableContainer {
+	&::-webkit-scrollbar {
+		width: 14px;
+		height: 14px;
+	}
+
+	/* Track */
+	&::-webkit-scrollbar-track {
+		background: #f1f1f1;
+	}
+
+	/* Handle */
+	&::-webkit-scrollbar-thumb {
+		background: #bebebe;
+		border-radius: 12px;
+	}
+
+	/* Handle on hover */
+	&::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+}
+#tableContainer {
+	&::-webkit-scrollbar {
+		width: 14px;
+		height: 14px;
+	}
+
+	/* Handle */
+	&::-webkit-scrollbar-thumb {
+		background: #9d9d9d;
+		border-radius: 12px;
+	}
+}

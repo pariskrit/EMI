@@ -1,20 +1,18 @@
 import React from "react";
-import {
-	Accordion,
-	AccordionDetails,
-	AccordionActions,
-} from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
+import { Accordion, AccordionDetails, AccordionActions } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import ColourConstants from "helpers/colourConstants";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionSummary from "@mui/material/AccordionSummary";
 import CurveButton from "components/Elements/CurveButton";
 import SafteryCritical from "assets/icons/safety-critical.svg";
 
 import { getLocalStorageData } from "helpers/utils";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	logoAccordion: {
 		borderColor: ColourConstants.commonBorder,
 		borderStyle: "solid",
@@ -57,7 +55,7 @@ function AccordionBox({
 	style = { marginTop: "10px" },
 	showSafetyCritical = false,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const { customCaptions } = getLocalStorageData("me");
 
 	return (

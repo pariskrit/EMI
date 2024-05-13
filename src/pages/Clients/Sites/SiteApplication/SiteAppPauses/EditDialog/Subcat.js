@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import API from "helpers/api";
 import SubcatStyle from "styles/application/SubcatStyle";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AS = SubcatStyle();
@@ -19,6 +21,7 @@ const Subcat = ({
 	const [isEdit, setIsEdit] = useState(false);
 	const [subcatName, setSubcatName] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 
@@ -66,14 +69,13 @@ const Subcat = ({
 				throw new Error(result);
 			}
 		} catch (err) {
-			console.log(err);
 			// Handling duplicate subcat error
 			if (
 				err.response.data.detail !== undefined ||
 				err.response.data.detail !== null
 			) {
 				//setErrors({ ...errors, ...{ name: err.response.data.detail } });
-				getError(err.response.data.detail);
+				getError(err.response.data.detail ?? `Failed to edit sub-category.`);
 
 				setIsUpdating(false);
 				return false;
@@ -84,13 +86,14 @@ const Subcat = ({
 				setErrors({ ...errors, ...err.response.data.errors });
 
 				setIsUpdating(false);
+				dispatch(showError(`Failed to edit sub-category.`));
 				return false;
 			} else {
 				// TODO: handle non validation errors here
-				console.log(err);
 
 				setIsEdit(false);
 				setIsUpdating(false);
+				dispatch(showError(`Failed to edit sub-category.`));
 			}
 		}
 	};

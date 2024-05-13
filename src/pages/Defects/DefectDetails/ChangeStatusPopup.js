@@ -4,8 +4,9 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-	makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getLocalStorageData } from "helpers/utils";
 import { useDispatch } from "react-redux";
@@ -18,17 +19,17 @@ import { handleSort } from "helpers/utils";
 
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 function ChangeStatusPopup({ open, onClose, setDetails }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [defectStatuses, setDefectStatuses] = useState([]);
 	const [selectedStatus, setSelectedStatus] = useState({});
@@ -58,7 +59,7 @@ function ChangeStatusPopup({ open, onClose, setDetails }) {
 			dispatch(
 				showError(
 					response.data?.detail ||
-						response.data ||
+						response?.data ||
 						"Could Not Update Model Status"
 				)
 			);

@@ -1,11 +1,13 @@
-import Typography from "@material-ui/core/Typography";
-import CheckIcon from "@material-ui/icons/Check";
+import Typography from "@mui/material/Typography";
+import CheckIcon from "@mui/icons-material/Check";
 import PropTypes from "prop-types";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ReactComponent as ArrowIcon } from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+//
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import ColourConstants from "helpers/colourConstants";
 import useInfiniteScroll from "hooks/useDropdownInfiniteScroll";
 import TableStyle from "styles/application/TableStyle";
@@ -18,13 +20,16 @@ import {
 	DROPDOWN_TOP_OFFSET,
 } from "helpers/constants";
 import ErrorMessageWithErrorIcon from "./ErrorMessageWithErrorIcon";
+import { handleSort } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const ADD = AddDialogStyle();
 const AT = TableStyle();
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderTopColor: ColourConstants.tableBorder,
@@ -83,10 +88,10 @@ const useStyles = makeStyles({
 		display: "flex",
 		alignItems: "center",
 	},
-});
+}));
 
 function DyanamicDropdown(props) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const {
 		width,
 		selectedValue,
@@ -132,11 +137,13 @@ function DyanamicDropdown(props) {
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dropdownlistner, setdropdownlistner] = useState(window);
 	const [isLoading, setLoading] = useState(false);
+	const [mouseDown, setMouseDown] = useState(false);
 	const [uniqueId] = useState(Math.random() * Date.now());
 	const scrollRef = useRef(true);
 	const focusRef = useRef(false);
-	const preloadSearch = useRef(false);
+	const optionsRef = useRef();
 
+	const preloadSearch = useRef(false);
 	useEffect(() => {
 		setFilteredList(dataSource);
 		setOriginalFilteredList(dataSource);
@@ -146,6 +153,8 @@ function DyanamicDropdown(props) {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dataSource]);
+
+	const dispatch = useDispatch();
 
 	const handleOutsideClick = useCallback(
 		(event) => {
@@ -172,6 +181,7 @@ function DyanamicDropdown(props) {
 				const dailogContent = document.getElementsByClassName(
 					"MuiDialogContent-root"
 				)[0];
+				setDropActive(false);
 				if (dailogContent) dailogContent.style.overflow = "auto";
 			}
 		},
@@ -182,26 +192,42 @@ function DyanamicDropdown(props) {
 		let specifiedElement = document.getElementsByClassName(
 			"dropdown-expand active"
 		)[0];
+		const { innerWidth, innerHeight } = window;
 		if (specifiedElement) {
-			//specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
-			if (
-				window.innerWidth - specifiedElement.getBoundingClientRect().right <
-				50
-			) {
+			specifiedElement.style.position = "relative";
+
+			//to fix the position issue
+			const adjustDropDown =
+				innerWidth - specifiedElement.getBoundingClientRect().right < 50 ||
+				(innerWidth > 2000 &&
+					innerWidth - specifiedElement.getBoundingClientRect().right < 100);
+
+			if (adjustDropDown) {
 				specifiedElement.style.left = "unset";
 				specifiedElement.style.right = `${DROPDOWN_RIGHT_OFFSET}px`;
 			} else {
+				specifiedElement.style.position = "absolute";
 				specifiedElement.style.right = "unset";
 				specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
 			}
 
 			let parentEl = document.getElementsByClassName("dropdown active")[0];
-			if (window.innerHeight - parentEl.getBoundingClientRect().bottom < 300) {
+			if (innerHeight - parentEl.getBoundingClientRect().bottom < 300) {
 				specifiedElement.style.top = "unset";
-				specifiedElement.style.bottom = `${DROPDOWN_TOP_OFFSET}px`;
+				if (adjustDropDown) {
+					specifiedElement.style.position = "relative";
+					specifiedElement.style.top = `${DROPDOWN_TOP_OFFSET}px`;
+				} else {
+					specifiedElement.style.bottom = `-${DROPDOWN_TOP_OFFSET}px`;
+				}
 			} else {
 				specifiedElement.style.bottom = "unset";
-				specifiedElement.style.top = `-${DROPDOWN_TOP_OFFSET}px`;
+				if (adjustDropDown) {
+					specifiedElement.style.position = "relative";
+					specifiedElement.style.top = `${DROPDOWN_TOP_OFFSET}px`;
+				} else {
+					specifiedElement.style.top = `-${DROPDOWN_TOP_OFFSET}px`;
+				}
 			}
 			specifiedElement.style.position = "absolute";
 		}
@@ -325,29 +351,31 @@ function DyanamicDropdown(props) {
 			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();
 			dropdownExpandEl.style.bottom = "unset";
-			dropdownExpandEl.style.top =
-				window.innerHeight - el?.getBoundingClientRect().bottom < 300
-					? `${dropdownPos.top - dropdownExpandEl.scrollHeight + 53}px`
-					: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
+			setTimeout(() => {
+				dropdownExpandEl.style.top =
+					window.innerHeight - el?.getBoundingClientRect().bottom < 300
+						? `${dropdownPos.top - dropdownExpandEl.scrollHeight + 53}px`
+						: `${dropdownPos.top - DROPDOWN_TOP_OFFSET}px`;
 
-			if (
-				parentEl.scrollWidth < dropdownExpandEl.scrollWidth &&
-				window.innerWidth - el.getBoundingClientRect().right < 150
-			) {
-				const isScrollbarActive =
-					document.body.scrollHeight > window.innerHeight;
-				dropdownExpandEl.style.right = `${
-					window.innerWidth -
-					dropdownPos.right +
-					(isScrollbarActive
-						? DROPDOWN_RIGHT_OFFSET / 2
-						: DROPDOWN_RIGHT_OFFSET)
-				}px`;
-			} else {
-				dropdownExpandEl.style.left = `${
-					dropdownPos.left + DROPDOWN_LEFT_OFFSET
-				}px`;
-			}
+				if (
+					parentEl.scrollWidth < dropdownExpandEl.scrollWidth &&
+					window.innerWidth - el.getBoundingClientRect().right < 150
+				) {
+					const isScrollbarActive =
+						document.body.scrollHeight > window.innerHeight;
+					dropdownExpandEl.style.right = `${
+						window.innerWidth -
+						dropdownPos.right +
+						(isScrollbarActive
+							? DROPDOWN_RIGHT_OFFSET / 2
+							: DROPDOWN_RIGHT_OFFSET)
+					}px`;
+				} else {
+					dropdownExpandEl.style.left = `${
+						dropdownPos.left + DROPDOWN_LEFT_OFFSET
+					}px`;
+				}
+			}, 0);
 		}
 		if (scrollRef.current === true) {
 			document
@@ -368,10 +396,18 @@ function DyanamicDropdown(props) {
 		)[0];
 		let dropbox = document.getElementsByClassName("dropbox active")[0];
 
+		let hoveredElement = document.querySelector(
+			".dropdown-expand.active  .hoverOver"
+		);
+		if (hoveredElement) {
+			hoveredElement.classList.remove("hoverOver");
+		}
+
 		if (dropbox) dropbox.classList.remove("active");
 		let parentEl = document.getElementsByClassName("dropdown active")[0];
 		if (parentEl) parentEl.classList.remove("active");
 		if (specifiedElement) specifiedElement.classList.remove("active");
+		setDropActive(false);
 	};
 
 	// clear and reset dropdown content
@@ -465,11 +501,107 @@ function DyanamicDropdown(props) {
 				);
 			}
 		} catch (error) {
-			console.log(error);
+			dispatch(showError("Failed to load data."));
 		} finally {
 			setLoading(false);
 		}
 	};
+
+	const handleMouseDown = (event) => {
+		setMouseDown(true);
+	};
+	useEffect(() => {
+		let active = null;
+
+		// Get the Selected Dropdown Item Element, if any, when dropdown opens
+		if (dropActive && !isLoading) {
+			active = document.querySelector(".dropdown-expand.active   .selected");
+			document.addEventListener("keydown", onKeyPress);
+		}
+
+		function onKeyPress(event) {
+			// Store the selected dropdown item or hovering dropdown item on every keypress. Required for changing the hovering item when pressing up or down.
+			const onHoverPresent =
+				active ??
+				document.querySelector(".dropdown-expand.active   .hoverOver");
+
+			// If no selected item or hovering item present then set hover state to the first element
+			if (!onHoverPresent) {
+				const firstChildElement = document.querySelector(
+					".dropdown-expand.active  .dynamic-drop-list"
+				)?.firstChild;
+				active = firstChildElement;
+				active?.classList && active.classList.add("hoverOver");
+			}
+
+			// If hover state present then change hover state on up and down key.
+			if (active && onHoverPresent) {
+				active.classList.remove("hoverOver");
+				if (event.keyCode === 40) {
+					if (active.classList.contains("group-item")) {
+						if (!active.nextElementSibling) {
+							active = active.parentElement.nextElementSibling
+								? active.parentElement.nextElementSibling.firstChild
+								: active;
+						} else {
+							active = active.nextElementSibling;
+						}
+					} else {
+						active = active.nextElementSibling || active;
+					}
+					active.scrollIntoView({
+						behavior: "smooth",
+						block: "end",
+					});
+				} else if (event.keyCode === 38) {
+					if (active.classList.contains("group-item")) {
+						if (!active.previousElementSibling) {
+							active = active.parentElement.previousElementSibling
+								? active.parentElement.previousElementSibling.lastChild
+								: active;
+						} else {
+							active = active.previousElementSibling;
+						}
+					} else {
+						active = active.previousElementSibling || active;
+					}
+					active.scrollIntoView({
+						behavior: "smooth",
+						block: "end",
+					});
+				} else if (event.keyCode === 13) {
+					if (
+						active.classList.contains("list-item") ||
+						active.classList.contains("group-item")
+					) {
+						active.click();
+					} else if (active.classList.contains("checklist-item")) {
+						const checkboxItem = active.querySelector("input[type=checkbox]");
+						if (checkboxItem) {
+							checkboxItem.click();
+						}
+					}
+					return;
+				}
+
+				active?.classList && active.classList.add("hoverOver");
+			}
+			setMouseDown(false);
+		}
+
+		const onTabPress = (e) => {
+			setMouseDown(false);
+		};
+
+		document.addEventListener("keydown", onTabPress);
+		document.addEventListener("mousedown", handleMouseDown);
+
+		return () => {
+			document.removeEventListener("mousedown", handleMouseDown);
+			document.removeEventListener("keydown", onKeyPress);
+			document.removeEventListener("keydown", onTabPress);
+		};
+	}, [dropActive, isLoading]);
 
 	return (
 		<div
@@ -521,7 +653,7 @@ function DyanamicDropdown(props) {
 
 					{showClear && (
 						<Typography
-							className={clsx("label", classes.clear)}
+							className={cx("label", classes.clear)}
 							onClick={handleClear}
 							style={{ color: "#E31212", textAlign: "right" }}
 						>
@@ -531,7 +663,16 @@ function DyanamicDropdown(props) {
 				</div>
 
 				<div
-					className={clsx({
+					tabIndex={0}
+					onFocus={async (event) => {
+						if (!mouseDown) {
+							const target = event.target;
+							handleDrpdwnClick(target);
+							await handleApiCall();
+							handleDrpdwnClick(target);
+						}
+					}}
+					className={cx({
 						"inputbox flex justify-between": true,
 						"icon-box": icon,
 						error: isError,
@@ -564,11 +705,20 @@ function DyanamicDropdown(props) {
 			</div>
 			{/* {dropActive && ( */}
 			<div
-				className={clsx({
+				className={cx({
 					"dropdown-expand": true,
 					// active: dropActive,
 				})}
+				onBlur={() => {
+					if (!mouseDown) {
+						removeActiveDropdown();
+					}
+					setDropActive(false);
+					return;
+				}}
 				style={{ width: dropDownActiveWidth }}
+				tabIndex={"0"}
+				role="button"
 			>
 				<div className="search-box flex justify-between">
 					<div className="input-field flex">
@@ -580,6 +730,7 @@ function DyanamicDropdown(props) {
 							onChange={(e) => onFilter(e.target.value)}
 							id="dynamic-dropdown-search-input"
 							ref={focusRef}
+							autoComplete="off"
 						/>
 					</div>
 
@@ -594,7 +745,7 @@ function DyanamicDropdown(props) {
 									onClick={() => {
 										handleSortClick(columns[i].name);
 									}}
-									className={clsx(classes.nameRow, classes.tableHeadRow, {
+									className={cx(classes.nameRow, classes.tableHeadRow, {
 										[classes.selectedTableHeadRow]:
 											currentTableSort[0] === columns[i].name,
 										[classes.tableHeadRow]:
@@ -640,8 +791,11 @@ function DyanamicDropdown(props) {
 													<ADD.CheckboxLabel key={col?.id}>
 														<EMICheckbox
 															state={
-																rolesChecklist.filter((r) => r.id === list.id)
-																	.length === 1
+																rolesChecklist.filter(
+																	(r) =>
+																		r.id === list.id ||
+																		r.id === list.modelVersionID
+																).length === 1
 															}
 															changeHandler={() => {
 																checklistChangeHandler(list.id, list[col.name]);
@@ -649,6 +803,7 @@ function DyanamicDropdown(props) {
 																// setDropActive(false);
 															}}
 															disabled={disabled}
+															tabIndex="-1"
 														/>
 														{list[col.name]}
 													</ADD.CheckboxLabel>
@@ -671,6 +826,11 @@ function DyanamicDropdown(props) {
 															setDropActive(false);
 															removeActiveDropdown();
 														}}
+														className={
+															"group-item" +
+															" " +
+															(group.id === selectedValue.id ? "selected" : "")
+														}
 													>
 														<span
 															style={{
@@ -696,7 +856,7 @@ function DyanamicDropdown(props) {
 														?.map((list) => (
 															<div
 																className={
-																	"list-item flex " +
+																	"list-item flex group-item " +
 																	(list.id === selectedValue.id
 																		? "selected"
 																		: "")
@@ -715,7 +875,7 @@ function DyanamicDropdown(props) {
 																			flexGrow: "1",
 																			minWidth: col.minWidth || "150px",
 																		}}
-																		className={clsx(classes.droplistitem, {
+																		className={cx(classes.droplistitem, {
 																			[classes.firstdroplistItem]: i === 0,
 																		})}
 																		key={i}
@@ -731,11 +891,12 @@ function DyanamicDropdown(props) {
 												</div>
 											);
 									  })
-									: filteredList?.map((list) => (
+									: filteredList?.map((list, index) => (
 											<div
+												ref={optionsRef}
 												className={
 													"list-item flex " +
-													(list.id === selectedValue.id ? "selected" : "")
+													(list?.id === selectedValue?.id ? "selected" : "")
 												}
 												key={list.id}
 												onClick={() => {
@@ -743,6 +904,7 @@ function DyanamicDropdown(props) {
 													setDropActive(false);
 													removeActiveDropdown();
 												}}
+												id={`list-${list.id}`}
 											>
 												{columns.map((col, i) => (
 													<span
@@ -750,7 +912,7 @@ function DyanamicDropdown(props) {
 															flexGrow: "1",
 															minWidth: col.minWidth || "150px",
 														}}
-														className={clsx(classes.droplistitem, {
+														className={cx(classes.droplistitem, {
 															[classes.firstdroplistItem]: i === 0,
 														})}
 														key={i}
@@ -821,6 +983,7 @@ DyanamicDropdown.defaultProps = {
 	onPageChange: () => {},
 	fetchData: () => {},
 	showBorderColor: false,
+	handleSort: handleSort,
 };
 
 DyanamicDropdown.propTypes = {

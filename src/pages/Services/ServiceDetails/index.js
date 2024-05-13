@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import PageNotFound from "components/Elements/PageNotFound";
 import { getServiceDetails } from "services/services/serviceDetails/detail";
 import { ServiceContext } from "contexts/ServiceDetailContext";
@@ -10,7 +10,7 @@ function ServicesDetails(props) {
 	const [state, dispatch] = useContext(ServiceContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isError, setIsError] = useState(false);
-	const { customCaptions, application } =
+	const { application } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
@@ -40,7 +40,7 @@ function ServicesDetails(props) {
 	return (
 		<>
 			<TabTitle
-				title={`${customCaptions.serviceWorkOrder} | ${application.name}`}
+				title={`${state?.serviceDetail?.workOrder} | ${application.name}`}
 			/>
 			{props.children(state.serviceDetail)}
 		</>

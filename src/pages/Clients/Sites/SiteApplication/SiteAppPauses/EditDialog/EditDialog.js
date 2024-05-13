@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { updatePauses } from "services/clients/sites/siteApplications/pauses";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import ColourConstants from "helpers/colourConstants";
 // Init styled components
 const AED = EditDialogStyle();
 const APD = PauseDialogStyle();
@@ -26,10 +31,10 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, alert: null };
 const defaultStateSchema = { name: "" };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
-});
+}));
 
 const defaultDelete = { delete: false, sub: {} };
 
@@ -45,7 +50,7 @@ const EditPauseDialog = ({
 	header,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -53,6 +58,7 @@ const EditPauseDialog = ({
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [deleteInfo, setDeleteInfo] = useState(defaultDelete);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -96,7 +102,7 @@ const EditPauseDialog = ({
 				return { success: false };
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to edit ${header} reason.`));
 		}
 	};
 	const handleSave = async () => {
@@ -130,10 +136,9 @@ const EditPauseDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to edit ${header}.`));
 		}
 	};
 
@@ -181,10 +186,28 @@ const EditPauseDialog = ({
 						<AED.HeaderText>Edit {header}</AED.HeaderText>
 					</DialogTitle>
 					<AED.ButtonContainer>
-						<AED.CancelButton onClick={closeOverride} variant="contained">
+						<AED.CancelButton
+							onClick={closeOverride}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</AED.CancelButton>
-						<AED.ConfirmButton variant="contained" onClick={handleSave}>
+						<AED.ConfirmButton
+							variant="contained"
+							onClick={handleSave}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Save
 						</AED.ConfirmButton>
 					</AED.ButtonContainer>
@@ -257,7 +280,16 @@ const EditPauseDialog = ({
 							  })}
 
 						<APD.NewButtonContainer>
-							<APD.NewButton variant="contained" onClick={handleAddNewClick}>
+							<APD.NewButton
+								variant="contained"
+								onClick={handleAddNewClick}
+								sx={{
+									"&.MuiButton-root:hover": {
+										backgroundColor: ColourConstants.deleteDialogHover,
+										color: "#ffffff",
+									},
+								}}
+							>
 								Add new
 							</APD.NewButton>
 						</APD.NewButtonContainer>

@@ -4,13 +4,16 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -37,7 +40,7 @@ const schema = yup.object({
 		.nullable(),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -49,7 +52,7 @@ const useStyles = makeStyles({
 	inputText: {
 		fontSize: 14,
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -76,7 +79,7 @@ function AddOrEditPart({
 	isEdit,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -175,7 +178,16 @@ function AddOrEditPart({
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
-							<ADD.CancelButton onClick={closeOverride} variant="contained">
+							<ADD.CancelButton
+								onClick={closeOverride}
+								variant="contained"
+								sx={{
+									"&.MuiButton-root:hover": {
+										backgroundColor: ColourConstants.deleteDialogHover,
+										color: "#ffffff",
+									},
+								}}
+							>
 								Cancel
 							</ADD.CancelButton>
 						</div>
@@ -185,6 +197,12 @@ function AddOrEditPart({
 								variant="contained"
 								className={classes.createButton}
 								disabled={isUpdating}
+								sx={{
+									"&.MuiButton-root:hover": {
+										backgroundColor: ColourConstants.deleteDialogHover,
+										color: "#ffffff",
+									},
+								}}
 							>
 								{isEdit ? "Close " : title}
 							</ADD.ConfirmButton>

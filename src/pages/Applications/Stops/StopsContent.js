@@ -1,5 +1,5 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Grid from "@material-ui/core/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/material/Grid";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
@@ -8,14 +8,21 @@ import NavDetails from "components/Elements/NavDetails";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import NavButtons from "components/Elements/NavButtons";
 import API from "helpers/api";
-import { handleSort } from "helpers/utils";
+import { getLocalStorageData, handleSort } from "helpers/utils";
 import React, { useCallback, useEffect, useState } from "react";
 import ContentStyle from "styles/application/ContentStyle";
 import ActionButtons from "./ActionButtons";
 import AddStopDialog from "./AddDialog";
 import EditStopDialog from "./EditDialog";
-import { applicationListPath } from "helpers/routePaths";
+import { appPath, applicationListPath } from "helpers/routePaths";
 import TabTitle from "components/Elements/TabTitle";
+import { setHistoryDrawerState, showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import RestoreIcon from "@mui/icons-material/Restore";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { useSelector } from "react-redux";
+import { getApplicationStopReason } from "services/History/application";
 
 // Init styled components
 const AC = ContentStyle();
@@ -33,6 +40,8 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [deleteID, setDeleteID] = useState(null);
 	const [searchedData, setSearchedData] = useState([]);
+	const dispatch = useDispatch();
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
@@ -60,7 +69,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError("Failed to fetch stop reasons."));
 			return false;
 		}
 	}, [id, setIs404]);
@@ -158,7 +167,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 				// Rendering data
 				setHaveData(true);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => dispatch(showError("Failed to fetch stop reasons.")));
 	}, [handleGetData]);
 
 	// Fetch side effect to get application details
@@ -179,20 +188,16 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 				}
 			} catch (err) {
 				// TODO: real error handling
-				console.log(err);
+				dispatch(showError("Failed to fetch application details."));
 				return false;
 			}
 		};
 
 		// Getting application and updating state
-		if (state === undefined) {
-			getApplicationData()
-				.then(() => {
-					console.log("application name updated");
-				})
-				.catch((err) => console.log(err));
+		if (state === null) {
+			getApplicationData();
 		} else {
-			setApplicationName(state.applicationName);
+			setApplicationName(state?.applicationName);
 		}
 		// eslint-disable-next-line
 	}, []);
@@ -217,10 +222,22 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 		// eslint-disable-next-line
 	}, [searchQuery]);
 
+	const { adminType } = getLocalStorageData("me");
+
+	const isReseller = adminType === RESELLER_ID;
+
 	return (
 		<div className="container">
 			<TabTitle title={`${applicationName} Stop Reasons`} />
 			{/* Start of dialogs */}
+			<HistoryBar
+				id={id}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					getApplicationStopReason(id, pageNumber, pageSize)
+				}
+			/>
 			<AddStopDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
@@ -245,20 +262,30 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 			<div className="topContainerCustomCaptions">
 				<NavDetails
 					staticCrumbs={[
-						{ id: 1, name: "Applications", url: applicationListPath },
+						{ id: 1, name: "Applications", url: appPath + applicationListPath },
 						{
 							id: 2,
-							name:
-								state !== undefined ? state.applicationName : applicationName,
+							name: state !== null ? state?.applicationName : applicationName,
 						},
 					]}
 				/>
-
-				{haveData ? (
-					<div>
-						<ActionButtons handleAddDialogOpen={handleAddDialogOpen} />
+				<div className="application-history-nav">
+					{haveData && !isReseller ? (
+						<div>
+							<ActionButtons
+								handleAddDialogOpen={handleAddDialogOpen}
+								disabled={isReseller}
+							/>
+						</div>
+					) : null}
+					<div
+						className="restore"
+						style={{ alignSelf: "flex-start" }}
+						onClick={() => dispatch(setHistoryDrawerState(true))}
+					>
+						<RestoreIcon />
 					</div>
-				) : null}
+				</div>
 			</div>
 
 			{/* Spinner should start here */}
@@ -267,7 +294,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 					<NavButtons
 						navigation={navigation}
 						applicationName={
-							state !== undefined ? state.applicationName : applicationName
+							state !== undefined ? state?.applicationName : applicationName
 						}
 						current="Reason Definitions"
 					/>
@@ -291,6 +318,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 											</Grid>
 											<Grid item>
 												<AC.SearchInput
+													variant="standard"
 													value={searchQuery}
 													onChange={(e) => {
 														setSearchQuery(e.target.value);
@@ -312,6 +340,7 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 										</Grid>
 										<Grid item>
 											<AC.SearchInput
+												variant="standard"
 												value={searchQuery}
 												onChange={(e) => {
 													setSearchQuery(e.target.value);
@@ -346,16 +375,19 @@ const StopsContent = ({ navigation, id, setIs404, state }) => {
 						handleSort={handleSort}
 						searchedData={searchedData}
 						searchQuery={searchQuery}
+						isReadOnly={isReseller}
 						menuData={[
 							{
 								name: "Edit",
 								handler: handleEditDialogOpen,
 								isDelete: false,
+								disabled: isReseller,
 							},
 							{
 								name: "Delete",
 								handler: handleDeleteDialogOpen,
 								isDelete: true,
+								disabled: isReseller,
 							},
 						]}
 					/>

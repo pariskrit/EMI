@@ -8,6 +8,11 @@ const initialState = {
 	defaultCustomCaptionsData: {},
 	apiErrorPresent: true,
 	loading: true,
+	isReadOnly:
+		(
+			JSON.parse(sessionStorage.getItem("me")) ||
+			JSON.parse(localStorage.getItem("me"))
+		)?.position?.settingsAccess === "R",
 	// haveData: false,
 };
 
@@ -63,15 +68,22 @@ function reducer(state, action) {
 				loading: false,
 			};
 
+		case "CHANGE_ISREADONLY":
+			return {
+				...state,
+				isReadOnly: action.payload,
+			};
+
 		default:
 			return state;
 	}
 }
 
 export const SiteContext = createContext();
-
 const SiteApplicationContext = ({ children }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+
+	
 	return (
 		<SiteContext.Provider value={[state, dispatch]}>
 			{children}

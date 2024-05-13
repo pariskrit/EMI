@@ -1,4 +1,4 @@
-import { CircularProgress, LinearProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -31,11 +31,15 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 	const [openEditPermit, setOpenEditPermit] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [pastePart, setPastePart] = useState(false);
+	const [pastePart, setPastePart] = useState(true);
 	const [isPasting, setIsPasting] = useState(false);
 
 	const [, CtxDispatch] = useContext(TaskContext);
-	const [state] = useContext(ModelContext);
+	const [state, MtxDispatch] = useContext(ModelContext);
+
+	const { customCaptions } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	const dispatch = useDispatch();
 
@@ -55,6 +59,17 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 						data: response?.data?.length,
 					},
 				});
+				if (response.data.length > 0) {
+					CtxDispatch({
+						type: "SET_PERMITS",
+						payload: true,
+					});
+				} else {
+					CtxDispatch({
+						type: "SET_PERMITS",
+						payload: false,
+					});
+				}
 			} else {
 				dispatch(
 					showError(
@@ -81,6 +96,10 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 		fetchPermits();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		setPastePart(state.isPermitsTaskDisabled);
+	}, [state]);
 
 	// handle dragging of permit
 
@@ -139,6 +158,12 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 				data: newData.length,
 			},
 		});
+		if (newData.length === 0) {
+			CtxDispatch({
+				type: "SET_PERMITS",
+				payload: false,
+			});
+		}
 	};
 
 	const createPermit = async (newPermit) => {
@@ -162,8 +187,8 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 	};
 
 	const handleCopy = (id) => {
-		setPastePart(true);
 		localStorage.setItem("taskpermit", id);
+		MtxDispatch({ type: "DISABLE_PERMIT_TASK", payload: false });
 	};
 
 	const handlePaste = async () => {
@@ -193,7 +218,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 			const taskId = localStorage.getItem("taskpermit");
 
 			if (taskId) {
-				setPastePart(true);
+				setPastePart(false);
 			}
 		} catch (error) {
 			return;
@@ -219,7 +244,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 		<div style={{ marginBottom: "20px" }}>
 			<AddOrEditPermit
 				open={openAddPermit}
-				title={`Add Permit`}
+				title={`Add ${customCaptions.permit}`}
 				closeHandler={() => {
 					setOpenAddPermit(false);
 				}}
@@ -229,7 +254,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 			/>
 			<AddOrEditPermit
 				open={openEditPermit}
-				title={`Permit`}
+				title={`${customCaptions.permit}`}
 				closeHandler={() => {
 					setOpenEditPermit(false);
 				}}
@@ -241,7 +266,7 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 				isEdit
 			/>
 			<DeleteDialog
-				entityName={`Permit`}
+				entityName={`${customCaptions.permit}`}
 				open={openDeleteDialog}
 				closeHandler={() => setOpenDeleteDialog(false)}
 				deleteEndpoint={Apis.ModelVersionTaskPermits}
@@ -252,22 +277,25 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 				className="detailsContainer topContainerCustomCaptions"
 				style={{ alignItems: "center" }}
 			>
-				<DetailsPanel header={`Permits`} dataCount={permits.length} />
+				<DetailsPanel
+					header={`${customCaptions.permitPlural}`}
+					dataCount={permits.length}
+				/>
 				{access === "F" && !state.modelDetail?.isPublished && (
 					<>
 						<GeneralButton
 							style={{ background: "#ED8738" }}
 							onClick={handlePaste}
-							disabled={!pastePart}
+							disabled={pastePart}
 						>
-							Paste {"Permit"}
+							Paste {`${customCaptions.permit}`}
 						</GeneralButton>
 						<AT.GeneralButton
 							onClick={() => {
 								setOpenAddPermit(true);
 							}}
 						>
-							Add Permit
+							Add {customCaptions.permit}
 						</AT.GeneralButton>
 					</>
 				)}
@@ -295,7 +323,9 @@ const Permits = ({ taskInfo, access, isMounted }) => {
 						isDelete: true,
 					},
 				].filter((x) => {
-					if (state.modelDetail?.isPublished) return false;
+					if (state.modelDetail?.isPublished) {
+						return x?.name === "Copy";
+					}
 
 					if (access === "F") return true;
 					if (access === "E") {

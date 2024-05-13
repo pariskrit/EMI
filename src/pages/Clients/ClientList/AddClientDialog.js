@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import AddDialogStyle from "../../../styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import AddDialogStyle from "styles/application/AddDialogStyle";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 import "./clientList.css";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -24,23 +28,24 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 const AddClientDialog = ({ open, closeHandler, createHandler }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -69,9 +74,7 @@ const AddClientDialog = ({ open, closeHandler, createHandler }) => {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
-					console.log(newData);
 					setErrors({ ...errors, ...newData.errors });
-
 					setIsUpdating(false);
 				}
 			} else {
@@ -82,10 +85,9 @@ const AddClientDialog = ({ open, closeHandler, createHandler }) => {
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to add client.`));
 		}
 	};
 	const handleEnterPress = (e) => {

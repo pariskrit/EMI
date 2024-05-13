@@ -21,7 +21,10 @@ import {
 	siteAppDetailPath,
 	siteAppPositionsPath,
 	siteAppFeedbackStatuses,
+	appPath,
 } from "helpers/routePaths";
+
+import roles from "helpers/roles";
 
 /**
  * NOTE: This is currently a helper. In production, this data may come from either the API
@@ -34,12 +37,43 @@ const SiteApplicationNavigation = (
 	data,
 	defaultCustom
 ) => {
+	//application modal nav-dropdown states
+	const showLubricants = data?.application?.showLubricants;
+	const showSystem = data?.application?.showSystem;
+	const showOperations = data?.application?.showOperatingMode;
 	// Setting navigation links with correct application ID
-	const links = `${clientsPath}/${clientId}/sites/${siteId}/applications/${appId}`;
+	const links = `${appPath}${clientsPath}/${clientId}/sites/${siteId}/applications/${appId}/`;
+	const taskDefList = [
+		{
+			title: data?.actionRequiredPluralCC || defaultCustom.actionRequiredPlural,
+			link: links + siteAppTaskActionsPath,
+		},
+	];
+	//add data only if its state is true
+	if (showLubricants) {
+		taskDefList.push({
+			title: data?.lubricantPluralCC || defaultCustom.lubricantPlural,
+			link: links + siteAppLubricantsPath,
+		});
+	}
+	if (showSystem) {
+		taskDefList.splice(1, 0, {
+			title: data?.systemPluralCC || defaultCustom.systemPlural,
+			link: links + siteAppTaskSystemsPath,
+		});
+	}
+	if (showOperations) {
+		taskDefList.splice(2, 0, {
+			title: data?.operatingModePluralCC || defaultCustom.operatingModePlural,
+			link: links + siteAppOperationModesPath,
+		});
+	}
+
 	const navigation = [
 		{
 			name: "Details",
 			main: "Details",
+			disableTo: [],
 			dropdown: [
 				{
 					title: "Application",
@@ -54,17 +88,24 @@ const SiteApplicationNavigation = (
 		{
 			name: "Reason Definitions",
 			main: "Reason Definitions",
+			disableTo: [roles.clientAdmin],
 			dropdown: [
 				{
-					title: data?.pauseReasonPluralCC || defaultCustom.pauseReasonPlural,
+					title:
+						data?.application?.pauseReasonPluralCC ||
+						defaultCustom.pauseReasonPlural,
 					link: links + siteAppPausePath,
 				},
 				{
-					title: data?.stopReasonPluralCC || defaultCustom.stopReasonPlural,
+					title:
+						data?.application?.stopReasonPluralCC ||
+						defaultCustom.stopReasonPlural,
 					link: links + siteAppStopsReasonsPath,
 				},
 				{
-					title: data?.skipReasonPluralCC || defaultCustom.skipReasonPlural,
+					title:
+						data?.application?.skipReasonPluralCC ||
+						defaultCustom.skipReasonPlural,
 					link: links + siteAppSkippedTasksPath,
 				},
 				{
@@ -82,6 +123,7 @@ const SiteApplicationNavigation = (
 		{
 			name: `${data?.modelCC || defaultCustom?.model} Definitions`,
 			main: "Model Definitions",
+			disableTo: [roles.clientAdmin],
 			dropdown: [
 				{
 					title: "Statuses",
@@ -96,30 +138,13 @@ const SiteApplicationNavigation = (
 		{
 			name: `${data?.taskCC || defaultCustom?.task} Definitions`,
 			main: "Task Definitions",
-			dropdown: [
-				{
-					title:
-						data?.actionRequiredPluralCC || defaultCustom.actionRequiredPlural,
-					link: links + siteAppTaskActionsPath,
-				},
-				{
-					title: data?.systemPluralCC || defaultCustom.systemPlural,
-					link: links + siteAppTaskSystemsPath,
-				},
-				{
-					title:
-						data?.operatingModePluralCC || defaultCustom.operatingModePlural,
-					link: links + siteAppOperationModesPath,
-				},
-				{
-					title: data?.lubricantPluralCC || defaultCustom.lubricantPlural,
-					link: links + siteAppLubricantsPath,
-				},
-			],
+			disableTo: [roles.clientAdmin],
+			dropdown: taskDefList,
 		},
 		{
 			name: `${data?.userCC || defaultCustom?.user} Definitions`,
 			main: "User Definitions",
+			disableTo: [roles.clientAdmin],
 			dropdown: [
 				{
 					title: data?.positionPluralCC || defaultCustom.positionPlural,
@@ -134,6 +159,7 @@ const SiteApplicationNavigation = (
 		{
 			name: `${data?.defectCC || defaultCustom?.defect} Definitions`,
 			main: "Defect Definitions",
+			disableTo: [roles.clientAdmin],
 			dropdown: [
 				{
 					title: data?.riskRatingPluralCC || defaultCustom.riskRatingPlural,
@@ -152,6 +178,7 @@ const SiteApplicationNavigation = (
 		{
 			name: `${data?.feedbackCC || defaultCustom.feedback} Definitions`,
 			main: "Feedback Definitions",
+			disableTo: [roles.clientAdmin],
 			dropdown: [
 				{
 					title:

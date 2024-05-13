@@ -1,6 +1,6 @@
-import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import Button from "@material-ui/core/Button";
+import { styled } from "@mui/styles";
+import ColourConstants from "helpers/colourConstants";
+import Button from "@mui/material/Button";
 
 const ActionButtonStyle = () => {
 	const media = "@media (max-width: 414px)";
@@ -12,7 +12,7 @@ const ActionButtonStyle = () => {
 				marginTop: "10px",
 			},
 		}),
-		GeneralButton: styled(Button)({
+		GeneralButton: styled(Button)(({ theme }) => ({
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
 			backgroundColor: ColourConstants.confirmButton,
@@ -25,7 +25,10 @@ const ActionButtonStyle = () => {
 				width: 130,
 				height: "35px",
 			},
-		}),
+			"&.MuiButton-root:hover": {
+				backgroundColor: "#d5d5d5",
+			},
+		})),
 	};
 };
 

@@ -7,15 +7,17 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import ColourConstants from "helpers/colourConstants";
 import Row from "./Row";
 import "./style.scss";
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	tableContainer: {
 		[media]: {
 			whiteSpace: "nowrap",
@@ -52,7 +54,7 @@ const ApplicationTable = ({
 	showQuantity,
 	redirect,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	if (isLoading) {
 		return <CircularProgress />;

@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import ColourConstants from "helpers/colourConstants";
 import CustomCaptionRow from "./CustomCaptionRow";
+import { getLocalStorageData } from "helpers/utils";
+import { RESELLER_ID } from "constants/UserConstants/indes";
 
 // Init styled components
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -29,7 +32,7 @@ const useStyles = makeStyles({
 	headerRow: {
 		width: "33%",
 	},
-});
+}));
 
 const CustomCaptionsTable = ({
 	data,
@@ -37,10 +40,14 @@ const CustomCaptionsTable = ({
 	handleUpdateCustomCaption,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init State
 	const [searchedData, setSearchedData] = useState([]);
+
+	const { adminType } = getLocalStorageData("me");
+
+	const isReseller = adminType === RESELLER_ID;
 
 	// Data to render custom captions
 	const customCaptionInputs = [
@@ -74,6 +81,16 @@ const CustomCaptionsTable = ({
 			pluralValue: data.locationPluralCC,
 			pluralDefault: "Locations",
 
+			indents: 0,
+		},
+
+		{
+			singularKey: "arrangementCC",
+			singularValue: data.arrangementCC,
+			singularDefault: "Arrangement",
+			pluralKey: "arrangementPluralCC",
+			pluralValue: data.arrangementPluralCC,
+			pluralDefault: "Arrangements",
 			indents: 0,
 		},
 
@@ -285,6 +302,16 @@ const CustomCaptionsTable = ({
 
 			indents: 1,
 		},
+		{
+			singularKey: "permitCC",
+			singularValue: data.permitCC,
+			singularDefault: "Permit",
+			pluralKey: "permitPluralCC",
+			pluralValue: data.permitCC,
+			pluralDefault: "Permits",
+
+			indents: 1,
+		},
 
 		{
 			singularKey: "workbookCC",
@@ -472,6 +499,16 @@ const CustomCaptionsTable = ({
 
 			indents: 0,
 		},
+		{
+			singularKey: "serialNumberRangeCC",
+			singularValue: data.serialNumberRangeCC,
+			singularDefault: "Serial Number Range",
+			pluralKey: "serialNumberRangePluralCC",
+			pluralValue: data.serialNumberRangePluralCC,
+			pluralDefault: "Serial Number Ranges",
+
+			indents: 0,
+		},
 
 		{
 			singularKey: "developerNameCC",
@@ -593,6 +630,16 @@ const CustomCaptionsTable = ({
 
 			indents: 1,
 		},
+		{
+			singularKey: "userReferenceCC",
+			singularValue: data.userReferenceCC,
+			singularDefault: "Reference",
+			pluralKey: "userReferencePluralCC",
+			pluralValue: data.userReferencePluralCC,
+			pluralDefault: "References",
+
+			indents: 1,
+		},
 
 		{
 			singularKey: "serviceCC",
@@ -648,6 +695,16 @@ const CustomCaptionsTable = ({
 
 			indents: 1,
 		},
+		{
+			singularKey: "notificationNumberCC",
+			singularValue: data.notificationNumberCC,
+			singularDefault: "Notification Number",
+			pluralKey: "notificationNumberPluralCC",
+			pluralValue: data.notificationNumberPluralCC,
+			pluralDefault: "Notification Numbers",
+
+			indents: 1,
+		},
 
 		{
 			singularKey: "defectCC",
@@ -688,17 +745,6 @@ const CustomCaptionsTable = ({
 			pluralKey: "defectTypePluralCC",
 			pluralValue: data.defectTypePluralCC,
 			pluralDefault: "Defect Types",
-
-			indents: 1,
-		},
-
-		{
-			singularKey: "typeCC",
-			singularValue: data.typeCC,
-			singularDefault: "Type",
-			pluralKey: "typePluralCC",
-			pluralValue: data.typePluralCC,
-			pluralDefault: "Types",
 
 			indents: 1,
 		},
@@ -831,7 +877,7 @@ const CustomCaptionsTable = ({
 					<AT.TableHead>
 						<TableRow>
 							<TableCell
-								className={clsx(
+								className={cx(
 									classes.headerRow,
 									classes.tableHeadRow,
 									classes.rowWithRightRow
@@ -841,7 +887,7 @@ const CustomCaptionsTable = ({
 							</TableCell>
 
 							<TableCell
-								className={clsx(
+								className={cx(
 									classes.headerRow,
 									classes.tableHeadRow,
 									classes.rowWithRightRow
@@ -853,7 +899,7 @@ const CustomCaptionsTable = ({
 							</TableCell>
 
 							<TableCell
-								className={clsx(classes.headerRow, classes.tableHeadRow)}
+								className={cx(classes.headerRow, classes.tableHeadRow)}
 							>
 								<AT.CellContainer>
 									Custom Caption (Plural Value)
@@ -874,6 +920,7 @@ const CustomCaptionsTable = ({
 									pluralDefault={CC.pluralDefault}
 									handleUpdateCustomCaption={handleUpdateCustomCaption}
 									indents={CC.indents}
+									isReseller={isReseller}
 								/>
 							)
 						)}

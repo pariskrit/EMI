@@ -1,14 +1,17 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import NavDetails from "components/Elements/NavDetails";
 import Icon from "components/Elements/Icon";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
+import { AccessTypes } from "helpers/constants";
 
 const AT = ActionButtonStyle();
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	restore: {
 		border: "2px solid",
 		borderRadius: "100%",
@@ -40,11 +43,15 @@ const useStyles = makeStyles({
 			flexDirection: "column",
 		},
 	},
-});
+}));
 
 function Header({ setOpenAddFeedback, dataLength, feedbackCC }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
+
+	const { position } = sessionStorage.getItem("me")
+		? JSON.parse(sessionStorage.getItem("me"))
+		: {};
 
 	return (
 		<div className={"topContainerCustomCaptions"}>
@@ -59,14 +66,18 @@ function Header({ setOpenAddFeedback, dataLength, feedbackCC }) {
 				hideVersion={true}
 			/>
 			<div className={classes.wrapper}>
-				<div className={classes.buttons}>
-					<AT.GeneralButton onClick={() => setOpenAddFeedback(true)}>
-						Add New
-					</AT.GeneralButton>
-				</div>
-				<div className="restore">
+				{position?.feedbackAccess &&
+					position?.feedbackAccess !== AccessTypes["Read-Only"] && (
+						<div className={classes.buttons}>
+							<AT.GeneralButton onClick={() => setOpenAddFeedback(true)}>
+								Add New
+							</AT.GeneralButton>
+						</div>
+					)}
+
+				{/* <div className="restore">
 					<Icon className={classes.restore} name="Restore" />
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

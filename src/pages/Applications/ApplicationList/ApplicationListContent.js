@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+import { useNavigate } from "react-router-dom";
+import { makeStyles } from "tss-react/mui";
 import ContentStyle from "styles/application/ContentStyle";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import ApplicationTable from "./ApplicationTable";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import AddApplicationDialog from "./AddApplicationDialog";
 import DuplicateApplicationDialog from "./DuplicateApplicationDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import { handleSort } from "helpers/utils";
+import { getLocalStorageData, handleSort } from "helpers/utils";
 import TabTitle from "components/Elements/TabTitle";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import { applicationListPath } from "helpers/routePaths";
 import withMount from "components/HOC/withMount";
+import { RESELLER_ID } from "constants/UserConstants/indes";
 // Init styled components
 const AC = ContentStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	listActions: {
 		marginBottom: 30,
 	},
@@ -42,12 +45,12 @@ const useStyles = makeStyles({
 		fontFamily: "Roboto Condensed",
 		width: 150,
 	},
-});
+}));
 
 const ApplicationListContent = ({ isMounted }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes } = useStyles();
+	const navigate = useNavigate();
 
 	// Init state
 	const [data, setData] = useState([]);
@@ -59,6 +62,7 @@ const ApplicationListContent = ({ isMounted }) => {
 	const [selectedID, setSelectedID] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchedData] = useState([]);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const fetchData = async () => {
@@ -69,7 +73,10 @@ const ApplicationListContent = ({ isMounted }) => {
 			if (!isMounted.aborted) {
 				if (result.status === 200) {
 					// Getting buffer
-					result = result.data;
+					result = result.data.map((d) => ({
+						...d,
+						status: d?.isActive ? "Active" : "Inactive",
+					}));
 
 					// Updating state
 					result.forEach((d, index) => {
@@ -97,7 +104,7 @@ const ApplicationListContent = ({ isMounted }) => {
 		} catch (err) {
 			// TODO: Real error handling when this has been decided on
 			// (are we throwing alerts or pushing to home?)
-			console.log(err);
+			dispatch(showError("Failed to fetch applications."));
 			return err;
 		}
 	};
@@ -131,7 +138,7 @@ const ApplicationListContent = ({ isMounted }) => {
 	};
 
 	const handleRedirect = (id) => {
-		history.push(`${applicationListPath}/${id}`);
+		navigate(`${applicationListPath}/${id}`);
 	};
 
 	const handleCreateData = async (name) => {
@@ -153,7 +160,6 @@ const ApplicationListContent = ({ isMounted }) => {
 				allowIndividualAssetModels: true,
 				allowFacilityBasedModels: true,
 				showLocations: true,
-				showModel: true,
 				showSerialNumberRange: true,
 				showLubricants: true,
 				showParts: true,
@@ -298,7 +304,7 @@ const ApplicationListContent = ({ isMounted }) => {
 			.then(() => {
 				if (!isMounted.aborted) setHaveData(true);
 			})
-			.catch((err) => console.log("ERROR: ", err));
+			.catch((err) => dispatch(showError("Failed to fetch applications.")));
 		// eslint-disable-next-line
 	}, []);
 
@@ -308,6 +314,10 @@ const ApplicationListContent = ({ isMounted }) => {
 		handleSearch();
 		// eslint-disable-next-line
 	}, [searchQuery]);
+
+	const { adminType } = getLocalStorageData("me");
+
+	const isReseller = adminType === RESELLER_ID;
 
 	return (
 		<div className="container">
@@ -345,12 +355,13 @@ const ApplicationListContent = ({ isMounted }) => {
 								<strong>{`Application List (${dataCount})`}</strong>
 							)}
 						</Typography>
-						{haveData ? (
+						{haveData && !isReseller ? (
 							<div className={classes.buttonContainer}>
 								<Button
 									variant="contained"
 									className={`${classes.productButton} addNewBtn`}
 									onClick={handleAddDialogOpen}
+									disabled={adminType === RESELLER_ID}
 								>
 									Add New
 								</Button>
@@ -367,6 +378,7 @@ const ApplicationListContent = ({ isMounted }) => {
 									</Grid>
 									<Grid item>
 										<AC.SearchInput
+											variant="standard"
 											value={searchQuery}
 											onChange={(e) => {
 												setSearchQuery(e.target.value);
@@ -390,6 +402,7 @@ const ApplicationListContent = ({ isMounted }) => {
 						handleDeleteDialogOpen={handleDeleteDialogOpen}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
+						adminType={adminType}
 					/>
 				) : (
 					<CircularProgress />

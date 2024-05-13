@@ -1,25 +1,32 @@
 import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 
 export const getDefectsList = async ({
 	siteAppId,
 	pageNumber = "1",
-	pageSize = DefaultPageSize,
+	pageSize = defaultPageSize(),
 	search = "",
 	sortField = "",
 	sortOrder = "",
 	fromDate = "",
 	toDate = "",
-	siteDepartmentID = "",
-	defectStatusID = "",
-	defectStatusType = "",
+	chips = [],
 }) => {
 	try {
-		let response = await API.get(
-			`${Apis.Defects}?siteAppId=${siteAppId}&fromDate=${fromDate}&toDate=${toDate}&siteDepartmentID=${siteDepartmentID}&defectStatusID=${defectStatusID}&defectStatusType=${defectStatusType}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}&sortField=${sortField}&sortOrder=${sortOrder}`
-		);
+		const payload = {
+			siteAppId,
+			pageNumber,
+			pageSize,
+			search,
+			sortField,
+			sortOrder,
+			fromDate,
+			toDate,
+			chips,
+		};
+		let response = await API.post(`${Apis.DefectsSearch}`, payload);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -39,6 +46,14 @@ export const getCountOfDefectsList = async ({
 		let response = await API.get(
 			`${Apis.Defects}/count?siteAppId=${siteAppId}&fromDate=${fromDate}&toDate=${toDate}&siteDepartmentID=${siteDepartmentID}&defectStatusID=${defectStatusID}&defectStatusType=${defectStatusType}&search=${search}`
 		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+export const getDefectAutocompleteSearch = async ({ search = "" }) => {
+	try {
+		let response = await API.get(`${Apis.DefectAutocomplete}/${search}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

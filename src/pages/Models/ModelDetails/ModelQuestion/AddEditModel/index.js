@@ -7,7 +7,7 @@ import {
 	Typography,
 	CircularProgress,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import Dropdown from "components/Elements/Dropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -26,7 +26,7 @@ import {
 } from "services/models/modelDetails/modelQuestions";
 import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import { generateErrorState, handleValidateObj, isChrome } from "helpers/utils";
 import DynamicDropdown from "components/Elements/DyamicDropdown";
 import questionSchema from "./questionSchema";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
@@ -84,7 +84,9 @@ const AddEditModel = ({
 	const [loading, setLoading] = useState(false);
 	const [isAdd, setIsAdd] = useState(false);
 	const [loader, setLoader] = useState({ role: false, option: false });
+	const [modelFocus, setModelFocus] = useState(true);
 
+	const { rolePlural, stage, zone } = customCaptions;
 	useEffect(() => {
 		if (editMode) {
 			const {
@@ -117,6 +119,16 @@ const AddEditModel = ({
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editMode]);
+
+	useEffect(() => {
+		if (roleOptions.length === 1 && !editMode) {
+			setInput((prev) => ({
+				...prev,
+				roles: [roleOptions[0].id],
+			}));
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [open]);
 
 	// HANDLE FUNCTIONS
 
@@ -452,6 +464,7 @@ const AddEditModel = ({
 			aria-describedby="alert-dialog-description"
 			style={{ minHeight: 500 }}
 			className="large-application-dailog"
+			disableEnforceFocus={isChrome() ? modelFocus : false}
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -462,7 +475,13 @@ const AddEditModel = ({
 				</DialogTitle>
 
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={closeOverride} variant="contained">
+					<ADD.CancelButton
+						onClick={closeOverride}
+						variant="contained"
+						onFocus={(e) => {
+							setModelFocus(true);
+						}}
+					>
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton variant="contained" onClick={handleSave}>
@@ -560,7 +579,11 @@ const AddEditModel = ({
 				{/* ROW 3 */}
 
 				<ADD.InputContainer>
-					<ADD.LeftInputContainer>
+					<ADD.LeftInputContainer
+						onBlur={() => {
+							setModelFocus(false);
+						}}
+					>
 						{/* <ADD.NameLabel>
 							Role<ADD.RequiredStar>*</ADD.RequiredStar>
 						</ADD.NameLabel> */}
@@ -568,7 +591,7 @@ const AddEditModel = ({
 							{loader.role ? <LinearProgress /> : null}
 							<DynamicDropdown
 								showHeader={false}
-								label={customCaptions}
+								label={rolePlural}
 								required
 								hasCheckBoxList={true}
 								dataSource={roleOptions}
@@ -577,16 +600,23 @@ const AddEditModel = ({
 								isServerSide={false}
 								width="99%"
 								checklistChangeHandler={handleRoles}
-								selectedValue={roleOptions
-									.filter((x) => {
-										if (input.roles.includes(x.id)) {
-											return true;
-										} else {
-											return false;
-										}
-									})
-									.map((x) => x.name)
-									.join(", ")}
+								selectedValue={
+									!editMode && roleOptions.length === 1
+										? roleOptions[0].name
+										: roleOptions
+												.filter((x) => {
+													if (
+														input.roles.includes(x.id) ||
+														input.roles.includes(x.modelVersionID)
+													) {
+														return true;
+													} else {
+														return false;
+													}
+												})
+												.map((x) => x.name)
+												.join(", ")
+								}
 								rolesChecklist={input.roles.map((x) => ({ id: x }))}
 								isError={errors.roles === null ? false : true}
 							/>
@@ -601,7 +631,7 @@ const AddEditModel = ({
 								) : (
 									<>
 										<ADD.NameLabel>
-											{input.timing === "S" ? "Stage" : "Zone"}
+											{input.timing === "S" ? stage : zone}
 											<ADD.RequiredStar>*</ADD.RequiredStar>
 										</ADD.NameLabel>
 										<ErrorInputFieldWrapper
@@ -638,6 +668,9 @@ const AddEditModel = ({
 														? false
 														: true
 												}
+												onBlur={() => {
+													setModelFocus(false);
+												}}
 											/>
 										</ErrorInputFieldWrapper>
 									</>
@@ -728,6 +761,9 @@ const AddEditModel = ({
 								<CurveButton
 									style={{ float: "left", width: 108 }}
 									onClick={() => setIsAdd(true)}
+									onBlur={() => {
+										setModelFocus(false);
+									}}
 								>
 									Add Option
 								</CurveButton>

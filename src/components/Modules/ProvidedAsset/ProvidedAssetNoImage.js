@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Divider from "@material-ui/core/Divider";
-import Link from "@material-ui/core/Link";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Typography from "@mui/material/Typography";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { checkIsFileImageType } from "helpers/utils";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	assetParentContainer: {
 		display: "flex",
 		flexWrap: "wrap",
@@ -81,7 +83,7 @@ function ProvidedAssetNoImage({
 	fetchClientDocuments,
 	getError,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const { id, name, url } = document;
 	const [openDialog, setOpenDialog] = useState(false);
 	const [imgURL, setImgURL] = useState("");
@@ -96,12 +98,10 @@ function ProvidedAssetNoImage({
 	useEffect(() => {
 		async function fetchImage() {
 			try {
-				//console.log(url);
 				let res = await fetch(url);
 				let blob = await res?.blob();
 				setImgURL(URL.createObjectURL(blob));
 			} catch (e) {
-				console.log("error occured in fetching");
 				getError("Error occured while fetching image!");
 			}
 		}

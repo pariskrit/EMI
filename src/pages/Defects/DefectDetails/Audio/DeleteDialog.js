@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, LinearProgress } from "@material-ui/core";
+import { Dialog, DialogTitle, LinearProgress } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
@@ -16,7 +16,7 @@ function DeleteDialog({ open, closeHandler, entityName, defectId }) {
 		const response = await deleteDefectAudio(defectId);
 
 		if (!response.status)
-			dispatch(showError(response.data?.detail || "Could not delete audio"));
+			dispatch(showError(response?.data?.detail || "Could not delete audio"));
 
 		setIsUpdating(false);
 	};

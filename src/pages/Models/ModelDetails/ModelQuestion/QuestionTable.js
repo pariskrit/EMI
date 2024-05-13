@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort, sortData } from "helpers/utils";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import TableStyle from "styles/application/TableStyle";
-import clsx from "clsx";
+
 import { QuestionColumn, Questionheaders } from "constants/modelDetails";
 import QuestionRow from "./QuestionRow";
 
@@ -13,7 +13,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	table: {
 		borderStyle: "solid",
 		fontFamily: "Roboto Condensed",
@@ -62,15 +62,18 @@ const useStyles = makeStyles({
 		color: ColourConstants.commonText,
 		opacity: "50%",
 	},
-});
+}));
 
 const QuestionTable = ({ data, setData, menuData, rolePlural }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
 
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		handleSort(data, setData, field, newMethod);
@@ -89,7 +92,7 @@ const QuestionTable = ({ data, setData, menuData, rolePlural }) => {
 								handleSortClick(QuestionColumn[index].name);
 							}}
 							style={{ width: header?.width || "auto" }}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === QuestionColumn[index].name,
 								[classes.tableHeadRow]:
@@ -127,19 +130,17 @@ const QuestionTable = ({ data, setData, menuData, rolePlural }) => {
 			</AT.TableHead>
 			<TableBody>
 				{data.length !== 0 ? (
-					sortData(
-						data,
-						currentTableSort[0],
-						currentTableSort[1]
-					).map((row, index) => (
-						<QuestionRow
-							row={row}
-							index={index}
-							data={data}
-							menuData={menuData}
-							classes={classes}
-						/>
-					))
+					sortData(data, currentTableSort[0], currentTableSort[1]).map(
+						(row, index) => (
+							<QuestionRow
+								row={row}
+								index={index}
+								data={data}
+								menuData={menuData}
+								classes={classes}
+							/>
+						)
+					)
 				) : (
 					<TableRow>
 						{Questionheaders(rolePlural).map((head, i) => {

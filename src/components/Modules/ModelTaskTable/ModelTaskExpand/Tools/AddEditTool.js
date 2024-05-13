@@ -4,9 +4,11 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { useDispatch } from "react-redux";
@@ -28,7 +30,7 @@ const schema = yup.object({
 		.max(100, "Must be less than or equal to 100 characters"),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -40,7 +42,7 @@ const useStyles = makeStyles({
 	inputText: {
 		fontSize: 14,
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -63,7 +65,7 @@ function AddOrEditTool({
 	isEdit,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state

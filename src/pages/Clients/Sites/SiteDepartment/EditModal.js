@@ -1,8 +1,8 @@
 import * as yup from "yup";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
 import React, { useState, useEffect } from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import {
 	handleValidateObj,
@@ -10,6 +10,8 @@ import {
 	getLocalStorageData,
 } from "helpers/utils";
 import { editSiteDepartments } from "services/clients/sites/siteDepartments";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -31,7 +33,8 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
-	const { customCaptions } = getLocalStorageData("me");
+	const { customCaptions } = getLocalStorageData("me") || {};
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -66,10 +69,9 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to edit ${customCaptions?.department}.`));
 		}
 	};
 	const handleUpdateData = async () => {
@@ -190,7 +192,9 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 								/>
 							</AED.LeftInputContainer>
 							<AED.RightInputContainer>
-								<AED.NameLabel>Description</AED.NameLabel>
+								<AED.NameLabel>
+									{customCaptions?.location ?? "Location"}
+								</AED.NameLabel>
 								<AED.NameInput
 									error={errors.description === null ? false : true}
 									helperText={

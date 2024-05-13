@@ -1,10 +1,10 @@
-import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import DialogContent from "@material-ui/core/DialogContent";
-import Typography from "@material-ui/core/Typography";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import DialogContentText from "@material-ui/core/DialogContentText";
+import { styled } from "@mui/styles";
+import ColourConstants from "helpers/colourConstants";
+import DialogContent from "@mui/material/DialogContent";
+import Typography from "@mui/material/Typography";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import DialogContentText from "@mui/material/DialogContentText";
 
 const DeleteDialogStyle = () => {
 	const media = "@media (max-width: 414px)";
@@ -45,6 +45,10 @@ const DeleteDialogStyle = () => {
 			backgroundColor: ColourConstants.deleteCancelButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
+			"&.MuiButton-root:hover": {
+				backgroundColor: ColourConstants.deleteDialogHover,
+				color: "#ffffff",
+			},
 		}),
 		DeleteButton: styled(Button)({
 			height: 43,
@@ -52,6 +56,10 @@ const DeleteDialogStyle = () => {
 			backgroundColor: ColourConstants.deleteButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
+			"&.MuiButton-root:hover": {
+				backgroundColor: ColourConstants.deleteDialogHover,
+				color: "#ffffff",
+			},
 		}),
 		InputContainer: styled(DialogContentText)({
 			width: "100%",

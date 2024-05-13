@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import { makeStyles } from "tss-react/mui";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
@@ -16,10 +16,7 @@ import { generateErrorState, handleValidateObj } from "helpers/utils";
 import API from "helpers/api";
 import { Apis } from "services/api";
 import { Link } from "react-router-dom";
-import {
-	useHistory,
-	useLocation,
-} from "react-router-dom/cjs/react-router-dom.min";
+import { useNavigate, useLocation } from "react-router-dom";
 import { showNotications } from "redux/notification/actions";
 import { useDispatch } from "react-redux";
 
@@ -45,7 +42,7 @@ const schema = (password) =>
 // Default state schemas
 const defaultErrorSchema = { Password: null, ConfirmPassword: null };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	root: {
 		height: "100vh",
 	},
@@ -169,9 +166,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ResetPassword = () => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes } = useStyles();
 	const { search } = useLocation();
-	const history = useHistory();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -211,7 +208,7 @@ const ResetPassword = () => {
 						})
 					);
 					// push to login page upon successful password reset
-					history.push("/login");
+					navigate("/login");
 				} else {
 					// show error notification
 					dispatch(
@@ -282,6 +279,11 @@ const ResetPassword = () => {
 										}}
 									>
 										<TextField
+											sx={{
+												"& .MuiInputBase-input.Mui-disabled": {
+													WebkitTextFillColor: "#000000",
+												},
+											}}
 											className={classes.labels}
 											error={errors.Password === null ? false : true}
 											helperText={
@@ -300,6 +302,11 @@ const ResetPassword = () => {
 											onChange={(e) => setPassword(e.target.value)}
 										/>
 										<TextField
+											sx={{
+												"& .MuiInputBase-input.Mui-disabled": {
+													WebkitTextFillColor: "#000000",
+												},
+											}}
 											className={classes.labels}
 											error={errors.ConfirmPassword === null ? false : true}
 											helperText={

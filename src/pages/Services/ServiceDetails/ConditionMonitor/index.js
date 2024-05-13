@@ -1,4 +1,4 @@
-import { Grid, LinearProgress } from "@material-ui/core";
+import { Grid, LinearProgress } from "@mui/material";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import {
@@ -12,7 +12,7 @@ import {
 	Label,
 	ResponsiveContainer,
 } from "recharts";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import {
 	handleSort,
@@ -31,8 +31,10 @@ import {
 } from "constants/serviceDetails";
 import GraphTitle from "components/Modules/GraphTitle";
 import { changeDate } from "helpers/date";
+import CustomGraphDot from "components/Elements/ConditionalMonitoring/CustomGraphDot";
+import CustomGraphActiveDot from "components/Elements/ConditionalMonitoring/CustomGraphActiveDot";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	loading: {
 		position: "absolute",
 		width: "100%",
@@ -40,12 +42,32 @@ const useStyles = makeStyles({
 		top: 0,
 		right: 0,
 	},
-});
+
+	customDotHoverModal: {
+		border: "1px solid #bdbdbd",
+		backgroundColor: "#ffffff",
+		borderRadius: "1px",
+		padding: "12px 14px",
+	},
+	customDotHoverModalInnerDiv: {
+		display: "flex",
+		justifyContent: "start",
+		alignItems: "start",
+		gap: "4px",
+		color: ColourConstants.orange,
+		fontSize: "15px",
+		padding: "0 2px",
+	},
+
+	muiIconStyle: {
+		"&.MuiSvgIcon-root ": {},
+	},
+}));
 
 function ConditionMonitor({ customCaptions, serviceId, state }) {
 	//init hooks
 	const dispatch = useDispatch();
-	const classes = useStyles();
+	const { classes } = useStyles();
 
 	// init state
 	const [selectedQuestion, setSelectedQuestion] = useState({});
@@ -70,7 +92,7 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 					} else {
 						dispatch(
 							showError(
-								response.data?.detail || "Failed to fetch Graph Details"
+								response?.data?.detail || "Failed to fetch Graph Details"
 							)
 						);
 					}
@@ -87,11 +109,81 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 	}, [selectedQuestion, serviceId, dispatch]);
 
 	const dateFormatter = (date) => {
-		return changeDate(new Date(new Date(date) + "Z"));
+		return changeDate(new Date(new Date(date)));
 	};
 
-	console.log(tooltipPosition);
+	const CustomToolTIp = (val) => {
+		const { active, payload } = val;
+		if (active && payload && payload.length) {
+			return (
+				<>
+					<div className={classes.customDotHoverModal}>
+						{payload.map((item) => (
+							<>
+								<div>
+									{isoDateWithoutTimeZone(
+										new Date(new Date(item?.payload.date))
+									)}
+								</div>
+								{!item?.payload.defects[0] && (
+									<div className={classes.customDotHoverModalInnerDiv}>
+										<span>Value</span> :
+										<span>{item?.payload.valueNumeric}</span>
+									</div>
+								)}
+								{item?.payload.defects[0]?.number && (
+									<div className={classes.customDotHoverModalInnerDiv}>
+										<span>
+											{customCaptions?.defect ?? "Defect"}&nbsp;
+											{customCaptions?.number ?? "Number"}
+										</span>
+										:<span>{item?.payload.defects[0]?.number}</span>
+									</div>
+								)}
+								{item?.payload.defects[0]?.defectStatusName && (
+									<div className={classes.customDotHoverModalInnerDiv}>
+										<span>
+											{customCaptions?.defectStatus ?? " Defect Status"}
+										</span>
+										:<span>{item?.payload.defects[0]?.defectStatusName}</span>
+									</div>
+								)}
+								{item?.payload.defects[0]?.defectTypeName && (
+									<div className={classes.customDotHoverModalInnerDiv}>
+										<span>{customCaptions?.defectType ?? " Defect Type"}</span>:
+										<span>{item?.payload.defects[0]?.defectTypeName}</span>
+									</div>
+								)}
+								{item?.payload.defects[0]?.defectRiskRatingName && (
+									<div className={classes.customDotHoverModalInnerDiv}>
+										<span>
+											{customCaptions?.defect ?? "Defect"}&nbsp;
+											{customCaptions?.riskRating ?? " Risk Rating"}
+										</span>
+										:
+										<span>
+											{item?.payload.defects[0]?.defectRiskRatingName}
+										</span>
+									</div>
+								)}
+								{item?.payload.defects[0]?.defectDetail && (
+									<div className={classes.customDotHoverModalInnerDiv}>
+										<span>
+											{customCaptions?.defect ?? "Defect"}&nbsp;
+											{customCaptions?.detail ?? "Detail"}
+										</span>
+										:<span>{item?.payload.defects[0]?.defectDetail}</span>
+									</div>
+								)}
+							</>
+						))}
+					</div>
+				</>
+			);
+		}
+	};
 
+	// console.log(customCaptions);
 	return (
 		<div style={{ marginTop: "25px" }}>
 			{isLoading && <LinearProgress className={classes.loading} />}
@@ -149,7 +241,7 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 									height={500}
 									data={grapghDetail.map((x) => ({
 										...x,
-										date: +new Date(x.date).getTime(),
+										date: +new Date(x.date + "Z").getTime(),
 										value: x.valueNumeric,
 									}))}
 									margin={{
@@ -173,11 +265,12 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 									<Tooltip
 										formatter={(value) => [value, "value"]}
 										labelFormatter={(val) =>
-											isoDateWithoutTimeZone(new Date(new Date(val) + "Z"))
+											isoDateWithoutTimeZone(new Date(new Date(val)))
 										}
 										wrapperStyle={{
 											opacity: tooltipPosition?.active ? 1 : 0,
 										}}
+										content={CustomToolTIp}
 									/>
 									<ReferenceLine
 										y={selectedQuestion?.maxValue}
@@ -196,25 +289,14 @@ function ConditionMonitor({ customCaptions, serviceId, state }) {
 										type="linear"
 										dataKey="value"
 										stroke={ColourConstants.orange}
-										dot={{ strokeWidth: 2, r: 7, fill: ColourConstants.orange }}
 										isAnimationActive={false}
+										dot={<CustomGraphDot fill="#ffa200" />}
 										key={`data-${selectedQuestion.id}-line`}
-										activeDot={{
-											onMouseOver: (e, val) => {
-												settooltipPosition((prev) => ({
-													active: true,
-												}));
-											},
-											onMouseLeave: (e) => {
-												settooltipPosition((prev) => ({
-													active: false,
-												}));
-											},
-
-											strokeWidth: 40,
-											stroke: "transparent",
-											r: 7,
-										}}
+										activeDot={
+											<CustomGraphActiveDot
+												settooltipPosition={settooltipPosition}
+											/>
+										}
 									/>
 								</LineChart>
 							</ResponsiveContainer>

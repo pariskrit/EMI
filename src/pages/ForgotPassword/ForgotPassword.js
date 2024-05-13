@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
@@ -30,7 +32,7 @@ const schema = yup.object({
 // Default state schemas
 const defaultErrorSchema = { Email: null };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	root: {
 		height: "100vh",
 	},
@@ -154,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ForgotPassword = () => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -253,6 +255,11 @@ const ForgotPassword = () => {
 										}}
 									>
 										<TextField
+											sx={{
+												"& .MuiInputBase-input.Mui-disabled": {
+													WebkitTextFillColor: "#000000",
+												},
+											}}
 											className={classes.labels}
 											error={errors.Email === null ? false : true}
 											helperText={errors.Email === null ? null : errors.Email}

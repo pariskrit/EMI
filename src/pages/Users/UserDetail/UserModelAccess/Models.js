@@ -2,10 +2,11 @@ import AccordionBox from "components/Layouts/AccordionBox";
 import CheckboxContainer from "components/Modules/CheckboxContainer";
 import React from "react";
 import GeneralButton from "components/Elements/GeneralButton";
-import { LinearProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { LinearProgress } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	main: {
 		display: "flex",
 		flexDirection: "column",
@@ -33,7 +34,7 @@ function Models({
 	name,
 	tickAllLoading,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
 		<AccordionBox title={captions[0] ?? "Models"}>
 			<div className={classes.main}>

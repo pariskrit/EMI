@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
 	checkSelected,
@@ -40,8 +40,9 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 			checked &&
 			!taskDetails?.taskInfo?.customIntervals &&
 			intervals.some((interval) => interval.checked)
-		)
+		) {
 			return;
+		}
 
 		const tempIntervals = [...intervals];
 
@@ -72,22 +73,16 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 
 		if (!response.status) {
 			setIntervals(tempIntervals);
-			dispatch(showError(response.data || "Could not update"));
+			dispatch(showError(response?.data || "Could not update"));
 		} else {
 			const filteredIntervals = intervals.filter((x) => Boolean(x.id)).length;
+
 			const counts = checked ? filteredIntervals + 1 : filteredIntervals - 1;
 			setSelectedIntervalsCount(counts);
 			document
 				.getElementById(`taskExpandable${taskInfo.id}`)
-				.querySelector(`#dataCellintervals > div >p`).innerHTML = intervals
-				.map((z) =>
-					z.modelVersionIntervalID === intervalId
-						? { ...z, id: checked ? true : null }
-						: z
-				)
-				.filter((x) => Boolean(x.id))
-				.map((x) => x.name)
-				.join(",");
+				.querySelector(`#dataCellintervals > div >p`).innerHTML =
+				response?.data?.intervals;
 			await fetchModelTaskIntervals();
 		}
 		setIsDisabled(false);
@@ -129,7 +124,7 @@ const Intervals = ({ taskInfo, access, isMounted }) => {
 			{
 				path: "customIntervals",
 				op: "replace",
-				value: !taskInfo.customIntervals,
+				value: !taskDetails.taskInfo.customIntervals,
 			},
 		]);
 		if (!res.status) CtxDispatch({ type: "TOGGLE_CUSTOM_INTERVALS" });

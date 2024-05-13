@@ -5,7 +5,7 @@ import {
 	DialogTitle,
 	makeStyles,
 	Button,
-} from "@material-ui/core";
+} from "@mui/material";
 import ImportTable from "./ImportTable";
 import { BASE_API_PATH } from "helpers/constants";
 import { importUserList } from "services/users/usersList";
@@ -16,7 +16,7 @@ const AT = AddDialogStyle();
 
 const media = "@media (max-width:414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	content: {
 		display: "flex",
 		flexDirection: "column",
@@ -30,10 +30,10 @@ const useStyles = makeStyles({
 			width: "auto",
 		},
 	},
-});
+}));
 
 const ImportListDialog = ({ open, handleClose, importSuccess, getError }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [loading, setLoading] = useState(false);
 	const [file, setFile] = useState({});
 	const [data, setData] = useState([]);

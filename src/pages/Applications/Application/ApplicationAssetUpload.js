@@ -6,9 +6,10 @@ import { showError } from "redux/common/actions";
 import { updateApplicaitonDetails } from "services/applications/detailsScreen/application";
 import DeleteDialog from "pages/Models/ModelDetails/ModelDetail/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
 
-const useStyles = makeStyles({
+const useStyles =  makeStyles()((theme) =>({
 	logoContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -38,7 +39,7 @@ const useStyles = makeStyles({
 		alignItems: "center",
 		justifyContent: "center",
 	},
-});
+}))
 
 function ApplicationAssetUpload({
 	imageUrl,
@@ -46,7 +47,8 @@ function ApplicationAssetUpload({
 	uploadToS3,
 	title,
 	titleKey,
-	paddingStyle = { paddingLeft: "2%" },
+	isReadOnly,
+	paddingStyle = { paddingRight: "2%" },
 }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -73,7 +75,7 @@ function ApplicationAssetUpload({
 		if (response.status) {
 			setImage(response.data);
 		} else {
-			dispatch(showError(response.data.detail || "Could not upload image"));
+			dispatch(showError(response?.data?.detail || "Could not upload image"));
 		}
 		setIsUploading(false);
 		setProgressData(0);
@@ -122,6 +124,7 @@ function ApplicationAssetUpload({
 			<div className={`${classes.logoContainer} logoContainerRight`}>
 				<AccordionBox title={title} defaultExpanded={false}>
 					<ImageUpload
+						isReadOnly={isReadOnly}
 						imageUrl={image}
 						imageName=""
 						onDrop={onImageDrop}

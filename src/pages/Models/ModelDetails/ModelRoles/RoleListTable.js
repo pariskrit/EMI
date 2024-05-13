@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import TableStyle from "styles/application/TableStyle";
-import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import clsx from "clsx";
+
 import PopupMenu from "components/Elements/PopupMenu";
 
 const AT = TableStyle();
@@ -14,7 +16,7 @@ const mediaMobile = "@media (max-width: 414px)";
 const mediaIpadpro = "@media (max-width: 1024px)";
 const mediaIpad = "@media (max-width: 768px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	table: {
 		borderStyle: "solid",
 		fontFamily: "Roboto Condensed",
@@ -65,17 +67,20 @@ const useStyles = makeStyles({
 	dataCell: {
 		height: 40,
 	},
-});
+}));
 
 function RoleListTable({ data, setData, headers, columns, menuData }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState([]);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [selectedData, setSelectedData] = useState(null);
 
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		handleSort(data, setData, field, newMethod);
@@ -95,7 +100,7 @@ function RoleListTable({ data, setData, headers, columns, menuData }) {
 								handleSortClick(columns[index]);
 							}}
 							style={{ width: header?.width || "auto" }}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === columns[index],
 								[classes.tableHeadRow]: currentTableSort[0] !== columns[index],
@@ -132,12 +137,12 @@ function RoleListTable({ data, setData, headers, columns, menuData }) {
 			<TableBody>
 				{data.length !== 0 ? (
 					data.map((row, index) => (
-						<TableRow key={row.id}>
+						<TableRow key={row.id} id={`role-${row.id}`} className="roleEl">
 							{columns.map((col, i, arr) => (
 								<TableCell
 									key={col}
 									scope="row"
-									className={clsx(classes.dataCell, classes.nameRow, {
+									className={cx(classes.dataCell, classes.nameRow, {
 										[classes.lastCell]: index === data.length - 1,
 									})}
 								>

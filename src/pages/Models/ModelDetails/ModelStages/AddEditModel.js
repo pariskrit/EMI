@@ -6,8 +6,10 @@ import {
 	FormControlLabel,
 	Typography,
 	LinearProgress,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import * as yup from "yup";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
@@ -20,6 +22,8 @@ import {
 	uploadModelStageImage,
 } from "services/models/modelDetails/modelStages";
 import ImageUpload from "components/Elements/ImageUpload";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const ADD = AddDialogStyle();
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
@@ -36,7 +40,8 @@ const schema = yup.object({
 		.mixed()
 		.test("fileType", "Unsupported File Format", (value) =>
 			SUPPORTED_FORMATS.includes(value.type)
-		),
+		)
+		.nullable(true),
 	imageName: yup.string(),
 	defaultSiteAssetFilter: yup.string().nullable(),
 });
@@ -47,7 +52,7 @@ const defaultErrorSchema = {
 	defaultSiteAssetFilter: null,
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
 
@@ -71,7 +76,7 @@ const useStyles = makeStyles({
 		},
 		verticalAlign: "middle",
 	},
-});
+}));
 
 const initialInput = {
 	name: "",
@@ -92,21 +97,18 @@ const AddEditModel = ({
 	title,
 	modelType,
 	customCaptionsAsset,
+	zonePlural,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(initialInput);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (detailData) {
-			const {
-				name,
-				imageURL,
-				imageKey,
-				hasZones,
-				defaultSiteAssetFilter,
-			} = detailData;
+			const { name, imageURL, imageKey, hasZones, defaultSiteAssetFilter } =
+				detailData;
 			setInput({
 				...input,
 				name,
@@ -224,10 +226,9 @@ const AddEditModel = ({
 			} else {
 				const newError = generateErrorState(localChecker);
 				setErrors({ ...errors, ...newError });
-				console.log(newError);
 			}
 		} catch (e) {
-			console.log(e);
+			dispatch(showError(`Failed to ${detailData ? "edit" : "add"} ${title}.`));
 			return;
 		}
 	};
@@ -354,7 +355,7 @@ const AddEditModel = ({
 									}}
 								/>
 							}
-							label={<Typography>Has Zones</Typography>}
+							label={<Typography>Has {zonePlural}</Typography>}
 						/>
 					</FormGroup>
 				</ADD.InputContainer>

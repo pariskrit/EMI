@@ -1,5 +1,7 @@
-import { makeStyles } from "@material-ui/core/styles";
-import RestoreIcon from "@material-ui/icons/Restore";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import RestoreIcon from "@mui/icons-material/Restore";
 import NavDetails from "components/Elements/NavDetails";
 import NavButtons from "components/Elements/NavButtons";
 import PropTypes from "prop-types";
@@ -7,13 +9,20 @@ import React, { useContext } from "react";
 import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import { ServiceContext } from "contexts/ServiceDetailContext";
-import { servicesPath } from "helpers/routePaths";
+import { appPath, servicesPath } from "helpers/routePaths";
 import { redService, serviceStatus } from "constants/serviceDetails";
+import PrintIcon from "assets/printer.svg";
+import { useParams } from "react-router-dom";
+import AccessWrapper from "components/Modules/AccessWrapper";
+import { NoReadOnly } from "helpers/constants";
+import { useDispatch } from "react-redux";
+import { setHistoryDrawerState } from "redux/common/actions";
+
 const AT = ActionButtonStyle();
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	restore: {
 		border: "2px solid",
 		borderRadius: "100%",
@@ -24,12 +33,18 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		color: "#307ad6",
 	},
+	printIcon: {
+		"&:hover": {
+			cursor: "pointer",
+		},
+	},
 	importButton: {
 		background: "#ED8738",
 	},
 	buttons: {
 		display: "flex",
 		marginLeft: "auto",
+		marginRight: "18px",
 		[media]: {
 			marginLeft: "0px",
 			flexDirection: "column",
@@ -45,7 +60,12 @@ const useStyles = makeStyles({
 			flexDirection: "column",
 		},
 	},
-});
+}));
+const importButton = {
+	"&.MuiButton-root": {
+		backgroundColor: "#ED8738",
+	},
+};
 
 const ServicesWrapper = ({
 	state,
@@ -60,6 +80,7 @@ const ServicesWrapper = ({
 	showPasteTask,
 	showChangeStatus,
 	showSaveChanges,
+	showPrint,
 	showVersion,
 	onClickSave,
 	onCLickedSaveChanges,
@@ -71,8 +92,17 @@ const ServicesWrapper = ({
 	isQuestionTaskDisabled,
 	customCaptions,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
+	const dispatch = useDispatch();
+	const { id } = useParams();
+
 	let name = "Task";
+
+	const {
+		position: { serviceAccess },
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	if (ModelName === customCaptions.questionPlural) {
 		name = customCaptions.question;
@@ -86,7 +116,11 @@ const ServicesWrapper = ({
 					status={true}
 					lastSaved={lastSaved}
 					staticCrumbs={[
-						{ id: 1, name: "Services", url: servicesPath },
+						{
+							id: 1,
+							name: customCaptions?.servicePlural,
+							url: appPath + servicesPath,
+						},
 						{
 							id: 2,
 							name: serviceDetail?.serviceDetail?.workOrder,
@@ -94,7 +128,7 @@ const ServicesWrapper = ({
 					]}
 					hideLastLogin
 					state={{
-						...state,
+						...state?.serviceDetail,
 						statusColor: redService.includes(state?.status) ? "red" : "#24BA78",
 						modelStatusName: serviceStatus[state?.status],
 					}}
@@ -114,6 +148,7 @@ const ServicesWrapper = ({
 					<div className={classes.buttons}>
 						{showPasteTask && (
 							<AT.GeneralButton
+								sx={importButton}
 								onClick={onClickPasteTask}
 								className={classes.importButton}
 								disabled={
@@ -127,20 +162,24 @@ const ServicesWrapper = ({
 						)}
 						{showVersion && (
 							<AT.GeneralButton
+								sx={importButton}
 								onClick={onClickVersion}
 								className={classes.importButton}
 							>
 								New Version
 							</AT.GeneralButton>
 						)}
-						{showChangeStatus && (
-							<AT.GeneralButton
-								onClick={onClickShowChangeStatus}
-								className={classes.importButton}
-							>
-								Change Status
-							</AT.GeneralButton>
-						)}
+						<AccessWrapper access={serviceAccess} accessList={NoReadOnly}>
+							{showChangeStatus && (
+								<AT.GeneralButton
+									sx={importButton}
+									onClick={onClickShowChangeStatus}
+									className={classes.importButton}
+								>
+									Change Status
+								</AT.GeneralButton>
+							)}
+						</AccessWrapper>
 						{showSaveChanges && (
 							<AT.GeneralButton onClick={onCLickedSaveChanges}>
 								Save Changes
@@ -152,9 +191,27 @@ const ServicesWrapper = ({
 						{showSave && (
 							<AT.GeneralButton onClick={onClickSave}>Save</AT.GeneralButton>
 						)}
-						<div className="restore">
-							<RestoreIcon className={classes.restore} />
-						</div>
+						{showPrint && (
+							<img
+								alt="Print"
+								src={PrintIcon}
+								style={{ marginRight: "10px" }}
+								className={classes.printIcon}
+								onClick={() => {
+									localStorage.setItem("state", JSON.stringify(state));
+									window.open(`/report/${id}/print`);
+								}}
+							/>
+						)}
+
+						{current === "Details" && (
+							<div
+								className="restore"
+								onClick={() => dispatch(setHistoryDrawerState(true))}
+							>
+								<RestoreIcon className={classes.restore} />
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

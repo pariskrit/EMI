@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import { useGoogleLogin } from "react-google-login";
-import { loginPath, userProfilePath } from "helpers/routePaths";
+import { connect, useDispatch } from "react-redux";
+import { GoogleLogin } from "@react-oauth/google";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import { makeStyles } from "tss-react/mui";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { loginPath, siteUserLoginPath } from "helpers/routePaths";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
@@ -18,9 +18,13 @@ import ColourConstants from "helpers/colourConstants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { loginSocialAccount, loginUser } from "redux/auth/actions";
 import { useMsal } from "@azure/msal-react";
-import ErrorIcon from "@material-ui/icons/Error";
-import { Link } from "react-router-dom";
+import ErrorIcon from "@mui/icons-material/Error";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import TabTitle from "components/Elements/TabTitle";
+import AppleLoginSignin from "components/Elements/AppleSigin/AppleLoginSignin";
+import { showError } from "redux/common/actions";
+import { handleSiteAppClick } from "helpers/handleSiteAppClick";
+import { defaultRedirect } from "helpers/constants";
 
 // Yup validation schema
 const schema = yup.object({
@@ -31,12 +35,13 @@ const schema = yup.object({
 	password: yup
 		.string("This field must be a string")
 		.required("This field is required"),
+	siteAppID: yup.mixed().nullable(),
 });
 
 // Default state schemas
-const defaultErrorSchema = { email: null, password: null };
+const defaultErrorSchema = { email: null, password: null, siteAppID: null };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	root: {
 		height: "100vh",
 	},
@@ -47,23 +52,27 @@ const useStyles = makeStyles((theme) => ({
 		backgroundPosition: "center",
 	},
 	paper: {
-		margin: theme.spacing(8, 4),
+		// margin: theme.spacing(8, 4),
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
+		position: "relative",
+		top: "50%",
+		transform: "translateY(-50%)",
 	},
 	watermark: {
 		background: `url(${Watermark}) fixed no-repeat bottom right`,
 		backgroundSize: 400,
+		position: "relative",
 	},
 	logoContainer: {
 		display: "flex",
 		alignItems: "center",
-		marginBottom: 70,
+		marginBottom: 80,
 		marginTop: 0,
 	},
 	logo: {
-		width: 300,
+		width: 335,
 	},
 	loginFormContainer: {
 		display: "flex",
@@ -103,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
 		gap: "70px",
 	},
 	googleIconWrapper: {
-		width: "45px",
+		width: "40px",
 		height: "38px",
 		borderRadius: "2px",
 		backgroundColor: "#fff",
@@ -132,13 +141,17 @@ const useStyles = makeStyles((theme) => ({
 	},
 	btnText: {
 		color: "#5e5e5e",
-		fontSize: "14px",
+		fontSize: "13px",
 		letterSpacing: "0.2px",
 		fontFamily: "Roboto",
+		marginLeft: "10px",
 	},
 	footer: {
-		position: "fixed",
+		position: "absolute",
 		bottom: "8px",
+		left: "50%",
+		transform: "translateX(-50%)",
+		whiteSpace: "nowrap",
 	},
 	footerText: {
 		fontSize: "1em",
@@ -224,6 +237,17 @@ const useStyles = makeStyles((theme) => ({
 			textDecoration: "underline",
 		},
 	},
+	termsAndPolicy: {
+		display: "flex",
+		justifyContent: "center",
+		width: "100%",
+		alignItems: "center",
+		gap: "10px",
+		height: "70px",
+		color: "#307AD6",
+		textDecoration: "none",
+		fontSize: "14px",
+	},
 }));
 
 const Login = ({
@@ -235,25 +259,32 @@ const Login = ({
 	errorMessage,
 }) => {
 	// from will provide previous path redirect from
-	const { state } = location;
-
+	// const { state } = location;
+	const { state } = useLocation();
+	const navigate = useNavigate();
 	// Init hooks
-	const classes = useStyles();
+	const { classes } = useStyles();
 
 	// Init state
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const { instance } = useMsal();
+	const dispatch = useDispatch();
 
-	const { signIn } = useGoogleLogin({
-		jsSrc: "https://apis.google.com/js/api.js",
-		onFailure: (res) => console.log(res),
-		clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-		onSuccess: (res) => responseGoogle(res),
-		cookiePolicy: "single_host_origin",
-	});
-
+	//url detail
+	const { search } = useLocation();
+	const redirectUrl = new URLSearchParams(search).get("redirectUrl");
+	let siteAppIdFromUrl;
+	let feedbackIdFromUrl;
+	if (redirectUrl) {
+		siteAppIdFromUrl = parseInt(
+			redirectUrl?.split("?")?.pop()?.split("=")?.pop()
+		);
+		feedbackIdFromUrl = parseInt(
+			redirectUrl?.split("?")?.shift()?.split("/")?.pop()
+		);
+	}
 	// Handlers
 	const loginHandler = async (email, password) => {
 		// Attempting login
@@ -262,13 +293,24 @@ const Login = ({
 				email: email,
 				password: password,
 			};
+
+			if (siteAppIdFromUrl && feedbackIdFromUrl) {
+				input = { ...input, siteAppID: siteAppIdFromUrl };
+			}
+
 			const localChecker = await handleValidateObj(schema, input);
 
 			// Attempting API call if no local validaton errors
-			if (!localChecker.some((el) => el.valid === false)) {
+			if (!localChecker?.some((el) => el.valid === false)) {
 				const response = await loginData(input);
-				if (response.data) {
-					redirectToPortalOrDefault(response?.data?.position?.siteAppID);
+
+				if (response.data && siteAppIdFromUrl && feedbackIdFromUrl) {
+					redirectToFeedbackNotification();
+				} else if (response.data && !(siteAppIdFromUrl && feedbackIdFromUrl)) {
+					redirectToPortalOrDefault(
+						response?.data?.position?.siteAppID,
+						response?.data?.position?.defaultPage
+					);
 					return true;
 				} else {
 					throw new Error(response);
@@ -280,27 +322,33 @@ const Login = ({
 			}
 		} catch (err) {
 			// Removing spinner
-			console.error(err);
+			dispatch(showError(err?.response?.data?.detail || `Failed to login.`));
 			return false;
 		}
 	};
 
 	const responseGoogle = async (res) => {
 		try {
-			const respon = await loginSocialAccount(
-				{ token: res.tokenId },
-				"GOOGLE",
-				"/Account/google"
-			);
+			var googleInput = { token: res?.credential };
 
-			if (respon) {
+			if (siteAppIdFromUrl && feedbackIdFromUrl) {
+				googleInput = { ...googleInput, siteAppID: siteAppIdFromUrl };
+			}
+			const respon = await loginSocialAccount(
+				googleInput,
+				"GOOGLE",
+				"/api/Account/google"
+			);
+			if (respon && siteAppIdFromUrl && feedbackIdFromUrl) {
+				redirectToFeedbackNotification();
+			} else if (respon) {
 				redirectToPortalOrDefault(respon?.position?.siteAppID);
 				return true;
 			} else {
 				throw new Error(respon);
 			}
 		} catch (err) {
-			console.error(err);
+			dispatch(showError(err?.response?.data ?? `Failed to login.`));
 			return false;
 		}
 	};
@@ -309,43 +357,94 @@ const Login = ({
 		instance
 			.loginPopup()
 			.then((res) => responseMicrosoft(res))
-			.catch((error) => console.log(error));
+			.catch((error) => dispatch(showError(`Failed to login.`)));
 	}
 
 	const responseMicrosoft = async (data) => {
 		// some actions
 
 		try {
+			var microsoftInput = { token: data?.idToken };
+
+			if (siteAppIdFromUrl && feedbackIdFromUrl) {
+				microsoftInput = { ...microsoftInput, siteAppID: siteAppIdFromUrl };
+			}
 			const respon = await loginSocialAccount(
-				{ token: data.idToken },
+				microsoftInput,
 				"MICROSOFT",
-				"/Account/microsoft"
+				"/api/Account/microsoft"
 			);
 
-			if (respon) {
+			if (respon && siteAppIdFromUrl && feedbackIdFromUrl) {
+				redirectToFeedbackNotification();
+			} else if (respon) {
 				redirectToPortalOrDefault(respon?.position?.siteAppID);
 			} else {
 				throw new Error(respon);
 			}
 		} catch (err) {
-			console.error(err);
+			dispatch(showError(err?.response?.data ?? `Failed to login.`));
 		}
 	};
 
-	const redirectToPortalOrDefault = (positionNotNull) =>
-		positionNotNull ? successRedirect() : redirectToPortal();
+	const responseApple = async (data) => {
+		if (data?.authorization?.code) {
+			try {
+				var appleInput = { token: data?.authorization?.code };
 
-	const successRedirect = () => {
+				if (siteAppIdFromUrl && feedbackIdFromUrl) {
+					appleInput = { ...appleInput, siteAppID: siteAppIdFromUrl };
+				}
+				const respon = await loginSocialAccount(
+					appleInput,
+					"Apple",
+					"/api/Account/Apple"
+				);
+
+				if (respon && siteAppIdFromUrl && feedbackIdFromUrl) {
+					redirectToFeedbackNotification();
+				} else if (respon) {
+					redirectToPortalOrDefault(respon?.position?.siteAppID);
+				} else {
+					throw new Error(respon);
+				}
+			} catch (err) {
+				dispatch(showError(err?.response?.data ?? `Failed to login.`));
+			}
+		} else {
+			return;
+		}
+	};
+
+	let versionInfo;
+
+	if (document.querySelector('meta[name="build-version"]')) {
+		versionInfo = document.querySelector('meta[name="build-version"]').content;
+	}
+
+	const redirectToPortalOrDefault = (positionNotNull, defaultPage) =>
+		positionNotNull ? successRedirect(defaultPage) : redirectToPortal();
+
+	const successRedirect = (defaultPage) => {
 		// Update below to change redirect location
 		// if Previous location available redirect to previous location
-		history.push(
-			state?.from?.pathname ? state?.from?.pathname : userProfilePath
+		navigate(
+			state?.from?.pathname
+				? state?.from?.pathname
+				: defaultRedirect[defaultPage] || siteUserLoginPath
 		);
 		return true;
 	};
 
 	const redirectToPortal = () =>
-		history.push({ pathname: "/app/portal", state: { from: loginPath } });
+		navigate("/app/portal", { state: { from: loginPath } });
+
+	const redirectToFeedbackNotification = () => {
+		dispatch(handleSiteAppClick(siteAppIdFromUrl, true));
+		navigate(`/app/feedback/${feedbackIdFromUrl}`, {
+			state: { from: loginPath },
+		});
+	};
 
 	const handleEnterPress = (e) => {
 		// 13 is the enter keycode
@@ -391,6 +490,11 @@ const Login = ({
 								)}
 								<form className={classes.form} noValidate>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										className={classes.labels}
 										error={errors.email === null ? false : true}
 										helperText={errors.email === null ? null : errors.email}
@@ -399,14 +503,20 @@ const Login = ({
 										required
 										fullWidth
 										id="email"
-										value={email}
+										value={email || null}
 										label="Email"
 										name="email"
 										autoComplete="email"
 										onChange={(e) => setEmail(e.target.value)}
 										onKeyDown={handleEnterPress}
 									/>
+
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										className={classes.labels}
 										error={errors.password === null ? false : true}
 										helperText={
@@ -420,7 +530,7 @@ const Login = ({
 										label="Password"
 										type="password"
 										id="password"
-										value={password}
+										value={password || null}
 										autoComplete="current-password"
 										onChange={(e) => setPassword(e.target.value)}
 										onKeyDown={handleEnterPress}
@@ -454,8 +564,19 @@ const Login = ({
 							<span className={classes.dividerText}>OR</span>
 							<span className={classes.secondLine}></span>
 						</div>
-						<div style={{ width: "100%" }}>
-							<div onClick={signIn} className={classes.googleBtn}>
+						<GoogleLogin
+							onSuccess={(credentialResponse) => {
+								responseGoogle(credentialResponse);
+							}}
+							onError={() => {
+								dispatch(showError(`Failed to login.`));
+							}}
+							width="340px"
+							theme="outline"
+						/>
+
+						{/* <div style={{ width: "100%" }}>
+							<div onClick={() => login()} className={classes.googleBtn}>
 								<div className={classes.googleIconWrapper}>
 									<img
 										alt=""
@@ -467,8 +588,7 @@ const Login = ({
 									<b>Sign In With Google</b>
 								</p>
 							</div>
-						</div>
-
+						</div> */}
 						<div
 							onClick={signInMicrosoftHandler}
 							className={classes.microsoftbtn}
@@ -484,14 +604,44 @@ const Login = ({
 								<b>Sign In With Microsoft</b>
 							</p>
 						</div>
+						<AppleLoginSignin responseApple={responseApple} />
 					</div>
-
-					<footer className={classes.footer}>
-						<Typography className={classes.footerText}>
-							&copy; 2021 Equipment Management International P/L
-						</Typography>
-					</footer>
+					<div className={classes.termsAndPolicy}>
+						<NavLink
+							target="_blank"
+							to={"http://www.equipmentmanagement.com.au/term-of-use"}
+							className={classes.forgotPassword}
+						>
+							Term Of Use
+						</NavLink>
+						<span>|</span>
+						<NavLink
+							target="_blank"
+							to={"http://www.equipmentmanagement.com.au/privacy-policy"}
+							className={classes.forgotPassword}
+						>
+							Privacy Policy
+						</NavLink>
+						<span>|</span>
+						<NavLink
+							target="_blank"
+							to={"https://support.emi3.io/support/tickets/new"}
+							className={classes.forgotPassword}
+						>
+							Support
+						</NavLink>
+					</div>
 				</div>
+				<footer className={classes.footer}>
+					<Typography className={classes.footerText}>
+						&emsp;&emsp;&emsp;Build Version:&nbsp;
+						{versionInfo}
+					</Typography>
+					<Typography className={classes.footerText}>
+						&copy;{versionInfo?.split("-")?.[0]} Equipment Management
+						International P/L
+					</Typography>
+				</footer>
 			</Grid>
 		</Grid>
 	);

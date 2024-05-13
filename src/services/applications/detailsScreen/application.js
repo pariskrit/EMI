@@ -90,3 +90,20 @@ export const uploadAppLogo = async (applicationId, payload, config = {}) => {
 		return getAPIResponse(error.response);
 	}
 };
+
+export const uploadNavigationLogo = async (
+	applicationId,
+	payload,
+	config = {}
+) => {
+	try {
+		const response = await API.post(
+			`${Apis.Application}/${applicationId}/uploadNavigationLogo`,
+			payload,
+			config
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error.response);
+	}
+};

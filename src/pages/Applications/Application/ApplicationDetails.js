@@ -1,9 +1,11 @@
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import Grid from "@mui/material/Grid";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import AccordionBox from "components/Layouts/AccordionBox";
 import ColourConstants from "helpers/colourConstants";
@@ -12,8 +14,9 @@ import { updateApplicaitonDetails } from "services/applications/detailsScreen/ap
 import { Facebook } from "react-spinners-css";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { RESELLER_ID } from "constants/UserConstants/indes";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	detailsContainer: {
 		marginTop: 15,
 		display: "flex",
@@ -65,9 +68,10 @@ const ApplicationDetails = ({
 	setInputData,
 	errors,
 	id,
+	adminType,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const [isFetching, setIsFetching] = useState({});
 	const [localData, setLocalData] = useState();
@@ -80,7 +84,6 @@ const ApplicationDetails = ({
 	const handleUpdateDetail = async (value, name) => {
 		if (name === "name") {
 			if (value === "") {
-				console.log(value, name, originalInputData.name);
 				setInputData((prev) => ({
 					...prev,
 					name: localData.name,
@@ -124,11 +127,12 @@ const ApplicationDetails = ({
 				);
 			}
 		} catch (error) {
-			console.log(error);
+			dispatch(showError("Could not update " + name));
 		}
 		setIsFetching((prev) => ({ ...prev, [name]: false }));
 	};
 
+	const Readonly = adminType === RESELLER_ID;
 	return (
 		<div className={classes.detailsContainer}>
 			<AccordionBox title="Details">
@@ -141,6 +145,11 @@ const ApplicationDetails = ({
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
 								variant="outlined"
@@ -150,9 +159,10 @@ const ApplicationDetails = ({
 									setInputData({ ...inputData, ...{ name: e.target.value } });
 								}}
 								onBlur={() => {
-									handleUpdateDetail(inputData.name, "name");
+									if (!Readonly) handleUpdateDetail(inputData.name, "name");
 								}}
 								InputProps={{
+									readOnly: Readonly,
 									classes: {
 										input: classes.inputText,
 									},
@@ -169,6 +179,11 @@ const ApplicationDetails = ({
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								error={errors.purpose === null ? false : true}
 								helperText={errors.purpose === null ? null : errors.purpose}
 								variant="outlined"
@@ -184,9 +199,11 @@ const ApplicationDetails = ({
 									});
 								}}
 								onBlur={() => {
-									handleUpdateDetail(inputData.purpose, "purpose");
+									if (!Readonly)
+										handleUpdateDetail(inputData.purpose, "purpose");
 								}}
 								InputProps={{
+									readOnly: Readonly,
 									classes: {
 										input: classes.inputText,
 									},
@@ -205,12 +222,14 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.equipmentModelStructure}
 												changeHandler={() => {
 													setInputData({
 														...inputData,
 														...{
-															equipmentModelStructure: !inputData.equipmentModelStructure,
+															equipmentModelStructure:
+																!inputData.equipmentModelStructure,
 														},
 													});
 													handleUpdateDetail(
@@ -234,12 +253,14 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.assetModelStructure}
 												changeHandler={() => {
 													setInputData({
 														...inputData,
 														...{
-															assetModelStructure: !inputData.assetModelStructure,
+															assetModelStructure:
+																!inputData.assetModelStructure,
 														},
 													});
 													handleUpdateDetail(
@@ -257,12 +278,13 @@ const ApplicationDetails = ({
 									/>
 								</FormGroup>
 							</div>
-
+							{/* 
 							<div className={classes.tickInputContainer}>
 								<FormGroup className={classes.tickboxSpacing}>
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showLocations}
 												changeHandler={() => {
 													setInputData({
@@ -285,13 +307,14 @@ const ApplicationDetails = ({
 										}
 									/>
 								</FormGroup>
-							</div>
+							</div> */}
 
 							<div className={classes.tickInputContainer}>
 								<FormGroup className={classes.tickboxSpacing}>
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showLubricants}
 												changeHandler={() => {
 													setInputData({
@@ -321,6 +344,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showParts}
 												changeHandler={() => {
 													setInputData({
@@ -347,6 +371,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showOperatingMode}
 												changeHandler={() => {
 													setInputData({
@@ -376,6 +401,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showSystem}
 												changeHandler={() => {
 													setInputData({
@@ -405,6 +431,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showDefectParts}
 												changeHandler={() => {
 													setInputData({
@@ -429,7 +456,7 @@ const ApplicationDetails = ({
 								</FormGroup>
 							</div>
 
-							<div className={classes.tickInputContainer}>
+							{/* <div className={classes.tickInputContainer}>
 								<FormGroup className={classes.tickboxSpacing}>
 									<FormControlLabel
 										control={
@@ -453,19 +480,21 @@ const ApplicationDetails = ({
 										}
 									/>
 								</FormGroup>
-							</div>
+							</div> */}
 
 							<div className={classes.tickInputContainer}>
 								<FormGroup className={classes.tickboxSpacing}>
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showSerialNumberRange}
 												changeHandler={() => {
 													setInputData({
 														...inputData,
 														...{
-															showSerialNumberRange: !inputData.showSerialNumberRange,
+															showSerialNumberRange:
+																!inputData.showSerialNumberRange,
 														},
 													});
 													handleUpdateDetail(
@@ -478,6 +507,65 @@ const ApplicationDetails = ({
 										label={
 											<Typography className={classes.inputText}>
 												Show Serial Number Range
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												disabled={Readonly}
+												state={inputData.showArrangements}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showArrangements: !inputData.showArrangements,
+														},
+													});
+													handleUpdateDetail(
+														!inputData.showArrangements,
+														"showArrangements"
+													);
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Arrangements
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												disabled={Readonly}
+												state={inputData.allowRegisterAssetsForServices}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															allowRegisterAssetsForServices:
+																!inputData.allowRegisterAssetsForServices,
+														},
+													});
+													handleUpdateDetail(
+														!inputData.allowRegisterAssetsForServices,
+														"allowRegisterAssetsForServices"
+													);
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Allow New Assets When Registering a Service
 											</Typography>
 										}
 									/>
@@ -496,6 +584,11 @@ const ApplicationDetails = ({
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								error={errors.name === null ? false : true}
 								helperText={errors.name === null ? null : errors.name}
 								variant="outlined"
@@ -508,6 +601,7 @@ const ApplicationDetails = ({
 									handleUpdateDetail(inputData.name, "name");
 								}}
 								InputProps={{
+									readOnly: Readonly,
 									classes: {
 										input: classes.inputText,
 									},
@@ -524,6 +618,11 @@ const ApplicationDetails = ({
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								error={errors.purpose === null ? false : true}
 								helperText={errors.purpose === null ? null : errors.purpose}
 								variant="outlined"
@@ -542,6 +641,7 @@ const ApplicationDetails = ({
 									handleUpdateDetail(inputData.purpose, "purpose");
 								}}
 								InputProps={{
+									readOnly: Readonly,
 									classes: {
 										input: classes.inputText,
 									},
@@ -560,12 +660,14 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.equipmentModelStructure}
 												changeHandler={() => {
 													setInputData({
 														...inputData,
 														...{
-															equipmentModelStructure: !inputData.equipmentModelStructure,
+															equipmentModelStructure:
+																!inputData.equipmentModelStructure,
 														},
 													});
 													handleUpdateDetail(
@@ -589,12 +691,14 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.assetModelStructure}
 												changeHandler={() => {
 													setInputData({
 														...inputData,
 														...{
-															assetModelStructure: !inputData.assetModelStructure,
+															assetModelStructure:
+																!inputData.assetModelStructure,
 														},
 													});
 													handleUpdateDetail(
@@ -647,6 +751,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showLubricants}
 												changeHandler={() => {
 													setInputData({
@@ -676,6 +781,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showParts}
 												changeHandler={() => {
 													setInputData({
@@ -702,6 +808,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showOperatingMode}
 												changeHandler={() => {
 													setInputData({
@@ -731,6 +838,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showSystem}
 												changeHandler={() => {
 													setInputData({
@@ -760,6 +868,7 @@ const ApplicationDetails = ({
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showDefectParts}
 												changeHandler={() => {
 													setInputData({
@@ -784,7 +893,7 @@ const ApplicationDetails = ({
 								</FormGroup>
 							</div>
 
-							<div className={classes.tickInputContainer}>
+							{/* <div className={classes.tickInputContainer}>
 								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
 									<FormControlLabel
 										control={
@@ -808,19 +917,21 @@ const ApplicationDetails = ({
 										}
 									/>
 								</FormGroup>
-							</div>
+							</div> */}
 
 							<div className={classes.tickInputContainer}>
 								<FormGroup className={`${classes.tickboxSpacing} ticketBox`}>
 									<FormControlLabel
 										control={
 											<EMICheckbox
+												disabled={Readonly}
 												state={inputData.showSerialNumberRange}
 												changeHandler={() => {
 													setInputData({
 														...inputData,
 														...{
-															showSerialNumberRange: !inputData.showSerialNumberRange,
+															showSerialNumberRange:
+																!inputData.showSerialNumberRange,
 														},
 													});
 													handleUpdateDetail(
@@ -833,6 +944,65 @@ const ApplicationDetails = ({
 										label={
 											<Typography className={classes.inputText}>
 												Show Serial Number Range
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												disabled={Readonly}
+												state={inputData.showArrangements}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															showArrangements: !inputData.showArrangements,
+														},
+													});
+													handleUpdateDetail(
+														!inputData.showArrangements,
+														"showArrangements"
+													);
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Show Arrangements
+											</Typography>
+										}
+									/>
+								</FormGroup>
+							</div>
+							<div className={classes.tickInputContainer}>
+								<FormGroup className={classes.tickboxSpacing}>
+									<FormControlLabel
+										control={
+											<EMICheckbox
+												disabled={Readonly}
+												state={inputData.allowRegisterAssetsForServices}
+												changeHandler={() => {
+													setInputData({
+														...inputData,
+														...{
+															allowRegisterAssetsForServices:
+																!inputData.allowRegisterAssetsForServices,
+														},
+													});
+													handleUpdateDetail(
+														!inputData.allowRegisterAssetsForServices,
+														"allowRegisterAssetsForServices"
+													);
+												}}
+											/>
+										}
+										label={
+											<Typography className={classes.inputText}>
+												Allow New Assets When Registering a Service
 											</Typography>
 										}
 									/>

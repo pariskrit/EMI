@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
 import API from "helpers/api";
 import ContentStyle from "styles/application/ContentStyle";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import NavDetails from "components/Elements/NavDetails";
-import ActionButtons from "./ActionButtons";
 import NavButtons from "components/Elements/NavButtons";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import CustomCaptionsTable from "./CustomCaptionsTable";
 import "./customCaptions.css";
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import { applicationListPath } from "helpers/routePaths";
+import { appPath, applicationListPath } from "helpers/routePaths";
 import TabTitle from "components/Elements/TabTitle";
+import { setHistoryDrawerState, showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import RestoreIcon from "@mui/icons-material/Restore";
+import { useSelector } from "react-redux";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { getApplicationDetails } from "services/History/application";
 
 // Init styled components
 const AC = ContentStyle();
@@ -23,6 +28,8 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 	const [data, setData] = useState({});
 	const [haveData, setHaveData] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
+	const errorDispatch = useDispatch();
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 
 	// Handlers
 	const handleGetData = useCallback(
@@ -67,13 +74,17 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 				}
 			} catch (err) {
 				// TODO: real error handling
-				console.log(err);
+				errorDispatch(showError("Failed to fetch custom captions."));
 				return false;
 			}
 		},
 		[id, setIs404]
 	);
 	const handleUpdateCustomCaption = async (key, value) => {
+		if (value === "") {
+			errorDispatch(showError("Custom Captions cannot be empty."));
+			return { success: false, error: "Empty value sent" };
+		}
 		try {
 			let updateData = await API.patch(`/api/Applications/${id}`, [
 				{
@@ -91,12 +102,11 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 				throw new Error(updateData);
 			}
 		} catch (err) {
-			if (err.response.data.errors !== undefined) {
+			if (err.response?.data?.errors !== undefined) {
 				return { success: false, error: err.response.data.errors };
 			} else {
 				// TODO: non validation error handling
-				console.log(err);
-
+				errorDispatch(showError("Failed to update custom caption."));
 				return { success: false, error: "Unknown error" };
 			}
 		}
@@ -107,8 +117,8 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 		// Handling update of name if state not provided
 		let updateName = true;
 
-		if (state !== undefined) {
-			setApplicationName(state.applicationName);
+		if (state !== null) {
+			setApplicationName(state?.applicationName);
 
 			updateName = false;
 		}
@@ -119,36 +129,46 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 				// Rendering data
 				setHaveData(true);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				errorDispatch(showError("Failed to fetch custom captions."))
+			);
 		// eslint-disable-next-line
 	}, [handleGetData]);
 
 	return (
 		<div className="container">
-			<TabTitle title={`${applicationName} CustomCaptions`} />
+			<TabTitle title={`${applicationName} Custom Captions`} />
+			<HistoryBar
+				id={id}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={errorDispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					getApplicationDetails(id, pageNumber, pageSize)
+				}
+			/>
 			<div className="topContainerCustomCaptions">
 				<NavDetails
 					staticCrumbs={[
-						{ id: 1, name: "Applications", url: applicationListPath },
+						{ id: 1, name: "Applications", url: appPath + applicationListPath },
 						{
 							id: 2,
-							name:
-								state !== undefined ? state.applicationName : applicationName,
+							name: state !== null ? state?.applicationName : applicationName,
 						},
 					]}
 				/>
 
-				{haveData ? (
-					<div>
-						<ActionButtons />
-					</div>
-				) : null}
+				<div
+					className="restore"
+					onClick={() => errorDispatch(setHistoryDrawerState(true))}
+				>
+					<RestoreIcon />
+				</div>
 			</div>
 
 			<NavButtons
 				navigation={navigation}
 				applicationName={
-					state !== undefined ? state.applicationName : applicationName
+					state !== undefined ? state?.applicationName : applicationName
 				}
 				current="Details"
 			/>
@@ -175,6 +195,7 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 											</Grid>
 											<Grid item>
 												<AC.SearchInput
+													variant="standard"
 													value={searchQuery}
 													onChange={(e) => {
 														setSearchQuery(e.target.value);
@@ -197,6 +218,7 @@ const CustomCaptionsContent = ({ navigation, id, setIs404, state }) => {
 										</Grid>
 										<Grid item>
 											<AC.SearchInput
+												variant="standard"
 												value={searchQuery}
 												onChange={(e) => {
 													setSearchQuery(e.target.value);

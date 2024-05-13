@@ -1,7 +1,7 @@
-import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import Divider from "@material-ui/core/Divider";
-import Button from "@material-ui/core/Button";
+import { styled } from "@mui/styles";
+import ColourConstants from "helpers/colourConstants";
+import Divider from "@mui/material/Divider";
+import Button from "@mui/material/Button";
 
 const PauseDialogStyle = () => {
 	return {
@@ -25,6 +25,10 @@ const PauseDialogStyle = () => {
 			backgroundColor: ColourConstants.confirmButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
+			"&.MuiButton-root:hover": {
+				backgroundColor: ColourConstants.deleteDialogHover,
+				color: "#ffffff",
+			},
 		}),
 	};
 };

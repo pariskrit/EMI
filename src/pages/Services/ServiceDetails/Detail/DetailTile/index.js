@@ -1,10 +1,12 @@
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import AccordionBox from "components/Layouts/AccordionBox";
-import { handleSort } from "helpers/utils";
+import { handleSort, isoDateFormat } from "helpers/utils";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { getModelDeparments } from "services/models/modelDetails/details";
 import { getModelAvailableAsset } from "services/models/modelDetails/modelAsset";
 import { getModelIntervals } from "services/models/modelDetails/modelIntervals";
 import { getModelRolesList } from "services/models/modelDetails/modelRoles";
@@ -25,12 +27,54 @@ function DetailTile({
 	const [serviceDetails, setServiceDetail] = useState({});
 	const [updating, setUpdating] = useState({});
 	const [modelAssest, setModelAssest] = useState([]);
+	const [siteAppState, setSiteAppState] = useState(null);
+	const [roles, setRoles] = useState([]);
+	const [departments, setDepartments] = useState([]);
+
+	const {
+		site: { showServiceClientName },
+		application: showArrangements,
+	} =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+
+	//to get the state of current application--applicatioin.showLubricants and so on.
+	const fetchSiteApplicationDetails = async () => {
+		try {
+			const result = await getSiteApplicationDetail(siteAppID);
+			const localItems =
+				JSON.parse(sessionStorage.getItem("me")) ||
+				JSON.parse(localStorage.getItem("me"));
+
+			const updatedStorage = {
+				...localItems,
+				site: {
+					...localItems.site,
+					showServiceClientName: result?.data?.showServiceClientName,
+				},
+			};
+			sessionStorage.setItem("me", JSON.stringify(updatedStorage));
+			localStorage.setItem("me", JSON.stringify(updatedStorage));
+			setSiteAppState(result);
+		} catch (err) {
+			reduxDispatch(
+				showError(err?.response?.data?.detail || "Failed to fetch data. ")
+			);
+		}
+	};
 
 	useEffect(() => {
+		fetchSiteApplicationDetails();
+		const date = isoDateFormat(
+			detail?.scheduledDate[detail?.scheduledDate?.length - 1] === "Z"
+				? detail?.scheduledDate
+				: detail?.scheduledDate + "Z"
+		);
 		if (detail) {
-			setServiceDetail(detail);
+			setServiceDetail({ ...detail, scheduledDate: date });
 		}
-	}, [detail]);
+	}, [detail, siteAppID]);
+
 	useEffect(() => {
 		const fetchAssetData = async () => {
 			try {
@@ -63,6 +107,85 @@ function DetailTile({
 		}
 	}, [detail.modelID, reduxDispatch]);
 
+	useEffect(() => {
+		const fetchRoles = async () => {
+			try {
+				const res = await getModelRolesList(
+					serviceDetails.activeModelVersionID
+				);
+				if (res.status) {
+					setRoles(res?.data);
+					res?.data?.forEach((data) => {
+						if (data.id === serviceDetails.roleID && data?.siteDepartmentID) {
+							dispatch({
+								type: "UPDATE_FIELD",
+								payload: {
+									name: "siteDepartmentID",
+									value: data?.siteDepartmentID || "",
+								},
+							});
+							dispatch({
+								type: "UPDATE_FIELD",
+								payload: {
+									name: "departmentName",
+									value: data?.siteDepartmentName || "",
+								},
+							});
+						}
+					});
+				} else {
+					reduxDispatch(
+						showError(
+							res?.data?.detail || "Error while getting the roles data!"
+						)
+					);
+				}
+			} catch (err) {
+				reduxDispatch(
+					showError(err?.data?.detail || "Error while getting the roles data!")
+				);
+			}
+		};
+		if (serviceDetails.activeModelVersionID && !isReadOnly) fetchRoles();
+	}, [
+		serviceDetails.activeModelVersionID,
+		reduxDispatch,
+		isReadOnly,
+		dispatch,
+	]);
+
+	useEffect(() => {
+		const fetchDepartments = async () => {
+			try {
+				const res = await getModelDeparments(
+					serviceDetails.activeModelVersionID
+				);
+				if (res.status) {
+					const filteredDepartments = res?.data
+						?.filter((department) => department?.id)
+						?.map((d) => ({
+							...d,
+							id: d?.modelDepartmentID,
+						}));
+					setDepartments(filteredDepartments);
+				} else {
+					reduxDispatch(
+						showError(
+							res?.data?.detail || "Error while getting the departments data!"
+						)
+					);
+				}
+			} catch (err) {
+				reduxDispatch(
+					showError(
+						err?.data?.detail || "Error while getting the departments data!"
+					)
+				);
+			}
+		};
+		if (serviceDetails.activeModelVersionID && !isReadOnly) fetchDepartments();
+	}, [serviceDetails.activeModelVersionID, reduxDispatch, isReadOnly]);
+
 	const handleDropDopChnage = async (val, field, actualField, otherField) => {
 		if (+val.id === +serviceDetails[field]) return;
 
@@ -76,11 +199,43 @@ function DetailTile({
 					  ])
 					: await patchServiceDetails(serviceId, [
 							{ op: "replace", path: actualField, value: val.id },
+							...(actualField === "modelVersionRoleID" &&
+							val?.siteDepartmentID &&
+							val?.siteDepartmentID !== serviceDetails?.siteDepartmentID
+								? [
+										{
+											op: "replace",
+											path: "siteDepartmentID",
+											value: val?.siteDepartmentID,
+										},
+								  ]
+								: []),
 					  ]);
 			if (response.status) {
+				if (actualField === "siteAssetID")
+					dispatch({
+						type: "UPDATE_FIELD",
+						payload: { name: "arrangement", value: val?.arrangementName || "" },
+					});
+				if (actualField === "modelVersionRoleID" && val?.siteDepartmentID) {
+					dispatch({
+						type: "UPDATE_FIELD",
+						payload: {
+							name: "siteDepartmentID",
+							value: val?.siteDepartmentID || "",
+						},
+					});
+					dispatch({
+						type: "UPDATE_FIELD",
+						payload: {
+							name: "departmentName",
+							value: val?.siteDepartmentName || "",
+						},
+					});
+				}
 				dispatch({
 					type: "UPDATE_FIELD",
-					payload: { name: field, value: response.data[field] },
+					payload: { name: field, value: response?.data[actualField] },
 				});
 				dispatch({
 					type: "UPDATE_FIELD",
@@ -102,13 +257,21 @@ function DetailTile({
 	const handleBlurTextField = async (name) => {
 		if (serviceDetails[name] === detail[name]) return;
 
+		let patchData;
+
+		if (name === "scheduledDate") {
+			patchData = new Date(serviceDetails[name])?.toISOString();
+		} else {
+			patchData = serviceDetails[name];
+		}
+
 		setUpdating((prev) => ({ ...prev, [name]: true }));
 		try {
 			const response = await patchServiceDetails(serviceId, [
 				{
 					op: "replace",
 					path: name,
-					value: serviceDetails[name],
+					value: patchData,
 				},
 			]);
 			if (response.status) {
@@ -175,7 +338,10 @@ function DetailTile({
 					]}
 					// dataSource={dropDownDatas?.actions}
 					selectedValue={{
-						name: serviceDetails.modelName + " " + serviceDetails.model,
+						name:
+							(serviceDetails.modelName ?? "") +
+							" " +
+							(serviceDetails?.model ?? ""),
 						id: serviceDetails.modelID,
 					}}
 					handleSort={handleSort}
@@ -197,11 +363,30 @@ function DetailTile({
 						isServerSide={false}
 						width="100%"
 						placeholder="Select Asset"
-						dataHeader={[{ id: 1, name: "Asset" }]}
-						columns={[{ id: 1, name: "name" }]}
+						showHeader
+						dataHeader={[
+							{ id: 1, name: "Asset" },
+							{ id: 2, name: "Description" },
+							...(state.hasArrangements
+								? [{ id: 3, name: "Arrangement" }]
+								: []),
+						]}
+						columns={[
+							{ id: 1, name: "name" },
+							{ id: 2, name: "description" },
+							...(state.hasArrangements
+								? [{ id: 3, name: "arrangementName" }]
+								: []),
+						]}
 						// dataSource={dropDownDatas?.actions}
 						selectedValue={{
-							name: serviceDetails.siteAssetName,
+							name:
+								serviceDetails.siteAssetName +
+								`${
+									serviceDetails.arrangement
+										? ` (${serviceDetails.arrangement})`
+										: ""
+								}`,
 							id: serviceDetails.siteAssetID,
 						}}
 						handleSort={handleSort}
@@ -225,18 +410,11 @@ function DetailTile({
 				<div style={{ marginBottom: 14 }}></div>
 				<DyanamicDropdown
 					isServerSide={false}
-					showHeader
+					dataSource={roles}
 					width="100%"
 					placeholder="Select Role"
-					dataHeader={[
-						{ id: 1, name: "Role" },
-						{ id: 2, name: "Department" },
-					]}
-					columns={[
-						{ id: 1, name: "name" },
-						{ id: 2, name: "siteDepartmentName" },
-					]}
-					// dataSource={dropDownDatas?.actions}
+					dataHeader={[{ id: 1, name: "Role" }]}
+					columns={[{ id: 1, name: "name" }]}
 					selectedValue={{
 						name: serviceDetails.role,
 						id: serviceDetails.roleID,
@@ -249,8 +427,38 @@ function DetailTile({
 					label={customCaptions?.role}
 					required
 					isReadOnly={isReadOnly || updating["roleID"] === true}
-					fetchData={() =>
-						getModelRolesList(serviceDetails.activeModelVersionID)
+				/>
+				<div style={{ marginBottom: 14 }}></div>
+				<DyanamicDropdown
+					isServerSide={false}
+					width="100%"
+					placeholder="Select Department"
+					dataHeader={[{ id: 2, name: "Department" }]}
+					columns={[{ id: 2, name: "name" }]}
+					dataSource={departments}
+					selectedValue={{
+						name: serviceDetails.departmentName,
+						id: serviceDetails.siteDepartmentID,
+					}}
+					handleSort={handleSort}
+					onChange={(val) =>
+						handleDropDopChnage(
+							val,
+							"siteDepartmentID",
+							"siteDepartmentID",
+							"departmentName"
+						)
+					}
+					selectdValueToshow="name"
+					label={customCaptions?.department}
+					required
+					isReadOnly={
+						isReadOnly ||
+						updating["siteDepartmentID"] === true ||
+						//test if the status type is scheduled i.e "S" or not
+						state?.Status === "S" ||
+						serviceDetails?.siteDepartmentID ||
+						departments.length === 1
 					}
 				/>
 				<div style={{ marginBottom: 14 }}></div>
@@ -287,7 +495,7 @@ function DetailTile({
 				<TextFieldContainer
 					label={"Scheduled Date"}
 					name={"scheduledDate"}
-					value={serviceDetails?.scheduledDate?.split("Z")[0]}
+					value={serviceDetails?.scheduledDate}
 					onChange={(e) => onInputChange(e, "scheduledDate")}
 					onBlur={() => handleBlurTextField("scheduledDate")}
 					isDisabled={isReadOnly}
@@ -298,7 +506,7 @@ function DetailTile({
 
 				<div style={{ marginBottom: 14 }}></div>
 				<TextFieldContainer
-					label={"WONN (Work Order Notification Number)"}
+					label={customCaptions?.notificationNumber}
 					name={"notificationNumber"}
 					value={serviceDetails?.notificationNumber}
 					onChange={(e) => onInputChange(e, "notificationNumber")}
@@ -308,6 +516,22 @@ function DetailTile({
 					isFetching={updating["notificationNumber"] === true}
 					onKeyDown={onEnterPress}
 				/>
+				{showServiceClientName && (
+					<>
+						<div style={{ marginBottom: 14 }}></div>
+						<TextFieldContainer
+							label={"Client Name"}
+							name={"clientName"}
+							value={serviceDetails?.clientName}
+							onChange={(e) => onInputChange(e, "clientName")}
+							onBlur={() => handleBlurTextField("clientName")}
+							isRequired={false}
+							isDisabled={isReadOnly}
+							isFetching={updating["clientName"] === true}
+							onKeyDown={onEnterPress}
+						/>
+					</>
+				)}
 			</div>
 		</AccordionBox>
 	);

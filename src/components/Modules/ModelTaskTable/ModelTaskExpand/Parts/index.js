@@ -1,4 +1,4 @@
-import { CircularProgress, LinearProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -31,11 +31,11 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 	const [openEditPart, setOpenEditPart] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [pastePart, setPastePart] = useState(false);
+	const [pastePart, setPastePart] = useState(true);
 	const [isPasting, setIsPasting] = useState(false);
 
 	const [, CtxDispatch] = useContext(TaskContext);
-	const [state] = useContext(ModelContext);
+	const [state, MtxDispatch] = useContext(ModelContext);
 
 	const dispatch = useDispatch();
 
@@ -59,6 +59,11 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 						data: response?.data?.length,
 					},
 				});
+				if (response.data.length > 0) {
+					CtxDispatch({ type: "SET_PARTS", payload: true });
+				} else {
+					CtxDispatch({ type: "SET_PARTS", payload: false });
+				}
 			} else {
 				dispatch(
 					showError(
@@ -85,6 +90,10 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 		fetchParts();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		setPastePart(state.isPartTaskDisabled);
+	}, [state]);
 
 	// handle dragging of part
 
@@ -143,6 +152,11 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 				data: newData.length,
 			},
 		});
+		if (newData.length > 0) {
+			CtxDispatch({ type: "SET_PARTS", payload: true });
+		} else {
+			CtxDispatch({ type: "SET_PARTS", payload: false });
+		}
 	};
 
 	const createPart = async (newPart) => {
@@ -169,8 +183,8 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 	};
 
 	const handleCopy = (id) => {
-		setPastePart(true);
 		localStorage.setItem("taskpart", id);
+		MtxDispatch({ type: "DISABLE_PARTS_TASK", payload: false });
 	};
 
 	const handlePaste = async () => {
@@ -200,7 +214,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 			const taskId = localStorage.getItem("taskpart");
 
 			if (taskId) {
-				setPastePart(true);
+				setPastePart(false);
 			}
 		} catch (error) {
 			return;
@@ -273,7 +287,7 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 						<GeneralButton
 							style={{ background: "#ED8738" }}
 							onClick={handlePaste}
-							disabled={!pastePart}
+							disabled={pastePart}
 						>
 							Paste {customCaptions.part}
 						</GeneralButton>
@@ -319,7 +333,9 @@ const Parts = ({ taskInfo, access, isMounted }) => {
 						isDelete: true,
 					},
 				].filter((x) => {
-					if (state?.modelDetail?.isPublished) return false;
+					if (state?.modelDetail?.isPublished) {
+						return x?.name === "Copy";
+					}
 					if (access === "F") return true;
 					if (access === "E") {
 						if (x.name === "Edit") return true;

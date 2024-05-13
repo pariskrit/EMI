@@ -1,5 +1,5 @@
 import React from "react";
-import ErrorIcon from "@material-ui/icons/Error";
+import ErrorIcon from "@mui/icons-material/Error";
 import ColourConstants from "helpers/colourConstants";
 
 export const FeedbackTableHeader = (customCaptions) => {

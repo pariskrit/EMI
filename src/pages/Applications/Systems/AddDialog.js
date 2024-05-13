@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import API from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { connect, useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -26,11 +29,13 @@ const AddSystemDialog = ({
 	closeHandler,
 	applicationID,
 	handleAddData,
+	getError,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -66,7 +71,7 @@ const AddSystemDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
+			dispatch(showError("Failed to add system."));
 
 			setIsUpdating(false);
 			closeOverride();
@@ -94,6 +99,12 @@ const AddSystemDialog = ({
 				throw new Error(result);
 			}
 		} catch (err) {
+			if (err.response?.data?.detail) {
+				getError(
+					err?.response?.data?.detail ||
+						"Input should not be empty and it should be less than 50 characters ."
+				);
+			}
 			if (err.response.data.errors !== undefined) {
 				setErrors({ ...errors, ...err.response.data.errors });
 			} else {
@@ -129,10 +140,28 @@ const AddSystemDialog = ({
 						{<ADD.HeaderText>Add System</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeOverride} variant="contained">
+						<ADD.CancelButton
+							onClick={closeOverride}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</ADD.CancelButton>
-						<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
+						<ADD.ConfirmButton
+							variant="contained"
+							onClick={handleAddClick}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Add New
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
@@ -165,4 +194,7 @@ const AddSystemDialog = ({
 	);
 };
 
-export default AddSystemDialog;
+const mapDispatchToProps = (dispatch) => ({
+	getError: (message) => dispatch(showError(message)),
+});
+export default connect(null, mapDispatchToProps)(AddSystemDialog);

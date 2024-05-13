@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-	makeStyles,
-	CircularProgress,
-	LinearProgress,
-} from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import {
 	getImages,
@@ -23,7 +20,7 @@ import { ModelContext } from "contexts/ModelDetailContext";
 import { pasteModelTaskImage } from "services/models/modelDetails/modelTasks/pasteApi";
 import ImageViewer from "components/Elements/ImageViewer";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	images: {
 		display: "flex",
 		flexDirection: "column",
@@ -34,7 +31,7 @@ const useStyles = makeStyles({
 		justifyContent: "space-between",
 		alignItems: "center",
 	},
-});
+}));
 
 const Images = ({ taskInfo, getError, isMounted }) => {
 	const me =
@@ -42,11 +39,11 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		JSON.parse(localStorage.getItem("me"));
 	const access = me?.position?.modelAccess;
 
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	const [, CtxDispatch] = useContext(TaskContext);
-	const [state] = useContext(ModelContext);
+	const [state, MtxDispatch] = useContext(ModelContext);
 
 	const [images, setImage] = useState({
 		data: [],
@@ -57,7 +54,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		originalData: [],
 		count: taskInfo.imageCount,
 	});
-	const [pastePart, setPastePart] = useState(false);
+	const [pastePart, setPastePart] = useState(true);
 	const [isPasting, setIsPasting] = useState(false);
 	const [openImage, setOPenImage] = useState(false);
 	const [ImageToOpen, setImageToOpen] = useState(null);
@@ -96,6 +93,11 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 				if (result.status) {
 					const responseData = result.data.map((x) => apiResponse(x));
 					setState({ data: responseData, originalData: responseData });
+					if (result.data.length > 0) {
+						CtxDispatch({ type: "SET_IMAGES", payload: true });
+					} else {
+						CtxDispatch({ type: "SET_IMAGES", payload: false });
+					}
 				} else {
 					errorResponse(result);
 				}
@@ -109,6 +111,10 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 		fetchTaskImages();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		setPastePart(state.isImageTaskDisabled);
+	}, [state]);
 
 	const handleDragEnd = async (e) => {
 		if (!e.destination) {
@@ -178,6 +184,11 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 					data: mainData?.length,
 				},
 			});
+			if (mainData.length > 0) {
+				CtxDispatch({ type: "SET_IMAGES", payload: true });
+			} else {
+				CtxDispatch({ type: "SET_IMAGES", payload: false });
+			}
 		}
 	};
 
@@ -195,6 +206,9 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 				data: filteredData?.length,
 			},
 		});
+		if (filteredData.length === 0) {
+			CtxDispatch({ type: "SET_IMAGES", payload: false });
+		}
 	};
 
 	const handleDeleteDialogClose = () => {
@@ -202,8 +216,8 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 	};
 
 	const handleCopy = (id) => {
-		setPastePart(true);
 		localStorage.setItem("taskimage", id);
+		MtxDispatch({ type: "DISABLE_IMAGES_TASK", payload: false });
 	};
 
 	const handlePaste = async () => {
@@ -233,7 +247,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 			const taskId = localStorage.getItem("taskimage");
 
 			if (taskId) {
-				setPastePart(true);
+				setPastePart(false);
 			}
 		} catch (error) {
 			return;
@@ -295,7 +309,7 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 							<GeneralButton
 								style={{ background: "#ED8738" }}
 								onClick={handlePaste}
-								disabled={!pastePart}
+								disabled={pastePart}
 							>
 								Paste {"Image"}
 							</GeneralButton>
@@ -333,7 +347,9 @@ const Images = ({ taskInfo, getError, isMounted }) => {
 							isDelete: true,
 						},
 					].filter((x) => {
-						if (state?.modelDetail?.isPublished) return false;
+						if (state?.modelDetail?.isPublished) {
+							return x?.name === "Copy";
+						}
 						if (access === "F") return true;
 						if (access === "E") {
 							if (x.name === "Edit") return true;

@@ -1,20 +1,21 @@
 import React from "react";
-import {
-	createTheme,
-	makeStyles,
-	ThemeProvider,
-} from "@material-ui/core/styles";
-import RestoreIcon from "@material-ui/icons/Restore";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
+import RestoreIcon from "@mui/icons-material/Restore";
 import NavDetails from "components/Elements/NavDetails";
 import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import Typography from "@material-ui/core/Typography";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import { withStyles } from "@material-ui/core/styles";
+import Typography from "@mui/material/Typography";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { withStyles } from "@mui/styles";
 import ColourConstants from "helpers/colourConstants";
 import IOSSwitch from "components/Elements/IOSSwitch";
-
+import { setHistoryDrawerState } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { getLocalStorageData } from "helpers/utils";
+import roles from "helpers/roles";
 const AT = ActionButtonStyle();
 
 const theme = createTheme({
@@ -34,7 +35,7 @@ const theme = createTheme({
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	statusSwitch: {
 		marginRight: 15,
 	},
@@ -58,9 +59,7 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		color: "#307ad6",
 	},
-	importButton: {
-		background: "#ED8738",
-	},
+
 	buttons: {
 		display: "flex",
 		marginLeft: "auto",
@@ -78,7 +77,7 @@ const useStyles = makeStyles({
 			zIndex: 1,
 		},
 	},
-});
+}));
 
 // Active/Inactive updating state switch
 const IOSSwitchUpdated = withStyles((theme) => ({
@@ -89,29 +88,38 @@ const IOSSwitchUpdated = withStyles((theme) => ({
 		margin: theme.spacing(1),
 	},
 	switchBase: {
+		"&$checked $thumb": {
+			backgroundColor: "white",
+		},
 		padding: 1,
 		"&$checked": {
 			transform: "translateX(16px)",
 			color: theme.palette.common.white,
 			"& + $track": {
-				backgroundColor: theme.palette.grey[400],
+				backgroundColor: ColourConstants.confirmButton,
+				opacity: 1,
+				border: "none",
+			},
+			"& + $thumb": {
+				backgroundColor: "blue",
 				opacity: 1,
 				border: "none",
 			},
 		},
 		"&$focusVisible $thumb": {
-			color: theme.palette.grey[400],
+			color: ColourConstants.confirmButton,
 			border: "6px solid #fff",
 		},
 	},
 	thumb: {
 		width: 24,
 		height: 24,
+		backgroundColor: "white",
 	},
 	track: {
+		backgroundColor: ColourConstants.cancelButton,
 		borderRadius: 26 / 2,
 		border: `1px solid ${theme.palette.grey[400]}`,
-		backgroundColor: theme.palette.grey[400],
 		opacity: 1,
 		transition: theme.transitions.create(["background-color", "border"]),
 	},
@@ -153,20 +161,37 @@ const CommonHeader = ({
 	handlePatchIsActive,
 	showPasswordReset,
 	onPasswordReset,
+	current,
+	createdDateTime,
+	createdUserName,
+	siteAppID,
 }) => {
-	const classes = useStyles();
+	const { classes } = useStyles();
+	const importButton = {
+		"&.MuiButton-root": {
+			backgroundColor: "#ED8738",
+		},
+	};
+	const dispatch = useDispatch();
+	let showCreated = current !== "Profile";
+	const location = useLocation();
+	const isUserProfilePage = location.pathname.includes("me");
+	const { role } = getLocalStorageData("me");
 
 	return (
 		<ThemeProvider theme={theme}>
 			<div>
 				<div className={"topContainerCustomCaptions"}>
 					<NavDetails
-						status={status}
+						status={!isUserProfilePage && status}
 						state={{
 							statusColor: currentStatus ? "#24BA78" : "red",
 							modelStatusName: currentStatus ? "Active" : "Inactive",
 						}}
 						staticCrumbs={crumbs}
+						showCreatedByAt={showCreated}
+						time={createdDateTime}
+						userName={createdUserName}
 					/>
 					<div
 						className={
@@ -217,26 +242,17 @@ const CommonHeader = ({
 						)}
 						<div className={classes.buttons}>
 							{showPasswordReset && (
-								<AT.GeneralButton
-									className={classes.importButton}
-									onClick={onPasswordReset}
-								>
+								<AT.GeneralButton sx={importButton} onClick={onPasswordReset}>
 									Reset Password
 								</AT.GeneralButton>
 							)}
 							{showDuplicate && (
-								<AT.GeneralButton
-									onClick={onDuplicate}
-									className={classes.importButton}
-								>
+								<AT.GeneralButton sx={importButton} onClick={onDuplicate}>
 									Duplicate
 								</AT.GeneralButton>
 							)}
 							{showImport && (
-								<AT.GeneralButton
-									onClick={onImport}
-									className={classes.importButton}
-								>
+								<AT.GeneralButton sx={importButton} onClick={onImport}>
 									Import From List
 								</AT.GeneralButton>
 							)}
@@ -248,8 +264,11 @@ const CommonHeader = ({
 							{showSave && (
 								<AT.GeneralButton onClick={onClickSave}>Save</AT.GeneralButton>
 							)}
-							{showHistory && (
-								<div className="restore">
+							{showHistory && role !== roles.clientAdmin && (
+								<div
+									className="restore"
+									onClick={() => dispatch(setHistoryDrawerState(true))}
+								>
 									<RestoreIcon className={classes.restore} />
 								</div>
 							)}

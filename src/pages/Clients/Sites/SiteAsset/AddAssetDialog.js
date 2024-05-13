@@ -4,8 +4,10 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import {
 	generateErrorState,
 	getLocalStorageData,
@@ -13,6 +15,8 @@ import {
 } from "helpers/utils";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const schema = yup.object({
 	name: yup
@@ -29,7 +33,7 @@ const defaultError = { name: null, description: null };
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -58,14 +62,15 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		marginBottom: 20,
 	},
-});
+}));
 
 const AddAssetDialog = ({ open, handleClose, createHandler }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
 	const { customCaptions } = getLocalStorageData("me");
+	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		handleClose();
@@ -92,9 +97,9 @@ const AddAssetDialog = ({ open, handleClose, createHandler }) => {
 				setLoading(false);
 			}
 		} catch (err) {
-			console.log(err);
 			setLoading(false);
 			closeOverride();
+			dispatch(showError(`Failed to add ${customCaptions?.asset}.`));
 		}
 	};
 

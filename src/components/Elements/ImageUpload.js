@@ -1,14 +1,16 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 import { ReactComponent as UploadIcon } from "assets/icons/uploadIcon.svg";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import { Divider } from "@material-ui/core";
+import { Divider } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	assetParentContainer: {
 		border: "none",
 		width: "100%",
@@ -89,11 +91,11 @@ const ImageUpload = ({
 	uploadPercentCompleted = 0,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({
 		onDrop,
-		disabled: isReadOnly,
+		disabled: isReadOnly || imageUrl,
 	});
 
 	if (isUploading) {
@@ -127,7 +129,9 @@ const ImageUpload = ({
 							onClick={onClick}
 							style={{ cursor: "pointer" }}
 						/>
-						<Link className="new-link">{imageName}</Link>
+						<Link className="new-link" underline="none">
+							{imageName}
+						</Link>
 					</div>
 
 					<div style={{ width: "50px", border: "none" }}>
@@ -154,7 +158,9 @@ const ImageUpload = ({
 
 							<Typography className={classes.dropText}>
 								Drag and drop some file here, or{" "}
-								<Link className={classes.imgLink}>browse</Link>
+								<Link className={classes.imgLink} underline="none">
+									browse
+								</Link>
 							</Typography>
 						</div>
 					)}

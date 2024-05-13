@@ -1,11 +1,11 @@
-import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import Typography from "@material-ui/core/Typography";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import TextField from "@material-ui/core/TextField";
+import { styled } from "@mui/styles";
+import ColourConstants from "helpers/colourConstants";
+import Typography from "@mui/material/Typography";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import TextField from "@mui/material/TextField";
 
 const DuplicateDialogStyle = () => {
 	return {
@@ -29,6 +29,10 @@ const DuplicateDialogStyle = () => {
 			backgroundColor: ColourConstants.cancelButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
+			"&.MuiButton-root:hover": {
+				backgroundColor: ColourConstants.deleteDialogHover,
+				color: "#ffffff",
+			},
 		}),
 		ConfirmButton: styled(Button)({
 			height: 43,
@@ -37,6 +41,10 @@ const DuplicateDialogStyle = () => {
 			backgroundColor: ColourConstants.confirmButton,
 			color: "#FFFFFF",
 			fontFamily: "Roboto Condensed",
+			"&.MuiButton-root:hover": {
+				backgroundColor: ColourConstants.deleteDialogHover,
+				color: "#ffffff",
+			},
 		}),
 		DialogContent: styled(DialogContent)({
 			marginBottom: 15,

@@ -10,14 +10,16 @@ const ElementList = ({
 	access,
 }) => {
 	const onErrorChange = (updatedData, modelName, errorName, elementID) => {
-		const resolved = updatedData.filter(
-			(x) => x.newName !== null || x[elementID] !== null
-		).length;
 		setModelData({
 			...modelData,
 			data: { ...modelData.data, [modelName]: updatedData },
 		});
+		if(elementID!=='roleID'){
+		const resolved = updatedData.filter(
+			(x) => x.newName !== null || x[elementID] !== null
+		).length;
 		setErrors({ ...errors, [errorName]: { ...errors[errorName], resolved } });
+		}
 	};
 	return (
 		<>

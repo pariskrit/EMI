@@ -6,13 +6,17 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddNoteDialog from "./AddNoteDialog";
 import UserNoteRow from "./UserNoteRow";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import { postUserDetailsNote } from "services/users/userDetails";
+import NoteContentPopup from "components/Elements/NoteContentPopup";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	noteContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -29,11 +33,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserNotes = ({ id, getError, setNotes, apis, handleGetNotes, notes }) => {
-	const classes = useStyles();
-
+	const { classes, cx } = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
 		deleteModal: false,
+		openContentModal: false,
 	});
 	const [noteId, setNoteId] = useState(null);
 
@@ -42,13 +46,14 @@ const UserNotes = ({ id, getError, setNotes, apis, handleGetNotes, notes }) => {
 	//Add Handler
 	const handleCreateData = async (note) => {
 		try {
-			let result = await apis.postNotesAPI({
+			let result = await postUserDetailsNote({
 				clientUserId: id,
 				note,
 			});
+
 			if (result.status) {
 				result = result.data;
-				setNotes([]);
+				//setNotes([]);
 				await handleGetNotes();
 				return { success: true };
 			} else {
@@ -69,9 +74,19 @@ const UserNotes = ({ id, getError, setNotes, apis, handleGetNotes, notes }) => {
 		const filteredData = [...notes].filter((x) => x.id !== id);
 		setNotes(filteredData);
 	};
+	const onOpenContentDialog = (note) => {
+		setModal({ ...modal, openContentModal: { open: true, note } });
+	};
+	const onCloseContentDialog = () =>
+		setModal({ ...modal, openContentModal: false });
 
 	return (
 		<div className={classes.noteContainer}>
+			<NoteContentPopup
+				open={modal.openContentModal.open ?? false}
+				onClose={onCloseContentDialog}
+				note={modal.openContentModal.note}
+			/>
 			<AddNoteDialog
 				open={addModal}
 				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
@@ -102,6 +117,7 @@ const UserNotes = ({ id, getError, setNotes, apis, handleGetNotes, notes }) => {
 							<TableCell>Date</TableCell>
 							<TableCell>Note</TableCell>
 							<TableCell></TableCell>
+							<TableCell></TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody className={classes.tableBody}>
@@ -111,6 +127,7 @@ const UserNotes = ({ id, getError, setNotes, apis, handleGetNotes, notes }) => {
 								row={row}
 								classes={classes}
 								onDeleteNote={() => handleDeleteNote(row.id)}
+								onViewNote={onOpenContentDialog}
 							/>
 						))}
 					</TableBody>

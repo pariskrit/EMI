@@ -20,6 +20,15 @@ export const getModelLists = async (id) => {
 	}
 };
 
+export const patchModelChange = async (id, payload) => {
+	try {
+		let response = await API.patch(`${Apis.Models}/${id}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const getModelTypes = async (id) => {
 	try {
 		let response = await API.get(`${Apis.ModelTypes}?siteAppId=${id}`);

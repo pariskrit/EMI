@@ -1,4 +1,20 @@
 import axios from "axios";
+import { decryptToken, encryptToken } from "./authenticationCrypto";
+
+let isRefreshing = false;
+let failedRequest = [];
+
+const requestQueue = (error, token = null) => {
+	failedRequest.forEach((prom) => {
+		if (error) {
+			prom.reject(error);
+		} else {
+			prom.resolve(token);
+		}
+	});
+
+	failedRequest = [];
+};
 
 // Setting base URL for backend requests
 const instance = axios.create({
@@ -11,18 +27,31 @@ const instance = axios.create({
 });
 
 // Setting auth (if JWT present)
-const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-if (token !== null || token !== undefined) {
-	instance.defaults.headers.common["Authorization"] = `bearer ${token}`;
-}
+
+instance.interceptors.request.use(
+	(config) => {
+		const localToken =
+			sessionStorage.getItem("token") || localStorage.getItem("token");
+		const token = decryptToken(localToken);
+
+		if (token) {
+			config.headers["Authorization"] = `bearer ${token}`;
+		}
+
+		return config;
+	},
+	(error) => {
+		Promise.reject(error);
+	}
+);
 
 instance.interceptors.response.use(
 	(response) => {
 		const url = response.config.url;
 		if (
 			url === "/api/Users/Login" ||
-			url === "/Account/google" ||
-			url === "/Account/microsoft"
+			url === "/api/Account/google" ||
+			url === "/api/Account/microsoft"
 		) {
 			instance.defaults.headers.common[
 				"Authorization"
@@ -41,20 +70,39 @@ instance.interceptors.response.use(
 
 			// Attempting to refresh token
 			try {
+				if (isRefreshing) {
+					return new Promise(function (resolve, reject) {
+						failedRequest.push({ resolve, reject });
+					})
+						.then((token) => {
+							originalRequest.headers["Authorization"] = "bearer " + token;
+							return instance(originalRequest);
+						})
+						.catch((err) => {
+							return Promise.reject(err);
+						});
+				}
+				originalRequest._retry = true;
+				isRefreshing = true;
+
+				const sessionToken =
+					JSON.parse(sessionStorage.getItem("me")) ||
+					JSON.parse(localStorage.getItem("me"));
+
+				const sessionRefreshToken = decryptToken(sessionToken?.refreshToken);
 				let refreshToken = await fetch(
 					`${
 						process.env.REACT_APP_API_ENDPOINT !== undefined
 							? process.env.REACT_APP_API_ENDPOINT
 							: "https://localhost:44310"
-					}/api/Token/RefreshToken`,
+					}/api/Token/RefreshToken?token=${encodeURIComponent(
+						sessionRefreshToken
+					)}`,
 					{
 						withCredentials: true,
 						credentials: "include",
 						method: "POST",
 						headers: {
-							Authorization: `bearer ${
-								sessionStorage.getItem("token") || localStorage.getItem("token")
-							}`,
 							"Content-Type": "application/json",
 						},
 					}
@@ -70,8 +118,21 @@ instance.interceptors.response.use(
 				originalRequest.headers.Authorization = `bearer ${refreshToken.jwtToken}`;
 
 				// Updating refresh token in localStorage
-				localStorage.setItem("token", refreshToken.jwtToken);
-				sessionStorage.setItem("token", refreshToken.jwtToken);
+				localStorage.setItem("token", encryptToken(refreshToken.jwtToken));
+				sessionStorage.setItem("token", encryptToken(refreshToken.jwtToken));
+
+				let newRefreshData = {
+					...sessionToken,
+					refreshToken: encryptToken(refreshToken.refreshToken),
+					jwtToken: encryptToken(refreshToken.jwtToken),
+				};
+
+				sessionStorage.setItem("me", JSON.stringify(newRefreshData));
+
+				localStorage.setItem("me", JSON.stringify(newRefreshData));
+
+				requestQueue(null, refreshToken.jwtToken);
+				isRefreshing = false;
 
 				// Updating instance token
 				instance.defaults.headers.common["Authorization"] = `bearer ${

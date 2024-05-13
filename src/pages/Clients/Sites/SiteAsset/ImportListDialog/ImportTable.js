@@ -6,7 +6,7 @@ import {
 	TableRow,
 	TableHead,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 const ImportTable = ({ data, title }) => {
 	const test = title.includes("References");
 	if (data.length === 0) {

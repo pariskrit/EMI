@@ -1,5 +1,6 @@
+import ColourConstants from "helpers/colourConstants";
 import React from "react";
-import ActionButtonStyle from "../../../styles/application/ActionButtonStyle";
+import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
 // Init styled components
 const AAD = ActionButtonStyle();
@@ -11,6 +12,12 @@ const ActionButtons = ({ handleAddDialogOpen }) => {
 				disableElevation
 				variant="contained"
 				onClick={handleAddDialogOpen}
+				sx={{
+					"&.MuiButton-root:hover": {
+						backgroundColor: ColourConstants.deleteDialogHover,
+						color: "#ffffff",
+					},
+				}}
 			>
 				Add New
 			</AAD.GeneralButton>

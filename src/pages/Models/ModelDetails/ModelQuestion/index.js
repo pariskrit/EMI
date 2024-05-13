@@ -12,25 +12,32 @@ import {
 	pasteModelQuestions,
 } from "services/models/modelDetails/modelQuestions";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import { CircularProgress, LinearProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import { showError } from "redux/common/actions";
 import {
 	questionTimingOptions,
 	questionTypeOptions,
 } from "constants/modelDetail";
-import { modelServiceLayout, modelsPath } from "helpers/routePaths";
+import { appPath, modelServiceLayout, modelsPath } from "helpers/routePaths";
 import { getModelRolesList } from "services/models/modelDetails/modelRoles";
 import QuestionTable from "./QuestionTable";
 import withMount from "components/HOC/withMount";
 import AddEditModel from "./AddEditModel";
-import { Tooltip } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { withStyles } from "@material-ui/core/styles";
+import { Tooltip } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { withStyles } from "@mui/styles";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import SearchField from "components/Elements/SearchField/SearchField";
 import TabTitle from "components/Elements/TabTitle";
+import { coalesc, commonScrollElementIntoView } from "helpers/utils";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { QuestionsPage } from "services/History/models";
+import { useNavigate } from "react-router-dom";
+import { HistoryCaptions } from "helpers/constants";
 // import useLazyLoad from "hooks/useLazyLoad";
 
 const HtmlTooltip = withStyles((theme) => ({
@@ -54,14 +61,14 @@ const debounce = (func, delay) => {
 		}, delay);
 	};
 };
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	loading: {
 		position: "absolute",
 		width: "100%",
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
 const ModelQuestion = ({
 	state,
@@ -73,13 +80,21 @@ const ModelQuestion = ({
 	history,
 }) => {
 	const {
-		customCaptions: { question, questionPlural, rolePlural, modelTemplate },
+		customCaptions: {
+			question,
+			questionPlural,
+			rolePlural,
+			modelTemplate,
+			service,
+			zone,
+			stage,
+		},
 		application,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const triggerRef = useRef(null);
 	const pasteQuestionRef = useRef(false);
@@ -93,11 +108,17 @@ const ModelQuestion = ({
 	const [duplicating, setDuplicating] = useState(false);
 	const [editMode, setEditMode] = useState(false);
 	const [isSearching, setIsSearching] = useState(false);
-	const fromSeriveLayoutId = history?.location?.state?.modelVersionQuestionID;
+	const fromSeriveLayoutId = history?.state?.modelVersionQuestionID;
 	const [searchTxt, setSearchTxt] = useState("");
 
+	useEffect(() => {
+		if (roleOptions.length === 1) {
+			const res = data.map((x) => apiResponse(x, roleOptions));
+			setData(res);
+		}
+	}, [roleOptions.length]);
 	// HANDLING OPERATIONS
-	function apiResponse(x) {
+	function apiResponse(x, options) {
 		const type = x.type;
 		const timing = x.timing;
 		const questionType = questionTypeOptions.find((x) => x.value === type);
@@ -107,11 +128,14 @@ const ModelQuestion = ({
 			...x,
 			compulsory: x.isCompulsory ? "Yes" : "No",
 			modelRoles:
-				x.roles === null || x.roles?.length === 0 ? (
+				roleOptions.length === 1 ? (
+					options[0]?.name
+				) : x.roles === null || x.roles?.length === 0 ? (
 					<ErrorMessageWithErrorIcon message={`No ${rolePlural} Assigned`} />
 				) : (
 					x.roles.map((x) => x.name).join(", ")
 				),
+			roles: roleOptions.length === 1 ? [options[0]] : [],
 			modelType: questionType.label,
 			modelTiming: timingType.label,
 			additional:
@@ -161,7 +185,7 @@ const ModelQuestion = ({
 			let result = await getModelQuestions(modelId, seachTxt);
 			if (result.status) {
 				if (!isMounted.aborted) {
-					result = result.data.map((x) => apiResponse(x));
+					result = result.data.map((x) => apiResponse(x, roleOptions));
 					setData(result);
 				}
 				dispatch({
@@ -182,7 +206,6 @@ const ModelQuestion = ({
 			return;
 		}
 	};
-
 	const fetchRoles = async () => {
 		try {
 			let result = await getModelRolesList(modelId);
@@ -195,7 +218,7 @@ const ModelQuestion = ({
 	};
 
 	const fetchData = async () => {
-		await Promise.all([fetchQuestions(), fetchRoles()]);
+		await Promise.all([fetchRoles(), fetchQuestions()]);
 		setLoading(false);
 	};
 
@@ -246,6 +269,7 @@ const ModelQuestion = ({
 
 					let result = await pasteModelQuestions(modelId, {
 						modelVersionQuestionID: question.copiedData.id,
+						roles: roleOptions[0],
 					});
 
 					if (result.status) {
@@ -281,7 +305,8 @@ const ModelQuestion = ({
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state.showPasteTask]);
-
+	//navigate
+	const navigate = useNavigate();
 	// Handle Edit Question
 	const handleEdit = (id) => {
 		setQuestionId(id);
@@ -400,7 +425,7 @@ const ModelQuestion = ({
 	};
 
 	const handleSwitchToServiceLayout = (id) => {
-		history.push(`${modelsPath}/${modelId}${modelServiceLayout}`, {
+		navigate(`${appPath}${modelsPath}/${modelId}${modelServiceLayout}`, {
 			state: { ModelVersionQuestionID: id },
 		});
 	};
@@ -429,7 +454,7 @@ const ModelQuestion = ({
 							isDelete: false,
 						},
 						{
-							name: "Switch To Service Layout",
+							name: `Switch To ${service} Layout`,
 							handler: handleSwitchToServiceLayout,
 							isDelete: false,
 						},
@@ -439,7 +464,11 @@ const ModelQuestion = ({
 							isDelete: true,
 						},
 					].filter((x) => {
-						if (state?.modelDetail?.isPublished) return false;
+						if (state?.modelDetail?.isPublished) {
+							return (
+								x?.name === "Copy" || x?.name === `Switch To ${service} Layout`
+							);
+						}
 						if (access === "F") return true;
 						if (access === "E") {
 							if (x.name === "Edit") return true;
@@ -458,10 +487,29 @@ const ModelQuestion = ({
 		return <CircularProgress />;
 	}
 
+	const handleItemClick = (id) => {
+		dispatch({ type: "TOGGLE_HISTORYBAR" });
+
+		commonScrollElementIntoView(`row${id}`, "rowEl");
+	};
+
 	return (
 		<>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${question} | ${application.name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${questionPlural} | ${application.name}`}
+			/>
+			<HistoryBar
+				id={modelId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					QuestionsPage(id, pageNumber, pageSize)
+				}
+				OnAddItemClick={handleItemClick}
+				isQuestion={true}
+				origin={HistoryCaptions.modelVersionQuestions}
 			/>
 			{isSearching && <LinearProgress className={classes.loading} />}
 			<AddEditModel
@@ -479,7 +527,7 @@ const ModelQuestion = ({
 				handleAddEditComplete={handleAddEditComplete}
 				handleOptions={handleOptions}
 				editMode={editMode}
-				customCaptions={rolePlural}
+				customCaptions={{ rolePlural, zone, stage }}
 			/>
 			<DeleteDialog
 				open={deleteModel}
@@ -489,6 +537,7 @@ const ModelQuestion = ({
 				handleRemoveData={handleRemoveData}
 				closeHandler={handleDeleteDialogClose}
 			/>
+
 			<div style={{ display: "flex", flexDirection: "column" }}>
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<DetailsPanel

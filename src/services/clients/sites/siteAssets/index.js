@@ -13,12 +13,23 @@ const importSiteAssets = async (siteId, data) => {
 };
 
 //#region get assets
-const getSiteAssets = async (siteId, pNo, pSize, search = "") => {
+const getSiteAssets = async (
+	siteId,
+	pNo,
+	pSize,
+	search = "",
+	sortField = "",
+	sortOrder = ""
+) => {
 	try {
+		const sort = sortField
+			? `&&sortField=${sortField}&&sortOrder=${sortOrder}`
+			: "";
+
 		let pageSearchField =
 			pNo !== null ? `&&pageNumber=${pNo}&&pageSize=${pSize}` : "";
 		let response = await API.get(
-			`${Apis.SiteAssets}?siteId=${siteId}${pageSearchField}&&search=${search}`
+			`${Apis.SiteAssets}?siteId=${siteId}${pageSearchField}${sort}&&search=${search}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {

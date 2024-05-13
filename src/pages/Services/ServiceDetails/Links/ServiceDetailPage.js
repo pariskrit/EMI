@@ -1,9 +1,8 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ServicesDetailsPage from "..";
 import routeList from "./routeList";
 import SingleComponent from "./SingleComponent";
-import { serviceDetailsPath } from "helpers/routePaths";
 import ServiceDetailContext from "contexts/ServiceDetailContext";
 
 const ServicesDetails = ({ access }) => {
@@ -15,24 +14,22 @@ const ServicesDetails = ({ access }) => {
 		<ServiceDetailContext>
 			<ServicesDetailsPage>
 				{(serviceDetail) => (
-					<Switch>
+					<Routes>
 						{routeList(serviceDetail, customCaptions).map((route) => (
 							<Route
 								key={route.id}
-								render={(props) => (
+								element={
 									<SingleComponent
 										{...route}
-										{...props}
 										access={access}
 										customCaptions={customCaptions}
 										siteAppID={siteAppID}
 									/>
-								)}
-								exact
-								path={serviceDetailsPath + route.path}
+								}
+								path={route.path}
 							/>
 						))}
-					</Switch>
+					</Routes>
 				)}
 			</ServicesDetailsPage>
 		</ServiceDetailContext>

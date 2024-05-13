@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "tss-react/mui";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 import ColourConstants from "helpers/colourConstants";
 import AccordionBox from "components/Layouts/AccordionBox";
-import Divider from "@material-ui/core/Divider";
-import {
-	CircularProgress,
-	FormControlLabel,
-	FormGroup,
-} from "@material-ui/core";
+import Divider from "@mui/material/Divider";
+import { CircularProgress, FormControlLabel, FormGroup } from "@mui/material";
 import EMICheckbox from "components/Elements/EMICheckbox";
-import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import {
+	getSiteApplicationDetail,
+	patchApplicationDetail,
+} from "services/clients/sites/siteApplications/siteApplicationDetails";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
+import roles from "helpers/roles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	detailsContainer: {
 		marginTop: 15,
 		display: "flex",
@@ -50,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: 14,
 		//cursor: "none",
 		color: "#000000de",
+	},
+	checkboxText: {
+		fontSize: 14,
 	},
 
 	assetParentContainer: {
@@ -91,43 +94,92 @@ const useStyles = makeStyles((theme) => ({
 	tickInput: {
 		marginTop: "40px",
 	},
+	serviceTick: {
+		marginTop: "5px",
+	},
 	tickbox_label: {
 		marginLeft: "0 !important",
 	},
 }));
 
-const Application = ({ details, loading, customCaptions }) => {
+const Application = ({
+	details,
+	loading,
+	customCaptions,
+	stateDispatch,
+	isReadOnly,
+}) => {
 	// Init hooks
-	const classes = useStyles();
+	const { role } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+	const { classes } = useStyles();
 	const [checkLists, setCheckLists] = useState({});
 	const { appId } = useParams();
 	const dispatch = useDispatch();
+	const [serviceLoading, setServiceLoading] = useState({
+		raisingDefectCopiesTaskName: false,
+		showServiceClientName: false,
+	});
 
-	const onraisingDefectCopiesTaskNameChange = async (e) => {
-		const { raisingDefectCopiesTaskName } = checkLists;
-		setCheckLists({
-			...checkLists,
-			raisingDefectCopiesTaskName: !raisingDefectCopiesTaskName,
-		});
+	const onraisingDefectCopiesTaskNameChange = async (path, value) => {
+		setServiceLoading((prev) => ({
+			...prev,
+			[path]: true,
+		}));
+
 		const result = await patchApplicationDetail(appId, [
 			{
 				op: "replace",
-				path: "raisingDefectCopiesTaskName",
-				value: !raisingDefectCopiesTaskName,
+				path: path,
+				value: value,
 			},
 		]);
 
-		if (!result.status) {
-			dispatch(showError(result.data.detail));
+		if (result.status) {
+			setCheckLists({
+				...checkLists,
+				[path]: value,
+			});
+			const result = await getSiteApplicationDetail(appId);
+
+			if (result.status) {
+				stateDispatch({
+					type: "SET_SITE_APP_DETAIL",
+					payload: result,
+				});
+
+				stateDispatch({
+					type: "TOGGLE_ISACTIVE",
+					payload: result?.data?.isActive,
+				});
+			}
 		}
+
+		if (!result.status) {
+			dispatch(showError(result?.data?.title));
+		}
+
+		setServiceLoading((prev) => ({
+			...prev,
+			[path]: false,
+		}));
 	};
 
 	useEffect(() => {
 		if (Object.keys(details).length > 0) {
-			const { raisingDefectCopiesTaskName } = details;
+			const {
+				raisingDefectCopiesTaskName,
+				userConfirmationMessage,
+				showServiceUserConfirmation,
+				showServiceClientName,
+			} = details;
 
 			setCheckLists({
 				raisingDefectCopiesTaskName,
+				userConfirmationMessage,
+				showServiceUserConfirmation,
+				showServiceClientName,
 			});
 		}
 	}, [details]);
@@ -152,6 +204,11 @@ const Application = ({ details, loading, customCaptions }) => {
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								variant="outlined"
 								fullWidth
 								disabled
@@ -171,6 +228,11 @@ const Application = ({ details, loading, customCaptions }) => {
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								variant="outlined"
 								fullWidth
 								disabled
@@ -212,14 +274,52 @@ const Application = ({ details, loading, customCaptions }) => {
 									control={
 										<EMICheckbox
 											state={checkLists.raisingDefectCopiesTaskName ?? false}
-											changeHandler={onraisingDefectCopiesTaskNameChange}
+											changeHandler={() =>
+												onraisingDefectCopiesTaskNameChange(
+													"raisingDefectCopiesTaskName",
+													!checkLists.raisingDefectCopiesTaskName
+												)
+											}
+											disabled={
+												serviceLoading.raisingDefectCopiesTaskName || isReadOnly
+											}
 										/>
 									}
 									label={
-										<Typography className={classes.inputText}>
+										<Typography className={classes.checkboxText}>
 											Raising a {customCaptions?.defect ?? "defect"} copies the{" "}
 											{customCaptions?.task ?? "task"} name into the{" "}
 											{customCaptions?.defect ?? "defect"} description
+										</Typography>
+									}
+									className={classes.tickbox_label}
+								/>
+							</FormGroup>
+						</div>
+						<div className={classes.serviceTick}>
+							<FormGroup className={classes.tickboxSpacing}>
+								<FormControlLabel
+									control={
+										<EMICheckbox
+											state={checkLists.showServiceClientName ?? false}
+											// changeHandler={onServiceClientChange}
+											changeHandler={() =>
+												onraisingDefectCopiesTaskNameChange(
+													"showServiceClientName",
+													!checkLists.showServiceClientName
+												)
+											}
+											disabled={
+												serviceLoading.showServiceClientName ||
+												isReadOnly ||
+												role !== roles.superAdmin
+											}
+										/>
+									}
+									label={
+										<Typography className={classes.checkboxText}>
+											Show Client Name in {customCaptions?.service ?? "Service"}{" "}
+											Screens
 										</Typography>
 									}
 									className={classes.tickbox_label}
@@ -238,6 +338,11 @@ const Application = ({ details, loading, customCaptions }) => {
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								variant="outlined"
 								fullWidth
 								value={details?.name ?? ""}
@@ -255,6 +360,11 @@ const Application = ({ details, loading, customCaptions }) => {
 							</Typography>
 
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								variant="outlined"
 								fullWidth
 								multiline

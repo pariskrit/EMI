@@ -1,9 +1,9 @@
-import { styled } from "@material-ui/core/styles";
+import { styled } from "@mui/styles";
 import ColourConstants from "helpers/colourConstants";
-// import TextField from "@material-ui/core/TextField";
+// import TextField from "@mui/material/TextField";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
-import Typography from "@material-ui/core/Typography";
-import { Input } from "@material-ui/core";
+import Typography from "@mui/material/Typography";
+import { Input } from "@mui/material";
 
 const SubcatStyle = () => {
 	const media = "@media (max-width: 414px)";

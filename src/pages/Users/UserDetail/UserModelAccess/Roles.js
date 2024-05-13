@@ -1,7 +1,7 @@
 import AccordionBox from "components/Layouts/AccordionBox";
 import CheckboxContainer from "components/Modules/CheckboxContainer";
 import React from "react";
-import { LinearProgress } from "@material-ui/core";
+import { LinearProgress } from "@mui/material";
 
 function Roles({ data, captions, handleCheck, name, roleChangeLoading }) {
 	return (

@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
@@ -19,7 +22,7 @@ const useStyles = makeStyles({
 	cancelButton: {
 		width: "90px",
 	},
-});
+}));
 
 const CommonAddDialog = ({
 	open,
@@ -31,7 +34,7 @@ const CommonAddDialog = ({
 	reference,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [error, setError] = useState({ isError: false });
 	const [isDisabled, setIsDisabled] = useState(false);
@@ -107,6 +110,12 @@ const CommonAddDialog = ({
 						onClick={closeHandler}
 						variant="contained"
 						className={classes.cancelButton}
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
 					>
 						Cancel
 					</ADD.CancelButton>
@@ -115,6 +124,12 @@ const CommonAddDialog = ({
 						variant="contained"
 						className={classes.createButton}
 						disabled={isDisabled}
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
 					>
 						Create {label}
 					</ADD.ConfirmButton>
@@ -124,6 +139,7 @@ const CommonAddDialog = ({
 			<DialogContent className={classes.dialogContent}>
 				<ADD.InputContainer>
 					<ADD.NameInput
+						autoFocus
 						error={error.isError}
 						helperText={error.isError ? error.name : null}
 						required

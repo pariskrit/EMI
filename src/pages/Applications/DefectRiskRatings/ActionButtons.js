@@ -10,9 +10,6 @@ const ActionButtons = ({ addOpen }) => {
 			<AAD.GeneralButton disableElevation variant="contained" onClick={addOpen}>
 				Add New
 			</AAD.GeneralButton>
-			<AAD.GeneralButton disableElevation variant="contained">
-				Save
-			</AAD.GeneralButton>
 		</AAD.ButtonContainer>
 	);
 };

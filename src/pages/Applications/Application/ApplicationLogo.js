@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
 import DropUploadBox from "components/Elements/DropUploadBox";
@@ -11,8 +13,10 @@ import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import AccordionBox from "components/Layouts/AccordionBox";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	logoContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -60,7 +64,7 @@ const ApplicationLogo = ({
 	handleSave,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [loading, setIsLoading] = useState(true);
@@ -71,6 +75,7 @@ const ApplicationLogo = ({
 		src: "",
 		alt: "",
 	});
+	const dispatch = useDispatch();
 
 	// Handlers
 	const handleGetLogo = async () => {
@@ -89,7 +94,7 @@ const ApplicationLogo = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError("Failed to load application logo."));
 
 			return false;
 		}
@@ -108,13 +113,13 @@ const ApplicationLogo = ({
 						}
 					})
 					.catch((err) => {
-						console.log(`ERROR UPDATING LOGO: ${err}`);
+						dispatch(showError(`ERROR UPDATING LOGO: ${err}`));
 						setShowUpload(true);
 						setIsLoading(false);
 					});
 			})
 			.catch((err) => {
-				console.log(err);
+				dispatch(showError(`ERROR UPDATING LOGO: ${err}`));
 				setShowUpload(true);
 				setIsLoading(false);
 			});

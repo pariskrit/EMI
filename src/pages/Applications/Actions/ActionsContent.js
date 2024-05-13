@@ -1,22 +1,29 @@
 import React, { useState, useEffect, useCallback } from "react";
 import API from "helpers/api";
 import ContentStyle from "styles/application/ContentStyle";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import NavDetails from "components/Elements/NavDetails";
 import ActionButtons from "./ActionButtons";
 import NavButtons from "components/Elements/NavButtons";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import AddActionDialog from "./AddDialog";
 import EditActionDialog from "./EditDialog";
-import { handleSort } from "helpers/utils";
+import { getLocalStorageData, handleSort } from "helpers/utils";
+import { setHistoryDrawerState, showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import SingleHeadTable from "components/Modules/SingleHeadTable";
-import { applicationListPath } from "helpers/routePaths";
+import { appPath, applicationListPath } from "helpers/routePaths";
 import TabTitle from "components/Elements/TabTitle";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import RestoreIcon from "@mui/icons-material/Restore";
+import { useSelector } from "react-redux";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { getApplicationActions } from "services/History/application";
 
 // Init styled components
 const AC = ContentStyle();
@@ -35,6 +42,8 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [dataChanged, setDataChanged] = useState(false);
 	const [searchedData, setSearchedData] = useState([]);
+	const dispatch = useDispatch();
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 
 	// Handlers
 	const handleGetData = useCallback(async () => {
@@ -61,7 +70,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError("Failed to fetch actions."));
 			return false;
 		}
 	}, [id, setIs404]);
@@ -160,7 +169,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 				// Rendering data
 				setHaveData(true);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => dispatch(showError("Failed to fetch actions.")));
 	}, [handleGetData]);
 
 	// Fetch side effect to get application details
@@ -181,20 +190,16 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 				}
 			} catch (err) {
 				// TODO: real error handling
-				console.log(err);
+				dispatch(showError("Failed to fetch application details."));
 				return false;
 			}
 		};
 
 		// Getting application and updating state
-		if (state === undefined) {
-			getApplicationData()
-				.then(() => {
-					console.log("application name updated");
-				})
-				.catch((err) => console.log(err));
+		if (state === null) {
+			getApplicationData();
 		} else {
-			setApplicationName(state.applicationName);
+			setApplicationName(state?.applicationName);
 		}
 		// eslint-disable-next-line
 	}, []);
@@ -219,10 +224,22 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 		// eslint-disable-next-line
 	}, [searchQuery]);
 
+	const { adminType } = getLocalStorageData("me");
+
+	const isReseller = adminType === RESELLER_ID;
+
 	return (
 		<div className="container">
 			<TabTitle title={`${applicationName} Actions`} />
 			{/* Start dialogs */}
+			<HistoryBar
+				id={id}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					getApplicationActions(id, pageNumber, pageSize)
+				}
+			/>
 			<AddActionDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
@@ -248,20 +265,26 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 			<div className="topContainerCustomCaptions">
 				<NavDetails
 					staticCrumbs={[
-						{ id: 1, name: "Applications", url: applicationListPath },
+						{ id: 1, name: "Applications", url: appPath + applicationListPath },
 						{
 							id: 2,
-							name:
-								state !== undefined ? state.applicationName : applicationName,
+							name: state !== null ? state?.applicationName : applicationName,
 						},
 					]}
 				/>
-
-				{haveData ? (
-					<div>
-						<ActionButtons handleAddDialogOpen={handleAddDialogOpen} />
+				<div className="application-history-nav">
+					{haveData && !isReseller ? (
+						<div>
+							<ActionButtons handleAddDialogOpen={handleAddDialogOpen} />
+						</div>
+					) : null}
+					<div
+						className="restore"
+						onClick={() => dispatch(setHistoryDrawerState(true))}
+					>
+						<RestoreIcon />
 					</div>
-				) : null}
+				</div>
 			</div>
 
 			{haveData ? (
@@ -269,7 +292,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 					<NavButtons
 						navigation={navigation}
 						applicationName={
-							state !== undefined ? state.applicationName : applicationName
+							state !== undefined ? state?.applicationName : applicationName
 						}
 						current="Task Definitions"
 					/>
@@ -293,6 +316,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 											</Grid>
 											<Grid item>
 												<AC.SearchInput
+													variant="standard"
 													value={searchQuery}
 													onChange={(e) => {
 														setSearchQuery(e.target.value);
@@ -315,6 +339,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 										</Grid>
 										<Grid item>
 											<AC.SearchInput
+												variant="standard"
 												value={searchQuery}
 												onChange={(e) => {
 													setSearchQuery(e.target.value);
@@ -339,6 +364,7 @@ const ActionsContent = ({ navigation, id, setIs404, state }) => {
 						setCurrentTableSort={setCurrentTableSort}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
+						isReadOnly={isReseller}
 					/>
 				</>
 			) : (

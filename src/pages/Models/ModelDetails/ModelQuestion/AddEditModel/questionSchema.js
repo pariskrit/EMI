@@ -22,35 +22,35 @@ const questionSchema = (questionType, questionTiming) =>
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup
+				then:()=> yup
 					.number()
 					.typeError("Decimal Places is required")
 					.required("Decimal Places is required"),
 			}),
 		checkboxCaption: yup.string("This field must be a string").when("type", {
 			is: () => questionType === "B",
-			then: yup.string().required("Please Provide Checkbox caption"),
+			then:()=> yup.string().required("Please Provide Checkbox caption"),
 		}),
 		modelVersionStageID: yup
 			.number()
 			.nullable(true)
 			.when("timing", {
 				is: () => questionTiming === "S",
-				then: yup.number().nullable().required("Please Select Model Stage"),
+				then:()=> yup.number().nullable().required("Please Select Model Stage"),
 			}),
 		modelVersionZoneID: yup
 			.number()
 			.nullable(true)
 			.when("timing", {
 				is: () => questionTiming === "Z",
-				then: yup.number().nullable().required("Please Select Model Zone"),
+				then:()=> yup.number().nullable().required("Please Select Model Zone"),
 			}),
 		options: yup
 			.array()
 			.of(yup.string())
 			.when("type", {
 				is: () => questionType === "O" || questionType === "C",
-				then: yup.array().of(yup.string()).min(1, "Option is required"),
+				then: ()=>yup.array().of(yup.string()).min(1, "Option is required"),
 			}),
 	});
 

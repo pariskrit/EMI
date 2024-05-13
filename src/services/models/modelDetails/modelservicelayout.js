@@ -37,11 +37,12 @@ export const getServiceLayoutDataByInterval = async (id, intervalId) => {
 export const getServiceLayoutDataByRoleAndInterval = async (
 	id,
 	intervalId,
-	roleId
+	roleId,
+	arrangementId
 ) => {
 	try {
 		let response = await API.get(
-			`${Apis.ModelVersions}/${id}/servicelayout?modelversionroleid=${roleId}&modelversionintervalid=${intervalId}`
+			`${Apis.ModelVersions}/${id}/servicelayout?modelversionroleid=${roleId}&modelversionintervalid=${intervalId}&modelversionarrangementid=${arrangementId}`
 		);
 		return getAPIResponse(response);
 	} catch (error) {

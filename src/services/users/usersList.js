@@ -3,12 +3,18 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 //#region get user list
-const getUsersList = async (pNo, pSize, search = "") => {
+const getUsersList = async (
+	pNo,
+	pSize,
+	search = "",
+	sort = "",
+	sortField = ""
+) => {
 	try {
 		let pageSearchField =
 			pNo !== null ? `&&pageNumber=${pNo}&&pageSize=${pSize}` : "";
 		let response = await API.get(
-			`${Apis.UsersList}?${pageSearchField}&&search=${search}`
+			`${Apis.UsersList}?${pageSearchField}&&search=${search}&&sort=${sort}&&sortField=${sortField}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -31,11 +37,13 @@ const getClientAdminUserList = async (
 	id,
 	pageNumber,
 	pageSize,
-	searchText = ""
+	searchText = "",
+	sort = "",
+	sortField = ""
 ) => {
 	try {
 		const response = await API.get(
-			`${Apis.userDetailSites}?clientId=${id}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${searchText}`
+			`${Apis.userDetailSites}?clientId=${id}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${searchText}&sort=${sort}&sortField=${sortField}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -58,11 +66,13 @@ const getSiteAppUserList = async (
 	id,
 	pageNumber = 1,
 	pageSize = 12,
-	search = ""
+	search = "",
+	sort = "",
+	sortField = ""
 ) => {
 	try {
 		const response = await API.get(
-			`${Apis.ClientUserSitesApps}?siteAppId=${id}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}`
+			`${Apis.ClientUserSitesApps}?siteAppId=${id}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}&sort=${sort}&sortField=${sortField}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -137,6 +147,16 @@ const importUserList = async (data) => {
 	}
 };
 
+//resend Inviatation
+const resendInvitation = async (data) => {
+	try {
+		let response = await API.post(`${Apis.UsersList}/resendinvite`, data);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getUsersList,
 	getUsersListCount,
@@ -146,4 +166,5 @@ export {
 	getClientAdminUserListCount,
 	getSiteAppUserList,
 	getSiteAppUserListCount,
+	resendInvitation,
 };

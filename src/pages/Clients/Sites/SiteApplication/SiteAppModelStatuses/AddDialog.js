@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { addModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -37,6 +40,7 @@ const AddStatusDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -72,10 +76,9 @@ const AddStatusDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to add ${header}.`));
 		}
 	};
 	const handleCreateData = async () => {
@@ -112,7 +115,7 @@ const AddStatusDialog = ({
 				return { success: false };
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to add ${header} status.`));
 		}
 	};
 
@@ -140,10 +143,24 @@ const AddStatusDialog = ({
 						{<ADD.HeaderText>Add New {header}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeHandler} variant="contained">
+						<ADD.CancelButton
+							onClick={closeHandler}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</ADD.CancelButton>
-						<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
+						<ADD.ConfirmButton variant="contained" onClick={handleAddClick} sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}>
 							Add New
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>

@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import "react-quill/dist/quill.snow.css";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	quill: {},
-});
+}));
 
 const TextEditor = ({
 	id,
@@ -17,11 +19,13 @@ const TextEditor = ({
 	name,
 	readOnly,
 	onBlur,
+	onKeyDown,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
 		<div>
 			<ReactQuill
+				preserveWhitespace={true}
 				id={id}
 				name={name}
 				value={value}
@@ -32,6 +36,7 @@ const TextEditor = ({
 				formats={TextEditor.formats}
 				readOnly={readOnly}
 				onBlur={onBlur}
+				onKeyDown={onKeyDown}
 				className={classes.quill}
 			></ReactQuill>
 		</div>

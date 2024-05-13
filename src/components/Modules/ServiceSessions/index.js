@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import CommonTable from "../../../pages/Services/ServiceDetails/Impacts/CommonTable";
-import { TableContainer, Typography } from "@material-ui/core";
-import { dateDifference, isoDateWithoutTimeZone } from "helpers/utils";
-import Grid from "@material-ui/core/Grid";
-import ServiceStages from "./ServiceStages";
-import clsx from "clsx";
+import React from "react";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
 
-const useStyles = makeStyles({
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import CommonTable from "pages/Services/ServiceDetails/Impacts/CommonTable";
+import { TableContainer, Typography } from "@mui/material";
+import { dateDifference, isoDateWithoutTimeZone } from "helpers/utils";
+import Grid from "@mui/material/Grid";
+import ServiceStages from "./ServiceStages";
+
+const useStyles = makeStyles()((theme) => ({
 	headerText: {
 		marginTop: 10,
 		fontWeight: 800,
@@ -49,7 +50,7 @@ const useStyles = makeStyles({
 	headingText: {
 		width: 100,
 	},
-});
+}));
 
 export default function ServiceReport({
 	completedService: rows,
@@ -57,8 +58,9 @@ export default function ServiceReport({
 	customCaptions,
 	formatQuestion,
 	groupByStage,
+	isPrint,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
 		<>
 			<TableContainer>
@@ -102,12 +104,15 @@ export default function ServiceReport({
 											<CommonTable
 												headers={[
 													"Question",
+													`${customCaptions?.user}`,
 													"Question Response",
 													"Question Response date",
 												]}
-												columns={["caption", "response", "date"]}
+												columns={["caption", "displayName", "response", "date"]}
+												isPrint={isPrint}
 												data={formatQuestion(
-													row?.questions?.filter((d) => d?.timing === "B")
+													row?.questions?.filter((d) => d?.timing === "B"),
+													row?.displayName
 												)}
 											/>
 										</TableCell>
@@ -121,6 +126,7 @@ export default function ServiceReport({
 												tasks={groupByStage(row?.tasks)}
 												customCaptions={customCaptions}
 												formatQuestion={formatQuestion}
+												showSkipped
 											/>
 										</TableCell>
 									</TableRow>
@@ -133,7 +139,8 @@ export default function ServiceReport({
 												headers={[
 													"Pause",
 													"Pause Subcategory",
-													"Other Reasons",
+													"Other Reason",
+													`${customCaptions?.user}`,
 													"Start Date",
 													"End Date",
 													"Duration",
@@ -142,15 +149,18 @@ export default function ServiceReport({
 													"pauseReason",
 													"pauseSubcategory",
 													"pauseOtherReason",
+													"displayName",
 													"startDate",
 													"endDate",
 													"duration",
 												]}
+												isPrint={isPrint}
 												data={row.pauses?.map((x) => ({
 													...x,
 													startDate: isoDateWithoutTimeZone(x.startDate + "Z"),
 													endDate: isoDateWithoutTimeZone(x.endDate + "Z"),
 													duration: dateDifference(x.endDate, x.startDate),
+													displayName: row?.displayName,
 												}))}
 											/>
 										</TableCell>
@@ -167,10 +177,11 @@ export default function ServiceReport({
 											<CommonTable
 												headers={[
 													"Question",
+													`${customCaptions?.user}`,
 													"Question Response",
 													"Question Response date",
 												]}
-												columns={["caption", "response", "date"]}
+												columns={["caption", "displayName", "response", "date"]}
 												data={formatQuestion(
 													row?.questions?.filter((d) => d?.timing === "E")
 												)}
@@ -190,7 +201,7 @@ export default function ServiceReport({
 														<div className={classes.main}>
 															<div className={classes.childClass}>
 																<Typography
-																	className={clsx(
+																	className={cx(
 																		classes.headingText,
 																		classes.footerLabel
 																	)}
@@ -199,7 +210,7 @@ export default function ServiceReport({
 																	Name
 																</Typography>
 																<Typography
-																	className={clsx(
+																	className={cx(
 																		classes.responseData,
 																		classes.footerText
 																	)}
@@ -210,7 +221,7 @@ export default function ServiceReport({
 															</div>
 															<div className={classes.childClass}>
 																<Typography
-																	className={clsx(
+																	className={cx(
 																		classes.headingText,
 																		classes.footerLabel
 																	)}
@@ -219,7 +230,7 @@ export default function ServiceReport({
 																	Role
 																</Typography>
 																<Typography
-																	className={clsx(
+																	className={cx(
 																		classes.responseData,
 																		classes.footerText
 																	)}
@@ -230,7 +241,7 @@ export default function ServiceReport({
 															</div>
 															<div className={classes.childClass}>
 																<Typography
-																	className={clsx(
+																	className={cx(
 																		classes.headingText,
 																		classes.footerLabel
 																	)}
@@ -239,7 +250,7 @@ export default function ServiceReport({
 																	Date
 																</Typography>
 																<Typography
-																	className={clsx(
+																	className={cx(
 																		classes.responseData,
 																		classes.footerText
 																	)}

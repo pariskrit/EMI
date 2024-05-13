@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import PositionAccessTypes from "helpers/positionAccessTypes";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
@@ -16,11 +17,12 @@ import "./positionTable.css";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { DefaultPageOptions } from "helpers/constants";
 
 // Init styled components
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -42,7 +44,7 @@ const useStyles = makeStyles({
 		color: "#FFFFFF",
 	},
 	generalRow: {
-		width: "20%",
+		width: `${100 / 11}%`,
 	},
 	headerName: {
 		width: 95,
@@ -54,7 +56,7 @@ const useStyles = makeStyles({
 	tableHead: {
 		whiteSpace: "nowrap",
 	},
-});
+}));
 
 const PositionsTable = ({
 	data,
@@ -67,9 +69,11 @@ const PositionsTable = ({
 	setCurrentTableSort,
 	searchedData,
 	setSearchedData,
+	isReadOnly = false,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
+	let defaultoptions = DefaultPageOptions();
 
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
@@ -78,7 +82,10 @@ const PositionsTable = ({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		handleSort(data, setData, field, newMethod);
@@ -91,7 +98,6 @@ const PositionsTable = ({
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};
-
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>
 			<Table aria-label="Positions Table">
@@ -101,7 +107,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("name");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]: currentTableSort[0] === "name",
 								[classes.tableHeadRow]: currentTableSort[0] !== "name",
 							})}
@@ -118,20 +124,21 @@ const PositionsTable = ({
 								</div>
 							</AT.CellContainer>
 						</TableCell>
+
 						<TableCell
 							onClick={() => {
-								handleSortClick("allowPublish");
+								handleSortClick("name");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
-									currentTableSort[0] === "allowPublish",
-								[classes.tableHeadRow]: currentTableSort[0] !== "allowPublish",
+									currentTableSort[0] === "defaultPage",
+								[classes.tableHeadRow]: currentTableSort[0] !== "defaultPage",
 							})}
 						>
 							<AT.CellContainer>
-								Allow Publish
+								Default Page
 								<div className={classes.arrowContainer}>
-									{currentTableSort[0] === "allowPublish" &&
+									{currentTableSort[0] === "defaultPage" &&
 									currentTableSort[1] === "desc" ? (
 										<AT.DefaultArrow fill="#FFFFFF" />
 									) : (
@@ -140,11 +147,12 @@ const PositionsTable = ({
 								</div>
 							</AT.CellContainer>
 						</TableCell>
+
 						<TableCell
 							onClick={() => {
 								handleSortClick("modelAccess");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "modelAccess",
 								[classes.tableHeadRow]: currentTableSort[0] !== "modelAccess",
@@ -162,11 +170,58 @@ const PositionsTable = ({
 								</div>
 							</AT.CellContainer>
 						</TableCell>
+
+						<TableCell
+							onClick={() => {
+								handleSortClick("allowPublish");
+							}}
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
+								[classes.selectedTableHeadRow]:
+									currentTableSort[0] === "allowPublish",
+								[classes.tableHeadRow]: currentTableSort[0] !== "allowPublish",
+							})}
+						>
+							<AT.CellContainer>
+								Allow Publish
+								<div className={classes.arrowContainer}>
+									{currentTableSort[0] === "allowPublish" &&
+									currentTableSort[1] === "desc" ? (
+										<AT.DefaultArrow fill="#FFFFFF" />
+									) : (
+										<AT.DescArrow fill="#FFFFFF" />
+									)}
+								</div>
+							</AT.CellContainer>
+						</TableCell>
+
+						<TableCell
+							onClick={() => {
+								handleSortClick("assets");
+							}}
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
+								[classes.selectedTableHeadRow]:
+									currentTableSort[0] === "assets",
+								[classes.tableHeadRow]: currentTableSort[0] !== "assets",
+							})}
+						>
+							<AT.CellContainer>
+								Assets
+								<div className={classes.arrowContainer}>
+									{currentTableSort[0] === "assets" &&
+									currentTableSort[1] === "desc" ? (
+										<AT.DefaultArrow fill="#FFFFFF" />
+									) : (
+										<AT.DescArrow fill="#FFFFFF" />
+									)}
+								</div>
+							</AT.CellContainer>
+						</TableCell>
+
 						<TableCell
 							onClick={() => {
 								handleSortClick("serviceAccess");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "serviceAccess",
 								[classes.tableHeadRow]: currentTableSort[0] !== "serviceAccess",
@@ -188,7 +243,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("defectAccess");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "defectAccess",
 								[classes.tableHeadRow]: currentTableSort[0] !== "defectAccess",
@@ -210,7 +265,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("noticeboardAccess");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "noticeboardAccess",
 								[classes.tableHeadRow]:
@@ -233,7 +288,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("feedbackAccess");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "feedbackAccess",
 								[classes.tableHeadRow]:
@@ -256,7 +311,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("userAccess");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "userAccess",
 								[classes.tableHeadRow]: currentTableSort[0] !== "userAccess",
@@ -278,7 +333,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("analyticsAccess");
 							}}
-							className={clsx(classes.generalRow, classes.rowWithRightRow, {
+							className={cx(classes.generalRow, classes.rowWithRightRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "analyticsAccess",
 								[classes.tableHeadRow]:
@@ -301,7 +356,7 @@ const PositionsTable = ({
 							onClick={() => {
 								handleSortClick("settingsAccess");
 							}}
-							className={clsx(classes.generalRow, {
+							className={cx(classes.generalRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "settingsAccess",
 								[classes.tableHeadRow]:
@@ -331,11 +386,15 @@ const PositionsTable = ({
 									<AT.TableBodyText>{d.name}</AT.TableBodyText>
 								</AT.CellContainer>
 							</AT.DataCell>
+
 							<AT.DataCell>
 								<AT.CellContainer>
-									<AT.TableBodyText>{d.allowPublish}</AT.TableBodyText>
+									<AT.TableBodyText>
+										{defaultoptions[d.defaultPage]}
+									</AT.TableBodyText>
 								</AT.CellContainer>
 							</AT.DataCell>
+
 							<AT.DataCell className={classes.generalRow}>
 								<AT.CellContainer>
 									<AT.TableBodyText>
@@ -343,6 +402,21 @@ const PositionsTable = ({
 									</AT.TableBodyText>
 								</AT.CellContainer>
 							</AT.DataCell>
+
+							<AT.DataCell>
+								<AT.CellContainer>
+									<AT.TableBodyText>{d.allowPublish}</AT.TableBodyText>
+								</AT.CellContainer>
+							</AT.DataCell>
+
+							<AT.DataCell>
+								<AT.CellContainer>
+									<AT.TableBodyText>
+										{PositionAccessTypes[d.assetAccess]}
+									</AT.TableBodyText>
+								</AT.CellContainer>
+							</AT.DataCell>
+
 							<AT.DataCell className={classes.generalRow}>
 								<AT.CellContainer>
 									<AT.TableBodyText>
@@ -391,48 +465,50 @@ const PositionsTable = ({
 										{PositionAccessTypes[d.settingsAccess]}
 									</AT.TableBodyText>
 
-									<AT.DotMenu
-										onClick={(e) => {
-											setAnchorEl(
-												anchorEl === e.currentTarget ? null : e.currentTarget
-											);
-											setSelectedData(
-												anchorEl === e.currentTarget ? null : index
-											);
-										}}
-									>
-										<AT.TableMenuButton>
-											<MenuIcon />
-										</AT.TableMenuButton>
-
-										<PopupMenu
-											index={index}
-											selectedData={selectedData}
-											anchorEl={anchorEl}
-											isLast={
-												searchQuery === ""
-													? index === data.length - 1
-													: index === searchedData.length - 1
-											}
-											id={d.id}
-											clickAwayHandler={() => {
-												setAnchorEl(null);
-												setSelectedData(null);
+									{!isReadOnly && (
+										<AT.DotMenu
+											onClick={(e) => {
+												setAnchorEl(
+													anchorEl === e.currentTarget ? null : e.currentTarget
+												);
+												setSelectedData(
+													anchorEl === e.currentTarget ? null : index
+												);
 											}}
-											menuData={[
-												{
-													name: "Edit",
-													handler: handleEditDialogOpen,
-													isDelete: false,
-												},
-												{
-													name: "Delete",
-													handler: handleDeleteDialogOpen,
-													isDelete: true,
-												},
-											]}
-										/>
-									</AT.DotMenu>
+										>
+											<AT.TableMenuButton>
+												<MenuIcon />
+											</AT.TableMenuButton>
+
+											<PopupMenu
+												index={index}
+												selectedData={selectedData}
+												anchorEl={anchorEl}
+												isLast={
+													searchQuery === ""
+														? index === data.length - 1
+														: index === searchedData.length - 1
+												}
+												id={d.id}
+												clickAwayHandler={() => {
+													setAnchorEl(null);
+													setSelectedData(null);
+												}}
+												menuData={[
+													{
+														name: "Edit",
+														handler: handleEditDialogOpen,
+														isDelete: false,
+													},
+													{
+														name: "Delete",
+														handler: handleDeleteDialogOpen,
+														isDelete: true,
+													},
+												]}
+											/>
+										</AT.DotMenu>
+									)}
 								</AT.CellContainer>
 							</AT.DataCell>
 						</TableRow>

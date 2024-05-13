@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { connect } from "react-redux";
-import { CircularProgress, makeStyles } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+
 import ColourConstants from "helpers/colourConstants";
 import {
 	deleteStages,
@@ -18,8 +20,9 @@ import withMount from "components/HOC/withMount";
 import { ModelContext } from "contexts/ModelDetailContext";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import { TaskContext } from "contexts/TaskDetailContext";
+import { updateModelTaskAssets } from "helpers/setModelTaskDom";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	stages: { display: "flex", flexDirection: "column", marginBottom: 12 },
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
@@ -45,13 +48,13 @@ const useStyles = makeStyles({
 		height: "10px",
 		lineHeight: "1rem",
 	},
-});
+}));
 
 const Stages = ({ taskInfo, getError, isMounted }) => {
 	const me =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [
 		{
 			modelDetail: { modelType },
@@ -178,6 +181,7 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 					);
 					setStages((th) => ({ ...th, data: mainData }));
 					fetchTaskStages();
+					updateModelTaskAssets(result?.data?.assets, taskInfo.id);
 					return { success: true };
 				} else {
 					// For asset change so if error, then selected will have current asset instead of new updated
@@ -217,28 +221,12 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 					fetchTaskStages();
 					CtxDispatch({
 						type: "SET_STAGE_NAME",
-						payload: stages.data
-							.map((z) =>
-								z.modelVersionStageID === data.ModelVersionStageID
-									? { ...z, id: true }
-									: z
-							)
-							.filter((x) => Boolean(x.id))
-							.map((x) => x.name)
-							.join(","),
+						payload: res?.data?.stages,
 					});
 					document
 						.getElementById(`taskExpandable${taskInfo.id}`)
-						.querySelector(`#dataCellstages > div >p`).innerHTML = stages.data
-						.map((z) =>
-							z.modelVersionStageID === data.ModelVersionStageID
-								? { ...z, id: true }
-								: z
-						)
-						.filter((x) => Boolean(x.id))
-						.map((x) => x.name)
-						.join(",");
-
+						.querySelector(`#dataCellstages > div >p`).innerHTML =
+						res.data.stages;
 					return { success: true };
 				} else {
 					// Post is for selected so if error, then selected will be deselected
@@ -270,19 +258,14 @@ const Stages = ({ taskInfo, getError, isMounted }) => {
 					}));
 					CtxDispatch({
 						type: "SET_STAGE_NAME",
-						payload: stages.data
-							.map((z) => (z.id === stageId ? { ...z, id: null } : z))
-							.filter((x) => Boolean(x.id))
-							.map((x) => x.name)
-							.join(","),
+						payload: res?.data?.stages,
 					});
 					document
 						.getElementById(`taskExpandable${taskInfo.id}`)
-						.querySelector(`#dataCellstages > div >p`).innerHTML = stages.data
-						.map((z) => (z.id === stageId ? { ...z, id: null } : z))
-						.filter((x) => Boolean(x.id))
-						.map((x) => x.name)
-						.join(",");
+						.querySelector(`#dataCellstages > div >p`).innerHTML =
+						res?.data?.stages;
+					updateModelTaskAssets(res?.data?.assets, taskInfo.id);
+
 					await fetchTaskStages();
 					return { success: true };
 				} else {

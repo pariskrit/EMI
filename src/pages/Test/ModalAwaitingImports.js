@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import PopupMenu from "components/Elements/PopupMenu";
-import clsx from "clsx";
+
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AT = TableStyle();
@@ -20,7 +24,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -64,11 +68,11 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
-});
+}));
 
 function ModalAwaitingImports({ siteAppId }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init State
 	const [modelsToImport, setModelsToImport] = useState([]);
@@ -76,6 +80,7 @@ function ModalAwaitingImports({ siteAppId }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [selectedID, setSelectedID] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
+	const dispatch = useDispatch();
 
 	// determine if there are any models to be imported by calling model imports api
 	useEffect(() => {
@@ -88,7 +93,7 @@ function ModalAwaitingImports({ siteAppId }) {
 					setModelsToImport(response.data);
 				}
 			} catch (error) {
-				console.log(error);
+				dispatch(showError(`Failed to fetch models to import `));
 			}
 		};
 		FetchModelsToImport();
@@ -136,14 +141,14 @@ function ModalAwaitingImports({ siteAppId }) {
 							<AT.TableHead>
 								<TableRow className={classes.tableHead}>
 									<TableCell
-										className={clsx(classes.nameRow, {
+										className={cx(classes.nameRow, {
 											[classes.tableHeadRow]: true,
 										})}
 									>
 										<AT.CellContainer>Make</AT.CellContainer>
 									</TableCell>
 									<TableCell
-										className={clsx(classes.nameRow, {
+										className={cx(classes.nameRow, {
 											[classes.tableHeadRow]: true,
 										})}
 									>
@@ -157,7 +162,7 @@ function ModalAwaitingImports({ siteAppId }) {
 										<TableCell
 											component="th"
 											scope="row"
-											className={clsx(classes.dataCell, classes.nameRow, {
+											className={cx(classes.dataCell, classes.nameRow, {
 												[classes.lastCell]: index === modelsToImport.length - 1,
 											})}
 										>
@@ -168,7 +173,7 @@ function ModalAwaitingImports({ siteAppId }) {
 										<TableCell
 											component="th"
 											scope="row"
-											className={clsx(classes.dataCell, classes.nameRow, {
+											className={cx(classes.dataCell, classes.nameRow, {
 												[classes.lastCell]: index === modelsToImport.length - 1,
 											})}
 										>
@@ -204,9 +209,7 @@ function ModalAwaitingImports({ siteAppId }) {
 														menuData={[
 															{
 																name: "Import",
-																handler: () => {
-																	console.log("Import");
-																},
+																handler: () => {},
 																isDelete: false,
 															},
 															{

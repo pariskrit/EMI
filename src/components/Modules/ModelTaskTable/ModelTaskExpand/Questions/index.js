@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import {
-	CircularProgress,
-	LinearProgress,
-	makeStyles,
-} from "@material-ui/core";
-import { useHistory, useParams } from "react-router-dom";
+import { CircularProgress, LinearProgress } from "@mui/material";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import GeneralButton from "components/Elements/GeneralButton";
 import ListTable from "./ListTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -12,18 +8,20 @@ import {
 	duplicateQuestions,
 	getQuestions,
 	pasteModelTaskQuestion,
+	pasteModelTaskQuestions,
 	patchQuestions,
 } from "services/models/modelDetails/modelTasks/questions";
 import AddEditModel from "./AddEditModel";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
-import { modelServiceLayout, modelsPath } from "helpers/routePaths";
+import { appPath, modelServiceLayout, modelsPath } from "helpers/routePaths";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { setPositionForPayload } from "helpers/setPositionForPayload";
-import { Tooltip } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Tooltip } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import { makeStyles } from "tss-react/mui";
 import { ModelContext } from "contexts/ModelDetailContext";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 import ColourConstants from "helpers/colourConstants";
@@ -50,7 +48,7 @@ const HtmlTooltip = withStyles((theme) => ({
 }))(Tooltip);
 
 // Styling Task Question
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	question: { display: "flex", flexDirection: "column" },
 	header: {
 		display: "flex",
@@ -59,7 +57,7 @@ const useStyles = makeStyles({
 	},
 	pasteTask: { background: "#ED8738" },
 	buttons: { display: "flex", justifyContent: "space-around" },
-});
+}));
 
 function apiResponse(d) {
 	const question = questionTypeOptions.find((a) => a.value === d.type);
@@ -130,19 +128,27 @@ function apiResponse(d) {
 	return res;
 }
 
-const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
-	const classes = useStyles();
+const Questions = ({
+	captions,
+	taskInfo,
+	getError,
+	access,
+	isMounted,
+	service,
+}) => {
+	const { classes } = useStyles();
 	const scrollRef = useRef();
-	const history = useHistory();
+	const navigate = useNavigate();
+	const location = useLocation();
 	const { id } = useParams();
 	// Initiate States
 	const [data, setData] = useState([]);
 	const [originalList, setOriginalList] = useState([]);
 	const [questionId, setQuestionId] = useState(null);
 	const [model, setModel] = useState({
-		delete: false,
-		addEdit: false,
-		copy: false,
+		// delete: false,
+		// addEdit: false,
+		// copy: false,
 	});
 	const [loading, setLoading] = useState({
 		fetch: true,
@@ -151,7 +157,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	const [addEditType, setAddEditType] = useState("add");
 
 	const [, CtxDispatch] = useContext(TaskContext);
-	const [state] = useContext(ModelContext);
+	const [state, MtxDispatch] = useContext(ModelContext);
 
 	// ARRANGING DATA FROM THE API RESPONSE
 
@@ -177,6 +183,17 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 						data: result?.length,
 					},
 				});
+				if (result.length > 0) {
+					CtxDispatch({
+						type: "SET_QUESTIONS",
+						payload: true,
+					});
+				} else {
+					CtxDispatch({
+						type: "SET_QUESTIONS",
+						payload: false,
+					});
+				}
 			} else {
 				errorResponse(result);
 			}
@@ -187,17 +204,17 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 
 	useEffect(() => {
 		const selectedQuestion = document.getElementById(
-			`row${history.location.state?.modelVersionQuestionID}`
+			`row${location.state?.modelVersionQuestionID}`
 		);
 		if (
 			!loading.fetch &&
-			history.location.state?.modelVersionQuestionID &&
+			location.state?.modelVersionQuestionID &&
 			selectedQuestion
 		) {
 			selectedQuestion.style.background = "#ffeb3b";
 			selectedQuestion.scrollIntoView({ block: "center", behavior: "smooth" });
 		}
-	}, [loading, history.location.state]);
+	}, [loading, location.state]);
 
 	useEffect(() => {
 		const initialFetch = async () => {
@@ -208,6 +225,17 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 		initialFetch();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		setModel({
+			delete: false,
+			addEdit: false,
+			copy:
+				state.isQuestionTaskDisabled && !localStorage.getItem("taskquestion"),
+			copyPlural:
+				state.isQuestionsDisabled && !localStorage.getItem("tasksquestions"),
+		});
+	}, [state]);
 
 	// HANDLE ADD AND EDIT IN MODEL
 	const handleEdit = (id) => {
@@ -253,7 +281,8 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	const handleCopy = (id) => {
 		setQuestionId(id);
 		localStorage.setItem("taskquestion", id);
-		setModel((th) => ({ ...th, copy: true }));
+		setModel((th) => ({ ...th, copy: false }));
+		MtxDispatch({ type: "DISABLE_QUESTION_TASK", payload: false });
 	};
 
 	const handlePaste = async () => {
@@ -278,12 +307,45 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 		}
 	};
 
+	const handlePasteQuestions = async () => {
+		setLoading((th) => ({ ...th, loader: true }));
+		try {
+			const taskQuestionsId = localStorage.getItem("tasksquestions");
+			let result = await pasteModelTaskQuestions(taskInfo.id, {
+				ModelVersionTaskID: taskQuestionsId,
+			});
+
+			if (!isMounted.aborted) {
+				setLoading((th) => ({ ...th, loader: false }));
+				if (result.status) {
+					fetchTaskQuestion();
+					setQuestionId(null);
+				} else {
+					errorResponse(result);
+				}
+			}
+		} catch (e) {
+			return;
+		}
+	};
+
 	const checkcopyQuestionStatus = async () => {
 		try {
 			const questionTaskId = localStorage.getItem("taskquestion");
 
 			if (questionTaskId) {
-				setModel((th) => ({ ...th, copy: true }));
+				setModel((th) => ({ ...th, copy: false }));
+			}
+		} catch (error) {
+			return;
+		}
+	};
+
+	const checkcopyQuestionsStatus = async () => {
+		try {
+			const questionTaskId = localStorage.getItem("tasksquestions");
+			if (questionTaskId) {
+				setModel((th) => ({ ...th, copyPlural: false }));
 			}
 		} catch (error) {
 			return;
@@ -293,11 +355,13 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 	const visibilitychangeCheck = function () {
 		if (!document.hidden) {
 			checkcopyQuestionStatus();
+			checkcopyQuestionsStatus();
 		}
 	};
 
 	useEffect(() => {
 		checkcopyQuestionStatus();
+		checkcopyQuestionsStatus();
 		document.addEventListener("visibilitychange", visibilitychangeCheck);
 		return () =>
 			document.removeEventListener("visibilitychange", visibilitychangeCheck);
@@ -306,8 +370,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 
 	// HANDLE SERVICE LAYOUT
 	const handleServiceLayout = (modelVersionTaskQuestionID) => {
-		history.push({
-			pathname: `${modelsPath}/${id}${modelServiceLayout}`,
+		navigate(`${appPath}${modelsPath}/${id}${modelServiceLayout}`, {
 			state: { modelVersionTaskQuestionID },
 		});
 	};
@@ -333,6 +396,17 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 				data: filtered?.length,
 			},
 		});
+		if (filtered.length > 0) {
+			CtxDispatch({
+				type: "SET_QUESTIONS",
+				payload: true,
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_QUESTIONS",
+				payload: false,
+			});
+		}
 	};
 
 	// HANDLE DRAG AND DROP
@@ -407,8 +481,15 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 						<span className={classes.buttons}>
 							<GeneralButton
 								className={classes.pasteTask}
+								onClick={handlePasteQuestions}
+								disabled={model.copyPlural}
+							>
+								Paste {captions.plural}
+							</GeneralButton>
+							<GeneralButton
+								className={classes.pasteTask}
 								onClick={handlePaste}
-								disabled={!model.copy}
+								disabled={model.copy}
 							>
 								Paste {captions.singular}
 							</GeneralButton>
@@ -425,6 +506,7 @@ const Questions = ({ captions, taskInfo, getError, access, isMounted }) => {
 				</div>
 				{loading.loader ? <LinearProgress /> : null}
 				<ListTable
+					service={service}
 					data={data}
 					handleDelete={handleDelete}
 					handleEdit={handleEdit}

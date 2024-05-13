@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/core/styles";
-import RestoreIcon from "@material-ui/icons/Restore";
+import { makeStyles } from "tss-react/mui";
+import RestoreIcon from "@mui/icons-material/Restore";
 import NavDetails from "components/Elements/NavDetails";
 import NavButtons from "components/Elements/NavButtons";
 import PropTypes from "prop-types";
@@ -11,7 +11,7 @@ const AT = ActionButtonStyle();
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	restore: {
 		border: "2px solid",
 		borderRadius: "100%",
@@ -43,7 +43,7 @@ const useStyles = makeStyles({
 			flexDirection: "column",
 		},
 	},
-});
+}));
 
 const ModelWrapper = ({
 	lastSaved,
@@ -63,7 +63,12 @@ const ModelWrapper = ({
 	onClickPasteTask,
 	onClickShowChangeStatus,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
+	const importButton = {
+		"&.MuiButton-root": {
+			backgroundColor: "#ED8738",
+		},
+	};
 
 	return (
 		<div className="container">
@@ -90,6 +95,7 @@ const ModelWrapper = ({
 					<div className={classes.buttons}>
 						{showPasteTask && (
 							<AT.GeneralButton
+								sx={importButton}
 								onClick={onClickPasteTask}
 								className={classes.importButton}
 							>
@@ -98,6 +104,7 @@ const ModelWrapper = ({
 						)}
 						{showChangeStatus && (
 							<AT.GeneralButton
+								sx={importButton}
 								onClick={onClickShowChangeStatus}
 								className={classes.importButton}
 							>

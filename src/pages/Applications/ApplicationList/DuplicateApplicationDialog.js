@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import DuplicateDialogStyle from "styles/application/DuplicateDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 import "./applicationtable.css";
 
@@ -24,11 +29,11 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
-});
+}));
 
 const DuplicateApplicationDialog = ({
 	id,
@@ -37,12 +42,13 @@ const DuplicateApplicationDialog = ({
 	duplicateHandler,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -80,10 +86,10 @@ const DuplicateApplicationDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError("Failed to duplicate application."));
 		}
 	};
 

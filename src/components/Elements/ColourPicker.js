@@ -1,9 +1,9 @@
 import React from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import "react-colorful/dist/index.css";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	colourInput: {
 		marginTop: "10%",
 		marginBottom: "10%",
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ColourPicker = ({ colour, updateParent, includeInput }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Handling no includeInput prop - defaults to false
 	if (includeInput === undefined) {

@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
 import { handleSort } from "helpers/utils";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 
 // Init styled components
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -62,7 +63,7 @@ const useStyles = makeStyles({
 		fontFamily: "Roboto Condensed",
 		fontSize: 14,
 	},
-});
+}));
 
 const ModelStatusesTable = ({
 	data,
@@ -74,9 +75,10 @@ const ModelStatusesTable = ({
 	isLoading,
 	defaultID,
 	onDefault,
+	isReadOnly = false,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init State
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -86,7 +88,10 @@ const ModelStatusesTable = ({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
@@ -99,7 +104,6 @@ const ModelStatusesTable = ({
 	if (isLoading) {
 		return <CircularProgress />;
 	}
-
 	return (
 		<div>
 			<AT.TableContainer component={Paper} elevation={0}>
@@ -110,7 +114,7 @@ const ModelStatusesTable = ({
 								onClick={() => {
 									handleSortClick("name");
 								}}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === "name",
 									[classes.tableHeadRow]: currentTableSort[0] !== "name",
@@ -130,7 +134,7 @@ const ModelStatusesTable = ({
 								onClick={() => {
 									handleSortClick("publish");
 								}}
-								className={clsx(classes.publishRow, {
+								className={cx(classes.publishRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === "publish",
 									[classes.tableHeadRow]: currentTableSort[0] !== "publish",
@@ -153,7 +157,7 @@ const ModelStatusesTable = ({
 							<TableRow key={d.id}>
 								<AT.DataCell>
 									<AT.TableBodyText
-										className={clsx({
+										className={cx({
 											[classes.defaultNameText]: d.id === defaultID,
 										})}
 									>
@@ -168,7 +172,7 @@ const ModelStatusesTable = ({
 								<AT.DataCell>
 									<AT.CellContainer>
 										<Typography
-											className={clsx({
+											className={cx({
 												[classes.yesText]: d.publish,
 												[classes.noText]: !d.publish,
 											})}
@@ -176,55 +180,59 @@ const ModelStatusesTable = ({
 											{d.publish ? "Yes" : "No"}
 										</Typography>
 
-										<AT.DotMenu
-											onClick={(e) => {
-												setAnchorEl(
-													anchorEl === e.currentTarget ? null : e.currentTarget
-												);
-												setSelectedData(
-													anchorEl === e.currentTarget ? null : index
-												);
-											}}
-										>
-											<AT.TableMenuButton>
-												<MenuIcon />
-											</AT.TableMenuButton>
-
-											<PopupMenu
-												index={index}
-												selectedData={selectedData}
-												anchorEl={anchorEl}
-												// isLast={
-												// 	searchQuery === ""
-												// 		? index === data.length - 1
-												// 		: index === searchedData.length - 1
-												// }
-												id={d.id}
-												clickAwayHandler={() => {
-													setAnchorEl(null);
-													setSelectedData(null);
+										{!isReadOnly && (
+											<AT.DotMenu
+												onClick={(e) => {
+													setAnchorEl(
+														anchorEl === e.currentTarget
+															? null
+															: e.currentTarget
+													);
+													setSelectedData(
+														anchorEl === e.currentTarget ? null : index
+													);
 												}}
-												publish={d.publish}
-												name={d.name}
-												menuData={[
-													{
-														name: "Edit",
-														handler: () => onEdit(d.id),
-														isDelete: false,
-													},
-													{
-														name: "Delete",
-														handler: () => onDelete(d.id),
-														isDelete: true,
-													},
-													{
-														name: "Make Default Status",
-														handler: () => onDefault(d.id, d.name),
-														isDelete: false,
-													},
-												]}
-											/>
-										</AT.DotMenu>
+											>
+												<AT.TableMenuButton>
+													<MenuIcon />
+												</AT.TableMenuButton>
+
+												<PopupMenu
+													index={index}
+													selectedData={selectedData}
+													anchorEl={anchorEl}
+													// isLast={
+													// 	searchQuery === ""
+													// 		? index === data.length - 1
+													// 		: index === searchedData.length - 1
+													// }
+													id={d.id}
+													clickAwayHandler={() => {
+														setAnchorEl(null);
+														setSelectedData(null);
+													}}
+													publish={d.publish}
+													name={d.name}
+													menuData={[
+														{
+															name: "Edit",
+															handler: () => onEdit(d.id),
+															isDelete: false,
+														},
+														{
+															name: "Delete",
+															handler: () => onDelete(d.id),
+															isDelete: true,
+														},
+														{
+															name: "Make Default Status",
+															handler: () => onDefault(d.id, d.name),
+															isDelete: false,
+														},
+													]}
+												/>
+											</AT.DotMenu>
+										)}
 									</AT.CellContainer>
 								</AT.DataCell>
 							</TableRow>

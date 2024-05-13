@@ -1,11 +1,13 @@
 import * as yup from "yup";
 import React, { useState } from "react";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const ADD = AddDialogStyle();
 
@@ -31,6 +33,7 @@ const AddDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		setInput(defaultStateSchema);
@@ -62,10 +65,9 @@ const AddDialog = ({
 				setIsUpdating(false);
 			}
 		} catch (err) {
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to add ${header}.`));
 		}
 	};
 

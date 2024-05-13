@@ -38,7 +38,9 @@ export const getClientUserSiteAppList = async ({
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.ClientUserSiteApps}?siteAppId=${siteAppId}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}`
+			`${
+				Apis.ClientUserSiteApps
+			}?siteAppId=${siteAppId}&pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}&excludeKeyContacts=${true}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -110,7 +112,7 @@ const patchExternalReference = async (id, data) => {
 // #region patch notes
 const patchSwitchUserDetails = async (id, data) => {
 	try {
-		let response = await API.patch(`${Apis.UsersList}/${id}`, data);
+		let response = await API.patch(`${Apis.ClientUser}/${id}`, data);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

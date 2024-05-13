@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-	Dialog,
-	DialogTitle,
-	LinearProgress,
-	makeStyles,
-} from "@material-ui/core";
+import { Dialog, DialogTitle, LinearProgress } from "@mui/material";
 import * as yup from "yup";
+import { makeStyles } from "tss-react/mui";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import {
@@ -13,13 +9,17 @@ import {
 	uploadTaskImage,
 } from "services/models/modelDetails/modelTasks/images";
 import ImageUpload from "components/Elements/ImageUpload";
+import ColourConstants from "helpers/colourConstants";
 
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
 
 const schema = yup.object({
-	description: yup.string("String is required"),
+	description: yup
+		.string("String is required")
+		.required("This field is required"),
 	image: yup
 		.mixed()
+		.nullable()
 		.test("fileType", "Unsupported File Format", (value) =>
 			SUPPORTED_FORMATS.includes(value.type)
 		),
@@ -29,10 +29,10 @@ const schema = yup.object({
 
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	imageEdit: { width: "60%", margin: "auto" },
 	image: { width: "100%" },
-});
+}));
 
 const defaultInput = {
 	description: "",
@@ -57,7 +57,7 @@ const AddEditModel = ({
 	handleComplete,
 	errorResponse,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultInput);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
@@ -167,10 +167,28 @@ const AddEditModel = ({
 				</DialogTitle>
 
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={closeOverride} variant="contained">
+					<ADD.CancelButton
+						onClick={closeOverride}
+						variant="contained"
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
+					>
 						Cancel
 					</ADD.CancelButton>
-					<ADD.ConfirmButton variant="contained" onClick={handleSave}>
+					<ADD.ConfirmButton
+						variant="contained"
+						onClick={handleSave}
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
+					>
 						{imageDetail ? "Close" : "Add " + title}
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>
@@ -204,7 +222,9 @@ const AddEditModel = ({
 					</ADD.LeftInputContainer>
 
 					<ADD.RightInputContainer>
-						<ADD.NameLabel>Description</ADD.NameLabel>
+						<ADD.NameLabel>
+							Description<ADD.RequiredStar>*</ADD.RequiredStar>
+						</ADD.NameLabel>
 						<ADD.NameInput
 							error={errors.description === null ? false : true}
 							helperText={

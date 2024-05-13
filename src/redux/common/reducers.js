@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
 	error: { status: false, message: "" },
 	loading: false,
+	isHistoryDrawerOpen: false,
+	showData: { isRedirected: false, data: {} },
 };
 
 export const commonSlice = createSlice({
@@ -17,6 +19,15 @@ export const commonSlice = createSlice({
 		},
 		setLoading: (state, { payload }) => {
 			state.loading = payload.loading;
+		},
+		openHistoryDrawer: (state, { payload }) => {
+			state.isHistoryDrawerOpen = payload.historyDrawerState;
+		},
+		setShowData: (state, { payload }) => {
+			state.showData = {
+				isRedirected: payload.showDataState,
+				data: payload.showData,
+			};
 		},
 	},
 });

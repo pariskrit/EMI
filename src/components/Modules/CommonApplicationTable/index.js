@@ -1,28 +1,29 @@
 import React, { useState } from "react";
-import clsx from "clsx";
+
 import PropTypes from "prop-types";
 import {
 	CircularProgress,
-	makeStyles,
 	Paper,
 	Table,
 	TableBody,
 	TableCell,
 	TableRow,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
 import TableStyle from "styles/application/TableStyle";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { handleSort } from "helpers/utils";
+import { dyanamicCellSize, handleSort } from "helpers/utils";
+import { DefaultPageOptions } from "helpers/constants";
 
 const AT = TableStyle();
 
 const mediaMobile = "@media(max-width: 414px)";
-const mediaIpad = "@media(max-width: 1024px)";
+const mediaIpad = "@media(max-width: 1375px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableContainer: {
 		[mediaMobile]: {
 			tableLayout: "auto",
@@ -72,7 +73,7 @@ const useStyles = makeStyles({
 	tableHead: {
 		whiteSpace: "nowrap",
 	},
-});
+}));
 
 const CommonApplicationTable = ({
 	data,
@@ -85,16 +86,22 @@ const CommonApplicationTable = ({
 	isLoading,
 	defaultID,
 	menuData,
+	isReadOnly = false,
+	defaultCustomCaptionsData,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
+	const defaultOptions = DefaultPageOptions(defaultCustomCaptionsData);
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
@@ -120,12 +127,16 @@ const CommonApplicationTable = ({
 									onClick={() => {
 										handleSortClick(columns[index]);
 									}}
-									className={clsx(classes.nameRow, {
-										[classes.selectedTableHeadRow]:
-											currentTableSort[0] === columns[index],
-										[classes.tableHeadRow]:
-											currentTableSort[0] !== columns[index],
-									})}
+									className={cx(
+										classes.dataCell,
+										dyanamicCellSize(headers.length),
+										{
+											[classes.selectedTableHeadRow]:
+												currentTableSort[0] === columns[index],
+											[classes.tableHeadRow]:
+												currentTableSort[0] !== columns[index],
+										}
+									)}
 								>
 									<AT.CellContainer className="flex justify-between">
 										{header}
@@ -150,25 +161,35 @@ const CommonApplicationTable = ({
 												key={col}
 												component="th"
 												scope="row"
-												className={clsx(classes.dataCell, classes.nameRow, {
-													[classes.lastCell]: index === data.length - 1,
-												})}
+												className={cx(
+													classes.dataCell,
+													dyanamicCellSize(columns.length),
+													{
+														[classes.lastCell]: index === data.length - 1,
+													}
+												)}
 											>
 												<AT.CellContainer key={col}>
 													<AT.TableBodyText
-														className={clsx({
+														className={cx({
 															[classes.defaultNameText]:
 																row.id === defaultID && i === 0,
 														})}
 													>
-														{`${row[col]}`}
+														{col === "defaultPage"
+															? defaultOptions[row[col]]
+															: col === "allowPublish"
+															? row[col]
+																? "Yes"
+																: "No"
+															: `${row[col]}`}
 													</AT.TableBodyText>
 													{row.id === defaultID && i === 0 ? (
 														<Typography className={classes.defaultText}>
 															(Default)
 														</Typography>
 													) : null}
-													{arr.length === i + 1 ? (
+													{!isReadOnly && arr.length === i + 1 ? (
 														<AT.DotMenu
 															onClick={(e) => {
 																setAnchorEl(

@@ -1,14 +1,14 @@
 import React from "react";
-import { styled } from "@material-ui/core/styles";
+import { styled } from "@mui/styles";
 import ColourConstants from "helpers/colourConstants";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Popper from "@material-ui/core/Popper";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Popper from "@mui/material/Popper";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
 
 // Style overrides
 const PopperPaper = styled(Paper)({

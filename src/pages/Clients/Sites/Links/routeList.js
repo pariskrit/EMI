@@ -2,33 +2,35 @@ import {
 	siteAssetPath,
 	siteDepartmentPath,
 	siteDetailPath,
-	siteLocationPath,
 	sitePath,
+	siteLicenses,
 } from "helpers/routePaths";
 import SiteAsset from "pages/Clients/Sites/SiteAsset";
 import SiteDepartmentsScreen from "pages/Clients/Sites/SiteDepartment/SiteDepartmentsScreen";
 import SiteDetail from "pages/Clients/Sites/SiteDetail/SiteDetailsScreen";
-import SiteLocationsScreen from "pages/Clients/Sites/SiteLocations/SiteLocationsScreen";
+import SiteLicenses from "pages/Clients/Sites/SiteLicenses";
 
 export const routeList = [
 	{
 		id: 1,
-		component: SiteDetail,
-		path: sitePath + siteDetailPath,
+		element: SiteDetail,
+		path: siteDetailPath,
+		condition: true,
 	},
 	{
 		id: 2,
-		component: SiteAsset,
-		path: sitePath + siteAssetPath,
+		element: SiteAsset,
+		path: siteAssetPath,
 	},
 	{
 		id: 3,
-		component: SiteDepartmentsScreen,
-		path: sitePath + siteDepartmentPath,
+		element: SiteDepartmentsScreen,
+		path: siteDepartmentPath,
+		condition: true,
 	},
 	{
 		id: 4,
-		component: SiteLocationsScreen,
-		path: sitePath + siteLocationPath,
+		element: SiteLicenses,
+		path: siteLicenses,
 	},
 ];

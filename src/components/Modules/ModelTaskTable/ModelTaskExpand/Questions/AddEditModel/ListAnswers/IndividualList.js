@@ -4,7 +4,7 @@ import {
 	FormControlLabel,
 	Typography,
 	TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import reorder from "assets/reorder.png";
@@ -121,6 +121,11 @@ function IndividualList({ x, classes, onEdit, onDelete, index }) {
 
 						{editMode ? (
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								error={error.name === null ? false : true}
 								helperText={error.name === null ? null : error.name}
 								style={{

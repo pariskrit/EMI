@@ -1,16 +1,17 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	error: {
 		color: "#f44336",
 		fontSize: "0.75rem",
 		marginBottom: 0,
 	},
-});
+}));
 
 function ErrorInputFieldWrapper({ errorMessage, children }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
 		<div>
 			{children}

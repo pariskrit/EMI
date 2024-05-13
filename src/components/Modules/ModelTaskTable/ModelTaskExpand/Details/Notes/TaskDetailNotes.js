@@ -6,8 +6,8 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import AccordionBox from "components/Layouts/AccordionBox";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
@@ -20,10 +20,10 @@ import {
 } from "services/models/modelDetails/modelTaskNotes";
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
-import NoteContent from "./NoteContent";
 import withMount from "components/HOC/withMount";
+import NoteContentPopup from "components/Elements/NoteContentPopup";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	noteContainer: {
 		display: "flex",
 		justifyContent: "flex-end",
@@ -64,9 +64,10 @@ const ModelTaskNotes = ({
 	modelId,
 	customCaptions,
 	disabled,
+	taskId,
 	isMounted,
 }) => {
-	const classes = useStyles();
+	const { classes } = useStyles();
 	const dispatch = useDispatch();
 
 	const [modal, setModal] = useState({
@@ -126,6 +127,14 @@ const ModelTaskNotes = ({
 	const handleRemoveData = (id) => {
 		const filteredData = [...data].filter((x) => x.id !== id);
 		setData(filteredData);
+		const headerNote = filteredData[filteredData.length - 1]?.note;
+		const rowDataCell = document
+			.getElementById(`taskExpandable${taskId}`)
+			?.querySelector(`#dataCellnotes > div > p`);
+
+		if (rowDataCell) {
+			rowDataCell.innerHTML = headerNote || "";
+		}
 	};
 
 	const handleViewNote = (note) => {
@@ -137,7 +146,7 @@ const ModelTaskNotes = ({
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div className={classes.noteContainer}>
-			<NoteContent
+			<NoteContentPopup
 				note={noteToView}
 				open={viewNoteModal}
 				onClose={() => setModal((th) => ({ ...th, viewNoteModal: false }))}
@@ -147,6 +156,7 @@ const ModelTaskNotes = ({
 				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
 				createHandler={handleCreateData}
 				fetchNotes={() => fetchNotes(false)}
+				taskId={taskId}
 			/>
 			<DeleteDialog
 				entityName="Note"

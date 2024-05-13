@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import API from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { connect, useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -21,11 +24,18 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null };
 const defaultStateSchema = { name: "" };
 
-const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
+const AddDialog = ({
+	open,
+	closeHandler,
+	applicationID,
+	handleAddData,
+	getError,
+}) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -41,8 +51,6 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
-
-			console.log(localChecker);
 
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
@@ -63,10 +71,9 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError("Failed to add feedback classification."));
 		}
 	};
 	const handleCreateData = async () => {
@@ -92,6 +99,12 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 				throw new Error(result);
 			}
 		} catch (err) {
+			if (err.response?.data?.detail) {
+				getError(
+					err?.response?.data?.detail ||
+						"Input should not be empty and it should be less than 50 characters ."
+				);
+			}
 			if (err.response.data.errors !== undefined) {
 				setErrors({ ...errors, ...err.response.data.errors });
 			} else {
@@ -116,7 +129,7 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 				fullWidth={true}
 				maxWidth="md"
 				open={open}
-				onClose={closeHandler}
+				onClose={closeOverride}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
@@ -127,10 +140,20 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 						{<ADD.HeaderText>Add New Feedback Classification</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeHandler} variant="contained">
+						<ADD.CancelButton onClick={closeOverride} variant="contained" sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}>
 							Cancel
 						</ADD.CancelButton>
-						<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
+						<ADD.ConfirmButton variant="contained" onClick={handleAddClick} sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}>
 							Add New
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
@@ -162,5 +185,7 @@ const AddDialog = ({ open, closeHandler, applicationID, handleAddData }) => {
 		</div>
 	);
 };
-
-export default AddDialog;
+const mapDispatchToProps = (dispatch) => ({
+	getError: (message) => dispatch(showError(message)),
+});
+export default connect(null, mapDispatchToProps)(AddDialog);

@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import FeedbackStatusTypes from "helpers/feedbackStatusTypes";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import {
 	addFeedbackStatuses,
 	patchFeedbackStatuses,
 } from "services/clients/sites/siteApplications/feedbackStatuses";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -45,6 +47,7 @@ const AddEditDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (editMode) {
@@ -86,10 +89,9 @@ const AddEditDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to add ${header}.`));
 		}
 	};
 	const handleCreateData = async () => {
@@ -128,7 +130,7 @@ const AddEditDialog = ({
 				return { success: false };
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to add  ${header}.`));
 		}
 	};
 
@@ -158,10 +160,9 @@ const AddEditDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to edit ${header}.`));
 		}
 	};
 
@@ -205,7 +206,7 @@ const AddEditDialog = ({
 				return { success: false };
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to update ${header}.`));
 		}
 	};
 
@@ -283,6 +284,11 @@ const AddEditDialog = ({
 									Type<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.InputLabel>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									error={errors.type === null ? false : true}
 									helperText={errors.type === null ? null : errors.type}
 									fullWidth={true}

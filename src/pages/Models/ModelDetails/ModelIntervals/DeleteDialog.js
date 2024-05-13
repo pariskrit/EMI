@@ -1,8 +1,8 @@
 import React from "react";
 import DeleteDialogStyle from "styles/application/DeleteDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 

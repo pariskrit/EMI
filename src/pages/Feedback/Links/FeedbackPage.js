@@ -1,25 +1,20 @@
 import React from "react";
+import Feedback from "pages/Feedback";
+import FeedbackList from "pages/Feedback/FeedbackList";
+import { Route, Routes } from "react-router-dom";
+import FeedbackDetails from "../FeedbackDetails";
 import AccessRoute from "components/HOC/AccessRoute";
-import { FeedbackDetailsPath, feedbackPath } from "helpers/routePaths";
 import access from "helpers/access";
-import Feedback from "..";
-import FeedbackList from "../FeedbackList";
-import FeedbackDetailPage from "../FeedbackDetails";
 
 const FeedbackPage = () => {
 	return (
 		<Feedback>
-			<AccessRoute
-				path={feedbackPath}
-				exact
-				component={FeedbackList}
-				access={access.feedbackAccess}
-			/>
-			<AccessRoute
-				path={FeedbackDetailsPath}
-				component={FeedbackDetailPage}
-				access={access.feedbackAccess}
-			/>
+			<Routes>
+				<Route element={<AccessRoute access={access.feedbackAccess} />}>
+					<Route index element={<FeedbackList />} />
+					<Route path={":id"} element={<FeedbackDetails />} />
+				</Route>
+			</Routes>
 		</Feedback>
 	);
 };

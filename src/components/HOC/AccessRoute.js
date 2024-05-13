@@ -1,36 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Route, useHistory } from "react-router";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
-const AccessRoute = ({ component: Component, access, condition, ...rest }) => {
-	const history = useHistory();
+const AccessRoute = ({
+	children,
+	component: Component,
+	access,
+	condition,
+	...rest
+}) => {
+	const navigate = useNavigate();
 	const { position, role } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
-	return (
-		<Route
-			{...rest}
-			render={(props) =>
-				position?.[access] === "F" ||
-				position?.[access] === "E" ||
-				position?.[access] === "R" ||
-				condition ? (
-					<Component
-						{...props}
-						position={position}
-						access={position[access]}
-						history={history}
-						role={role}
-					/>
-				) : history.length > 1 ? (
-					history.goBack()
-				) : (
-					history.push("/app/me")
-				)
-			}
-		/>
-	);
+	const accessState =
+		position?.[access] === "F" ||
+		position?.[access] === "E" ||
+		position?.[access] === "R" ||
+		condition;
+
+	useEffect(() => {
+		if (!accessState && !(window.history.length < 1)) {
+			navigate(-1);
+		}
+	}, []);
+
+	if (accessState)
+		return (
+			<>
+				{children}
+				<Outlet context={{ access: position?.[access], role, position }} />
+			</>
+		);
+	else if (window.history.length < 1) {
+		return <Navigate to="/app/me" />;
+	}
+
+	// return <Navigate to="/app/portal" />;
 };
 AccessRoute.defaultProps = {
 	access: "",

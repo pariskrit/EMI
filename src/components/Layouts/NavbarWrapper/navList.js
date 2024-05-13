@@ -8,7 +8,7 @@ import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
 import { ReactComponent as DefectsIcon } from "assets/icons/defects.svg";
 import { ReactComponent as FeedbackIcon } from "assets/icons/feedback.svg";
 import { ReactComponent as NoticeboardsIcon } from "assets/icons/noticeboards.svg";
-
+import { ReactComponent as HasQuestion } from "assets/icons/question_dark.svg";
 import access from "helpers/access";
 import roles from "helpers/roles";
 import {
@@ -27,7 +27,7 @@ import {
 	clientSettingPath,
 } from "helpers/routePaths";
 
-const navList = [
+const navList = (customCaptions) => [
 	{
 		activeName: "Clients",
 		name: "Clients",
@@ -53,8 +53,8 @@ const navList = [
 		roles: [roles.clientAdmin],
 	},
 	{
-		activeName: "Models",
-		name: "Models",
+		activeName: `Models`,
+		name: `${customCaptions?.modelPlural ?? "Models"}`,
 		icon: ModelIcon,
 		path: modelsPath,
 		access: access.modelAccess,
@@ -62,10 +62,18 @@ const navList = [
 	},
 	{
 		activeName: "Services",
-		name: "Services",
+		name: `${customCaptions?.servicePlural ?? "Services"}`,
 		icon: ServiceIcon,
 		path: servicesPath,
 		access: access.serviceAccess,
+		roles: "",
+	},
+	{
+		activeName: "Defects",
+		name: `${customCaptions?.defectPlural ?? "Defects"}`,
+		icon: DefectsIcon,
+		path: defectsPath,
+		access: access.defectAccess,
 		roles: "",
 	},
 	{
@@ -74,15 +82,8 @@ const navList = [
 		icon: AnalyticsIcon,
 		path: analyticsPath,
 		access: access.analyticsAccess,
-		roles: [roles.superAdmin, roles.clientAdmin],
-	},
-	{
-		activeName: "Defects",
-		name: "Defects",
-		icon: DefectsIcon,
-		path: defectsPath,
-		access: access.defectAccess,
 		roles: "",
+		// roles: [roles.superAdmin, roles.clientAdmin],
 	},
 	{
 		activeName: "Analysis",
@@ -104,7 +105,7 @@ const navList = [
 
 	{
 		activeName: "Feedback",
-		name: "Feedback",
+		name: `${customCaptions?.feedbackPlural ?? "Feedbacks"}`,
 		icon: FeedbackIcon,
 		path: feedbackPath,
 		access: access.feedbackAccess,
@@ -112,7 +113,7 @@ const navList = [
 	},
 	{
 		activeName: "Noticeboards",
-		name: "Noticeboards",
+		name: `${customCaptions?.tutorialPlural ?? "Noticeboard"}`,
 		icon: NoticeboardsIcon,
 		path: noticeboardPath,
 		access: access.noticeboardAccess,
@@ -120,17 +121,26 @@ const navList = [
 	},
 	{
 		activeName: "Users",
-		name: "Users",
+		name: `${customCaptions?.userPlural ?? "Users"}`,
 		icon: UserIcon,
 		path: usersPath,
 		access: access.userAccess,
 		roles: [roles.superAdmin, roles.clientAdmin, roles.siteUser],
+		hideToReseller: true,
 	},
 	{
-		activeName: "Setting",
-		name: "Setting",
+		activeName: "Settings",
+		name: "Settings",
 		icon: SettingsIcon,
 		path: settingPath,
+		access: access.settingsAccess,
+		roles: "",
+	},
+	{
+		activeName: "Support",
+		name: "Support",
+		icon: HasQuestion,
+		path: "",
 		access: access.settingsAccess,
 		roles: "",
 	},

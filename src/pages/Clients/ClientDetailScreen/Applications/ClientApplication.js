@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import ApplicationTable from "components/Modules/ApplicationTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -14,8 +16,11 @@ import {
 import AddAppDialog from "./AddAppDialog";
 import "./application.css";
 import ChangeDialog from "./ChangeDialog";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import roles from "helpers/roles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	appContainer: {
 		marginTop: 15,
 		display: "flex",
@@ -56,8 +61,8 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const ClientApplication = ({ clientId, getError }) => {
-	const classes = useStyles();
+const ClientApplication = ({ clientId, getError, role }) => {
+	const { classes, cx } = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
 		deleteModal: false,
@@ -68,6 +73,7 @@ const ClientApplication = ({ clientId, getError }) => {
 	const [data, setData] = useState([]);
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	const fetchApplications = async () => {
 		try {
@@ -83,6 +89,7 @@ const ClientApplication = ({ clientId, getError }) => {
 			setIsLoading(false);
 		} catch (err) {
 			setIsLoading(false);
+			dispatch(showError(`Failed to fetch client applications.`));
 		}
 	};
 
@@ -107,11 +114,12 @@ const ClientApplication = ({ clientId, getError }) => {
 				await fetchApplications();
 				return { success: true };
 			} else {
+				dispatch(showError(`Failed to fetch client documents.`));
 				throw new Error(result);
 			}
 		} catch (err) {
-			console.log(err.response);
 			getError("Error Creating Application");
+			dispatch(showError(`Failed to add application.`));
 		}
 	};
 
@@ -146,6 +154,8 @@ const ClientApplication = ({ clientId, getError }) => {
 
 	const { addModal, deleteModal, changeModal } = modal;
 
+	const isClientAdmin = role === roles.clientAdmin;
+
 	return (
 		<div className={classes.appContainer}>
 			<AddAppDialog
@@ -172,7 +182,7 @@ const ClientApplication = ({ clientId, getError }) => {
 
 			<AccordionBox
 				title={`Application (${data.length})`}
-				isActionsPresent={true}
+				isActionsPresent={!isClientAdmin}
 				buttonName="Add Application"
 				buttonAction={() => setModal((th) => ({ ...th, addModal: true }))}
 				accordianDetailsCss="table-container"

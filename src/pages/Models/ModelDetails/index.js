@@ -1,12 +1,13 @@
 import React, { useCallback, useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import { ModelContext } from "contexts/ModelDetailContext";
 import {
 	getModelDetails,
 	getModelLists,
 } from "services/models/modelDetails/details";
 import PageNotFound from "components/Elements/PageNotFound";
+import { COLLAPSEDID } from "constants/modelDetails";
 
 function ModelDetails(props) {
 	const [state, dispatch] = useContext(ModelContext);
@@ -23,7 +24,6 @@ function ModelDetails(props) {
 			getModelDetails(id),
 			getModelLists(siteAppID),
 		]);
-
 		if (!response?.every((res) => res.status)) {
 			setIsError(true);
 		} else {
@@ -40,13 +40,14 @@ function ModelDetails(props) {
 		}
 		setIsLoading(false);
 	}, [id, dispatch, siteAppID]);
-
 	useEffect(() => {
 		fetchModelDetails();
-
 		if (JSON.parse(localStorage.getItem("serviceLayoutData"))?.modelId !== id)
 			localStorage.removeItem("serviceLayoutData");
+
+		return () => sessionStorage.removeItem(COLLAPSEDID);
 	}, [fetchModelDetails, id]);
+	// console.log(isError);
 
 	if (isLoading) {
 		return <CircularProgress />;
@@ -55,6 +56,7 @@ function ModelDetails(props) {
 	if (isError) {
 		return <PageNotFound message="Model Not Found" />;
 	}
+
 	return <>{props.children(state.modelDetail)}</>;
 }
 

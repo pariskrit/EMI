@@ -13,6 +13,7 @@ import DeleteDialog from "components/Elements/DeleteDialog";
 
 import UserRolesTable from "./UserRolesTable";
 import TabTitle from "components/Elements/TabTitle";
+import { showError } from "redux/common/actions";
 
 const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 	const [haveData, setHaveData] = useState(false);
@@ -53,7 +54,11 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 			}
 		} catch (err) {
 			//Error Handling
-			console.log(err);
+			dispatch(
+				showError(
+					`Failed to fetch ${state.defaultCustomCaptionsData?.rolePlural}.`
+				)
+			);
 			return false;
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,7 +70,13 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 				// Rendering data
 				setHaveData(true);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				dispatch(
+					showError(
+						`Failed to fetch ${state.defaultCustomCaptionsData?.rolePlural}.`
+					)
+				)
+			);
 	}, [handleGetData]);
 
 	const handleAddData = (item) => {
@@ -128,11 +139,12 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 		showAdd,
 		details: { data },
 		defaultCustomCaptionsData: { role, rolePlural, defectPlural },
+		isReadOnly,
 	} = state;
 	return (
 		<div className="container">
 			<TabTitle
-				title={`${state.details.data.application.name} ${state.defaultCustomCaptionsData?.role}`}
+				title={`${state.details.data.application.name} ${state.defaultCustomCaptionsData?.rolePlural}`}
 			/>
 			<AddDialog
 				open={showAdd}
@@ -195,6 +207,7 @@ const UserRolesContent = ({ id, setIs404, getError, state, dispatch }) => {
 						searchQuery={searchQuery}
 						isLoading={loading}
 						defectPlural={defectPlural}
+						isReadOnly={isReadOnly}
 					/>
 				</>
 			</CommonBody>

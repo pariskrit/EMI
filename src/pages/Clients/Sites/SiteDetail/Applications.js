@@ -10,13 +10,19 @@ import {
 	getSiteApplications,
 	updateSiteApplicationStatus,
 } from "services/clients/sites/siteDetails";
+import { READONLY_ACCESS } from "constants/AccessTypes/AccessTypes";
+import roles from "helpers/roles";
 
 const Applications = ({
 	siteId,
+	position,
+	siteAppID,
 	setError,
 	fetchKeyContactsList,
 	isLoading,
 	setIsLoading,
+	role,
+	isClientAdmin,
 }) => {
 	const [applicationList, setApplicationList] = useState([]);
 	const [openChangeConfirmDialog, setOpenChangeConfirmDialog] = useState(false);
@@ -104,10 +110,11 @@ const Applications = ({
 				siteId={siteId}
 				fetchKeyContactsList={fetchKeyContactsList}
 				fetchApplicationList={fetchApplicationList}
+				role={role}
 			/>
 			<AccordionBox
 				title="Applications"
-				isActionsPresent={true}
+				isActionsPresent={role === roles.superAdmin}
 				buttonName="Add Application"
 				buttonAction={onOpenAddSiteApplicationModal}
 				// accordianDetailsCss="table-container"

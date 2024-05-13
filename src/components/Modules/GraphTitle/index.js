@@ -1,10 +1,11 @@
 import React from "react";
-import { makeStyles, Box } from "@material-ui/core";
+import { Box } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import DynamicBreadCrumb from "./DynamicBreadCrumb";
 import ModalHeader from "./ModalHeader";
 import ColourConstants from "helpers/colourConstants";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	headerContainer: {
 		textAlign: "center",
 		marginTop: 25,
@@ -14,7 +15,7 @@ const useStyles = makeStyles({
 		fontSize: "20px",
 		color: ColourConstants.commonText,
 	},
-});
+}));
 
 const GraphTitle = ({
 	serviceName = "",
@@ -28,7 +29,7 @@ const GraphTitle = ({
 	afterClick = () => {},
 	questionName = "",
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<Box className={classes.headerContainer}>

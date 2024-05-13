@@ -1,23 +1,23 @@
-import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
-import Table from "@material-ui/core/Table";
-import { useHistory } from "react-router-dom";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Table from "@mui/material/Table";
+import { useNavigate } from "react-router-dom";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import TableStyle from "styles/application/TableStyle";
-
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { defectsPath } from "helpers/routePaths";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 import { getDefectsList } from "services/defects/defectsList";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AT = TableStyle();
@@ -25,7 +25,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableBody: {
 		whiteSpace: "noWrap",
 	},
@@ -81,7 +81,7 @@ const useStyles = makeStyles({
 		color: ColourConstants.commonText,
 		opacity: "50%",
 	},
-});
+}));
 
 const DefectListTable = ({
 	data,
@@ -104,20 +104,25 @@ const DefectListTable = ({
 	setDataForFetchingDefect,
 	currentTableSort,
 	setCurrentTableSort,
+	content,
+	isReadOnly,
+	chips,
 }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
+	const [changeTableHeight, setChangeTableHeight] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [scrollEvent, setScrollEvent] = useState(window);
 	const scrollRef = useRef(true);
+	const dispatch = useDispatch();
 
 	const { hasMore, loading, gotoTop, handleScroll } = useInfiniteScroll(
 		data,
-		countOFDefects,
+		data?.length, //countOFDefects //temp. fix for scroll-issue -- currently the count api is not returning the correct count
 		async (pageSize, prevData, name) =>
 			await onPageChange(pageSize + 1, prevData, name),
 		page,
@@ -133,6 +138,7 @@ const DefectListTable = ({
 			sortOrder: currentTableSort[1],
 			page,
 			search: searchText,
+			chips,
 		}
 	);
 
@@ -152,14 +158,24 @@ const DefectListTable = ({
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data]);
+	//to change the height of the table
+	useEffect(() => {
+		if (data) {
+			setChangeTableHeight(!changeTableHeight);
+		}
+	}, [chips.length]);
 
 	//Pagination of defects
 	const onPageChange = async (p, prevData, name) => {
 		try {
 			const response = await getDefectsList({
+				chips,
+				siteDepartmentID: department,
+				defectStatusID: status,
+				data,
 				siteAppId: siteAppID,
 				pageNumber: p,
-				pageSize: DefaultPageSize,
+				pageSize: defaultPageSize(),
 				...name,
 			});
 			if (response.status) {
@@ -171,7 +187,7 @@ const DefectListTable = ({
 				throw new Error(response);
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to fetch ${content}}.`));
 			return err;
 		}
 	};
@@ -179,7 +195,10 @@ const DefectListTable = ({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// // Sorting table
 		// if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
@@ -196,7 +215,7 @@ const DefectListTable = ({
 
 	return (
 		<>
-			<AutoFitContentInScreen containsTable={true}>
+			<AutoFitContentInScreen containsTable={true} loading={changeTableHeight}>
 				<Table aria-label="Table" className={classes.table}>
 					<AT.TableHead className={classes.taskHeader}>
 						<TableRow className={classes.tableHead}>
@@ -211,7 +230,7 @@ const DefectListTable = ({
 										width: header?.width || "auto",
 										minWidth: header?.minWidth || "auto",
 									}}
-									className={clsx(classes.nameRow, {
+									className={cx(classes.nameRow, {
 										[classes.selectedTableHeadRow]:
 											currentTableSort[0] === columns[index],
 										[classes.tableHeadRow]:
@@ -249,7 +268,7 @@ const DefectListTable = ({
 						</TableRow>
 					</AT.TableHead>
 					<TableBody className={classes.tableBody}>
-						{formattedData(data, history)?.map((row, index) => (
+						{formattedData(data, navigate)?.map((row, index) => (
 							<TableRow key={index}>
 								{columns?.map((col, i, arr) => (
 									<TableCell
@@ -295,20 +314,32 @@ const DefectListTable = ({
 															setAnchorEl(null);
 															setSelectedData(null);
 														}}
-														menuData={[
-															{
-																name: "Edit",
-																handler: () => {
-																	history.push(`${defectsPath}/${row.id}`);
-																},
-																isDelete: false,
-															},
-															{
-																name: "Delete",
-																handler: handleDeleteDialogOpen,
-																isDelete: true,
-															},
-														]}
+														menuData={
+															isReadOnly
+																? [
+																		{
+																			name: "View",
+																			handler: () => {
+																				navigate(`${row.id}`);
+																			},
+																			isDelete: false,
+																		},
+																  ]
+																: [
+																		{
+																			name: "Edit",
+																			handler: () => {
+																				navigate(`${row.id}`);
+																			},
+																			isDelete: false,
+																		},
+																		{
+																			name: "Delete",
+																			handler: handleDeleteDialogOpen,
+																			isDelete: true,
+																		},
+																  ]
+														}
 													/>
 												</AT.DotMenu>
 											) : null}

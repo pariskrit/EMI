@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import API from "helpers/api";
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Subcat from "./Subcat";
-import NewSubcat from "./NewSubcat";
-import ErrorAlert from "../ErrorAlert";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
+import Subcat from "pages/Applications/Pauses/EditDialog/Subcat";
+import NewSubcat from "pages/Applications/Pauses/EditDialog/NewSubcat";
+import ErrorAlert from "pages/Applications/Pauses/ErrorAlert";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import DeleteDialog from "components/Elements/DeleteDialog";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -28,10 +33,10 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, alert: null };
 const defaultStateSchema = { name: "" };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
-});
+}));
 const defaultDelete = { delete: false, sub: {} };
 
 const EditPauseDialog = ({
@@ -44,7 +49,7 @@ const EditPauseDialog = ({
 	handleUpdateSubcatStateName,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -52,6 +57,7 @@ const EditPauseDialog = ({
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [deleteInfo, setDeleteInfo] = useState(defaultDelete);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -130,7 +136,7 @@ const EditPauseDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
+			dispatch(showError("Failed to edit pause reason."));
 
 			setIsUpdating(false);
 			closeOverride();
@@ -183,10 +189,28 @@ const EditPauseDialog = ({
 						<AED.HeaderText>Edit Pause Reason</AED.HeaderText>
 					</DialogTitle>
 					<AED.ButtonContainer>
-						<AED.CancelButton onClick={closeOverride} variant="contained">
+						<AED.CancelButton
+							onClick={closeOverride}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</AED.CancelButton>
-						<AED.ConfirmButton variant="contained" onClick={handleSave}>
+						<AED.ConfirmButton
+							variant="contained"
+							onClick={handleSave}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Save
 						</AED.ConfirmButton>
 					</AED.ButtonContainer>

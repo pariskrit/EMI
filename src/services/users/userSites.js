@@ -39,6 +39,17 @@ export const postClientUserSiteApps = async (payload) => {
 	}
 };
 
+export const getClientUserId = async (id) => {
+	try {
+		let response = await API.get(
+			`${Apis.ClientUserSitesApps}/getByUserId/${id}`
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
 export const updateClientUserSiteAppsStatus = async (id, payload) => {
 	try {
 		let response = await API.patch(

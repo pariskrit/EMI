@@ -1,15 +1,18 @@
-import Typography from "@material-ui/core/Typography";
-import CheckIcon from "@material-ui/icons/Check";
+import Typography from "@mui/material/Typography";
+import CheckIcon from "@mui/icons-material/Check";
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import clsx from "clsx";
+//
+import { makeStyles } from "tss-react/mui";
 import {
 	DROPDOWN_LEFT_OFFSET,
 	DROPDOWN_RIGHT_OFFSET,
 	DROPDOWN_TOP_OFFSET,
 } from "helpers/constants";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 function Dropdown(props) {
 	const {
@@ -29,7 +32,11 @@ function Dropdown(props) {
 	const [originalFilteredList, setOriginalFilteredList] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const focusRef = useRef(false);
-
+	const [mouseDown, setMouseDown] = useState(false);
+	const [dropActive, setDropActive] = useState(false);
+	const dispatch = useDispatch();
+	const useStyles = makeStyles()((theme) => ({}));
+	const { cx } = useStyles();
 	useEffect(() => {
 		setFilteredList(options);
 		setOriginalFilteredList(options);
@@ -68,11 +75,10 @@ function Dropdown(props) {
 		)[0];
 		let dropbox = document.getElementsByClassName("dropbox active")[0];
 		let isClickInside =
-			specifiedElement?.contains(event.target) ||
-			dropbox?.contains(event.target);
+			specifiedElement?.contains(event?.target) ||
+			dropbox?.contains(event?.target);
 		let parentEl = document.getElementsByClassName("dropdown active")[0];
 		if (!isClickInside) {
-			//setDropActive(false);
 			if (dropbox) dropbox.classList.remove("active");
 			if (parentEl) parentEl.classList.remove("active");
 			if (specifiedElement) {
@@ -83,6 +89,7 @@ function Dropdown(props) {
 				"MuiDialogContent-root"
 			)[0];
 			if (dailogContent) dailogContent.style.overflow = "auto";
+			setDropActive(false);
 		}
 	};
 
@@ -91,7 +98,6 @@ function Dropdown(props) {
 			"dropdown-expand active"
 		)[0];
 		if (specifiedElement) {
-			//specifiedElement.style.left = `${DROPDOWN_LEFT_OFFSET}px`;
 			if (
 				window.innerWidth - specifiedElement.getBoundingClientRect().right <
 				50
@@ -132,19 +138,11 @@ function Dropdown(props) {
 		if (parentEl) parentEl.classList.add("active");
 		const dropdownExpandEl = parentEl.querySelector(".dropdown-expand");
 		if (dropdownExpandEl) dropdownExpandEl.classList.add("active");
-		//setDropActive(true);
+		setDropActive(true);
 		focusRef.current.focus();
 
 		onFilter("");
 
-		// setDropUpward(
-		// 	window.innerHeight - el.getBoundingClientRect().bottom < 300
-		// 		? false
-		// 		: true
-		// );
-		// setDropSideway(
-		// 	window.innerWidth - el.getBoundingClientRect().right < 150 ? false : true
-		// );
 		if (dropdownExpandEl) {
 			dropdownExpandEl.style.position = "fixed";
 			const dropdownPos = parentEl?.getBoundingClientRect();
@@ -173,10 +171,6 @@ function Dropdown(props) {
 				}px`;
 			}
 		}
-		// const dailogContent = document.getElementsByClassName(
-		// 	"MuiDialogContent-root"
-		// )[0];
-		// if (dailogContent) dailogContent.style.overflow = "visible";
 	};
 
 	const removeActiveDropdown = () => {
@@ -189,6 +183,8 @@ function Dropdown(props) {
 		let parentEl = document.getElementsByClassName("dropdown active")[0];
 		if (parentEl) parentEl.classList.remove("active");
 		if (specifiedElement) specifiedElement.classList.remove("active");
+
+		setDropActive(false);
 	};
 
 	const handleApiCall = async () => {
@@ -208,11 +204,85 @@ function Dropdown(props) {
 				}))
 			);
 		} catch (error) {
-			console.log(error);
+			dispatch(showError(`Failed to fetch data.`));
 		} finally {
 			setIsLoading(false);
 		}
 	};
+
+	const handleMouseDown = (event) => {
+		setMouseDown(true);
+	};
+
+	useEffect(() => {
+		let active = null;
+		// Get the Selected Dropdown Item Element, if any, when dropdown opens
+		if (dropActive && !isLoading) {
+			active = document.querySelector(".dropdown-expand.active   .selected");
+			document.addEventListener("keydown", onKeyPress);
+		}
+
+		function onKeyPress(event) {
+			// Store the selected dropdown item or hovering dropdown item on every keypress. Required for changing the hovering item when pressing up or down.
+			const onHoverPresent =
+				active ??
+				document.querySelector(".dropdown-expand.active   .hoverOver");
+
+			// If no selected item or hovering item present then set hover state to the first element
+			if (!onHoverPresent) {
+				const firstChildElement = document.querySelector(
+					".dropdown-expand.active  .drop-list"
+				)?.firstChild;
+				active = firstChildElement;
+				active?.classList && active.classList.add("hoverOver");
+			}
+
+			// If hover state present then change hover state on up and down key.
+			if (active && onHoverPresent) {
+				active?.classList && active.classList.remove("hoverOver");
+				if (event.keyCode === 40) {
+					active = active.nextElementSibling || active;
+
+					active.scrollIntoView({
+						behavior: "smooth",
+						block: "end",
+					});
+				} else if (event.keyCode === 38) {
+					active = active.previousElementSibling || active;
+					active.scrollIntoView({
+						behavior: "smooth",
+						block: "end",
+					});
+				} else if (event.keyCode === 13) {
+					if (active.classList.contains("list-item")) {
+						active.click();
+					}
+					return;
+				}
+
+				active?.classList && active.classList.add("hoverOver");
+			}
+
+			setMouseDown(false);
+		}
+
+		const onTabPress = (e) => {
+			if (e.keyCode === 9) {
+				setMouseDown(false);
+			}
+		};
+
+		document.addEventListener("keydown", onTabPress);
+		document.addEventListener("mousedown", handleMouseDown);
+
+		return () => {
+			document.removeEventListener("keydown", onKeyPress);
+			document.removeEventListener("keydown", onTabPress);
+			document.removeEventListener("mousedown", handleMouseDown);
+
+			active?.classList && active.classList.remove("hoverOver");
+		};
+	}, [dropActive, isLoading]);
 	return (
 		<div
 			className="dropdown"
@@ -223,11 +293,11 @@ function Dropdown(props) {
 				onClick={
 					isReadOnly
 						? null
-						: (event) => {
+						: async (event) => {
 								handleDrpdwnClick(event);
 								!isReadOnly &&
 									originalFilteredList?.length === 0 &&
-									handleApiCall();
+									(await handleApiCall());
 						  }
 				}
 			>
@@ -239,10 +309,21 @@ function Dropdown(props) {
 				)}
 
 				<div
-					className={clsx("inputbox flex justify-between", [
-						isError && "error",
-					])}
+					className={cx("inputbox flex justify-between", [isError && "error"])}
 					style={{ width }}
+					tabIndex={0}
+					onFocus={
+						isReadOnly
+							? null
+							: async (event) => {
+									if (!mouseDown) {
+										handleDrpdwnClick(event);
+										!isReadOnly &&
+											originalFilteredList?.length === 0 &&
+											(await handleApiCall());
+									}
+							  }
+					}
 				>
 					<span>
 						{selectedValue && selectedValue.label ? (
@@ -256,10 +337,18 @@ function Dropdown(props) {
 			</div>
 			{/* {dropActive && ( */}
 			<div
-				className={clsx({
+				className={cx({
 					"dropdown-expand": true,
 					//active: dropActive,
 				})}
+				onBlur={() => {
+					if (!mouseDown) {
+						removeActiveDropdown();
+					}
+					return;
+				}}
+				tabIndex={"0"}
+				role="button"
 			>
 				<div className="search-box flex justify-between">
 					<div className="input-field flex">
@@ -271,6 +360,7 @@ function Dropdown(props) {
 							onChange={(e) => onFilter(e.target.value)}
 							id="dropdown-search-input"
 							ref={focusRef}
+							autoComplete={"off"}
 						/>
 					</div>
 
@@ -287,6 +377,8 @@ function Dropdown(props) {
 								key={list.value}
 								onClick={() => {
 									onChange(list);
+									setDropActive(false);
+
 									removeActiveDropdown();
 								}}
 							>

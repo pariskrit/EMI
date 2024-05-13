@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CircularProgress, Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress, Grid } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import Details from "./Details";
 import Notes from "./Notes";
 import Settings from "./Settings";
@@ -24,9 +26,12 @@ import NewVersionPopUp from "./NewVersionPopUp";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import ConfirmChangeDialog from "components/Elements/ConfirmChangeDialog";
 import TabTitle from "components/Elements/TabTitle";
-import { modelDetail } from "helpers/routePaths";
+import { coalesc } from "helpers/utils";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { DetailPage } from "services/History/models";
+import { HistoryCaptions } from "helpers/constants";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	detailContainer: {
 		marginTop: 25,
 	},
@@ -67,8 +72,7 @@ function ModelDetailContent({
 	access,
 	isMounted,
 }) {
-	console.log(state);
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isLoading, setIsLoading] = useState(true);
 	const [modelDetailsData, setModelDetailsData] = useState({
 		modelDepartments: [],
@@ -97,7 +101,7 @@ function ModelDetailContent({
 		} else {
 			reduxDispatch(
 				showError(
-					response.data || response.data?.detail || "Could not revert version"
+					response?.data || response?.data?.detail || "Could not revert version"
 				)
 			);
 		}
@@ -139,18 +143,19 @@ function ModelDetailContent({
 		position.siteAppID,
 		reduxDispatch,
 		state.modelDetail,
-		isMounted,
+		isMounted.aborted,
 		modelDefaultId,
+		modelId,
 	]);
 
 	useEffect(() => {
-		if (
-			Object.keys(modelDetailsData).every(
-				(prop) => modelDetailsData[prop].length === 0
-			)
-		)
-			fetchAllData();
-	}, [fetchAllData, modelDetailsData]);
+		// if (
+		// 	Object.keys(modelDetailsData).every(
+		// 		(prop) => modelDetailsData[prop].length === 0
+		// 	)
+		// )
+		fetchAllData();
+	}, [fetchAllData, modelId]);
 
 	useEffect(() => {
 		setModelDetailsData({
@@ -166,12 +171,13 @@ function ModelDetailContent({
 	// checking the access of the user to allow or disallow edit add.
 	const isReadOnly = access === "R";
 	const isEditOnly = access === "E";
-
 	return (
 		<>
 			{state && application.name && (
 				<TabTitle
-					title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} | ${application.name}`}
+					title={`${state?.modelDetail?.name} ${coalesc(
+						state?.modelDetail?.modelName
+					)} | ${application.name}`}
 				/>
 			)}
 			<ConfirmChangeDialog
@@ -191,6 +197,16 @@ function ModelDetailContent({
 				open={state.showVersion}
 				onClose={() => dispatch({ type: "TOOGLE_VERSION", payload: false })}
 			/>
+
+			<HistoryBar
+				id={modelId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					DetailPage(id, pageNumber, pageSize)
+				}
+				origin={HistoryCaptions.modelVersions}
+			/>
 			<div className={classes.detailContainer}>
 				<AutoFitContentInScreen loading={isLoading}>
 					<Grid container spacing={2}>
@@ -207,7 +223,7 @@ function ModelDetailContent({
 							<Departments
 								listOfDepartment={modelDetailsData.modelDepartments}
 								customCaptions={customCaptions}
-								modelId={modelDefaultId}
+								modelId={modelId}
 								isReadOnly={isReadOnly}
 								isPublished={state?.modelDetail?.isPublished}
 							/>
@@ -219,6 +235,7 @@ function ModelDetailContent({
 						</Grid>
 						<Grid item lg={6} md={6} xs={12}>
 							<Settings
+								Ctxdispatch={dispatch}
 								data={modelDetailsData?.details}
 								customCaptions={customCaptions}
 								isReadOnly={isReadOnly || state?.modelDetail?.isPublished}
@@ -227,6 +244,7 @@ function ModelDetailContent({
 								imageUrl={modelDetailsData?.details?.imageURL}
 								thumbnailURL={modelDetailsData?.details?.thumbnailURL}
 								modelId={modelId}
+								customCaptions={customCaptions}
 								isReadOnly={
 									isReadOnly || state?.modelDetail?.isPublished || isEditOnly
 								}
@@ -236,6 +254,7 @@ function ModelDetailContent({
 								modelId={modelDefaultId}
 								documents={modelDetailsData.modelDocuments}
 								isReadOnly={isReadOnly || isEditOnly}
+								customCaptions={customCaptions}
 							/>
 						</Grid>
 					</Grid>

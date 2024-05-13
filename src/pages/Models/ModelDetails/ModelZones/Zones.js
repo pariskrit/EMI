@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import React, { useEffect, useState } from "react";
@@ -22,6 +22,10 @@ import {
 	ModelZoneTableHeader,
 } from "constants/modelDetails";
 import TabTitle from "components/Elements/TabTitle";
+import { coalesc, commonScrollElementIntoView } from "helpers/utils";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { ZonesPage } from "services/History/models";
+import { HistoryCaptions } from "helpers/constants";
 
 function Zones({ modelId, state, dispatch, access, isMounted }) {
 	// init states
@@ -194,18 +198,34 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 	};
 
 	const createModalZone = async (input) => {
-		console.log(input);
 		return await addNewModelZone({
 			Name: input.Name,
 			ModelVersionID: input.ModelVersionID,
 			defaultSiteAssetFilter: input.defaultSiteAssetFilter,
 		});
 	};
+	const handleItemClick = (id) => {
+		dispatch({ type: "TOGGLE_HISTORYBAR" });
+
+		commonScrollElementIntoView(`zone-${id}`, "zoneEl");
+	};
 
 	return (
 		<div>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${customCaptions.zone} | ${application.name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${customCaptions.zonePlural} | ${application.name}`}
+			/>
+			<HistoryBar
+				id={modelId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					ZonesPage(id, pageNumber, pageSize)
+				}
+				OnAddItemClick={handleItemClick}
+				origin={HistoryCaptions.modelVersionZones}
 			/>
 			<ImageViewer
 				open={openImage}
@@ -250,6 +270,7 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 				deleteID={selectedID}
 				handleRemoveData={handleRemoveData}
 			/>
+
 			{loading ? (
 				<CircularProgress />
 			) : (
@@ -274,6 +295,8 @@ function Zones({ modelId, state, dispatch, access, isMounted }) {
 								access === "R" ||
 								state?.modelDetail?.isPublished
 							}
+							type="zone"
+							classEl="zoneEl"
 							menuData={[
 								{
 									name: "Edit",

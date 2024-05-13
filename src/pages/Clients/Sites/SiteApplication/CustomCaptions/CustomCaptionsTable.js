@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import ColourConstants from "helpers/colourConstants";
 import CustomCaptionRow from "./CustomCaptionRow";
 
 // Init styled components
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -29,7 +30,7 @@ const useStyles = makeStyles({
 	headerRow: {
 		width: "33%",
 	},
-});
+}));
 
 const CustomCaptionsTable = ({
 	data,
@@ -38,8 +39,7 @@ const CustomCaptionsTable = ({
 	handleUpdateCustomCaption,
 }) => {
 	// Init hooks
-	const classes = useStyles();
-
+	const { classes, cx } = useStyles();
 	// Init State
 	const [searchedData, setSearchedData] = useState([]);
 
@@ -74,6 +74,17 @@ const CustomCaptionsTable = ({
 			pluralKey: "locationPlural",
 			pluralValue: data.locationPluralCC,
 			pluralDefault: defaultData.locationPlural,
+
+			indents: 0,
+		},
+
+		{
+			singularKey: "arrangement",
+			singularValue: data.arrangementCC,
+			singularDefault: defaultData.arrangement,
+			pluralKey: "arrangementPlural",
+			pluralValue: data.arrangementPluralCC,
+			pluralDefault: defaultData.arrangementPlural,
 
 			indents: 0,
 		},
@@ -286,6 +297,16 @@ const CustomCaptionsTable = ({
 
 			indents: 1,
 		},
+		{
+			singularKey: "permit",
+			singularValue: data.permitCC,
+			singularDefault: defaultData.permit,
+			pluralKey: "permitPlural",
+			pluralValue: data.permitCC,
+			pluralDefault: defaultData.permitPlural,
+
+			indents: 1,
+		},
 
 		{
 			singularKey: "workbook",
@@ -473,6 +494,16 @@ const CustomCaptionsTable = ({
 
 			indents: 0,
 		},
+		{
+			singularKey: "serialNumberRange",
+			singularValue: data.serialNumberRangeCC,
+			singularDefault: defaultData.serialNumberRange,
+			pluralKey: "serialNumberRangePlural",
+			pluralValue: data.serialNumberRangePluralCC,
+			pluralDefault: defaultData.serialNumberRangePlural,
+
+			indents: 0,
+		},
 
 		{
 			singularKey: "developerName",
@@ -505,6 +536,16 @@ const CustomCaptionsTable = ({
 			pluralDefault: defaultData.tutorialPlural,
 
 			indents: 0,
+		},
+		{
+			singularKey: "notificationNumber",
+			singularValue: data.notificationNumberCC,
+			singularDefault: defaultData.notificationNumber,
+			pluralKey: "notificationNumberPlural",
+			pluralValue: data.notificationNumberPluralCC,
+			pluralDefault: defaultData.notificationNumberPlural,
+
+			indents: 1,
 		},
 
 		{
@@ -591,6 +632,16 @@ const CustomCaptionsTable = ({
 			pluralKey: "positionPlural",
 			pluralValue: data.positionPluralCC,
 			pluralDefault: defaultData.positionPlural,
+
+			indents: 1,
+		},
+		{
+			singularKey: "userReference",
+			singularValue: data.userReferenceCC,
+			singularDefault: defaultData.userReference,
+			pluralKey: "userReferencePlural",
+			pluralValue: data.userReferencePluralCC,
+			pluralDefault: defaultData.userReferencePlural,
 
 			indents: 1,
 		},
@@ -694,17 +745,6 @@ const CustomCaptionsTable = ({
 		},
 
 		{
-			singularKey: "type",
-			singularValue: data.typeCC,
-			singularDefault: defaultData.type,
-			pluralKey: "typePlural",
-			pluralValue: data.typePluralCC,
-			pluralDefault: defaultData.typePlural,
-
-			indents: 1,
-		},
-
-		{
 			singularKey: "riskRating",
 			singularValue: data.riskRatingCC,
 			singularDefault: defaultData.riskRating,
@@ -803,10 +843,10 @@ const CustomCaptionsTable = ({
 				// Searching fields
 				const results = customCaptionInputs.filter((CC) => {
 					return [
-						CC.singularDefault,
-						CC.singularValue,
-						CC.pluralDefault,
-						CC.pluralValue,
+						CC?.singularDefault,
+						CC?.singularValue,
+						CC?.pluralDefault,
+						CC?.pluralValue,
 					].some((el) => el.toLowerCase().includes(searchQuery.toLowerCase()));
 				});
 
@@ -832,7 +872,7 @@ const CustomCaptionsTable = ({
 					<AT.TableHead>
 						<TableRow>
 							<TableCell
-								className={clsx(
+								className={cx(
 									classes.headerRow,
 									classes.tableHeadRow,
 									classes.rowWithRightRow
@@ -842,7 +882,7 @@ const CustomCaptionsTable = ({
 							</TableCell>
 
 							<TableCell
-								className={clsx(
+								className={cx(
 									classes.headerRow,
 									classes.tableHeadRow,
 									classes.rowWithRightRow
@@ -854,7 +894,7 @@ const CustomCaptionsTable = ({
 							</TableCell>
 
 							<TableCell
-								className={clsx(classes.headerRow, classes.tableHeadRow)}
+								className={cx(classes.headerRow, classes.tableHeadRow)}
 							>
 								<AT.CellContainer>
 									Custom Caption (Plural Value)
@@ -866,15 +906,15 @@ const CustomCaptionsTable = ({
 						{(searchQuery === "" ? customCaptionInputs : searchedData).map(
 							(CC) => (
 								<CustomCaptionRow
-									key={CC.singularKey}
-									singularKey={CC.singularKey}
-									singularValue={CC.singularValue}
-									singularDefault={CC.singularDefault}
-									pluralKey={CC.pluralKey}
-									pluralValue={CC.pluralValue}
-									pluralDefault={CC.pluralDefault}
+									key={CC?.singularKey}
+									singularKey={CC?.singularKey}
+									singularValue={CC?.singularValue}
+									singularDefault={CC?.singularDefault}
+									pluralKey={CC?.pluralKey}
+									pluralValue={CC?.pluralValue}
+									pluralDefault={CC?.pluralDefault}
 									handleUpdateCustomCaption={handleUpdateCustomCaption}
-									indents={CC.indents}
+									indents={CC?.indents}
 								/>
 							)
 						)}

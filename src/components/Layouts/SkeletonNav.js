@@ -1,8 +1,8 @@
 import React from "react";
-import { Skeleton } from "@material-ui/lab";
-import { makeStyles } from "@material-ui/core";
+import { Skeleton } from "@mui/lab";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	line: {
 		height: "12px",
 		width: "100%",
@@ -48,10 +48,10 @@ const useStyles = makeStyles({
 	rectBox: {
 		margin: "auto",
 	},
-});
+}));
 
 const SkeletonNav = () => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<>

@@ -1,4 +1,6 @@
 import {
+	appPath,
+	modelArrangement,
 	modelAssest,
 	modelIntervals,
 	modelQuestions,
@@ -15,7 +17,7 @@ import {
  */
 const ModelDetailNavigation = (id, detail, customCaptions) => {
 	// Setting navigation links with correct Model Detail ID
-	const links = `${modelsPath}/${id}`;
+	const links = `${appPath}${modelsPath}/${id}`;
 	const navigation = [
 		{
 			name: `Details`,
@@ -24,6 +26,12 @@ const ModelDetailNavigation = (id, detail, customCaptions) => {
 		{
 			name: `${customCaptions?.assetPlural} (${detail?.assetCount || 0})`,
 			url: links + modelAssest,
+		},
+		{
+			name: `${customCaptions?.arrangementPlural || "Arrangements"} (${
+				detail?.arrangementCount || 0
+			})`,
+			url: links + modelArrangement,
 		},
 		{
 			name: `${customCaptions?.stagePlural} (${detail?.stageCount || 0})`,

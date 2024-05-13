@@ -7,14 +7,15 @@ import { handleSort } from "helpers/utils";
 import { useSearch } from "hooks/useSearch";
 import React, { useCallback, useEffect, useState } from "react";
 //import ContentStyle from "styles/application/ContentStyle";
-import CommonBody from "../CommonBody";
+import CommonBody from "components/Modules/CommonBody";
 // Icon Import
-import AddDialog from "./AddDialog";
-import EditDialog from "./EditDialog";
+import AddDialog from "components/Modules/SingleColumnTableCommonComponent/AddDialog";
+import EditDialog from "components/Modules/SingleColumnTableCommonComponent/EditDialog";
 
 // Show Default
 import DefaultDialog from "components/Elements/DefaultDialog";
 import TabTitle from "components/Elements/TabTitle";
+import { showError } from "redux/common/actions";
 
 const CommonContent = ({
 	id,
@@ -49,6 +50,7 @@ const CommonContent = ({
 	const {
 		defaultCustomCaptionsData,
 		details: { data },
+		isReadOnly,
 	} = state;
 
 	// Show Default
@@ -86,7 +88,7 @@ const CommonContent = ({
 			return false;
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id, setIs404]);
+	}, [id, setIs404, apis]);
 
 	const handleAddData = (d) => {
 		const newData = [...allData];
@@ -154,7 +156,9 @@ const CommonContent = ({
 
 				setHaveData(true);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				dispatch(showError(`Failed to load ${pluralCaption ?? "data"}.`))
+			);
 	}, [handleGetData]);
 
 	useEffect(() => {
@@ -216,7 +220,9 @@ const CommonContent = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(
+				showError(`Failed to update default ${singleCaption ?? "data"}.`)
+			);
 
 			return false;
 		}
@@ -242,17 +248,15 @@ const CommonContent = ({
 					}
 				} catch (err) {
 					// TODO: real error handling
-					console.log(err);
+					dispatch(
+						showError(err?.details ?? `Failed to load application details.`)
+					);
 					return false;
 				}
 			};
 
 			// Getting application and updating state
-			getApplicationData()
-				.then(() => {
-					console.log("application name updated");
-				})
-				.catch((err) => console.log(err));
+			getApplicationData();
 		}
 		// eslint-disable-next-line
 	}, []);
@@ -272,7 +276,11 @@ const CommonContent = ({
 				<TabTitle
 					title={`${state?.details.data.application.name} ${
 						state?.defaultCustomCaptionsData[pluralCaption.default]
-							? state.defaultCustomCaptionsData[pluralCaption.default]
+							? pluralCaption.default === "tool"
+								? `Missing ${state.defaultCustomCaptionsData.part} or ${
+										state.defaultCustomCaptionsData[pluralCaption.default]
+								  } Reasons `
+								: state.defaultCustomCaptionsData[pluralCaption.default]
 							: ""
 					}`}
 				/>
@@ -429,6 +437,7 @@ const CommonContent = ({
 						searchQuery={searchQuery}
 						searchedData={searchedData}
 						isLoading={loading}
+						isReadOnly={isReadOnly}
 						menuData={
 							showDefault
 								? [

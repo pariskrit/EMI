@@ -5,8 +5,8 @@ import {
 	DialogTitle,
 	LinearProgress,
 	Link,
-	makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import { CSVLink } from "react-csv";
 import { BASE_API_PATH } from "helpers/constants";
 import DropUpload from "components/Elements/DropUploadBox";
@@ -16,12 +16,13 @@ import { useDispatch } from "react-redux";
 import { showNotications } from "redux/notification/actions";
 import { showError } from "redux/common/actions";
 import { DownloadCSVTemplate } from "services/services/serviceLists";
+import { findWindows } from "windows-iana";
 
 const AT = AddDialogStyle();
 
 const media = "@media (max-width:414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	content: {
 		display: "flex",
 		flexDirection: "column",
@@ -41,7 +42,7 @@ const useStyles = makeStyles({
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
 const ImportFileDialouge = ({
 	open,
@@ -49,7 +50,7 @@ const ImportFileDialouge = ({
 	importSuccess,
 	siteAppID,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
@@ -67,7 +68,7 @@ const ImportFileDialouge = ({
 			const DownloadImportCSVTemplate = async () => {
 				const response = await DownloadCSVTemplate();
 				if (response.status) {
-					setTemplateCSV(response.data);
+					setTemplateCSV(response?.data);
 				}
 			};
 			DownloadImportCSVTemplate();
@@ -82,18 +83,23 @@ const ImportFileDialouge = ({
 	const importDocument = async (Key, imp) => {
 		setFetchLoading(true);
 		try {
+			const result = findWindows(
+				Intl.DateTimeFormat().resolvedOptions().timeZone
+			);
+
 			const response = await API.post(`${BASE_API_PATH}Services/import`, {
 				Key,
 				SiteAppID: siteAppID,
 				import: imp,
+				timeZone: result?.[0]?.toString(),
 			});
 			if (response.status === 201 || response.status === 200) {
 				await importSuccess();
 				return response;
 			} else {
-				if (response.data.detail) {
+				if (response?.data?.detail) {
 					if (!isCancellled.current) {
-						dispatch(showError(response.data.detail || "Failed To Import"));
+						dispatch(showError(response?.data?.detail || "Failed To Import"));
 					}
 					return { success: false };
 				}
@@ -111,13 +117,17 @@ const ImportFileDialouge = ({
 		}
 	};
 
-	const onDocumentUpload = async (key, url) => {
-		importDocument(key, true).then(async (res) => {
-			setShow(true);
-			closeOverride();
-			setShowProgress(true);
-			isCancellled.current = false;
-		});
+	const onDocumentUpload = async (key, url, res) => {
+		if (res) await importDocument(key, true);
+		else {
+			setFetchLoading(false);
+			setLoading(false);
+			setUploadPercentCompleted(0);
+		}
+		setShow(true);
+		closeOverride();
+		setShowProgress(true);
+		isCancellled.current = false;
 	};
 
 	useEffect(() => {

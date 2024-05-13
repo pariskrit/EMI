@@ -1,7 +1,8 @@
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
+import { makeStyles } from "tss-react/mui";
 import React from "react";
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	textColor: {
 		color: ColourConstants.commonText,
 	},
@@ -16,7 +17,7 @@ const useStyles = makeStyles({
 		fontSize: "16px",
 		fontWeight: "bold",
 	},
-});
+}));
 
 const ModalHeader = ({
 	modelName,
@@ -26,7 +27,7 @@ const ModalHeader = ({
 	taskName,
 	questionName,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
 		<Box className={classes.textColor}>
 			<Typography className={classes.header}>{modelName}</Typography>

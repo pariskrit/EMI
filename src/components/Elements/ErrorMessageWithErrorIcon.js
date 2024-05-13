@@ -1,7 +1,7 @@
 import React from "react";
-import ErrorIcon from "@material-ui/icons/Error";
-import { withStyles } from "@material-ui/core/styles";
-import { Tooltip } from "@material-ui/core";
+import ErrorIcon from "@mui/icons-material/Error";
+import { withStyles } from "@mui/styles";
+import { Tooltip } from "@mui/material";
 
 const HtmlTooltip = withStyles((theme) => ({
 	tooltip: {

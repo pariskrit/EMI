@@ -4,10 +4,14 @@ import {
 	DialogTitle,
 	LinearProgress,
 	TextField,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
 
@@ -27,7 +31,7 @@ const ADD = AddDialogStyle();
 const defaultData = { quantity: 0, name: "", description: "" };
 const defaultError = { quantity: null, name: null, description: null };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -35,13 +39,14 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [isUpdating, setIsUpdating] = useState(false);
+	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		setInput(defaultData);
@@ -66,8 +71,8 @@ const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
 
 			setIsUpdating(false);
 		} catch (err) {
-			console.log(err);
 			setIsUpdating(false);
+			dispatch(showError("Failed to add new " + captions?.part));
 			closeOverride();
 		}
 	};
@@ -114,6 +119,11 @@ const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
 			<DialogContent className={classes.dialogContent}>
 				<div style={{ marginBottom: "10px" }}>
 					<TextField
+						sx={{
+							"& .MuiInputBase-input.Mui-disabled": {
+								WebkitTextFillColor: "#000000",
+							},
+						}}
 						label="Quantity"
 						error={errors.quantity === null ? false : true}
 						helperText={errors.quantity === null ? null : errors.quantity}
@@ -126,6 +136,11 @@ const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
 				</div>
 				<div style={{ marginBottom: "10px" }}>
 					<TextField
+						sx={{
+							"& .MuiInputBase-input.Mui-disabled": {
+								WebkitTextFillColor: "#000000",
+							},
+						}}
 						label="Name"
 						error={errors.name === null ? false : true}
 						helperText={errors.name === null ? null : errors.name}
@@ -137,6 +152,11 @@ const AddNoteDialog = ({ open, handleClose, createHandler, captions }) => {
 
 				<div style={{ marginBottom: "10px" }}>
 					<TextField
+						sx={{
+							"& .MuiInputBase-input.Mui-disabled": {
+								WebkitTextFillColor: "#000000",
+							},
+						}}
 						label="Description"
 						fullWidth
 						onChange={(e) =>

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import API from "helpers/api";
 import SubcatStyle from "styles/application/SubcatStyle";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AS = SubcatStyle();
@@ -18,6 +20,7 @@ const Subcat = ({
 	const [isEdit, setIsEdit] = useState(false);
 	const [subcatName, setSubcatName] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	const handleShowEdit = () => {
 		setSubcatName(sub.name);
@@ -66,6 +69,7 @@ const Subcat = ({
 				throw new Error(result);
 			}
 		} catch (err) {
+			dispatch(showError("Failed to edit pause reason subcategory."));
 			// Handling duplicate subcat error
 			if (
 				err.response.data.detail !== undefined ||
@@ -85,8 +89,6 @@ const Subcat = ({
 				return false;
 			} else {
 				// TODO: handle non validation errors here
-				console.log(err);
-
 				setIsEdit(false);
 				setIsUpdating(false);
 			}

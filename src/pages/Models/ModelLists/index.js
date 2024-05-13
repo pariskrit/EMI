@@ -1,18 +1,21 @@
 import { handleSort } from "helpers/utils";
-import { CircularProgress, LinearProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "tss-react/mui";
+import Typography from "@mui/material/Typography";
 import {
 	addModal,
 	duplicateModal,
+	getClientDetail,
 	getListOfModelVersions,
 	getModelImports,
 	getModelList,
+	getModelStatuses,
+	transferModel,
 } from "services/models/modelList";
 import React, { useState, useCallback, useEffect } from "react";
 import ContentStyle from "styles/application/ContentStyle";
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import ModelsListTable from "./ModelsListTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -30,12 +33,26 @@ import RoleWrapper from "components/Modules/RoleWrapper";
 import AccessWrapper from "components/Modules/AccessWrapper";
 import roles from "helpers/roles";
 import TabTitle from "components/Elements/TabTitle";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
+import { getSiteDepartmentsInService } from "services/services/serviceLists";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import { useRef } from "react";
+import mainAccess from "helpers/access";
+
+import {
+	MODEL_STORAGE_DEPARTMENT,
+	MODEL_STORAGE_STATUS,
+} from "helpers/constants";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { useOutletContext } from "react-router-dom";
+import ShareModal from "./ShareModal";
+import { handleSiteAppClick } from "helpers/handleSiteAppClick";
 
 const AC = ContentStyle();
 
 const media = "@media(max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	listActions: {
 		marginBottom: 30,
 	},
@@ -74,7 +91,10 @@ const useStyles = makeStyles({
 		left: 0,
 		top: 0,
 	},
-});
+	filter: {
+		display: "flex",
+	},
+}));
 
 const debounce = (func, delay) => {
 	let timer;
@@ -88,19 +108,20 @@ const debounce = (func, delay) => {
 	};
 };
 
-const ModelLists = ({ getError, isMounted, access }) => {
-	const classes = useStyles();
+const ModelLists = ({ getError, isMounted }) => {
+	const { classes } = useStyles();
 	useSuperAdminExclude();
 	//Init State
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
-
 	const [deleteID, setDeleteID] = useState(null);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openVersionTableDialog, setOpenVersionTableDialog] = useState(false);
 	const [openAddNewModal, setOpenAddNewModal] = useState(false);
 	const [openDuplicateModal, setOpenDuplicateModal] = useState(false);
+	const [openShareModel, setOpenShareModel] = useState(false);
 	const [duplicateModalData, setDuplicateModalData] = useState({});
+	const [shareModelData, setShareModellData] = useState({});
 	const [modelVersions, setModelVersions] = useState([]);
 	const [allData, setAllData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
@@ -109,10 +130,50 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const [modelImportData, setModelImportData] = useState([]);
 	const [searching, setSearching] = useState(false);
 	const [activeModelVersion, setActiveModelVersion] = useState(null);
-
-	const { position, application, customCaptions } =
+	const [modelStatuses, setModelStatuses] = useState([]);
+	const [siteDepartments, setSiteDepartments] = useState([]);
+	const [siteAppState, setSiteAppState] = useState(null);
+	const me =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
+	const {
+		position,
+		application,
+		customCaptions,
+		siteID,
+		siteAppID,
+		site: { siteDepartmentID, siteDepartmentName, clientID },
+	} = me;
+
+	const [shareModelsFromApi, setShareModelsFromApi] = useState(0);
+	useEffect(() => {
+		const fetchClient = async () => {
+			await dispatch(handleSiteAppClick(siteAppID, true));
+			setShareModelsFromApi(application.shareModels);
+		};
+		fetchClient();
+	}, [clientID, application, siteAppID]);
+
+	const isSharableModel = shareModelsFromApi === 1 || shareModelsFromApi === 2;
+	const { access } = useOutletContext();
+
+	// get service list filters from local storage for memorized dropdown filter
+	const statusFromMemory = JSON.parse(
+		sessionStorage.getItem(MODEL_STORAGE_STATUS)
+	);
+	const departmentFromMemory = JSON.parse(
+		sessionStorage.getItem(MODEL_STORAGE_DEPARTMENT)
+	);
+
+	const [selectedStatus, setSelectedStatus] = useState(
+		statusFromMemory === null ? { id: "", name: "Show All" } : statusFromMemory
+	);
+
+	const [selectedDepartment, setSelectedDepartment] = useState(
+		departmentFromMemory === null
+			? { id: siteDepartmentID, name: siteDepartmentName }
+			: departmentFromMemory
+	);
 
 	//display error popup
 	const displayError = (errorMessage, response) =>
@@ -141,7 +202,12 @@ const ModelLists = ({ getError, isMounted, access }) => {
 	const handleSearch = debounce(
 		async (searchValue) => {
 			setSearching(true);
-			await fetchModelList(searchValue);
+			searchRef.current = searchValue;
+			await fetchModelList(
+				searchValue,
+				selectedStatus?.id,
+				selectedDepartment?.id
+			);
 			setSearching(false);
 		},
 		[1000]
@@ -151,13 +217,37 @@ const ModelLists = ({ getError, isMounted, access }) => {
 		setDuplicateModalData(modalToDuplicate);
 		setOpenDuplicateModal(true);
 	};
-
-	const fetchModelList = async (searchTxt = "") => {
-		const response = await getModelList(position?.siteAppID || 24, searchTxt);
+	const onShareModelOpen = (modalToShare) => {
+		setShareModellData(modalToShare);
+		setOpenShareModel(true);
+	};
+	const searchRef = useRef("");
+	const fetchModelList = async (
+		searchTxt = "",
+		modelStatusID = selectedStatus.id || "",
+		siteDepartmentID = selectedDepartment.id || ""
+	) => {
+		const response = await getModelList(
+			position?.siteAppID || 24,
+			searchTxt,
+			modelStatusID,
+			siteDepartmentID
+		);
 		if (!isMounted.aborted) {
 			if (response.status) {
-				setAllData(response.data);
-				setFilteredData(response.data);
+				const newData = response.data.map((d) => ({
+					...d,
+					serialNumberRange: d?.serialNumberRange ?? "",
+					fullName:
+						d?.name +
+						" " +
+						(d?.modelName === null || d?.modelName === undefined
+							? ""
+							: d?.modelName),
+				}));
+
+				setAllData(newData);
+				setFilteredData(newData);
 			} else {
 				displayError(response?.data?.errors?.siteAppId[0], response);
 			}
@@ -170,11 +260,19 @@ const ModelLists = ({ getError, isMounted, access }) => {
 		return await addModal(payload);
 	};
 
-	const onDuplicateModal = async () => {
+	const onDuplicateModal = async (payload) => {
 		return await duplicateModal({
-			modelId: duplicateModalData.id,
-			modelVersionId: duplicateModalData.devModelVersionID,
+			modelId: duplicateModalData?.id,
+			modelVersionId: duplicateModalData?.devModelVersionID,
+			name: payload?.name,
+			modelName: payload?.modelName,
+			modelTypeId: payload?.modelTypeID,
+			type: payload?.type,
+			serialNumberRange: payload?.serialNumberRange,
 		});
+	};
+	const onShareModel = async (payload) => {
+		return await transferModel(payload);
 	};
 
 	const onViewVersionTableOpen = async (id) => {
@@ -200,7 +298,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 		const response = await getModelImports(position?.siteAppID || 24);
 		if (!isMounted.aborted) {
 			if (response.status) {
-				setModelImportData(response.data);
+				setModelImportData(response?.data);
 			} else {
 				displayError(response?.data?.errors?.siteAppId[0], response);
 			}
@@ -211,10 +309,88 @@ const ModelLists = ({ getError, isMounted, access }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	// handling onChange for 2 dropdowns
+	const onDropdownChange = async (type, selectedItem) => {
+		setSearching(true);
+		if (type === "department" && selectedItem.id !== selectedDepartment.id) {
+			sessionStorage.setItem(
+				MODEL_STORAGE_DEPARTMENT,
+				JSON.stringify(selectedItem)
+			);
+			setSelectedDepartment(selectedItem);
+			await fetchModelList(
+				searchRef.current,
+				selectedStatus?.id,
+				selectedItem?.id
+			);
+		}
+		// is a status dropdown and the selectedItem is different from the previously selected
+		if (type === "status" && selectedItem.id !== selectedStatus.id) {
+			sessionStorage.setItem(
+				MODEL_STORAGE_STATUS,
+				JSON.stringify(selectedItem)
+			);
+			setSelectedStatus(selectedItem);
+			await fetchModelList(
+				searchRef.current,
+				selectedItem?.id,
+				selectedDepartment?.id
+			);
+		}
+		setSearching(false);
+	};
+	//to get the state of current application--applicatioin.showLubricants and so on.
+	const fetchSiteApplicationDetails = async () => {
+		const result = await getSiteApplicationDetail(siteAppID);
+		setSiteAppState(result);
+	};
+
 	useEffect(() => {
-		Promise.all([fetchModelList(), fetchModelImports()]);
+		fetchSiteApplicationDetails();
+		const fetchData = async () => {
+			const [, , modelStats, siteDepts] = await Promise.all([
+				fetchModelList(),
+				fetchModelImports(),
+				getModelStatuses(siteAppID),
+				getSiteDepartmentsInService(siteID),
+			]);
+			if (modelStats.status) {
+				setModelStatuses([{ id: "", name: "Show All" }, ...modelStats.data]);
+			}
+			if (siteDepts.status) {
+				setSiteDepartments([{ id: "", name: "Show All" }, ...siteDepts.data]);
+			}
+		};
+		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	//to set the table header and column
+	const ModelListHeader = [
+		// customCaptions?.make,
+		// customCaptions?.model,
+		customCaptions?.modelTemplate,
+		customCaptions?.modelType,
+		"Status",
+		"Latest Version",
+		"Active Version",
+		"Review Date",
+	];
+
+	const ModelListColumn = [
+		"fullName",
+		"modelType",
+		"status",
+		"devModelVersion",
+		"activeModelVersion",
+		"reviewDate",
+	];
+
+	//Hide Serial Number Range column of model list if the Application.ShowSerialNumberRange property is false.
+	if (siteAppState?.data?.application?.showSerialNumberRange) {
+		ModelListHeader.splice(3, 0, customCaptions?.serialNumberRange);
+		ModelListColumn.splice(3, 0, "serialNumberRange");
+	}
 	return (
 		<div className="container">
 			<TabTitle title={`${customCaptions.model} | ${application.name}`} />
@@ -223,7 +399,7 @@ const ModelLists = ({ getError, isMounted, access }) => {
 				closeHandler={() => setOpenAddNewModal(false)}
 				siteId={position?.siteAppID}
 				data={null}
-				title="Add Model"
+				title="Add "
 				createProcessHandler={createModal}
 			/>
 			<CommonModal
@@ -231,9 +407,18 @@ const ModelLists = ({ getError, isMounted, access }) => {
 				closeHandler={() => setOpenDuplicateModal(false)}
 				siteId={position?.siteAppID}
 				data={duplicateModalData}
-				title={"Duplicate " + customCaptions?.modelTemplate}
+				title={"Duplicate "}
 				createProcessHandler={onDuplicateModal}
 				isDuplicate
+			/>
+			<ShareModal
+				open={openShareModel}
+				closeHandler={() => setOpenShareModel(false)}
+				siteId={position?.siteAppID}
+				data={shareModelData}
+				title={"Transfer "}
+				createProcessHandler={onShareModel}
+				isSharableModel={shareModelsFromApi}
 			/>
 
 			<DeleteDialog
@@ -267,14 +452,14 @@ const ModelLists = ({ getError, isMounted, access }) => {
 						gutterBottom
 					>
 						{allData.length === 0 ? (
-							<strong>{"Model List"}</strong>
+							<strong>{` ${customCaptions?.model} List `}</strong>
 						) : (
-							<strong>{`Model List (${allData.length})`}</strong>
+							<strong>{`${customCaptions?.model} List (${allData.length})`}</strong>
 						)}
 					</Typography>
 
 					<div className={classes.buttonContainer}>
-						<RoleWrapper roles={[roles.clientAdmin]}>
+						<RoleWrapper roles={[roles.siteUser]}>
 							<AccessWrapper access={access} accessList={["E"]}>
 								<GeneralButton
 									style={{ backgroundColor: "#ed8738" }}
@@ -295,23 +480,82 @@ const ModelLists = ({ getError, isMounted, access }) => {
 						</AccessWrapper>
 					</div>
 				</div>
-				<ModalAwaitingImports modelImportData={modelImportData} />
-
-				<AC.SearchContainer>
-					<AC.SearchInner className="applicationSearchBtn">
-						<Grid container spacing={1} alignItems="flex-end">
-							<Grid item>
-								<SearchIcon />
-							</Grid>
-							<Grid item>
-								<AC.SearchInput
-									onChange={(e) => handleSearch(e.target.value)}
-									label="Search"
-								/>
-							</Grid>
+				<ModalAwaitingImports
+					modelImportData={modelImportData}
+					customCaptions={customCaptions}
+					isReadOnly={position?.[mainAccess.modelAccess] === "R"}
+				/>
+				<div className={classes.filter}>
+					<Grid container spacing={2}>
+						<Grid item lg={6} md={6} xs={12}>
+							<DyanamicDropdown
+								dataSource={modelStatuses}
+								columns={[{ name: "name", id: 1, minWidth: "130px" }]}
+								columnsMinWidths={[140, 140, 140, 140, 140]}
+								showHeader={false}
+								width="100%"
+								placeholder={`Select Status`}
+								onChange={(item) => onDropdownChange("status", item)}
+								selectdValueToshow="name"
+								selectedValue={selectedStatus}
+								label={`Filter by Status`}
+								isServerSide={false}
+								icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
+								required={false}
+								showBorderColor
+								// hasGroup
+							/>
 						</Grid>
-					</AC.SearchInner>
-				</AC.SearchContainer>
+						<Grid item lg={6} md={6} xs={12}>
+							<DyanamicDropdown
+								dataSource={siteDepartments}
+								dataHeader={[
+									{
+										id: 1,
+										name: `${customCaptions?.department ?? "Department"}`,
+									},
+									{
+										id: 2,
+										name: `${customCaptions?.location ?? "Location"}`,
+									},
+								]}
+								showHeader
+								columns={[
+									{ id: 1, name: "name" },
+									{ id: 2, name: "description" },
+								]}
+								columnsMinWidths={[140, 140, 140, 140, 140]}
+								placeholder={`Select Department`}
+								width="100%"
+								onChange={(item) => onDropdownChange("department", item)}
+								selectdValueToshow="name"
+								selectedValue={selectedDepartment}
+								label={`Filter by ${customCaptions.department}`}
+								isServerSide={false}
+								icon={<FilterListIcon style={{ color: "rgb(48, 122, 215)" }} />}
+								required={false}
+								showBorderColor
+							/>
+						</Grid>
+					</Grid>
+
+					<AC.SearchContainer>
+						<AC.SearchInner className="applicationSearchBtn">
+							<Grid container spacing={1} alignItems="flex-end">
+								<Grid item>
+									<SearchIcon />
+								</Grid>
+								<Grid item>
+									<AC.SearchInput
+										variant="standard"
+										onChange={(e) => handleSearch(e.target.value)}
+										label="Search"
+									/>
+								</Grid>
+							</Grid>
+						</AC.SearchInner>
+					</AC.SearchContainer>
+				</div>
 			</div>
 			{searching && <LinearProgress />}
 			{isLoading ? (
@@ -321,55 +565,18 @@ const ModelLists = ({ getError, isMounted, access }) => {
 					data={filteredData}
 					access={access}
 					headers={
-						application?.showModel
-							? [
-									// customCaptions?.make,
-									// customCaptions?.model,
-									customCaptions?.modelTemplate,
-									customCaptions?.modelType,
-									"Status",
-									"Serial Number Range",
-									"Latest Version",
-									"Active Version",
-									"Review Date",
-							  ]
-							: [
-									// customCaptions?.make,
-									customCaptions?.modelTemplate,
-									customCaptions?.modelType,
-									"Status",
-									"Serial Number Range",
-									"Latest Version",
-									"Active Version",
-									"Review Date",
-							  ]
+						application?.allowIndividualAssetModels
+							? ModelListHeader
+							: ModelListHeader
 					}
-					columns={
-						application?.showModel
-							? [
-									["name", "modelName"],
-									"modelType",
-									"status",
-									"serialNumberRange",
-									"devModelVersion",
-									"activeModelVersion",
-									"reviewDate",
-							  ]
-							: [
-									["name"],
-									"modelType",
-									"status",
-									"serialNumberRange",
-									"devModelVersion",
-									"activeModelVersion",
-									"reviewDate",
-							  ]
-					}
+					columns={ModelListColumn}
 					setData={setFilteredData}
 					handleSort={handleSort}
 					handleDeleteDialogOpen={handleDeleteDialogOpen}
 					handleDuplicateModalOpen={onDuplicateModalOpen}
+					handleShareModelOpen={onShareModelOpen}
 					handleViewVersionModalOpen={onViewVersionTableOpen}
+					isSharableModel={isSharableModel}
 				/>
 			)}
 		</div>

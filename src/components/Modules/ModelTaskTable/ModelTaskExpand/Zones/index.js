@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import withMount from "components/HOC/withMount";
 import { ModelContext } from "contexts/ModelDetailContext";
@@ -15,6 +15,7 @@ import {
 	removeModelTaskZone,
 } from "services/models/modelDetails/modelTaskZones";
 import TaskZoneListTable from "./TaskZoneListTable";
+import { updateModelTaskAssets } from "helpers/setModelTaskDom";
 
 const Zones = ({ taskInfo, access, isMounted }) => {
 	const { id } = taskInfo;
@@ -32,9 +33,8 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 		customCaptions,
 		position: { siteAppID },
 		siteID,
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
 
 	// checking the access of the user to allow or disallow edit add.
 	const isReadOnly = access === "R";
@@ -100,6 +100,9 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 				perPage,
 				search
 			);
+			if (!response.status) {
+				throw new Error("Failed to fetch data");
+			}
 			if (!isMounted.aborted) {
 				if (search) {
 					setSiteAssest((prev) =>
@@ -178,15 +181,8 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 						fetchModelTaskZones(false);
 						document
 							.getElementById(`taskExpandable${taskInfo.id}`)
-							.querySelector(`#dataCellzones > div >p`).innerHTML = zones
-							.map((z) =>
-								z.modelVersionZoneID === modelVersionZoneID
-									? { ...z, id: true }
-									: z
-							)
-							.filter((x) => Boolean(x.id))
-							.map((x) => x.name)
-							.join(",");
+							.querySelector(`#dataCellzones > div >p`).innerHTML =
+							response?.data?.zones;
 						return;
 					} else {
 						setZones(originalZones);
@@ -232,15 +228,10 @@ const Zones = ({ taskInfo, access, isMounted }) => {
 
 						document
 							.getElementById(`taskExpandable${taskInfo.id}`)
-							.querySelector(`#dataCellzones > div >p`).innerHTML = zones
-							.map((z) =>
-								z.modelVersionZoneID === modelVersionZoneID
-									? { ...z, id: null }
-									: z
-							)
-							.filter((x) => Boolean(x.id))
-							.map((x) => x.name)
-							.join(",");
+							.querySelector(`#dataCellzones > div >p`).innerHTML =
+							response?.data?.zones;
+						updateModelTaskAssets(response?.data?.assets, taskInfo.id);
+
 						return;
 					} else {
 						setZones(originalZones);

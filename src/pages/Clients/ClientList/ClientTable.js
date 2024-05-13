@@ -1,20 +1,22 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { clientsPath } from "helpers/routePaths";
+import { getLocalStorageData } from "helpers/utils";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import { shareModelsOptions } from "helpers/constants";
 
 // Init styled components
 const AT = TableStyle();
@@ -22,7 +24,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -60,20 +62,20 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
-});
+}));
 
 const ClientTable = ({
 	data,
 	setData,
 	handleSort,
 	searchQuery,
-	handleDeleteDialogOpen,
+	handleStatusChangeDialogOpen,
 	searchedData,
 	setSearchedData,
 }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Init State
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -83,7 +85,10 @@ const ClientTable = ({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		handleSort(data, setData, field, newMethod);
@@ -97,6 +102,49 @@ const ClientTable = ({
 		setCurrentTableSort([field, newMethod]);
 	};
 
+	const { adminType } = getLocalStorageData("me");
+
+	const isReseller = adminType === RESELLER_ID;
+
+	const getDynamicmenuData = (row) => {
+		const initialMenu = [
+			{
+				name: "Edit",
+				handler: () => {
+					navigate(`${row.id}`);
+				},
+				isDelete: false,
+			},
+		];
+
+		if (!isReseller) {
+			initialMenu.push({
+				name: row.isActive ? "Make Inactive" : "Make active",
+				handler: () => {
+					handleStatusChangeDialogOpen(row.id, row.isActive);
+				},
+				isDelete: false,
+			});
+		}
+		if (isReseller && row.isActive) {
+			initialMenu.push({
+				name: "Make Inactive",
+				handler: () => {
+					handleStatusChangeDialogOpen(row.id, row.isActive);
+				},
+				isDelete: false,
+			});
+		}
+
+		return initialMenu;
+	};
+
+	//get the name of shareModels Label
+	function getShareModelName(value) {
+		const shareModelType = shareModelsOptions.find((x) => x.value === value);
+		return shareModelType.label;
+	}
+
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>
 			<Table aria-label="Table">
@@ -106,7 +154,7 @@ const ClientTable = ({
 							onClick={() => {
 								handleSortClick("name");
 							}}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.selectedTableHeadRow]: currentTableSort[0] === "name",
 								[classes.tableHeadRow]: currentTableSort[0] !== "name",
 							})}
@@ -114,6 +162,47 @@ const ClientTable = ({
 							<AT.CellContainer>
 								Name
 								{currentTableSort[0] === "name" &&
+								currentTableSort[1] === "desc" ? (
+									<AT.DefaultArrow fill="#FFFFFF" />
+								) : (
+									<AT.DescArrow fill="#FFFFFF" />
+								)}
+							</AT.CellContainer>
+						</TableCell>
+						<TableCell
+							onClick={() => {
+								handleSortClick("shareModels");
+							}}
+							className={cx(classes.clientsRow, {
+								[classes.selectedTableHeadRow]:
+									currentTableSort[0] === "shareModels",
+								[classes.tableHeadRow]: currentTableSort[0] !== "shareModels",
+							})}
+						>
+							<AT.CellContainer>
+								Model Sharing
+								{currentTableSort[0] === "shareModels" &&
+								currentTableSort[1] === "desc" ? (
+									<AT.DefaultArrow fill="#FFFFFF" />
+								) : (
+									<AT.DescArrow fill="#FFFFFF" />
+								)}
+							</AT.CellContainer>
+						</TableCell>
+
+						<TableCell
+							onClick={() => {
+								handleSortClick("status");
+							}}
+							className={cx(classes.clientsRow, {
+								[classes.selectedTableHeadRow]:
+									currentTableSort[0] === "status",
+								[classes.tableHeadRow]: currentTableSort[0] !== "status",
+							})}
+						>
+							<AT.CellContainer>
+								Status
+								{currentTableSort[0] === "status" &&
 								currentTableSort[1] === "desc" ? (
 									<AT.DefaultArrow fill="#FFFFFF" />
 								) : (
@@ -129,19 +218,42 @@ const ClientTable = ({
 							<TableCell
 								component="th"
 								scope="row"
-								className={clsx(classes.dataCell, classes.nameRow, {
+								className={cx(classes.dataCell, classes.nameRow, {
 									[classes.lastCell]: index === data.length - 1,
 								})}
 							>
 								<AT.CellContainer>
 									<AT.TableBodyText>
-										<Link
-											className={classes.nameLink}
-											to={`${clientsPath}/${row.id}`}
-										>
+										<Link className={classes.nameLink} to={`${row.id}`}>
 											{row.name}
 										</Link>
 									</AT.TableBodyText>
+								</AT.CellContainer>
+							</TableCell>
+							<TableCell
+								component="th"
+								scope="row"
+								className={cx(classes.dataCell, classes.nameRow, {
+									[classes.lastCell]: index === data.length - 1,
+								})}
+							>
+								<AT.CellContainer>
+									<AT.TableBodyText>
+										<>{getShareModelName(row.shareModels)}</>
+									</AT.TableBodyText>
+								</AT.CellContainer>
+							</TableCell>
+							<TableCell
+								className={cx(classes.dataCell, {
+									[classes.lastCell]: index === data.length - 1,
+								})}
+							>
+								<AT.CellContainer>
+									{row.isActive ? (
+										<p style={{ color: ColourConstants.black }}>Active</p>
+									) : (
+										<p style={{ color: ColourConstants.red }}>Inactive</p>
+									)}
 
 									<AT.DotMenu
 										onClick={(e) => {
@@ -171,20 +283,7 @@ const ClientTable = ({
 												setAnchorEl(null);
 												setSelectedData(null);
 											}}
-											menuData={[
-												{
-													name: "Edit",
-													handler: () => {
-														history.push(`${clientsPath}/${row.id}`);
-													},
-													isDelete: false,
-												},
-												{
-													name: "Delete",
-													handler: handleDeleteDialogOpen,
-													isDelete: true,
-												},
-											]}
+											menuData={getDynamicmenuData(row)}
 										/>
 									</AT.DotMenu>
 								</AT.CellContainer>

@@ -1,14 +1,16 @@
 import React from "react";
 import TableStyle from "styles/application/TableStyle";
-import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
-import clsx from "clsx";
+
 import SiteRow from "./SiteRow";
 
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -38,7 +40,7 @@ const useStyles = makeStyles({
 	dataCell: {
 		height: 40,
 	},
-});
+}));
 
 function UserSiteListTable({
 	data,
@@ -47,10 +49,10 @@ function UserSiteListTable({
 	clientUserID,
 	fetchUserSites,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
-		<AT.TableContainer>
+		<AT.TableContainer style={{ overflow: "visible" }}>
 			<Table aria-label="Table">
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
@@ -58,7 +60,7 @@ function UserSiteListTable({
 							<TableCell
 								key={header.id}
 								style={{ width: header?.width || "auto" }}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.tableHeadRow]: true,
 								})}
 							>

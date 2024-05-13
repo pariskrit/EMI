@@ -1,10 +1,10 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	main: {
 		display: "flex",
 		alignItems: "center",
@@ -17,12 +17,12 @@ const useStyles = makeStyles({
 		textAlign: "center",
 		cursor: "pointer",
 	},
-});
+}));
 
 const PageNotFound = ({ message = "404 Page Not Found" }) => {
-	const history = useHistory();
-	const classes = useStyles();
-	const handleGoBack = () => history.goBack();
+	const navigate = useNavigate();
+	const { classes, } = useStyles();
+	const handleGoBack = () => navigate(-1);
 
 	return (
 		<div className={classes.main}>

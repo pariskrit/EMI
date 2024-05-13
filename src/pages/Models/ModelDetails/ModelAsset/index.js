@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { CircularProgress, Grid, LinearProgress } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { CircularProgress, Grid, LinearProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import CommonApplicationTable from "./AssestTable";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -14,17 +16,23 @@ import { showError } from "redux/common/actions";
 import AddModel from "./AddModel";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import TabTitle from "components/Elements/TabTitle";
+import { coalesc, commonScrollElementIntoView } from "helpers/utils";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { AssetsPage } from "services/History/models";
+import { HistoryCaptions } from "helpers/constants";
+import { getModelVersionAvailableArrangments } from "services/models/modelDetails/modelArrangements";
+import EditArrangement from "./EditArrangement";
 
 const AC = ContentStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	loading: {
 		position: "absolute",
 		width: "100%",
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
 const ModelAsset = ({
 	state,
@@ -36,14 +44,14 @@ const ModelAsset = ({
 	modelDefaultId,
 }) => {
 	const {
-		customCaptions: { asset, assetPlural, modelTemplate },
+		customCaptions: { asset, assetPlural, modelTemplate, arrangement },
 		position: { serviceAccess },
 		application,
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
 
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	const [data, setData] = useState([]);
 	const [searchedData, setSearchedData] = useState([]);
@@ -51,6 +59,14 @@ const ModelAsset = ({
 	const [loading, setLoading] = useState(false);
 	const [deleteAsset, setDelete] = useState({ open: false, id: null });
 	const [isEditingActive, setIsEditingActive] = useState(false);
+	const [arrangementDatas, setArrangementsData] = useState(undefined);
+	const [arrangementEditData, setArrangementEditData] = useState(undefined);
+	const [openArrangementEdit, setOpenArrangementEdit] = useState(false);
+
+	const handleArrangementEdit = (val) => {
+		setOpenArrangementEdit(true);
+		setArrangementEditData(val);
+	};
 
 	const fetchModelAsset = async (showLoading = true) => {
 		showLoading && setLoading(true);
@@ -75,6 +91,22 @@ const ModelAsset = ({
 	};
 
 	React.useEffect(() => {
+		const fetchArrangements = async () => {
+			try {
+				const result = await getModelVersionAvailableArrangments(
+					modelDefaultId
+				);
+				if (result.status) {
+					setArrangementsData(result?.data);
+				}
+			} catch (err) {
+				dispatch(showError("Failed to fetch Arrangments data"));
+			}
+		};
+		fetchArrangements();
+	}, [modelDefaultId, dispatch]);
+
+	React.useEffect(() => {
 		fetchModelAsset();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -94,12 +126,16 @@ const ModelAsset = ({
 			...responseData,
 			status: responseData.isActive ? "Active" : "Inactive",
 		});
-
 		setData(main);
 		dispatch({
 			type: "TAB_COUNT",
 			payload: { countTab: "assetCount", data: main.length },
 		});
+	};
+
+	const handleArrangementClose = () => {
+		setOpenArrangementEdit(false);
+		setArrangementEditData(undefined);
 	};
 
 	const handleClose = () => {
@@ -149,24 +185,61 @@ const ModelAsset = ({
 	}
 
 	if (state?.modelDetail?.modelType === "F") {
-		history.goBack();
+		navigate(-1);
 	}
+
+	const handleItemClick = (id) => {
+		dispatch({ type: "TOGGLE_HISTORYBAR" });
+
+		commonScrollElementIntoView(`asset-${id}`, "assetEl");
+	};
 
 	return (
 		<>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${asset} | ${application.name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${assetPlural} | ${application.name}`}
+			/>
+			<HistoryBar
+				id={modelDefaultId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					AssetsPage(id, pageNumber, pageSize)
+				}
+				OnAddItemClick={handleItemClick}
+				origin={HistoryCaptions.modelAssets}
 			/>
 			{isEditingActive && <LinearProgress className={classes.loading} />}
+
+			<EditArrangement
+				open={openArrangementEdit}
+				editData={arrangementEditData}
+				isEdit={arrangementEditData}
+				handleClose={handleArrangementClose}
+				title={arrangement}
+				fetchModelAsset={fetchModelAsset}
+				arrangementDatas={arrangementDatas}
+			/>
 			<AddModel
 				open={state.showAdd}
 				handleClose={handleClose}
 				modelId={modelDefaultId}
+				editData={arrangementEditData}
 				getError={getError}
 				title={asset}
+				isEdit={arrangementEditData}
+				arrangementTitle={arrangement}
 				handleAddComplete={handleAddComplete}
 				serviceAccess={serviceAccess}
 				fetchModelAsset={fetchModelAsset}
+				arrangementDatas={arrangementDatas}
+				hideArrangements={
+					!application?.showArrangements ||
+					state?.modelDetail?.modelType === "F" ||
+					arrangementDatas?.length === 0
+				}
 			/>
 
 			<DeleteDialog
@@ -191,6 +264,7 @@ const ModelAsset = ({
 							</Grid>
 							<Grid item>
 								<AC.SearchInput
+									variant="standard"
 									onChange={(e) => handleSearch(e.target.value)}
 									label="Search"
 								/>
@@ -204,11 +278,12 @@ const ModelAsset = ({
 				setData={setData}
 				searchedData={searchedData}
 				searchQuery={searchQuery}
-				headers={[`${asset}`, "Description", "Status"]}
-				columns={["name", "description", "status"]}
+				headers={[`${asset}`, "Description", "Arrangement", "Status"]}
+				columns={["name", "description", "arrangementName", "status"]}
 				access={access}
 				handleEdit={handleEdit}
 				handleDelete={handleDelete}
+				handleArrangementEdit={handleArrangementEdit}
 				menuData={[
 					{
 						name: "Edit",

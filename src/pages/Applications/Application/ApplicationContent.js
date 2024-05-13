@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ContentStyle from "styles/application/ContentStyle";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Grid from "@material-ui/core/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/material/Grid";
 import ApplicationActionButtons from "./ApplicationActionButtons";
 import NavButtons from "components/Elements/NavButtons";
 import ApplicationDetails from "./ApplicationDetails";
@@ -11,10 +11,14 @@ import ColourDetails from "./ColourDetails";
 // import SmallNavLogo from "./SmallNavLogo";
 import API from "helpers/api";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "helpers/utils";
+import {
+	handleValidateObj,
+	generateErrorState,
+	getLocalStorageData,
+} from "helpers/utils";
 import "./application2.css";
 import NavDetails from "components/Elements/NavDetails";
-import { applicationListPath } from "helpers/routePaths";
+import { appPath, applicationListPath } from "helpers/routePaths";
 import AlertColor from "./alertColor";
 import AssetUpload from "./ApplicationAssetUpload";
 import {
@@ -23,8 +27,12 @@ import {
 	uploadMobileWhiteSmallAppLogo,
 	uploadSmallAppLogo,
 	uploadWaterMark,
+	uploadNavigationLogo,
 } from "services/applications/detailsScreen/application";
 import TabTitle from "components/Elements/TabTitle";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { RESELLER_ID } from "constants/UserConstants/indes";
 
 // Init styled components
 const AC = ContentStyle();
@@ -45,6 +53,9 @@ const schema = yup.object({
 		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
 	showLubricants: yup
+		.boolean("This field must be a boolean (true or false)")
+		.required("This field is required"),
+	showArrangements: yup
 		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
 	showParts: yup
@@ -82,11 +93,15 @@ const defaultErrorSchema = {
 	showOperatingMode: null,
 	showSystem: null,
 	showDefectParts: null,
+	showArrangements: null,
 	colour: null,
 	logoKey: null,
 	logoFilename: null,
+	navigationLogoKey: null,
+	navigationLogoURL: null,
 	isLogoTrademarked: null,
 	logoURL: null,
+	allowRegisterAssetsForServices: null,
 };
 const defaultStateSchema = {
 	name: "",
@@ -99,15 +114,19 @@ const defaultStateSchema = {
 	showOperatingMode: false,
 	showSystem: false,
 	showDefectParts: false,
+	showArrangements: false,
 	colour: "",
 	logoKey: "",
 	logoFilename: "",
+	navigationLogoKey: "",
+	navigationLogoURL: "",
 	isLogoTrademarked: false,
 	logoURL: "",
+	allowRegisterAssetsForServices: false,
 };
 
 const ApplicationContent = ({ navigation, id, setIs404 }) => {
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	// Init state
 	const [isLoading, setIsLoading] = useState(true);
@@ -121,6 +140,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 	// isActive state is being patched on change (this is closer to the eventual autosave
 	// future plan)
 	const [isActive, setIsActive] = useState(false);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const handleSave = async (lKey, lName) => {
@@ -230,8 +250,6 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 			} else {
 				// TODO: Handle non-validation errors
 				setIsSaving(false);
-
-				console.log(err);
 				return false;
 			}
 		}
@@ -240,8 +258,10 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 		setIsActive(updatedIsActive);
 	};
 	const handleRedirect = (id) => {
-		history.push(`${applicationListPath}/${id}`);
+		navigate(`${applicationListPath}/${id}`);
 	};
+
+	const { adminType } = getLocalStorageData("me");
 
 	// Fetching data after pageload
 	useEffect(() => {
@@ -270,6 +290,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 						showModel: result.showModel,
 						showSerialNumberRange: result.showSerialNumberRange,
 						showParts: result.showParts,
+						showArrangements: result.showArrangements,
 						showOperatingMode: result.showOperatingMode,
 						showSystem: result.showSystem,
 						showDefectParts: result.showDefectParts,
@@ -278,11 +299,15 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 						logoFilename: result.logoFilename,
 						isLogoTrademarked: result.isLogoTrademarked,
 						logoURL: result.logoURL,
+						navigationLogoKey: result.navigationLogoKey,
+						navigationLogoURL: result.navigationLogoURL,
 						alertColor: `#${result.alertColor}`,
 						watermarkURL: result.watermarkURL,
 						mobileWhiteAppLogoURL: result.mobileWhiteAppLogoURL,
 						mobileSmallWhiteAppLogoURL: result.mobileSmallWhiteAppLogoURL,
 						smallLogoURL: result.smallLogoURL,
+						allowRegisterAssetsForServices:
+							result.allowRegisterAssetsForServices,
 					};
 
 					// Updating state
@@ -300,7 +325,8 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 				}
 			} catch (err) {
 				// TODO: real handling of errors
-				console.log(err);
+				dispatch(showError("Failed to load data."));
+
 				return;
 			}
 		};
@@ -308,6 +334,8 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 		// Calling fetch function
 		fetchData();
 	}, [id, setIs404]);
+
+	const isReadOnly = adminType === RESELLER_ID;
 
 	// Loading spinner while awaiting data. Otherwise, render screen
 	if (isLoading) {
@@ -323,7 +351,11 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 				<AC.TopContainer className="applicationNav">
 					<NavDetails
 						staticCrumbs={[
-							{ id: 1, name: "Applications", url: applicationListPath },
+							{
+								id: 1,
+								name: "Applications",
+								url: appPath + applicationListPath,
+							},
 							{ id: 2, name: data.name },
 						]}
 					/>
@@ -336,6 +368,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 						// TODO: Below will come from state when the field exists
 						currentStatus={isActive}
 						handleUpdateIsActive={handleUpdateIsActive}
+						adminType={adminType}
 					/>
 				</AC.TopContainer>
 
@@ -344,7 +377,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 					applicationName={data.name}
 					current="Details"
 				/>
-				<Grid container>
+				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<ApplicationDetails
 							inputData={inputData}
@@ -352,6 +385,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							setInputData={setInputData}
 							errors={errors}
 							id={id}
+							adminType={adminType}
 						/>
 					</Grid>
 
@@ -361,6 +395,16 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							inputColour={inputData.colour}
 							setInputColour={setInputData}
 							id={id}
+							isReadOnly={isReadOnly}
+						/>
+					</Grid>
+
+					<Grid item xs={6} className="desktopViewGrid">
+						<AlertColor
+							inputColour={inputData.alertColor}
+							setInputColour={setInputData}
+							id={id}
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -371,14 +415,18 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							uploadToS3={uploadAppLogo}
 							title="Application Logo"
 							titleKey="logoKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
 					<Grid item xs={6} className="desktopViewGrid">
-						<AlertColor
-							inputColour={inputData.alertColor}
-							setInputColour={setInputData}
+						<AssetUpload
+							imageUrl={inputData.navigationLogoURL}
 							id={id}
+							uploadToS3={uploadNavigationLogo}
+							title="Navigation Logo"
+							titleKey="navigationLogoKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -389,6 +437,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							uploadToS3={uploadWaterMark}
 							title="Watermark"
 							titleKey="watermarkKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -400,6 +449,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							title="Small Navigation Logo"
 							titleKey="smallLogoKey"
 							paddingStyle={{ paddingRight: "2%" }}
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -410,6 +460,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							uploadToS3={uploadMobileWhiteAppLogo}
 							title="Mobile White App Logo"
 							titleKey="mobileWhiteAppLogoKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -421,6 +472,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							title="Mobile Small White App Logo"
 							titleKey="mobileSmallWhiteAppLogoKey"
 							paddingStyle={{ paddingRight: "2%" }}
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -430,6 +482,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							inputColour={inputData.colour}
 							setInputColour={setInputData}
 							id={id}
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
@@ -437,6 +490,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							inputColour={inputData.alertColor}
 							setInputColour={setInputData}
 							id={id}
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
@@ -446,6 +500,17 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							uploadToS3={uploadAppLogo}
 							title="Application Logo"
 							titleKey="logoKey"
+							isReadOnly={isReadOnly}
+						/>
+					</Grid>
+					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
+						<AssetUpload
+							imageUrl={inputData.logoURL}
+							id={id}
+							uploadToS3={uploadNavigationLogo}
+							title="Navigation Logo"
+							titleKey="navigationLogoKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
@@ -456,6 +521,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							title="Small Navigation Logo"
 							titleKey="smallLogoKey"
 							paddingStyle={{ paddingRight: "2%" }}
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 					<Grid item xs={12} className="mobileViewGridWithDiffDisplay">
@@ -465,6 +531,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							uploadToS3={uploadWaterMark}
 							title="Watermark"
 							titleKey="watermarkKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -475,6 +542,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							uploadToS3={uploadMobileWhiteAppLogo}
 							title="Mobile White App Logo"
 							titleKey="mobileWhiteAppLogoKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 
@@ -485,6 +553,7 @@ const ApplicationContent = ({ navigation, id, setIs404 }) => {
 							uploadToS3={uploadMobileWhiteSmallAppLogo}
 							title="Mobile Small White App Logo"
 							titleKey="mobileSmallWhiteAppLogoKey"
+							isReadOnly={isReadOnly}
 						/>
 					</Grid>
 				</Grid>

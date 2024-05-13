@@ -1,7 +1,10 @@
 import React from "react";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
+import { ModelContext } from "contexts/ModelDetailContext";
+import { useContext } from "react";
 
 function ListTable({
+	service,
 	data,
 	handleEdit,
 	handleDelete,
@@ -12,6 +15,8 @@ function ListTable({
 	access,
 	disable,
 }) {
+	const [state] = useContext(ModelContext);
+
 	return (
 		<DragAndDropTable
 			data={data}
@@ -42,7 +47,7 @@ function ListTable({
 					isDelete: false,
 				},
 				{
-					name: "Switch To Service Layout",
+					name: `Switch To ${service} Layout`,
 					handler: handleServiceLayout,
 					isDelete: false,
 				},
@@ -52,6 +57,11 @@ function ListTable({
 					isDelete: true,
 				},
 			].filter((x) => {
+				if (state?.modelDetail?.isPublished) {
+					return (
+						x?.name === "Copy" || x?.name === `Switch To ${service} Layout`
+					);
+				}
 				if (disable) return false;
 				if (access === "F") return true;
 				if (access === "E") {

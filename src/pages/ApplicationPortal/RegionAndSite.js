@@ -1,17 +1,19 @@
 import React from "react";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import ArrowIcon from "assets/icons/arrowIcon.svg";
-import { Link } from "react-router-dom";
-import { modelsPath } from "helpers/routePaths";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import { makeStyles } from "tss-react/mui";
 
+import Typography from "@mui/material/Typography";
+import ArrowIcon from "assets/icons/arrowIcon.svg";
+
+import { useDispatch } from "react-redux";
+
+import { handleSiteAppClick } from "helpers/handleSiteAppClick";
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	accordionParent: {
 		borderStyle: "solid",
 		borderColor: "#000000",
@@ -33,6 +35,8 @@ const useStyles = makeStyles((theme) => ({
 		borderTop: "1px solid rgba(0, 0, 0, .125)",
 		padding: "14px 20px",
 		alignItems: "center",
+		display:'flex',
+		justifyContent:'start'
 	},
 	regionText: {
 		fontWeight: "bold",
@@ -57,21 +61,22 @@ const useStyles = makeStyles((theme) => ({
 	},
 	siteLink: {
 		color: "#307AD6",
-		margin: "0 4px",
+		fontSize: "1rem",
+		fontWeight: "400",
+		lineHeight: "1.5",
+		border: "none",
+		textDecoration: "underline",
+		backgroundColor: "transparent",
+		"&:hover": {
+			cursor: "pointer",
+		},
 	},
 }));
 
 function RegionAndSite({ region, sites }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
+	const dispatch = useDispatch();
 
-	const handleSiteAppClick = async (id) => {
-		localStorage.setItem("siteAppId", id);
-		localStorage.setItem(
-			"clientUserId",
-			sessionStorage.getItem("clientUserId")
-		);
-		localStorage.setItem("isAdmin", sessionStorage.getItem("isAdmin"));
-	};
 	return (
 		<Accordion className={classes.accordionParent} defaultExpanded>
 			<AccordionSummary
@@ -102,14 +107,14 @@ function RegionAndSite({ region, sites }) {
 						Site:
 					</Typography>
 					<Typography>
-						<Link
+						<button
 							className={classes.siteLink}
-							target="_blank"
-							to={modelsPath}
-							onClick={() => handleSiteAppClick(site.siteAppID)}
+							//	target="_blank"
+							// to={modelsPath}
+							onClick={() => dispatch(handleSiteAppClick(site.siteAppID))}
 						>
 							{site.name}
-						</Link>
+						</button>
 					</Typography>
 				</AccordionDetails>
 			))}

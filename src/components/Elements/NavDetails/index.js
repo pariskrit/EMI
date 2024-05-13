@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Typography from "@mui/material/Typography";
 import ColourConstants from "helpers/colourConstants";
-import SaveHistory from "../SaveHistory";
+import SaveHistory from "components/Elements/SaveHistory";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import CreatedByAt from "../CreatedByAt";
+import CreatedByAt from "components/Elements/CreatedByAt";
+import roles from "helpers/roles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	crumbText: {
 		fontWeight: "bold",
 		fontSize: "20px",
@@ -48,7 +51,7 @@ const NavDetails = ({
 	userName,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isActive, setActive] = useState(false);
 	const { site, isSiteUser, role } = JSON.parse(
 		sessionStorage.getItem("me") || localStorage.getItem("me")
@@ -68,7 +71,7 @@ const NavDetails = ({
 			: crumbs;
 
 	// Show Site Name only in crumbs if user is Site Application User
-	if ((role === "SiteUser" || isSiteUser) && path.includes("clients"))
+	if ((role === roles.siteUser || isSiteUser) && path.includes("clients"))
 		realCrumbs = [{ id: 1, name: site?.siteName }];
 
 	return (
@@ -103,7 +106,7 @@ const NavDetails = ({
 						<div
 							className={`${classes.icon} flex`}
 							style={{
-								backgroundColor: state?.statusColor,
+								backgroundColor: state?.statusColor ?? ColourConstants.green,
 							}}
 						></div>
 						{state?.modelStatusName ?? "Active"}

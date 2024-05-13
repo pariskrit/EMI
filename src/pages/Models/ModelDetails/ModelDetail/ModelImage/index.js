@@ -5,13 +5,19 @@ import {
 	updateModel,
 	uploadImageToS3,
 } from "services/models/modelDetails/details";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialog from "pages/Models/ModelDetails/ModelDetail/DeleteDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import ImageViewer from "components/Elements/ImageViewer";
 import { ModelContext } from "contexts/ModelDetailContext";
 
-function ModelImage({ imageUrl, modelId, isReadOnly, thumbnailURL }) {
+function ModelImage({
+	imageUrl,
+	modelId,
+	isReadOnly,
+	thumbnailURL,
+	customCaptions,
+}) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
@@ -107,7 +113,7 @@ function ModelImage({ imageUrl, modelId, isReadOnly, thumbnailURL }) {
 				handleDelete={handleDeleteImage}
 				isDeleting={isDeleting}
 			/>
-			<AccordionBox title={`Model Image (${image ? 1 : 0})`}>
+			<AccordionBox title={`${customCaptions?.model} Image (${image ? 1 : 0})`}>
 				<ImageUpload
 					imageUrl={thumbnailImg}
 					imageName=""

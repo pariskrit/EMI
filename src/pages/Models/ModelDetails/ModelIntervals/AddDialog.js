@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import NewSubCategoryField from "./NewSubCategoryField";
 import SubCategory from "./Subcategory";
-import { DialogContent, Grid } from "@material-ui/core";
+import { DialogContent, Grid } from "@mui/material";
 import CheckboxContainer from "components/Modules/CheckboxContainer";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -21,7 +23,7 @@ const schema = yup.object({
 	name: yup
 		.string("This field must be a string")
 		.required("This field is required")
-		.max(50, "The field Name must be a string with a maximum length of 50."),
+		.max(100, "The field Name must be a string with a maximum length of 100."),
 	allCategories: yup.array("This field must be an array"),
 	autoIncludeIntervals: yup.array("This field must be an array"),
 });
@@ -50,6 +52,7 @@ const AddDialog = ({
 	const [newCategory, setNewCategory] = useState("");
 	const [isCategoryEditable, setIsCategoryEditable] = useState([]);
 	const [isDeleteClick, setIsDeleteClick] = useState(false);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -84,7 +87,7 @@ const AddDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
+			dispatch(showError(`Failed to add ${captions?.interval}`));
 		}
 		setIsUpdating(false);
 	};
@@ -97,10 +100,9 @@ const AddDialog = ({
 		}
 		setInput({
 			...input,
-			allCategories: [
-				...input.allCategories,
-				{ name: newCategory },
-			].sort((a, b) => a.name.localeCompare(b.name)),
+			allCategories: [...input.allCategories, { name: newCategory }].sort(
+				(a, b) => a.name.localeCompare(b.name)
+			),
 		});
 	};
 

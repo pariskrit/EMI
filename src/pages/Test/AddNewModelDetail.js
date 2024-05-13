@@ -7,14 +7,15 @@ import {
 	LinearProgress,
 	Radio,
 	RadioGroup,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
 import { getModelTypes } from "services/clients/sites/siteApplications/modelTypes";
-import { getSiteLocations } from "services/clients/sites/siteLocations";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { showNotications } from "redux/notification/actions";
 import { useDispatch } from "react-redux";
@@ -37,14 +38,14 @@ const schema = yup.object({
 	modelTemplateType: yup.string("This field must be a string").nullable(),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -71,7 +72,7 @@ function AddNewModelDetail({
 	createProcessHandler,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -85,22 +86,11 @@ function AddNewModelDetail({
 	useEffect(() => {
 		if (open) {
 			const getFormData = async () => {
-				const response = await Promise.all([
-					getModelTypes(siteId),
-					getSiteLocations(siteId),
-				]);
-				const [modeltypeslist, locationList] = response;
+				const response = await Promise.all([getModelTypes(siteId)]);
+				const [modeltypeslist] = response;
 				if (modeltypeslist.status === true) {
 					setModelTypes(
 						modeltypeslist.data.map((list) => ({
-							label: list.name,
-							value: list.id,
-						}))
-					);
-				}
-				if (locationList.status === true) {
-					setLocations(
-						locationList.data.map((list) => ({
 							label: list.name,
 							value: list.id,
 						}))
@@ -145,13 +135,11 @@ function AddNewModelDetail({
 					modelName: input.model || null,
 					type: input.modelTemplateType || null,
 					modelTypeID: input.type.value,
-					siteLocationID: input.location.value || null,
 				};
 				const newData = await createProcessHandler(payload);
 				if (newData.status === 201) {
 					setIsUpdating(false);
 					// push to model details
-					console.log("model details posted");
 				} else {
 					setIsUpdating(false);
 					dispatch(
@@ -269,7 +257,6 @@ function AddNewModelDetail({
 								options={locations}
 								selectedValue={input.location}
 								onChange={(e) => {
-									console.log(e);
 									setInput({ ...input, location: e });
 								}}
 								label=""

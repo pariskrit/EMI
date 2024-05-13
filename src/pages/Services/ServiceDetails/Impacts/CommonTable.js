@@ -1,17 +1,22 @@
 import {
-	makeStyles,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import React from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	tableHead: {
 		backgroundColor: "#D2D2D9",
 		border: "0.5px solid",
+	},
+	tableHeadPrint: {
+		backgroundColor: "#D2D2D9",
+		border: "0.5px solid",
+		display: "table-row-group",
 	},
 	noDataTableRow: {
 		borderBottom: "none !important",
@@ -24,27 +29,30 @@ const useStyles = makeStyles((theme) => ({
 function dynamicWidth(i) {
 	if (i === 0) {
 		return {
-			width: "40vw",
+			width: "50vw",
 		};
 	}
-
 	if (i === 1) {
-		return { width: "30vw" };
+		return { width: "20vw" };
+	} else {
+		return { width: "20vw" };
 	}
 }
 
-function CommonTable({ data = [], headers = [], columns = [] }) {
-	const classes = useStyles();
+function CommonTable({ data = [], headers = [], columns = [], isPrint }) {
+	const { classes, cx } = useStyles();
 
 	const style = { width: Math.floor(100 / headers.length) + "%" };
 	return (
 		<Table className={classes.tableContainer}>
-			<TableHead className={classes.tableHead}>
+			<TableHead
+				className={isPrint ? classes.tableHeadPrint : classes.tableHead}
+			>
 				<TableRow>
 					{headers.map((header, i) => (
 						<TableCell
 							key={header}
-							style={headers.length === 3 ? dynamicWidth(i) : style}
+							style={headers.length === 4 ? dynamicWidth(i) : style}
 						>
 							{header}
 						</TableCell>

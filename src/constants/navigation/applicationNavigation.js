@@ -1,6 +1,7 @@
 import {
 	actionsPath,
 	applicationListPath,
+	appPath,
 	customCaptionsPath,
 	defectRiskRatingsPath,
 	defectStatusesPath,
@@ -31,29 +32,38 @@ const ApplicationNavigation = (id) => {
 		{
 			name: "Details",
 			dropdown: [
-				{ title: "Application", link: `${applicationListPath}/${id}` },
+				{
+					title: "Application",
+					link: `${appPath}${applicationListPath}/${id}`,
+				},
 				{
 					title: "Custom Captions",
-					link: `${applicationListPath}/${id}${customCaptionsPath}`,
+					link: `${appPath}${applicationListPath}/${id}${customCaptionsPath}`,
 				},
 			],
 		},
 		{
 			name: "Reason Definitions",
 			dropdown: [
-				{ title: "Pauses", link: `${applicationListPath}/${id}${pausesPath}` },
-				{ title: "Stops", link: `${applicationListPath}/${id}${stopsPath}` },
+				{
+					title: "Pauses",
+					link: `${appPath}${applicationListPath}/${id}${pausesPath}`,
+				},
+				{
+					title: "Stops",
+					link: `${appPath}${applicationListPath}/${id}${stopsPath}`,
+				},
 				{
 					title: "Skipped Tasks",
-					link: `${applicationListPath}/${id}${skippedTasksPath}`,
+					link: `${appPath}${applicationListPath}/${id}${skippedTasksPath}`,
 				},
 				{
 					title: "Missing Part or Tools",
-					link: `${applicationListPath}/${id}${missingItemsPath}`,
+					link: `${appPath}${applicationListPath}/${id}${missingItemsPath}`,
 				},
 				{
 					title: "Status Changes",
-					link: `${applicationListPath}/${id}${StatusChangesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${StatusChangesPath}`,
 				},
 			],
 		},
@@ -62,11 +72,11 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Statuses",
-					link: `${applicationListPath}/${id}${modelStatusesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${modelStatusesPath}`,
 				},
 				{
 					title: "Types",
-					link: `${applicationListPath}/${id}${modelTypesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${modelTypesPath}`,
 				},
 			],
 		},
@@ -75,15 +85,15 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Actions",
-					link: `${applicationListPath}/${id}${actionsPath}`,
+					link: `${appPath}${applicationListPath}/${id}${actionsPath}`,
 				},
 				{
 					title: "Systems",
-					link: `${applicationListPath}/${id}${systemsPath}`,
+					link: `${appPath}${applicationListPath}/${id}${systemsPath}`,
 				},
 				{
 					title: "Operating Modes",
-					link: `${applicationListPath}/${id}${operatingModesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${operatingModesPath}`,
 				},
 			],
 		},
@@ -92,9 +102,12 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Positions",
-					link: `${applicationListPath}/${id}${positionsPath}`,
+					link: `${appPath}${applicationListPath}/${id}${positionsPath}`,
 				},
-				{ title: "Roles", link: `${applicationListPath}/${id}${rolesPath}` },
+				{
+					title: "Roles",
+					link: `${appPath}${applicationListPath}/${id}${rolesPath}`,
+				},
 			],
 		},
 		{
@@ -102,15 +115,15 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Risk Ratings",
-					link: `${applicationListPath}/${id}${defectRiskRatingsPath}`,
+					link: `${appPath}${applicationListPath}/${id}${defectRiskRatingsPath}`,
 				},
 				{
 					title: "Statuses",
-					link: `${applicationListPath}/${id}${defectStatusesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${defectStatusesPath}`,
 				},
 				{
 					title: "Types",
-					link: `${applicationListPath}/${id}${defectTypesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${defectTypesPath}`,
 				},
 			],
 		},
@@ -119,15 +132,15 @@ const ApplicationNavigation = (id) => {
 			dropdown: [
 				{
 					title: "Classifications",
-					link: `${applicationListPath}/${id}${feedbackClassificationsPath}`,
+					link: `${appPath}${applicationListPath}/${id}${feedbackClassificationsPath}`,
 				},
 				{
 					title: "Priorities",
-					link: `${applicationListPath}/${id}${feedbackPrioritiesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${feedbackPrioritiesPath}`,
 				},
 				{
 					title: "Statuses",
-					link: `${applicationListPath}/${id}${feedbackStatusesPath}`,
+					link: `${appPath}${applicationListPath}/${id}${feedbackStatusesPath}`,
 				},
 			],
 		},

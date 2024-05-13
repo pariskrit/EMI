@@ -3,11 +3,12 @@ import AccordionBox from "components/Layouts/AccordionBox";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+
 import ColourConstants from "helpers/colourConstants";
 import DeleteDialog from "./DeleteDialog";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	container: {
 		display: "flex",
 		alignItems: "center",
@@ -20,10 +21,10 @@ const useStyles = makeStyles({
 			cursor: "pointer",
 		},
 	},
-});
+}));
 
 function Audio({ src, defectId }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [open, setOpen] = useState(false);
 
 	const closeDeleteDialog = () => setOpen(false);

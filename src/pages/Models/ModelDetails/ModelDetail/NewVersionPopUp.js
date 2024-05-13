@@ -1,32 +1,33 @@
 import React from "react";
-import { Dialog, DialogTitle, LinearProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Dialog, DialogTitle, LinearProgress } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { postNewModelVersion } from "services/models/modelDetails/details";
-import { useParams } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-import { modelsPath } from "helpers/routePaths";
+import { useParams, useNavigate } from "react-router-dom";
+import { appPath, modelsPath } from "helpers/routePaths";
 
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		// width: "auto",
 	},
-});
+}));
 
 function NewVersionPopUp({ open, onClose }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const dispatch = useDispatch();
 	const { id } = useParams();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const handleCreateProcess = async () => {
 		setIsUpdating(true);
@@ -34,11 +35,11 @@ function NewVersionPopUp({ open, onClose }) {
 			const response = await postNewModelVersion(id);
 			if (response.status) {
 				onClose();
-				history.push(`${modelsPath}/${response.data}`);
+				navigate(`${appPath}${modelsPath}/${response.data}`);
 			} else {
 				dispatch(
 					showError(
-						response.data?.detail || "Error: Could not create new version"
+						response?.data?.detail || "Error: Could not create new version"
 					)
 				);
 			}

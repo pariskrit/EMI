@@ -21,8 +21,6 @@ import Stops from "pages/Applications/Stops/Stops";
 import Systems from "pages/Applications/Systems/System";
 import {
 	actionsPath,
-	applicationDetailsPath,
-	applicationListPath,
 	customCaptionsPath,
 	defectRiskRatingsPath,
 	defectStatusesPath,
@@ -45,108 +43,98 @@ import {
 
 export const routeList = [
 	{
-		id: 1,
-		component: ApplicationList,
-		path: applicationListPath,
-	},
-	{
-		id: 2,
-		component: Application,
-		path: applicationDetailsPath,
-	},
-	{
 		id: 3,
 		component: CustomCaptions,
-		path: applicationDetailsPath + customCaptionsPath,
+		path: customCaptionsPath,
 	},
 	{
 		id: 4,
 		component: ModelStatuses,
-		path: applicationDetailsPath + modelStatusesPath,
+		path: modelStatusesPath,
 	},
 	{
 		id: 5,
 		component: Positions,
-		path: applicationDetailsPath + positionsPath,
+		path: positionsPath,
 	},
 	{
 		id: 6,
 		component: Roles,
-		path: applicationDetailsPath + rolesPath,
+		path: rolesPath,
 	},
 	{
 		id: 7,
 		component: ModelTypes,
-		path: applicationDetailsPath + modelTypesPath,
+		path: modelTypesPath,
 	},
 	{
 		id: 8,
 		component: OperatingModes,
-		path: applicationDetailsPath + operatingModesPath,
+		path: operatingModesPath,
 	},
 	{
 		id: 9,
 		component: Pauses,
-		path: applicationDetailsPath + pausesPath,
+		path: pausesPath,
 	},
 	{
 		id: 10,
 		component: Stops,
-		path: applicationDetailsPath + stopsPath,
+		path: stopsPath,
 	},
 	{
 		id: 11,
 		component: SkippedTasks,
-		path: applicationDetailsPath + skippedTasksPath,
+		path: skippedTasksPath,
 	},
 	{
 		id: 12,
 		component: MissingItems,
-		path: applicationDetailsPath + missingItemsPath,
+		path: missingItemsPath,
 	},
 	{
 		id: 13,
 		component: StatusChanges,
-		path: applicationDetailsPath + StatusChangesPath,
+		path: StatusChangesPath,
 	},
 	{
 		id: 14,
 		component: Actions,
-		path: applicationDetailsPath + actionsPath,
+		path: actionsPath,
 	},
 	{
 		id: 15,
 		component: Systems,
-		path: applicationDetailsPath + systemsPath,
+		path: systemsPath,
 	},
 	{
 		id: 16,
 		component: DefectRiskRatings,
-		path: applicationDetailsPath + defectRiskRatingsPath,
+		path: defectRiskRatingsPath,
 	},
 	{
 		id: 17,
 		component: DefectStatuses,
-		path: applicationDetailsPath + defectStatusesPath,
+		path: defectStatusesPath,
 	},
 	{
 		id: 18,
 		component: DefectTypes,
-		path: applicationDetailsPath + defectTypesPath,
+		path: defectTypesPath,
 	},
 	{
 		id: 19,
 		component: FeedbackClassifications,
-		path: applicationDetailsPath + feedbackClassificationsPath,
+		path: feedbackClassificationsPath,
 	},
 	{
 		id: 20,
 		component: FeedbackPriorities,
-		path: applicationDetailsPath + feedbackPrioritiesPath,
+		path: feedbackPrioritiesPath,
 	},
 	{
 		id: 21,
 		component: FeedbackStatuses,
-		path: applicationDetailsPath + feedbackStatusesPath,
+		path: feedbackStatusesPath,
 	},
 ];

@@ -3,11 +3,13 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 import {
 	debounce,
 	generateErrorState,
@@ -32,7 +34,7 @@ const ADD = AddDialogStyle();
 const defaultData = { userID: "" };
 const defaultError = { userID: null };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -40,21 +42,21 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 const AddNoteDialog = ({ open, handleClose, createHandler, siteAppId }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [isUpdating, setIsUpdating] = useState(false);
-	const [page, setPage] = useState({ pageNo: 1, pageSize: DefaultPageSize });
+	const [page, setPage] = useState({ pageNo: 1, pageSize: defaultPageSize() });
 	const [contactUsers, setContactUsers] = useState([]);
 	const [count, setCount] = useState(0);
 
 	const closeOverride = () => {
 		setInput(defaultData);
 		setErrors(defaultError);
-		setPage({ pageNo: 1, pageSize: DefaultPageSize });
+		setPage({ pageNo: 1, pageSize: defaultPageSize() });
 		setContactUsers([]);
 		setCount(0);
 		handleClose();

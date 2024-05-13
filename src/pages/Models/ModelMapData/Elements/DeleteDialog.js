@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogTitle, LinearProgress } from "@material-ui/core";
+import { Dialog, DialogTitle, LinearProgress } from "@mui/material";
 import DeleteDialogStyle from "styles/application/DeleteDialogStyle";
 
 const ADD = DeleteDialogStyle();

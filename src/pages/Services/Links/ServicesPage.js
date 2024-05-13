@@ -1,25 +1,41 @@
 import React from "react";
 import AccessRoute from "components/HOC/AccessRoute";
-import { serviceDetailsPath, servicesPath } from "helpers/routePaths";
+import { serviceGraph } from "helpers/routePaths";
 import access from "helpers/access";
-import Services from "..";
-import ServiceLists from "../ServiceLists";
-import ServiceDetailPage from "../ServiceDetails/Links/ServiceDetailPage";
+import Services from "pages/Services";
+import ServiceLists from "pages/Services/ServiceLists";
+import AlternativeView from "pages/Services/AlternateView/AlternativeView";
+import { Route, Routes } from "react-router-dom";
+import ServiceDetailPage from "pages/Services/ServiceDetails/Links/ServiceDetailPage";
 
 const ServicesPage = () => {
 	return (
 		<Services>
-			<AccessRoute
-				path={servicesPath}
-				exact
-				component={ServiceLists}
-				access={access.serviceAccess}
-			/>
-			<AccessRoute
-				path={serviceDetailsPath}
-				component={ServiceDetailPage}
-				access={access.serviceAccess}
-			/>
+			<Routes>
+				<Route element={<AccessRoute access={access.serviceAccess} />}>
+					<Route path={`:id/*`} element={<ServiceDetailPage />} />
+					<Route path={serviceGraph} element={<AlternativeView />} />
+					<Route index element={<ServiceLists />} />
+				</Route>
+
+				{/* <AccessRoute
+					path={servicesPath}
+					exact
+					component={ServiceLists}
+					access={access.serviceAccess}
+				/>
+				<AccessRoute
+					path={serviceGraph}
+					exact
+					component={AlternativeView}
+					access={access.serviceAccess}
+				/>
+				<AccessRoute
+					path={serviceDetailsPath}
+					component={ServiceDetailPage}
+					access={access.serviceAccess}
+				/> */}
+			</Routes>
 		</Services>
 	);
 };

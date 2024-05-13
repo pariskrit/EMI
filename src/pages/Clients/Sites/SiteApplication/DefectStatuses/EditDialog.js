@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import { defectStatusTypes } from "helpers/constants";
 import { updateDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -39,6 +41,7 @@ const EditDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -73,10 +76,9 @@ const EditDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to edit ${header}.`));
 		}
 	};
 	const handleUpdateData = async () => {
@@ -175,6 +177,11 @@ const EditDialog = ({
 								Type<AED.RequiredStar>*</AED.RequiredStar>
 							</AED.InputLabel>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								error={errors.type === null ? false : true}
 								helperText={errors.type === null ? null : errors.type}
 								fullWidth={true}

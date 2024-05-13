@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import AddEditModel from "./AddEditModel";
@@ -20,18 +20,21 @@ import {
 	ModelStageTableHeader,
 } from "constants/modelDetails";
 import TabTitle from "components/Elements/TabTitle";
+import { coalesc, commonScrollElementIntoView } from "helpers/utils";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { StagesPage } from "services/History/models";
+import { HistoryCaptions } from "helpers/constants";
 
 const modelState = { id: null, open: false };
 
 const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	const {
-		customCaptions: { stage, stagePlural, modelTemplate, asset },
+		customCaptions: { stage, stagePlural, modelTemplate, asset, zonePlural },
 		siteAppID,
 		siteID,
 		application,
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
 
 	const [data, setData] = useState([]);
 	const [stageId, setStageId] = useState(null);
@@ -143,6 +146,12 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 		}
 	};
 
+	const handleItemClick = (id) => {
+		dispatch({ type: "TOGGLE_HISTORYBAR" });
+
+		commonScrollElementIntoView(`stage-${id}`, "stageEl");
+	};
+
 	if (loading) {
 		return <CircularProgress />;
 	}
@@ -150,7 +159,19 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 	return (
 		<>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${stage} | ${application.name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${stagePlural} | ${application.name}`}
+			/>
+			<HistoryBar
+				id={modelId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					StagesPage(id, pageNumber, pageSize)
+				}
+				OnAddItemClick={handleItemClick}
+				origin={HistoryCaptions.modelVersionStages}
 			/>
 			<ImageViewer
 				open={openImage}
@@ -175,6 +196,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				siteID={siteID}
 				modelType={state?.modelDetail?.modelType}
 				customCaptionsAsset={asset}
+				zonePlural={zonePlural}
 			/>
 			<DeleteDialog
 				open={deleteModel.open}
@@ -184,6 +206,7 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 				handleRemoveData={handleRemoveData}
 				closeHandler={handleDeleteDialogClose}
 			/>
+
 			<div style={{ display: "flex", flexDirection: "column" }}>
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<DetailsPanel
@@ -199,11 +222,14 @@ const ModelStage = ({ state, dispatch, getError, modelId, access }) => {
 						disableDnd={access === "R" || state?.modelDetail?.isPublished}
 						headers={ModelStageTableHeader(
 							state?.modelDetail?.modelType,
-							asset
+							asset,
+							zonePlural
 						)}
 						columns={ModelStageTableColumn(state?.modelDetail?.modelType)}
 						onClickImage={() => setOPenImage(true)}
 						handleDragEnd={handleDragEnd}
+						type="stage"
+						classEl="stageEl"
 						menuData={[
 							{
 								name: "Edit",

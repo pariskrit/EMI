@@ -4,8 +4,10 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { useState } from "react";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
@@ -21,7 +23,7 @@ import { handleSort } from "helpers/utils";
 
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: "500px",
 	},
@@ -31,10 +33,10 @@ const useStyles = makeStyles({
 	reviewDate: {
 		width: "322px",
 	},
-});
+}));
 
 function ChangeStatusPopup({ open, onClose }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [modelStatuses, setModelStatuses] = useState([]);
 	const [selectedModelStatus, setSelectedModelStatus] = useState({});
@@ -42,6 +44,9 @@ function ChangeStatusPopup({ open, onClose }) {
 	const [, modelDispatch] = useContext(ModelContext);
 	const { id } = useParams();
 	const [reviewDate, setReviewDate] = useState("");
+	const { position, customCaptions } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
 
 	const handleCreateProcess = async () => {
 		if (selectedModelStatus?.id === undefined) {
@@ -72,7 +77,7 @@ function ChangeStatusPopup({ open, onClose }) {
 		try {
 			const response = await updateModel(id, payload);
 			if (!response.status)
-				dispatch(showError(response.data || "Could Not Update Model Status"));
+				dispatch(showError(response?.data || "Could Not Update Model Status"));
 			else {
 				modelDispatch({
 					type: "SET_ISPUBLISHED",
@@ -82,11 +87,17 @@ function ChangeStatusPopup({ open, onClose }) {
 						reviewDate: response?.data?.reviewDate,
 					},
 				});
+				!response?.data?.arrangementsExist &&
+					dispatch(
+						showError(
+							`Please review your ${customCaptions["asset"]} ${customCaptions["arrangementPlural"]}. Some  ${customCaptions["assetPlural"]} contain an invalid ${customCaptions["arrangement"]} configuration for this new published version.`
+						)
+					);
 			}
 
 			onClose();
 		} catch (error) {
-			dispatch(showError(error.message || "Could Not Update Model Status"));
+			dispatch(showError(error?.message || "Could Not Update Model Status"));
 		}
 
 		setIsUpdating(false);
@@ -94,9 +105,6 @@ function ChangeStatusPopup({ open, onClose }) {
 	const onModelStatusChange = (status) => setSelectedModelStatus(status);
 
 	const fetchModelStatuses = async () => {
-		const { position } =
-			JSON.parse(sessionStorage.getItem("me")) ||
-			JSON.parse(localStorage.getItem("me"));
 		setIsUpdating(true);
 		const response = await getModelStatuses(position.siteAppID);
 

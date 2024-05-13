@@ -1,17 +1,17 @@
 import {
-	makeStyles,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { isoDateWithoutTimeZone } from "helpers/utils";
 import React from "react";
+import { makeStyles } from "tss-react/mui";
 import Icon from "components/Elements/Icon";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	headerText: {
 		fontWeight: 600,
 		fontSize: 20,
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	tableHead: {
 		backgroundColor: "#D2D2D9",
+		display: "table-row-group",
 		// border: "1px solid",
 	},
 	noDataTableRow: {
@@ -51,8 +52,9 @@ const ServiceStages = ({
 	formatQuestion,
 	customCaptions,
 	completedBy = "",
+	showSkipped,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<>
@@ -96,6 +98,8 @@ const ServiceStages = ({
 												...zone,
 												completedDate: zone.completedDate
 													? isoDateWithoutTimeZone(zone.completedDate + "Z")
+													: showSkipped
+													? "Skipped"
 													: "",
 												actionName: (
 													<span style={{ marginRight: "10px" }}>

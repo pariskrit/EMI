@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 
 import { patchRoles } from "services/clients/sites/siteApplications/userRoles";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -39,6 +41,7 @@ const EditRoleDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -124,10 +127,10 @@ const EditRoleDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to edit ${header}.`));
 		}
 	};
 

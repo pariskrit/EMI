@@ -50,14 +50,10 @@ const removeModelTaskAttachment = async (ModelVersionTaskAttachmentID) => {
 	}
 };
 
-const uploadModelTaskAttachmentDocument = async (
-	modelVersionTaskId,
-	fileType,
-	payload
-) => {
+const uploadModelTaskAttachmentDocument = async (payload) => {
 	try {
-		let response = await API.get(
-			`${Apis.ModelVersionTaskAttachments}/uploadDocument?modelVersionTaskId=${modelVersionTaskId}&fileType=${fileType}`,
+		let response = await API.post(
+			`${Apis.ModelVersionTaskAttachments}/upload`,
 			payload
 		);
 		return getAPIResponse(response);

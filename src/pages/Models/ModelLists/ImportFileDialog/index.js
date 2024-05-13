@@ -4,8 +4,8 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-	makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import { BASE_API_PATH } from "helpers/constants";
 import DropUpload from "components/Elements/DropUploadBox";
 import AddDialogStyle from "styles/application/AddDialogStyle";
@@ -17,7 +17,7 @@ const AT = AddDialogStyle();
 
 const media = "@media (max-width:414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	content: {
 		display: "flex",
 		flexDirection: "column",
@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
 const ImportFileDialouge = ({
 	open,
@@ -46,7 +46,7 @@ const ImportFileDialouge = ({
 	getError,
 	siteAppID,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
@@ -107,12 +107,16 @@ const ImportFileDialouge = ({
 		}
 	};
 
-	const onDocumentUpload = async (key, url) => {
-		importDocument(key, true).then(async (res) => {
-			setShow(true);
-			closeOverride();
-			isCancellled.current = false;
-		});
+	const onDocumentUpload = async (key, url, res) => {
+		if (res) await importDocument(key, true);
+		else {
+			setFetchLoading(false);
+			setLoading(false);
+			setUploadPercentCompleted(0);
+		}
+		setShow(true);
+		closeOverride();
+		isCancellled.current = false;
 	};
 
 	useEffect(() => {

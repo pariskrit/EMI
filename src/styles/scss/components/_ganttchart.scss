@@ -1,0 +1,24 @@
+#serviceganttchartid {
+	svg {
+		g:nth-child(9) {
+			text {
+				text-decoration: underline;
+			}
+		}
+		:nth-child(10) {
+			g {
+				:nth-child(2) {
+					display: none;
+				}
+				// :nth-child(1) {
+				// 	y: 20;
+				// }
+			}
+		}
+		g:nth-child(10) {
+			rect {
+				height: 110px;
+			}
+		}
+	}
+}

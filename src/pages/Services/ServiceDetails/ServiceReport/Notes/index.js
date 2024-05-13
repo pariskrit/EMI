@@ -5,16 +5,21 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Typography from "@mui/material/Typography";
 import NotesRow from "./NoteRow";
 import ColourConstants from "helpers/colourConstants";
 import TableStyle from "styles/application/TableStyle";
 
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
+	responsiveTable: {
+		minWidth: "99%",
+	},
 	tableHead: {
 		backgroundColor: "#D2D2D9",
 	},
@@ -32,16 +37,16 @@ const useStyles = makeStyles({
 		borderRightStyle: "solid",
 		borderRightWidth: "1px",
 	},
-});
+}));
 
-const Notes = ({ data }) => {
-	const classes = useStyles();
+const Notes = ({ data, isPrint }) => {
+	const { classes, cx } = useStyles();
 	return (
 		<div>
 			<Typography className={classes.headerText} component="h1" gutterBottom>
 				<strong>Notes</strong>
 			</Typography>
-			<AT.TableContainer>
+			<AT.TableContainer className={classes.responsiveTable}>
 				<Table>
 					<TableHead className={classes.tableHead}>
 						<TableRow className={classes.tableHeadRow}>
@@ -63,7 +68,12 @@ const Notes = ({ data }) => {
 					<TableBody>
 						{data.length > 0 ? (
 							data.map((row) => (
-								<NotesRow key={row.id} row={row} classes={classes} />
+								<NotesRow
+									key={row.id}
+									row={row}
+									classes={classes}
+									isPrint={isPrint}
+								/>
 							))
 						) : (
 							<TableRow>

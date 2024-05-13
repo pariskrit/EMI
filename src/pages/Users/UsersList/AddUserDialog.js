@@ -5,21 +5,26 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-import { usersPath } from "helpers/routePaths";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { appPath, usersPath } from "helpers/routePaths";
+import { makeStyles } from "tss-react/mui";
+
 import {
 	addClientUsers,
 	addClientUserSiteApps,
 	addUserToList,
 } from "services/users/usersList";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import { generateErrorState, handleValidateObj, isChrome } from "helpers/utils";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getSiteDepartments } from "services/clients/sites/siteDepartments";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { SuperAdminType } from "constants/UserConstants/indes";
+import roles from "helpers/roles";
 
 const schema = (isSiteUser, role) =>
 	yup.object({
@@ -33,18 +38,21 @@ const schema = (isSiteUser, role) =>
 			.string("This field must be a string")
 			.required("This field is required")
 			.email("Invalid email format"),
-		phone: yup.string("This field must be a string").nullable(),
 		department: yup.object({
 			name: yup.string("This field is required").when("role", {
-				is: () => role === "SiteUser" || isSiteUser,
-				then: yup.string("Must be string").required("This field is required"),
+				is: () => role === roles.siteUser || isSiteUser,
+				then:()=> yup.string("Must be string").required("This field is required"),
 			}),
 		}),
 		position: yup.object({
 			name: yup.string("This field is required").when("role", {
-				is: () => role === "SiteUser" || isSiteUser,
-				then: yup.string("Must be string").required("This field is required"),
+				is: () => role === roles.siteUser || isSiteUser,
+				then:()=> yup.string("Must be string").required("This field is required"),
 			}),
+		}),
+		AdminType: yup.object({
+			id: yup.number().required(),
+			role: yup.string().required(),
 		}),
 		externalReference: yup.string().nullable(),
 	});
@@ -54,7 +62,7 @@ const defaultData = {
 	firstName: "",
 	lastName: "",
 	email: "",
-	phone: "",
+	AdminType: SuperAdminType.find((d) => d.id === 2),
 	externalReference: "",
 	position: {},
 	department: {},
@@ -63,7 +71,6 @@ const defaultError = {
 	firstName: null,
 	lastName: null,
 	email: null,
-	phone: null,
 	department: null,
 	position: null,
 	externalReference: null,
@@ -71,7 +78,7 @@ const defaultError = {
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -100,7 +107,7 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		marginBottom: 20,
 	},
-});
+}));
 
 const AddAssetDialog = ({
 	open,
@@ -113,18 +120,22 @@ const AddAssetDialog = ({
 	siteAppID,
 	isSiteUser,
 	customCaptions,
+	adminType,
 }) => {
-	let history = useHistory();
+	let navigate = useNavigate();
 
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
 	const { id } = (JSON.parse(sessionStorage.getItem("clientAdminMode")) ||
 		JSON.parse(localStorage.getItem("clientAdminMode"))) ?? { id: null };
-	const isSuperAdmin = role === "SuperAdmin";
-	const isClientAdmin = role === "ClientAdmin" && !isSiteUser;
-	const isSiteAppUser = role === "SiteUser" || isSiteUser;
+	const isSuperAdmin = role === roles.superAdmin;
+	const isClientAdmin = role === roles.clientAdmin && !isSiteUser;
+	const isSiteAppUser = role === roles.siteUser || isSiteUser;
+
+	const [modelFocus, setModelFocus] = useState(true);
+	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		handleClose();
@@ -156,7 +167,6 @@ const AddAssetDialog = ({
 						siteAppID,
 						departmentID: input.department.id,
 						positionID: input.position.id,
-						phone: input.phone,
 						externalReference: input.externalReference,
 					};
 					result = await addClientUserSiteApps(data);
@@ -171,7 +181,11 @@ const AddAssetDialog = ({
 
 					result = await addClientUsers(data);
 				}
-				if (isSuperAdmin) result = await addUserToList(data);
+				if (isSuperAdmin)
+					result = await addUserToList({
+						...data,
+						AdminType: input.AdminType.id,
+					});
 
 				if (result.status) {
 					//Adding new user
@@ -187,13 +201,13 @@ const AddAssetDialog = ({
 			}
 			setLoading(false);
 		} catch (err) {
-			console.log(err);
+			dispatch(showError("Cannot add user."));
 			setLoading(false);
 			closeOverride();
 		}
 	};
 	const handleRedirect = (id) => {
-		history.push(`${usersPath}/${id}`);
+		navigate(`${appPath}${usersPath}/${id}`);
 	};
 
 	const fetchSiteDepartments = async () => await getSiteDepartments(siteID);
@@ -218,6 +232,7 @@ const AddAssetDialog = ({
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 			className="application-dailog"
+			disableEnforceFocus={isChrome() ? modelFocus : false}
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -229,7 +244,13 @@ const AddAssetDialog = ({
 					}
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={closeOverride} variant="contained">
+					<ADD.CancelButton
+						onClick={closeOverride}
+						variant="contained"
+						onFocus={(e) => {
+							setModelFocus(true);
+						}}
+					>
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton
@@ -292,56 +313,35 @@ const AddAssetDialog = ({
 							<ErrorInputFieldWrapper
 								errorMessage={errors.email === null ? null : errors.email}
 							>
-								<ADD.NameInput
-									error={errors.email === null ? false : true}
-									fullWidth
-									onChange={(e) =>
-										setInput({ ...input, email: e.target.value })
-									}
-									onKeyDown={handleEnterPress}
-									variant="outlined"
-								/>
+								{isSiteAppUser ? (
+									<ADD.NameInput
+										error={errors.email === null ? false : true}
+										fullWidth
+										onChange={(e) =>
+											setInput({ ...input, email: e.target.value })
+										}
+										onKeyDown={handleEnterPress}
+										variant="outlined"
+									/>
+								) : (
+									<ADD.NameInput
+										error={errors.email === null ? false : true}
+										fullWidth
+										onChange={(e) =>
+											setInput({ ...input, email: e.target.value })
+										}
+										onKeyDown={handleEnterPress}
+										variant="outlined"
+										onBlur={() => {
+											setModelFocus(false);
+										}}
+									/>
+								)}
 							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
 						<ADD.RightInputContainer>
 							{isSiteAppUser ? (
 								<>
-									<ADD.NameLabel>Phone</ADD.NameLabel>
-									<ErrorInputFieldWrapper
-										errorMessage={errors.phone === null ? null : errors.phone}
-									>
-										<ADD.NameInput
-											error={errors.phone === null ? false : true}
-											fullWidth
-											onChange={(e) =>
-												setInput({ ...input, phone: e.target.value })
-											}
-											onKeyDown={handleEnterPress}
-											variant="outlined"
-										/>
-									</ErrorInputFieldWrapper>
-								</>
-							) : null}
-							{isClientAdmin ? (
-								<>
-									<ADD.NameLabel>Reference</ADD.NameLabel>
-
-									<ADD.NameInput
-										fullWidth
-										onChange={(e) =>
-											setInput({ ...input, externalReference: e.target.value })
-										}
-										onKeyDown={handleEnterPress}
-										variant="outlined"
-									/>
-								</>
-							) : null}
-						</ADD.RightInputContainer>
-					</ADD.InputContainer>
-					{isSiteAppUser ? (
-						<>
-							<ADD.InputContainer>
-								<ADD.LeftInputContainer>
 									<ErrorInputFieldWrapper
 										errorMessage={
 											errors?.department === null ? null : errors?.department
@@ -350,8 +350,14 @@ const AddAssetDialog = ({
 										<DyanamicDropdown
 											label={customCaptions?.department ?? "Department"}
 											dataHeader={[
-												{ id: 1, name: "Name" },
-												{ id: 2, name: "Description" },
+												{
+													id: 1,
+													name: `${customCaptions?.department ?? "Department"}`,
+												},
+												{
+													id: 2,
+													name: `${customCaptions?.location ?? "Location"}`,
+												},
 											]}
 											showHeader
 											onChange={(val) =>
@@ -369,8 +375,48 @@ const AddAssetDialog = ({
 											width="100%"
 										/>
 									</ErrorInputFieldWrapper>
-								</ADD.LeftInputContainer>
-								<ADD.RightInputContainer>
+								</>
+							) : null}
+							{isClientAdmin ? (
+								<>
+									<ADD.NameLabel>
+										{customCaptions?.userReference ?? "Reference"}
+									</ADD.NameLabel>
+
+									<ADD.NameInput
+										fullWidth
+										onChange={(e) =>
+											setInput({ ...input, externalReference: e.target.value })
+										}
+										onKeyDown={handleEnterPress}
+										variant="outlined"
+									/>
+								</>
+							) : null}
+
+							{isSuperAdmin && (
+								<>
+									<DyanamicDropdown
+										label={"Type"}
+										showHeader
+										dataSource={SuperAdminType}
+										onChange={(val) =>
+											setInput((input) => ({ ...input, AdminType: val }))
+										}
+										columns={[{ name: "role" }]}
+										selectedValue={input.AdminType}
+										selectdValueToshow="role"
+										required={true}
+										width="100%"
+									/>
+								</>
+							)}
+						</ADD.RightInputContainer>
+					</ADD.InputContainer>
+					{isSiteAppUser ? (
+						<>
+							<ADD.InputContainer>
+								<ADD.LeftInputContainer>
 									{isSiteAppUser ? (
 										<ErrorInputFieldWrapper
 											errorMessage={
@@ -394,11 +440,9 @@ const AddAssetDialog = ({
 											/>
 										</ErrorInputFieldWrapper>
 									) : null}
-								</ADD.RightInputContainer>
-							</ADD.InputContainer>
-							<ADD.InputContainer>
-								<ADD.LeftInputContainer>
-									<ADD.NameLabel>Reference</ADD.NameLabel>
+								</ADD.LeftInputContainer>
+								<ADD.RightInputContainer>
+									<ADD.NameLabel>{customCaptions?.userReference}</ADD.NameLabel>
 
 									<ADD.NameInput
 										fullWidth
@@ -407,8 +451,11 @@ const AddAssetDialog = ({
 										}
 										onKeyDown={handleEnterPress}
 										variant="outlined"
+										onBlur={() => {
+											setModelFocus(false);
+										}}
 									/>
-								</ADD.LeftInputContainer>
+								</ADD.RightInputContainer>
 							</ADD.InputContainer>
 						</>
 					) : null}

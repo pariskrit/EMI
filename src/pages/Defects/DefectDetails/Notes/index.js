@@ -6,8 +6,10 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import ColourConstants from "helpers/colourConstants";
 import NoteRow from "./NoteRow";
@@ -15,11 +17,11 @@ import AddNoteDialog from "./AddNoteDialog";
 import { addDefectNotes, getDefectNotes } from "services/defects/details";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import ContentDialog from "./ContentDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { Apis } from "services/api";
+import NoteContentPopup from "components/Elements/NoteContentPopup";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	noteContainer: {
 		// marginTop: 25,
 		display: "flex",
@@ -61,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Notes = ({ data, defectId, isReadOnly }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [defect, setDefect] = useState({
 		openAddModal: false,
 		openDeleteModal: false,
@@ -77,7 +79,7 @@ const Notes = ({ data, defectId, isReadOnly }) => {
 		if (response.status) {
 			fetchNotes();
 		} else {
-			dispatch(showError(response.data.error || "Could not add note"));
+			dispatch(showError(response?.data?.error || "Could not add note"));
 		}
 	};
 
@@ -92,7 +94,7 @@ const Notes = ({ data, defectId, isReadOnly }) => {
 		if (response.status) {
 			setNotes(response.data);
 		} else {
-			dispatch(showError(response.data?.error || "Could not fetch note"));
+			dispatch(showError(response?.data?.error || "Could not fetch note"));
 		}
 		setLoading(false);
 	}, [defectId, dispatch]);
@@ -120,7 +122,7 @@ const Notes = ({ data, defectId, isReadOnly }) => {
 
 	return (
 		<div className={classes.noteContainer}>
-			<ContentDialog
+			<NoteContentPopup
 				open={defect.openContentModal.open ?? false}
 				onClose={onCloseContentDialog}
 				note={defect.openContentModal.note}

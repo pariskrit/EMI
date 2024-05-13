@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Link from "@material-ui/core/Link";
-import { makeStyles, Typography } from "@material-ui/core";
+import React, { useContext } from "react";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Link from "@mui/material/Link";
+import { Typography } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import ColourConstants from "helpers/colourConstants";
+import { ServiceContext } from "contexts/ServiceDetailContext";
+import { coalesc } from "helpers/utils";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	header: {
 		color: ColourConstants.commonText,
 		fontSize: 20,
@@ -35,14 +38,15 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		alignItems: "center",
 	},
-});
+}));
 
 const DynamicBreadCrumb = ({ datas, serviceName, afterClick }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const DefaultSeparator = () => {
 		return <span className={classes.crumbText}>{">"}</span>;
 	};
+	const [serviceDetail] = useContext(ServiceContext);
 
 	return (
 		<div className={classes.container}>
@@ -64,6 +68,17 @@ const DynamicBreadCrumb = ({ datas, serviceName, afterClick }) => {
 					)
 				)}
 			</Breadcrumbs>
+			<Typography className={classes.activeLink} style={{ fontWeight: "bold" }}>
+				{serviceDetail?.serviceDetail?.workOrder} -{" "}
+				{serviceDetail?.serviceDetail?.modelName +
+					" " +
+					coalesc(serviceDetail?.serviceDetail?.model) +
+					" "}
+				{serviceDetail?.serviceDetail?.modelTemplateType === "A"
+					? `- ${serviceDetail?.serviceDetail?.siteAssetName}  `
+					: null}
+				- {serviceDetail?.serviceDetail?.role}
+			</Typography>
 		</div>
 	);
 };

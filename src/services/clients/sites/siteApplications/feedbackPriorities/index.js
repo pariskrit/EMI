@@ -57,7 +57,6 @@ const patchDefaultFeedbackPriorities = async (id, requestData) => {
 const getDefaultFeedbackPriorities = async (id) => {
 	try {
 		let response = await API.get(`/api/SiteApps/${id}/defaults`);
-		console.log(response);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

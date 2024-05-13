@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import { useGoogleLogin } from "react-google-login";
+import { GoogleLogin } from "@react-oauth/google";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import * as yup from "yup";
 import ColourLogo from "assets/colourLogo.png";
 import LoginImage from "assets/spash_no_background.png";
@@ -19,10 +21,12 @@ import { useLocation } from "react-router-dom";
 import API from "helpers/api";
 import { Apis } from "services/api";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { showNotications } from "redux/notification/actions";
 import { loginSocialAccount } from "redux/auth/actions";
 import { clientsPath } from "helpers/routePaths";
+import AppleLoginSignin from "components/Elements/AppleSigin/AppleLoginSignin";
+import { showError } from "redux/common/actions";
 
 // Yup validation schema
 const schema = yup.object({
@@ -39,7 +43,7 @@ const schema = yup.object({
 // Default state schemas
 const defaultErrorSchema = { Password: null };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	root: {
 		height: "100vh",
 	},
@@ -234,8 +238,8 @@ const RegisterEmail = () => {
 	const { search, state } = useLocation();
 
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes } = useStyles();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -243,14 +247,6 @@ const RegisterEmail = () => {
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [loading, setLoading] = useState(false);
 	const { instance } = useMsal();
-
-	const { signIn } = useGoogleLogin({
-		jsSrc: "https://apis.google.com/js/api.js",
-		onFailure: (res) => console.log(res),
-		clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-		onSuccess: (res) => responseGoogle(res),
-		cookiePolicy: "single_host_origin",
-	});
 
 	// Handlers
 	const RegisterEmail = async (e, Password) => {
@@ -322,7 +318,11 @@ const RegisterEmail = () => {
 		setLoading(true);
 		try {
 			const respon = await dispatch(
-				loginSocialAccount({ token: res.tokenId }, "GOOGLE", "/Account/google")
+				loginSocialAccount(
+					{ token: res.tokenId },
+					"GOOGLE",
+					"/api/Account/google"
+				)
 			);
 
 			if (respon) {
@@ -342,7 +342,6 @@ const RegisterEmail = () => {
 				})
 			);
 			setLoading(false);
-			console.error(err);
 			return false;
 		}
 	};
@@ -351,7 +350,7 @@ const RegisterEmail = () => {
 		instance
 			.loginPopup()
 			.then((res) => responseMicrosoft(res))
-			.catch((error) => console.log(error));
+			.catch((error) => dispatch(showError(`Failed to login.`)));
 	}
 
 	const responseMicrosoft = async (data) => {
@@ -362,7 +361,7 @@ const RegisterEmail = () => {
 				loginSocialAccount(
 					{ token: data.idToken },
 					"MICROSOFT",
-					"/Account/microsoft"
+					"/api/Account/microsoft"
 				)
 			);
 
@@ -381,7 +380,27 @@ const RegisterEmail = () => {
 				})
 			);
 			setLoading(false);
-			console.error(err);
+		}
+	};
+	const responseApple = async (data) => {
+		if (data?.authorization?.code) {
+			try {
+				const respon = await loginSocialAccount(
+					{ token: data?.authorization?.code },
+					"Apple",
+					"/api/Account/Apple"
+				);
+
+				if (respon) {
+					redirectToPortalOrDefault(respon?.position?.siteAppID);
+				} else {
+					throw new Error(respon);
+				}
+			} catch (err) {
+				dispatch(showError(`Failed to login.`));
+			}
+		} else {
+			return;
 		}
 	};
 	const redirectToPortalOrDefault = (positionNotNull) =>
@@ -390,13 +409,13 @@ const RegisterEmail = () => {
 	const successRedirect = () => {
 		// Update below to change redirect location
 		// if Previous location available redirect to previous location
-		history.push(state?.from?.pathname ? state?.from?.pathname : clientsPath);
+		navigate(state?.from?.pathname ? state?.from?.pathname : clientsPath);
 		return true;
 	};
 
-	const redirectToPortal = () => history.push("/app/portal");
+	const redirectToPortal = () => navigate("/app/portal");
 
-	const redirectLogin = () => history.push("/login");
+	const redirectLogin = () => navigate("/login");
 
 	return (
 		<Grid container component="main" className={classes.root}>
@@ -432,6 +451,11 @@ const RegisterEmail = () => {
 									}}
 								>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										className={classes.labels}
 										error={errors.Password === null ? false : true}
 										helperText={
@@ -469,7 +493,17 @@ const RegisterEmail = () => {
 							<span className={classes.dividerText}>OR</span>
 							<span className={classes.secondLine}></span>
 						</div>
-						<div style={{ width: "100%" }}>
+						<GoogleLogin
+							onSuccess={(credentialResponse) => {
+								responseGoogle(credentialResponse);
+							}}
+							onError={() => {
+								dispatch(showError(`Failed to login.`));
+							}}
+							width="340px"
+							theme="outline"
+						/>
+						{/* <div style={{ width: "100%" }}>
 							<div className={classes.googleBtn} onClick={signIn}>
 								<div className={classes.googleIconWrapper}>
 									<img
@@ -482,7 +516,7 @@ const RegisterEmail = () => {
 									<b>Sign In With Google</b>
 								</p>
 							</div>
-						</div>
+						</div> */}
 
 						<div
 							onClick={signInMicrosoftHandler}
@@ -499,6 +533,7 @@ const RegisterEmail = () => {
 								<b>Sign In With Microsoft</b>
 							</p>
 						</div>
+						<AppleLoginSignin responseApple={responseApple} />
 					</div>
 
 					<footer className={classes.footer}>

@@ -1,5 +1,5 @@
-import { TableCell, TableRow, Tooltip } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { TableCell, TableRow, Tooltip } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { changeDate } from "helpers/date";
 import React from "react";
@@ -14,7 +14,7 @@ const HtmlTooltip = withStyles((theme) => ({
 	},
 }))(Tooltip);
 
-const ClientNoteRow = ({ row, classes, onDeleteNote }) => {
+const ClientNoteRow = ({ row, classes, onViewNote, onDeleteNote }) => {
 	return (
 		<TableRow>
 			<TableCell style={{ width: "170px" }}>{row.name}</TableCell>
@@ -23,6 +23,11 @@ const ClientNoteRow = ({ row, classes, onDeleteNote }) => {
 				<HtmlTooltip title={row.note}>
 					<p className="max-two-line">{row.note}</p>
 				</HtmlTooltip>
+			</TableCell>
+			<TableCell>
+				<p className="new-link" onClick={() => onViewNote(row.note)}>
+					View
+				</p>
 			</TableCell>
 			<TableCell style={{ width: "50px" }}>
 				<DeleteIcon className={classes.deleteIcon} onClick={onDeleteNote} />

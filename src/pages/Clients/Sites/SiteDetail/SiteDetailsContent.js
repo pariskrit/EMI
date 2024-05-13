@@ -1,21 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import KeyContacts from "./KeyContacts";
 import Applications from "./Applications";
 import { getSiteAppKeyContacts } from "services/clients/sites/siteDetails";
 import SiteDetails from "./SiteDetails";
 import License from "./License";
-import { getClientDetails } from "services/clients/clientDetailScreen";
 import { siteOptions } from "helpers/constants";
+import { getLocalStorageData } from "helpers/utils";
+import roles from "helpers/roles";
 
 const Details = () => {
-	const { id, clientId } = useParams();
+	const { id } = useParams();
 	const [contactsList, setContactsList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const cancelFetch = useRef(false);
 	const [isApplicationsLoading, setApplicationsLoading] = useState(true);
 	const [licenseData, setLicenseData] = useState({});
+
+	const { position, siteAppID, role } = getLocalStorageData("me");
+
+	const isClientAdmin = role === roles.clientAdmin;
 
 	const fetchKeyContactsList = async () => {
 		const result = await getSiteAppKeyContacts(id);
@@ -31,7 +36,6 @@ const Details = () => {
 					name: data.displayName,
 					product: data.name,
 					email: data.email,
-					phone: data.phone,
 				}))
 			);
 
@@ -41,28 +45,34 @@ const Details = () => {
 		}
 	};
 
-	const fetchClient = async (licenseType, licenseCount) => {
-		const result = await getClientDetails(clientId);
+	const fetchClient = async (
+		licenseType,
+		licenseCount,
+		siteLicenseType,
+		licenses,
+		shareModels
+	) => {
+		setLicenseData({
+			clientLicenseType: licenseType,
+			clientLicenses: licenseCount,
+			siteLicenseType,
+			licenses,
+			shareModels,
+		});
 
-		if (result.status) {
-			setLicenseData({
-				clientLicenseType: result.data.licenseType,
-				clientLicenses: result.data.licenses,
-			});
-
-			if (result.data.licenseType === 3) {
-				const licenseName = siteOptions.find(
-					(option) => option.value === licenseType
-				);
-				setLicenseData((prev) => ({
-					...prev,
-					selectedLicenseType: {
-						label: licenseName.label,
-						value: licenseName.value,
-					},
-					licenseCount,
-				}));
-			}
+		// site license type "Application-Based Licencing"
+		if (licenseType === 5) {
+			const licenseName = siteOptions.find(
+				(option) => option.value === licenseType
+			);
+			setLicenseData((prev) => ({
+				...prev,
+				selectedLicenseType: {
+					label: licenseName.label,
+					value: licenseName.value,
+				},
+				licenseCount,
+			}));
 		}
 		setIsLoading(false);
 	};
@@ -75,19 +85,26 @@ const Details = () => {
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
 	return (
 		<div style={{ marginTop: 22 }}>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
-							<SiteDetails siteId={id} fetchClient={fetchClient} />
+							<SiteDetails
+								siteId={id}
+								fetchClient={fetchClient}
+								position={position}
+								siteAppID={siteAppID}
+							/>
 						</Grid>
 						<Grid item xs={12}>
 							<License
 								siteId={id}
 								licenseData={licenseData}
 								isLoading={isLoading}
+								isClientAdmin={isClientAdmin}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -96,9 +113,13 @@ const Details = () => {
 						<Grid item xs={12}>
 							<Applications
 								siteId={id}
+								position={position}
+								siteAppID={siteAppID}
 								fetchKeyContactsList={fetchKeyContactsList}
 								isLoading={isApplicationsLoading}
 								setIsLoading={setApplicationsLoading}
+								role={role}
+								isClientAdmin={isClientAdmin}
 							/>
 						</Grid>
 					</Grid>

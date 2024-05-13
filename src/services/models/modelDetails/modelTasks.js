@@ -3,10 +3,17 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 // get list of model zones
-const getModelTasksList = async (modelVersionId, searchTxt = "") => {
+const getModelTasksList = async (
+	sortField = "actionName",
+	modelVersionId,
+	searchTxt = "",
+	pageNumber,
+	pageSize,
+	sort = "asc"
+) => {
 	try {
 		let response = await API.get(
-			`${Apis.ModelTasks}?modelVersionId=${modelVersionId}&search=${searchTxt}`
+			`${Apis.ModelTasks}?modelVersionId=${modelVersionId}&search=${searchTxt}&sortField=${sortField}&sort=${sort}`
 		);
 		return getAPIResponse(response);
 	} catch (error) {

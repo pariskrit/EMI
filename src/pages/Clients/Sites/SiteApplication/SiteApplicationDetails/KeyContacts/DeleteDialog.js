@@ -1,10 +1,11 @@
 import React from "react";
 import DeleteDialogStyle from "styles/application/DeleteDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = DeleteDialogStyle();
@@ -31,10 +32,28 @@ const DeleteDialog = ({
 						{<ADD.HeaderText>Delete {entityName}</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeHandler} variant="contained">
+						<ADD.CancelButton
+							onClick={closeHandler}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</ADD.CancelButton>
-						<ADD.DeleteButton onClick={handleDelete} variant="contained">
+						<ADD.DeleteButton
+							onClick={handleDelete}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Delete
 						</ADD.DeleteButton>
 					</ADD.ButtonContainer>

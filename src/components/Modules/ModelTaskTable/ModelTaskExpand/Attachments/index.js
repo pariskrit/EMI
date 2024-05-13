@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { CircularProgress, LinearProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import Link from "@material-ui/core/Link";
+import Link from "@mui/material/Link";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { Apis } from "services/api";
@@ -35,15 +35,14 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 	const [openEditAttachment, setOpenEditAttachment] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [pastePart, setPastePart] = useState(false);
+	const [pastePart, setPastePart] = useState(true);
 	const [isPasting, setIsPasting] = useState(false);
 
 	const [, CtxDispatch] = useContext(TaskContext);
-	const [state] = useContext(ModelContext);
+	const [state, MtxDispatch] = useContext(ModelContext);
 
 	const dispatch = useDispatch();
 
-	console.log(attachments);
 	const fetchAttachments = async (showLoading = true) => {
 		!isMounted.aborted && showLoading && setLoading(true);
 		try {
@@ -98,6 +97,17 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						data: response?.data?.length,
 					},
 				});
+				if (response.data.length > 0) {
+					CtxDispatch({
+						type: "SET_DOCUMENTS",
+						payload: true,
+					});
+				} else {
+					CtxDispatch({
+						type: "SET_DOCUMENTS",
+						payload: false,
+					});
+				}
 			} else {
 				dispatch(
 					showError(
@@ -124,6 +134,10 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 		fetchAttachments();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		setPastePart(state.isAttachmentsTaskDisabled);
+	}, [state]);
 
 	// handle dragging of attachment
 
@@ -185,16 +199,26 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				data: newData?.length,
 			},
 		});
+		if (newData.length > 0) {
+			CtxDispatch({
+				type: "SET_DOCUMENTS",
+				payload: true,
+			});
+		} else {
+			CtxDispatch({
+				type: "SET_DOCUMENTS",
+				payload: false,
+			});
+		}
 	};
 
 	const createAttachment = async (newPermit) => {
 		let response, callApi;
 		if (newPermit.file) {
-			response = await uploadModelTaskAttachmentDocument(
-				taskInfo.id,
-				newPermit.file.type.split("/")[1],
-				{ Filename: newPermit.file.name }
-			);
+			response = await uploadModelTaskAttachmentDocument({
+				Filename: newPermit.file.name,
+				ModelVersionTaskId: taskInfo.id,
+			});
 			if (response.status) {
 				try {
 					await fetch(response.data.url, {
@@ -221,7 +245,10 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 				filename: newPermit?.filename || null,
 			});
 		} else {
-			return { status: false, data: { detail: "File Upload Failed" } };
+			return {
+				status: false,
+				data: { detail: response?.data?.detail || "File Upload Failed" },
+			};
 		}
 	};
 
@@ -235,11 +262,11 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 	const editAttachment = async (payload) => {
 		let response;
 		if (payload.file?.name) {
-			response = await uploadModelTaskAttachmentDocument(
-				taskInfo.id,
-				payload.file.type.split("/")[1],
-				{ Filename: payload.file.name }
-			);
+			response = await uploadModelTaskAttachmentDocument({
+				Filename: payload.file.name,
+				ModelVersionTaskId: taskInfo.id,
+			});
+			let errMsg = response?.data?.detail;
 			if (response.status) {
 				try {
 					await fetch(response.data.url, {
@@ -248,11 +275,17 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 					});
 				} catch (error) {
 					response = false;
-					return { status: false, data: { detail: "File Upload Failed" } };
+					return {
+						status: false,
+						data: { detail: "File Upload Failed" },
+					};
 				}
 			} else {
 				response = false;
-				return { status: false, data: { detail: "File Upload Failed" } };
+				return {
+					status: false,
+					data: { detail: errMsg || "File Upload Failed" },
+				};
 			}
 		} else {
 			response = false;
@@ -282,8 +315,8 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 	};
 
 	const handleCopy = (id) => {
-		setPastePart(true);
 		localStorage.setItem("taskdocument", id);
+		MtxDispatch({ type: "DISABLE_ATTACHMENTS_TASK", payload: false });
 	};
 
 	const handlePaste = async () => {
@@ -313,7 +346,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 			const taskId = localStorage.getItem("taskdocument");
 
 			if (taskId) {
-				setPastePart(true);
+				setPastePart(false);
 			}
 		} catch (error) {
 			return;
@@ -381,7 +414,7 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						<GeneralButton
 							style={{ background: "#ED8738", width: "200px" }}
 							onClick={handlePaste}
-							disabled={!pastePart}
+							disabled={pastePart}
 						>
 							Paste {"Attachment"}
 						</GeneralButton>
@@ -422,7 +455,9 @@ const Attachments = ({ taskInfo, access, isMounted }) => {
 						isDelete: true,
 					},
 				].filter((x) => {
-					if (state?.modelDetail?.isPublished) return false;
+					if (state?.modelDetail?.isPublished) {
+						return x?.name === "Copy";
+					}
 					if (access === "F") return true;
 					if (access === "E") {
 						if (x.name === "Edit") return true;

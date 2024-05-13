@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import { endOfDay, startOfDay } from "helpers/date";
 import { convertDateToUTC } from "helpers/utils";
 
 export const redService = ["T", "X", "N", "S"];
@@ -16,9 +16,13 @@ export const serviceStatus = {
 	H: "Checked Out",
 };
 
-export const changeStatusReason = [
+export const changeStatusReason = (customCaptions) => [
 	{ id: "X", name: "Cancel", showIn: "S" },
-	{ id: "C", name: "Complete", showIn: "T" },
+	{
+		id: "C",
+		name: `Complete (${customCaptions?.taskPlural ?? "Tasks"} Skipped)`,
+		showIn: "T",
+	},
 	{ id: "N", name: "Incomplete", showIn: "T" },
 	{ id: "P", name: "Completed by Paper", showIn: "S" },
 ];
@@ -28,10 +32,12 @@ export const mappeedStatusReason = {
 	name: "Cancel",
 };
 
-export const statusOfServices = (status, TasksSkipped) => {
+export const statusOfServices = (status, TasksSkipped, customCaptions) => {
 	switch (status) {
 		case "T":
-			return TasksSkipped === false ? "Stopped" : "Stopped (Tasks Skipped)";
+			return TasksSkipped === false
+				? "Stopped"
+				: `Stopped (${customCaptions?.taskPlural ?? "Tasks"} Skipped)`;
 		case "X":
 			return "Cancelled";
 		case "N":
@@ -39,7 +45,9 @@ export const statusOfServices = (status, TasksSkipped) => {
 		case "S":
 			return "Scheduled";
 		case "C":
-			return TasksSkipped === false ? "Complete" : "Complete (Tasks Skipped)";
+			return TasksSkipped === false
+				? "Complete"
+				: `Complete (${customCaptions?.taskPlural ?? "Tasks"} Skipped)`;
 		case "P":
 			return "Complete (By Paper)";
 		case "I":
@@ -56,70 +64,75 @@ export const statusOfServices = (status, TasksSkipped) => {
 
 export const serviceTableHeader = (
 	allowIndividualAssetModels,
-	customCaptions
+	customCaptions,
+	showServiceClientName
 ) => {
 	return allowIndividualAssetModels === true
 		? [
-				{ id: 1, name: "Work Order" },
+				{ id: 1, name: customCaptions.serviceWorkOrder },
+				...(showServiceClientName ? [{ id: 16, name: "Client Name" }] : []),
+				{ id: 8, name: customCaptions.model },
+				{ id: 9, name: customCaptions.asset },
+				{ id: 11, name: customCaptions.interval },
+				{ id: 12, name: customCaptions.role },
 				{ id: 2, name: "Status" },
 				{ id: 3, name: "% Completed", width: "200px" },
 				{ id: 5, name: "% Time Under/Over" },
 				{ id: 6, name: "Time (Mins) Under/Over" },
 				{ id: 7, name: "Mins Remaining" },
-				{ id: 8, name: customCaptions.model },
-				{ id: 9, name: customCaptions.asset + " Number" },
-				{ id: 10, name: customCaptions.modelType },
-				{ id: 11, name: customCaptions.interval },
-				{ id: 12, name: customCaptions.role },
+
 				{ id: 13, name: "Scheduled Date/Time" },
 				{ id: 14, name: "Current " + customCaptions.user },
 				{ id: 15, name: customCaptions.service + " Started" },
 		  ]
 		: [
 				{ id: 1, name: "Work Order" },
+				...(showServiceClientName ? [{ id: 16, name: "Client Name" }] : []),
+				{ id: 8, name: customCaptions.model },
+				{ id: 11, name: customCaptions.interval },
+				{ id: 12, name: customCaptions.role },
 				{ id: 2, name: "Status" },
 				{ id: 3, name: "% Completed", width: "200px" },
 				{ id: 5, name: "% Time Under/Over" },
 				{ id: 6, name: "Time (Mins) Under/Over" },
 				{ id: 7, name: "Mins Remaining" },
-				{ id: 8, name: customCaptions.model },
-				{ id: 10, name: customCaptions.modelType },
-				{ id: 11, name: customCaptions.interval },
-				{ id: 12, name: customCaptions.role },
 				{ id: 13, name: "Scheduled Date/Time" },
 				{ id: 14, name: "Current " + customCaptions.user },
 				{ id: 15, name: customCaptions.service + " Started" },
 		  ];
 };
-export const serviceTableColumns = (allowIndividualAssetModels) => {
+export const serviceTableColumns = (
+	allowIndividualAssetModels,
+	showServiceClientName
+) => {
 	return allowIndividualAssetModels === true
 		? [
 				"workOrder",
+				...(showServiceClientName ? ["clientName"] : []),
+				"modelName",
+				"siteAssetName",
+				"interval",
+				"role",
 				"status",
 				"percentageComplete",
 				"percentageOverTime",
 				"minutesOverTime",
 				"estimatedMinutes",
-				"modelName",
-				"siteAssetName",
-				"typeName",
-				"interval",
-				"role",
 				"scheduledDate",
 				"checkoutUser",
 				"checkoutDate",
 		  ]
 		: [
 				"workOrder",
+				...(showServiceClientName ? ["clientName"] : []),
+				"modelName",
+				"interval",
+				"role",
 				"status",
 				"percentageComplete",
 				"percentageOverTime",
 				"minutesOverTime",
 				"estimatedMinutes",
-				"modelName",
-				"typeName",
-				"interval",
-				"role",
 				"scheduledDate",
 				"checkoutUser",
 				"checkoutDate",
@@ -144,8 +157,8 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 	{
 		id: 1,
 		name: "Today",
-		fromDate: convertDateToUTC(new Date(dayjs().startOf("day"))),
-		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
+		fromDate: convertDateToUTC(startOfDay()),
+		toDate: convertDateToUTC(endOfDay()),
 	},
 	{
 		id: 2,
@@ -157,7 +170,7 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 				todayDate.getDate() - 7
 			)
 		),
-		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
+		toDate: convertDateToUTC(endOfDay()),
 	},
 	{
 		id: 3,
@@ -169,7 +182,7 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 				todayDate.getDate() - 14
 			)
 		),
-		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
+		toDate: convertDateToUTC(endOfDay()),
 	},
 	{
 		id: 4,
@@ -181,7 +194,7 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 				todayDate.getDate() - 30
 			)
 		),
-		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
+		toDate: convertDateToUTC(endOfDay()),
 	},
 	{
 		id: 5,
@@ -193,7 +206,7 @@ export const filterByDateOptions = (todayDate, customCaptions) => [
 				todayDate.getDate() - 365
 			)
 		),
-		toDate: convertDateToUTC(new Date(dayjs().endOf("day"))),
+		toDate: convertDateToUTC(endOfDay()),
 	},
 	{
 		id: 6,
@@ -268,3 +281,5 @@ export const serviceMonitorQuestionCols = (modelType) =>
 				{ id: 3, name: "taskName" },
 				{ id: 4, name: "question" },
 		  ];
+
+export const serviceGarphId = "serviceganttchartid";

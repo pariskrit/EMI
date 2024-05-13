@@ -5,23 +5,25 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import ColourConstants from "helpers/colourConstants";
-import NoteRow from "./NoteRow";
-import AddNoteDialog from "./AddNoteDialog";
-import DeleteDialog from "../DeleteDialog";
+import NoteRow from "pages/Services/ServiceDetails/Detail/NotesTile/NoteRow";
+import AddNoteDialog from "pages/Services/ServiceDetails/Detail/NotesTile/AddNoteDialog";
+import DeleteDialog from "pages/Services/ServiceDetails/Detail/DeleteDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import ContentDialog from "./ContentDialog";
 import {
 	deleteServiceNotes,
 	getServiceNotes,
 	postServiceNote,
 } from "services/services/serviceDetails/detail";
+import NoteContentPopup from "components/Elements/NoteContentPopup";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	noteContainer: {
 		display: "flex",
 		justifyContent: "flex-end",
@@ -62,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Notes = ({ data, serviceId, isReadOnly }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [modal, setModal] = useState({
 		openAddModal: false,
 		openDeleteModal: false,
@@ -81,7 +83,7 @@ const Notes = ({ data, serviceId, isReadOnly }) => {
 		if (response.status) {
 			fetchNotes();
 		} else {
-			dispatch(showError(response.data.error || "Could not add note"));
+			dispatch(showError(response?.data?.error || "Could not add note"));
 		}
 	};
 
@@ -108,7 +110,7 @@ const Notes = ({ data, serviceId, isReadOnly }) => {
 		if (response.status) {
 			setNotes(response.data);
 		} else {
-			console.log(response);
+			dispatch(showError(response?.data?.error || "Could not delete note"));
 		}
 	};
 
@@ -136,7 +138,7 @@ const Notes = ({ data, serviceId, isReadOnly }) => {
 	}, [data]);
 	return (
 		<div className={classes.noteContainer}>
-			<ContentDialog
+			<NoteContentPopup
 				open={modal.openContentModal.open ?? false}
 				onClose={onCloseContentDialog}
 				note={modal.openContentModal.note}

@@ -6,15 +6,17 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import ColourConstants from "helpers/colourConstants";
 import ClientKeyRow from "./TableRow";
 import PropTypes from "prop-types";
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	tableContainer: {
 		[media]: {
 			whiteSpace: "nowrap",
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function KeyContacts({ data, tableHeaders, isLoading }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	if (isLoading) {
 		return <CircularProgress />;

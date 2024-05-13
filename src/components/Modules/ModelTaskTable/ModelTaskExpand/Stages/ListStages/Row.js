@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext, useEffect } from "react";
-import { TableRow, TableCell } from "@material-ui/core";
+import { TableRow, TableCell } from "@mui/material";
 import TableStyle from "styles/application/TableStyle";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import EMICheckbox from "components/Elements/EMICheckbox";
@@ -54,7 +54,6 @@ function Row({
 		},
 		selected: x.id !== null,
 	});
-
 	const [modelState] = useContext(ModelContext);
 	const [searchCount, setSearchCount] = useState(null);
 	const [updating, setUpdating] = useState(false);
@@ -129,7 +128,7 @@ function Row({
 	};
 
 	const handleAssetDropPage = async (p, prevData) => {
-		setPage(() => p);
+		setPage((prev) => ({ ...prev, pageNo: p }));
 		await pageChange({ pNo: p, pSize: 10, search: "" }, prevData);
 	};
 
@@ -179,7 +178,6 @@ function Row({
 				);
 			}
 		} catch (error) {
-			console.log(error);
 			dispatch(
 				showError(
 					error?.response?.detail || "Could not assign site asset reference"

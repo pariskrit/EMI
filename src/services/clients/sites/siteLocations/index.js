@@ -3,14 +3,14 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 //#region get locations
-const getSiteLocations = async (siteId) => {
-	try {
-		let response = await API.get(`${Apis.SiteLocations}?siteId=${siteId}`);
-		return getAPIResponse(response);
-	} catch (err) {
-		return getAPIResponse(err?.response);
-	}
-};
+// const getSiteLocations = async (siteId) => {
+// 	try {
+// 		let response = await API.get(`${Apis.SiteLocations}?siteAppId=${siteId}`);
+// 		return getAPIResponse(response);
+// 	} catch (err) {
+// 		return getAPIResponse(err?.response);
+// 	}
+// };
 
 //#endregion
 
@@ -51,7 +51,7 @@ const deleteSiteLocations = async (siteId) => {
 //#endregion
 
 export {
-	getSiteLocations,
+	// getSiteLocations,
 	addSiteLocations,
 	deleteSiteLocations,
 	editSiteLocations,

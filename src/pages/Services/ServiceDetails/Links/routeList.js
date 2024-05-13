@@ -5,12 +5,12 @@ import {
 	serviceReport,
 	serviceTimes,
 } from "helpers/routePaths";
-import ServiceDetailContent from "../Detail";
-import Impacts from "../Impacts";
-import Defects from "../Defects";
-import Times from "../Times";
-import ServiceReport from "../ServiceReport";
-import ConditionMonitor from "../ConditionMonitor";
+import ServiceDetailContent from "pages/Services/ServiceDetails/Detail";
+import Impacts from "pages/Services/ServiceDetails/Impacts";
+import Defects from "pages/Services/ServiceDetails/Defects";
+import Times from "pages/Services/ServiceDetails/Times";
+import ServiceReport from "pages/Services/ServiceDetails/ServiceReport";
+import ConditionMonitor from "pages/Services/ServiceDetails/ConditionMonitor";
 
 const routeList = (detail, customCaptions) => [
 	{

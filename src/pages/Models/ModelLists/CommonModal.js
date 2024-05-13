@@ -7,19 +7,23 @@ import {
 	LinearProgress,
 	Radio,
 	RadioGroup,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import Departments from "pages/Models/ModelDetails/ModelDetail/Departments";
+import { generateErrorState, handleValidateObj, isChrome } from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
 import { getModelTypes } from "services/clients/sites/siteApplications/modelTypes";
-import { getSiteLocations } from "services/clients/sites/siteLocations";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { showNotications } from "redux/notification/actions";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { modelsPath } from "helpers/routePaths";
+import { useNavigate } from "react-router-dom";
+import { appPath, modelsPath } from "helpers/routePaths";
+import { getAvailableModelDepartments } from "services/models/modelList";
+import { getModelDeparments } from "services/models/modelDetails/details";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -36,26 +40,26 @@ const schema = yup.object({
 		.integer()
 		.required("The field is required"),
 
-	location: yup.number("This field must be a string").nullable(),
 	modelTemplateType: yup.string("This field must be a string").nullable(),
 	serialNumberRange: yup.string("This field must be a string").nullable(),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
+		padding: "2px 0px",
+		minWidth: "170px",
 		// width: "auto",
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
 	name: null,
 	model: null,
 	type: null,
-	location: null,
 	modelTemplateType: "F",
 	serialNumberRange: null,
 };
@@ -63,7 +67,6 @@ const defaultStateSchema = {
 	name: "",
 	model: "",
 	type: {},
-	location: {},
 	modelTemplateType: "F",
 	serialNumberRange: null,
 };
@@ -76,44 +79,42 @@ function AddNewModelDetail({
 	title,
 	createProcessHandler,
 	isDuplicate,
+	isShareModel,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [availableDepartments, setAvailableDepartments] = useState([]);
+	const [registeredDepartments, setRegisteredDepartments] = useState([]);
 	const [modelTypes, setModelTypes] = useState([]);
-	const [locations, setLocations] = useState([]);
-	const { application, customCaptions } =
+	const [modelFocus, setModelFocus] = useState(true);
+
+	const { application, customCaptions, siteAppID } =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
 
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	// get model types for dropdown
 	useEffect(() => {
-		if (open && !isDuplicate) {
+		if (open) {
 			setIsUpdating(true);
 			const getFormData = async () => {
-				const response = await Promise.all([
-					getModelTypes(siteId),
-					getSiteLocations(siteId),
-				]);
-				const [modeltypeslist, locationList] = response;
-				if (modeltypeslist.status === true) {
+				let response = null;
+				if (application?.showLocations) {
+					response = await Promise.all([getModelTypes(siteId)]);
+				} else {
+					response = await Promise.all([getModelTypes(siteId)]);
+				}
+				const [modeltypeslist] = response;
+				if (modeltypeslist?.status === true) {
 					setModelTypes(
 						modeltypeslist.data.map((list) => ({
-							label: list.name,
-							value: list.id,
-						}))
-					);
-				}
-				if (locationList.status === true) {
-					setLocations(
-						locationList.data.map((list) => ({
 							label: list.name,
 							value: list.id,
 						}))
@@ -127,15 +128,34 @@ function AddNewModelDetail({
 	}, [open, siteId]);
 
 	useEffect(() => {
-		if (data) {
-			setInput(() => ({
-				...data,
-				type: { label: data.modelType, value: 0 },
-				location: { label: data.locationName, value: 0 },
-				model: data.modelName,
-			}));
+		if (open) {
+			const fetchAvailableDepartments = async () => {
+				const depts = await getAvailableModelDepartments(siteAppID);
+				setAvailableDepartments(depts?.data);
+			};
+			const fetchModelDepartments = async () => {
+				const depts = await getModelDeparments(
+					data?.activeModelVersionID || data?.devModelVersionID
+				);
+				setAvailableDepartments(depts?.data || []);
+			};
+			if (data) {
+				setInput(() => ({
+					...data,
+					type: { label: data.modelType, value: data?.modelTypeID },
+					model: data.modelName,
+				}));
+			}
+			if (
+				isDuplicate &&
+				(data?.activeModelVersionID || data?.devModelVersionID)
+			) {
+				fetchModelDepartments();
+			} else {
+				fetchAvailableDepartments();
+			}
 		}
-	}, [data]);
+	}, [data, open]);
 
 	const closeOverride = () => {
 		// Clearing input state and errors
@@ -156,7 +176,6 @@ function AddNewModelDetail({
 		const cleanInput = {
 			...input,
 			type: input?.type?.value,
-			location: input?.location?.value || null,
 		};
 
 		try {
@@ -170,15 +189,17 @@ function AddNewModelDetail({
 					modelName: input.model || null,
 					type: input.modelTemplateType || null,
 					modelTypeID: input.type.value,
-					siteLocationID: input.location.value || null,
 					serialNumberRange: input.serialNumberRange || null,
+					siteDepartments: registeredDepartments
+						?.filter((department) => department.checked)
+						.map((department) => department.id),
 				};
 
 				const newData = await createProcessHandler(payload);
 
-				if (newData.status) {
+				if (newData?.status) {
 					// setIsUpdating(false);
-					history.push(`${modelsPath}/${newData?.data?.modelVersionID}`);
+					navigate(`${appPath}${modelsPath}/${newData?.data?.modelVersionID}`);
 				} else {
 					setIsUpdating(false);
 
@@ -210,12 +231,19 @@ function AddNewModelDetail({
 	const handleDuplicateModel = async () => {
 		setIsUpdating(true);
 
-		const newData = await createProcessHandler();
+		const payload = {
+			name: input.name,
+			modelName: input.model || null,
+			type: input.modelTemplateType || null,
+			modelTypeID: input.type.value,
+			serialNumberRange: input.serialNumberRange || null,
+		};
 
-		if (newData.status) {
-			history.push(`${modelsPath}/${newData.data.modelVersionID}`);
+		const newData = await createProcessHandler(payload);
+
+		if (newData?.status) {
+			navigate(`${appPath}${modelsPath}/${newData.data.modelVersionID}`);
 		} else {
-			console.log(newData);
 			dispatch(
 				showNotications({
 					show: true,
@@ -231,6 +259,7 @@ function AddNewModelDetail({
 
 		setIsUpdating(false);
 	};
+
 	return (
 		<div>
 			<Dialog
@@ -239,16 +268,28 @@ function AddNewModelDetail({
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 				className="medium-application-dailog"
+				disableEnforceFocus={isChrome() ? modelFocus : false}
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
-						{<ADD.HeaderText>{title}</ADD.HeaderText>}
+						{
+							<ADD.HeaderText>
+								{title}
+								{customCaptions?.modelTemplate ?? "Model"}
+							</ADD.HeaderText>
+						}
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
-							<ADD.CancelButton onClick={closeOverride} variant="contained">
+							<ADD.CancelButton
+								onClick={closeOverride}
+								variant="contained"
+								onFocus={(e) => {
+									setModelFocus(true);
+								}}
+							>
 								Cancel
 							</ADD.CancelButton>
 						</div>
@@ -261,7 +302,11 @@ function AddNewModelDetail({
 								className={classes.createButton}
 								disabled={isUpdating}
 							>
-								{isDuplicate ? "Duplicate" : title}
+								{isShareModel
+									? "Transfer"
+									: isDuplicate
+									? "Duplicate"
+									: `Add ${customCaptions?.modelTemplate ?? "Model"}`}
 							</ADD.ConfirmButton>
 						</div>
 					</ADD.ButtonContainer>
@@ -272,7 +317,9 @@ function AddNewModelDetail({
 						application?.allowIndividualAssetModels && (
 							<ADD.InputContainer>
 								<ADD.LeftInputContainer>
-									<ADD.NameLabel>{customCaptions?.modelTemplate}</ADD.NameLabel>
+									<ADD.NameLabel>
+										{customCaptions?.modelTemplate ?? "Model Template"}
+									</ADD.NameLabel>
 									<RadioGroup
 										aria-label="ModelTemplateType"
 										name="ModelTemplateType"
@@ -297,13 +344,17 @@ function AddNewModelDetail({
 							</ADD.InputContainer>
 						)}
 					<ADD.InputContainer>
-						{application?.showModel && input.modelTemplateType === "A" ? (
+						{(input.modelTemplateType === "A" ||
+							application?.allowIndividualAssetModels) &&
+						(input.modelTemplateType !== "F" ||
+							!application?.allowFacilityBasedModels) ? (
 							<ADD.LeftInputContainer>
 								<ADD.NameLabel>
 									{customCaptions?.make}
 									<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.NameLabel>
 								<ADD.NameInput
+									variant="standard"
 									error={errors.name === null ? false : true}
 									helperText={errors.name === null ? null : errors.name}
 									value={input.name}
@@ -315,10 +366,11 @@ function AddNewModelDetail({
 						) : (
 							<ADD.FullWidthContainer>
 								<ADD.NameLabel>
-									{customCaptions?.modelTemplate}
+									{customCaptions?.modelTemplate ?? "Model Template"}
 									<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.NameLabel>
 								<ADD.NameInput
+									variant="standard"
 									error={errors.name === null ? false : true}
 									helperText={errors.name === null ? null : errors.name}
 									value={input.name}
@@ -329,20 +381,24 @@ function AddNewModelDetail({
 							</ADD.FullWidthContainer>
 						)}
 
-						{application?.showModel && input.modelTemplateType === "A" && (
-							<ADD.RightInputContainer>
-								<ADD.NameLabel>{customCaptions?.model}</ADD.NameLabel>
-								<ADD.NameInput
-									error={errors.model === null ? false : true}
-									helperText={errors.model === null ? null : errors.model}
-									required
-									value={input.model}
-									onChange={(e) => {
-										setInput({ ...input, model: e.target.value });
-									}}
-								/>
-							</ADD.RightInputContainer>
-						)}
+						{(input.modelTemplateType === "A" ||
+							application?.allowIndividualAssetModels) &&
+							(input.modelTemplateType !== "F" ||
+								!application?.allowFacilityBasedModels) && (
+								<ADD.RightInputContainer>
+									<ADD.NameLabel>{customCaptions?.model}</ADD.NameLabel>
+									<ADD.NameInput
+										variant="standard"
+										error={errors.model === null ? false : true}
+										helperText={errors.model === null ? null : errors.model}
+										required
+										value={input.model}
+										onChange={(e) => {
+											setInput({ ...input, model: e.target.value });
+										}}
+									/>
+								</ADD.RightInputContainer>
+							)}
 					</ADD.InputContainer>
 					<ADD.InputContainer>
 						<ADD.FullWidthContainer>
@@ -360,7 +416,7 @@ function AddNewModelDetail({
 										setInput({ ...input, type: e });
 									}}
 									label=""
-									placeholder="Select Type"
+									placeholder={`Select ${customCaptions?.modelType}`}
 									required={true}
 									width="100%"
 									isError={errors.type === null ? false : true}
@@ -368,29 +424,15 @@ function AddNewModelDetail({
 							</ErrorInputFieldWrapper>
 						</ADD.FullWidthContainer>
 					</ADD.InputContainer>
-					{application?.showLocations && (
-						<ADD.InputContainer>
-							<ADD.FullWidthContainer>
-								<ADD.NameLabel>Location</ADD.NameLabel>
-								<Dropdown
-									options={locations}
-									selectedValue={input.location}
-									onChange={(e) => {
-										setInput({ ...input, location: e });
-									}}
-									label=""
-									placeholder="Select Location"
-									width="100%"
-								/>
-							</ADD.FullWidthContainer>
-						</ADD.InputContainer>
-					)}
 					{application?.showSerialNumberRange &&
 						input.modelTemplateType === "A" && (
 							<ADD.InputContainer>
 								<ADD.FullWidthContainer>
-									<ADD.NameLabel>Serial Number Range</ADD.NameLabel>
+									<ADD.NameLabel>
+										{customCaptions?.serialNumberRange}
+									</ADD.NameLabel>
 									<ADD.NameInput
+										variant="standard"
 										error={errors.serialNumberRange === null ? false : true}
 										helperText={
 											errors.serialNumberRange === null ? null : errors.name
@@ -403,6 +445,21 @@ function AddNewModelDetail({
 								</ADD.FullWidthContainer>
 							</ADD.InputContainer>
 						)}
+					<ADD.InputContainer>
+						<ADD.FullWidthContainer>
+							<Departments
+								listOfDepartment={availableDepartments}
+								customCaptions={customCaptions}
+								isReadOnly={false}
+								isPublished={false}
+								setRegisteredDepartments={setRegisteredDepartments}
+								isDuplicate={isDuplicate}
+								onBlur={() => {
+									setModelFocus(false);
+								}}
+							/>
+						</ADD.FullWidthContainer>
+					</ADD.InputContainer>
 				</DialogContent>
 			</Dialog>
 		</div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Grid, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Grid, TextField, Typography } from "@mui/material";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
@@ -8,13 +8,16 @@ import {
 	getLocalStorageData,
 	handleValidateObj,
 } from "helpers/utils";
+import { makeStyles } from "tss-react/mui";
+
 import useOutsideClick from "hooks/useOutsideClick";
 import {
 	deleteSiteAssetReferences,
 	updateSiteAssetReferences,
 } from "services/clients/sites/siteAssets/references";
 import "./edit.css";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 const schema = yup.object({
 	name: yup
@@ -44,7 +47,7 @@ const defaultErrorSchema = {
 	workCenter: null,
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	inputContainer: {
 		display: "flex",
 		alignItems: "center",
@@ -100,12 +103,13 @@ const FunctionalLocations = ({
 	error,
 }) => {
 	const ref = useRef();
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [attemptDelete, setAttemptDelete] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const [input, setInput] = useState(defaultInputSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const { customCaptions } = getLocalStorageData("me");
+	const dispatch = useDispatch();
 
 	// Click outside the component and set to false
 
@@ -125,10 +129,11 @@ const FunctionalLocations = ({
 				throw new Error(result);
 			}
 		} catch (err) {
-			console.log(err);
 			setAttemptDelete(false);
 			setLoading(false);
-			return false;
+			dispatch(
+				showError(`Failed to delete ${customCaptions?.assetReference}.`)
+			);
 		}
 	};
 
@@ -217,9 +222,11 @@ const FunctionalLocations = ({
 						setLoading(false);
 					}
 				} catch (err) {
-					console.log(err);
 					setIsEdit(false);
 					setLoading(false);
+					dispatch(
+						showError(`Failed to add ${customCaptions?.assetReferencePlural}.`)
+					);
 				}
 			}
 		}
@@ -252,6 +259,11 @@ const FunctionalLocations = ({
 							<Grid container spacing={2}>
 								<Grid item sm={6}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										autoFocus
 										fullWidth
 										variant="outlined"
@@ -266,6 +278,11 @@ const FunctionalLocations = ({
 								</Grid>
 								<Grid item sm={6}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										fullWidth
 										variant="outlined"
 										name="description"
@@ -282,6 +299,11 @@ const FunctionalLocations = ({
 								</Grid>
 								<Grid item sm={6}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										fullWidth
 										variant="outlined"
 										name="plannerGroup"
@@ -297,6 +319,11 @@ const FunctionalLocations = ({
 								</Grid>
 								<Grid item sm={6}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										fullWidth
 										variant="outlined"
 										name="workCenter"
@@ -316,6 +343,11 @@ const FunctionalLocations = ({
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										fullWidth
 										variant="outlined"
 										name="name"
@@ -329,6 +361,11 @@ const FunctionalLocations = ({
 								</Grid>
 								<Grid item xs={12}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										fullWidth
 										variant="outlined"
 										name="description"
@@ -344,6 +381,11 @@ const FunctionalLocations = ({
 								</Grid>
 								<Grid item xs={12}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										fullWidth
 										variant="outlined"
 										name="plannerGroup"
@@ -359,6 +401,11 @@ const FunctionalLocations = ({
 								</Grid>
 								<Grid item xs={12}>
 									<TextField
+										sx={{
+											"& .MuiInputBase-input.Mui-disabled": {
+												WebkitTextFillColor: "#000000",
+											},
+										}}
 										fullWidth
 										variant="outlined"
 										name="workCenter"

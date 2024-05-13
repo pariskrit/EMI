@@ -1,19 +1,15 @@
 import React, {
 	useCallback,
+	useContext,
 	useEffect,
 	useMemo,
 	useRef,
 	useState,
 } from "react";
 import ModelTaskTable from "components/Modules/ModelTaskTable";
-import ErrorIcon from "@material-ui/icons/Error";
 import DetailsPanel from "components/Elements/DetailsPanel";
-import HasImages from "assets/icons/images.svg";
-import HasDocuments from "assets/icons/documents.svg";
-import HasTools from "assets/icons/tools.svg";
-import HasParts from "assets/icons/parts.svg";
-import SafteryCritical from "assets/icons/safety-critical.svg";
-import { CircularProgress, LinearProgress } from "@material-ui/core";
+
+import { CircularProgress, LinearProgress } from "@mui/material";
 import AddNewModelTask from "./AddNewModelTask";
 import {
 	addModelTask,
@@ -23,28 +19,53 @@ import {
 } from "services/models/modelDetails/modelTasks";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import withMount from "components/HOC/withMount";
-import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import SearchTask from "./SearchTask";
-import { checkIfVisibleInViewPort } from "helpers/utils";
+import {
+	NumericSort,
+	checkIfVisibleInViewPort,
+	coalesc,
+	handleSort,
+} from "helpers/utils";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import TabTitle from "components/Elements/TabTitle";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { TasksPage } from "services/History/models";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { HistoryCaptions } from "helpers/constants";
+import modelTaskScroller from "helpers/modelTaskScroller";
+import { ModelContext } from "contexts/ModelDetailContext";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	loading: {
 		position: "absolute",
 		width: "100%",
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
-function Task({ modelId, state, dispatch, access, isMounted }) {
+function Task({
+	modelId,
+	state,
+	dispatch,
+	access,
+	isMounted,
+	getCurrentTaskTableSort,
+	isTaskListImportSuccess,
+}) {
 	const [isLoading, setLoading] = useState(true);
 	const [isDataLoading, setDataLoading] = useState(true);
 	const [taskList, setTaskList] = useState([]);
 	const [originalTaskList, setOriginalTaskList] = useState([]);
+	const [currentTableSort, setCurrentTableSort] = useState([
+		"actionName",
+		"asc",
+	]);
 
 	const [isPasting, setPasting] = useState(false);
 
@@ -54,34 +75,61 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	const [enablePasteTask, setPasteTask] = useState(false);
 	const shouldExpandRef = useRef(false);
 	const isScrolledOnLoad = useRef(false);
+	const [siteAppState, setSiteAppState] = useState(null);
 
-	const history = useHistory();
+	const location = useLocation();
 
 	const reduxDispatch = useDispatch();
-
+	let sortField = currentTableSort[0];
+	let sort = currentTableSort[1];
 	// const fromSeriveLayoutId = 24102;
-	const fromSeriveLayoutId = history?.location?.state?.modelVersionTaskID;
+	const fromSeriveLayoutId = location?.state?.modelVersionTaskID;
+	const [
+		{
+			modelDetail: { modelType },
+		},
+	] = useContext(ModelContext);
 
 	useEffect(() => {
 		if (
 			taskList.length !== 0 &&
-			isLoading === false &&
-			shouldExpandRef.current === false &&
+			!isLoading &&
+			!shouldExpandRef.current &&
 			fromSeriveLayoutId
 		) {
 			setTimeout(() => {
 				if (document.getElementById(`taskExpandable${fromSeriveLayoutId}`)) {
-					document
-						.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-						.scrollIntoView({
-							behavior: "smooth",
-							block: "start",
-							inline: "start",
-							// top:
-							// 	document
-							// 		.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-							// 		.getBoundingClientRect().bottom + window.pageYOffset,
-						});
+					if (
+						!isScrolledOnLoad.current &&
+						checkIfVisibleInViewPort(
+							document.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+						)
+					) {
+						document
+							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+							.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+								inline: "center",
+							});
+
+						document
+							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+							.click();
+						isScrolledOnLoad.current = true;
+					} else {
+						document
+							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+							.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+								inline: "center",
+								// top:
+								// 	document
+								// 		.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+								// 		.getBoundingClientRect().bottom + window.pageYOffset,
+							});
+					}
 
 					shouldExpandRef.current = true;
 				}
@@ -98,22 +146,28 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						document.getElementById(`taskExpandable${fromSeriveLayoutId}`)
 					)
 				) {
-					// console.log("scrolled", isScrolledOnLoad);
 					isScrolledOnLoad.current = true;
+
 					setTimeout(() => {
 						document
 							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-							.click();
-						setTimeout(() => {
-							document
-								.getElementById(`taskExpandable${fromSeriveLayoutId}`)
-								.scrollIntoView({
+							.scrollIntoView(
+								{
 									behavior: "smooth",
 									block: "start",
 									inline: "start",
-								});
-						}, 1000);
-					}, 500);
+								},
+								true
+							);
+
+						document
+							.getElementById("table-scroll-wrapper-container")
+							.scrollBy(0, -60);
+
+						document
+							.getElementById(`taskExpandable${fromSeriveLayoutId}`)
+							.click();
+					}, 1000);
 				}
 			};
 			handleScroll();
@@ -125,71 +179,112 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 		}
 	}, [fromSeriveLayoutId, isLoading]);
 
-	const classes = useStyles();
+	const { classes } = useStyles();
 
 	const {
 		position,
-		application: { showOperatingMode, name },
+		application: { name },
 		customCaptions,
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+		siteAppID,
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
+
+	const handleSortClick = (field) => {
+		// Flipping current method
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
+
+		if (field === "taskGroupID" || field === "estimatedMinutes") {
+			NumericSort(taskList, setTaskList, field, newMethod);
+		} else {
+			handleSort(taskList, setTaskList, field, newMethod);
+		}
+
+		// Sorting table
+
+		// Updating header state
+		setCurrentTableSort([field, newMethod]);
+		getCurrentTaskTableSort([field, newMethod]);
+	};
+
+	const sortData = (data) => {
+		if (currentTableSort[1] === "asc") {
+			data.sort((a, b) =>
+				a[currentTableSort[0]]
+					?.toString()
+					.localeCompare(b[currentTableSort[0]]?.toString())
+			);
+		}
+
+		if (currentTableSort[0] === "desc") {
+			data.sort((a, b) =>
+				b[currentTableSort[0]]
+					?.toString()
+					.localeCompare(a[currentTableSort[0]]?.toString())
+			);
+		}
+		return data;
+	};
 
 	const fetchData = useCallback(
 		async (
+			sortField = "actionName",
 			modelVersionId,
 			showLoading = true,
 			search = "",
 			pageNumber,
 			pageSize,
-			callCount = true
+			callCount = true,
+			sort = "asc"
 		) => {
 			// !isMounted.aborted && showLoading && setLoading(true);
+			setDataLoading(true);
+
 			try {
 				const response = await Promise.all([
-					getModelTasksList(modelVersionId, search, pageNumber, pageSize),
+					getModelTasksList(
+						sortField,
+						modelVersionId,
+						search,
+						pageNumber,
+						pageSize,
+						sort
+					),
 					callCount ? getLengthOfModelTasks(modelId) : null,
 				]);
+
 				if (response[0].status) {
 					if (!isMounted.aborted) {
 						const taskList = response[0].data.map((t) => ({
 							...t,
-							hasTaskImages: t?.hasTaskImages ? (
-								<img src={HasImages} alt="" />
-							) : (
-								""
-							),
-							hasTools: t?.hasTools ? <img src={HasTools} alt="" /> : "",
-							hasParts: t?.hasParts ? <img src={HasParts} alt="" /> : "",
-							hasDocuments: t?.hasDocuments ? (
-								<img src={HasDocuments} alt="" />
-							) : (
-								""
-							),
-							safetyCritical: t?.safetyCritical ? (
-								<img src={SafteryCritical} alt="" />
-							) : (
-								""
-							),
-							errors: t?.hasErrors ? t?.hasErrors : "",
-							intervals: t?.intervals
-								?.map((interval) => interval?.name)
-								?.join(", "),
-							zones: t?.zones?.map((zone) => zone?.name)?.join(", "),
-							roles: t?.roles?.map((role) => role?.name)?.join(", "),
-							stages: t?.stages?.map((stage) => stage?.name)?.join(", "),
+							hasTaskImages: t?.hasTaskImages,
+							hasTools: t?.hasTools,
+							hasParts: t?.hasParts,
+							hasDocuments: t?.hasDocuments,
+							safetyCritical: t?.safetyCritical,
+							hasQuestion: t?.hasQuestion,
+							errors: t?.hasErrors,
+							systemName: t?.systemName ?? "",
+							intervals: t?.intervals,
+
+							zones: t?.zones,
+							roles: t?.roles,
+							stages: t?.stages,
 						}));
+
 						setLoading(false);
-						setDataLoading(true);
+						setOriginalTaskList(sortData(response[0].data));
+						setTaskList(sortData(taskList));
+						setTotalTaskCount(taskList?.length);
 						setTimeout(() => {
-							setTaskList(taskList);
-							setOriginalTaskList(response[0].data);
 							setDataLoading(false);
 						}, 1);
 					}
 				} else {
 					reduxDispatch(
-						showError(response[0]?.data?.title || "something went wrong")
+						showError(response?.[0]?.data?.title || "something went wrong")
 					);
 				}
 
@@ -200,7 +295,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						}
 					} else {
 						reduxDispatch(
-							showError(response[1]?.data?.title || "something went wrong")
+							showError(response?.[1]?.data?.title || "something went wrong")
 						);
 					}
 				}
@@ -217,16 +312,45 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	);
 
 	useEffect(() => {
-		fetchData(modelId, true, "", pageNumber, perPage);
+		fetchData(sortField, modelId, true, "", pageNumber, perPage, false, sort);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [modelId]);
+	}, [modelId, isTaskListImportSuccess]);
 
 	useEffect(() => {
 		if (enablePasteTask) {
 			dispatch({ type: "DISABLE_PASTE_TASK", payload: false });
 		}
 	}, [enablePasteTask, dispatch]);
+
+	const fetchSiteApplicationDetails = async () => {
+		try {
+			const result = await getSiteApplicationDetail(siteAppID);
+			setSiteAppState(result?.data);
+		} catch (error) {
+			reduxDispatch(showError(error?.response?.data || "something went wrong"));
+		}
+	};
+	useEffect(() => {
+		if (
+			currentTableSort[0] === "taskGroupID" ||
+			currentTableSort[0] === "estimatedMinutes"
+		) {
+			NumericSort(
+				taskList,
+				setTaskList,
+				currentTableSort[0],
+				currentTableSort[1]
+			);
+		} else {
+			handleSort(
+				taskList,
+				setTaskList,
+				currentTableSort[0],
+				currentTableSort[1]
+			);
+		}
+	}, [taskList?.length]);
 
 	useEffect(() => {
 		if (state.showPasteTask) {
@@ -239,7 +363,16 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						ModelVersionTaskID: +task.modelTaskId,
 					});
 					if (response.status) {
-						await fetchData(modelId, false, "", pageNumber, perPage);
+						await fetchData(
+							"",
+							modelId,
+							false,
+							"",
+							pageNumber,
+							perPage,
+							sortField,
+							sort
+						);
 						dispatch({
 							type: "TAB_COUNT",
 							payload: { countTab: "taskCount", data: totalTaskCount + 1 },
@@ -248,31 +381,9 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 						// scroll down to new pasted task
 						setTimeout(() => {
 							if (document.getElementById(`taskExpandable${response.data}`)) {
-								document
-									.getElementById(`taskExpandable${response.data}`)
-									.scrollIntoView({
-										behavior: "smooth",
-										block: "start",
-										top:
-											document
-												.getElementById(`taskExpandable${response.data}`)
-												.getBoundingClientRect().bottom + window.pageYOffset,
-									});
-
-								setTimeout(() => {
-									document
-										.getElementById(`taskExpandable${response.data}`)
-										.click();
-									setTimeout(() => {
-										document
-											.getElementById(`taskExpandable${response.data}`)
-											.scrollIntoView({
-												behavior: "smooth",
-												block: "start",
-												inline: "center",
-											});
-									}, 1000);
-								}, 500);
+								modelTaskScroller(
+									document.getElementById(`taskExpandable${response.data}`)
+								);
 							}
 						}, 500);
 					} else {
@@ -284,7 +395,6 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 					reduxDispatch(
 						showError(error?.response?.data || "something went wrong")
 					);
-					console.log(error);
 				} finally {
 					dispatch({ type: "TOGGLE_PASTE_TASK", payload: false });
 					setPasteTask(false);
@@ -323,6 +433,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	};
 
 	useEffect(() => {
+		fetchSiteApplicationDetails();
 		checkcopyQuestionStatus();
 		document.addEventListener("visibilitychange", visibilitychangeCheck);
 		return () =>
@@ -356,20 +467,37 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 
 	const handleCopyTaskQuestion = (modelTaskId) => {
 		navigator.clipboard.writeText(modelTaskId);
+		dispatch({ type: "DISABLE_QUESTIONS_TASKS", payload: false });
+		localStorage.setItem("tasksquestions", modelTaskId);
 	};
 
 	const modelTaskTable = useMemo(() => {
 		return (
 			<AutoFitContentInScreen containsTable>
 				<ModelTaskTable
+					currentTableSort={currentTableSort}
+					setCurrentTableSort={setCurrentTableSort}
+					handleSortClick={handleSortClick}
 					handleEdit={() => {}}
 					handleDelete={handleRemoveData}
 					handleCopy={handleCopy}
 					handleCopyTaskQuestion={handleCopyTaskQuestion}
 					setData={setTaskList}
-					headers={dymanicTableHeader(showOperatingMode, customCaptions).header}
+					headers={
+						dymanicTableHeader(
+							siteAppState?.application?.showOperatingMode,
+							siteAppState?.application?.showSystem,
+							customCaptions,
+							modelType
+						).header
+					}
 					columns={
-						dymanicTableHeader(showOperatingMode, customCaptions).columns
+						dymanicTableHeader(
+							siteAppState?.application?.showOperatingMode,
+							siteAppState?.application?.showSystem,
+							customCaptions,
+							modelType
+						).columns
 					}
 					data={taskList}
 					originalData={originalTaskList}
@@ -385,13 +513,43 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 			</AutoFitContentInScreen>
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [taskList, totalTaskCount, isDataLoading]);
+	}, [
+		taskList,
+		totalTaskCount,
+		isDataLoading,
+		siteAppState?.application?.showOperatingMode,
+		siteAppState?.application?.showSystem,
+	]);
+
+	const handleItemClick = (id) => {
+		dispatch({ type: "TOGGLE_HISTORYBAR" });
+
+		// commonScrollElementIntoView(`interval-${id}`);
+		setTimeout(() => {
+			if (document.getElementById(`taskExpandable${id}`)) {
+				modelTaskScroller(document.getElementById(`taskExpandable${id}`));
+			}
+		}, 500);
+	};
 
 	if (isLoading) return <CircularProgress />;
 	return (
 		<div>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${customCaptions.task} | ${name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${customCaptions.taskPlural} | ${name}`}
+			/>
+			<HistoryBar
+				id={modelId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					TasksPage(id, pageNumber, pageSize)
+				}
+				OnAddItemClick={handleItemClick}
+				hasSubTable={true}
+				origin={HistoryCaptions.modelVersionTasks}
 			/>
 			{isPasting ? <LinearProgress className={classes.loading} /> : null}
 			<AddNewModelTask
@@ -402,7 +560,18 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				title={`Add ${customCaptions?.task}`}
 				modelId={modelId}
 				createProcessHandler={createModelTask}
-				fetchData={() => fetchData(modelId, false, "", pageNumber, perPage)}
+				fetchData={() =>
+					fetchData(
+						"",
+						modelId,
+						false,
+						"",
+						pageNumber,
+						perPage,
+						sortField,
+						sort
+					)
+				}
 				pageSize={perPage}
 				pageNo={pageNumber}
 				customCaptions={customCaptions}
@@ -414,7 +583,7 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 				<DetailsPanel
 					header={customCaptions?.taskPlural}
 					dataCount={taskList.length}
-					description={`${customCaptions?.task} assigned in this asset model`}
+					description={`${customCaptions?.taskPlural} assigned in this ${customCaptions?.modelTemplate}`}
 				/>
 				<SearchTask fetchData={fetchData} modelId={modelId} classes={classes} />
 			</div>
@@ -424,126 +593,92 @@ function Task({ modelId, state, dispatch, access, isMounted }) {
 	);
 }
 
-const dymanicTableHeader = (operatingModeShown, customCaptions) => {
-	if (operatingModeShown)
-		return {
-			header: [
-				{
-					id: 16,
-					name: <img src={HasImages} alt="" />,
-					isSort: false,
-				},
-				{
-					id: 15,
-					name: <img src={HasTools} alt="" />,
-					isSort: false,
-				},
-				{ id: 1, name: <img src={HasParts} alt="" />, isSort: false },
-				{
-					id: 17,
-					name: <img src={HasDocuments} alt="" />,
-					isSort: false,
-				},
-				{
-					id: 13,
-					name: <img src={SafteryCritical} alt="" />,
-					isSort: false,
-				},
-				{
-					id: 14,
-					name: <ErrorIcon style={{ color: "red" }} />,
-					isSort: false,
-				},
-				{ id: 2, name: customCaptions?.actionRequired, isSort: true },
-				{ id: 3, name: "Name", isSort: true, uuid: "name" },
-				{ id: 4, name: customCaptions?.operatingMode, isSort: true },
-				{ id: 5, name: customCaptions?.system, isSort: true },
-				{ id: 6, name: customCaptions?.rolePlural, isSort: true },
-				{ id: 7, name: "Est Mins", isSort: true },
-				{ id: 9, name: "Order Added", isSort: true },
-				{ id: 10, name: "Notes", isSort: true },
-				{
-					id: 11,
-					name: customCaptions?.intervalPlural,
-					isSort: true,
-					width: "100px",
-				},
-				{ id: 12, name: customCaptions?.stagePlural, isSort: true },
-				{ id: 13, name: customCaptions?.zonePlural, isSort: true },
-			],
-			columns: [
-				"hasTaskImages",
-				"hasTools",
-				"hasParts",
-				"hasDocuments",
-				"safetyCritical",
-				"errors",
-				"actionName",
-				"name",
-				"operatingModeName",
-				"systemName",
-				"roles",
-				"estimatedMinutes",
-				"taskGroupID",
-				"notes",
-				"intervals",
-				"stages",
-				"zones",
-			],
-		};
+const dymanicTableHeader = (
+	operatingModeShown,
+	showSystem,
+	customCaptions,
+	modelType
+) => {
+	let header = [
+		{ id: 16, name: "", isSort: false },
+		{ id: 9, name: "Order Added", isSort: true },
+		{ id: 2, name: customCaptions?.actionRequired, isSort: true },
+		{ id: 3, name: "Name", isSort: true },
+		{ id: 6, name: customCaptions?.rolePlural, isSort: true },
+		{ id: 7, name: "Est Mins", isSort: true },
+		{
+			id: 11,
+			name: customCaptions?.intervalPlural,
+			isSort: true,
+			width: "100px",
+		},
+		{ id: 12, name: customCaptions?.stagePlural, isSort: true },
+		{ id: 13, name: customCaptions?.zonePlural, isSort: true },
+		{ id: 10, name: "Notes", isSort: true },
+	];
+
+	// insert indexes for show system and operating mode
+	let insertIndexOperatingMode = 4;
+	let insertIndexShowSystem = 5;
+
+	// Updating the insert index
+	if (modelType === "F") {
+		insertIndexOperatingMode = 5;
+		insertIndexShowSystem = 6;
+	}
+
+	// for modelType "F"
+	if (modelType === "F") {
+		header.splice(4, 0, {
+			id: 14,
+			name: customCaptions?.asset,
+			isSort: true,
+		});
+	}
+
+	// for operatingModeShown
+	if (operatingModeShown) {
+		header.splice(insertIndexOperatingMode, 0, {
+			id: 4,
+			name: customCaptions?.operatingMode,
+			isSort: true,
+		});
+	}
+
+	//for operatingModeShown and showSystem
+
+	if (operatingModeShown && showSystem) {
+		header.splice(insertIndexShowSystem, 0, {
+			id: 5,
+			name: customCaptions?.system,
+			isSort: true,
+		});
+	}
+	// for only showSystem
+	if (modelType !== "F" && !operatingModeShown && showSystem) {
+		header.splice(4, 0, {
+			id: 5,
+			name: customCaptions?.system,
+			isSort: true,
+		});
+	}
+
 	return {
-		header: [
-			{ id: 16, name: <img src={HasImages} alt="" />, isSort: false },
-			{ id: 15, name: <img src={HasTools} alt="" />, isSort: false },
-			{ id: 1, name: <img src={HasParts} alt="" />, isSort: false },
-			{
-				id: 17,
-				name: <img src={HasDocuments} alt="" />,
-				isSort: false,
-			},
-			{
-				id: 13,
-				name: <img src={SafteryCritical} alt="" />,
-				isSort: false,
-			},
-			{
-				id: 14,
-				name: <ErrorIcon style={{ color: "red" }} />,
-				isSort: false,
-			},
-			{ id: 2, name: customCaptions?.actionRequired, isSort: true },
-			{ id: 3, name: "Name", isSort: true },
-			{ id: 5, name: customCaptions?.system, isSort: true },
-			{ id: 6, name: customCaptions?.rolePlural, isSort: true },
-			{ id: 7, name: "Est Mins", isSort: true },
-			{ id: 9, name: "Order Added", isSort: true },
-			{ id: 10, name: "Notes", isSort: true },
-			{
-				id: 11,
-				name: customCaptions?.intervalPlural,
-				isSort: true,
-				width: "100px",
-			},
-			{ id: 12, name: customCaptions?.stagePlural, isSort: true },
-			{ id: 13, name: customCaptions?.zonePlural, isSort: true },
-		],
+		header,
 		columns: [
-			"hasTaskImages",
-			"hasTools",
-			"hasParts",
-			"hasDocuments",
-			"safetyCritical",
-			"errors",
+			"logo",
+			"taskGroupID",
 			"actionName",
 			"name",
-			"systemName",
+			...(modelType === "F" ? ["assets"] : []),
+			...(operatingModeShown ? ["operatingModeName"] : []),
+			...(showSystem ? ["systemName"] : []),
 			"roles",
 			"estimatedMinutes",
-			"taskGroupID",
-			"notes",
 			"intervals",
 			"stages",
 			"zones",
+			"notes",
 		],
 	};
 };

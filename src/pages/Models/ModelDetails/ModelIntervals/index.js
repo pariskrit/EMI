@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import React, { useCallback, useEffect, useState } from "react";
@@ -18,6 +18,10 @@ import { setPositionForPayload } from "helpers/setPositionForPayload";
 import { updateModel } from "services/models/modelDetails/details";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import TabTitle from "components/Elements/TabTitle";
+import { coalesc, commonScrollElementIntoView } from "helpers/utils";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { IntervalPage } from "services/History/models";
+import { HistoryCaptions } from "helpers/constants";
 
 function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -116,7 +120,7 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 			setModelIntervals(newDate);
 		} else {
 			setModelIntervals(originalModelIntervals);
-			reduxDispatch(showError(response.data || "Could not drag interval"));
+			reduxDispatch(showError(response?.data || "Could not drag interval"));
 		}
 	};
 
@@ -134,10 +138,10 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 			setModelIntervals([...latestIntervals]);
 			dispatch({
 				type: "TAB_COUNT",
-				payload: { countTab: "intervalCount", data: latestIntervals.length },
+				payload: { countTab: "intervalCount", data: latestIntervals?.length },
 			});
 		} else {
-			reduxDispatch(showError(response.data || "Could not delete intervals"));
+			reduxDispatch(showError(response?.data || "Could not delete intervals"));
 		}
 
 		setIsDeleting(false);
@@ -155,7 +159,7 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 		} else {
 			reduxDispatch(
 				showError(
-					response.data || response.data.detail || "Could not add Interval"
+					response?.data || response?.data?.detail || "Could not add Interval"
 				)
 			);
 		}
@@ -180,7 +184,7 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 			setOriginalModelIntervals(tempModelIntervals);
 			dispatch({
 				type: "TAB_COUNT",
-				payload: { countTab: "intervalCount", data: response.data.length },
+				payload: { countTab: "intervalCount", data: response?.data?.length },
 			});
 		} else {
 			reduxDispatch(showError("Could not fetch intervals"));
@@ -195,13 +199,31 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 	const isReadOnly = access === "R";
 	const isEditOnly = access === "E";
 
+	const handleItemClick = (id) => {
+		dispatch({ type: "TOGGLE_HISTORYBAR" });
+
+		commonScrollElementIntoView(`interval-${id}`, "intervalEl");
+	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
 	return (
 		<div>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${interval} | ${application.name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${intervalPlural} | ${application.name}`}
+			/>
+			<HistoryBar
+				id={modelId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					IntervalPage(id, pageNumber, pageSize)
+				}
+				OnAddItemClick={handleItemClick}
+				origin={HistoryCaptions.modelVersionIntervals}
 			/>
 			<AddDialog
 				open={state.showAdd}
@@ -231,6 +253,7 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 				handleDelete={handleDelete}
 				isDeleting={isDeleting}
 			/>
+
 			<div className="detailsContainer">
 				<DetailsPanel
 					header={intervalPlural}
@@ -287,6 +310,8 @@ function ModelInterval({ state, dispatch, modelId, access, modelDefaultId }) {
 					handleDragEnd={handleDragEnd}
 					isModelEditable={true}
 					disableDnd={isReadOnly || state?.modelDetail?.isPublished}
+					type="interval"
+					classEl="intervalEl"
 					menuData={[
 						{
 							name: "Edit",

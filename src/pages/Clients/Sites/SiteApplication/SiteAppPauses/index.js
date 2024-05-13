@@ -12,6 +12,7 @@ import MobileSearchField from "components/Elements/SearchField/MobileSearchField
 import { useSearch } from "hooks/useSearch";
 import { getPauses } from "services/clients/sites/siteApplications/pauses";
 import TabTitle from "components/Elements/TabTitle";
+import { SiteContext } from "contexts/SiteApplicationContext";
 
 const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	const [modal, setModal] = useState({ edit: false, delete: false });
@@ -50,7 +51,6 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 	};
 
 	const handleUpdateSubcat = (parentId, subcatID, newName) => {
-		console.log(parentId, subcatID, newName);
 		const newData = [...allData];
 
 		let pauseIndex = newData.findIndex((el) => el.id === parentId);
@@ -187,12 +187,13 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 		showAdd,
 		details: { data },
 		defaultCustomCaptionsData: { pauseReason, pauseReasonPlural },
+		isReadOnly,
 	} = state;
 
 	if (is404 === false) {
 		return (
 			<div>
-				<TabTitle title={`${data.application.name} ${pauseReason}`} />
+				<TabTitle title={`${data.application.name} ${pauseReasonPlural}`} />
 				<AddDialog
 					open={showAdd}
 					closeHandler={() => dispatch({ type: "ADD_TOGGLE" })}
@@ -241,6 +242,7 @@ const SiteAppPauses = ({ state, dispatch, appId, getError }) => {
 					/>
 				</div>
 				<CommonApplicationTable
+					isReadOnly={isReadOnly}
 					setData={setAllData}
 					setSearch={setSearchData}
 					searchedData={searchedData}

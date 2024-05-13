@@ -5,6 +5,7 @@ const initialState = {
 	modelDetail: {
 		id: "",
 	},
+	showhistorybar: false,
 	showAdd: false,
 	showSave: false,
 	showSaveChanges: false,
@@ -14,11 +15,31 @@ const initialState = {
 	showVersion: false,
 	isPasteTaskDisabled: true,
 	isQuestionTaskDisabled: true,
+	isQuestionsDisabled: true,
+	isToolTaskDisabled: true,
+	isPermitsTaskDisabled: true,
+	isPartTaskDisabled: true,
+	isImageTaskDisabled: true,
+	isAttachmentsTaskDisabled: true,
+	serviceLayoutDetails: {
+		modelVersionId: "",
+		modelVersionRoleId: "",
+		modelVersionIntervalId: "",
+		modelVersionArrangementId: "",
+	},
 };
 
 function reducer(state, action) {
 	const { payload, type } = action;
 	switch (type) {
+		case "SET_SERVICE_LAYOUT_DETAILS":
+			return {
+				...state,
+				serviceLayoutDetails: {
+					...state.serviceLayoutDetails,
+					...payload,
+				},
+			};
 		case "SET_MODEL_DETAIL":
 			return {
 				...state,
@@ -30,6 +51,15 @@ function reducer(state, action) {
 						? ColourConstants.green
 						: ColourConstants.red,
 					activeModelVersion: payload.activeModelVersion,
+				},
+			};
+
+		case "UPDATE_SWITCH":
+			return {
+				...state,
+				modelDetail: {
+					...state?.modelDetail,
+					active: payload?.active,
 				},
 			};
 
@@ -127,6 +157,24 @@ function reducer(state, action) {
 		case "DISABLE_QUESTION_TASK":
 			return { ...state, isQuestionTaskDisabled: payload };
 
+		case "DISABLE_QUESTIONS_TASKS":
+			return { ...state, isQuestionsDisabled: payload };
+
+		case "DISABLE_TOOL_TASK":
+			return { ...state, isToolTaskDisabled: payload };
+
+		case "DISABLE_PERMIT_TASK":
+			return { ...state, isPermitsTaskDisabled: payload };
+
+		case "DISABLE_PARTS_TASK":
+			return { ...state, isPartTaskDisabled: payload };
+
+		case "DISABLE_IMAGES_TASK":
+			return { ...state, isImageTaskDisabled: payload };
+
+		case "DISABLE_ATTACHMENTS_TASK":
+			return { ...state, isAttachmentsTaskDisabled: payload };
+
 		case "TAB_COUNT":
 			return {
 				...state,
@@ -142,6 +190,40 @@ function reducer(state, action) {
 			return {
 				...state,
 				taskDetail: { ...state.taskDetail, [payload.countTab]: payload.data },
+			};
+
+		case "CHANGE_MODEL_TYPE":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					modelTypeID: payload.value,
+					modelTypeName: payload.label,
+				},
+			};
+
+		case "SERIAL_NUMBER_RANGE":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					serialNumberRange: payload,
+				},
+			};
+
+		case "CHANGE_TICK":
+			return {
+				...state,
+				modelDetail: {
+					...state.modelDetail,
+					[payload.name]: !payload.value,
+				},
+			};
+
+		case "TOGGLE_HISTORYBAR":
+			return {
+				...state,
+				showhistorybar: !state.showhistorybar,
 			};
 
 		default:

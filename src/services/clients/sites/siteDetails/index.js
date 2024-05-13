@@ -62,12 +62,29 @@ const getAvailableSiteApplications = async (siteId) => {
 		return getAPIResponse(error.response);
 	}
 };
-
-const addSiteApplications = async (siteId, applicationId) => {
+const getApplicationPositions = async (applicationId) => {
 	try {
-		const response = await API.post(`${Apis.Applications}/`, {
+		const response = await API.get(
+			`${Apis.ApplicationPositions}?applicationId=${applicationId}`
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error.response);
+	}
+};
+
+const addSiteApplications = async (
+	siteId,
+	applicationId,
+	siteDepartmentId,
+	positionId
+) => {
+	try {
+		const response = await API.post(`${Apis.Applications}`, {
 			siteID: siteId,
 			applicationID: applicationId,
+			siteDepartmentId: siteDepartmentId,
+			positionId: positionId,
 		});
 
 		return getAPIResponse(response);
@@ -103,4 +120,5 @@ export {
 	getAvailableSiteApplications,
 	addSiteApplications,
 	updateSiteApplicationStatus,
+	getApplicationPositions,
 };

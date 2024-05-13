@@ -5,27 +5,29 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import CancelIcon from "@material-ui/icons/Cancel";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { hideError } from "redux/common/actions";
 import CurveButton from "./CurveButton";
 
-const useStyles = makeStyles({
-	dialogTitle: {
-		backgroundColor: "#E31212",
-		color: "#FFFFFF",
-		display: "flex",
-		justifyContent: "center",
-	},
-	dialogAction: {
-		display: "flex",
-		justifyContent: "center",
-	},
+const useStyles = makeStyles()((theme) => {
+	return {
+		dialogTitle: {
+			backgroundColor: "#E31212",
+			color: "#FFFFFF",
+			display: "flex",
+			justifyContent: "center",
+		},
+		dialogAction: {
+			display: "flex",
+			justifyContent: "center",
+		},
+	};
 });
 
 const ErrorDialog = ({ error, removeError }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const handleClose = () => removeError();
 
 	return (

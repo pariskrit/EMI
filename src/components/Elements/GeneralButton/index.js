@@ -1,5 +1,5 @@
 import React from "react";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
 import "./style.css";
 
 function GeneralButton({
@@ -31,11 +31,12 @@ function GeneralButton({
 			</div>
 		);
 	}
-
+	const useStyles = makeStyles()((theme) => ({}));
+	const { cx } = useStyles();
 	return (
 		<button
 			onClick={onClick}
-			className={clsx("button", className, { "disabled-button": disabled })}
+			className={cx("button", className, { "disabled-button": disabled })}
 			style={{ ...style, textTransform: "uppercase" }}
 			disabled={disabled}
 		>

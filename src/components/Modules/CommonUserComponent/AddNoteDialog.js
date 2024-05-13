@@ -4,12 +4,15 @@ import {
 	DialogTitle,
 	LinearProgress,
 	TextField,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
+import ColourConstants from "helpers/colourConstants";
 
 const schema = yup.object({
 	note: yup
@@ -21,7 +24,7 @@ const ADD = AddDialogStyle();
 const defaultData = { note: "" };
 const defaultError = { note: null };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -29,10 +32,11 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 const AddNoteDialog = ({ open, handleClose, createHandler }) => {
-	const classes = useStyles();
+	const dispatch = useDispatch();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -51,11 +55,10 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 			const localChecker = await handleValidateObj(schema, input);
 			if (!localChecker.some((el) => el.valid === false)) {
 				const newData = await createHandler(input.note);
-				if (newData.success) {
+				if (newData?.success) {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
-					console.log(newData);
 					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
 				}
@@ -65,18 +68,17 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 				setIsUpdating(false);
 			}
 		} catch (err) {
-			console.log(err);
-
+			dispatch(showError("Failed to add note."));
 			setIsUpdating(false);
 			closeOverride();
 		}
 	};
 
-	const handleEnterPress = (e) => {
+	const handleEnterPress = async (e) => {
 		// 13 is the enter keycode
 		if (!isUpdating) {
 			if (e.keyCode === 13) {
-				handleCreateProcess();
+				await handleCreateProcess();
 			}
 		}
 	};
@@ -94,7 +96,16 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 					{<ADD.HeaderText>Add Note</ADD.HeaderText>}
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={handleClose} variant="contained">
+					<ADD.CancelButton
+						onClick={handleClose}
+						variant="contained"
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
+					>
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton
@@ -102,6 +113,12 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 						variant="contained"
 						className={classes.createButton}
 						disabled={isUpdating}
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
 					>
 						Add Note
 					</ADD.ConfirmButton>
@@ -109,6 +126,12 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
 				<TextField
+					sx={{
+						"& .MuiInputBase-input.Mui-disabled": {
+							WebkitTextFillColor: "#000000",
+						},
+					}}
+					variant="standard"
 					label="Note"
 					error={errors.note === null ? false : true}
 					helperText={errors.note === null ? null : errors.note}

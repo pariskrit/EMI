@@ -1,24 +1,24 @@
-import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
-import Table from "@material-ui/core/Table";
-import { useHistory } from "react-router-dom";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Table from "@mui/material/Table";
+import { useNavigate } from "react-router-dom";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import TableStyle from "styles/application/TableStyle";
-
 import useInfiniteScroll from "hooks/useInfiniteScroll";
-import { servicesPath } from "helpers/routePaths";
-
+import { appPath, servicesPath } from "helpers/routePaths";
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import { getServicesList } from "services/services/serviceLists";
-import { DefaultPageSize, statusTypeClassification } from "helpers/constants";
+import { statusTypeClassification } from "helpers/constants";
 import EMICheckbox from "components/Elements/EMICheckbox";
+import { defaultPageSize } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AT = TableStyle();
@@ -26,7 +26,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableBody: {
 		whiteSpace: "noWrap",
 	},
@@ -82,7 +82,7 @@ const useStyles = makeStyles({
 		color: ColourConstants.commonText,
 		opacity: "50%",
 	},
-});
+}));
 
 const ServiceListTable = ({
 	data,
@@ -108,16 +108,19 @@ const ServiceListTable = ({
 	setCurrentTableSort,
 	selectedServices,
 	handleSelectService,
+	content,
+	isReadOnly,
 }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [scrollEvent, setScrollEvent] = useState(window);
 	const scrollRef = useRef(true);
+	const dispatch = useDispatch();
 
 	const { hasMore, loading, gotoTop, handleScroll } = useInfiniteScroll(
 		data,
@@ -165,7 +168,7 @@ const ServiceListTable = ({
 			const response = await getServicesList({
 				siteAppId: siteAppID,
 				pageNumber: p,
-				pageSize: DefaultPageSize,
+				pageSize: defaultPageSize(),
 				...name,
 			});
 			if (response.status) {
@@ -177,22 +180,23 @@ const ServiceListTable = ({
 				throw new Error(response);
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to load ${content}`));
 			return err;
 		}
 	};
-
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		handleSort(field, newMethod);
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};
-
 	return (
 		<>
 			<AutoFitContentInScreen containsTable={true}>
@@ -206,7 +210,7 @@ const ServiceListTable = ({
 										handleSortClick(columns[index]);
 									}}
 									style={{ width: header?.width || "auto" }}
-									className={clsx(classes.nameRow, {
+									className={cx(classes.nameRow, {
 										[classes.selectedTableHeadRow]:
 											currentTableSort[0] === columns[index],
 										[classes.tableHeadRow]:
@@ -246,7 +250,7 @@ const ServiceListTable = ({
 						</TableRow>
 					</AT.TableHead>
 					<TableBody className={classes.tableBody}>
-						{formattedData(data, history)?.map((row, index) => (
+						{formattedData(data, navigate)?.map((row, index) => (
 							<TableRow key={index}>
 								{columns?.map((col, i, arr) => (
 									<AT.DataCell key={col}>
@@ -261,7 +265,6 @@ const ServiceListTable = ({
 															gap: 10,
 														}}
 													>
-														{" "}
 														<EMICheckbox
 															state={
 																selectedServices.findIndex(
@@ -272,12 +275,13 @@ const ServiceListTable = ({
 																handleSelectService(data[index], checked);
 															}}
 														/>
+
 														{col === "modelName"
 															? row[col] + " " + row["model"]
 															: row[col]}
 													</span>
 												) : col === "modelName" ? (
-													row[col] + " " + row["model"]
+													row[col] + " " + (row["model"] ?? "")
 												) : (
 													row[col]
 												)}
@@ -316,9 +320,11 @@ const ServiceListTable = ({
 														}}
 														menuData={[
 															{
-																name: "Edit",
+																name: isReadOnly ? "View" : "Edit",
 																handler: () => {
-																	history.push(`${servicesPath}/${row.id}`);
+																	navigate(
+																		`${appPath}${servicesPath}/${row.id}`
+																	);
 																},
 																isDelete: false,
 																showInStatus: "Edit",
@@ -374,6 +380,7 @@ const ServiceListTable = ({
 															},
 														].filter((x) => {
 															if (x.showInStatus === "Edit") return true;
+															if (isReadOnly) return false;
 															if (
 																x.name === "Complete" &&
 																x.showInStatus === data[index]["status"] &&

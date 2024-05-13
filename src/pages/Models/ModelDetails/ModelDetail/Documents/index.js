@@ -13,14 +13,20 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import Row from "./Row";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialog from "pages/Models/ModelDetails/ModelDetail/DeleteDialog";
 
 import { deleteDocument } from "services/models/modelDetails/details";
 import { showError } from "redux/common/actions";
 
-function Documents({ classes, modelId, documents, isReadOnly }) {
+function Documents({
+	classes,
+	modelId,
+	documents,
+	isReadOnly,
+	customCaptions,
+}) {
 	const [filesUploading, setFilesUploading] = useState(false);
 	const [listOfDocuments, setListOfDocuments] = useState([]);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState({
@@ -70,10 +76,10 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 	};
 
 	useEffect(() => {
-		if (listOfDocuments.length === 0) {
+		if (documents && documents.length) {
 			setListOfDocuments(documents);
 		}
-	}, [documents, listOfDocuments]);
+	}, [documents]);
 
 	useEffect(() => {
 		if (uploadPercentCompleted === 100) {
@@ -89,7 +95,9 @@ function Documents({ classes, modelId, documents, isReadOnly }) {
 				handleDelete={handleDelete}
 				isDeleting={isDeleting}
 			/>
-			<AccordionBox title={`Model Documents (${listOfDocuments.length})`}>
+			<AccordionBox
+				title={`${customCaptions?.model} Documents (${listOfDocuments.length})`}
+			>
 				<div className={classes.logoContentParent}>
 					<Table>
 						<TableHead className={classes.tableHead}>

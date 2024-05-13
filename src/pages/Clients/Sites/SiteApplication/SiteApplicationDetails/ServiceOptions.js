@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 import AccordionBox from "components/Layouts/AccordionBox";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import EMICheckbox from "components/Elements/EMICheckbox";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import { CircularProgress, Grid } from "@material-ui/core";
-import { useParams } from "react-router";
-import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Typography from "@mui/material/Typography";
+import { CircularProgress, Grid } from "@mui/material";
+import { useParams } from "react-router-dom";
+import {
+	getSiteApplicationDetail,
+	patchApplicationDetail,
+} from "services/clients/sites/siteApplications/siteApplicationDetails";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	detailsContainer: {
 		marginTop: 15,
 		display: "flex",
@@ -39,17 +44,33 @@ const useStyles = makeStyles((theme) => ({
 		marginLeft: "0 !important",
 	},
 }));
-function ServiceOptions({ details, setError, loading }) {
-	const classes = useStyles();
+
+function ServiceOptions({ details, setError, loading, dispatch, isReadOnly }) {
+	const { classes, cx } = useStyles();
 	const { appId } = useParams();
 	const [checkLists, setCheckLists] = useState({});
+	const [serviceLoading, setServiceLoading] = useState(false);
+
+	const fetchSiteApplicationDetails = async () => {
+		const result = await getSiteApplicationDetail(appId);
+
+		if (result.status) {
+			dispatch({
+				type: "SET_SITE_APP_DETAIL",
+				payload: result,
+			});
+
+			dispatch({
+				type: "TOGGLE_ISACTIVE",
+				payload: result.data.isActive,
+			});
+		}
+	};
 
 	const onServiceUserConfirmationChange = async (e) => {
 		const { showServiceUserConfirmation } = checkLists;
-		setCheckLists({
-			...checkLists,
-			showServiceUserConfirmation: !showServiceUserConfirmation,
-		});
+		setServiceLoading(true);
+
 		const result = await patchApplicationDetail(appId, [
 			{
 				op: "replace",
@@ -58,9 +79,18 @@ function ServiceOptions({ details, setError, loading }) {
 			},
 		]);
 
+		if (result.status) {
+			setCheckLists({
+				...checkLists,
+				showServiceUserConfirmation: !showServiceUserConfirmation,
+			});
+			await fetchSiteApplicationDetails();
+		}
+
 		if (!result.status) {
 			setError(result.data.detail);
 		}
+		setServiceLoading(false);
 	};
 
 	const onTextAreaChange = (e) => {
@@ -80,6 +110,9 @@ function ServiceOptions({ details, setError, loading }) {
 				value: userConfirmationMessage,
 			},
 		]);
+		if (result.status) {
+			await fetchSiteApplicationDetails();
+		}
 
 		if (!result.status) {
 			setError(result.data.detail);
@@ -90,13 +123,14 @@ function ServiceOptions({ details, setError, loading }) {
 		if (Object.keys(details).length > 0) {
 			const {
 				raisingDefectCopiesTaskName,
-
 				userConfirmationMessage,
+				showServiceUserConfirmation,
 			} = details;
 
 			setCheckLists({
 				raisingDefectCopiesTaskName,
 				userConfirmationMessage,
+				showServiceUserConfirmation,
 			});
 		}
 	}, [details]);
@@ -123,7 +157,7 @@ function ServiceOptions({ details, setError, loading }) {
 							minRows={3}
 							onChange={onTextAreaChange}
 							onBlur={handleConfirmationMessageUpdate}
-							disabled={!checkLists.showServiceUserConfirmation}
+							disabled={!checkLists.showServiceUserConfirmation || isReadOnly}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -134,6 +168,7 @@ function ServiceOptions({ details, setError, loading }) {
 										<EMICheckbox
 											state={checkLists.showServiceUserConfirmation ?? false}
 											changeHandler={onServiceUserConfirmationChange}
+											disabled={serviceLoading || isReadOnly}
 										/>
 									}
 									label={

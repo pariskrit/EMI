@@ -1,13 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+import Typography from "@mui/material/Typography";
 import ColourConstants from "helpers/colourConstants";
 import { formatAMPM } from "helpers/utils";
 import { changeDate } from "helpers/date";
 
 const media = "@media (max-width: 414px)";
-
-const useStyles = makeStyles((theme) => ({
+const theme = createTheme();
+const useStyles = makeStyles()((theme) => ({
 	mainDiv: {
 		marginLeft: "5px",
 		paddingLeft: "2px",
@@ -38,22 +40,24 @@ const useStyles = makeStyles((theme) => ({
 const CreatedByAt = ({ time, userName }) => {
 	let localTime = changeDate(time);
 	let amPm = formatAMPM(new Date(time + "Z"));
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
-		<div className={`${classes.mainDiv} mt-sm `}>
-			<div className={classes.childDiv}>
-				<Typography className={classes.boldText}>Created By:</Typography>
-				<Typography className={classes.simpleText}>{userName}</Typography>
+		<ThemeProvider theme={theme}>
+			<div className={`${classes.mainDiv} mt-sm `}>
+				<div className={classes.childDiv}>
+					<Typography className={classes.boldText}>Created By:</Typography>
+					<Typography className={classes.simpleText}>{userName}</Typography>
+				</div>
+				<div className={classes.childDiv}>
+					<Typography className={classes.boldText}>on</Typography>
+					<Typography className={classes.simpleText}>{localTime}</Typography>
+				</div>
+				<div className={classes.childDiv}>
+					<Typography className={classes.boldText}>at</Typography>
+					<Typography className={classes.simpleText}>{amPm}</Typography>
+				</div>
 			</div>
-			<div className={classes.childDiv}>
-				<Typography className={classes.boldText}>on</Typography>
-				<Typography className={classes.simpleText}>{localTime}</Typography>
-			</div>
-			<div className={classes.childDiv}>
-				<Typography className={classes.boldText}>at</Typography>
-				<Typography className={classes.simpleText}>{amPm}</Typography>
-			</div>
-		</div>
+		</ThemeProvider>
 	);
 };
 export default CreatedByAt;

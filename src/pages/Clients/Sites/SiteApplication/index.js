@@ -67,7 +67,6 @@ function SiteApplication(props) {
 		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appId]);
-
 	return <div>{props.children(state?.defaultCustomCaptionsData)}</div>;
 }
 

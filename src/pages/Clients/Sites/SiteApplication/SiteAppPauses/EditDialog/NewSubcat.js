@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import API from "helpers/api";
 import SubcatStyle from "styles/application/SubcatStyle";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AS = SubcatStyle();
@@ -19,6 +21,7 @@ const NewSubcat = ({
 	const ref = useRef(null);
 	const [subcatName, setSubcatName] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		ref.current.focus();
@@ -55,15 +58,18 @@ const NewSubcat = ({
 			) {
 				// setErrors({ ...errors, ...{ name: err.response.data.detail } });
 				getError(err.response.data.detail);
+				dispatch(showError(`Failed to add sub-category.`));
 				return { success: false };
 			}
 
 			// Handling other errors
 			if (err.response.data.errors !== undefined) {
 				setErrors({ ...errors, ...err.response.data.errors });
+				dispatch(showError(`Failed to add sub-category.`));
 				return { success: false };
 			} else {
 				// If no explicit errors provided, throws to caller
+				dispatch(showError(`Failed to add sub-category.`));
 				throw new Error(err);
 			}
 		}
@@ -97,10 +103,9 @@ const NewSubcat = ({
 				}
 			} catch (err) {
 				// TODO: handle non validation errors here
-				console.log(err);
-
 				setIsUpdating(false);
 				closeOverride();
+				dispatch(showError(`Failed to add sub-category.`));
 			}
 		}
 		// Setting progress indicator

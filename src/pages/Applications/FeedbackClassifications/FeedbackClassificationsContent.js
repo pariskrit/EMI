@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import API from "helpers/api";
 import ContentStyle from "styles/application/ContentStyle";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import NavDetails from "components/Elements/NavDetails";
 import ActionButtons from "./ActionButtons";
 import NavButtons from "components/Elements/NavButtons";
@@ -11,13 +11,20 @@ import FeedbackClassificationsTable from "./FeedbackClassificationsTable";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import AddStatusDialog from "./AddDialog";
 import EditStatusDialog from "./EditDialog";
-import Grid from "@material-ui/core/Grid";
-import { handleSort } from "helpers/utils";
+import Grid from "@mui/material/Grid";
+import { getLocalStorageData, handleSort } from "helpers/utils";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import { applicationListPath } from "helpers/routePaths";
+import { appPath, applicationListPath } from "helpers/routePaths";
 import TabTitle from "components/Elements/TabTitle";
+import { setHistoryDrawerState, showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import { useSelector } from "react-redux";
+import RestoreIcon from "@mui/icons-material/Restore";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { getApplicationFeedbackClassifications } from "services/History/application";
 
 // Init styled components
 const AC = ContentStyle();
@@ -44,6 +51,8 @@ const FeedbackClassificationsContent = ({
 	const [deleteID, setDeleteID] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchedData] = useState([]);
+	const dispatch = useDispatch();
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 
 	const handleGetData = useCallback(async () => {
 		// Attempting to get data
@@ -75,7 +84,8 @@ const FeedbackClassificationsContent = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError("Failed to fetch feedback classifications."));
+
 			return false;
 		}
 	}, [id, setIs404]);
@@ -126,7 +136,6 @@ const FeedbackClassificationsContent = ({
 	const handleDefaultUpdate = async () => {
 		// Attempting to update default
 		try {
-			console.log(confirmDefault[0]);
 			// Patching change to API
 			const result = await API.patch(`/api/Applications/${id}`, [
 				{
@@ -150,8 +159,7 @@ const FeedbackClassificationsContent = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
-
+			dispatch(showError("Failed to update default feedback classification."));
 			return false;
 		}
 	};
@@ -239,7 +247,9 @@ const FeedbackClassificationsContent = ({
 					throw new Error("Unable to get data");
 				}
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				dispatch(showError("Failed to fetch feedback classifications."))
+			);
 	}, [handleGetData]);
 
 	// Fetch side effect to get application details
@@ -263,17 +273,13 @@ const FeedbackClassificationsContent = ({
 				}
 			} catch (err) {
 				// TODO: real error handling
-				console.log(err);
+				dispatch(showError("Failed to fetch application data."));
 				return false;
 			}
 		};
 
 		// Getting application and updating state
-		getApplicationData()
-			.then(() => {
-				console.log("application name updated");
-			})
-			.catch((err) => console.log(err));
+		getApplicationData();
 		// eslint-disable-next-line
 	}, []);
 
@@ -306,10 +312,22 @@ const FeedbackClassificationsContent = ({
 		// eslint-disable-next-line
 	}, [searchQuery]);
 
+	const { adminType } = getLocalStorageData("me");
+
+	const isReseller = adminType === RESELLER_ID;
+
 	return (
 		<div className="container">
 			<TabTitle title={`${applicationName} Feedback Classifications`} />
 			{/* START DIALOGS */}
+			<HistoryBar
+				id={id}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					getApplicationFeedbackClassifications(id, pageNumber, pageSize)
+				}
+			/>
 			<AddStatusDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
@@ -342,26 +360,33 @@ const FeedbackClassificationsContent = ({
 			<div className="topContainerCustomCaptions">
 				<NavDetails
 					staticCrumbs={[
-						{ id: 1, name: "Applications", url: applicationListPath },
+						{ id: 1, name: "Applications", url: appPath + applicationListPath },
 						{
 							id: 2,
-							name:
-								state !== undefined ? state.applicationName : applicationName,
+							name: state !== null ? state?.applicationName : applicationName,
 						},
 					]}
-				/>
-				{haveData ? (
-					<div>
-						<ActionButtons addOpen={handleAddDialogOpen} />
+				/>{" "}
+				<div className="application-history-nav">
+					{haveData && !isReseller ? (
+						<div>
+							<ActionButtons addOpen={handleAddDialogOpen} />
+						</div>
+					) : null}
+					<div
+						className="restore"
+						onClick={() => dispatch(setHistoryDrawerState(true))}
+					>
+						<RestoreIcon />
 					</div>
-				) : null}
+				</div>
 			</div>
 			{haveData ? (
 				<>
 					<NavButtons
 						navigation={navigation}
 						applicationName={
-							state !== undefined ? state.applicationName : applicationName
+							state !== undefined ? state?.applicationName : applicationName
 						}
 						current="Feedback Definitions"
 					/>
@@ -385,6 +410,7 @@ const FeedbackClassificationsContent = ({
 											</Grid>
 											<Grid item>
 												<AC.SearchInput
+													variant="standard"
 													value={searchQuery}
 													onChange={(e) => {
 														setSearchQuery(e.target.value);
@@ -406,6 +432,7 @@ const FeedbackClassificationsContent = ({
 										</Grid>
 										<Grid item>
 											<AC.SearchInput
+												variant="standard"
 												value={searchQuery}
 												onChange={(e) => {
 													setSearchQuery(e.target.value);
@@ -432,6 +459,7 @@ const FeedbackClassificationsContent = ({
 						setCurrentTableSort={setCurrentTableSort}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
+						isReadOnly={isReseller}
 					/>
 				</>
 			) : (

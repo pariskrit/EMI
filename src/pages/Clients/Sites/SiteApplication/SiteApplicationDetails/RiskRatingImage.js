@@ -4,14 +4,14 @@ import ImageUpload from "components/Elements/ImageUpload";
 import DeleteDialog from "pages/Models/ModelDetails/ModelDetail/DeleteDialog";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import {
 	DeleteDefectRiskRatingImage,
 	uploadDefectRiskRatingImage,
 } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import ImageViewer from "components/Elements/ImageViewer";
 
-function RiskRatingImage({ loading, details }) {
+function RiskRatingImage({ loading, details, isReadOnly }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
@@ -95,9 +95,12 @@ function RiskRatingImage({ loading, details }) {
 				handleDelete={handleDeleteImage}
 				isDeleting={isDeleting}
 			/>
-			<AccordionBox title={`Defect Risk Rating Image`}>
+			<AccordionBox
+				title={details?.data?.riskRatingMatrixCC ?? "Defect Risk Rating Image"}
+			>
 				<ImageUpload
 					imageUrl={image}
+					isReadOnly={isReadOnly}
 					imageName=""
 					onDrop={onImageDrop}
 					removeImage={onDeleteLogo}

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import MenuDropdown from "./MenuDropdown";
 import ColourConstants from "helpers/colourConstants";
 import PropTypes from "prop-types";
 
 const media = "@media(max-width: 768px)";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	desktopNav: {
 		display: "flex",
 		flexDirection: "column",
@@ -53,9 +54,11 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "14.5px",
 		fontFamily: "Roboto Condensed",
 		letterSpacing: 0,
+		color: ColourConstants.navButtonTextColor,
 		"&:hover": {
 			backgroundColor: ColourConstants.navButtonOnHover,
 			color: "#FFFFFF",
+			borderColor: ColourConstants.navButtonOnHover,
 		},
 	},
 	curveButtonCurrent: {
@@ -70,9 +73,10 @@ const NavButtons = ({
 	current,
 	onClick,
 	hideMobileViewBackground,
+	role,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init State
 	const [selectedButton, setSelectedButton] = useState(null);
@@ -105,7 +109,7 @@ const NavButtons = ({
 							<Button
 								className={`${
 									navItem.name === current
-										? clsx(classes.curveButton, classes.curveButtonCurrent)
+										? cx(classes.curveButton, classes.curveButtonCurrent)
 										: classes.curveButton
 								} largeBtn`}
 								onMouseEnter={(e) => {
@@ -116,8 +120,11 @@ const NavButtons = ({
 									setAnchorEl(null);
 									setSelectedButton(null);
 								}}
-								onClick={() => onClick(navItem.url)}
+								onClick={() => {
+									onClick(navItem.url);
+								}}
 								key={index}
+								disabled={navItem?.disableTo?.includes(role)}
 							>
 								{navItem.name}
 								{navItem?.dropdown?.length > 0 && (
@@ -149,7 +156,7 @@ const NavButtons = ({
 							<Button
 								className={`${
 									navItem.name === current
-										? clsx(classes.curveButton, classes.curveButtonCurrent)
+										? cx(classes.curveButton, classes.curveButtonCurrent)
 										: classes.curveButton
 								} largeBtn`}
 								onClick={(e) => {

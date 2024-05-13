@@ -2,7 +2,14 @@ import React from "react";
 import ServiceLayoutUI from "components/Modules/ServiceLayoutUI";
 
 function ServiceLayout({ state, dispatch, access, modelId }) {
-	return <ServiceLayoutUI modelId={modelId} access={access} state={state} />;
+	return (
+		<ServiceLayoutUI
+			modelId={modelId}
+			access={access}
+			state={state}
+			dispatch={dispatch}
+		/>
+	);
 }
 
 export default ServiceLayout;

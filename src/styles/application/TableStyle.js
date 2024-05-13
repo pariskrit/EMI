@@ -1,11 +1,11 @@
-import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import Typography from "@material-ui/core/Typography";
-import { ReactComponent as ArrowIcon } from "../../assets/icons/Arrow-nocolour.svg";
-import IconButton from "@material-ui/core/IconButton";
+import { styled } from "@mui/styles";
+import ColourConstants from "helpers/colourConstants";
+import TableContainer from "@mui/material/TableContainer";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import Typography from "@mui/material/Typography";
+import { ReactComponent as ArrowIcon } from "assets/icons/Arrow-nocolour.svg";
+import IconButton from "@mui/material/IconButton";
 
 // Constants
 const MAX_ROW_HEIGHT = 51;
@@ -22,7 +22,7 @@ const TableStyle = () => {
 			fontSize: 14,
 			overflowX: "auto",
 			borderColor: ColourConstants.tableBorder,
-			borderWidth: 1,
+			border: 1,
 			borderRadius: 0,
 			[mediaMobile]: {
 				maxWidth: "87vw",

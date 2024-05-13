@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -40,10 +41,28 @@ function EditDialog({
 					{<AED.HeaderText>Edit {title}</AED.HeaderText>}
 				</DialogTitle>
 				<AED.ButtonContainer>
-					<AED.CancelButton onClick="" variant="contained">
+					<AED.CancelButton
+						onClick=""
+						variant="contained"
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
+					>
 						Cancel
 					</AED.CancelButton>
-					<AED.ConfirmButton variant="contained" onClick={handleSave}>
+					<AED.ConfirmButton
+						variant="contained"
+						onClick={handleSave}
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
+					>
 						Save
 					</AED.ConfirmButton>
 				</AED.ButtonContainer>

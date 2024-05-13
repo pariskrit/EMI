@@ -1,4 +1,5 @@
 import API from "helpers/api";
+import { encryptToken } from "helpers/authenticationCrypto";
 import { setStorage } from "helpers/storage";
 import { authSlice } from "./reducers";
 
@@ -15,9 +16,14 @@ export const loginUser = (input) => async (dispatch) => {
 		API.post("/api/Users/Login", input)
 			.then(async (res) => {
 				const d = await setStorage(res.data);
-				localStorage.setItem("originalLogin", JSON.stringify(d));
-				sessionStorage.setItem("originalLogin", JSON.stringify(d));
-				dispatch(dataSuccess({ data: d }));
+				const modifiedData = {
+					...d,
+					jwtToken: encryptToken(d.jwtToken),
+					refreshToken: encryptToken(d.refreshToken),
+				};
+				localStorage.setItem("originalLogin", JSON.stringify(modifiedData));
+				sessionStorage.setItem("originalLogin", JSON.stringify(modifiedData));
+				dispatch(dataSuccess({ data: modifiedData }));
 				resolve(res);
 			})
 			.catch((err) => {
@@ -35,15 +41,22 @@ export const loginSocialAccount = (input, loginType, url) => async (
 		API.post(url, input)
 			.then(async (res) => {
 				const d = await setStorage(res.data);
+				const modifiedData = {
+					...d,
+					jwtToken: encryptToken(d.jwtToken),
+					refreshToken: encryptToken(d.refreshToken),
+				};
 				localStorage.setItem("loginType", loginType);
 				sessionStorage.setItem("loginType", loginType);
-				localStorage.setItem("originalLogin", JSON.stringify(d));
-				sessionStorage.setItem("originalLogin", JSON.stringify(d));
-				dispatch(dataSuccess({ data: d }));
+				localStorage.setItem("originalLogin", JSON.stringify(modifiedData));
+				sessionStorage.setItem("originalLogin", JSON.stringify(modifiedData));
+				dispatch(dataSuccess({ data: modifiedData }));
 				resolve(res);
 			})
 			.catch((err) => {
-				dispatch(userFailure(err.response.data.detail));
+				dispatch(
+					userFailure(err?.response?.data?.detail || err?.response?.data)
+				);
 				reject(err);
 			});
 	});

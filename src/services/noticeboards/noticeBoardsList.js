@@ -1,12 +1,12 @@
 import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 
 export const getNoticeBoardsList = async ({
 	siteAppId,
 	pageNumber = "1",
-	pageSize = DefaultPageSize,
+	pageSize = defaultPageSize(),
 	search = "",
 	sortField = "",
 	sortOrder = "",

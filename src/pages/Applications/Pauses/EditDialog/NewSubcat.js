@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 import API from "../../../../helpers/api";
 import SubcatStyle from "../../../../styles/application/SubcatStyle";
 
@@ -17,6 +19,7 @@ const NewSubcat = ({
 	// Init state
 	const [subcatName, setSubcatName] = useState("");
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -88,13 +91,14 @@ const NewSubcat = ({
 			} else {
 				// Removing indicator
 				setIsUpdating(false);
+				dispatch(showError("Failed to add pause reason subcategory."));
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError("Failed to add pause reason subcategory."));
 		}
 	};
 	const handleEnterPress = (e) => {

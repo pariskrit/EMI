@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
 import NewSubCategoryField from "./NewSubCategoryField";
@@ -18,7 +18,7 @@ import {
 } from "services/models/modelDetails/modelIntervals";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { DialogContent, Grid } from "@material-ui/core";
+import { DialogContent, Grid } from "@mui/material";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import CheckboxContainer from "components/Modules/CheckboxContainer";
@@ -44,7 +44,6 @@ const defaultStateSchema = {
 	allCategories: [],
 	autoIncludeIntervals: [],
 };
-
 const EditDialog = ({
 	open,
 	closeHandler,
@@ -88,7 +87,7 @@ const EditDialog = ({
 		if (!response.status) {
 			setInput(tempInput);
 			dispatch(
-				showError(response.data.detail || "Could not add task list number")
+				showError(response?.data?.detail || "Could not add task list number")
 			);
 		} else {
 			onNewSubCategoryFieldHide();
@@ -180,7 +179,7 @@ const EditDialog = ({
 		} else {
 			setInput(tempInput);
 			dispatch(
-				showError(response.data.detail || "Could not delete task list number")
+				showError(response?.data?.detail || "Could not delete task list number")
 			);
 		}
 	};
@@ -253,12 +252,13 @@ const EditDialog = ({
 		// Attempting API call if no local validaton errors
 		if (!localChecker.some((el) => el.valid === false)) {
 			setIsUpdating(true);
+			setErrors(defaultErrorSchema);
 			const response = await updateModelIntervals(intervalId, [
 				{ path: "name", op: "replace", value: input.name },
 			]);
 
 			if (!response.status) {
-				dispatch(showError(response.data.detail || "Could not update name"));
+				dispatch(showError(response?.data?.detail || "Could not update name"));
 			} else {
 				setInput({ ...input, isNameChanged: false });
 				fetchModelIntervals();
@@ -312,6 +312,7 @@ const EditDialog = ({
 			fetchModelIntervalsToEdit();
 		}
 	}, [open, fetchModelIntervalsToEdit]);
+
 	return (
 		<Dialog
 			fullWidth={true}
@@ -329,7 +330,10 @@ const EditDialog = ({
 					<ADD.HeaderText>Edit {captions.interval}</ADD.HeaderText>
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.ConfirmButton onClick={closeOverride} variant="contained">
+					<ADD.ConfirmButton
+						onClick={!errors?.name?.length ? closeOverride : null}
+						variant="contained"
+					>
 						Close
 					</ADD.ConfirmButton>
 				</ADD.ButtonContainer>

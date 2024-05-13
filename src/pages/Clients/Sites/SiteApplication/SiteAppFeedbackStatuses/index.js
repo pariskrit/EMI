@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import SearchField from "components/Elements/SearchField/SearchField";
@@ -36,6 +36,7 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 	const [editData, setEditData] = useState({});
 	const [defaultId, setDefaultId] = useState(null);
 	const [is404, setIs404] = useState(false);
+	const errorDispatch = useDispatch();
 
 	const handleGetData = useCallback(async () => {
 		setLoading(true);
@@ -65,7 +66,13 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 		} catch (err) {
 			// TODO: real error handling
 			setLoading(false);
-			console.log(err);
+			errorDispatch(
+				showError(
+					`Failed to fetch ${
+						data?.feedbackStatusPluralCC || feedbackStatusPlural
+					}.`
+				)
+			);
 			return false;
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,8 +118,13 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
-
+			errorDispatch(
+				showError(
+					`Failed to update default ${
+						data?.feedbackStatusCC || feedbackStatus
+					}.`
+				)
+			);
 			return false;
 		}
 	};
@@ -163,12 +175,13 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 		showAdd,
 		details: { data },
 		defaultCustomCaptionsData: { feedbackStatus, feedbackStatusPlural },
+		isReadOnly,
 	} = state;
 	if (is404 === false) {
 		return (
 			<div>
 				<TabTitle
-					title={`${state.details.data.application.name} ${state.defaultCustomCaptionsData?.feedbackStatus}`}
+					title={`${state.details.data.application.name} ${state.defaultCustomCaptionsData?.feedbackStatusPlural}`}
 				/>
 				<DefaultDialog
 					open={model.default}
@@ -227,6 +240,7 @@ const SiteAppFeedbackStatuses = ({ state, dispatch, appId, getError }) => {
 					searchedData={searchedData}
 					searchQuery={searchQuery}
 					isLoading={loading}
+					isReadOnly={isReadOnly}
 					menuData={[
 						{
 							name: "Edit",

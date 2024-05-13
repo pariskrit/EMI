@@ -87,6 +87,17 @@ const pasteModelTaskQuestion = async (id, data) => {
 		return getAPIResponse(error?.response);
 	}
 };
+const pasteModelTaskQuestions = async (id, data) => {
+	try {
+		let response = await API.post(
+			`${Apis.ModelTasks}/${id}/PasteQuestions`,
+			data
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
 
 export {
 	getQuestions,
@@ -97,4 +108,5 @@ export {
 	postQuestionOptions,
 	patchQuestionOptions,
 	pasteModelTaskQuestion,
+	pasteModelTaskQuestions,
 };

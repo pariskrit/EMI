@@ -1,27 +1,25 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { useState } from "react";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { useParams } from "react-router-dom";
-import { ServiceContext } from "contexts/ServiceDetailContext";
 import { getStatusChanges } from "services/clients/sites/siteApplications/statusChanges";
-import {
-	changeMultipleServiceStatus,
-	changeServiceStatus,
-} from "services/services/serviceDetails/detail";
+import { changeMultipleServiceStatus } from "services/services/serviceDetails/detail";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import { changeStatusReason } from "constants/serviceDetails";
 import {
+	FilterStatusChange,
 	generateErrorState,
 	handleSort,
 	handleValidateObj,
@@ -39,14 +37,14 @@ const schema = yup.object({
 		.required("This field is required"),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 function ChangeStatusPopup({
 	open,
@@ -56,8 +54,9 @@ function ChangeStatusPopup({
 	services = [],
 	fetchData,
 	setSelectedServices,
+	customCaptions,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [serviceStatuses, setServiceStatuses] = useState([]);
 	const [selectedServiceStatus, setSelectedServiceStatus] = useState({});
@@ -84,14 +83,16 @@ function ChangeStatusPopup({
 			if (!localChecker.some((el) => el.valid === false)) {
 				const response = await changeMultipleServiceStatus({
 					changeStatusReasonID: SelectedchangeStatusReason?.id,
-					status: selectedServiceStatus.id,
+					status: selectedServiceStatus?.id,
 					otherReason: otherReason,
-					services,
+					services: services.map((x) => x?.id),
 				});
 				if (!response.status)
 					dispatch(
 						showError(
-							response.data.detail || "Could Not Update Services Status"
+							response?.data?.detail ||
+								response?.data ||
+								"Could Not Update Services Status"
 						)
 					);
 				else {
@@ -105,7 +106,7 @@ function ChangeStatusPopup({
 				setIsUpdating(false);
 			}
 		} catch (error) {
-			console.log(error);
+			dispatch(showError("Could Not Update Services Status"));
 		}
 
 		setIsUpdating(false);
@@ -154,6 +155,14 @@ function ChangeStatusPopup({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 
+	useEffect(() => {
+		if (services[0]?.status === "T" && open) {
+			setSelectedServiceStatus(
+				changeStatusReason(customCaptions).find((d) => d.name === "Incomplete")
+			);
+		}
+	}, [services, open]);
+
 	return (
 		<Dialog
 			open={open}
@@ -196,10 +205,11 @@ function ChangeStatusPopup({
 					}
 				>
 					<DyanamicDropdown
-						dataSource={changeStatusReason.filter((x) => {
-							if (x.showIn === status) return x;
-							return false;
-						})}
+						dataSource={FilterStatusChange(
+							services[0],
+							changeStatusReason(customCaptions),
+							customCaptions
+						)}
 						onChange={onModelStatusChange}
 						selectedValue={selectedServiceStatus}
 						selectdValueToshow="name"

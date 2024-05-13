@@ -1,16 +1,29 @@
 import React from "react";
-import { clientDetailPath, clientsPath } from "helpers/routePaths";
+import { clientDetailPath, clientsPath, sitePath } from "helpers/routePaths";
 import ClientList from "pages/Clients/ClientList/ClientList";
-import Client from "..";
-import ClientDetails from "../ClientDetailScreen/ClientDetails";
+import Client from "pages/Clients";
+import ClientDetails from "pages/Clients/ClientDetailScreen/ClientDetails";
 import RoleRoute from "components/HOC/RoleRoute";
 import roles from "helpers/roles";
-import AccessRoleRoute from "components/HOC/AccessRoleRoute";
+import { Route, Routes } from "react-router-dom";
+import SitePage from "../Sites/Links/SitePage";
 
 export default function ClientPage() {
 	return (
 		<Client>
-			<RoleRoute
+			<Routes>
+				<Route element={<RoleRoute roles={[roles.superAdmin]} />}>
+					<Route index element={<ClientList />} />
+					<Route path={clientDetailPath} element={<ClientDetails />} />
+				</Route>
+				<Route
+					path={"/app/client/:id"}
+					element={<RoleRoute roles={[roles.clientAdmin]} />}
+				>
+					<Route path={"/app/client/:id"} element={<ClientDetails />} />
+				</Route>
+			</Routes>
+			{/* <RoleRoute
 				path={clientsPath}
 				exact
 				component={ClientList}
@@ -28,7 +41,7 @@ export default function ClientPage() {
 				exact
 				component={ClientDetails}
 				roles={[roles.clientAdmin]}
-			/>
+			/> */}
 		</Client>
 	);
 }

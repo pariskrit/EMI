@@ -28,19 +28,19 @@ import {
 	siteAppDefectRiskRatingsPath,
 } from "helpers/routePaths";
 import CustomCaptions from "pages/Clients/Sites/SiteApplication/CustomCaptions";
-import SiteApplication from "..";
-import SiteAppFeedbackStatuses from "../SiteAppFeedbackStatuses";
-import SiteApplicationDetails from "../SiteApplicationDetails";
-import SiteAppModelStatuses from "../SiteAppModelStatuses";
-import SiteAppPauses from "../SiteAppPauses";
-import SingleComponent from "./SingleComponent";
-import UserRoles from "../UserRoles";
-import DefectStatuses from "../DefectStatuses";
-import DefectRiskRatings from "../DefectRiskRatings";
-import UserPositions from "../UserPositions";
-import { RoleRoutes } from "components/HOC/RoleRoute";
-import { Switch } from "react-router-dom";
-import { Route } from "react-router-dom/cjs/react-router-dom.min";
+import SiteApplication from "pages/Clients/Sites/SiteApplication";
+import SiteAppFeedbackStatuses from "pages/Clients/Sites/SiteApplication/SiteAppFeedbackStatuses";
+import SiteApplicationDetails from "pages/Clients/Sites/SiteApplication/SiteApplicationDetails";
+import SiteAppModelStatuses from "pages/Clients/Sites/SiteApplication/SiteAppModelStatuses";
+import SiteAppPauses from "pages/Clients/Sites/SiteApplication/SiteAppPauses";
+import SingleComponent from "pages/Clients/Sites/SiteApplication/Links/SingleComponent";
+import UserRoles from "pages/Clients/Sites/SiteApplication/UserRoles";
+import DefectStatuses from "pages/Clients/Sites/SiteApplication/DefectStatuses";
+import DefectRiskRatings from "pages/Clients/Sites/SiteApplication/DefectRiskRatings";
+import UserPositions from "pages/Clients/Sites/SiteApplication/UserPositions";
+import RoleRoute, { RoleRoutes } from "components/HOC/RoleRoute";
+import { Routes, useLocation } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 const route = (customCaption) => {
 	return [
@@ -52,6 +52,7 @@ const route = (customCaption) => {
 			showAdd: false,
 			showHistory: true,
 			showSwitch: true,
+			condition: true,
 		},
 		{
 			id: 108,
@@ -321,27 +322,34 @@ const route = (customCaption) => {
 };
 
 const SiteAppPage = () => {
+	const location = useLocation();
+	const { role, position } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+
 	return (
-		<Route path={siteAppPath}>
-			<SiteApplicationContext>
-				<SiteApplication>
-					{(customCaption) => (
-						<Switch>
-							{route(customCaption).map((route) => (
-								<RoleRoutes
-									component={SingleComponent}
-									key={route.id}
-									path={siteAppPath + route.path}
-									exact
-									roles={[roles.superAdmin, roles.siteUser, roles.clientAdmin]}
-									routeInfo={route}
-								/>
-							))}
-						</Switch>
-					)}
-				</SiteApplication>
-			</SiteApplicationContext>
-		</Route>
+		<SiteApplicationContext>
+			<SiteApplication>
+				{(customCaption) => (
+					<Routes>
+						{route(customCaption).map((route) => (
+							<Route
+								key={route.id}
+								element={
+									<RoleRoute
+										condition={route?.condition}
+										roles={[roles.siteUser, roles.clientAdmin]}
+									>
+										<SingleComponent {...route} />
+									</RoleRoute>
+								}
+								path={route.path}
+							/>
+						))}
+					</Routes>
+				)}
+			</SiteApplication>
+		</SiteApplicationContext>
 	);
 };
 

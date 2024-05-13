@@ -1,10 +1,11 @@
 import instance from "helpers/api";
-import { commonSlice } from "./reducers";
-import { authSlice } from "../auth/reducers.js";
+import { commonSlice } from "redux/common/reducers";
+import { authSlice } from "redux/auth/reducers.js";
 import { setStorage } from "helpers/storage";
 import roles from "helpers/roles";
 
-const { setError, removeError, setLoading } = commonSlice.actions;
+const { setError, removeError, setLoading, openHistoryDrawer, setShowData } =
+	commonSlice.actions;
 const { dataSuccess } = authSlice.actions;
 
 export const showError = (message) => (dispatch) =>
@@ -32,3 +33,13 @@ export const loginWithSiteAppId = (id) => async (dispatch) => {
 };
 
 export const hideError = () => (dispatch) => dispatch(removeError());
+
+export const setHistoryDrawerState = (payload) => (dispatch) =>
+	dispatch(openHistoryDrawer({ historyDrawerState: payload }));
+
+//showData for analytics page
+export const setAnalyticsShowData = (payload) => (dispatch) => {
+	dispatch(
+		setShowData({ showData: payload.data, showDataState: payload.state })
+	);
+};

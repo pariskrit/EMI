@@ -1,10 +1,12 @@
 import * as yup from "yup";
 import React, { useState } from "react";
-import Dialog from "@material-ui/core/Dialog";
-import { makeStyles } from "@material-ui/core/styles";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import LinearProgress from "@mui/material/LinearProgress";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
 	handleValidateObj,
@@ -12,6 +14,8 @@ import {
 	getLocalStorageData,
 } from "helpers/utils";
 import { addSiteLocations } from "services/clients/sites/siteLocations";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -29,7 +33,7 @@ const defaultStateSchema = { name: "" };
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 		[media]: {
@@ -46,7 +50,7 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		marginBottom: 20,
 	},
-});
+}));
 
 const AddLocationsDialog = ({
 	open,
@@ -56,13 +60,14 @@ const AddLocationsDialog = ({
 	getError,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const { customCaptions } = getLocalStorageData("me");
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -78,8 +83,6 @@ const AddLocationsDialog = ({
 
 		try {
 			const localChecker = await handleValidateObj(schema, input);
-
-			console.log(localChecker);
 
 			// Attempting API call if no local validaton errors
 			if (!localChecker.some((el) => el.valid === false)) {
@@ -100,9 +103,9 @@ const AddLocationsDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to add ${customCaptions?.location}.`));
 		}
 	};
 	const handleEnterPress = (e) => {

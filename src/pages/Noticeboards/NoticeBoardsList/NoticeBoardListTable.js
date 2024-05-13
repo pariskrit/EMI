@@ -1,20 +1,23 @@
-import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
-import Table from "@material-ui/core/Table";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Table from "@mui/material/Table";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
+import { makeStyles } from "tss-react/mui";
 import TableStyle from "styles/application/TableStyle";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
-
+import { isoDateWithoutTimeZone } from "helpers/utils";
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 import { getNoticeBoardsList } from "services/noticeboards/noticeBoardsList";
+import { Tooltip } from "@mui/material";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AT = TableStyle();
@@ -22,7 +25,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableBody: {
 		whiteSpace: "noWrap",
 	},
@@ -78,7 +81,24 @@ const useStyles = makeStyles({
 		color: ColourConstants.commonText,
 		opacity: "50%",
 	},
-});
+	cellContainerHeight: {
+		height: "46px",
+	},
+	greater: {
+		color: ColourConstants.red,
+	},
+}));
+
+const HtmlTooltip = withStyles((theme) => ({
+	tooltip: {
+		backgroundColor: "#f5f5f9",
+		color: "rgba(0, 0, 0, 0.87)",
+		maxWidth: 220,
+		fontSize: theme.typography.pxToRem(12),
+		border: "1px solid #dadde9",
+		whiteSpace: "pre-wrap",
+	},
+}))(Tooltip);
 
 const NoticeBoardListTable = ({
 	data,
@@ -99,15 +119,20 @@ const NoticeBoardListTable = ({
 	setDataForFetchingNoticeBoard,
 	currentTableSort,
 	setCurrentTableSort,
+	content,
+	isReadOnly,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
+	const [convertedData, setConvertedData] = useState([]);
+
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [scrollEvent, setScrollEvent] = useState(window);
 	const scrollRef = useRef(true);
+	const dispatch = useDispatch();
 
 	const { hasMore, loading, gotoTop, handleScroll } = useInfiniteScroll(
 		data,
@@ -143,13 +168,32 @@ const NoticeBoardListTable = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data]);
 
+	useEffect(() => {
+		let newData = formattedData(data).map((item) => {
+			let currentDate = new Date();
+			let apiDate = isoDateWithoutTimeZone(
+				item?.expiryDate ? item.expiryDate + "Z" : item.expiryDate
+			);
+			let isGreater =
+				currentDate > new Date(item?.expiryDate ? item?.expiryDate + "Z" : "");
+			return {
+				...item,
+				expiryDate: (
+					<span className={`${isGreater ? classes.greater : ""}`}>
+						{apiDate}
+					</span>
+				),
+			};
+		});
+		setConvertedData(newData);
+	}, [data, formattedData]);
 	//Pagination of noticeboard
 	const onPageChange = async (p, prevData, name) => {
 		try {
 			const response = await getNoticeBoardsList({
 				siteAppId: siteAppID,
 				pageNumber: p,
-				pageSize: DefaultPageSize,
+				pageSize: defaultPageSize(),
 				...name,
 			});
 			if (response.status) {
@@ -161,15 +205,30 @@ const NoticeBoardListTable = ({
 				throw new Error(response);
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to load more ${content}.`));
 			return err;
 		}
+	};
+
+	const getDocumentsList = (arr) => {
+		let data = [];
+		arr.forEach((d) => {
+			data.push(d?.name);
+		});
+		return (
+			<HtmlTooltip title={data.join(" , ")}>
+				<span className="max-two-line">{data.join(" , ")}</span>
+			</HtmlTooltip>
+		);
 	};
 
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		handleSort(field, newMethod);
 
@@ -194,7 +253,7 @@ const NoticeBoardListTable = ({
 										width: header?.width || "auto",
 										minWidth: header?.minWidth || "auto",
 									}}
-									className={clsx(classes.nameRow, {
+									className={cx(classes.nameRow, {
 										[classes.selectedTableHeadRow]:
 											currentTableSort[0] === columns[index],
 										[classes.tableHeadRow]:
@@ -232,7 +291,7 @@ const NoticeBoardListTable = ({
 						</TableRow>
 					</AT.TableHead>
 					<TableBody className={classes.tableBody}>
-						{formattedData(data)?.map((row, index) => (
+						{convertedData?.map((row, index) => (
 							<TableRow key={index}>
 								{columns?.map((col, i, arr) => (
 									<TableCell
@@ -244,10 +303,14 @@ const NoticeBoardListTable = ({
 											whiteSpace: "normal",
 										}}
 									>
-										<AT.CellContainer key={col}>
-											{row[col]}
-
-											{arr.length === i + 1 ? (
+										<AT.CellContainer
+											key={col}
+											className={classes.cellContainerHeight}
+										>
+											{Array.isArray(row[col])
+												? getDocumentsList(row[col])
+												: row[col]}
+											{arr.length === i + 1 && !isReadOnly ? (
 												<AT.DotMenu
 													onClick={(e) => {
 														setAnchorEl(

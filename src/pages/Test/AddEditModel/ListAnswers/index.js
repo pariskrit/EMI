@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
+import { makeStyles } from "tss-react/mui";
+
 import {
-	makeStyles,
 	TextField,
 	FormGroup,
 	FormControlLabel,
@@ -8,7 +9,7 @@ import {
 	CircularProgress,
 	Button,
 	Grid,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -40,7 +41,7 @@ const me =
 	JSON.parse(sessionStorage.getItem("me")) ||
 	JSON.parse(localStorage.getItem("me"));
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	add: {
 		marginBottom: 12,
 		display: "flex",
@@ -99,7 +100,7 @@ const useStyles = makeStyles({
 		fontSize: 14,
 		padding: "13px 10px",
 	},
-});
+}));
 
 const defaultInput = { raiseDefect: false, name: "" };
 const defaultError = { raiseDefect: null, name: null };
@@ -118,7 +119,7 @@ function ListAnswers({
 	errors,
 }) {
 	const ref = useRef();
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const [addNew, setAddNew] = useState(false);
 	const [input, setInput] = useState(defaultInput);
@@ -345,6 +346,11 @@ function ListAnswers({
 						{addNew ? (
 							<div ref={ref} className={classes.add}>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									error={error.name === null ? false : true}
 									helperText={error.name === null ? null : error.name}
 									variant="outlined"

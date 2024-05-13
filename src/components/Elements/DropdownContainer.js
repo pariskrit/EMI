@@ -1,10 +1,10 @@
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import Dropdown from "components/Elements/Dropdown";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "tss-react/mui";
 
 import React from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	labelText: {
 		fontFamily: "Roboto Condensed",
 		fontWeight: "bold",
@@ -24,7 +24,7 @@ function DropdownContainer({
 	className = null,
 	isReadOnly,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<div className={className} style={{ marginBottom: "14px" }}>

@@ -1,4 +1,4 @@
-import ModelDetailContent from "../ModelDetail/ModelDetailContent";
+import ModelDetailContent from "pages/Models/ModelDetails/ModelDetail/ModelDetailContent";
 import {
 	modelAssest,
 	modelRoles,
@@ -8,15 +8,17 @@ import {
 	modelTask,
 	modelServiceLayout,
 	modelIntervals,
+	modelArrangement,
 } from "helpers/routePaths";
-import ModelAsset from "../ModelAsset";
-import ModelStage from "../ModelStages";
-import Roles from "../ModelRoles/Roles";
-import Zones from "../ModelZones/Zones";
-import ModelInterval from "../ModelIntervals";
-import ModelQuestion from "../ModelQuestion";
-import Task from "../ModelTasks/Task";
-import ModelServiceLayout from "../ModelServiceLayout";
+import ModelAsset from "pages/Models/ModelDetails/ModelAsset";
+import ModelStage from "pages/Models/ModelDetails/ModelStages";
+import Roles from "pages/Models/ModelDetails/ModelRoles/Roles";
+import Zones from "pages/Models/ModelDetails/ModelZones/Zones";
+import ModelInterval from "pages/Models/ModelDetails/ModelIntervals";
+import ModelQuestion from "pages/Models/ModelDetails/ModelQuestion";
+import Task from "pages/Models/ModelDetails/ModelTasks/Task";
+import ModelServiceLayout from "pages/Models/ModelDetails/ModelServiceLayout";
+import Arrangements from "pages/Models/ModelDetails/ModelArrangements/Arrangements";
 
 const routeList = (detail, customCaptions) => [
 	{
@@ -30,6 +32,7 @@ const routeList = (detail, customCaptions) => [
 		showSaveChanges: false,
 		showPasteTask: false,
 		showVersion: true,
+		showSwitch: true,
 	},
 	{
 		id: 3,
@@ -37,6 +40,20 @@ const routeList = (detail, customCaptions) => [
 		name: `${customCaptions?.assetPlural} (${detail?.assetCount || 0})`,
 		path: modelAssest,
 		component: ModelAsset,
+		showSave: false,
+		showChangeStatus: false,
+		showSaveChanges: false,
+		showPasteTask: false,
+		showAdd: true,
+	},
+	{
+		id: 10,
+		ModelName: customCaptions?.arrangementPlural,
+		name: `${customCaptions?.arrangementPlural} (${
+			detail?.arrangementCount || 0
+		})`,
+		path: modelArrangement,
+		component: Arrangements,
 		showSave: false,
 		showChangeStatus: false,
 		showSaveChanges: false,

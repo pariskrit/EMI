@@ -4,9 +4,9 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
 	generateErrorState,
@@ -23,12 +23,11 @@ import TextFieldContainer from "components/Elements/TextFieldContainer";
 import { getDefectTypes } from "services/clients/sites/siteApplications/defectTypes";
 import { getDefectRiskRatings } from "services/clients/sites/siteApplications/defectRiskRatings";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import ColourConstants from "helpers/colourConstants";
-import { getSiteAssets } from "services/clients/sites/siteAssets";
 import { getAvailabeleModelDeparments } from "services/models/modelDetails/details";
 
 // Init styled components
@@ -63,14 +62,14 @@ const schema = () =>
 			.required("The field is required"),
 	});
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		// width: "auto",
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -112,7 +111,7 @@ function AddNewDefectDetail({
 	setDataForFetchingDefect,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -225,7 +224,7 @@ function AddNewDefectDetail({
 				if (newData.status === true) {
 					setDataForFetchingDefect({
 						pageNumber: 1,
-						pageSize: DefaultPageSize,
+						pageSize: defaultPageSize(),
 						search: "",
 						sortField: "",
 						sort: "",
@@ -238,7 +237,7 @@ function AddNewDefectDetail({
 
 					dispatch(
 						showError(
-							newData.data.detail ||
+							newData?.data?.detail ||
 								"Failed to add new " + customCaptions?.defect
 						)
 					);
@@ -251,11 +250,9 @@ function AddNewDefectDetail({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
-
-			dispatch(showError("Failed to add new defect"));
+			dispatch(showError(`Failed to add new ${customCaptions?.defect}`));
 		}
 	};
 
@@ -305,7 +302,7 @@ function AddNewDefectDetail({
 									placeholder={"Select " + customCaptions?.model}
 									dataHeader={[
 										{ id: 1, name: "Name" },
-										{ id: 2, name: "Model" },
+										{ id: 2, name: `${customCaptions.model}` },
 									]}
 									columns={[
 										{ id: 1, name: "name" },
@@ -354,9 +351,24 @@ function AddNewDefectDetail({
 									isServerSide={false}
 									width="100%"
 									placeholder={"Select " + customCaptions?.department}
-									dataHeader={[{ id: 1, name: "Department" }]}
-									columns={[{ id: 1, name: "name" }]}
-									selectedValue={{ ...input["siteDepartmentID"] }}
+									dataHeader={[
+										{
+											id: 1,
+											name: `${customCaptions?.department ?? "Department"}`,
+										},
+										{
+											id: 2,
+											name: `${customCaptions?.location ?? "Location"}`,
+										},
+									]}
+									showHeader
+									columns={[
+										{ id: 1, name: "name" },
+										{ id: 2, name: "description" },
+									]}
+									selectedValue={{
+										...input["siteDepartmentID"],
+									}}
 									handleSort={handleSort}
 									onChange={(val) => {
 										setInput({ ...input, siteDepartmentID: val });
@@ -568,7 +580,7 @@ function AddNewDefectDetail({
 								}
 							>
 								<TextFieldContainer
-									label={"Notification Number"}
+									label={customCaptions?.defectWorkOrder}
 									name={"workOrder"}
 									value={input?.workOrder}
 									onChange={(e) =>

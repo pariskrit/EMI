@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
-import Divider from "@material-ui/core/Divider";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import Divider from "@mui/material/Divider";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
 import { useParams } from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	assetParentContainer: {
 		display: "flex",
 		flexWrap: "wrap",
@@ -88,9 +89,10 @@ const ProvidedAsset = ({
 	isLogo = true,
 	imageId = null,
 	onImageClick = null,
+	isReadOnly = false,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const { id } = useParams();
 
@@ -134,7 +136,7 @@ const ProvidedAsset = ({
 				<Divider className={classes.dividerStyle} />
 
 				<div
-					className={clsx(classes.always, {
+					className={cx(classes.always, {
 						[classes.imageAssetContainer]: !isRec,
 						[classes.imageAssetContainerRec]: isRec,
 					})}
@@ -153,15 +155,17 @@ const ProvidedAsset = ({
 					</Typography>
 				</div>
 
-				<div className={classes.deleteContainer}>
-					<DeleteIcon
-						className={classes.deleteButton}
-						alt="Delete icon"
-						onClick={() => {
-							setOpenDialog(true);
-						}}
-					/>
-				</div>
+				{!isReadOnly && (
+					<div className={classes.deleteContainer}>
+						<DeleteIcon
+							className={classes.deleteButton}
+							alt="Delete icon"
+							onClick={() => {
+								setOpenDialog(true);
+							}}
+						/>
+					</div>
+				)}
 
 				{noBottomDivider ? null : <Divider className={classes.dividerStyle} />}
 			</div>

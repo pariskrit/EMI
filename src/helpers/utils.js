@@ -1,4 +1,13 @@
-import { changeDate } from "./date";
+import { CONTENTDISPOSITION } from "constants/ResponseHeaders";
+import {
+	HistoryCaptions,
+	HistoryProperty,
+	HistoryPropertyCode,
+	pageSize,
+	Months,
+} from "./constants";
+import { changeDate, materialUiDate } from "./date";
+import { serviceGarphId } from "constants/serviceDetails";
 
 export const handleSort = (
 	currentState,
@@ -10,19 +19,44 @@ export const handleSort = (
 
 	if (sortMethod === "asc") {
 		sorted.sort((a, b) =>
-			a[sortField]?.toString().localeCompare(b[sortField]?.toString())
+			(a[sortField]?.toString() || "").localeCompare(
+				b[sortField]?.toString() || ""
+			)
 		);
 	}
 
 	if (sortMethod === "desc") {
 		sorted.sort((a, b) =>
-			b[sortField]?.toString().localeCompare(a[sortField]?.toString())
+			(b[sortField]?.toString() || "").localeCompare(
+				a[sortField]?.toString() || ""
+			)
 		);
 	}
 
 	stateSetter(sorted);
 
 	return true;
+};
+
+export const NumericSort = (
+	currentState,
+	stateSetter,
+	sortField,
+	sortMethod
+) => {
+	let sorted = [...currentState];
+
+	if (sortMethod === "asc") {
+		sorted.sort((a, b) => a[sortField] - b[sortField]);
+	}
+
+	if (sortMethod === "desc") {
+		sorted.sort((a, b) => b[sortField] - a[sortField]);
+	}
+
+	stateSetter(sorted);
+
+	return sorted;
 };
 
 export const sortData = (data, sortField, sortMethod) => {
@@ -82,6 +116,34 @@ export const generateErrorState = (localValidationArr) => {
 	return newErrors;
 };
 
+export const commonScrollElementIntoView = (uniqueId, className = "") => {
+	const element = document.getElementById(uniqueId);
+
+	const allElements = document.querySelectorAll(`.${className}`);
+
+	allElements.forEach((item) => (item.style.background = ""));
+
+	const tableElement = document.getElementById(
+		"table-scroll-wrapper-container"
+	);
+
+	if (element) {
+		const tableTop = tableElement?.getBoundingClientRect().top;
+		const elTop = element?.getBoundingClientRect().top;
+		let topPos;
+
+		topPos =
+			elTop > tableTop ? elTop - tableTop - 45 : -(tableTop - elTop) - 50;
+
+		tableElement.scrollBy({
+			behavior: "smooth",
+			top: topPos,
+		});
+
+		element.style.background = "#ffeb3b";
+	}
+};
+
 export const checkIsFileImageType = (fileName) => {
 	const splittedFile = fileName?.split(".");
 	const fileType = splittedFile[splittedFile?.length - 1];
@@ -108,11 +170,34 @@ export function formatAMPM(date) {
 	return strTime;
 }
 
+export function twentyFourHrFormat(date) {
+	let hours = date.getHours();
+	if (hours < 10) {
+		hours = `0${hours}`;
+	}
+	let minutes = date.getMinutes();
+	if (minutes < 10) {
+		minutes = `0${minutes}`;
+	}
+	let strTime = `${hours}:${minutes}`;
+	return strTime;
+}
+
 export const isoDateWithoutTimeZone = (date) => {
 	if (date == null) return date;
 	date = new Date(date);
 
 	const localDateAndTime = `${changeDate(date)} ${formatAMPM(date)}`;
+	return localDateAndTime;
+};
+
+export const isoDateFormat = (date) => {
+	if (date == null) return date;
+	date = new Date(date);
+
+	const localDateAndTime = `${materialUiDate(date)}T${twentyFourHrFormat(
+		date
+	)}`;
 	return localDateAndTime;
 };
 
@@ -162,6 +247,12 @@ export const makeTableAutoScrollAndExpand = (data) => {
 	}, 500);
 };
 
+export const isChrome = () => {
+	return (
+		/Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
+	);
+};
+
 export const sortFromDate = (data = [], sortField) => {
 	return data?.sort(function (a, b) {
 		return new Date(a[sortField]) - new Date(b[sortField]);
@@ -186,6 +277,25 @@ export const csvFileToArray = (string) => {
 
 export const convertDateToUTC = (date) => {
 	return new Date(date.getTime()).toJSON();
+};
+
+export const customFromattedDate = (customDate) => {
+	return {
+		fromDate: convertDateToUTC(
+			new Date(
+				new Date(
+					customDate.from > customDate.to ? customDate.to : customDate.from
+				).setHours(0, 0, 0, 0)
+			)
+		),
+		toDate: convertDateToUTC(
+			new Date(
+				new Date(
+					customDate.from > customDate.to ? customDate.from : customDate.to
+				).setHours(23, 59, 59, 999)
+			)
+		),
+	};
 };
 
 export const debounce = (func, delay) => {
@@ -281,6 +391,184 @@ export function formatBytes(bytes, decimals = 2) {
 
 	return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
+
 export const coalesc = (val) => {
 	return val ?? "";
+};
+
+export const defaultPageSize = () => {
+	const height = window.innerHeight;
+	if (height > 1200) {
+		return pageSize.LARGE_SIZE;
+	} else if (height > 769) {
+		return pageSize.MEDIUM_SIZE;
+	} else {
+		return pageSize.SMALL_SIZE;
+	}
+};
+
+export const dyanamicCellSize = (columnsLength) => {
+	return { width: `${100 / columnsLength}%` };
+};
+
+export const analyticsStartDate = (year, month) => {
+	return `${year}-${month}-01T00:00:00.000Z `;
+};
+
+export const analyticsEndtDate = (year, month) => {
+	return `${year}-${month}-${new Date(
+		year,
+		month,
+		0
+	).getDate()}T00:00:00.000Z `;
+};
+
+export const groupBy = function (xs, key) {
+	return xs?.reduce(function (rv, x) {
+		(rv[x[key]] = rv[x[key]] || []).push(x);
+		return rv;
+	}, {});
+};
+
+export const FilterStatusChange = (service, changeReason, customCaptions) => {
+	if (service?.status === "T") {
+		return changeReason.filter((d) => d.name === "Incomplete");
+	}
+
+	return changeReason.filter((x) => {
+		if (x.showIn === service?.status) return x;
+		return false;
+	});
+};
+
+export const fileDownload = (response, fileName) => {
+	const href = URL.createObjectURL(response.data);
+
+	// create "a" HTML element with href to file & click
+	const link = document.createElement("a");
+	link.href = href;
+	link.setAttribute("download", fileName); //or any other extension
+	document.body.appendChild(link);
+	link.click();
+
+	// clean up "a" element & remove ObjectURL
+	document.body.removeChild(link);
+	URL.revokeObjectURL(href);
+};
+
+export const getFileNameFromContentDispositonHeader = (response) => {
+	return response?.headers?.[CONTENTDISPOSITION]?.split(";")?.[1]?.split(
+		"="
+	)?.[1];
+};
+
+export const htmlToPlainText = (html) => {
+	var temporaryElement = document.createElement("div");
+	temporaryElement.innerHTML = html;
+	return temporaryElement.textContent || temporaryElement.innerText || "";
+};
+
+export const historyFinalData = ({
+	value,
+	statuses,
+	data,
+	customCaptions,
+	origin,
+}) => {
+	if (
+		statuses === HistoryProperty.serviceStatus &&
+		data?.propertyName === "Status"
+	)
+		return HistoryPropertyCode(statuses, customCaptions)[value];
+	else if (
+		[
+			HistoryCaptions.modelVersionTasks,
+			HistoryCaptions.modelVersionQuestions,
+		].includes(origin) &&
+		["Timing", "Type"].includes(data?.propertyName)
+	)
+		return HistoryPropertyCode(
+			data?.propertyName === "Timing"
+				? HistoryProperty.questionTiming
+				: HistoryProperty.questionType,
+			customCaptions
+		)[value];
+	else if (typeof value === "boolean") return Boolean(value) ? "Yes" : "No";
+	else return value;
+};
+
+//custom date when date range is small
+export const handleCustomDateRange = (axisHeight, data) => {
+	const startDate = new Date(
+		Math.min(...data.slice(1).map((d) => new Date(d[3])))
+	);
+	const endDate = new Date(
+		Math.max(...data.slice(1).map((d) => new Date(d[4])))
+	);
+
+	const timeDiff = (endDate - startDate) / (1000 * 3600 * 24);
+	const svgContainer = document.querySelector(
+		`#${serviceGarphId} svg g:nth-child(3)`
+	);
+	const textDOM = svgContainer.querySelectorAll("text");
+	const TIME_DIFF = Math.floor(timeDiff);
+	if (timeDiff <= 5) {
+		axisHeight.current = {
+			...axisHeight.current,
+			xFinal: textDOM[textDOM.length - 1]?.getAttribute("x"),
+		};
+
+		textDOM.forEach((d, i) => {
+			const firstX = i === 0 && d?.getAttribute("x");
+			const firstY = i === 0 && d?.getAttribute("y");
+			const xGaps =
+				(axisHeight.current.xFinal - axisHeight.current.x) /
+				Math.floor(timeDiff);
+
+			axisHeight.current =
+				i === 0
+					? { ...axisHeight.current, x: firstX, y: firstY }
+					: axisHeight.current;
+
+			const yheight = axisHeight.current.y;
+			let xHeight =
+				i === 0
+					? firstX
+					: i === Math.floor(timeDiff)
+					? axisHeight.current?.xFinal
+					: parseInt(axisHeight.current.x) + i * xGaps;
+			if (TIME_DIFF <= 2) {
+				xHeight = xHeight - 18;
+			}
+
+			if (TIME_DIFF > 2 && TIME_DIFF <= 5) {
+				xHeight = xHeight + 25;
+			}
+			const requiredDate = `${
+				Months[new Date(startDate.getTime() + i * 3600000 * 24).getMonth()]
+			} ${new Date(startDate.getTime() + i * 3600000 * 24).getDate()}`;
+
+			d.remove();
+			if (i <= Math.floor(timeDiff)) {
+				var newtxt = document.createElementNS(
+					"http://www.w3.org/2000/svg",
+					"text"
+				);
+				newtxt.setAttribute("y", yheight);
+				newtxt.setAttribute("x", xHeight);
+				newtxt.setAttribute("fill", "black");
+				newtxt.setAttribute("font-size", "13px");
+				newtxt.setAttribute("font-weight", "normal");
+				newtxt.textContent = requiredDate;
+				svgContainer.appendChild(newtxt);
+			}
+		});
+	} else {
+		textDOM.forEach((d) => {
+			if (d.textContent.includes("/")) {
+				const tempData = d.textContent.split("/");
+				d.textContent = `${tempData[1]}/${tempData[0].trim()}`;
+			}
+		});
+	}
 };

@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import ColourConstants from "helpers/colourConstants";
 
@@ -23,7 +25,7 @@ const mediaMobile = "@media (max-width: 414px)";
 const mediaIpadpro = "@media (max-width: 1024px)";
 const mediaIpad = "@media (max-width: 768px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	table: {
 		borderStyle: "solid",
 		fontFamily: "Roboto Condensed",
@@ -82,7 +84,7 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
-});
+}));
 
 const DragAndDropTable = ({
 	data,
@@ -92,9 +94,11 @@ const DragAndDropTable = ({
 	disableDnd,
 	menuData,
 	isModelEditable,
+	type,
+	classEl,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<DragDropContext
@@ -120,7 +124,7 @@ const DragAndDropTable = ({
 						{headers.map((header, i) => (
 							<TableCell
 								key={header}
-								className={clsx(classes.tableHeadRow)}
+								className={cx(classes.tableHeadRow)}
 								style={columns[i]?.style}
 							>
 								<AT.CellContainer
@@ -155,6 +159,8 @@ const DragAndDropTable = ({
 											columns={columns}
 											menuData={menuData}
 											isModelEditable={isModelEditable}
+											type={type}
+											classEl={classEl}
 										/>
 									)}
 								</Draggable>
@@ -173,12 +179,12 @@ DragAndDropTable.defaultProps = {
 	menuData: [
 		{
 			name: "Edit",
-			handler: (id) => console.log(id),
+			handler: (id) => {},
 			isDelete: false,
 		},
 		{
 			name: "Delete",
-			handler: (id) => console.log(id),
+			handler: (id) => {},
 			isDelete: true,
 		},
 	],

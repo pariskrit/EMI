@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import AccordionBox from "components/Layouts/AccordionBox";
 import { getLocalStorageData, isoDateWithoutTimeZone } from "helpers/utils";
 import React, { useCallback, useEffect, useState } from "react";
@@ -15,8 +15,10 @@ import {
 import CommonTable from "./CommonTable";
 import { dateDifference } from "helpers/utils";
 import { serviceStatus } from "constants/serviceDetails";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
+import updateStorage from "helpers/updateStorage";
 
-const getAllData = (customCaptions) => [
+const getAllData = (customCaptions, application) => [
 	{
 		id: 1,
 		title: customCaptions?.pauseReasonPlural ?? "Pause Reasons",
@@ -47,9 +49,11 @@ const getAllData = (customCaptions) => [
 	},
 	{
 		id: 3,
-		title: `Missing ${customCaptions?.partPlural ?? "Part"} And ${
-			customCaptions?.toolPlural ?? "Tools"
-		}`,
+		title: `Missing ${
+			application.showParts
+				? `${customCaptions?.partPlural ?? "Parts"} And `
+				: ""
+		} ${customCaptions?.toolPlural ?? "Tools"}`,
 		data: [],
 		columns: ["userName", "partOrTool", "reasonName", "otherReason"],
 		headers: [
@@ -87,12 +91,24 @@ const getAllData = (customCaptions) => [
 
 function Impacts() {
 	const { id } = useParams();
-	const { customCaptions } = getLocalStorageData("me");
-
-	const [data, setData] = useState(getAllData(customCaptions));
+	const { application, customCaptions, siteAppID } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+	const [data, setData] = useState(getAllData(customCaptions, application));
 	const [loading, setLoading] = useState(true);
 	const dispatch = useDispatch();
 
+	const [siteAppState, setSiteAppState] = useState({ application });
+	const reduxDispatch = useDispatch();
+
+	const fetchSiteApplicationDetails = async () => {
+		try {
+			const result = await getSiteApplicationDetail(siteAppID);
+			setSiteAppState(result?.data);
+		} catch (error) {
+			reduxDispatch(showError(error?.response?.data || "something went wrong"));
+		}
+	};
 	const fetchAllData = useCallback(async () => {
 		const response = await Promise.all([
 			getPauses(id),
@@ -106,7 +122,7 @@ function Impacts() {
 			const errorTileIndex = response.findIndex((res) => !res.status);
 			dispatch(
 				showError(
-					response[errorTileIndex].data?.detail || "Could not fetch data"
+					response?.[errorTileIndex].data?.detail || "Could not fetch data"
 				)
 			);
 		}
@@ -161,6 +177,10 @@ function Impacts() {
 		fetchAllData();
 	}, [fetchAllData]);
 
+	useEffect(() => {
+		fetchSiteApplicationDetails();
+		if (siteAppID) updateStorage(siteAppID);
+	}, []);
 	if (loading) {
 		return <CircularProgress />;
 	}

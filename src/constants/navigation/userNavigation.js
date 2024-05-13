@@ -1,4 +1,5 @@
 import {
+	appPath,
 	userDetailSitePath,
 	userModelAccess,
 	usersPath,
@@ -10,22 +11,22 @@ import {
  */
 const userNavigation = (id) => {
 	// Setting navigation links with correct application ID
-	const userdetail = `/${id}`;
+	const userdetail = `${appPath}${usersPath}/${id}`;
 	const navigation = [
 		{
 			name: "Details",
 			main: "Details",
-			url: usersPath + userdetail,
+			url: userdetail,
 		},
 		{
 			name: "Sites",
 			main: "Sites",
-			url: usersPath + userdetail + userDetailSitePath,
+			url: userdetail + userDetailSitePath,
 		},
 		{
 			name: "Model Access",
 			main: "Model Access",
-			url: usersPath + userdetail + userModelAccess,
+			url: userdetail + userModelAccess,
 		},
 	];
 

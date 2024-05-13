@@ -13,14 +13,14 @@ const schema = (questionType) =>
 		isCompulsory: yup.bool(),
 		checkboxCaption: yup.string().when("type", {
 			is: () => questionType === "B",
-			then: yup.string().required("Checkbox Caption is required"),
+			then: ()=>yup.string().required("Checkbox Caption is required"),
 		}),
 		decimalPlaces: yup
 			.number()
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup
+				then:()=> yup
 					.number()
 					.nullable()
 					.typeError("Decimal Places is required")
@@ -31,14 +31,14 @@ const schema = (questionType) =>
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup.number().nullable(),
+				then:()=> yup.number().nullable(),
 			}),
 		maxValue: yup
 			.number()
 			.nullable()
 			.when("type", {
 				is: () => questionType === "N",
-				then: yup.number().nullable(),
+				then:()=> yup.number().nullable(),
 			}),
 		options: yup
 			.array()
@@ -46,7 +46,7 @@ const schema = (questionType) =>
 			.nullable()
 			.when("type", {
 				is: () => questionType === "O" || questionType === "C",
-				then: yup
+				then:()=> yup
 					.array()
 					.of(yup.string())
 					.min(1, "Option is required")

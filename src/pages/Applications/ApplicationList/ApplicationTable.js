@@ -1,23 +1,21 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
-
 import "./applicationtable.css";
-
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import { applicationListPath } from "helpers/routePaths";
+import { RESELLER_ID } from "constants/UserConstants/indes";
 
 // Init styled components
 const AT = TableStyle();
@@ -25,7 +23,7 @@ const AT = TableStyle();
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -63,7 +61,7 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
-});
+}));
 
 const ApplicationTable = ({
 	data,
@@ -74,10 +72,11 @@ const ApplicationTable = ({
 	handleDuplicateDialogOpen,
 	searchedData,
 	setSearchedData,
+	adminType,
 }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Init State
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -101,6 +100,8 @@ const ApplicationTable = ({
 		setCurrentTableSort([field, newMethod]);
 	};
 
+	const isReseller = adminType === RESELLER_ID;
+
 	return (
 		<AT.TableContainer
 			component={Paper}
@@ -114,7 +115,7 @@ const ApplicationTable = ({
 							onClick={() => {
 								handleSortClick("name");
 							}}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.selectedTableHeadRow]: currentTableSort[0] === "name",
 								[classes.tableHeadRow]: currentTableSort[0] !== "name",
 							})}
@@ -132,22 +133,20 @@ const ApplicationTable = ({
 						<AT.MiddleTableRow className={classes.tableHeadRow}>
 							Logo
 						</AT.MiddleTableRow>
-						<AT.MiddleTableRow className={classes.tableHeadRow}>
-							Status
-						</AT.MiddleTableRow>
+
 						<TableCell
 							onClick={() => {
-								handleSortClick("clients");
+								handleSortClick("status");
 							}}
-							className={clsx(classes.clientsRow, {
+							className={cx(classes.clientsRow, {
 								[classes.selectedTableHeadRow]:
-									currentTableSort[0] === "clients",
-								[classes.tableHeadRow]: currentTableSort[0] !== "clients",
+									currentTableSort[0] === "status",
+								[classes.tableHeadRow]: currentTableSort[0] !== "status",
 							})}
 						>
 							<AT.CellContainer>
-								Number of Clients
-								{currentTableSort[0] === "clients" &&
+								Status
+								{currentTableSort[0] === "status" &&
 								currentTableSort[1] === "desc" ? (
 									<AT.DefaultArrow fill="#FFFFFF" />
 								) : (
@@ -163,19 +162,16 @@ const ApplicationTable = ({
 							<TableCell
 								component="th"
 								scope="row"
-								className={clsx(classes.dataCell, classes.nameRow, {
+								className={cx(classes.dataCell, classes.nameRow, {
 									[classes.lastCell]: index === data.length - 1,
 								})}
 							>
-								<Link
-									className={classes.nameLink}
-									to={`${applicationListPath}/${row.id}`}
-								>
+								<Link className={classes.nameLink} to={`${row.id}`}>
 									{row.name}
 								</Link>
 							</TableCell>
 							<TableCell
-								className={clsx(classes.dataCell, {
+								className={cx(classes.dataCell, {
 									[classes.lastCell]: index === data.length - 1,
 								})}
 							>
@@ -192,69 +188,67 @@ const ApplicationTable = ({
 								)}
 							</TableCell>
 							<TableCell
-								className={clsx(classes.dataCell, {
-									[classes.lastCell]: index === data.length - 1,
-								})}
-							>
-								{row.isActive ? "Active" : "Inactive"}
-							</TableCell>
-							<TableCell
-								className={clsx(classes.dataCell, {
+								className={cx(classes.dataCell, {
 									[classes.lastCell]: index === data.length - 1,
 								})}
 							>
 								<AT.CellContainer>
-									<AT.TableBodyText>{row.clients}</AT.TableBodyText>
+									{row.isActive ? "Active" : "Inactive"}
 
-									<AT.DotMenu
-										onClick={(e) => {
-											setAnchorEl(
-												anchorEl === e.currentTarget ? null : e.currentTarget
-											);
-											setSelectedData(
-												anchorEl === e.currentTarget ? null : index
-											);
-										}}
-									>
-										<AT.TableMenuButton>
-											<MenuIcon />
-										</AT.TableMenuButton>
-
-										<PopupMenu
-											index={index}
-											selectedData={selectedData}
-											anchorEl={anchorEl}
-											isLast={
-												searchQuery === ""
-													? index === data.length - 1
-													: index === searchedData.length - 1
-											}
-											id={row.id}
-											clickAwayHandler={() => {
-												setAnchorEl(null);
-												setSelectedData(null);
+									{!isReseller && (
+										<AT.DotMenu
+											onClick={(e) => {
+												setAnchorEl(
+													anchorEl === e.currentTarget ? null : e.currentTarget
+												);
+												setSelectedData(
+													anchorEl === e.currentTarget ? null : index
+												);
 											}}
-											menuData={[
-												{
-													name: "Edit",
-													handler: () => {
-														history.push(`${applicationListPath}/${row.id}`);
+										>
+											<AT.TableMenuButton>
+												<MenuIcon />
+											</AT.TableMenuButton>
+
+											<PopupMenu
+												index={index}
+												selectedData={selectedData}
+												anchorEl={anchorEl}
+												isLast={
+													searchQuery === ""
+														? index === data.length - 1
+														: index === searchedData.length - 1
+												}
+												id={row.id}
+												clickAwayHandler={() => {
+													setAnchorEl(null);
+													setSelectedData(null);
+												}}
+												menuData={[
+													{
+														name: "Edit",
+														handler: () => {
+															navigate(`${row.id}`);
+														},
+														isDelete: false,
+														disabled: isReseller,
 													},
-													isDelete: false,
-												},
-												{
-													name: "Duplicate",
-													handler: handleDuplicateDialogOpen,
-													isDelete: false,
-												},
-												{
-													name: "Delete",
-													handler: handleDeleteDialogOpen,
-													isDelete: true,
-												},
-											]}
-										/>
-									</AT.DotMenu>
+													{
+														name: "Duplicate",
+														handler: handleDuplicateDialogOpen,
+														isDelete: false,
+														disabled: isReseller,
+													},
+													{
+														name: "Delete",
+														handler: handleDeleteDialogOpen,
+														isDelete: true,
+														disabled: row?.hasSiteApps || isReseller,
+													},
+												]}
+											/>
+										</AT.DotMenu>
+									)}
 								</AT.CellContainer>
 							</TableCell>
 						</TableRow>

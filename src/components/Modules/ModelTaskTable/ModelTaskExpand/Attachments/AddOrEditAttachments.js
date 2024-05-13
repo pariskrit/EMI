@@ -4,16 +4,18 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import AttachmentUpload from "./AttachmentUpload.js";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
-import { Restaurant } from "@material-ui/icons";
+import ColourConstants from "helpers/colourConstants.js";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -24,14 +26,16 @@ const schema = yup.object({
 		.string("This field must be string")
 		.required("This field is required")
 		.max(100, "Must be less than or equal to 100 characters"),
-	file: yup.mixed().test("fileType", "File size limited to 6 MB", (value) => {
-		return value.size < 6 * 1024 * 1024 || typeof value === "string";
-	}),
-
+	file: yup
+		.mixed()
+		.test("fileType", "File size limited to 6 MB", (value) => {
+			return value.size < 6 * 1024 * 1024 || typeof value === "string";
+		})
+		.nullable(),
 	link: yup.string("This field must be string"),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -46,7 +50,7 @@ const useStyles = makeStyles({
 	inputInfo: {
 		marginLeft: "7px",
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -70,7 +74,7 @@ function AddOrEditAttachment({
 	isEdit,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -169,7 +173,16 @@ function AddOrEditAttachment({
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
-							<ADD.CancelButton onClick={closeOverride} variant="contained">
+							<ADD.CancelButton
+								onClick={closeOverride}
+								variant="contained"
+								sx={{
+									"&.MuiButton-root:hover": {
+										backgroundColor: ColourConstants.deleteDialogHover,
+										color: "#ffffff",
+									},
+								}}
+							>
 								Cancel
 							</ADD.CancelButton>
 						</div>
@@ -179,6 +192,12 @@ function AddOrEditAttachment({
 								variant="contained"
 								className={classes.createButton}
 								disabled={isUpdating}
+								sx={{
+									"&.MuiButton-root:hover": {
+										backgroundColor: ColourConstants.deleteDialogHover,
+										color: "#ffffff",
+									},
+								}}
 							>
 								{isEdit ? "Close" : title}
 							</ADD.ConfirmButton>

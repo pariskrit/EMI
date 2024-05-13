@@ -1,17 +1,21 @@
-import React, { useState } from "react";
-import API from "../../../helpers/api";
-import AddDialogStyle from "../../../styles/application/AddDialogStyle";
-import PositionAccessTypes from "../../../helpers/positionAccessTypes";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
-import EMICheckbox from "../../../components/Elements/EMICheckbox";
+import React, { useEffect, useState } from "react";
+import API from "helpers/api";
+import AddDialogStyle from "styles/application/AddDialogStyle";
+import PositionAccessTypes from "helpers/positionAccessTypes";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
+import EMICheckbox from "components/Elements/EMICheckbox";
 import * as yup from "yup";
-import { handleValidateObj, generateErrorState } from "../../../helpers/utils";
+import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { connect, useDispatch } from "react-redux";
+import { AccessTypes, DefaultPageOptions } from "helpers/constants";
+import DynamicDropdown from "components/Elements/DyamicDropdown";
+import { isChrome } from "helpers/utils";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -53,6 +57,10 @@ const schema = yup.object({
 	allowPublish: yup
 		.boolean("This field must be a boolean (true or false)")
 		.required("This field is required"),
+	defaultPage: yup.string("This field must be string"),
+	assetAccess: yup
+		.string("This field must be string")
+		.required("This field id required"),
 });
 
 // Default state schemas
@@ -69,12 +77,15 @@ const defaultErrorSchema = {
 	settings: null,
 	changeSkippedTasks: null,
 	allowPublish: null,
+	defaultPage: null,
+	assetAccess: null,
 };
 const defaultStateSchema = {
 	name: "",
 	assetModel: "N",
 	services: "N",
 	defects: "N",
+	defaultPage: 0,
 	defectExports: "N",
 	noticeBoards: "N",
 	feedback: "N",
@@ -83,6 +94,7 @@ const defaultStateSchema = {
 	settings: "N",
 	changeSkippedTasks: false,
 	allowPublish: false,
+	assetAccess: "N",
 };
 
 const AddPositionDialog = ({
@@ -90,12 +102,30 @@ const AddPositionDialog = ({
 	closeHandler,
 	applicationID,
 	handleAddData,
+	getError,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const [modelFocus, setModelFocus] = useState(true);
+	const dispatch = useDispatch();
 
+	const InterdefaultOptions = DefaultPageOptions();
+
+	const defaultOptions = Object.keys(InterdefaultOptions).map((key) => {
+		return {
+			id: key,
+			name: InterdefaultOptions[key],
+		};
+	});
+
+	const positionTypes = Object.keys(PositionAccessTypes).map((key) => {
+		return {
+			id: key,
+			name: PositionAccessTypes[key],
+		};
+	});
 	// Handlers
 	const closeOverride = () => {
 		// Clearing input state and errors
@@ -130,7 +160,7 @@ const AddPositionDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
+			dispatch(showError(err?.message ?? "Failed to add position."));
 
 			setIsUpdating(false);
 			closeOverride();
@@ -153,6 +183,8 @@ const AddPositionDialog = ({
 				analyticsAccess: input.reportingAnalytics,
 				allowChangeSkippedTaskStatus: input.changeSkippedTasks,
 				allowPublish: input.allowPublish,
+				defaultPage: input.defaultPage,
+				assetAccess: input.assetAccess,
 			};
 
 			const result = await API.post("/api/ApplicationPositions", data);
@@ -160,7 +192,7 @@ const AddPositionDialog = ({
 			// Handling success
 			if (result.status === 201) {
 				// Adding ID to data
-				data.id = result.data;
+				data.id = result?.data;
 
 				// Adding new type to state
 				handleAddData(data);
@@ -170,8 +202,14 @@ const AddPositionDialog = ({
 				throw new Error(result);
 			}
 		} catch (err) {
+			if (err.response?.data?.detail) {
+				getError(
+					err?.response?.data?.detail ||
+						"Input should not be empty and it should be less than 50 characters ."
+				);
+			}
 			if (err.response.data.errors !== undefined) {
-				setErrors({ ...errors, ...err.response.data.errors });
+				setErrors({ ...errors, ...err?.response?.data?.errors });
 			} else {
 				// If no explicit errors provided, throws to caller
 				throw new Error(err);
@@ -187,6 +225,21 @@ const AddPositionDialog = ({
 			handleAddClick();
 		}
 	};
+	useEffect(() => {
+		const modal = document.getElementById("warningText");
+
+		if (
+			modal &&
+			input.settings === AccessTypes.None &&
+			(input.assetAccess === AccessTypes["Read-Only"] ||
+				input.assetAccess === AccessTypes.Edit ||
+				input.assetAccess === AccessTypes.Full)
+		) {
+			modal.scrollIntoView({
+				behavior: "smooth",
+			});
+		}
+	}, [input.assetAccess, input.settings]);
 
 	return (
 		<div>
@@ -197,6 +250,7 @@ const AddPositionDialog = ({
 				onClose={closeOverride}
 				aria-labelledby="title"
 				aria-describedby="description"
+				disableEnforceFocus={isChrome() ? modelFocus : false}
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
@@ -205,10 +259,31 @@ const AddPositionDialog = ({
 						{<ADD.HeaderText>Add Position</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeOverride} variant="contained">
+						<ADD.CancelButton
+							onClick={closeOverride}
+							variant="contained"
+							onFocus={(e) => {
+								setModelFocus(true);
+							}}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</ADD.CancelButton>
-						<ADD.ConfirmButton variant="contained" onClick={handleAddClick}>
+						<ADD.ConfirmButton
+							variant="contained"
+							onClick={handleAddClick}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Add New
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>
@@ -223,8 +298,8 @@ const AddPositionDialog = ({
 									Name<ADD.RequiredStar>*</ADD.RequiredStar>
 								</ADD.InputLabel>
 								<ADD.NameInput
-									error={errors.name === null ? false : true}
-									helperText={errors.name === null ? null : errors.name}
+									error={errors?.name === null ? false : true}
+									helperText={errors?.name === null ? null : errors?.name}
 									variant="outlined"
 									value={input.name}
 									autoFocus
@@ -236,235 +311,225 @@ const AddPositionDialog = ({
 							</ADD.LeftInputContainer>
 
 							{/* ASSET MODEL INPUT */}
+
 							<ADD.RightInputContainer>
-								<ADD.InputLabel>
-									Asset Models Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-								<TextField
-									error={errors.assetModel === null ? false : true}
-									helperText={
-										errors.assetModel === null ? null : errors.assetModel
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Default Page"
+									selectedValue={
+										defaultOptions.filter(
+											(d) => d?.id === input?.defaultPage?.toString()
+										)[0]
 									}
-									fullWidth={true}
-									select
-									value={input.assetModel}
-									onChange={(e) => {
-										setInput({ ...input, assetModel: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
+									selectdValueToshow="name"
+									dataSource={defaultOptions}
+									onChange={(data) =>
+										setInput({ ...input, defaultPage: data?.id })
+									}
+									columns={[{ name: "name" }]}
+								/>
 							</ADD.RightInputContainer>
 						</ADD.InputContainer>
 
 						<ADD.InputContainer>
 							{/* Services INPUT */}
+
 							<ADD.LeftInputContainer>
-								<ADD.InputLabel>
-									Services Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-								<TextField
-									error={errors.services === null ? false : true}
-									helperText={errors.services === null ? null : errors.services}
-									fullWidth={true}
-									select
-									value={input.services}
-									onChange={(e) => {
-										setInput({ ...input, services: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Asset Models Access"
+									selectedValue={
+										positionTypes.filter((d) => d?.id === input?.assetModel)[0]
+									}
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) =>
+										setInput({ ...input, assetModel: data?.id })
+									}
+									columns={[{ name: "name" }]}
+								/>
 							</ADD.LeftInputContainer>
 
-							{/* DEFECTS INPUT */}
 							<ADD.RightInputContainer>
-								<ADD.InputLabel>
-									Defects Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.defects === null ? false : true}
-									helperText={errors.defects === null ? null : errors.defects}
-									fullWidth={true}
-									select
-									value={input.defects}
-									onChange={(e) => {
-										setInput({ ...input, defects: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Services Access"
+									selectedValue={
+										positionTypes.filter((d) => d?.id === input?.services)[0]
+									}
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) =>
+										setInput({ ...input, services: data?.id })
+									}
+									columns={[{ name: "name" }]}
+								/>
 							</ADD.RightInputContainer>
+
+							{/* DEFECTS INPUT */}
 						</ADD.InputContainer>
 
 						<ADD.InputContainer>
 							{/* NOTICE BOARDS INPUT */}
 							<ADD.LeftInputContainer>
-								<ADD.InputLabel>
-									Notice Boards Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.noticeBoards === null ? false : true}
-									helperText={
-										errors.noticeBoards === null ? null : errors.noticeBoards
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Defects Access"
+									selectedValue={
+										positionTypes.filter((d) => d?.id === input?.defects)[0]
 									}
-									fullWidth={true}
-									select
-									value={input.noticeBoards}
-									onChange={(e) => {
-										setInput({ ...input, noticeBoards: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.LeftInputContainer>
-							{/* USERS INPUT */}
-							<ADD.RightInputContainer>
-								{/* FEEDBACK INPUT */}
-								<ADD.InputLabel>
-									Feedback Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-								<TextField
-									error={errors.feedback === null ? false : true}
-									helperText={errors.feedback === null ? null : errors.feedback}
-									fullWidth={true}
-									select
-									value={input.feedback}
-									onChange={(e) => {
-										setInput({ ...input, feedback: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.RightInputContainer>
-						</ADD.InputContainer>
-
-						<ADD.InputContainer>
-							{/* USERS INPUT */}
-							<ADD.LeftInputContainer>
-								<ADD.InputLabel>
-									Users Access<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.users === null ? false : true}
-									helperText={errors.users === null ? null : errors.users}
-									fullWidth={true}
-									select
-									value={input.users}
-									onChange={(e) => {
-										setInput({ ...input, users: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.LeftInputContainer>
-							<ADD.RightInputContainer>
-								<ADD.InputLabel>
-									Analytics Access
-									<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-
-								<TextField
-									error={errors.reportingAnalytics === null ? false : true}
-									helperText={
-										errors.reportingAnalytics === null
-											? null
-											: errors.reportingAnalytics
-									}
-									fullWidth={true}
-									select
-									value={input.reportingAnalytics}
-									onChange={(e) => {
-										setInput({ ...input, reportingAnalytics: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
-							</ADD.RightInputContainer>
-						</ADD.InputContainer>
-						<ADD.InputContainer>
-							<ADD.LeftInputContainer>
-								<ADD.InputLabel>
-									Settings<ADD.RequiredStar>*</ADD.RequiredStar>
-								</ADD.InputLabel>
-								<TextField
-									error={errors.settings === null ? false : true}
-									helperText={errors.settings === null ? null : errors.settings}
-									fullWidth={true}
-									select
-									value={input.settings}
-									onChange={(e) => {
-										setInput({ ...input, settings: e.target.value });
-									}}
-									variant="outlined"
-								>
-									{Object.keys(PositionAccessTypes).map((key) => (
-										<MenuItem key={key} value={key}>
-											{PositionAccessTypes[key]}
-										</MenuItem>
-									))}
-								</TextField>
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) => setInput({ ...input, defects: data?.id })}
+									columns={[{ name: "name" }]}
+								/>
 							</ADD.LeftInputContainer>
 
-							{/* ALLOW CHANGE SKIPPED TASKS INPUT */}
 							<ADD.RightInputContainer>
-								<FormControlLabel
-									style={{ marginTop: "30px", marginLeft: "0px" }}
-									control={
-										<EMICheckbox
-											changeHandler={() => {
-												setInput({
-													...input,
-													allowPublish: !input.allowPublish,
-												});
-											}}
-										/>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Notice Boards Access"
+									selectedValue={
+										positionTypes.filter(
+											(d) => d?.id === input?.noticeBoards
+										)[0]
 									}
-									label={
-										<Typography style={{ fontSize: "14px" }}>
-											Allow Publication of AModel Template
-										</Typography>
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) =>
+										setInput({ ...input, noticeBoards: data?.id })
 									}
+									columns={[{ name: "name" }]}
 								/>
 							</ADD.RightInputContainer>
+							{/* USERS INPUT */}
+						</ADD.InputContainer>
+
+						<ADD.InputContainer>
+							{/* USERS INPUT */}
+							<ADD.LeftInputContainer>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Feedback Access"
+									selectedValue={
+										positionTypes.filter((d) => d?.id === input?.feedback)[0]
+									}
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) =>
+										setInput({ ...input, feedback: data?.id })
+									}
+									columns={[{ name: "name" }]}
+								/>
+							</ADD.LeftInputContainer>
+
+							<ADD.RightInputContainer>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Users Access"
+									selectedValue={
+										positionTypes.filter((d) => d?.id === input?.users)[0]
+									}
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) => setInput({ ...input, users: data?.id })}
+									columns={[{ name: "name" }]}
+								/>
+							</ADD.RightInputContainer>
+						</ADD.InputContainer>
+						<ADD.InputContainer>
+							<ADD.LeftInputContainer>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Analytics Access"
+									selectedValue={
+										positionTypes.filter(
+											(d) => d?.id === input?.reportingAnalytics
+										)[0]
+									}
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) =>
+										setInput({ ...input, reportingAnalytics: data?.id })
+									}
+									columns={[{ name: "name" }]}
+								/>
+							</ADD.LeftInputContainer>
+
+							<ADD.RightInputContainer>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Settings"
+									selectedValue={
+										positionTypes.filter((d) => d?.id === input?.settings)[0]
+									}
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) =>
+										setInput({ ...input, settings: data?.id })
+									}
+									columns={[{ name: "name" }]}
+								/>
+							</ADD.RightInputContainer>
+
+							{/* ALLOW CHANGE SKIPPED TASKS INPUT */}
+						</ADD.InputContainer>
+						<ADD.InputContainer>
+							<ADD.LeftInputContainer>
+								<DynamicDropdown
+									width="100%"
+									required
+									label="Assets Access"
+									selectedValue={
+										positionTypes.filter((d) => d?.id === input?.assetAccess)[0]
+									}
+									selectdValueToshow="name"
+									dataSource={positionTypes}
+									onChange={(data) => {
+										setInput({ ...input, assetAccess: data?.id });
+									}}
+									columns={[{ name: "name" }]}
+								/>
+								{input.settings === AccessTypes.None &&
+									(input.assetAccess === AccessTypes["Read-Only"] ||
+										input.assetAccess === AccessTypes.Edit ||
+										input.assetAccess === AccessTypes.Full) && (
+										<p style={{ color: "red" }} id="warningText">
+											This Position will not be able to access the Assets list
+											without Settings Access
+										</p>
+									)}
+							</ADD.LeftInputContainer>
+							<FormControlLabel
+								style={{ marginLeft: "14px" }}
+								control={
+									<EMICheckbox
+										changeHandler={() => {
+											setInput({
+												...input,
+												allowPublish: !input?.allowPublish,
+											});
+										}}
+									/>
+								}
+								label={
+									<Typography style={{ fontSize: "14px" }}>
+										Allow Publication of AModel Template
+									</Typography>
+								}
+								onBlur={() => {
+									setModelFocus(false);
+								}}
+							/>
 						</ADD.InputContainer>
 					</div>
 				</ADD.DialogContent>
@@ -473,4 +538,7 @@ const AddPositionDialog = ({
 	);
 };
 
-export default AddPositionDialog;
+const mapDispatchToProps = (dispatch) => ({
+	getError: (message) => dispatch(showError(message)),
+});
+export default connect(null, mapDispatchToProps)(AddPositionDialog);

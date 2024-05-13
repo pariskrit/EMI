@@ -1,11 +1,15 @@
 import React from "react";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
-import { makeStyles, Typography } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+import { Typography } from "@mui/material";
 import TableStyle from "styles/application/TableStyle";
-import clsx from "clsx";
-import ColourConstants from "helpers/colourConstants";
 
-const useStyles = makeStyles({
+import ColourConstants from "helpers/colourConstants";
+import { makeStyles } from "tss-react/mui";
+
+const useStyles = makeStyles()((theme) => ({
+	responsiveTable: {
+		display: "table-row-group",
+	},
 	tableHead: {
 		backgroundColor: ColourConstants.tableBackground,
 	},
@@ -26,11 +30,11 @@ const useStyles = makeStyles({
 		borderRightStyle: "solid",
 		borderRightWidth: "1px",
 	},
-});
+}));
 const AT = TableStyle();
 
 const Defects = ({ headers, customCaptions, data, columns }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	return (
 		<div>
 			<Typography className={classes.headerText} component="h1" gutterBottom>
@@ -38,15 +42,15 @@ const Defects = ({ headers, customCaptions, data, columns }) => {
 					{customCaptions.service} {customCaptions?.defect}
 				</strong>
 			</Typography>
-			<AT.TableContainer>
+			<AT.TableContainer style={{ minWidth: "99%" }}>
 				<Table aria-label="Table">
-					<AT.TableHead>
+					<AT.TableHead className={classes.responsiveTable}>
 						<TableRow className={classes.tableHead}>
 							{headers.map((header) => (
 								<TableCell
 									key={header.id}
 									style={{ width: header?.width || "auto" }}
-									className={clsx(classes.nameRow, {
+									className={cx(classes.nameRow, {
 										[classes.tableHeadRow]: true,
 									})}
 								>
@@ -80,7 +84,7 @@ const Defects = ({ headers, customCaptions, data, columns }) => {
 																		width: "auto",
 																		paddingLeft: "20px",
 																	}}
-																	className={clsx(classes.nameRow, {
+																	className={cx(classes.nameRow, {
 																		[classes.tableHeadRow]: true,
 																	})}
 																>

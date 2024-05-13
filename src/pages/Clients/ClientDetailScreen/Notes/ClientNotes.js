@@ -6,8 +6,10 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import ColourConstants from "helpers/colourConstants";
@@ -19,8 +21,11 @@ import {
 } from "services/clients/clientDetailScreen";
 import AddNoteDialog from "./AddNoteDialog";
 import ClientNoteRow from "./ClientNoteRow";
+import NoteContentPopup from "components/Elements/NoteContentPopup";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	noteContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -57,15 +62,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ClientNotes = ({ clientId, getError }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [modal, setModal] = useState({
 		addModal: false,
 		deleteModal: false,
+		openContentModal: false,
 	});
 	const [noteId, setNoteId] = useState(null);
 	const [data, setData] = useState([]);
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	const fetchNotes = async () => {
 		try {
@@ -80,8 +87,8 @@ const ClientNotes = ({ clientId, getError }) => {
 			}
 			setIsLoading(false);
 		} catch (err) {
-			console.log(err);
 			setIsLoading(false);
+			dispatch(showError(`Failed to fetch notes.`));
 			return err;
 		}
 	};
@@ -123,9 +130,20 @@ const ClientNotes = ({ clientId, getError }) => {
 		const filteredData = [...data].filter((x) => x.id !== id);
 		setData(filteredData);
 	};
+
+	const onOpenContentDialog = (note) => {
+		setModal({ ...modal, openContentModal: { open: true, note } });
+	};
+	const onCloseContentDialog = () =>
+		setModal({ ...modal, openContentModal: false });
 	const { addModal, deleteModal } = modal;
 	return (
 		<div className={classes.noteContainer}>
+			<NoteContentPopup
+				open={modal.openContentModal.open ?? false}
+				onClose={onCloseContentDialog}
+				note={modal.openContentModal.note}
+			/>
 			<AddNoteDialog
 				open={addModal}
 				handleClose={() => setModal((th) => ({ ...th, addModal: false }))}
@@ -158,6 +176,7 @@ const ClientNotes = ({ clientId, getError }) => {
 								<TableCell>Date</TableCell>
 								<TableCell>Note</TableCell>
 								<TableCell></TableCell>
+								<TableCell></TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -166,6 +185,7 @@ const ClientNotes = ({ clientId, getError }) => {
 									key={row.id}
 									row={row}
 									classes={classes}
+									onViewNote={onOpenContentDialog}
 									onDeleteNote={() => handleDeleteNote(row.id)}
 								/>
 							))}

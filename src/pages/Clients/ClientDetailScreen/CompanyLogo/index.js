@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import DropUploadBox from "components/Elements/DropUploadBox";
 import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
@@ -7,7 +9,7 @@ import ColourConstants from "helpers/colourConstants";
 import { BASE_API_PATH } from "helpers/constants";
 import { updateClientLogo } from "services/clients/clientDetailScreen";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	logoContainer: {
 		marginTop: 15,
 		display: "flex",
@@ -47,12 +49,12 @@ const ClientLogo = ({
 	fetchClientDetail,
 	getError,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [showUpload, setShowUpload] = useState(true);
 	const [filesUploading, setFilesUploading] = useState(false);
 
 	useEffect(() => {
-		if (clientDetail.logoURL) {
+		if (clientDetail?.logoURL || clientDetail[0]?.logoURL) {
 			setShowUpload(false);
 		}
 	}, [clientDetail]);
@@ -104,9 +106,9 @@ const ClientLogo = ({
 					/>
 				) : (
 					<ProviderAsset
-						name={clientDetail.logoFilename}
-						src={clientDetail.logoURL}
-						alt={clientDetail.logoFilename}
+						name={clientDetail?.logoFilename || clientDetail[0]?.name}
+						src={clientDetail?.logoURL || clientDetail[0]?.logoURL}
+						alt={clientDetail?.logoFilename || clientDetail[0]?.logoFilename}
 						deleteLogo={onDeleteLogo}
 						deleteEndpoint={`${BASE_API_PATH}Clients`}
 					/>

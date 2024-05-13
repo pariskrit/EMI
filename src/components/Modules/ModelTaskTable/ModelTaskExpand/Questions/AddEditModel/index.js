@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import {
 	Dialog,
 	DialogTitle,
-	makeStyles,
 	FormGroup,
 	FormControlLabel,
 	Typography,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import schema from "./schema";
 import {
@@ -33,10 +33,10 @@ const questionTypeOptions = [
 
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	paper: { minWidth: "90%" },
 	numberFields: { display: "flex", width: "100%", gap: 5, flexWrap: "wrap" },
-});
+}));
 
 const initialState = {
 	caption: "",
@@ -70,7 +70,7 @@ function AddEditModel({
 	getError,
 	addEditType,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	const [input, setInput] = useState(initialState);
 	const [errors, setErrors] = useState(defaultError);

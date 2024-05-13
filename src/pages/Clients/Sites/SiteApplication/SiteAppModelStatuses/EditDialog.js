@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { patchModelStatuses } from "services/clients/sites/siteApplications/modelStatuses";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -37,6 +40,7 @@ const EditStatusDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -71,10 +75,9 @@ const EditStatusDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to edit ${header}.`));
 		}
 	};
 	const handleUpdateData = async () => {
@@ -118,7 +121,7 @@ const EditStatusDialog = ({
 				// If not success, throwing error
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to edit ${header} status.`));
 		}
 	};
 
@@ -153,10 +156,28 @@ const EditStatusDialog = ({
 						{<AED.HeaderText>Edit {header}</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
-						<AED.CancelButton onClick={closeHandler} variant="contained">
+						<AED.CancelButton
+							onClick={closeHandler}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</AED.CancelButton>
-						<AED.ConfirmButton variant="contained" onClick={handleSave}>
+						<AED.ConfirmButton
+							variant="contained"
+							onClick={handleSave}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Save
 						</AED.ConfirmButton>
 					</AED.ButtonContainer>

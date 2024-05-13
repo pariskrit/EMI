@@ -16,6 +16,7 @@ const BASE_API_PATH_SITE_APP_KEY_CONTACTS = `${BASE_API_PATH}SiteAppKeyContacts`
 const BASE_API_PATH_SITE_APPLICATIONS = `${BASE_API_PATH}siteapps`;
 const BASE_API_PATH_SITES_LOCATIONS = `${BASE_API_PATH}SiteLocations`;
 const BASE_API_PATH_SITES_DEPARTMENTS = `${BASE_API_PATH}SiteDepartments`;
+const BASE_API_PATH_APPLICATION_POSITIONS = `${BASE_API_PATH}ApplicationPositions`;
 const BASE_API_PATH_SITE_ASSET_COUNT = `${BASE_API_PATH}SiteAssets/Count`;
 const BASE_API_PATH_STOP_REASONS = `${BASE_API_PATH}StopReasons`;
 const BASE_API_PATH_OPERATING_MODES = `${BASE_API_PATH}operatingModes`;
@@ -41,6 +42,8 @@ const BASE_API_PATH_APPLICATIONS_AND_SITES = `${BASE_API_PATH}users/me/portal`;
 const BASE_API_PATH_USER_SITEs = `${BASE_API_PATH}clientusers`;
 const BASE_API_PATH_CLIENT_USER_SITES = `${BASE_API_PATH}clientusersites`;
 const BASE_API_PATH_CLIENT_USER_SITES_APPS = `${BASE_API_PATH}ClientUserSiteApps`;
+const BASE_API_PATH_CLIENT_USERS = `${BASE_API_PATH}ClientUsers`;
+const BASE_API_PATH_REPORTING = `${BASE_API_PATH}Reporting`;
 
 // Application
 const BASE_API_PATH_APPLICATIONS = `${BASE_API_PATH}Applications`;
@@ -60,6 +63,10 @@ const BASE_API_PATH_FORGOT_PASSWORD = `${BASE_API_PATH}Users/ForgotPassword`;
 
 // reset password
 const BASE_API_PATH_RESET_PASSWORD = `${BASE_API_PATH}Users/ResetPassword`;
+
+//login to client admin
+
+const BASE_API_PATH_CLIENT_ADMIN = `${BASE_API_PATH}Users/LoginToClientAdmin`;
 
 //UserDetails
 const BASE_API_PATH_USERDETAILSNOTEPOST = `${BASE_API_PATH}clientusernotes`;
@@ -84,6 +91,7 @@ const BASE_API_PATH_MODEL_TASKS = `${BASE_API_PATH}ModelVersionTasks`;
 const BASE_API_PATH_MODEL_TASKS_QUESTIONS = `${BASE_API_PATH}ModelVersionTaskQuestions`;
 const BASE_API_PATH_MODEL_TASKS_QUESTION_OPTIONS = `${BASE_API_PATH}ModelVersionTaskQuestionOptions`;
 
+const BASE_API_PATH_MODEL_VERSION_TASK_ARRANGEMENT = `${BASE_API_PATH}ModelVersionTaskArrangements`;
 const BASE_API_PATH_MODEL_TASKS_STAGES = `${BASE_API_PATH}ModelVersionTaskStages`;
 const BASE_API_PATH_MODEL_ASSETS = `${BASE_API_PATH}ModelAssets`;
 const BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL = `${BASE_API_PATH}ModelVersionTaskIntervals`;
@@ -102,6 +110,9 @@ const BASE_API_PATH_MODEL_DOCUMENTS = `${BASE_API_PATH}ModelDocuments`;
 
 // Model Task Notes
 const BASE_API_PATH_MODEL_TASK_NOTES = `${BASE_API_PATH}ModelTaskNotes`;
+
+// Model Version Arrangements
+const BASE_API_PATH_MODEL_VERSION_ARRANGMENTS = `${BASE_API_PATH}ModelVersionArrangements`;
 
 // Model Task Parts
 const BASE_API_PATH_MODEL_TASK_PARTS = `${BASE_API_PATH}ModelVersionTaskParts`;
@@ -124,6 +135,9 @@ const BASE_API_PATH_MODEL_TASK_PERMITS = `${BASE_API_PATH}ModelVersionTaskPermit
 // Model Task Attachments
 const BASE_API_PATH_MODEL_TASK_ATTACHMENTS = `${BASE_API_PATH}ModelVersionTaskDocuments`;
 
+// Model Published
+const BASE_API_PATH_MODELS_PUBLISHED = `${BASE_API_PATH}Models/published`;
+
 // Services
 const BASE_API_PATH_SERVICES = `${BASE_API_PATH}services`;
 
@@ -132,6 +146,8 @@ const BASE_API_PATH_SERVICES_NOTES = `${BASE_API_PATH}ServiceNotes`;
 
 // Defects
 const BASE_API_PATH_DEFECTS = `${BASE_API_PATH}Defects`;
+const BASE_API_PATH_DEFECTS_SEARCH = `${BASE_API_PATH}Defects/search`;
+const BASE_API_PATH_DEFECTS_AUTOCOMPLETE = `${BASE_API_PATH}Defects/autocomplete`;
 const BASE_API_PATH_DEFECT_NOTES = `${BASE_API_PATH}DefectNotes`;
 const BASE_API_PATH_DEFECT_IMAGES = `${BASE_API_PATH}DefectImages`;
 const BASE_API_PATH_DEFECT_PARTS = `${BASE_API_PATH}DefectParts`;
@@ -143,6 +159,82 @@ const BASE_API_PATH_FEEDBACK_IMAGES = `${BASE_API_PATH}FeedbackImages`;
 
 // NoticeBoards
 const BASE_API_PATH_NOTICE_BOARDS = `${BASE_API_PATH}Noticeboards`;
+const BASE_API_PATH_NOTICE_BOARDS_DEPARTMENTS = `${BASE_API_PATH}NoticeboardDepartments`;
+
+//Analytics
+const BASE_API_PATH_ANALYTICS = `${BASE_API_PATH}Analytics`;
+
+//History
+//MODEL
+const BASE_API_PATH_HISTORY_MODEL_DETAILS = `${BASE_API_PATH}history/modelversions/`;
+const BASE_API_PATH_HISTORY_MODEL_ASSETS = `${BASE_API_PATH}history/modelassets?modelId=`;
+const BASE_API_PATH_HISTORY_MODEL_ARRANGEMENTS = `${BASE_API_PATH}history/modelversionarrangements?modelVersionId=`;
+const BASE_API_PATH_HISTORY_MODEL_STAGES = `${BASE_API_PATH}history/modelversionstages?modelVersionId=`;
+const BASE_API_PATH_HISTORY_MODEL_ZONES = `${BASE_API_PATH}history/modelversionzones?modelVersionId=`;
+const BASE_API_PATH_HISTORY_MODEL_INTERVAL = `${BASE_API_PATH}history/modelversionintervals?modelVersionId=`;
+const BASE_API_PATH_HISTORY_MODEL_ROLES = `${BASE_API_PATH}history/modelversionroles?modelVersionId=`;
+const BASE_API_PATH_HISTORY_MODEL_QUESTIONS = `${BASE_API_PATH}history/modelversionquestions?modelVersionId=`;
+const BASE_API_PATH_HISTORY_MODEL_TASKS = `${BASE_API_PATH}history/modelversiontasks?modelVersionId=`;
+//History services
+const BASE_API_PATH_HISTORY_SERVICE_DETAILS = `${BASE_API_PATH}history/services/`;
+//History defects
+const BASE_API_PATH_HISTORY_DEFECTS = `${BASE_API_PATH}history/defects/`;
+//History feedback
+const BASE_API_PATH_HISTORY_FEEDBACK = `${BASE_API_PATH}history/feedbacks/`;
+//History user
+const BASE_API_PATH_HISTORY_USER = `${BASE_API_PATH}history/clientUserSiteApp/`;
+const BASE_API_PATH_HISTORY_USERADMIN = `${BASE_API_PATH}history/userdetails/`;
+//Hisotry Site
+const BASE_API_PATH_HISTORY_SITE_SETTINGS = `${BASE_API_PATH}history/sitesettings/`;
+const BASE_API_PATH_HISTORY_SITE_ASSETS = `${BASE_API_PATH}history/siteassets/`;
+const BASE_API_PATH_HISTORY_SITE_DEPARTMENTS = `${BASE_API_PATH}history/sitedepartments/`;
+//History Site Application
+const BASE_API_PATH_HISTORY_SITEAPP_FEEDBACK_STATUSES = `${BASE_API_PATH}history/siteappfeedbackstatuses/`;
+const BASE_API_PATH_HISTORY_SITEAPP_FEEDBACK_PRIORITIES = `${BASE_API_PATH}history/siteappfeedbackpriorities/`;
+const BASE_API_PATH_HISTORY_SITEAPP_FEEDBACK_CLASSIFICATIONS = `${BASE_API_PATH}history/siteappfeedbackclassifications/`;
+const BASE_API_PATH_HISTORY_SITEAPP_DEFECT_TYPES = `${BASE_API_PATH}history/siteappdefecttypes/`;
+const BASE_API_PATH_HISTORY_SITEAPP_DEFECT_STATUSES = `${BASE_API_PATH}history/siteappdefectstatuses/`;
+const BASE_API_PATH_HISTORY_SITEAPP_DEFECT_RISKRATINGS = `${BASE_API_PATH}history/siteappdefectriskratings/`;
+const BASE_API_PATH_HISTORY_SITEAPP_ROLES = `${BASE_API_PATH}history/siteapproles/`;
+const BASE_API_PATH_HISTORY_SITEAPP_POSITIONS = `${BASE_API_PATH}history/siteapppositions/`;
+const BASE_API_PATH_HISTORY_SITEAPP_OPERATING_MODES = `${BASE_API_PATH}history/siteappoperatingmodes/`;
+const BASE_API_PATH_HISTORY_SITEAPP_LUBRICANTS = `${BASE_API_PATH}history/siteapplubricants/`;
+const BASE_API_PATH_HISTORY_SITEAPP_SYSTEMS = `${BASE_API_PATH}history/siteappsystems/`;
+const BASE_API_PATH_HISTORY_SITEAPP_ACTIONS = `${BASE_API_PATH}history/siteappactions/`;
+const BASE_API_PATH_HISTORY_SITEAPP_MODEL_TYPES = `${BASE_API_PATH}history/siteappmodeltypes/`;
+const BASE_API_PATH_HISTORY_SITEAPP_MODEL_STATUSES = `${BASE_API_PATH}history/siteappmodelstatuses/`;
+const BASE_API_PATH_HISTORY_SITEAPP_CHANGE_STATUS_REASONS = `${BASE_API_PATH}history/siteappchangestatusreasons/`;
+const BASE_API_PATH_HISTORY_SITEAPP_MISSING_PART_TOOL_REASONS = `${BASE_API_PATH}history/siteappmissingparttoolreasons/`;
+const BASE_API_PATH_HISTORY_SITEAPP_SKIP_REASONS = `${BASE_API_PATH}history/siteappskipreasons/`;
+const BASE_API_PATH_HISTORY_SITEAPP_STOP_REASONS = `${BASE_API_PATH}history/siteappstopreasons/`;
+const BASE_API_PATH_HISTORY_SITEAPP_PAUSE_REASONS = `${BASE_API_PATH}history/siteapppausereasons/`;
+const BASE_API_PATH_HISTORY_SITEAPP_DETAILS = `${BASE_API_PATH}history/siteappdetails/`;
+
+//History Application
+const BASE_API_PATH_HISTORY_APP_DETAILS = `${BASE_API_PATH}history/applicationdetails/`;
+const BASE_API_PATH_HISTORY_APP_PAUSE_REASON = `${BASE_API_PATH}history/applicationpauses/`;
+const BASE_API_PATH_HISTORY_APP_STOP_REASON = `${BASE_API_PATH}history/applicationstopreasons/`;
+const BASE_API_PATH_HISTORY_APP_SKIP_REASON = `${BASE_API_PATH}history/applicationskipreasons/`;
+const BASE_API_PATH_HISTORY_APP_MISSING_PART_TOOL_REASON = `${BASE_API_PATH}history/applicationmissingparttoolreasons/`;
+const BASE_API_PATH_HISTORY_APP_CHANGE_STATUS_REASON = `${BASE_API_PATH}history/applicationchangestatusreasons/`;
+const BASE_API_PATH_HISTORY_APP_MODEL_STATUSES = `${BASE_API_PATH}history/applicationmodelstatuses/`;
+const BASE_API_PATH_HISTORY_APP_MODEL_TYPES = `${BASE_API_PATH}history/applicationmodeltypes/`;
+const BASE_API_PATH_HISTORY_APP_ACTIONS = `${BASE_API_PATH}history/applicationactions/`;
+const BASE_API_PATH_HISTORY_APP_SYSTEMS = `${BASE_API_PATH}history/applicationsystems/`;
+const BASE_API_PATH_HISTORY_APP_OPERATING_MODES = `${BASE_API_PATH}history/applicationoperatingmodes/`;
+const BASE_API_PATH_HISTORY_APP_POSITIONS = `${BASE_API_PATH}history/applicationpositions/`;
+const BASE_API_PATH_HISTORY_APP_ROLES = `${BASE_API_PATH}history/applicationroles/`;
+const BASE_API_PATH_HISTORY_APP_DEFECT_RISK_RATINGS = `${BASE_API_PATH}history/applicationdefectriskratings/`;
+const BASE_API_PATH_HISTORY_APP_DEFECT_STATUSES = `${BASE_API_PATH}history/applicationdefectstatuses/`;
+const BASE_API_PATH_HISTORY_APP_DEFECT_TYPES = `${BASE_API_PATH}history/applicationdefecttypes/`;
+const BASE_API_PATH_HISTORY_APP_FEEDBACK_CLASSIFICATIONS = `${BASE_API_PATH}history/applicationfeedbackclassifications/`;
+const BASE_API_PATH_HISTORY_APP_FEEDBACK_PRIORITIES = `${BASE_API_PATH}history/applicationfeedbackpriorities/`;
+const BASE_API_PATH_HISTORY_APP_FEEDBACK_STATUSES = `${BASE_API_PATH}history/applicationfeedbackstatuses/`;
+
+//History noticeboards
+const BASE_API_PATH_HISTORY_NOTICEBOARD = `${BASE_API_PATH}history/noticeboards?siteAppId=`;
+//History ClientDetails
+const BASE_API_PATH_HISTORY_CLIENTDETAILS = `${BASE_API_PATH}history/clientdetails/`;
 
 export const Apis = {
 	// register email
@@ -157,11 +249,16 @@ export const Apis = {
 	//users list
 	UsersList: `${BASE_API_PATH_USERSLIST}`,
 
+	ClientUser: `${BASE_API_PATH_CLIENT_USERS}`,
+
 	//userDetails
 	UserDetailsNote: `${BASE_API_PATH_USERDETAILSNOTE}`,
 	UserDetailsNotePost: `${BASE_API_PATH_USERDETAILSNOTEPOST}`,
 	UserDetailReference: `${BASE_API_PATH_USERREFERENCE}`,
 	userDetailSites: `${BASE_API_PATH_USER_SITEs}`,
+
+	//clientAdmin
+	ClientAdmin: BASE_API_PATH_CLIENT_ADMIN,
 
 	//userProfile
 	UserProfile: `${BASE_API_PATH_USERPROFILE}`,
@@ -198,6 +295,7 @@ export const Apis = {
 	Applications: `${BASE_API_PATH_SITE_APPLICATIONS}`,
 	SiteLocations: `${BASE_API_PATH_SITES_LOCATIONS}`,
 	SiteDepartments: `${BASE_API_PATH_SITES_DEPARTMENTS}`,
+	ApplicationPositions: `${BASE_API_PATH_APPLICATION_POSITIONS}`,
 
 	//stop reasons
 	StopReasons: `${BASE_API_PATH_STOP_REASONS}`,
@@ -277,16 +375,19 @@ export const Apis = {
 	ModelTaskQuestions: `${BASE_API_PATH_MODEL_TASKS_QUESTIONS}`,
 	ModelTaskQuestionOptions: `${BASE_API_PATH_MODEL_TASKS_QUESTION_OPTIONS}`,
 
+	ModelVersionTaskArrangements: `${BASE_API_PATH_MODEL_VERSION_TASK_ARRANGEMENT}`,
 	ModelTaskStages: `${BASE_API_PATH_MODEL_TASKS_STAGES}`,
 	ModelTaskZones: `${BASE_API_PATH_MODEL_TASK_ZONES}`,
 	ModelVersionTaskIntervals: `${BASE_API_PATH_MODEL_VERSION_TASK_INTERVAL}`,
 	ModelTaskNotes: `${BASE_API_PATH_MODEL_TASK_NOTES}`,
+	ModelVersionArrangements: `${BASE_API_PATH_MODEL_VERSION_ARRANGMENTS}`,
 	ModelVersionTaskRoles: `${BASE_API_PATH_MODEL_VERSION_TASK_ROLES}`,
 	ModelVersionTaskParts: `${BASE_API_PATH_MODEL_TASK_PARTS}`,
 	ModelVersionTaskImages: `${BASE_API_PATH_MODEL_TASK_IMAGES}`,
 	ModelVersionTaskTools: `${BASE_API_PATH_MODEL_TASK_TOOLS}`,
 	ModelVersionTaskPermits: `${BASE_API_PATH_MODEL_TASK_PERMITS}`,
 	ModelVersionTaskAttachments: `${BASE_API_PATH_MODEL_TASK_ATTACHMENTS}`,
+	ModelsPublished: `${BASE_API_PATH_MODELS_PUBLISHED}`,
 
 	//Users
 	ClientUserSiteApps: `${BASE_API_PATH_CLIENTUSERSITEAPPS}`,
@@ -304,6 +405,8 @@ export const Apis = {
 
 	// Defects
 	Defects: `${BASE_API_PATH_DEFECTS}`,
+	DefectsSearch: `${BASE_API_PATH_DEFECTS_SEARCH}`,
+	DefectAutocomplete: `${BASE_API_PATH_DEFECTS_AUTOCOMPLETE}`,
 	DefectNotes: `${BASE_API_PATH_DEFECT_NOTES}`,
 	DefectImages: `${BASE_API_PATH_DEFECT_IMAGES}`,
 	DefectParts: `${BASE_API_PATH_DEFECT_PARTS}`,
@@ -315,4 +418,72 @@ export const Apis = {
 
 	// NoticeBoards
 	NoticeBoards: `${BASE_API_PATH_NOTICE_BOARDS}`,
+	NoticeboardDepartments: `${BASE_API_PATH_NOTICE_BOARDS_DEPARTMENTS}`,
+
+	//Analytics
+	Analytics: `${BASE_API_PATH_ANALYTICS}`,
+	//history
+	modelhistorydetail: `${BASE_API_PATH_HISTORY_MODEL_DETAILS}`,
+	modelhistoryassets: `${BASE_API_PATH_HISTORY_MODEL_ASSETS}`,
+	modelhistoryarrangement: `${BASE_API_PATH_HISTORY_MODEL_ARRANGEMENTS}`,
+	modelhistorystages: `${BASE_API_PATH_HISTORY_MODEL_STAGES}`,
+	modelhistoryzones: `${BASE_API_PATH_HISTORY_MODEL_ZONES}`,
+	modelhistoryinterval: `${BASE_API_PATH_HISTORY_MODEL_INTERVAL}`,
+	modelhistoryrole: `${BASE_API_PATH_HISTORY_MODEL_ROLES}`,
+	modelhistorytasks: `${BASE_API_PATH_HISTORY_MODEL_TASKS}`,
+	modelhistoryquestions: `${BASE_API_PATH_HISTORY_MODEL_QUESTIONS}`,
+
+	serviceDetailHistory: `${BASE_API_PATH_HISTORY_SERVICE_DETAILS}`,
+	defectsHistory: `${BASE_API_PATH_HISTORY_DEFECTS}`,
+	feedbacksHistory: `${BASE_API_PATH_HISTORY_FEEDBACK}`,
+	clientUserSitesHistory: `${BASE_API_PATH_HISTORY_USER}`,
+	clientDetails: `${BASE_API_PATH_HISTORY_CLIENTDETAILS}`,
+	superAdminUserHistory: `${BASE_API_PATH_HISTORY_USERADMIN}`,
+	noticeBoardsHistory: `${BASE_API_PATH_HISTORY_NOTICEBOARD}`,
+	siteSettingsHistory: `${BASE_API_PATH_HISTORY_SITE_SETTINGS}`,
+	siteAssetsHistory: `${BASE_API_PATH_HISTORY_SITE_ASSETS}`,
+	siteDepartmentsHistory: `${BASE_API_PATH_HISTORY_SITE_DEPARTMENTS}`,
+
+	siteAppFeedbackStatus: `${BASE_API_PATH_HISTORY_SITEAPP_FEEDBACK_STATUSES}`,
+	siteAppFeedbackPriorities: `${BASE_API_PATH_HISTORY_SITEAPP_FEEDBACK_PRIORITIES}`,
+	siteAppFeedbackClassifications: `${BASE_API_PATH_HISTORY_SITEAPP_FEEDBACK_CLASSIFICATIONS}`,
+	siteAppDefectTypes: `${BASE_API_PATH_HISTORY_SITEAPP_DEFECT_TYPES}`,
+	siteAppDefectStatuses: `${BASE_API_PATH_HISTORY_SITEAPP_DEFECT_STATUSES}`,
+	siteAppDefectRiskRatings: `${BASE_API_PATH_HISTORY_SITEAPP_DEFECT_RISKRATINGS}`,
+	siteAppRoles: `${BASE_API_PATH_HISTORY_SITEAPP_ROLES}`,
+	siteAppPositions: `${BASE_API_PATH_HISTORY_SITEAPP_POSITIONS}`,
+	siteAppLubricants: `${BASE_API_PATH_HISTORY_SITEAPP_LUBRICANTS}`,
+	siteAppOperatingModes: `${BASE_API_PATH_HISTORY_SITEAPP_OPERATING_MODES}`,
+	siteAppSystems: `${BASE_API_PATH_HISTORY_SITEAPP_SYSTEMS}`,
+	siteAppActions: `${BASE_API_PATH_HISTORY_SITEAPP_ACTIONS}`,
+	siteAppModelTypes: `${BASE_API_PATH_HISTORY_SITEAPP_MODEL_TYPES}`,
+	siteAppModelStatuses: `${BASE_API_PATH_HISTORY_SITEAPP_MODEL_STATUSES}`,
+	siteAppChangeStatusReasons: `${BASE_API_PATH_HISTORY_SITEAPP_CHANGE_STATUS_REASONS}`,
+	siteAppMissingPartToolReasons: `${BASE_API_PATH_HISTORY_SITEAPP_MISSING_PART_TOOL_REASONS}`,
+	siteAppSkipReasons: `${BASE_API_PATH_HISTORY_SITEAPP_SKIP_REASONS}`,
+	siteAppStopReasons: `${BASE_API_PATH_HISTORY_SITEAPP_STOP_REASONS}`,
+	siteAppPauseReasons: `${BASE_API_PATH_HISTORY_SITEAPP_PAUSE_REASONS}`,
+	siteAppDetails: `${BASE_API_PATH_HISTORY_SITEAPP_DETAILS}`,
+	appDetails: `${BASE_API_PATH_HISTORY_APP_DETAILS}`,
+	appPauseReason: `${BASE_API_PATH_HISTORY_APP_PAUSE_REASON}`,
+	appStopReason: `${BASE_API_PATH_HISTORY_APP_STOP_REASON}`,
+	appSkipReason: `${BASE_API_PATH_HISTORY_APP_SKIP_REASON}`,
+	appMissingPartToolReason: `${BASE_API_PATH_HISTORY_APP_MISSING_PART_TOOL_REASON}`,
+	appChangeStatusReason: `${BASE_API_PATH_HISTORY_APP_CHANGE_STATUS_REASON}`,
+	appChangeModelStatus: `${BASE_API_PATH_HISTORY_APP_MODEL_STATUSES}`,
+	appChangeModelTypes: `${BASE_API_PATH_HISTORY_APP_MODEL_TYPES}`,
+	appActions: `${BASE_API_PATH_HISTORY_APP_ACTIONS}`,
+	appSystems: `${BASE_API_PATH_HISTORY_APP_SYSTEMS}`,
+	appOperaingModes: `${BASE_API_PATH_HISTORY_APP_OPERATING_MODES}`,
+	appPositions: `${BASE_API_PATH_HISTORY_APP_POSITIONS}`,
+	appRoles: `${BASE_API_PATH_HISTORY_APP_ROLES}`,
+	appDefectRiskRatings: `${BASE_API_PATH_HISTORY_APP_DEFECT_RISK_RATINGS}`,
+	appDefectStatuses: `${BASE_API_PATH_HISTORY_APP_DEFECT_STATUSES}`,
+	appDefectTypes: `${BASE_API_PATH_HISTORY_APP_DEFECT_TYPES}`,
+	appFeedbackClassifications: `${BASE_API_PATH_HISTORY_APP_FEEDBACK_CLASSIFICATIONS}`,
+	appFeedbackPriorities: `${BASE_API_PATH_HISTORY_APP_FEEDBACK_PRIORITIES}`,
+	appFeedbackStatuses: `${BASE_API_PATH_HISTORY_APP_FEEDBACK_STATUSES}`,
+
+	//Reports
+	Reports: `${BASE_API_PATH_REPORTING}`,
 };

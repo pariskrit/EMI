@@ -1,18 +1,17 @@
-import {
-	CircularProgress,
-	Grid,
-	LinearProgress,
-	Link,
-} from "@material-ui/core";
+import { CircularProgress, Grid, LinearProgress } from "@mui/material";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import SearchField from "components/Elements/SearchField/SearchField";
+import { Link } from "react-router-dom";
+
 import {
 	isoDateWithoutTimeZone,
 	convertDateToUTC,
 	debounce,
 	roundedToFixed,
 	MuiFormatDate,
+	defaultPageSize,
+	customFromattedDate,
 } from "helpers/utils";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -26,8 +25,8 @@ import {
 import AddNewServiceDetail from "./AddService";
 import ImportCSVFile from "./CSVImport";
 import Header from "./Header";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import { makeStyles } from "@material-ui/core/styles";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import { makeStyles } from "tss-react/mui";
 import ServiceListTable from "./ServiceListTable";
 import {
 	defaultTimeframe,
@@ -41,7 +40,9 @@ import Icon from "components/Elements/Icon";
 import ProgressBar from "components/Elements/ProgressBar";
 import { servicesPath } from "helpers/routePaths";
 import {
-	DefaultPageSize,
+	SERVICE_STORAGE_DEPARTMENT,
+	SERVICE_STORAGE_STATUS,
+	SERVICE_STORAGE_TIMEFRAME,
 	statusOptions,
 	statusTypeClassification,
 } from "helpers/constants";
@@ -53,8 +54,10 @@ import StatusChangePopup from "./StatusChangePopup";
 import { changeDate } from "helpers/date";
 import MultipleChangeStatusPopup from "./MultipleChangeStatusPopup";
 import TabTitle from "components/Elements/TabTitle";
+import mainAccess from "helpers/access";
+import { getSiteApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	loading: {
 		position: "absolute",
 		width: "100%",
@@ -62,15 +65,19 @@ const useStyles = makeStyles({
 		top: 0,
 		right: 0,
 	},
-});
+}));
 
 const formattedData = (data, history) => {
 	return data.map((x) => ({
 		...x,
 		workOrder: (
 			<Link
-				onClick={() => history.push(`${servicesPath}/${x.id}`)}
-				style={{ color: ColourConstants.activeLink, cursor: "pointer" }}
+				to={`${x.id}`}
+				style={{
+					color: ColourConstants.activeLink,
+					cursor: "pointer",
+					textDecoration: "none",
+				}}
 			>
 				{x.workOrder}
 			</Link>
@@ -95,7 +102,7 @@ const formattedData = (data, history) => {
 					height="30px"
 					width={
 						x.percentageComplete === 0 || x.percentageComplete > 20
-							? "200px"
+							? "125px"
 							: "50px"
 					}
 					bgColour={
@@ -172,7 +179,7 @@ function ServiceLists({
 }) {
 	// init hooks
 	const dispatch = useDispatch();
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const {
 		allData,
 		setAllData,
@@ -184,20 +191,26 @@ function ServiceLists({
 
 	// gets localstoarge || sessionStorage data
 	const {
+		position,
 		customCaptions,
 		siteAppID,
 		siteID,
-		application: { allowIndividualAssetModels, name },
-		site: { siteDepartmentID, siteDepartmentName },
-	} =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
+		application: {
+			allowIndividualAssetModels,
+			name,
+			showArrangements,
+			allowRegisterAssetsForServices,
+		},
+		site: { siteDepartmentID, siteDepartmentName, showServiceClientName },
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
 
 	// init state
 	const [currentTableSort, setCurrentTableSort] = useState([
 		"scheduledDate",
 		"asc",
 	]);
+
 	const [openAddService, setOpenAddService] = useState(false);
 	const [countOFService, setCountOfService] = useState(0);
 	const [openImportCSV, setImportCSV] = useState(false);
@@ -207,10 +220,8 @@ function ServiceLists({
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [selectedServices, setSelectedServices] = useState([]);
 	const [openChnageStatusPopup, setOpenChnageStatusPopup] = useState(false);
-	const [
-		openMultipleChnageStatusPopup,
-		setOpenMultipleChnageStatusPopup,
-	] = useState(false);
+	const [openMultipleChnageStatusPopup, setOpenMultipleChnageStatusPopup] =
+		useState(false);
 	const [siteDepartments, setSiteDepartments] = useState([]);
 	const [selectedTimeframe, setSelectedTimeframe] = useState(
 		timeFrameFromMemory === null ? defaultTimeframe : timeFrameFromMemory
@@ -236,7 +247,7 @@ function ServiceLists({
 	);
 	const [dataForFetchingService, setDataForFetchingService] = useState({
 		pageNumber: 1,
-		pageSize: DefaultPageSize,
+		pageSize: defaultPageSize(),
 		search: "",
 		sortField: "",
 		sort: "",
@@ -250,7 +261,7 @@ function ServiceLists({
 		// is a department dropdown and the selectedItem is different from the previously selected
 		if (type === "department" && selectedItem.id !== selectedDepartment.id) {
 			sessionStorage.setItem(
-				"service-department",
+				SERVICE_STORAGE_DEPARTMENT,
 				JSON.stringify(selectedItem)
 			);
 			setSelectedDepartment(selectedItem);
@@ -266,14 +277,17 @@ function ServiceLists({
 		}
 		// is a status dropdown and the selectedItem is different from the previously selected
 		if (type === "status" && selectedItem.id !== selectedStatus.id) {
-			sessionStorage.setItem("service-status", JSON.stringify(selectedItem));
+			sessionStorage.setItem(
+				SERVICE_STORAGE_STATUS,
+				JSON.stringify(selectedItem)
+			);
 			setSelectedStatus(selectedItem);
 			await fetchServiceList({
 				search: searchRef.current,
 				status: selectedItem?.id,
 				siteDepartmentID: selectedDepartment?.id,
-				fromDate: selectedTimeframe.fromDate,
-				toDate: selectedTimeframe.toDate,
+				fromDate: selectedTimeframe?.fromDate,
+				toDate: selectedTimeframe?.toDate,
 				sortField: currentTableSort[0],
 				sort: currentTableSort[1],
 			});
@@ -287,15 +301,15 @@ function ServiceLists({
 			} else {
 				setSelectedTimeframe(selectedItem);
 				sessionStorage.setItem(
-					"service-timeFrame",
+					SERVICE_STORAGE_TIMEFRAME,
 					JSON.stringify(selectedItem)
 				);
 				await fetchServiceList({
 					search: searchRef.current,
 					siteDepartmentID: selectedDepartment?.id,
-					status: selectedStatus.id,
-					fromDate: selectedItem.fromDate,
-					toDate: selectedItem.toDate,
+					status: selectedStatus?.id,
+					fromDate: selectedItem?.fromDate,
+					toDate: selectedItem?.toDate,
 
 					sortField: currentTableSort[0],
 					sort: currentTableSort[1],
@@ -331,18 +345,7 @@ function ServiceLists({
 
 		setSearching(true);
 
-		const formattedCustomDate = {
-			fromDate: convertDateToUTC(
-				new Date(
-					customDate.from > customDate.to ? customDate.to : customDate.from
-				)
-			),
-			toDate: convertDateToUTC(
-				new Date(
-					customDate.from > customDate.to ? customDate.from : customDate.to
-				)
-			),
-		};
+		const formattedCustomDate = customFromattedDate(customDate);
 
 		// setting the custom date values to selectedTimeFrame state and checking if From date is greater than To date and managing accordingly
 		setSelectedTimeframe({
@@ -352,7 +355,7 @@ function ServiceLists({
 			id: 7,
 		});
 		sessionStorage.setItem(
-			"service-timeFrame",
+			SERVICE_STORAGE_TIMEFRAME,
 			JSON.stringify({
 				...selectedTimeframe,
 				...formattedCustomDate,
@@ -364,11 +367,11 @@ function ServiceLists({
 		await fetchServiceList({
 			search: searchRef.current,
 			siteDepartmentID: selectedDepartment?.id,
-			status: selectedStatus.id,
-			fromDate: formattedCustomDate.fromDate,
-			toDate: formattedCustomDate.toDate,
-			sortField: currentTableSort[0],
-			sort: currentTableSort[1],
+			status: selectedStatus?.id,
+			fromDate: formattedCustomDate?.fromDate,
+			toDate: formattedCustomDate?.toDate,
+			sortField: currentTableSort?.[0],
+			sort: currentTableSort?.[1],
 		});
 		setSearching(false);
 
@@ -418,8 +421,8 @@ function ServiceLists({
 						}),
 				]);
 				if (response[0].status) {
-					setAllData(response[0].data);
-					response[1].status && setCountOfService(response[1].data);
+					setAllData(response?.[0]?.data);
+					response?.[1].status && setCountOfService(response?.[1]?.data);
 					setDataForFetchingService((prev) => ({ ...prev, pageNumber: 1 }));
 				} else {
 					dispatch(
@@ -474,6 +477,40 @@ function ServiceLists({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [siteID]);
 
+	const fetchSiteApplicationDetails = async () => {
+		try {
+			const result = await getSiteApplicationDetail(siteAppID);
+			const localItems =
+				JSON.parse(sessionStorage.getItem("me")) ||
+				JSON.parse(localStorage.getItem("me"));
+
+			const updatedStorage = {
+				...localItems,
+				site: {
+					...localItems.site,
+					showServiceClientName: result?.data?.showServiceClientName,
+				},
+				application: {
+					...localItems.application,
+					allowFacilityBasedModels:
+						result?.data?.application.showServiceClientName,
+					allowIndividualAssetModels:
+						result?.data?.application.allowIndividualAssetModels,
+					allowRegisterAssetsForServices:
+						result?.data?.application.allowRegisterAssetsForServices,
+				},
+			};
+			localStorage.setItem("me", JSON.stringify(updatedStorage));
+			sessionStorage.setItem("me", JSON.stringify(updatedStorage));
+		} catch (err) {
+			dispatch(showError(err?.response?.detail || "Failed to fetch data"));
+		}
+	};
+
+	useEffect(() => {
+		fetchSiteApplicationDetails();
+	}, []);
+
 	// searching for services
 	const handleSearch = useCallback(
 		debounce(
@@ -492,7 +529,7 @@ function ServiceLists({
 				if (!value || value === "")
 					setDataForFetchingService({
 						pageNumber: 1,
-						pageSize: DefaultPageSize,
+						pageSize: defaultPageSize(),
 						search: "",
 						sortField: "",
 						sort: "",
@@ -541,21 +578,34 @@ function ServiceLists({
 		}
 	};
 
+	//check if all selected services are stopped
+	const isServicesStopped = () => {
+		const isAllStopped = selectedServices[0]?.status === "T";
+		if (isAllStopped) {
+			return selectedServices.every(
+				(x) => x.tasksSkipped === selectedServices[0].tasksSkipped
+			);
+		}
+		return true;
+	};
+
 	// disable change status button if services selected with different status
 	const isMultipleServiceDisable = () => {
 		if (selectedServices.length === 0) return true;
-		return !selectedServices.every(
-			(x) => x.status === selectedServices[0].status
+		return !(
+			selectedServices.every(
+				(x) => x?.status === selectedServices?.[0]?.status
+			) && isServicesStopped()
 		);
 	};
 
-	const mainData = searchQuery.length === 0 ? allData : allData;
+	const mainData = searchQuery?.length === 0 ? allData : allData;
 
 	if (loading) return <CircularProgress />;
 
 	return (
 		<>
-			<TabTitle title={`${customCaptions.service} | ${name}`} />
+			<TabTitle title={`${customCaptions.servicePlural} | ${name}`} />
 			{isSearching && <LinearProgress className={classes.loading} />}
 			<StatusChangePopup
 				open={openChnageStatusPopup}
@@ -577,11 +627,12 @@ function ServiceLists({
 				serviceId={deleteID}
 			/>
 			<MultipleChangeStatusPopup
+				customCaptions={customCaptions}
 				onClose={() => setOpenMultipleChnageStatusPopup(false)}
 				open={openMultipleChnageStatusPopup}
 				status={selectedServices[0]?.status}
 				siteAppID={siteAppID}
-				services={selectedServices.map((x) => x.id)}
+				services={selectedServices}
 				fetchData={() =>
 					fetchServiceList({
 						search: searchRef.current,
@@ -621,7 +672,7 @@ function ServiceLists({
 					});
 					setDataForFetchingService({
 						pageNumber: 1,
-						pageSize: DefaultPageSize,
+						pageSize: defaultPageSize(),
 						search: "",
 						sortField: "",
 						sort: "",
@@ -635,7 +686,11 @@ function ServiceLists({
 				siteAppId={siteAppID}
 				title={"Add " + customCaptions?.service}
 				createProcessHandler={addNewService}
+				showArrangements={showArrangements}
+				showServiceClientName={showServiceClientName}
+				allowRegisterAssetsForServices={allowRegisterAssetsForServices}
 				customCaptions={customCaptions}
+				position={position}
 				setSearchQuery={setSearchQuery}
 				fetchData={() =>
 					fetchServiceList({
@@ -668,6 +723,12 @@ function ServiceLists({
 					setImportCSV={setImportCSV}
 					dataLength={countOFService}
 					selectedServices={selectedServices}
+					statusType={selectedStatus}
+					department={selectedDepartment}
+					searchFilter={searchRef.current}
+					statusId={selectedStatus.id}
+					fromDate={selectedTimeframe.fromDate}
+					toDate={selectedTimeframe.toDate}
 				/>
 				<div
 					className="detailsContainer"
@@ -754,9 +815,22 @@ function ServiceLists({
 					<Grid item lg={3} md={6} xs={12}>
 						<DyanamicDropdown
 							dataSource={siteDepartments}
-							columns={[{ name: "name", id: 1, minWidth: "130px" }]}
+							dataHeader={[
+								{
+									id: 1,
+									name: `${customCaptions?.department ?? "Department"}`,
+								},
+								{
+									id: 2,
+									name: `${customCaptions?.location ?? "Location"}`,
+								},
+							]}
+							showHeader
+							columns={[
+								{ id: 1, name: "name" },
+								{ id: 2, name: "description" },
+							]}
 							columnsMinWidths={[140, 140, 140, 140, 140]}
-							showHeader={false}
 							placeholder={`Select Department`}
 							width="100%"
 							onChange={(item) => onDropdownChange("department", item)}
@@ -770,53 +844,61 @@ function ServiceLists({
 						/>
 					</Grid>
 				</Grid>
-				<div style={{ height: 20 }}></div>
-				<div className="dynamic-width-table">
-					<ServiceListTable
-						data={mainData}
-						headers={serviceTableHeader(
-							allowIndividualAssetModels,
-							customCaptions
-						)}
-						columns={serviceTableColumns(allowIndividualAssetModels)}
-						setData={setAllData}
-						searchQuery={searchRef.current}
-						formattedData={formattedData}
-						searchedData={searchedData}
-						setSearchData={setSearchData}
-						handleDeleteDialogOpen={handleDeleteDialogOpen}
-						handleChnageStatus={handleChangeStatus}
-						searchText={searchRef.current}
-						page={dataForFetchingService.pageNumber}
-						countOFService={countOFService}
-						department={selectedDepartment.id}
-						status={selectedStatus.id}
-						date={{
+				<div
+					style={{
+						height: 20,
+					}}
+				></div>
+				<ServiceListTable
+					data={mainData}
+					headers={serviceTableHeader(
+						allowIndividualAssetModels,
+						customCaptions,
+						showServiceClientName
+					)}
+					columns={serviceTableColumns(
+						allowIndividualAssetModels,
+						showServiceClientName
+					)}
+					setData={setAllData}
+					searchQuery={searchRef.current}
+					formattedData={formattedData}
+					searchedData={searchedData}
+					setSearchData={setSearchData}
+					handleDeleteDialogOpen={handleDeleteDialogOpen}
+					handleChnageStatus={handleChangeStatus}
+					searchText={searchRef.current}
+					page={dataForFetchingService.pageNumber}
+					countOFService={countOFService}
+					department={selectedDepartment.id}
+					status={selectedStatus.id}
+					date={{
+						fromDate: selectedTimeframe.fromDate,
+						toDate: selectedTimeframe.toDate,
+					}}
+					handleSort={async (sortField, sortOrder) => {
+						setSearching(true);
+						await fetchServiceList({
+							search: searchRef.current,
+							siteDepartmentID: selectedDepartment?.id,
+							status: selectedStatus.id,
 							fromDate: selectedTimeframe.fromDate,
 							toDate: selectedTimeframe.toDate,
-						}}
-						handleSort={async (sortField, sortOrder) => {
-							setSearching(true);
-							await fetchServiceList({
-								search: searchRef.current,
-								siteDepartmentID: selectedDepartment?.id,
-								status: selectedStatus.id,
-								fromDate: selectedTimeframe.fromDate,
-								toDate: selectedTimeframe.toDate,
-								sort: sortOrder,
-								sortField,
-								shouldCount: false,
-							});
-							setSearching(false);
-						}}
-						setDataForFetchingService={setDataForFetchingService}
-						siteAppID={siteAppID}
-						selectedServices={selectedServices}
-						currentTableSort={currentTableSort}
-						setCurrentTableSort={setCurrentTableSort}
-						handleSelectService={handleSelectService}
-					/>
-				</div>
+							sort: sortOrder,
+							sortField,
+							shouldCount: false,
+						});
+						setSearching(false);
+					}}
+					setDataForFetchingService={setDataForFetchingService}
+					siteAppID={siteAppID}
+					selectedServices={selectedServices}
+					currentTableSort={currentTableSort}
+					setCurrentTableSort={setCurrentTableSort}
+					handleSelectService={handleSelectService}
+					content={customCaptions?.servicePlural}
+					isReadOnly={position?.[mainAccess.serviceAccess] === "R"}
+				/>
 			</div>
 		</>
 	);

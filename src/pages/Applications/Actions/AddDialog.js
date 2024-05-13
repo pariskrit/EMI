@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import API from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { connect, useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -26,11 +28,13 @@ const AddActionDialog = ({
 	closeHandler,
 	applicationID,
 	handleAddData,
+	getError,
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -66,7 +70,7 @@ const AddActionDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
+			dispatch(showError("Failed to add action."));
 
 			setIsUpdating(false);
 			closeOverride();
@@ -94,6 +98,12 @@ const AddActionDialog = ({
 				throw new Error(newData);
 			}
 		} catch (err) {
+			if (err.response?.data?.detail) {
+				getError(
+					err?.response?.data?.detail ||
+						"Input should not be empty and it should be less than 50 characters ."
+				);
+			}
 			if (err.response.data.errors !== undefined) {
 				setErrors({ ...errors, ...err.response.data.errors });
 			} else {
@@ -165,4 +175,7 @@ const AddActionDialog = ({
 	);
 };
 
-export default AddActionDialog;
+const mapDispatchToProps = (dispatch) => ({
+	getError: (message) => dispatch(showError(message)),
+});
+export default connect(null, mapDispatchToProps)(AddActionDialog);

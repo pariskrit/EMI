@@ -11,3 +11,6 @@
 		position: absolute;
 	}
 }
+div[role="tooltip"] {
+	z-index: 10000 !important;
+}

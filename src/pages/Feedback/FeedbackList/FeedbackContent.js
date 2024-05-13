@@ -4,8 +4,8 @@ import {
 	LinearProgress,
 	Link,
 	Tooltip,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import SearchField from "components/Elements/SearchField/SearchField";
@@ -15,6 +15,8 @@ import {
 	debounce,
 	MuiFormatDate,
 	getLocalStorageData,
+	defaultPageSize,
+	customFromattedDate,
 } from "helpers/utils";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -22,8 +24,10 @@ import { showError } from "redux/common/actions";
 import { getSiteDepartmentsInService } from "services/services/serviceLists";
 import AddNewFeedbackDetail from "./AddFeedback";
 import Header from "./Header";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import { makeStyles } from "@material-ui/core/styles";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import FeedbackListTable from "./FeedbackListTable";
 import {
 	defaultTimeframe,
@@ -32,7 +36,6 @@ import {
 
 import { feedbackPath } from "helpers/routePaths";
 import {
-	DefaultPageSize,
 	FEEDBACK_STORAGE_DEPARTMENT,
 	FEEDBACK_STORAGE_MY_FEEDBACK,
 	FEEDBACK_STORAGE_STATUS,
@@ -54,7 +57,7 @@ import {
 } from "constants/FeedbackDetails";
 import EMICheckbox from "components/Elements/EMICheckbox";
 import { getFeedbackStatuses } from "services/clients/sites/siteApplications/feedbackStatuses";
-import ErrorIcon from "@material-ui/icons/Error";
+import ErrorIcon from "@mui/icons-material/Error";
 import TabTitle from "components/Elements/TabTitle";
 
 const HtmlTooltip = withStyles((theme) => ({
@@ -67,7 +70,7 @@ const HtmlTooltip = withStyles((theme) => ({
 	},
 }))(Tooltip);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	loading: {
 		position: "absolute",
 		width: "100%",
@@ -75,7 +78,7 @@ const useStyles = makeStyles({
 		top: 0,
 		right: 0,
 	},
-});
+}));
 
 export const isRelevantFeedback = (feedback, me) => {
 	return (
@@ -86,13 +89,17 @@ export const isRelevantFeedback = (feedback, me) => {
 	);
 };
 
-const formattedData = (data, history, me) => {
+const formattedData = (data, navigate, me) => {
 	return data.map((x) => ({
 		...x,
 		number: (
 			<Link
-				onClick={() => history.push(`${feedbackPath}/${x.id}`)}
-				style={{ color: ColourConstants.activeLink, cursor: "pointer" }}
+				onClick={() => navigate(`${x.id}`)}
+				style={{
+					color: ColourConstants.activeLink,
+					cursor: "pointer",
+					textDecoration: "none",
+				}}
 			>
 				{x.number}
 			</Link>
@@ -107,7 +114,7 @@ const formattedData = (data, history, me) => {
 			<HtmlTooltip title={x.benefit}>
 				<p className="max-two-line">
 					<Link
-						onClick={() => history.push(`${feedbackPath}/${x.id}`)}
+						onClick={() => navigate(`${x.id}`)}
 						style={{
 							color: ColourConstants.commonText,
 							cursor: "pointer",
@@ -123,7 +130,7 @@ const formattedData = (data, history, me) => {
 			<HtmlTooltip title={x.changeRequired}>
 				<p className="max-two-line">
 					<Link
-						onClick={() => history.push(`${feedbackPath}/${x.id}`)}
+						onClick={() => navigate(`${x.id}`)}
 						style={{
 							color: ColourConstants.commonText,
 							cursor: "pointer",
@@ -157,7 +164,7 @@ function FeedbackLists({
 }) {
 	// init hooks
 	const dispatch = useDispatch();
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const {
 		allData,
 		setAllData,
@@ -175,7 +182,7 @@ function FeedbackLists({
 		site: { siteDepartmentID, siteDepartmentName },
 		id,
 		application,
-		position: { id: positionId },
+		position: { id: positionId, feedbackAccess },
 	} = getLocalStorageData("me");
 
 	// init state
@@ -215,7 +222,7 @@ function FeedbackLists({
 	);
 	const [dataForFetchingFeedback, setDataForFetchingFeedback] = useState({
 		pageNumber: 1,
-		pageSize: DefaultPageSize,
+		pageSize: defaultPageSize(),
 		search: "",
 		sortField: "",
 		sort: "",
@@ -314,18 +321,7 @@ function FeedbackLists({
 
 		setSearching(true);
 
-		const formattedCustomDate = {
-			fromDate: convertDateToUTC(
-				new Date(
-					customDate.from > customDate.to ? customDate.to : customDate.from
-				)
-			),
-			toDate: convertDateToUTC(
-				new Date(
-					customDate.from > customDate.to ? customDate.from : customDate.to
-				)
-			),
-		};
+		const formattedCustomDate = customFromattedDate(customDate);
 
 		// setting the custom date values to selectedTimeFrame state and checking if From date is greater than To date and managing accordingly
 		setSelectedTimeframe({
@@ -509,7 +505,7 @@ function FeedbackLists({
 				if (!value || value === "")
 					setDataForFetchingFeedback({
 						pageNumber: 1,
-						pageSize: DefaultPageSize,
+						pageSize: defaultPageSize(),
 						search: "",
 						sortField: "",
 						sort: "",
@@ -551,7 +547,9 @@ function FeedbackLists({
 
 	return (
 		<>
-			<TabTitle title={`${customCaptions.feedback} | ${application.name}`} />
+			<TabTitle
+				title={`${customCaptions.feedbackPlural} | ${application.name}`}
+			/>
 			{isSearching && <LinearProgress className={classes.loading} />}
 
 			<DeleteDialog
@@ -652,7 +650,9 @@ function FeedbackLists({
 							setSearching(false);
 						}}
 					/>
-					<label> My {customCaptions.feedback}</label>
+					<label style={{ fontSize: "14px" }}>
+						My {customCaptions.feedback}
+					</label>
 				</Grid>
 				<div style={{ height: 10 }}></div>
 				<Grid container spacing={2}>
@@ -711,9 +711,22 @@ function FeedbackLists({
 					<Grid item lg={3} md={6} xs={12}>
 						<DyanamicDropdown
 							dataSource={siteDepartments}
-							columns={[{ name: "name", id: 1, minWidth: "130px" }]}
+							dataHeader={[
+								{
+									id: 1,
+									name: `${customCaptions?.department ?? "Department"}`,
+								},
+								{
+									id: 2,
+									name: `${customCaptions?.location ?? "Location"}`,
+								},
+							]}
+							showHeader
+							columns={[
+								{ id: 1, name: "name" },
+								{ id: 2, name: "description" },
+							]}
 							columnsMinWidths={[140, 140, 140, 140, 140]}
-							showHeader={false}
 							placeholder={`Select Department`}
 							width="100%"
 							onChange={(item) => onDropdownChange("department", item)}
@@ -770,6 +783,8 @@ function FeedbackLists({
 						setCurrentTableSort={setCurrentTableSort}
 						userId={id}
 						positionId={positionId}
+						content={customCaptions?.feedback}
+						isReadOnly={feedbackAccess === "R"}
 					/>
 				</div>
 			</div>

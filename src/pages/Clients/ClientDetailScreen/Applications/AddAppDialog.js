@@ -4,14 +4,18 @@ import {
 	DialogTitle,
 	LinearProgress,
 	Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import Dropdown from "components/Elements/Dropdown";
 import API from "helpers/api";
 import { BASE_API_PATH } from "helpers/constants";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import useDidMountEffect from "hooks/useDidMountEffect";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
 
@@ -25,7 +29,7 @@ const ADD = AddDialogStyle();
 const defaultData = { applicationId: null };
 const defaultError = { applicationId: null };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -44,7 +48,7 @@ const useStyles = makeStyles({
 	inputText: {
 		fontSize: 14,
 	},
-});
+}));
 const selectedDefault = {
 	id: null,
 	logoURL: "",
@@ -52,12 +56,13 @@ const selectedDefault = {
 	purpose: "",
 };
 const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [availableApp, setAvailableApp] = useState([]);
 	const [selectedApp, setSelectedApp] = useState(selectedDefault);
 	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
 	useEffect(() => {
 		const fetchAvailableApp = async () => {
 			setLoading(true);
@@ -73,8 +78,8 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 					throw new Error(result);
 				}
 			} catch (err) {
-				console.log(err);
 				setLoading(false);
+				dispatch(showError(`Failed to fetch available application.`));
 				return err;
 			}
 		};
@@ -120,9 +125,9 @@ const AddAppDialog = ({ open, handleClose, createHandler, clientId }) => {
 				setLoading(false);
 			}
 		} catch (err) {
-			console.log(err);
 			setLoading(false);
 			closeOverride();
+			dispatch(showError(`Failed to add client application.`));
 		}
 	};
 

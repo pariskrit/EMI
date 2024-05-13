@@ -1,5 +1,7 @@
 import React, { useReducer, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import DropUploadBox from "components/Elements/DropUploadBox";
 import ProviderAsset from "components/Modules/ProvidedAsset/ProvidedAsset";
 import { AssetReducer } from "./reducer";
@@ -28,7 +30,7 @@ const INIT_ASSETS = [
 	},
 ];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	otherAssetContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -59,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 const OtherAssets = () => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [assets, dispatch] = useReducer(AssetReducer, INIT_ASSETS);
@@ -84,7 +86,6 @@ const OtherAssets = () => {
 		});
 	};
 	const newUploadHandler = (key) => {
-		console.log(key);
 		// files.forEach((file) => {
 		// 	addAssetHandler(file.name, "User uploaded file", file.preview);
 		// });

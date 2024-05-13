@@ -1,4 +1,4 @@
-import { CircularProgress, LinearProgress, Link } from "@material-ui/core";
+import { CircularProgress, LinearProgress, Link } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import SearchField from "components/Elements/SearchField/SearchField";
 import {
@@ -8,14 +8,16 @@ import {
 	getFormattedLink,
 } from "helpers/utils";
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showError } from "redux/common/actions";
 import AddNewNoticeBoardDetail from "./AddNoticeBoard";
 import Header from "./Header";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import NoticeBoardListTable from "./NoticeBoardListTable";
 
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 import ColourConstants from "helpers/colourConstants";
 import { useUserSearch } from "hooks/useUserSearch";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -30,8 +32,11 @@ import {
 	NoticeBoardsTableHeader,
 } from "constants/NoticeBoards";
 import TabTitle from "components/Elements/TabTitle";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { noticeBoardsPage } from "services/History/models";
+import { HistoryCaptions } from "helpers/constants";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	loading: {
 		position: "absolute",
 		width: "100%",
@@ -39,7 +44,7 @@ const useStyles = makeStyles({
 		top: 0,
 		right: 0,
 	},
-});
+}));
 
 const formattedData = (data) => {
 	return data.map((x) => ({
@@ -61,14 +66,14 @@ const formattedData = (data) => {
 				{x.name}
 			</Link>
 		),
-		expiryDate: x.expiryDate ? isoDateWithoutTimeZone(x.expiryDate + "Z") : "",
+		// expiryDate: x.expiryDate ? isoDateWithoutTimeZone(x.expiryDate + "Z") : "",
 	}));
 };
 
 function NoticeBoardsList() {
 	// init hooks
 	const dispatch = useDispatch();
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const {
 		allData,
 		setAllData,
@@ -84,6 +89,7 @@ function NoticeBoardsList() {
 		siteAppID,
 		siteID,
 		application,
+		position: { noticeboardAccess },
 	} = getLocalStorageData("me");
 
 	// init state
@@ -101,7 +107,7 @@ function NoticeBoardsList() {
 
 	const [dataForFetchingNoticeBoard, setDataForFetchingNoticeBoard] = useState({
 		pageNumber: 1,
-		pageSize: DefaultPageSize,
+		pageSize: defaultPageSize(),
 		search: "",
 		sortField: "",
 		sort: "",
@@ -191,7 +197,7 @@ function NoticeBoardsList() {
 			if (!value || value === "")
 				setDataForFetchingNoticeBoard({
 					pageNumber: 1,
-					pageSize: DefaultPageSize,
+					pageSize: defaultPageSize(),
 					search: "",
 					sortField: "",
 					sort: "",
@@ -231,7 +237,7 @@ function NoticeBoardsList() {
 				link: payload?.link !== "" ? payload.link : null,
 				description: payload.description,
 				expiryDate: payload.expiryDate,
-				siteDepartmentID: payload.siteDepartmentID,
+				siteDepartments: payload.siteDepartments,
 			});
 		} else {
 			return { status: false, data: { detail: "File Upload Failed" } };
@@ -257,14 +263,24 @@ function NoticeBoardsList() {
 	};
 
 	const mainData = searchQuery.length === 0 ? allData : allData;
-
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 	if (loading) return <CircularProgress />;
 
 	return (
 		<>
-			<TabTitle title={`${customCaptions.tutorial} | ${application.name}`} />
+			<TabTitle
+				title={`${customCaptions.tutorialPlural} | ${application.name}`}
+			/>
 			{isSearching && <LinearProgress className={classes.loading} />}
-
+			<HistoryBar
+				id={siteAppID}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					noticeBoardsPage(id, pageNumber, pageSize)
+				}
+				origin={HistoryCaptions.noticeBoard}
+			/>
 			<DeleteDialog
 				entityName={customCaptions?.tutorial}
 				open={openDeleteDialog}
@@ -377,6 +393,8 @@ function NoticeBoardsList() {
 						siteAppID={siteAppID}
 						currentTableSort={currentTableSort}
 						setCurrentTableSort={setCurrentTableSort}
+						content={customCaptions?.tutorial}
+						isReadOnly={noticeboardAccess === "R"}
 					/>
 				</div>
 			</div>

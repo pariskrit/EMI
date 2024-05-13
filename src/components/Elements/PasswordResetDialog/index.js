@@ -5,11 +5,16 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import TextField from "@mui/material/TextField";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { generateErrorState, handleValidateObj } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import ColourConstants from "helpers/colourConstants";
 
 const ADD = AddDialogStyle();
 const defaultData = {
@@ -25,7 +30,7 @@ const defaultError = {
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -53,13 +58,14 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		marginBottom: 20,
 	},
-});
+}));
 
 const PasswordResetDialog = ({ open, handleClose, apis, id, getError }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		handleClose();
@@ -79,7 +85,6 @@ const PasswordResetDialog = ({ open, handleClose, apis, id, getError }) => {
 			// .oneOf([yup.ref("newPassword")], "Password must be the same!")
 			.test("passwords-match", "Passwords must match", function (value) {
 				return input.newPassword === value;
-				// console.log(input.newPassword, value);
 			})
 			.required("This field is required"),
 	});
@@ -94,7 +99,6 @@ const PasswordResetDialog = ({ open, handleClose, apis, id, getError }) => {
 					setLoading(false);
 					closeOverride();
 				} else {
-					console.log("errorrr", newData);
 					setErrors({ ...errors, ...newData.errors });
 					setLoading(false);
 				}
@@ -104,9 +108,9 @@ const PasswordResetDialog = ({ open, handleClose, apis, id, getError }) => {
 				setLoading(false);
 			}
 		} catch (err) {
-			console.log(err);
 			setLoading(false);
 			closeOverride();
+			dispatch(showError("Failed to reset password."));
 		}
 	};
 
@@ -123,8 +127,6 @@ const PasswordResetDialog = ({ open, handleClose, apis, id, getError }) => {
 			let result = await apis.postPasswordResetAPI((id = "me"), data);
 
 			if (result.status) {
-				console.log("result", result);
-
 				return { success: true };
 			} else {
 				if (result.data.detail) {
@@ -169,7 +171,16 @@ const PasswordResetDialog = ({ open, handleClose, apis, id, getError }) => {
 					{<ADD.HeaderText>Password Reset</ADD.HeaderText>}
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={closeOverride} variant="contained">
+					<ADD.CancelButton
+						onClick={closeOverride}
+						variant="contained"
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
+					>
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton
@@ -177,6 +188,12 @@ const PasswordResetDialog = ({ open, handleClose, apis, id, getError }) => {
 						variant="contained"
 						className={classes.createButton}
 						disabled={loading}
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
 					>
 						Save
 					</ADD.ConfirmButton>

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import API from "helpers/api";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -26,6 +28,7 @@ const EditActionDialog = ({ open, closeHandler, data, handleEditData }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -95,7 +98,7 @@ const EditActionDialog = ({ open, closeHandler, data, handleEditData }) => {
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
+			dispatch(showError("Failed to edit action."));
 
 			setIsUpdating(false);
 			closeOverride();

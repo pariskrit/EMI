@@ -18,7 +18,6 @@ export const fetchClientDetail = (id) => async (dispatch) => {
 			throw new Error(response);
 		}
 	} catch (err) {
-		console.log(err.response);
 		dispatch(clientDetailFailure());
 	}
 };

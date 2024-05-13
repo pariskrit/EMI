@@ -1,6 +1,8 @@
-import { CircularProgress } from "@material-ui/core";
-import AccordionActions from "@material-ui/core/AccordionActions";
-import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@mui/material";
+import AccordionActions from "@mui/material/AccordionActions";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import CurveButton from "components/Elements/CurveButton";
 import { handleSort } from "helpers/utils";
@@ -9,10 +11,12 @@ import {
 	addClientRegion,
 	getClientRegion,
 } from "services/clients/clientDetailScreen";
-import CommonAddDialog from "../CommonAddDialog";
-import Region from "./Region";
+import CommonAddDialog from "pages/Clients/ClientDetailScreen/CommonAddDialog";
+import Region from "pages/Clients/ClientDetailScreen/RegionAndSites/Region";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	logoContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -56,13 +60,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ClientRegionAndSites({ clientId, getError }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [listOfRegions, setListOfRegions] = useState([]);
 
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [regionInput, setRegionInput] = useState("");
 	const cancelFetch = useRef(false);
 	const [isLoading, setLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	//add region
 	const onAddRegion = async (e) => {
@@ -120,7 +125,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 			setLoading(false);
 		} catch (error) {
 			setLoading(false);
-			console.log(error);
+			dispatch(showError("Failed to fetch region and sites."));
 		}
 	};
 
@@ -148,7 +153,7 @@ function ClientRegionAndSites({ clientId, getError }) {
 			)}
 
 			<AccordionBox
-				title={`Regions And Sites ${listOfRegions.length}/5`}
+				title={`Regions And Sites`}
 				accordianDetailsCss={classes.regionSiteContainer}
 			>
 				<AccordionActions className={classes.actionButton}>

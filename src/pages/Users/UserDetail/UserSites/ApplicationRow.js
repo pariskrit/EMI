@@ -4,12 +4,14 @@ import {
 	LinearProgress,
 	TableCell,
 	TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import TableStyle from "styles/application/TableStyle";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import IOSSwitch from "components/Elements/IOSSwitch";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
@@ -23,7 +25,7 @@ import DialogPopup from "components/Elements/DialogPopup";
 
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -59,7 +61,7 @@ const useStyles = makeStyles({
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
 function ApplicationRow({
 	row,
@@ -68,7 +70,7 @@ function ApplicationRow({
 	clientUserSiteID,
 	fetchUserSites,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	const [status, setStatus] = useState(false);
@@ -143,6 +145,26 @@ function ApplicationRow({
 		setUpdatingStatus(false);
 	};
 
+	const handleChangeClientStatus = async (val) => {
+		if (row.clientUserSiteApps.length > 0) {
+			try {
+				setUpdatingStatus(true);
+				let response = await updateClientUserSiteAppsStatus(
+					row.clientUserSiteApps?.[0].id,
+					[{ op: "replace", path: "positionID", value: val.id }]
+				);
+				if (response.status) {
+					setPosition(val);
+				}
+			} catch (error) {
+				dispatch(showError(error?.data?.detail || "Position Update Failed"));
+			}
+		} else {
+			setPosition(val);
+		}
+		setUpdatingStatus(false);
+	};
+
 	return (
 		<>
 			{updatingStatus && <LinearProgress className={classes.loading} />}
@@ -155,7 +177,7 @@ function ApplicationRow({
 				<TableCell
 					component="th"
 					scope="row"
-					className={clsx(classes.dataCell, classes.nameRow, {
+					className={cx(classes.dataCell, classes.nameRow, {
 						[classes.lastCell]: index === data.length - 1,
 					})}
 				>
@@ -166,7 +188,7 @@ function ApplicationRow({
 				<TableCell
 					component="th"
 					scope="row"
-					className={clsx(classes.dataCell, classes.nameRow, {
+					className={cx(classes.dataCell, classes.nameRow, {
 						[classes.lastCell]: index === data.length - 1,
 					})}
 				>
@@ -181,7 +203,9 @@ function ApplicationRow({
 							selectedValue={position}
 							placeholder="Select Position"
 							handleSort={handleSort}
-							onChange={(val) => setPosition(val)}
+							onChange={(val) => {
+								handleChangeClientStatus(val);
+							}}
 							selectdValueToshow="name"
 							// isReadOnly={isReadOnly || isPublished}
 							// disabled={isUpdating?.operatingModeID}
@@ -193,7 +217,7 @@ function ApplicationRow({
 				<TableCell
 					component="th"
 					scope="row"
-					className={clsx(classes.dataCell, classes.nameRow, {
+					className={cx(classes.dataCell, classes.nameRow, {
 						[classes.lastCell]: index === data.length - 1,
 					})}
 				>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import { BASE_API_PATH } from "helpers/constants";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import DetailsPanel from "components/Elements/DetailsPanel";
@@ -7,7 +7,7 @@ import ClientSiteTable from "components/Modules/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
 import EditDialog from "./EditModal";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import "../SiteDepartment/site.scss";
+import "pages/Clients/Sites/SiteDepartment/site.scss";
 import { getLocalStorageData } from "helpers/utils";
 import { useSelector } from "react-redux";
 import TabTitle from "components/Elements/TabTitle";
@@ -110,6 +110,7 @@ const SiteLocationsContent = ({ data, setData, isLoading, getError }) => {
 							</Grid>
 							<Grid item>
 								<AC.SearchInput
+									variant="standard"
 									value={searchQuery}
 									onChange={handleSearch}
 									label={`Search ${

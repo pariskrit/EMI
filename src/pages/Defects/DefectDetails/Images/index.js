@@ -1,4 +1,6 @@
-import { CircularProgress, Grid, makeStyles } from "@material-ui/core";
+import { CircularProgress, Grid } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+
 import ImageUpload from "components/Elements/ImageUpload";
 import ImageViewer from "components/Elements/ImageViewer";
 import AccordionBox from "components/Layouts/AccordionBox";
@@ -9,14 +11,14 @@ import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getDefectImages, uploadDefectImage } from "services/defects/details";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	image: {
 		padding: "0 8px !important",
 	},
-});
+}));
 
-function DefectImages({ defectId, captions }) {
-	const classes = useStyles();
+function DefectImages({ defectId, captions, isReadOnly = false }) {
+	const { classes, cx } = useStyles();
 	const [images, setImages] = useState([]);
 	const [isUploading, setIsUploading] = useState(false);
 	const [progressData, setProgressData] = useState(0);
@@ -41,7 +43,7 @@ function DefectImages({ defectId, captions }) {
 		if (response.status) {
 			setImages([...images, response.data]);
 		} else {
-			dispatch(showError(response.data?.detail || "Could not upload image"));
+			dispatch(showError(response?.data?.detail || "Could not upload image"));
 		}
 		setIsUploading(false);
 		setProgressData(0);
@@ -95,6 +97,7 @@ function DefectImages({ defectId, captions }) {
 									deleteEndpoint={`${BASE_API_PATH}defectimages`}
 									imageId={img.id}
 									isLogo={false}
+									isReadOnly={isReadOnly}
 									onImageClick={() => handleOpenImageViewer(img?.imageURL)}
 								/>
 							</Grid>
@@ -108,6 +111,7 @@ function DefectImages({ defectId, captions }) {
 									onDrop={handleImageUpload}
 									isUploading={isUploading}
 									uploadPercentCompleted={progressData}
+									isReadOnly={isReadOnly}
 								/>
 							</Grid>
 						) : null}

@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+import { useNavigate } from "react-router-dom";
+import { makeStyles } from "tss-react/mui";
 import ContentStyle from "styles/application/ContentStyle";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import ClientTable from "./ClientTable";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import AddClientDialog from "./AddClientDialog";
 import API from "helpers/api";
 import ColourConstants from "helpers/colourConstants";
-import DeleteDialog from "components/Elements/DeleteDialog";
 import { handleSort } from "helpers/utils";
+import StatusChangeDialogue from "components/Elements/StatusChangeDialog";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import withMount from "components/HOC/withMount";
 import TabTitle from "components/Elements/TabTitle";
+
 // Init styled components
 const AC = ContentStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	listActions: {
 		marginBottom: 30,
 	},
@@ -41,29 +44,31 @@ const useStyles = makeStyles({
 		fontFamily: "Roboto Condensed",
 		width: 150,
 	},
-});
+}));
 
 const ClientListContent = ({ isMounted }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes } = useStyles();
+	const navigate = useNavigate();
 
 	// Init state
 	const [data, setData] = useState([]);
 	const [haveData, setHaveData] = useState(false);
 	const [dataCount, setDataCount] = useState(null);
 	const [openAddDialog, setOpenAddDialog] = useState(false);
-	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [openStatusChangeDialog, setOpenStatusChangeDialog] = useState(false);
 	const [selectedID, setSelectedID] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchedData] = useState([]);
+	const [clientStatus, setClientStatus] = useState(null);
+	const dispatch = useDispatch();
 	// Fetching data on pageload
 	useEffect(() => {
 		fetchData()
 			.then(() => {
 				if (!isMounted.aborted) setHaveData(true);
 			})
-			.catch((err) => console.log("ERROR: ", err));
+			.catch((err) => dispatch(showError("Failed to load clients.")));
 		// eslint-disable-next-line
 	}, []);
 
@@ -102,7 +107,7 @@ const ClientListContent = ({ isMounted }) => {
 		} catch (err) {
 			// TODO: Real error handling when this has been decided on
 			// (are we throwing alerts or pushing to home?)
-			console.log(err);
+			dispatch(showError("Failed to load clients."));
 			return err;
 		}
 	};
@@ -115,18 +120,23 @@ const ClientListContent = ({ isMounted }) => {
 		setOpenAddDialog(false);
 	};
 
-	const handleDeleteDialogOpen = (id) => {
+	const handleStatusChangeDialogOpen = (id, status) => {
 		setSelectedID(id);
-		setOpenDeleteDialog(true);
+		setClientStatus(status);
+		setOpenStatusChangeDialog(true);
 	};
 
-	const handleDeleteDialogClose = () => {
+	const handleStatusChangeDialogClose = async (statusChanged) => {
 		setSelectedID(null);
-		setOpenDeleteDialog(false);
+		setClientStatus(null);
+		if (statusChanged === true) {
+			await fetchData();
+		}
+		setOpenStatusChangeDialog(false);
 	};
 
 	const handleRedirect = (id) => {
-		history.push(`/client/${id}`);
+		navigate(`/app/clients/${id}`);
 	};
 
 	const handleCreateData = async (name) => {
@@ -193,15 +203,6 @@ const ClientListContent = ({ isMounted }) => {
 		}
 	};
 
-	const handleRemoveData = (id) => {
-		const newData = [...data].filter(function (item) {
-			return item.id !== id;
-		});
-
-		// Updating state
-		setData(newData);
-	};
-
 	const handleSearch = () => {
 		// Clearning state and returning if empty
 		if (searchQuery === "") {
@@ -238,13 +239,13 @@ const ClientListContent = ({ isMounted }) => {
 				closeHandler={handleAddDialogClose}
 				createHandler={handleCreateData}
 			/>
-			<DeleteDialog
+			<StatusChangeDialogue
 				entityName="Client"
-				open={openDeleteDialog}
-				closeHandler={handleDeleteDialogClose}
-				deleteEndpoint="/api/Clients"
-				deleteID={selectedID}
-				handleRemoveData={handleRemoveData}
+				open={openStatusChangeDialog}
+				closeHandler={handleStatusChangeDialogClose}
+				statusChangeEndpoint="/api/Clients"
+				clientID={selectedID}
+				clientStatus={clientStatus}
 			/>
 			<div>
 				<div className={classes.listActions}>
@@ -282,6 +283,7 @@ const ClientListContent = ({ isMounted }) => {
 									</Grid>
 									<Grid item>
 										<AC.SearchInput
+											variant="standard"
 											value={searchQuery}
 											onChange={(e) => {
 												setSearchQuery(e.target.value);
@@ -297,11 +299,14 @@ const ClientListContent = ({ isMounted }) => {
 
 				{haveData ? (
 					<ClientTable
-						data={data}
+						data={data.map((d) => ({
+							...d,
+							status: d?.isActive ? "Active" : "Inactive",
+						}))}
 						setData={setData}
 						handleSort={handleSort}
 						searchQuery={searchQuery}
-						handleDeleteDialogOpen={handleDeleteDialogOpen}
+						handleStatusChangeDialogOpen={handleStatusChangeDialogOpen}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
 					/>

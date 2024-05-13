@@ -1,5 +1,5 @@
 import ContentStyle from "styles/application/ContentStyle";
-import { CircularProgress, Grid } from "@material-ui/core";
+import { CircularProgress, Grid } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import React, { useEffect, useState } from "react";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -17,6 +17,10 @@ import { useDispatch } from "react-redux";
 import withMount from "components/HOC/withMount";
 import AutoFitContentInScreen from "components/Layouts/AutoFitContentInScreen";
 import TabTitle from "components/Elements/TabTitle";
+import { coalesc, commonScrollElementIntoView } from "helpers/utils";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { RolesPage } from "services/History/models";
+import { HistoryCaptions } from "helpers/constants";
 
 const AC = ContentStyle();
 
@@ -65,7 +69,13 @@ function Roles({
 			if (response.status) {
 				if (!isMounted.aborted) {
 					setData(response.data);
-					setFilteredData(response.data);
+					const updatedData = response.data?.map((item) => ({
+						...item,
+						siteDepartmentName: item?.siteDepartmentName || "All",
+					}));
+
+
+					setFilteredData(updatedData);
 				}
 				dispatch({
 					type: "TAB_COUNT",
@@ -95,7 +105,6 @@ function Roles({
 	//open edit dialogue
 	const handleEditDialogOpen = (roleToEdit) => {
 		roleToEdit = filteredData?.find((x) => x.id === roleToEdit);
-		console.log("fdsfsdfds", roleToEdit);
 		setRoleToEditData({
 			name: roleToEdit?.name,
 			roleID: roleToEdit?.mappedRoleID,
@@ -120,7 +129,11 @@ function Roles({
 	};
 
 	const createModalRole = async (payload) => {
-		return await addModelRole({ ...payload, ModelVersionID: modelId });
+		return await addModelRole({
+			...payload,
+			siteDepartmentID: payload?.siteDepartmentID || null,
+			ModelVersionID: modelId,
+		});
 	};
 
 	const PatchModelRole = async (payload) => {
@@ -130,16 +143,33 @@ function Roles({
 			{
 				op: "replace",
 				path: "siteDepartmentID",
-				value: payload?.siteDepartmentID,
+				value: payload?.siteDepartmentID || null,
 			},
 		];
 		return await editModelRole(roleToEditId?.id, payload);
+	};
+	const handleItemClick = (id) => {
+		dispatch({ type: "TOGGLE_HISTORYBAR" });
+
+		commonScrollElementIntoView(`role-${id}`, "roleEl");
 	};
 
 	return (
 		<div>
 			<TabTitle
-				title={`${state?.modelDetail?.name} ${state?.modelDetail?.modelName} ${customCaptions.role} | ${application.name}`}
+				title={`${state?.modelDetail?.name} ${coalesc(
+					state?.modelDetail?.modelName
+				)} ${customCaptions.rolePlural} | ${application.name}`}
+			/>
+			<HistoryBar
+				id={modelId}
+				showhistorybar={state.showhistorybar}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					RolesPage(id, pageNumber, pageSize)
+				}
+				OnAddItemClick={handleItemClick}
+				origin={HistoryCaptions.modelVersionRoles}
 			/>
 			<AddModelRoleDialog
 				open={state.showAdd}
@@ -174,6 +204,7 @@ function Roles({
 				deleteEndpoint={Apis.ModelRoles}
 				handleRemoveData={handleRemoveData}
 			/>
+
 			{loading ? (
 				<CircularProgress />
 			) : (
@@ -192,6 +223,7 @@ function Roles({
 									</Grid>
 									<Grid item>
 										<AC.SearchInput
+											variant="standard"
 											onChange={(e) => handleSearch(e.target.value)}
 											label="Search"
 										/>

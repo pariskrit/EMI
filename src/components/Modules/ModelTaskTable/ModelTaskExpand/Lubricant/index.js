@@ -1,9 +1,11 @@
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { handleSort } from "helpers/utils";
 import { getLubricants } from "services/clients/sites/siteApplications/lubricants";
@@ -15,7 +17,7 @@ import { ModelContext } from "contexts/ModelDetailContext";
 // Init styled components
 const ADD = AddDialogStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	mainContainer: {
 		margin: "20px 0",
 	},
@@ -35,11 +37,11 @@ const useStyles = makeStyles({
 	inputText: {
 		color: "#000000de",
 	},
-});
+}));
 
 const Lubricant = ({ taskInfo, access, isMounted }) => {
 	// init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// const [lubricantsList, setLubricantsList] = useState([]);
@@ -237,7 +239,7 @@ const Lubricant = ({ taskInfo, access, isMounted }) => {
 				<DyanamicDropdown
 					isServerSide={false}
 					width="100%"
-					placeholder="Select Lubricant "
+					placeholder={`Select ${customCaptions?.lubricant}`}
 					columns={[{ id: 1, name: "name" }]}
 					// dataSource={lubricantsList}
 					selectedValue={{

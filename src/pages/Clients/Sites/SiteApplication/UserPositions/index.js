@@ -13,6 +13,7 @@ import { getPositions } from "services/clients/sites/siteApplications/userPositi
 import AddEditDialog from "./AddEditDialog";
 import { Apis } from "services/api";
 import TabTitle from "components/Elements/TabTitle";
+import { DefaultPageOptions } from "helpers/constants";
 
 function DefectStatuses({ appId, setError }) {
 	const {
@@ -28,9 +29,13 @@ function DefectStatuses({ appId, setError }) {
 			showAdd,
 			details: { data },
 			defaultCustomCaptionsData,
+			isReadOnly,
 		},
 		dispatch,
 	] = useContext(SiteContext);
+
+	const defaultOptions = DefaultPageOptions(defaultCustomCaptionsData);
+
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isLoading, setLoading] = useState(true);
 	const [deleteId, setDeleteId] = useState(null);
@@ -55,7 +60,7 @@ function DefectStatuses({ appId, setError }) {
 	const handleRemoveData = (id) =>
 		setAllData([...allData.filter((d) => d.id !== id)]);
 
-	const handleEditData = (editedData) => {
+	const handleEditData = () => {
 		// const newList = [...allData];
 		// const index = newList.findIndex((data) => data.id === editedData.id);
 		// newList.splice(index, 1, editedData);
@@ -76,7 +81,11 @@ function DefectStatuses({ appId, setError }) {
 		setLoading(false);
 
 		if (!result.status) {
-			console.log("error occurred login again");
+			dispatch(
+				showError(
+					`Failed to fetch ${data?.application?.name} ${defaultCustomCaptionsData?.positionPlural}.`
+				)
+			);
 		} else {
 			setAllData([
 				...result?.data?.map((res) => ({
@@ -85,6 +94,7 @@ function DefectStatuses({ appId, setError }) {
 					defectAccess: positionAccessTypes[res.defectAccess],
 					defectExportAccess: positionAccessTypes[res.defectExportAccess],
 					feedbackAccess: positionAccessTypes[res.feedbackAccess],
+					assetAccess: positionAccessTypes[res.assetAccess],
 					modelAccess: positionAccessTypes[res.modelAccess],
 					noticeboardAccess: positionAccessTypes[res.noticeboardAccess],
 					serviceAccess: positionAccessTypes[res.serviceAccess],
@@ -99,11 +109,10 @@ function DefectStatuses({ appId, setError }) {
 		fetchPositions();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
 	return (
 		<>
 			<TabTitle
-				title={`${data.application.name} ${defaultCustomCaptionsData?.position}`}
+				title={`${data.application.name} ${defaultCustomCaptionsData?.positionPlural}`}
 			/>
 			<DeleteDialog
 				entityName={data?.positionCC || defaultCustomCaptionsData?.position}
@@ -124,6 +133,7 @@ function DefectStatuses({ appId, setError }) {
 				isEdit={isEdit}
 				header={data?.positionCC || defaultCustomCaptionsData?.position}
 				customCaptions={defaultCustomCaptionsData}
+				defaultOptions={defaultOptions}
 			/>
 			<div className="detailsContainer">
 				<DetailsPanel
@@ -151,15 +161,16 @@ function DefectStatuses({ appId, setError }) {
 				/>
 			</div>
 			<CommonApplicationTable
-				data={allData.map((position) => ({
-					...position,
-					allowPublish: position.allowPublish ? "Yes" : "No",
-				}))}
+				defaultCustomCaptionsData={defaultCustomCaptionsData}
+				data={allData}
 				setData={setAllData}
+				isReadOnly={isReadOnly}
 				columns={[
 					"name",
-					"allowPublish",
+					"defaultPage",
 					"modelAccess",
+					"allowPublish",
+					"assetAccess",
 					"serviceAccess",
 					"defectAccess",
 					"noticeboardAccess",
@@ -170,8 +181,10 @@ function DefectStatuses({ appId, setError }) {
 				]}
 				headers={[
 					"Name",
-					"Allow Publish",
+					"Default Page",
 					defaultCustomCaptionsData?.modelTemplatePlural,
+					"Allow Publish",
+					defaultCustomCaptionsData?.assetPlural,
 					defaultCustomCaptionsData?.servicePlural,
 					defaultCustomCaptionsData?.defectPlural,
 					defaultCustomCaptionsData?.tutorialPlural,

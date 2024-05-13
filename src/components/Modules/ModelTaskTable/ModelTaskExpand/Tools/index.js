@@ -1,4 +1,4 @@
-import { CircularProgress, LinearProgress } from "@material-ui/core";
+import { CircularProgress, LinearProgress } from "@mui/material";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DragAndDropTable from "components/Modules/DragAndDropTable";
 import DeleteDialog from "components/Elements/DeleteDialog";
@@ -26,16 +26,14 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 	const [tools, setTools] = useState([]);
 	const [originalTools, setOriginalTools] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
-
 	const [openAddTool, setOpenAddTool] = useState(false);
 	const [openEditTool, setOpenEditTool] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [pastePart, setPastePart] = useState(false);
+	// const [pastePart, setPastePart] = useState(false);
 	const [isPasting, setIsPasting] = useState(false);
-
 	const [, CtxDispatch] = useContext(TaskContext);
-	const [state] = useContext(ModelContext);
+	const [state, MdxDispatch] = useContext(ModelContext);
 
 	const dispatch = useDispatch();
 
@@ -59,6 +57,17 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 						data: response?.data?.length,
 					},
 				});
+				if (response.data.length > 0) {
+					CtxDispatch({
+						type: "SET_TOOLS",
+						payload: true,
+					});
+				} else {
+					CtxDispatch({
+						type: "SET_TOOLS",
+						payload: false,
+					});
+				}
 			} else {
 				dispatch(
 					showError(
@@ -143,6 +152,12 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 				data: newData.length,
 			},
 		});
+		if (newData.length === 0) {
+			CtxDispatch({
+				type: "SET_TOOLS",
+				payload: false,
+			});
+		}
 	};
 
 	const createTool = async (newTool) => {
@@ -167,7 +182,10 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 	};
 
 	const handleCopy = (id) => {
-		setPastePart(true);
+		MdxDispatch({
+			type: "DISABLE_TOOL_TASK",
+			payload: false,
+		});
 		localStorage.setItem("tasktool", id);
 	};
 
@@ -198,7 +216,10 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 			const taskId = localStorage.getItem("tasktool");
 
 			if (taskId) {
-				setPastePart(true);
+				MdxDispatch({
+					type: "DISABLE_TOOL_TASK",
+					payload: false,
+				});
 			}
 		} catch (error) {
 			return;
@@ -269,7 +290,7 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 						<GeneralButton
 							style={{ background: "#ED8738" }}
 							onClick={handlePaste}
-							disabled={!pastePart}
+							disabled={state.isToolTaskDisabled}
 						>
 							Paste {customCaptions.tool}
 						</GeneralButton>
@@ -311,7 +332,9 @@ const Tools = ({ taskInfo, access, isMounted }) => {
 						isDelete: true,
 					},
 				].filter((x) => {
-					if (state.modelDetail?.isPublished) return false;
+					if (state.modelDetail?.isPublished) {
+						return x?.name === "Copy";
+					}
 					if (access === "F") return true;
 					if (access === "E") {
 						if (x.name === "Edit") return true;

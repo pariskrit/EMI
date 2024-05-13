@@ -5,11 +5,13 @@ import {
 	DialogTitle,
 	LinearProgress,
 	Divider,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+import Typography from "@mui/material/Typography";
 import AddDialogStyle from "styles/application/AddDialogStyle";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import { generateErrorState, handleValidateObj, isChrome } from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { getSiteAppRoles } from "services/models/modelDetails/modelRoles";
@@ -30,12 +32,10 @@ const schema = yup.object({
 	roleID: yup
 		.string("Map to Service Role is Required")
 		.required("Map to Service Role is Required"),
-	siteDepartmentID: yup
-		.string("Department name is Required")
-		.required("Department name is Required"),
+	siteDepartmentID: yup.string("Department name is Required").nullable(),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -44,14 +44,25 @@ const useStyles = makeStyles({
 	createButton: {
 		// width: "auto",
 	},
-});
+	descriptionText: {
+		fontSize: "1em",
+		margin: 0,
+		padding: 0,
+		fontStyle: "italic",
+	},
+}));
 
 // Default state schemas
 const defaultErrorSchema = { roleID: null, name: null, siteDepartmentID: null };
 const defaultStateSchema = {
 	roleID: {},
 	name: "",
-	siteDepartmentID: {},
+	siteDepartmentID: {
+		id: null,
+		siteDepartmentID: null,
+		name: "All",
+		description: "",
+	},
 };
 
 function AddNewModelRole({
@@ -69,14 +80,22 @@ function AddNewModelRole({
 	mappedDepartmentName,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
-	const [department, setDepartments] = useState([]);
+	const [department, setDepartments] = useState([
+		{
+			id: null,
+			siteDepartmentID: null,
+			name: "All",
+			description: "",
+		},
+	]);
+	const [modelFocus, setModelFocus] = useState(true);
 	// const [siteRoles, setSiteRoles] = useState([]);
 
 	// get model types for dropdown
@@ -119,11 +138,17 @@ function AddNewModelRole({
 				const response = await getAvailabeleModelDeparments(modelId);
 				let finalData = response.data?.map((x) => ({
 					...x,
-					id: x.siteDepartmentID,
+					id: x?.siteDepartmentID,
+					name: x?.name || "All",
 				}));
 				setDepartments(finalData);
+				if (finalData?.length === 1 && !data) {
+					setInput({
+						...input,
+						siteDepartmentID: finalData[0],
+					});
+				}
 			}
-
 			getDepartments();
 		}
 	}, [open, modelId]);
@@ -198,6 +223,7 @@ function AddNewModelRole({
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 				className="application-dailog"
+				disableEnforceFocus={isChrome() ? modelFocus : false}
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
@@ -207,7 +233,13 @@ function AddNewModelRole({
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
-							<ADD.CancelButton onClick={closeOverride} variant="contained">
+							<ADD.CancelButton
+								onClick={closeOverride}
+								variant="contained"
+								onFocus={(e) => {
+									setModelFocus(true);
+								}}
+							>
 								Cancel
 							</ADD.CancelButton>
 						</div>
@@ -276,7 +308,11 @@ function AddNewModelRole({
 					</ADD.InputContainer>
 
 					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
+						<ADD.LeftInputContainer
+							onBlur={() => {
+								setModelFocus(false);
+							}}
+						>
 							<ErrorInputFieldWrapper
 								errorMessage={
 									errors.siteDepartmentID === null
@@ -285,8 +321,21 @@ function AddNewModelRole({
 								}
 							>
 								<DyanamicDropdown
-									dataHeader={[{ id: 1, name: "Name" }]}
-									columns={[{ id: 1, name: "name" }]}
+									dataHeader={[
+										{
+											id: 1,
+											name: `${customCaptions?.department ?? "Department"}`,
+										},
+										{
+											id: 2,
+											name: `${customCaptions?.location ?? "Location"}`,
+										},
+									]}
+									showHeader
+									columns={[
+										{ id: 1, name: "name" },
+										{ id: 2, name: "description" },
+									]}
 									selectdValueToshow={"name"}
 									dataSource={department}
 									selectedValue={input?.siteDepartmentID}
@@ -295,11 +344,22 @@ function AddNewModelRole({
 									}}
 									label={customCaptions.department}
 									placeholder="Select Department"
-									required={true}
+									showClear
+									onClear={() =>
+										setInput((prev) => ({
+											...prev,
+											siteDepartmentID: defaultStateSchema?.siteDepartmentID,
+										}))
+									}
 									width="100%"
 									isError={errors.siteDepartmentID === null ? false : true}
 								/>
 							</ErrorInputFieldWrapper>
+							<Typography className={classes.descriptionText}>
+								{customCaptions?.servicePlural} for this {customCaptions.role}{" "}
+								will always be assigned to the following{" "}
+								{customCaptions.department}
+							</Typography>
 						</ADD.LeftInputContainer>
 					</ADD.InputContainer>
 				</DialogContent>

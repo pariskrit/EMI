@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import ChangeStatusPopup from "./changeStatusPopUp";
 import ColourConstants from "helpers/colourConstants";
-import { CircularProgress, Grid } from "@material-ui/core";
+import { CircularProgress, Grid } from "@mui/material";
 import DetailTile from "./DetailTile";
 import ServiceInformation from "./ServiceInformationTile";
 import Notes from "./NotesTile";
@@ -11,11 +11,16 @@ import {
 	getServicePeopleList,
 } from "services/services/serviceDetails/detail";
 import PeopleTile from "./PeopleTile";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showError } from "redux/common/actions";
-import StatusChangePopup from "../../ServiceLists/StatusChangePopup";
+import StatusChangePopup from "pages/Services/ServiceLists/StatusChangePopup";
+import { getLocalStorageData } from "helpers/utils";
+import { READONLY_ACCESS } from "constants/AccessTypes/AccessTypes";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { servicesPage } from "services/History/models";
+import { HistoryCaptions, HistoryProperty } from "helpers/constants";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	detailContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -57,14 +62,19 @@ function ServiceDetail({
 	siteAppID,
 	serviceId,
 }) {
-	const classes = useStyles();
+	// const { state, dispatch, customCaptions, siteAppID, serviceId } =
+	// 	useOutletContext();
+	const { classes } = useStyles();
 	const redxDispatch = useDispatch();
-
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 	const [notes, setNotes] = useState([]);
 	const [peoples, setPeoples] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [openChnageStatusPopup, setOpenChnageStatusPopup] = useState(false);
 
+	const { position } = getLocalStorageData("me");
+
+	const readOnly = position?.serviceAccess === READONLY_ACCESS;
 	useEffect(() => {
 		const fetchDetails = async () => {
 			try {
@@ -112,7 +122,16 @@ function ServiceDetail({
 				fetchData={() => dispatch({ type: "SET_SERVICE_STATUS", payload: "T" })}
 				setDataForFetchingService={() => {}}
 			/>
-
+			<HistoryBar
+				id={serviceId}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					servicesPage(id, pageNumber, pageSize)
+				}
+				origin={HistoryCaptions.services}
+				statuses={HistoryProperty.serviceStatus}
+			/>
 			<div className={classes.detailContainer}>
 				<Grid container spacing={2}>
 					<Grid item lg={6} md={6} xs={12}>
@@ -124,7 +143,7 @@ function ServiceDetail({
 							serviceId={serviceId}
 							dispatch={dispatch}
 							state={state.serviceDetail}
-							isReadOnly={state?.serviceDetail?.status !== "S"}
+							isReadOnly={readOnly || state?.serviceDetail?.status !== "S"}
 						/>
 					</Grid>
 					<Grid item lg={6} md={6} xs={12}>
@@ -137,9 +156,14 @@ function ServiceDetail({
 							dispatch={dispatch}
 							state={state.serviceDetail}
 							setOpenChnageStatusPopup={setOpenChnageStatusPopup}
+							isReadOnly={readOnly}
 						/>
-						<PeopleTile data={peoples} classes={classes} />
-						<Notes serviceId={serviceId} data={notes} />
+						<PeopleTile
+							data={peoples}
+							classes={classes}
+							customCaptions={customCaptions}
+						/>
+						<Notes serviceId={serviceId} data={notes} isReadOnly={readOnly} />
 					</Grid>
 				</Grid>
 			</div>

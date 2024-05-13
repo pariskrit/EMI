@@ -1,15 +1,15 @@
 import React from "react";
 import { ServiceContext } from "contexts/ServiceDetailContext";
-import ServiceWrapper from "../commonHeader";
+import ServiceWrapper from "pages/Services/ServiceDetails/commonHeader";
+import { serviceReport } from "helpers/routePaths";
 import ServiceDetailNavigation from "constants/navigation/serviceDetailNavigation";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const SingleComponent = ({ access, customCaptions, siteAppID, ...route }) => {
 	const [state, dispatch] = React.useContext(ServiceContext);
-	const {
-		match: {
-			params: { id },
-		},
-	} = route;
+	const { id } = useParams();
+	const navigate = useNavigate();
 
 	const navigation = ServiceDetailNavigation(
 		id,
@@ -49,10 +49,13 @@ const SingleComponent = ({ access, customCaptions, siteAppID, ...route }) => {
 			: [route.showAdd, access === "F", !state?.modelDetail?.isPublished].every(
 					(x) => x === true
 			  );
+
+	const showPrint = route.path === serviceReport;
+
 	return (
 		<div>
 			<ServiceWrapper
-				state={state.serviceDetail}
+				state={state}
 				ModelName={route.ModelName}
 				current={route.name}
 				navigation={navigation}
@@ -61,6 +64,7 @@ const SingleComponent = ({ access, customCaptions, siteAppID, ...route }) => {
 				onClickAdd={openAddModel}
 				showSave={route.showSave}
 				showPasteTask={showPaste}
+				showPrint={showPrint}
 				showChangeStatus={
 					(route.showChangeStatus && state.serviceDetail.status === "S") ||
 					(route.showChangeStatus && state.serviceDetail.status === "T")
@@ -74,7 +78,7 @@ const SingleComponent = ({ access, customCaptions, siteAppID, ...route }) => {
 				onCLickedSaveChanges={openClickSaveChanges}
 				onClickPasteTask={openPasteTaskModel}
 				onClickShowChangeStatus={openChangeStatusModel}
-				onNavClick={(path) => route.history.push(path)}
+				onNavClick={(path) => navigate(path)}
 				isPasteTaskDisabled={state.isPasteTaskDisabled}
 				isQuestionTaskDisabled={state.isQuestionTaskDisabled}
 				customCaptions={customCaptions}

@@ -1,12 +1,19 @@
 import React, { useState, useRef } from "react";
-import { connect } from "react-redux";
-import { Grid, makeStyles, TextField } from "@material-ui/core";
+import { connect, useDispatch } from "react-redux";
+import { Grid, TextField } from "@mui/material";
 import * as yup from "yup";
 import ColourConstants from "helpers/colourConstants";
-import { generateErrorState, handleValidateObj } from "helpers/utils";
+import {
+	generateErrorState,
+	getLocalStorageData,
+	handleValidateObj,
+} from "helpers/utils";
+import { makeStyles } from "tss-react/mui";
+
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import { postSiteAssetReferences } from "services/clients/sites/siteAssets/references";
 import useOutsideClick from "hooks/useOutsideClick";
+import { showError } from "redux/common/actions";
 
 const schema = yup.object().shape({
 	name: yup
@@ -37,7 +44,7 @@ const defaultErrorSchema = {
 	workCenter: null,
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	deleteIcon: {
 		transform: "scale(0.7)",
 		color: ColourConstants.deleteButton,
@@ -63,9 +70,11 @@ const NewFunctionalLocations = ({
 	error,
 }) => {
 	const childRef = useRef(null);
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultInputSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const { customCaptions } = getLocalStorageData("me");
+	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		setLoading(false);
@@ -125,7 +134,7 @@ const NewFunctionalLocations = ({
 					setLoading(false);
 				}
 			} catch (err) {
-				console.log(err);
+				dispatch(showError(`Failed to save function location.`));
 			}
 		}
 	};
@@ -167,6 +176,11 @@ const NewFunctionalLocations = ({
 					<Grid container spacing={2}>
 						<Grid item sm={6}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="name"
@@ -182,6 +196,11 @@ const NewFunctionalLocations = ({
 						</Grid>
 						<Grid item sm={6}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="description"
@@ -198,10 +217,15 @@ const NewFunctionalLocations = ({
 						</Grid>
 						<Grid item sm={6}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="plannerGroup"
-								label="Planner Group"
+								label={customCaptions?.assetPlannerGroup ?? "Planner Group"}
 								onChange={handleChange}
 								value={input.plannerGroup}
 								error={errors.plannerGroup === null ? false : true}
@@ -214,10 +238,15 @@ const NewFunctionalLocations = ({
 						</Grid>
 						<Grid item sm={6}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="workCenter"
-								label="Work Center"
+								label={customCaptions?.assetMainWorkCenter ?? "Work Center"}
 								onChange={handleChange}
 								value={input.workCenter}
 								error={errors.workCenter === null ? false : true}
@@ -234,6 +263,11 @@ const NewFunctionalLocations = ({
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="name"
@@ -248,6 +282,11 @@ const NewFunctionalLocations = ({
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="description"
@@ -264,6 +303,11 @@ const NewFunctionalLocations = ({
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="plannerGroup"
@@ -280,6 +324,11 @@ const NewFunctionalLocations = ({
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								fullWidth
 								variant="outlined"
 								name="workCenter"

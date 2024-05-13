@@ -1,8 +1,8 @@
 import * as yup from "yup";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
 import React, { useState, useEffect } from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import EditDialogStyle from "styles/application/EditDialogStyle";
 import {
 	handleValidateObj,
@@ -10,6 +10,8 @@ import {
 	getLocalStorageData,
 } from "helpers/utils";
 import { editSiteLocations } from "services/clients/sites/siteLocations";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -31,6 +33,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const { customCaptions } = getLocalStorageData("me");
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -66,10 +69,10 @@ const EditDialog = ({ open, closeHandler, data, handleEditData, getError }) => {
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to Edit ${customCaptions?.location}.`));
 		}
 	};
 	const handleUpdateData = async () => {

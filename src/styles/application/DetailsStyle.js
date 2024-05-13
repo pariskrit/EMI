@@ -1,6 +1,6 @@
-import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import Typography from "@material-ui/core/Typography";
+import { styled } from "@mui/styles";
+import ColourConstants from "helpers/colourConstants";
+import Typography from "@mui/material/Typography";
 
 const DetailsStyle = () => {
 	return {

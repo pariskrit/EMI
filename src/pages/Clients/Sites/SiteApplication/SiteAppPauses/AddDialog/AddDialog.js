@@ -1,15 +1,20 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import PauseDialogStyle from "styles/application/PauseDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import Subcat from "./Subcat";
 import NewSubcat from "./NewSubcat";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
 import { addPauses } from "services/clients/sites/siteApplications/pauses";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -26,10 +31,10 @@ const schema = yup.object({
 const defaultErrorSchema = { name: null, alert: null };
 const defaultStateSchema = { name: "" };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
-});
+}));
 
 const AddPauseDialog = ({
 	open,
@@ -40,7 +45,7 @@ const AddPauseDialog = ({
 	header,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -48,6 +53,8 @@ const AddPauseDialog = ({
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [subcats, setSubcats] = useState([]);
+
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -171,7 +178,7 @@ const AddPauseDialog = ({
 				return false;
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError(`Failed to add ${header} reason.`));
 		}
 	};
 	const handleAddNewClick = () => {
@@ -201,10 +208,28 @@ const AddPauseDialog = ({
 					</DialogTitle>
 
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeOverride} variant="contained">
+						<ADD.CancelButton
+							onClick={closeOverride}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</ADD.CancelButton>
-						<ADD.ConfirmButton variant="contained" onClick={handleSave}>
+						<ADD.ConfirmButton
+							variant="contained"
+							onClick={handleSave}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Save
 						</ADD.ConfirmButton>
 					</ADD.ButtonContainer>

@@ -8,14 +8,14 @@ import {
 	Typography,
 	Dialog,
 	CircularProgress,
-	makeStyles,
-} from "@material-ui/core";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { modelsPath } from "helpers/routePaths";
-import { changeDateFormat } from "helpers/utils";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { useNavigate } from "react-router-dom";
+import { appPath, modelsPath } from "helpers/routePaths";
+import { isoDateWithoutTimeZone } from "helpers/utils";
 import ColourConstants from "helpers/colourConstants";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	row: {
 		cursor: "pointer",
 		"&:hover": {
@@ -35,7 +35,7 @@ const useStyles = makeStyles({
 		width: "152px",
 		alignItems: "center",
 	},
-});
+}));
 const VersionListTable = ({
 	versions,
 	open,
@@ -43,8 +43,8 @@ const VersionListTable = ({
 	isLoading,
 	activeModelVersion,
 }) => {
-	const style = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 	return (
 		<Dialog
 			open={open}
@@ -77,26 +77,36 @@ const VersionListTable = ({
 							{versions?.map((version, i) => (
 								<TableRow
 									key={i}
-									className={style.row}
-									onClick={() => history.push(`${modelsPath}/${version.id}`)}
+									className={classes.row}
+									onClick={() =>
+										navigate(`${appPath}${modelsPath}/${version?.id}`)
+									}
 								>
-									<TableCell>{version.version}</TableCell>
-									<TableCell className={style.cell}>
+									<TableCell
+										style={{
+											color: "rgb(17, 100, 206)",
+											cursor: "pointer",
+										}}
+									>
+										{version?.version}
+									</TableCell>
+									<TableCell className={classes.cell}>
 										<div
-											className={`${style.icon} flex`}
+											className={`${classes.icon} flex`}
 											style={{
-												backgroundColor: !version.isPublished
+												backgroundColor: !version?.isPublished
 													? ColourConstants.orange
-													: activeModelVersion === version.version
+													: activeModelVersion === version?.version
 													? ColourConstants.green
 													: ColourConstants.red,
 											}}
 										></div>
-										<p>{version.isPublished ? "Active" : "In Development"}</p>
+										<p>{version?.statusName}</p>
 									</TableCell>
-									<TableCell>{version.displayName}</TableCell>
+									<TableCell>{version?.displayName}</TableCell>
 									<TableCell>
-										{changeDateFormat(version.modifiedDateTime)}
+										{/* {changeDateFormat(version.modifiedDateTime)} */}
+										{isoDateWithoutTimeZone(version?.modifiedDateTime)}
 									</TableCell>
 								</TableRow>
 							))}

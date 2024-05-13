@@ -5,12 +5,14 @@ import {
 	LinearProgress,
 	TableCell,
 	TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import TableStyle from "styles/application/TableStyle";
 import ColourConstants from "helpers/colourConstants";
 import { handleSort } from "helpers/utils";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import IOSSwitch from "components/Elements/IOSSwitch";
 import UserSiteApplicationListTable from "./siteApplicationListTable";
@@ -25,7 +27,7 @@ import DialogPopup from "components/Elements/DialogPopup";
 
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -61,10 +63,10 @@ const useStyles = makeStyles({
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
 function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	const [toogle, setToogle] = useState(false);
@@ -150,7 +152,7 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 				<TableCell
 					component="th"
 					scope="row"
-					className={clsx(classes.dataCell, classes.nameRow, {
+					className={cx(classes.dataCell, classes.nameRow, {
 						[classes.lastCell]: index === data.length - 1,
 					})}
 				>
@@ -161,7 +163,7 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 				<TableCell
 					component="th"
 					scope="row"
-					className={clsx(classes.dataCell, classes.nameRow, {
+					className={cx(classes.dataCell, classes.nameRow, {
 						[classes.lastCell]: index === data.length - 1,
 					})}
 				>
@@ -169,10 +171,15 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 						<DyanamicDropdown
 							isServerSide={false}
 							width="50%"
-							// dataHeader={[{ id: 1, name: "Operating Mode" }]}
-							columns={[{ id: 1, name: "name" }]}
-							// dataSource={dropDownDatas?.operatingModes}
-							// showHeader
+							dataHeader={[
+								{ id: 1, name: "Department" },
+								{ id: 2, name: "Location" },
+							]}
+							columns={[
+								{ id: 1, name: "name" },
+								{ id: 2, name: "description" },
+							]}
+							showHeader
 							selectedValue={selectedDepartment}
 							placeholder="Select Department"
 							handleSort={handleSort}
@@ -187,7 +194,7 @@ function SiteRow({ row, data, index, clientUserID, fetchUserSites }) {
 				<TableCell
 					component="th"
 					scope="row"
-					className={clsx(classes.dataCell, classes.nameRow, {
+					className={cx(classes.dataCell, classes.nameRow, {
 						[classes.lastCell]: index === data.length - 1,
 					})}
 				>

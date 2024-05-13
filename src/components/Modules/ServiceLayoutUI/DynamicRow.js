@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
-import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import reorder from "assets/reorder.png";
 import "./style.css";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { modelQuestions, modelsPath, modelTask } from "helpers/routePaths";
+import {
+	appPath,
+	modelQuestions,
+	modelsPath,
+	modelTask,
+} from "helpers/routePaths";
+import { COLLAPSEDID } from "constants/modelDetails";
 
 const style = {
 	color: "#307ad7",
@@ -17,35 +23,98 @@ function DynamicRow({
 	isDragDisabled,
 	isLastDroppable = false,
 	firstRender = true,
+	taskIdToHighlight,
+	taskQuestionIdToHighlight,
 }) {
 	const [isMore, setIsMore] = useState({});
-	const history = useHistory();
+	const navigate = useNavigate();
 	const { id } = useParams();
+	const collapsedIds = JSON.parse(sessionStorage.getItem(COLLAPSEDID) || "{}");
 
-	const showChildren = (id) => {
+	const handleSessionStorage = (data) => {
+		sessionStorage.setItem(COLLAPSEDID, JSON.stringify(data));
+	};
+
+	const showChildren = (id, childrenData) => {
+		const collapsedIds = JSON.parse(
+			sessionStorage.getItem(COLLAPSEDID) || "{}"
+		);
 		if (isMore[id]?.show) {
 			setIsMore({ ...isMore, [id]: { show: false } });
+			collapsedIds[id] = { show: false };
+			handleSessionStorage(collapsedIds);
 			return;
 		}
+		//add children id to collapse id in session
+		const zoneIds = childrenData?.zones?.map((zone) => zone.modelVersionZoneID);
+		const taskIds = childrenData?.tasks
+			?.filter((task) => task.questions.length)
+			.map((data) => data.id);
+		const tempCollapseIds = [...(zoneIds || []), ...(taskIds || [])];
+		tempCollapseIds?.forEach((item) => (collapsedIds[item] = { show: false }));
+
 		setIsMore({ ...isMore, [id]: { show: true } });
+		delete collapsedIds?.[id];
+		handleSessionStorage(collapsedIds);
 	};
 
 	const redirectToQuestionsOrTasksTab = (value) => {
 		if (value?.type === "stage") return;
 
-		const goToTask = value.type === "task" || value.type2 === "taskQuestion";
-		history.push({
-			pathname: goToTask
-				? `${modelsPath}/${id}${modelTask}`
-				: `${modelsPath}/${id}${modelQuestions}`,
-			state: goToTask
-				? {
-						modelVersionTaskID: value?.modelVersionTaskID || value?.taskId,
-						modelVersionQuestionID: value.type === "task" ? null : value?.id,
-						fromServiceLayout: true,
-				  }
-				: { modelVersionQuestionID: value?.id },
+		const goToTask = value?.type === "task" || value?.type2 === "taskQuestion";
+		navigate(
+			goToTask
+				? `${appPath}${modelsPath}/${id}${modelTask}`
+				: `${appPath}${modelsPath}/${id}${modelQuestions}`,
+			{
+				state: goToTask
+					? {
+							modelVersionTaskID: value?.modelVersionTaskID || value?.taskId,
+							modelVersionQuestionID: value?.type === "task" ? null : value?.id,
+							fromServiceLayout: true,
+					  }
+					: { modelVersionQuestionID: value?.id },
+			}
+		);
+	};
+
+	//returns ids in value and perform recursive loop to children value
+	const getArrayOfIds = (data, highlightedId) => {
+		const ids = [];
+		data.forEach((d) => {
+			if (d?.value?.tasks?.length) {
+				const isIdPresent = d.value.tasks.some(
+					(task) =>
+						task.id === highlightedId ||
+						task.modelVersionTaskID === highlightedId
+				);
+				if (isIdPresent) {
+					d.value.tasks.forEach((task) => {
+						if (
+							task.modelVersionTaskID !== highlightedId &&
+							task.questions.length
+						) {
+							collapsedIds[task.id] = { show: false };
+							handleSessionStorage(collapsedIds);
+						}
+						ids.push(task.id);
+					});
+				} else {
+					collapsedIds[d.value.id] = { show: false };
+					handleSessionStorage(collapsedIds);
+				}
+			} else {
+				d?.value?.modelVersionTaskID && ids.push(d?.value?.modelVersionTaskID);
+				d?.value?.id && ids.push(d?.value?.id);
+				d?.value?.modelVersionTaskQuestionID &&
+					ids.push(d?.value?.modelVersionTaskQuestionID);
+			}
+			if (!Array.isArray(d?.children)) {
+				ids.push(...getArrayOfIds(d.children.value, highlightedId));
+			}
 		});
+
+		return ids;
 	};
 
 	useEffect(() => {
@@ -61,7 +130,30 @@ function DynamicRow({
 				if (listOfIds.length !== 0) {
 					let idsToExpand = {};
 					listOfIds.forEach((id) => {
-						idsToExpand = { ...idsToExpand, [id]: { show: true } };
+						let value = false;
+						const highlightedId = +taskIdToHighlight || +taskIdToHighlight;
+
+						//check if the collapsed items contains the id to highlight
+						if (highlightedId && collapsedIds.hasOwnProperty(`${id}`)) {
+							const requiredData = rowData?.value?.find(
+								(data) => data?.value?.id === id
+							);
+
+							const tempId = getArrayOfIds([requiredData], highlightedId);
+							value = tempId.includes(highlightedId);
+							if (value) {
+								const collapsedIds = JSON.parse(
+									sessionStorage.getItem(COLLAPSEDID) || "{}"
+								);
+								delete collapsedIds?.[id];
+								handleSessionStorage(collapsedIds);
+							}
+						}
+
+						//set collapse state added based on session storage and the value of highlighted ids
+						if (!collapsedIds.hasOwnProperty(`${id}`) || value) {
+							idsToExpand = { ...idsToExpand, [id]: { show: true } };
+						}
 					});
 					setIsMore(idsToExpand);
 				}
@@ -74,7 +166,7 @@ function DynamicRow({
 		<Droppable
 			droppableId={
 				rowData?.parentId
-					? `droppable_${rowData?.rowName}_${rowData.parentId}`
+					? `droppable_${rowData?.rowName}_${rowData?.parentId}_${rowData?.value?.[0]?.value?.grandParentId}`
 					: `droppable_${rowData?.rowName}`
 			}
 			type={rowData?.name}
@@ -90,12 +182,12 @@ function DynamicRow({
 					className="position-relative"
 				>
 					{rowData?.value?.map((val, i) => (
-						<React.Fragment key={val.value.sn}>
+						<React.Fragment key={val?.value?.sn}>
 							<Draggable
-								key={val.value.id}
-								draggableId={`${val.value.type}_${val.value.id}_${val.value.grandParentId}_${val.value?.parentId}_${val.value.childId}`}
+								key={val?.value?.id + (val?.value?.grandParentId || 1)}
+								draggableId={`${val?.value?.type}_${val?.value?.id}_${val?.value?.grandParentId}_${val?.value?.parentId}_${val?.value?.childId}_${i}`}
 								index={i}
-								isDragDisabled={!val.value.isDraggable || isDragDisabled}
+								isDragDisabled={!val?.value?.isDraggable || isDragDisabled}
 							>
 								{(provided2, snapshot) => (
 									<>
@@ -107,7 +199,7 @@ function DynamicRow({
 											{...provided2.draggableProps}
 											className="row__questions"
 										>
-											{isChild && i === rowData.value.length - 1 ? (
+											{isChild && i === rowData?.value?.length - 1 ? (
 												<div className="sl-white-border"></div>
 											) : null}
 											<div className="row__main">
@@ -123,7 +215,7 @@ function DynamicRow({
 												) : null}
 												<div className="row__questions__icon">
 													<img
-														src={val.value.icon}
+														src={val?.value?.icon}
 														alt="icon"
 														style={{ width: "20px", height: "20px" }}
 													/>
@@ -132,7 +224,7 @@ function DynamicRow({
 													{...provided2.dragHandleProps}
 													style={{
 														display:
-															!isDragDisabled && val.value.isDraggable
+															!isDragDisabled && val?.value?.isDraggable
 																? "block"
 																: "none",
 
@@ -146,12 +238,14 @@ function DynamicRow({
 													/>
 												</div>
 												{val?.children?.value?.length &&
-												!val.value.hideTaskQuestions ? (
+												!val?.value?.hideTaskQuestions ? (
 													<div
 														className="row__questions__moreicon"
-														onClick={() => showChildren(val.value.id)}
+														onClick={() =>
+															showChildren(val?.value?.id, val.value)
+														}
 													>
-														{isMore[val.value.id]?.show ? (
+														{isMore[val?.value?.id]?.show ? (
 															<RemoveCircleOutlineIcon style={style} />
 														) : (
 															<AddCircleOutlineOutlinedIcon style={style} />
@@ -161,34 +255,37 @@ function DynamicRow({
 
 												<div
 													id={
-														val.value.highlightTask ||
-														val.value.highlightQuestion ||
-														val.value.highlightTaskQuestion
+														val?.value?.highlightTask ||
+														val?.value?.highlightQuestion ||
+														val?.value?.highlightTaskQuestion
 															? `highlightedTask`
 															: ""
 													}
 													className={`row__questions__item ${
-														val.value.type !== "zone" &&
-														val.value.type !== "stage"
+														val?.value?.type !== "zone" &&
+														val?.value?.type !== "stage"
 															? "cursor link"
 															: ""
 													} ${
-														val.value.highlightTask ||
-														val.value.highlightQuestion ||
-														val.value.highlightTaskQuestion
+														val?.value?.highlightTask ||
+														val?.value?.highlightQuestion ||
+														val?.value?.highlightTaskQuestion
 															? "highlight"
 															: ""
 													}`}
 													onClick={() =>
-														redirectToQuestionsOrTasksTab(val.value)
+														redirectToQuestionsOrTasksTab(val?.value)
 													}
 												>
-													{val.value.type === "task"
-														? `${val.value.actionName ?? ""} ${val.value.name} `
-														: val.value.name}
-													{val.value.assetName && val.value.type === "task" ? (
+													{val?.value?.type === "task"
+														? `${val?.value?.actionName ?? ""} ${
+																val?.value?.name
+														  } `
+														: val?.value?.name}
+													{val?.value?.assetName &&
+													val?.value?.type === "task" ? (
 														<span style={{ fontStyle: "italic" }}>
-															({val.value.assetName})
+															({val?.value?.assetName})
 														</span>
 													) : null}
 												</div>
@@ -197,13 +294,16 @@ function DynamicRow({
 									</>
 								)}
 							</Draggable>
-							{isMore[val.value.id]?.show && !val.value.hideTaskQuestions ? (
+							{isMore[val?.value?.id]?.show &&
+							!val?.value?.hideTaskQuestions ? (
 								<DynamicRow
-									rowData={val.children}
+									rowData={val?.children}
 									isChild={val?.children?.value?.length}
 									isDragDisabled={isDragDisabled}
-									isLastDroppable={i === rowData.value.length - 1}
+									isLastDroppable={i === rowData?.value?.length - 1}
 									firstRender={firstRender}
+									taskIdToHighlight={taskIdToHighlight}
+									taskQuestionIdToHighlight={taskQuestionIdToHighlight}
 								/>
 							) : null}
 						</React.Fragment>

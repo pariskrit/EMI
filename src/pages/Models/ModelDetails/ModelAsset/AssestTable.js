@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import clsx from "clsx";
+
 import PropTypes from "prop-types";
 import {
 	CircularProgress,
-	makeStyles,
 	Table,
 	TableBody,
 	TableCell,
 	TableRow,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import PopupMenu from "components/Elements/PopupMenu";
 import ColourConstants from "helpers/colourConstants";
 import TableStyle from "styles/application/TableStyle";
@@ -22,7 +22,7 @@ const AT = TableStyle();
 const mediaMobile = "@media(max-width: 414px)";
 const mediaIpad = "@media(max-width: 1024px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableContainer: {
 		tableLayout: "fixed",
 		borderStyle: "solid",
@@ -80,7 +80,7 @@ const useStyles = makeStyles({
 	tableHead: {
 		whiteSpace: "nowrap",
 	},
-});
+}));
 
 const CommonApplicationTable = ({
 	data,
@@ -96,8 +96,9 @@ const CommonApplicationTable = ({
 	access,
 	handleEdit,
 	handleDelete,
+	handleArrangementEdit,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -105,7 +106,10 @@ const CommonApplicationTable = ({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
@@ -130,7 +134,7 @@ const CommonApplicationTable = ({
 								onClick={() => {
 									handleSortClick(columns[index]);
 								}}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === columns[index],
 									[classes.tableHeadRow]:
@@ -154,23 +158,27 @@ const CommonApplicationTable = ({
 					{data.length !== 0 ? (
 						(searchQuery.length === 0 ? data : searchedData).map(
 							(row, index) => (
-								<TableRow key={row.id}>
+								<TableRow
+									key={row.id}
+									id={`asset-${row.id}`}
+									className="assetEl"
+								>
 									{columns.map((col, i, arr) => (
 										<TableCell
 											key={col}
 											scope="row"
-											className={clsx(classes.dataCell, classes.nameRow, {
+											className={cx(classes.dataCell, classes.nameRow, {
 												[classes.lastCell]: index === data.length - 1,
 											})}
 										>
 											<AT.CellContainer key={col}>
 												<AT.TableBodyText
-													className={clsx({
+													className={cx({
 														[classes.defaultNameText]:
 															row.id === defaultID && i === 0,
 													})}
 												>
-													{`${row[col]}`}
+													{`${row[col] || ""}`}
 												</AT.TableBodyText>
 												{row.id === defaultID && i === 0 ? (
 													<Typography className={classes.defaultText}>
@@ -212,6 +220,13 @@ const CommonApplicationTable = ({
 																			? "Make Inactive"
 																			: "Make Active",
 																	handler: handleEdit,
+																	isDelete: false,
+																},
+																{
+																	name: "Edit",
+																	handler: () => {
+																		handleArrangementEdit(row);
+																	},
 																	isDelete: false,
 																},
 																{

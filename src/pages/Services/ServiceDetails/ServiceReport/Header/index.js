@@ -1,11 +1,12 @@
 import React from "react";
-import { makeStyles, Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { isoDateWithoutTimeZone } from "helpers/utils";
-import clsx from "clsx";
+
 import { serviceStatus } from "constants/serviceDetails";
+import { makeStyles } from "tss-react/mui";
 
 const media = "@media (max-width: 768px)";
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	headerText: {
 		marginTop: 10,
 		fontSize: 28,
@@ -55,70 +56,71 @@ const useStyles = makeStyles({
 	keyHeading: {
 		width: "150px",
 	},
-});
+}));
 
 const Header = ({ state, customCaptions }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const date = isoDateWithoutTimeZone(
-		state.scheduledDate ? state.scheduledDate + "Z" : state.scheduledDate
+		state?.scheduledDate[state?.scheduledDate?.length - 1] === "Z"
+			? state?.scheduledDate
+			: state?.scheduledDate + "Z"
 	);
 
-	console.log("ssssssssssss", state);
 	return (
 		<>
 			<Typography className={classes.headerText} component="h1" gutterBottom>
 				<strong>{customCaptions.service} Report</strong>
 			</Typography>
 			<div className={classes.workOrder}>
-				{customCaptions.serviceWorkOrder} {state.workOrder}
+				{customCaptions?.serviceWorkOrder} {state?.workOrder}
 			</div>
 			<hr className={classes.horizon} />
 			<div className={classes.main}>
 				<div className={classes.first}>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
+						<span className={cx(classes.headings, classes.keyHeading)}>
 							{customCaptions.model}
 						</span>
 						<span className={classes.headings}>
-							{state.modelName} {state.model}
+							{state?.modelName} {state?.model}
 						</span>
 					</div>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
-							{customCaptions.interval}
+						<span className={cx(classes.headings, classes.keyHeading)}>
+							{customCaptions?.interval}
 						</span>
-						<span className={classes.headings}>{state.interval}</span>
+						<span className={classes.headings}>{state?.interval}</span>
 					</div>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
-							{customCaptions.role}
+						<span className={cx(classes.headings, classes.keyHeading)}>
+							{customCaptions?.role}
 						</span>
-						<span className={classes.headings}>{state.role}</span>
+						<span className={classes.headings}>{state?.role}</span>
 					</div>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
+						<span className={cx(classes.headings, classes.keyHeading)}>
 							{customCaptions.modelType}
 						</span>
-						<span className={classes.headings}>{state.typeName}</span>
+						<span className={classes.headings}>{state?.typeName}</span>
 					</div>
 				</div>
 				<div className={classes.first}>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
-							{customCaptions.service} Status
+						<span className={cx(classes.headings, classes.keyHeading)}>
+							{customCaptions?.service} Status
 						</span>
 						<span className={classes.headings}>
 							{serviceStatus[state?.status]}
 						</span>
 					</div>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
+						<span className={cx(classes.headings, classes.keyHeading)}>
 							{customCaptions.model} Version
 						</span>
 						<span className={classes.headings}>{state?.modelVersion}</span>
 					</div>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
+						<span className={cx(classes.headings, classes.keyHeading)}>
 							{customCaptions.asset}
 						</span>
 						<span className={classes.headings}>{state?.siteAssetName}</span>
@@ -126,8 +128,8 @@ const Header = ({ state, customCaptions }) => {
 				</div>
 				<div className={classes.first}>
 					<div className={classes.list}>
-						<span className={clsx(classes.headings, classes.keyHeading)}>
-							Completion Date
+						<span className={cx(classes.headings, classes.keyHeading)}>
+							Scheduled Date
 						</span>
 						<span className={classes.headings}>{date}</span>
 					</div>

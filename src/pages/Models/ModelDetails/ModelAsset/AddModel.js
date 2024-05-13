@@ -8,7 +8,7 @@ import {
 	FormGroup,
 	FormControlLabel,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import instance from "helpers/api";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
@@ -26,18 +26,30 @@ import {
 import * as yup from "yup";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { addSiteAsset } from "services/clients/sites/siteAssets";
+import { isChrome } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const ADD = AddDialogStyle();
 
+const initialInput = {
+	asset: {},
+	status: true,
+	name: "",
+	description: "",
+	modelVersionArrangementID: "",
+};
+
 // Yup validation schema
-const schema = (serviceAcces, assetID) =>
+const schema = (serviceAcces, assetID, hideArrangements) =>
 	yup.object({
 		asset: yup
 			.string("Asset is required")
 			.nullable()
 			.when("assetname", {
 				is: () => serviceAcces !== "F",
-				then: yup.string("Asset is required").required("Asset is required"),
+				then: () =>
+					yup.string("Asset is required").required("Asset is required"),
 			}),
 		name: yup
 			.string("This field is required")
@@ -46,15 +58,17 @@ const schema = (serviceAcces, assetID) =>
 				is: () =>
 					(serviceAcces === "F" && assetID === null) ||
 					(serviceAcces === "F" && assetID === undefined),
-				then: yup.string("Name is required").required("Name is required"),
+				then: () => yup.string("Name is required").required("Name is required"),
 			}),
 		description: yup
 			.string()
 			.max(255, "Must be less than or equal to 255 characters ")
 			.nullable(),
 		status: yup.bool().required(),
+		modelVersionArrangementID: hideArrangements
+			? yup.string().nullable()
+			: yup.string().required("Arrangement is required"),
 	});
-
 const debounce = (func, delay) => {
 	let timer;
 	return function () {
@@ -78,15 +92,15 @@ const AddModel = ({
 	fetchModelAsset,
 	isEdit = false,
 	serviceAccess,
+	isFromService = false,
+	handleServiceAddComplete,
+	arrangementTitle,
+	hideArrangements = true,
+	arrangementDatas,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [assets, setAsset] = useState([]);
-	const [input, setInput] = useState({
-		asset: {},
-		status: true,
-		name: "",
-		description: "",
-	});
+	const [input, setInput] = useState(initialInput);
 	const [page, setPage] = useState({ pageNo: 1, pageSize: 10 });
 	const [count, setCount] = useState(0);
 	const { position, siteID } =
@@ -97,7 +111,20 @@ const AddModel = ({
 		status: null,
 		name: null,
 		description: null,
+		modelVersionArrangementID: null,
 	});
+
+	const [modelFocus, setModelFocus] = useState(true);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (arrangementDatas?.length === 1) {
+			setInput((prev) => ({
+				...prev,
+				modelVersionArrangementID: arrangementDatas[0],
+			}));
+		}
+	}, [arrangementDatas]);
 
 	useEffect(() => {
 		if (isEdit && editData) {
@@ -141,25 +168,51 @@ const AddModel = ({
 		await Promise.all([fetchAssets(), fetchAssetCount()]);
 	};
 
+	const addSeriveModelAsset = async () => {
+		const { status, asset, name, description, modelVersionArrangementID } =
+			input;
+
+		const localChecker = await handleValidateObj(
+			schema(serviceAccess, asset.id, hideArrangements, name),
+			{
+				asset: asset?.id,
+				status,
+				name,
+				description,
+				modelVersionArrangementID: modelVersionArrangementID?.id,
+			}
+		);
+		if (!localChecker.some((el) => el.valid === false)) {
+			handleServiceAddComplete(input);
+			setInput(initialInput);
+		} else {
+			const newError = generateErrorState(localChecker);
+			setErrors({ ...errors, ...newError });
+		}
+	};
+
 	const addModelAsset = async () => {
 		setLoading(true);
 
-		const { status, asset, name, description } = input;
+		const { status, asset, name, description, modelVersionArrangementID } =
+			input;
 
 		const data = {
 			ModelID: +modelId,
 			SiteAssetID: asset.id,
 			isActive: status,
+			modelVersionArrangementID: modelVersionArrangementID?.id || "",
 		};
 
 		try {
 			const localChecker = await handleValidateObj(
-				schema(serviceAccess, asset.id, name),
+				schema(serviceAccess, asset.id, hideArrangements, name),
 				{
 					asset: asset?.id,
 					status,
 					name,
 					description,
+					modelVersionArrangementID: input?.modelVersionArrangementID?.id,
 				}
 			);
 			// Attempting API call if no local validaton errors
@@ -188,6 +241,10 @@ const AddModel = ({
 							: data
 					);
 					if (result.status) {
+						handleAddComplete({
+							...input,
+							isActive: input.status ? true : false,
+						});
 						await fetchModelAsset(false);
 						closeOverride();
 					} else {
@@ -217,8 +274,7 @@ const AddModel = ({
 				setErrors({ ...errors, ...newError });
 			}
 		} catch (e) {
-			console.log(e);
-			return;
+			dispatch(showError(`Failed to add ${title}.`));
 		}
 		setLoading(false);
 	};
@@ -250,7 +306,9 @@ const AddModel = ({
 					20,
 					searchTxt
 				);
-				setAsset(response.data);
+				if (response?.status) {
+					setAsset(response.data);
+				}
 			} else {
 				pageChange(1, []);
 			}
@@ -265,6 +323,7 @@ const AddModel = ({
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 			className="application-dailog"
+			disableEnforceFocus={isChrome() ? modelFocus : false}
 		>
 			{loading ? <LinearProgress /> : null}
 			<ADD.ActionContainer>
@@ -275,12 +334,21 @@ const AddModel = ({
 				</DialogTitle>
 				<ADD.ButtonContainer>
 					<div className="modalButton">
-						<ADD.CancelButton onClick={closeOverride} variant="contained">
+						<ADD.CancelButton
+							onClick={closeOverride}
+							variant="contained"
+							onFocus={(e) => {
+								setModelFocus(true);
+							}}
+						>
 							Cancel
 						</ADD.CancelButton>
 					</div>
 					<div className="modalButton">
-						<ADD.ConfirmButton onClick={addModelAsset} variant="contained">
+						<ADD.ConfirmButton
+							onClick={isFromService ? addSeriveModelAsset : addModelAsset}
+							variant="contained"
+						>
 							{isEdit ? "Close" : `Add ${title}`}
 						</ADD.ConfirmButton>
 					</div>
@@ -317,7 +385,7 @@ const AddModel = ({
 								}
 								selectedValue={input.asset}
 								onPageChange={pageChange}
-								page={page.pageNo}
+								page={page}
 								columns={[
 									{ name: "name", id: 1 },
 									{ name: "description", id: 2 },
@@ -334,24 +402,26 @@ const AddModel = ({
 						</ErrorInputFieldWrapper>
 					)}
 
-					<FormGroup style={{ marginLeft: "10px" }}>
-						<FormControlLabel
-							control={
-								<EMICheckbox
-									state={input?.status}
-									changeHandler={() => {
-										setInput((th) => ({
-											...th,
-											status: !th.status,
-											name: "",
-											description: "",
-										}));
-									}}
-								/>
-							}
-							label={<Typography>Active</Typography>}
-						/>
-					</FormGroup>
+					{!isFromService && (
+						<FormGroup style={{ marginLeft: "10px" }}>
+							<FormControlLabel
+								control={
+									<EMICheckbox
+										state={input?.status}
+										changeHandler={() => {
+											setInput((th) => ({
+												...th,
+												status: !th.status,
+												name: "",
+												description: "",
+											}));
+										}}
+									/>
+								}
+								label={<Typography>Active</Typography>}
+							/>
+						</FormGroup>
+					)}
 				</div>
 				{serviceAccess === "F" && (
 					<>
@@ -397,8 +467,42 @@ const AddModel = ({
 										asset: {},
 									});
 								}}
+								onBlur={() => {
+									setModelFocus(false);
+								}}
 							/>
 						</div>
+						{!hideArrangements && (
+							<div style={{ marginTop: "20px" }}>
+								<ErrorInputFieldWrapper
+									errorMessage={
+										errors?.modelVersionArrangementID === null
+											? null
+											: errors?.modelVersionArrangementID
+									}
+								>
+									<DyanamicDropdown
+										dataSource={arrangementDatas}
+										isServerSide={false}
+										width="100%"
+										placeholder={`Select ${arrangementTitle}`}
+										dataHeader={[{ id: 1, name: "Interval" }]}
+										columns={[{ id: 1, name: "name" }]}
+										selectedValue={input["modelVersionArrangementID"]}
+										handleSort={handleSort}
+										onChange={(val) => {
+											setInput({
+												...input,
+												modelVersionArrangementID: val,
+											});
+										}}
+										selectdValueToshow="name"
+										label={arrangementTitle}
+										required
+									/>
+								</ErrorInputFieldWrapper>
+							</div>
+						)}
 					</>
 				)}
 			</DialogContent>

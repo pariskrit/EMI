@@ -5,22 +5,21 @@ import {
 	TableBody,
 	TableRow,
 	TableCell,
-	makeStyles,
 	Paper,
 	CircularProgress,
-} from "@material-ui/core";
-import clsx from "clsx";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+
 import TableStyle from "styles/application/TableStyle";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { handleSort } from "helpers/utils";
 import "./arrowStyle.scss";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -43,7 +42,7 @@ const useStyles = makeStyles({
 	dataCell: {
 		height: 50,
 	},
-});
+}));
 
 const ClientSiteTable = ({
 	data,
@@ -57,26 +56,45 @@ const ClientSiteTable = ({
 	count,
 	isLoading,
 	searchText,
+	pagination,
+	isReadOnly = false,
+	taskPluralCC,
+	assetCC,
+	downloadReportHandler,
+	isSiteUser,
+	currentTableSort,
+	setCurrentTableSort,
+	handleSort,
 }) => {
-	const classes = useStyles();
-	const [currentTableSort, setCurrentTableSort] = useState(["asset", "asc"]);
+	const { classes, cx } = useStyles();
+
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
+
 	const { hasMore, loading, gotoTop } = useInfiniteScroll(
 		data,
 		count,
-		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
+		async (pageSize, prevData, name) =>
+			await onPageChange(pageSize + 1, prevData, name),
 		page,
-		searchText
+		searchText,
+		window,
+		{
+			sortField: currentTableSort[0],
+			sortOrder: currentTableSort[1],
+		}
 	);
 
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			field === currentTableSort[0] && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
-		handleSort(data, setData, field, newMethod);
+		handleSort(field, newMethod);
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
@@ -97,7 +115,7 @@ const ClientSiteTable = ({
 								onClick={() => {
 									handleSortClick(columns[index]);
 								}}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === columns[index],
 									[classes.tableHeadRow]:
@@ -107,8 +125,24 @@ const ClientSiteTable = ({
 								<AT.CellContainer className="flex justify-between">
 									{header}
 									<div className="arrow">
-										<AT.DescArrow fill="#F9F9FC" className="arrowUp" />
-										<AT.DefaultArrow fill="#F9F9FC" className="arrowDown" />
+										<AT.DescArrow
+											fill={
+												currentTableSort[0] === columns[index] &&
+												currentTableSort[1] === "asc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowUp"
+										/>
+										<AT.DefaultArrow
+											fill={
+												currentTableSort[0] === columns[index] &&
+												currentTableSort[1] === "desc"
+													? "#D2D2D9"
+													: "#F9F9FC"
+											}
+											className="arrowDown"
+										/>
 									</div>
 									{/* {currentTableSort[0] === columns[index] &&
 									currentTableSort[1] === "desc" ? (
@@ -130,13 +164,13 @@ const ClientSiteTable = ({
 										key={col}
 										component="th"
 										scope="row"
-										className={clsx(classes.dataCell, classes.nameRow, {
+										className={cx(classes.dataCell, classes.nameRow, {
 											[classes.lastCell]: index === data.length - 1,
 										})}
 									>
 										<AT.CellContainer key={col}>
 											<AT.TableBodyText>{row[col]}</AT.TableBodyText>
-											{arr.length === i + 1 ? (
+											{arr.length === i + 1 && !isReadOnly ? (
 												<AT.DotMenu
 													onClick={(e) => {
 														setAnchorEl(
@@ -162,18 +196,39 @@ const ClientSiteTable = ({
 															setAnchorEl(null);
 															setSelectedData(null);
 														}}
-														menuData={[
-															{
-																name: "Edit",
-																handler: () => onEdit(row.id),
-																isDelete: false,
-															},
-															{
-																name: "Delete",
-																handler: () => onDelete(row.id),
-																isDelete: true,
-															},
-														]}
+														menuData={
+															isSiteUser
+																? [
+																		{
+																			name: "Edit",
+																			handler: () => onEdit(row.id),
+																			isDelete: false,
+																		},
+																		{
+																			name: "Delete",
+																			handler: () => onDelete(row.id),
+																			isDelete: true,
+																		},
+																		{
+																			name: `${taskPluralCC} where ${assetCC} Used`,
+																			handler: () =>
+																				downloadReportHandler(row.id),
+																			isDelete: false,
+																		},
+																  ]
+																: [
+																		{
+																			name: "Edit",
+																			handler: () => onEdit(row.id),
+																			isDelete: false,
+																		},
+																		{
+																			name: "Delete",
+																			handler: () => onDelete(row.id),
+																			isDelete: true,
+																		},
+																  ]
+														}
 													/>
 												</AT.DotMenu>
 											) : null}
@@ -208,7 +263,6 @@ const ClientSiteTable = ({
 					style={{ textAlign: "center", padding: "16px 10px" }}
 					className="flex justify-center"
 				>
-					<b>Yay! You have seen it all</b>
 					<span
 						className="link-color ml-md cursor-pointer"
 						onClick={() => gotoTop()}
@@ -236,8 +290,8 @@ ClientSiteTable.defaultProps = {
 	],
 	columns: ["asset", "description"],
 	headers: ["Asset", "Description"],
-	onEdit: (id) => console.log("Edit", id),
-	onDelete: (id) => console.log("Delete", id),
+	onEdit: (id) => {},
+	onDelete: (id) => {},
 	pagination: true,
 };
 

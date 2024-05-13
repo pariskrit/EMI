@@ -2,6 +2,13 @@ import questionIcon from "assets/question.png";
 import stageIcon from "assets/stage.png";
 import zoneIcon from "assets/zone.png";
 import taskIcon from "assets/task.png";
+import {
+	QUESTION,
+	QUESTIONPLURAL,
+	TASK,
+	TASKPLURAL,
+	ZONES,
+} from "constants/modelDetails";
 
 export const reorder = (list, startIndex, endIndex) => {
 	const result = Array.from(list);
@@ -33,7 +40,7 @@ export const modifyResponseData = (
 			parentId: 0,
 			rowName: property,
 			name: property,
-			value: changedData[property].map((value) => {
+			value: changedData[property]?.map((value) => {
 				sn += 1;
 				return {
 					value: {
@@ -145,7 +152,7 @@ export const getDataType = (
 	questionId = null,
 	taskQuestionId = null
 ) => {
-	if (data.type === "questions") return null;
+	if (data.type === QUESTIONPLURAL) return null;
 
 	const hasQuestions = data?.questions?.length > 0;
 	const hasTasks = data?.tasks?.length > 0;
@@ -171,9 +178,9 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...question,
-						icon: icons["questions"],
+						icon: icons[QUESTIONPLURAL],
 						isDraggable: true,
-						type: "question",
+						type: QUESTION,
 						sn,
 						id: question.modelVersionQuestionID,
 						highlightQuestion: question.modelVersionQuestionID === questionId,
@@ -185,8 +192,8 @@ export const getDataType = (
 					return {
 						...task,
 						id: task.id,
-						icon: icons["tasks"],
-						type: "task",
+						icon: icons[TASKPLURAL],
+						type: TASK,
 						sn,
 						isDraggable: true,
 						hideTaskQuestions,
@@ -199,9 +206,9 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...zone,
-						icon: icons["zones"],
+						icon: icons[ZONES],
 						isDraggable: false,
-						type: "zones",
+						type: ZONES,
 						sn,
 						id: zone.modelVersionZoneID,
 						grandParentId: data.modelVersionStageID || data.id,
@@ -223,9 +230,9 @@ export const getDataType = (
 					return {
 						...question,
 						sn: sn,
-						icon: icons["questions"],
+						icon: icons[QUESTIONPLURAL],
 						isDraggable: true,
-						type: "question",
+						type: QUESTION,
 						highlightQuestion: question.modelVersionQuestionID === questionId,
 						grandParentId:
 							data.modelVersionStageID || data.grandParentId || null,
@@ -240,8 +247,8 @@ export const getDataType = (
 						...task,
 						sn: sn,
 						id: task.id,
-						icon: icons["tasks"],
-						type: "task",
+						icon: icons[TASKPLURAL],
+						type: TASK,
 						isDraggable: true,
 						questionId,
 						hideTaskQuestions,
@@ -253,7 +260,7 @@ export const getDataType = (
 				}),
 			],
 			type:
-				data.type === "zone"
+				data.type === ZONES
 					? "zoneQuestionsAndTasks"
 					: "stageQuestionsAndTasks",
 		};
@@ -274,8 +281,8 @@ export const getDataType = (
 					return {
 						...task,
 						id: task.id,
-						icon: icons["tasks"],
-						type: "task",
+						icon: icons[TASKPLURAL],
+						type: TASK,
 						isDraggable: true,
 						sn,
 						hideTaskQuestions,
@@ -288,9 +295,9 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...zone,
-						icon: icons["zones"],
+						icon: icons[ZONES],
 						isDraggable: false,
-						type: "zones",
+						type: ZONES,
 						sn,
 						id: zone.modelVersionZoneID,
 						grandParentId: data.modelVersionStageID || data.id,
@@ -316,8 +323,8 @@ export const getDataType = (
 					return {
 						...question,
 						id: question.modelVersionQuestionID,
-						icon: icons["questions"],
-						type: "question",
+						icon: icons[QUESTIONPLURAL],
+						type: QUESTION,
 						sn,
 						isDraggable: true,
 						highlightQuestion: question.modelVersionQuestionID === questionId,
@@ -327,9 +334,9 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...zone,
-						icon: icons["zones"],
+						icon: icons[ZONES],
 						isDraggable: false,
-						type: "zones",
+						type: ZONES,
 						sn,
 						id: zone.modelVersionZoneID,
 						grandParentId: data.modelVersionStageID,
@@ -354,16 +361,16 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...zone,
-						icon: icons["zones"],
+						icon: icons[ZONES],
 						id: zone.modelVersionZoneID,
-						type: "zone",
+						type: ZONES,
 						isDraggable: false,
 						sn,
 						grandParentId: data.modelVersionStageID,
 					};
 				}),
 			],
-			type: "zones",
+			type: ZONES,
 		};
 	}
 
@@ -381,8 +388,8 @@ export const getDataType = (
 					return {
 						...task,
 						id: task.id,
-						icon: icons["tasks"],
-						type: "task",
+						icon: icons[TASKPLURAL],
+						type: TASK,
 						sn,
 						isDraggable: true,
 						hideTaskQuestions,
@@ -393,7 +400,7 @@ export const getDataType = (
 					};
 				}),
 			],
-			type: data.type === "zone" ? "zoneTasks" : "tasks",
+			type: data.type === ZONES ? "zoneTasks" : TASKPLURAL,
 		};
 	}
 
@@ -408,10 +415,10 @@ export const getDataType = (
 					sn += 1;
 					return {
 						...question,
-						icon: icons["questions"],
+						icon: icons[QUESTIONPLURAL],
 						isDraggable: true,
-						type: "question",
-						type2: data?.type === "task" ? "taskQuestion" : "",
+						type: QUESTION,
+						type2: data?.type === TASK ? "taskQuestion" : "",
 						sn,
 						id:
 							question.modelVersionQuestionID ||
@@ -428,7 +435,9 @@ export const getDataType = (
 				}),
 			],
 			type:
-				data.grandParentId && data.parentId ? "zoneTaskQuestions" : "questions",
+				data.grandParentId && data.parentId
+					? "zoneTaskQuestions"
+					: QUESTIONPLURAL,
 		};
 	}
 

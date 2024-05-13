@@ -1,15 +1,14 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { makeStyles } from "tss-react/mui";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import ColourConstants from "helpers/colourConstants";
 import PropTypes from "prop-types";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 
 const media = "@media(max-width: 768px)";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	desktopNav: {
 		display: "flex",
 		flexDirection: "column",
@@ -42,7 +41,11 @@ const useStyles = makeStyles((theme) => ({
 	buttonGroup: {
 		width: "100%",
 	},
+	minimumWidth: {
+		minWidth: "120px",
+	},
 	curveButton: {
+		color: "black",
 		borderRadius: 0,
 		padding: 6,
 		borderWidth: 1,
@@ -54,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
 		"&:hover": {
 			backgroundColor: ColourConstants.navButtonOnHover,
 			color: "#FFFFFF",
+			borderColor: ColourConstants.navButtonOnHover,
 		},
 	},
 	curveButtonCurrent: {
@@ -64,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Navigation = ({ navigation, current, onClick }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<>
@@ -84,8 +88,12 @@ const Navigation = ({ navigation, current, onClick }) => {
 							<Button
 								className={`${
 									navItem.name === current
-										? clsx(classes.curveButton, classes.curveButtonCurrent)
-										: classes.curveButton
+										? cx(
+												classes.curveButton,
+												classes.minimumWidth,
+												classes.curveButtonCurrent
+										  )
+										: cx(classes.curveButton, classes.minimumWidth)
 								} largeBtn`}
 								onClick={() => onClick(navItem.name)}
 								key={index}
@@ -120,7 +128,7 @@ const Navigation = ({ navigation, current, onClick }) => {
 							<Button
 								className={`${
 									navItem.name === current
-										? clsx(classes.curveButton, classes.curveButtonCurrent)
+										? cx(classes.curveButton, classes.curveButtonCurrent)
 										: classes.curveButton
 								} largeBtn`}
 								onClick={(e) => {

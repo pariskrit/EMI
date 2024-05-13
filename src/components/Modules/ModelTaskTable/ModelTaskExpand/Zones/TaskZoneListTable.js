@@ -1,9 +1,11 @@
 import React, { useCallback, useContext, useState } from "react";
 import TableStyle from "styles/application/TableStyle";
-import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
-import clsx from "clsx";
+
 import { ModelContext } from "contexts/ModelDetailContext";
 import {
 	getSiteAssetsForZones,
@@ -12,6 +14,7 @@ import {
 import { showError } from "redux/common/actions";
 import { useDispatch } from "react-redux";
 import ZoneRow from "./ZoneRow";
+import { updateModelTaskAssets } from "helpers/setModelTaskDom";
 
 const AT = TableStyle();
 
@@ -27,7 +30,7 @@ const debounce = (func, delay) => {
 	};
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -58,7 +61,7 @@ const useStyles = makeStyles({
 		borderWidth: 1,
 		borderRadius: 0,
 	},
-});
+}));
 
 function TaskZoneListTable({
 	data,
@@ -75,20 +78,21 @@ function TaskZoneListTable({
 	isReadOnly,
 	fetchSiteFromDropDown,
 	fetchModelTaskZones,
+	taskId,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	const [modelState] = useContext(ModelContext);
-	const [page, setPage] = useState(1);
+	const [page, setPage] = useState({ pageNo: 1, pageSize: 10 });
 
 	const {
 		modelDetail: { modelType },
 	} = modelState;
 
-	const onPageChange = async (pageSize) => {
-		setPage(pageSize);
-		await fetchSiteAssest(siteAppId, pageSize, 10);
+	const onPageChange = async (pageNo) => {
+		setPage((prev) => ({ ...prev, pageNo }));
+		await fetchSiteAssest(siteAppId, pageNo, page.pageSize);
 	};
 
 	const handleServierSideSearch = useCallback(
@@ -131,6 +135,7 @@ function TaskZoneListTable({
 				if (response.status) {
 					setOriginalZones(data);
 					fetchModelTaskZones(false);
+					updateModelTaskAssets(response?.data?.assets, taskId);
 				} else {
 					dispatch(
 						showError(response?.data?.detail || "Could not add assest to zone")
@@ -153,7 +158,7 @@ function TaskZoneListTable({
 					<TableRow className={classes.tableHead}>
 						<TableCell
 							style={{ width: "78px" }}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.tableHeadRow]: true,
 							})}
 						>
@@ -161,7 +166,7 @@ function TaskZoneListTable({
 						</TableCell>
 						<TableCell
 							style={{ width: "auto" }}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.tableHeadRow]: true,
 							})}
 						>
@@ -170,7 +175,7 @@ function TaskZoneListTable({
 						{modelType === "F" ? (
 							<TableCell
 								style={{ width: "auto" }}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.tableHeadRow]: true,
 								})}
 							>
@@ -180,7 +185,7 @@ function TaskZoneListTable({
 						{modelType === "F" ? (
 							<TableCell
 								style={{ width: "auto" }}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.tableHeadRow]: true,
 								})}
 							>

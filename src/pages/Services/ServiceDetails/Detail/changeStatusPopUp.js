@@ -4,9 +4,11 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { useState } from "react";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
@@ -19,6 +21,7 @@ import { changeServiceStatus } from "services/services/serviceDetails/detail";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import { changeStatusReason } from "constants/serviceDetails";
 import {
+	FilterStatusChange,
 	generateErrorState,
 	handleSort,
 	handleValidateObj,
@@ -36,17 +39,17 @@ const schema = yup.object({
 		.required("This field is required"),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 function ChangeStatusPopup({ open, onClose, status }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [serviceStatuses, setServiceStatuses] = useState([]);
 	const [selectedServiceStatus, setSelectedServiceStatus] = useState({});
@@ -57,8 +60,12 @@ function ChangeStatusPopup({ open, onClose, status }) {
 		SelectedchangeStatusReason: null,
 	});
 
+	const { customCaptions } =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+
 	const dispatch = useDispatch();
-	const [, serviceDispatch] = useContext(ServiceContext);
+	const [serviceInfo, serviceDispatch] = useContext(ServiceContext);
 	const { id } = useParams();
 
 	const handleCreateProcess = async () => {
@@ -80,7 +87,7 @@ function ChangeStatusPopup({ open, onClose, status }) {
 				});
 				if (!response.status)
 					dispatch(
-						showError(response.data || "Could Not Update Service Status")
+						showError(response?.data || "Could Not Update Service Status")
 					);
 				else {
 					serviceDispatch({
@@ -95,7 +102,7 @@ function ChangeStatusPopup({ open, onClose, status }) {
 				setIsUpdating(false);
 			}
 		} catch (error) {
-			console.log(error);
+			dispatch(showError(`Failed to change status.`));
 		}
 
 		setIsUpdating(false);
@@ -144,6 +151,14 @@ function ChangeStatusPopup({ open, onClose, status }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 
+	useEffect(() => {
+		if (serviceInfo?.serviceDetail?.status === "T" && open) {
+			setSelectedServiceStatus(
+				changeStatusReason(customCaptions).find((d) => d.name === "Incomplete")
+			);
+		}
+	}, [serviceInfo, open]);
+
 	return (
 		<Dialog
 			open={open}
@@ -186,10 +201,11 @@ function ChangeStatusPopup({ open, onClose, status }) {
 					}
 				>
 					<DyanamicDropdown
-						dataSource={changeStatusReason.filter((x) => {
-							if (x.showIn === status?.serviceDetail?.status) return x;
-							return false;
-						})}
+						dataSource={FilterStatusChange(
+							serviceInfo?.serviceDetail,
+							changeStatusReason(customCaptions),
+							customCaptions
+						)}
 						onChange={onModelStatusChange}
 						selectedValue={selectedServiceStatus}
 						selectdValueToshow="name"

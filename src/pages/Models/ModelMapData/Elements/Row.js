@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import clsx from "clsx";
-import { CircularProgress, TableCell, TableRow } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
-import Dropdown from "components/Elements/Dropdown";
+import { CircularProgress, TableCell, TableRow } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import CurveButton from "components/Elements/CurveButton";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import API from "helpers/api";
@@ -15,7 +14,7 @@ import AccessWrapper from "components/Modules/AccessWrapper";
 
 const successColor = "#24BA78";
 const errorColor = "#E21313";
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	error: {
 		color: errorColor,
 	},
@@ -42,7 +41,7 @@ const useStyles = makeStyles({
 		},
 		verticalAlign: "middle",
 	},
-});
+}));
 
 const Row = ({
 	dropDown,
@@ -53,14 +52,14 @@ const Row = ({
 	disableInput,
 	access,
 }) => {
-	const { success, error, resolveStyle, textBox, deleteIcon } = useStyles();
+	const { textBox, deleteIcon, cx, classes } = useStyles();
 	const [selectedValue, setSelectedValue] = useState({});
 	const [addNew, setAddNew] = useState({ open: false, text: "" });
 	const [confirmDelete, setDeleteConfirm] = useState(false);
 	const [isUpdating, setUpdating] = useState(false);
 
 	useEffect(() => {
-		const selectedData = dropDown.find((y) => y.value === x[elementID]);
+		const selectedData = dropDown.find((y) => y.id === x[elementID]);
 		setSelectedValue(selectedData);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dropDown]);
@@ -80,7 +79,7 @@ const Row = ({
 	};
 
 	const handleChange = (value) => {
-		patchData(value.value, elementID);
+		patchData(value?.id, elementID);
 		setSelectedValue(value);
 	};
 
@@ -108,7 +107,7 @@ const Row = ({
 			<TableRow>
 				<TableCell>{x.name}</TableCell>
 				<TableCell>
-					<Dropdown
+					{/* <Dropdown
 						options={dropDown}
 						selectedValue={selectedValue}
 						onChange={handleChange}
@@ -116,6 +115,17 @@ const Row = ({
 						required={true}
 						width="100%"
 						disabled={x.newName !== null || disableInput}
+					/>  */}
+
+					<DyanamicDropdown
+						dataSource={dropDown}
+						width="100%"
+						selectedValue={selectedValue}
+						onChange={handleChange}
+						selectdValueToshow="label"
+						disabled={x.newName !== null || disableInput}
+						columns={[{ name: "label", id: 1 }]}
+						showClear={elementID === "roleID"}
 					/>
 				</TableCell>
 				<TableCell>
@@ -146,10 +156,15 @@ const Row = ({
 						<CircularProgress style={{ height: 20, width: 20 }} />
 					) : (
 						<span
-							className={clsx(
-								resolveStyle,
-								{ [error]: x.newName === null || x[elementID] === null },
-								{ [success]: x.newName !== null || x[elementID] !== null }
+							className={cx(
+								classes.resolveStyle,
+								{
+									[classes.error]: x.newName === null || x[elementID] === null,
+								},
+								{
+									[classes.success]:
+										x.newName !== null || x[elementID] !== null,
+								}
 							)}
 						>
 							{x.newName !== null || x[elementID] !== null ? (

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Link from "@material-ui/core/Link";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 import ColourEditDialog from "./ColourEditDialog";
 import ColourConstants from "helpers/colourConstants";
 import AccordionBox from "components/Layouts/AccordionBox";
@@ -9,12 +11,12 @@ import { updateApplicaitonDetails } from "services/applications/detailsScreen/ap
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	colourContainer: {
 		marginTop: 25,
 		display: "flex",
 		justifyContent: "center",
-		paddingRight: "2%",
+		// paddingRight: "2%",
 	},
 	colourAccordion: {
 		borderColor: ColourConstants.commonBorder,
@@ -62,9 +64,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ColourDetails = ({ inputColour, setInputColour, id }) => {
+const ColourDetails = ({ inputColour, setInputColour, id, isReadOnly }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -72,6 +74,7 @@ const ColourDetails = ({ inputColour, setInputColour, id }) => {
 
 	// Handlers
 	const handleEditOpen = () => {
+		if (isReadOnly) return;
 		setOpenEditDialog(true);
 	};
 	const handleEditClose = () => {
@@ -97,12 +100,13 @@ const ColourDetails = ({ inputColour, setInputColour, id }) => {
 			} else {
 				dispatch(
 					showError(
-						response.data.detail || "could not update primary application color"
+						response?.data?.detail ||
+							"could not update primary application color"
 					)
 				);
 			}
 		} catch (error) {
-			console.log(error);
+			dispatch(showError(`Failed to update primary application color.`));
 		}
 		setOpenEditDialog(false);
 	};

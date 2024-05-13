@@ -1,8 +1,8 @@
-import { TableCell, TableRow, Tooltip } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { TableCell, TableRow, Tooltip } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { ReactComponent as DeleteIcon } from "assets/icons/deleteIcon.svg";
 import React from "react";
-import Link from "@material-ui/core/Link";
+import Link from "@mui/material/Link";
 import { isoDateWithoutTimeZone } from "helpers/utils";
 
 const HtmlTooltip = withStyles((theme) => ({

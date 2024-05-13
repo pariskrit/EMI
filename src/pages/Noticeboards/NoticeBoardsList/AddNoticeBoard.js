@@ -4,28 +4,33 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
-import dayjs from "dayjs";
+import { makeStyles } from "tss-react/mui";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
 	generateErrorState,
-	handleSort,
 	handleValidateObj,
+	isoDateFormat,
 } from "helpers/utils";
 import { useDispatch } from "react-redux";
-import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { showError } from "redux/common/actions";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 import AttachmentUpload from "./AttachmentUpload";
-import { getSiteDepartmentsInService } from "services/services/serviceLists";
+import {
+	deleteNoticeboardDepartment,
+	getNoticeboardDepartment,
+	getSiteDepartmentsInService,
+	updateNoticeboardDepartment,
+} from "services/services/serviceLists";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import {
 	patchNoticeBoard,
 	postNewNoticeBoardsFile,
 } from "services/noticeboards/noticeBoardsList";
+import CheckboxInput from "components/Elements/CheckboxInput";
 
 // Init styled components
 const ADD = AddDialogStyle();
@@ -37,23 +42,38 @@ const schema = () =>
 			.string("This field must be a string")
 			.required("This field is required"),
 		description: yup.string("This field must be a string").nullable(),
-		file: yup.mixed().test("fileType", "File size limited to 6 MB", (value) => {
-			return value.size < 6 * 1024 * 1024 || typeof value === "string";
-		}),
-		link: yup.string("This field must be string"),
+		file: yup
+			.mixed()
+			.test("fileType", "File size limited to 6 MB", (value) => {
+				return value
+					? value.size < 6 * 1024 * 1024 || typeof value === "string"
+					: true;
+			})
+			.nullable(),
+		link: yup
+			.string("This field must be a string")
+			.when(["file"], (file, schema) =>
+				!file ? schema.required("Either Document or Link is required.") : schema
+			),
 
-		siteDepartmentID: yup.string("This field must be a string").nullable(),
+		siteDepartments: yup.array("This field must be a string").nullable(),
 		expiryDate: yup.string("This field must be a string").nullable(),
 	});
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		width: "auto",
 	},
-});
+	departmentTitle: {
+		fontSize: "14px",
+		fontFamily: "Roboto Condensed",
+		fontWeight: "bold",
+		marginBottom: "5px",
+	},
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -61,7 +81,7 @@ const defaultErrorSchema = {
 	description: null,
 	file: null,
 	link: null,
-	siteDepartmentID: null,
+	siteDepartments: null,
 	expiryDate: null,
 };
 const defaultStateSchema = {
@@ -69,7 +89,7 @@ const defaultStateSchema = {
 	description: "",
 	file: null,
 	link: "",
-	siteDepartmentID: {},
+	siteDepartments: [],
 	expiryDate: "",
 };
 
@@ -88,37 +108,125 @@ function AddNewNoticeBoardDetail({
 	isEdit = false,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [Focus, setFocus] = useState(false);
+	const [departmentList, setDepartmentList] = useState([]);
+	const [isDisabled, setIsDisabled] = useState({});
+
+	const pluralDepartmentsTitle =
+		customCaptions?.["departmentPlural"] ?? "Departments";
 
 	useEffect(() => {
 		if (data) {
 			setInput({
-				name: data.name,
-				description: data.description || "",
-				file: data.documentURL ? data.name : null,
-				link: data.link || "",
-				siteDepartmentID: {
-					id: data.siteDepartmentID,
-					name: data.siteDepartmentName,
-				},
-				expiryDate: data.expiryDate
-					? dayjs(data.expiryDate + "Z").format("YYYY-MM-DDTHH:mm:ss")
-					: "",
+				id: data?.id,
+				name: data?.name,
+				description: data?.description || "",
+				file: data?.documentURL ? data?.name : null,
+				link: data?.link || "",
+				siteDepartments: [
+					{
+						id: data?.siteDepartments,
+						name: data?.siteDepartmentName,
+					},
+				],
+				expiryDate: data.expiryDate ? isoDateFormat(data.expiryDate + "Z") : "",
 			});
 		}
 	}, [data]);
+	const getCheckedDepartments = async (id) => {
+		let response = await getNoticeboardDepartment(id);
+		if (response.status) {
+			let datas = response?.data.map((x) => ({
+				...x,
+				label: x?.name,
+				deletedID: x?.id,
+			}));
+
+			let checkData = datas.map((x) => {
+				if (x?.id) {
+					return {
+						...x,
+						checked: true,
+					};
+				} else {
+					return {
+						...x,
+						checked: false,
+					};
+				}
+			});
+			setDepartmentList(checkData);
+		}
+	};
+
+	const handleDepartmentChecked = (val) => {
+		let ids = input?.siteDepartments?.includes(val.id);
+		if (!ids) {
+			setInput((prev) => ({
+				...prev,
+				siteDepartments: [...prev.siteDepartments, val?.id],
+			}));
+		} else {
+			setInput((prev) => ({
+				...prev,
+				siteDepartments: prev.siteDepartments?.filter((x) => x !== val.id),
+			}));
+		}
+	};
+
+	const handleEditDepartmentChecked = async (val) => {
+		let prevData = [...departmentList];
+		setIsDisabled((prev) => ({
+			...prev,
+			[val.noticeboardDepartmentID]: true,
+		}));
+
+		let response = val.checked
+			? await deleteNoticeboardDepartment(val?.deletedID)
+			: await updateNoticeboardDepartment({
+					noticeboardID: input?.id,
+					siteDepartmentID: val?.noticeboardDepartmentID,
+			  });
+		// let response = false;
+		if (!response.status) {
+			setInput(prevData);
+			dispatch(showError(response?.data || "Could not check input box"));
+		} else {
+			fetchData();
+			setInput((prev) => ({
+				...prev,
+			}));
+			setDepartmentList((prev) => [
+				...prev.map((data) =>
+					data.noticeboardDepartmentID === val?.noticeboardDepartmentID
+						? {
+								...data,
+								checked: data?.checked ? false : true,
+								deletedID: val?.checked ? data?.deletedID : response?.data,
+						  }
+						: data
+				),
+			]);
+		}
+		setIsDisabled((prev) => ({
+			...prev,
+			[val.noticeboardDepartmentID]: false,
+		}));
+	};
 
 	const closeOverride = () => {
 		// Clearing input state and errors
 		setInput(defaultStateSchema);
 		setErrors(defaultErrorSchema);
+		setIsLoading(false);
 		closeHandler();
 	};
 
@@ -135,7 +243,7 @@ function AddNewNoticeBoardDetail({
 		// cleaned Input
 		const cleanInput = {
 			...input,
-			siteDepartmentID: input?.siteDepartmentID?.id || null,
+			siteDepartments: input?.siteDepartments || null,
 			expiryDate: input?.expiryDate
 				? new Date(new Date(input?.expiryDate).getTime()).toJSON()
 				: null,
@@ -153,13 +261,12 @@ function AddNewNoticeBoardDetail({
 					...cleanInput,
 					siteAppId: siteAppId,
 				};
-
 				const newData = await createProcessHandler(payload);
 
 				if (newData.status === true) {
 					setDataForFetchingNoticeBoard({
 						pageNumber: 1,
-						pageSize: DefaultPageSize,
+						pageSize: defaultPageSize(),
 						search: "",
 						sortField: "",
 						sort: "",
@@ -172,7 +279,7 @@ function AddNewNoticeBoardDetail({
 
 					dispatch(
 						showError(
-							newData.data.detail ||
+							newData?.data?.detail ||
 								"Failed to add new " + customCaptions?.tutorial
 						)
 					);
@@ -185,7 +292,6 @@ function AddNewNoticeBoardDetail({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 			setIsUpdating(false);
 			setErrors({ ...errors, ...err?.response?.data?.errors });
 
@@ -207,7 +313,7 @@ function AddNewNoticeBoardDetail({
 		}
 
 		if (value === data[name]) return;
-		setIsUpdating(true);
+		setIsLoading(true);
 		if (name === "link") {
 			setInput({ ...input, file: null });
 		}
@@ -224,11 +330,11 @@ function AddNewNoticeBoardDetail({
 					  ]);
 			if (response.status) {
 				await fetchData();
-				setIsUpdating(false);
+				setIsLoading(false);
 			} else {
 				dispatch(
 					showError(
-						response.data.detail ||
+						response?.data?.detail ||
 							"Failed to edit  " + customCaptions?.tutorial
 					)
 				);
@@ -237,7 +343,7 @@ function AddNewNoticeBoardDetail({
 			}
 		} catch (error) {
 		} finally {
-			setIsUpdating(false);
+			setIsLoading(false);
 		}
 	};
 
@@ -252,13 +358,13 @@ function AddNewNoticeBoardDetail({
 			let response;
 			try {
 				response = await postNewNoticeBoardsFile({
-					filename: e[0].name,
+					filename: e?.[0]?.name,
 				});
 				if (response.status) {
 					try {
 						await fetch(response.data.url, {
 							method: "PUT",
-							body: e[0],
+							body: e?.[0],
 						});
 						await patchNoticeBoard(data.id, [
 							{ op: "replace", path: "documentKey", value: response.data.key },
@@ -289,6 +395,30 @@ function AddNewNoticeBoardDetail({
 		}
 	};
 
+	const fetchDepartmentList = async () => {
+		let response = await getSiteDepartmentsInService(siteID);
+		if (response.status) {
+			let datas = response.data.map((x) => ({
+				...x,
+				label: x.name,
+				deleteId: x.id,
+			}));
+			setDepartmentList(datas);
+		}
+	};
+
+	// useEffect(() => {
+	// 	fetchDepartmentList();
+	// }, []);
+
+	useEffect(() => {
+		if (isEdit && open) {
+			getCheckedDepartments(data?.id);
+		} else {
+			fetchDepartmentList();
+		}
+	}, [isEdit, open]);
+
 	return (
 		<div>
 			<Dialog
@@ -298,7 +428,7 @@ function AddNewNoticeBoardDetail({
 				aria-describedby="alert-dialog-description"
 				className="medium-application-dailog"
 			>
-				{isUpdating ? <LinearProgress /> : null}
+				{isUpdating || isLoading ? <LinearProgress /> : null}
 
 				<ADD.ActionContainer>
 					<DialogTitle id="alert-dialog-title">
@@ -385,7 +515,7 @@ function AddNewNoticeBoardDetail({
 								onChange={(e) => {
 									setInput({ ...input, link: e.target.value, file: null });
 								}}
-								onBlur={() => handleBlurField("link", input.link)}
+								onBlur={() => handleBlurField("link", input?.link)}
 								onKeyDown={handleKeydownPress}
 								variant="outlined"
 								fullWidth
@@ -420,42 +550,29 @@ function AddNewNoticeBoardDetail({
 								/>
 							</ErrorInputFieldWrapper>
 						</ADD.LeftInputContainer>
-						<ADD.RightInputContainer>
-							<ErrorInputFieldWrapper
-								errorMessage={
-									errors.siteDepartmentID === null
-										? null
-										: errors.siteDepartmentID
-								}
-							>
-								<DyanamicDropdown
-									isServerSide={false}
-									width="100%"
-									placeholder={"Select " + customCaptions?.department}
-									dataHeader={[{ id: 1, name: customCaptions?.department }]}
-									columns={[{ id: 1, name: "name" }]}
-									selectedValue={{
-										...input["siteDepartmentID"],
-									}}
-									handleSort={handleSort}
-									onChange={(val) => {
-										setInput({
-											...input,
-											siteDepartmentID: val,
-										});
-										if (isEdit) {
-											handleBlurField("siteDepartmentID", val.id);
-										}
-									}}
-									selectdValueToshow={"name"}
-									label={customCaptions?.department}
-									isError={errors.siteDepartmentID === null ? false : true}
-									fetchData={() => getSiteDepartmentsInService(siteID)}
-									showClear
-								/>
-							</ErrorInputFieldWrapper>
-						</ADD.RightInputContainer>
 					</ADD.InputContainer>
+
+					<div>
+						<p className={classes.departmentTitle}>{pluralDepartmentsTitle}</p>
+						<p>
+							<em>
+								{customCaptions.tutorialPlural ?? "Noticeboards"}
+								&nbsp;will be displayed on Mobile Devices for the
+								following&nbsp;
+								{pluralDepartmentsTitle}.
+							</em>
+						</p>
+						{departmentList.map((detail) => (
+							<CheckboxInput
+								key={detail?.noticeboardDepartmentID}
+								state={detail}
+								handleCheck={
+									isEdit ? handleEditDepartmentChecked : handleDepartmentChecked
+								}
+								isDisabled={isDisabled[detail?.noticeboardDepartmentID]}
+							/>
+						))}
+					</div>
 				</DialogContent>
 			</Dialog>
 		</div>

@@ -12,6 +12,38 @@ export const getModelIntervals = async (id) => {
 	}
 };
 
+export const getModelVersionArrangements = async (id) => {
+	try {
+		let response = await API.get(
+			`${Apis.ModelVersionArrangements}?modelVersionId=${id}`
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
+export const addModelVersionArrangements = async (payload) => {
+	try {
+		let response = await API.post(`${Apis.ModelVersionArrangements}`, payload);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
+export const editModelVersionArrangements = async (id, payload) => {
+	try {
+		let response = await API.patch(
+			`${Apis.ModelVersionArrangements}/${id}`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (error) {
+		return getAPIResponse(error?.response);
+	}
+};
+
 export const getModelIntervalsToEdit = async (id) => {
 	try {
 		let response = await API.get(`${Apis.ModelIntervals}/${id}`);

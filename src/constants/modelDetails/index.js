@@ -60,10 +60,10 @@ export const ModelZoneTableColumn = (ModelType) => {
 		];
 };
 
-export const ModelStageTableHeader = (ModelType, asset) => {
+export const ModelStageTableHeader = (ModelType, asset, zonePlural) => {
 	if (ModelType === "F")
-		return ["Name", "Image", "Has Zones", `Default ${asset} Filter`];
-	else return ["Name", "Image", "Has Zones"];
+		return ["Name", "Image", `Has ${zonePlural}`, `Default ${asset} Filter`];
+	else return ["Name", "Image", `Has ${zonePlural}`];
 };
 
 export const ModelStageTableColumn = (ModelType) => {
@@ -81,3 +81,11 @@ export const ModelStageTableColumn = (ModelType) => {
 			{ id: 3, name: "hasZones", style: { width: "20vw" } },
 		];
 };
+
+export const ZONES = "zones";
+export const QUESTION = "question";
+export const QUESTIONPLURAL = "questions";
+export const TASK = "task";
+export const TASKPLURAL = "tasks";
+
+export const COLLAPSEDID = "collapsedId";

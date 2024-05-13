@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Table, TableCell, TableBody, TableRow } from "@material-ui/core";
+import { Table, TableCell, TableBody, TableRow } from "@mui/material";
 import TableStyle from "styles/application/TableStyle";
 import Row from "./Row";
-import clsx from "clsx";
-
+import { makeStyles } from "tss-react/mui";
 const AT = TableStyle();
 
 function ListStages({
@@ -23,13 +22,15 @@ function ListStages({
 	fetchFromDropDwn,
 	fetchTaskStages,
 }) {
-	const [page, setPage] = useState(1);
+	const [page, setPage] = useState({ pageNo: 1, pageSize: 10 });
+	const useStyles = makeStyles()((theme) => ({}));
+	const { cx } = useStyles();
 	return (
 		<Table aria-label="Table" className={classes.table}>
 			<AT.TableHead>
 				<TableRow className={classes.tableHead}>
 					<TableCell
-						className={clsx(classes.nameRow, {
+						className={cx(classes.nameRow, {
 							[classes.tableHeadRow]: true,
 						})}
 					>
@@ -37,7 +38,7 @@ function ListStages({
 					</TableCell>
 					<TableCell
 						style={{ width: "auto" }}
-						className={clsx(classes.nameRow, {
+						className={cx(classes.nameRow, {
 							[classes.tableHeadRow]: true,
 						})}
 					>
@@ -49,7 +50,7 @@ function ListStages({
 					{modelType === "F" ? (
 						<TableCell
 							style={{ width: "auto" }}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.tableHeadRow]: true,
 							})}
 						>

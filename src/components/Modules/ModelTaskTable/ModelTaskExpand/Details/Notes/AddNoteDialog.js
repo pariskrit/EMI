@@ -4,14 +4,17 @@ import {
 	DialogTitle,
 	LinearProgress,
 	TextField,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
+import ColourConstants from "helpers/colourConstants";
 
 const schema = yup.object({
 	note: yup
@@ -23,7 +26,7 @@ const ADD = AddDialogStyle();
 const defaultData = { note: "" };
 const defaultError = { note: null };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -31,10 +34,16 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
-const AddNoteDialog = ({ open, handleClose, createHandler, fetchNotes }) => {
-	const classes = useStyles();
+const AddNoteDialog = ({
+	open,
+	handleClose,
+	createHandler,
+	fetchNotes,
+	taskId,
+}) => {
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
@@ -57,6 +66,16 @@ const AddNoteDialog = ({ open, handleClose, createHandler, fetchNotes }) => {
 				if (newData.status) {
 					setIsUpdating(false);
 					closeOverride();
+					if (taskId) {
+						const rowDataCell = document
+							.getElementById(`taskExpandable${taskId}`)
+							?.querySelector(`#dataCellnotes > div > p `);
+
+						if (rowDataCell) {
+							rowDataCell.innerHTML = input.note || "";
+						}
+					}
+
 					fetchNotes();
 				} else {
 					setErrors({ ...errors, ...newData.errors });
@@ -97,7 +116,16 @@ const AddNoteDialog = ({ open, handleClose, createHandler, fetchNotes }) => {
 					{<ADD.HeaderText>Add Note</ADD.HeaderText>}
 				</DialogTitle>
 				<ADD.ButtonContainer>
-					<ADD.CancelButton onClick={handleClose} variant="contained">
+					<ADD.CancelButton
+						onClick={handleClose}
+						variant="contained"
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
+					>
 						Cancel
 					</ADD.CancelButton>
 					<ADD.ConfirmButton
@@ -105,6 +133,12 @@ const AddNoteDialog = ({ open, handleClose, createHandler, fetchNotes }) => {
 						variant="contained"
 						className={classes.createButton}
 						disabled={isUpdating}
+						sx={{
+							"&.MuiButton-root:hover": {
+								backgroundColor: ColourConstants.deleteDialogHover,
+								color: "#ffffff",
+							},
+						}}
 					>
 						Add Note
 					</ADD.ConfirmButton>
@@ -112,6 +146,11 @@ const AddNoteDialog = ({ open, handleClose, createHandler, fetchNotes }) => {
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
 				<TextField
+					sx={{
+						"& .MuiInputBase-input.Mui-disabled": {
+							WebkitTextFillColor: "#000000",
+						},
+					}}
 					label="Note"
 					error={errors.note === null ? false : true}
 					helperText={errors.note === null ? null : errors.note}

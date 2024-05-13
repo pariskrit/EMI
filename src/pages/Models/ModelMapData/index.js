@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import ModelMapHeader from "./ModelMapHeader";
 import API from "helpers/api";
 import Dropdown from "components/Elements/Dropdown";
@@ -11,7 +11,7 @@ import {
 	Grid,
 	TextField,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import ElementList from "./ElementList";
 import { showError } from "redux/common/actions";
 import { modelsPath } from "helpers/routePaths";
@@ -20,10 +20,12 @@ import { getModelMapData } from "services/models/modelMap";
 import ColourConstants from "helpers/colourConstants";
 import useSuperAdminExclude from "hooks/useSuperAdminExclude";
 import TabTitle from "components/Elements/TabTitle";
+import DyanamicDropdown from "components/Elements/DyamicDropdown";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 const modalInitial = { data: {}, loading: false };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	main: {
 		marginTop: 30,
 	},
@@ -41,7 +43,7 @@ const useStyles = makeStyles({
 		paddingBottom: 5,
 		width: "100%",
 	},
-});
+}));
 
 // Either newName or elementID (actionID,lubricantID, etc) not null return true
 function filterResolved(x, elementId) {
@@ -60,11 +62,11 @@ function setDropDownList(lists) {
 	}));
 }
 
-const ModelMapData = ({ match, history, getError, isMounted, access }) => {
-	const classes = useStyles();
-	const {
-		params: { modelId },
-	} = match;
+const ModelMapData = ({ match, getError, isMounted }) => {
+	const navigate = useNavigate();
+	const { classes } = useStyles();
+	const { access } = useOutletContext();
+	const { modelId } = useParams();
 	useSuperAdminExclude();
 	const [modelData, setModelData] = useState(modalInitial);
 	const { customCaptions, application } =
@@ -72,7 +74,6 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 		JSON.parse(localStorage.getItem("me"));
 
 	const [dropDowns, setDropDown] = useState({
-		locations: [],
 		departments: [],
 		statuses: [],
 		types: [],
@@ -84,11 +85,10 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 		lubricants: { total: 0, resolved: 0 },
 		operatingModes: { total: 0, resolved: 0 },
 		systems: { total: 0, resolved: 0 },
-		roles: { total: 0, resolved: 0 },
+		//roles: { total: 0, resolved: 0 },
 	});
 
 	const [dropDownValue, setDropDownValue] = useState({
-		location: {},
 		department: {},
 		type: {},
 	});
@@ -100,6 +100,8 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 	});
 
 	const [dropDownLoading, setDropDownLoading] = useState(false);
+
+	const dispatch = useDispatch();
 
 	const fetchData = async () => {
 		setModelData({ data: {}, loading: true });
@@ -134,12 +136,12 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 								filterResolved(x, "operatingModeID")
 							).length,
 						},
-						roles: {
-							total: data.modelImportRoles.length,
-							resolved: data.modelImportRoles.filter((x) =>
-								filterResolved(x, "roleID")
-							).length,
-						},
+						// roles: {
+						// 	total: data.modelImportRoles.length,
+						// 	resolved: data.modelImportRoles.filter((x) =>
+						// 		filterResolved(x, "roleID")
+						// 	).length,
+						// },
 						systems: {
 							total: data.modelImportSystems.length,
 							resolved: data.modelImportSystems.filter((x) =>
@@ -152,49 +154,35 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 					const siteAppID = data.siteAppID;
 					Promise.all(
 						[
-							"/api/SiteLocations?siteAppId=" + siteAppID,
 							"/api/SiteDepartments?siteAppId=" + siteAppID,
 							"/api/ModelTypes?siteAppId=" + siteAppID,
 						].map((end) => API.get(end))
 					)
 						.then(
-							axios.spread(
-								(
-									{ data: locations },
-									{ data: departments },
-									{ data: types }
-								) => {
-									const loc = setDropDownList(locations);
-									const dep = setDropDownList(departments);
-									const typ = setDropDownList(types);
+							axios.spread(({ data: departments }, { data: types }) => {
+								const dep = departments;
+								const typ = setDropDownList(types);
 
-									if (!isMounted.aborted) {
-										setDropDown({
-											loading: false,
-											locations: loc,
-											departments: dep,
-											types: typ,
-										});
+								if (!isMounted.aborted) {
+									setDropDown({
+										loading: false,
+										departments: dep,
+										types: typ,
+									});
 
-										setDropDownValue({
-											location:
-												loc.find((x) =>
-													setDropDownData(x, data.siteLocationID)
-												) || {},
-											department:
-												dep.find((x) =>
-													setDropDownData(x, data.siteDepartmentID)
-												) || {},
+									setDropDownValue({
+										department: dep.filter(
+											(item) => item.id === data.siteDepartmentID
+										)[0],
 
-											type:
-												typ.find((x) => setDropDownData(x, data.modelTypeID)) ||
-												{},
-										});
-									}
+										type:
+											typ.find((x) => setDropDownData(x, data.modelTypeID)) ||
+											{},
+									});
 								}
-							)
+							})
 						)
-						.catch((err) => console.log(err.response));
+						.catch((err) => dispatch(showError("Failed to load data")));
 				} else {
 					// isMounted
 					return;
@@ -203,13 +191,12 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 				// response status
 				if (res?.data?.title !== undefined) getError(res.data.title);
 
-				history.push(modelsPath);
+				navigate(modelsPath);
 			}
 		} catch (err) {
 			return;
 		}
 	};
-
 	useEffect(() => {
 		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -240,6 +227,11 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 		}
 	};
 
+	const departmentChangeHandler = (val, typeId) => {
+		patchData(typeId, val.id);
+		setDropDownValue((th) => ({ ...th, department: val }));
+	};
+
 	const handleTextChange = (e) => {
 		const { name, value } = e.target;
 		setTextValue((th) => ({ ...th, [name]: value }));
@@ -266,12 +258,11 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 			/>
 			{dropDownLoading ? <LinearProgress className={classes.loading} /> : null}
 			<ModelMapHeader
+				modelData={modelData}
 				name={`${modelData.data.name} (${modelData.data.model})`}
 				errors={errors}
 				getError={getError}
-				history={history}
 				modelId={modelId}
-				fetchData={fetchData}
 				access={access}
 			/>
 
@@ -284,6 +275,11 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 							<Grid item md={4} sm={6} xs={12}>
 								<Typography className={classes.labeling}>Name</Typography>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									name="name"
 									onChange={handleTextChange}
 									onBlur={handleBlur}
@@ -296,6 +292,11 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 							<Grid item md={4} sm={6} xs={12}>
 								<Typography className={classes.labeling}>Model</Typography>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									name="model"
 									onChange={handleTextChange}
 									onBlur={handleBlur}
@@ -307,9 +308,14 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 							</Grid>
 							<Grid item md={4} sm={6} xs={12}>
 								<Typography className={classes.labeling}>
-									Serial Number Range
+									{customCaptions?.serialNumberRange ?? "Serial Number Range"}
 								</Typography>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									name="serialNumberRange"
 									onChange={handleTextChange}
 									onBlur={handleBlur}
@@ -322,28 +328,31 @@ const ModelMapData = ({ match, history, getError, isMounted, access }) => {
 						</Grid>
 						<Grid container spacing={2}>
 							<Grid item md={4} sm={6} xs={12}>
-								<Typography className={classes.labeling}>Location</Typography>
-								<Dropdown
+								<DyanamicDropdown
+									dataHeader={[
+										{
+											id: 1,
+											name: `${customCaptions?.department ?? "Department"}`,
+										},
+										{
+											id: 2,
+											name: `${customCaptions?.location ?? "Location"}`,
+										},
+									]}
+									showHeader
+									columns={[
+										{ id: 1, name: "name" },
+										{ id: 2, name: "description" },
+									]}
+									selectdValueToshow={"name"}
+									dataSource={dropDowns?.departments}
+									selectedValue={dropDownValue?.department}
+									onChange={(val) => {
+										departmentChangeHandler(val, "siteDepartmentID");
+									}}
+									label={customCaptions.department}
+									placeholder="Select Department"
 									width="100%"
-									placeholder="Please Select"
-									options={dropDowns.locations}
-									onChange={(val) =>
-										handleChange("location", val, "siteLocationID")
-									}
-									selectedValue={dropDownValue.location}
-									disabled={disableInput}
-								/>
-							</Grid>
-							<Grid item md={4} sm={6} xs={12}>
-								<Typography className={classes.labeling}>Department</Typography>
-								<Dropdown
-									width="100%"
-									placeholder="Please Select"
-									options={dropDowns.departments}
-									onChange={(val) =>
-										handleChange("department", val, "siteDepartmentID")
-									}
-									selectedValue={dropDownValue.department}
 									disabled={disableInput}
 								/>
 							</Grid>

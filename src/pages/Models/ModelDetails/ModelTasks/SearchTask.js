@@ -1,4 +1,4 @@
-import { LinearProgress } from "@material-ui/core";
+import { LinearProgress } from "@mui/material";
 import SearchField from "components/Elements/SearchField/SearchField";
 import React, { useCallback, useState } from "react";
 
@@ -21,8 +21,8 @@ function SearchTask({ fetchData, modelId, classes }) {
 	const handleSearch = useCallback(
 		debounce(async (value) => {
 			setIsSearching(true);
-			if (value) await fetchData(modelId, false, value, "", "", false);
-			else await fetchData(modelId, false, "", "", "", false);
+			if (value) await fetchData("", modelId, false, value, "", "", false, "");
+			else await fetchData("", modelId, false, "", "", "", false, "");
 			setIsSearching(false);
 		}, 1500),
 		[]

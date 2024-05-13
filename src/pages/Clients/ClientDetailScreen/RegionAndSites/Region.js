@@ -1,22 +1,23 @@
-import Accordion from "@material-ui/core/Accordion";
-import AccordionActions from "@material-ui/core/AccordionActions";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import Accordion from "@mui/material/Accordion";
+import AccordionActions from "@mui/material/AccordionActions";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import { makeStyles } from "tss-react/mui";
+
+import Typography from "@mui/material/Typography";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import CurveButton from "components/Elements/CurveButton";
 import { handleSort } from "helpers/utils";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { addClientSite } from "services/clients/clientDetailScreen";
-import CommonAddDialog from "../CommonAddDialog";
-import { siteDetailPath, clientsPath } from "helpers/routePaths";
+import CommonAddDialog from "pages/Clients/ClientDetailScreen/CommonAddDialog";
+import { siteDetailPath, clientsPath, appPath } from "helpers/routePaths";
 
 // Constants
 const SUMMARY_COLOR = "#EDEDF4";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	accordionParent: {
 		borderStyle: "solid",
 		borderColor: "#000000",
@@ -68,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 	const { id, name, sites } = region;
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [siteInput, setSiteInput] = useState("");
 	const [modifiedSites, setModifiedSites] = useState([]);
@@ -128,10 +129,7 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 				/>
 			)}
 
-			<Accordion
-				className={classes.accordionParent}
-				defaultExpanded={sites.length > 0}
-			>
+			<Accordion className={classes.accordionParent} defaultExpanded={true}>
 				<AccordionSummary
 					className={classes.summary}
 					expandIcon={
@@ -161,7 +159,7 @@ function Region({ region, fetchRegionsAndSites, getError, clientId }) {
 						<Typography>
 							<Link
 								className={classes.siteLink}
-								to={`${clientsPath}/${clientId}/sites/${site.id}${siteDetailPath}`}
+								to={`${appPath}${clientsPath}/${clientId}/sites/${site.id}/${siteDetailPath}`}
 							>
 								{site.name}
 							</Link>

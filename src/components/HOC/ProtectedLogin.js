@@ -1,30 +1,32 @@
-import React from "react";
-import { Redirect, Route } from "react-router";
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { defaultRedirect } from "helpers/constants";
 
-const ProtectedLogin = ({ component: Component, ...rest }) => {
-	const {
-		location: { state },
-	} = rest;
-	const me = sessionStorage.getItem("me") || localStorage.getItem("me");
-	return (
-		<Route
-			{...rest}
-			render={(props) =>
-				!me ? (
-					<Component {...props} />
-				) : (
-					<Redirect
-						to={{
-							pathname: state?.from?.pathname
-								? state?.from?.pathname
-								: "/app/me",
-							state: { from: props.location },
-						}}
-					/>
-				)
-			}
-		/>
-	);
+const ProtectedLogin = ({ children }) => {
+	const location = useLocation();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const me =
+			JSON.parse(sessionStorage.getItem("me")) ||
+			JSON.parse(localStorage.getItem("me"));
+		const isNavigatingFromFeedback =
+			location.search.includes("siteAppId") &&
+			location.search.includes("feedback");
+		if (me && !isNavigatingFromFeedback) {
+			const state = location.state || {};
+			navigate(
+				state?.from?.pathname
+					? state.from.pathname
+					: me.siteAppID
+					? defaultRedirect[me.position.defaultPage]
+					: "/app/me",
+				{ state: { from: location } }
+			);
+		}
+	}, [location, navigate]);
+
+	return children;
 };
 
 export default ProtectedLogin;

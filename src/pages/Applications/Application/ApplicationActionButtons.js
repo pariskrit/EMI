@@ -1,20 +1,30 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { withStyles } from "@mui/styles";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
 import API from "helpers/api";
-import Typography from "@material-ui/core/Typography";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import Typography from "@mui/material/Typography";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 import DuplicateApplicationDialog from "./DuplicateApplicationDialog";
 import ColourConstants from "helpers/colourConstants";
+import { setHistoryDrawerState, showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import RestoreIcon from "@mui/icons-material/Restore";
+import { useSelector } from "react-redux";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { getApplicationDetails } from "services/History/application";
 
 const AAB = ActionButtonStyle();
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	statusSwitch: {
 		marginRight: 15,
 	},
+
 	activeStatusSwitchText: {
 		color: ColourConstants.confirmButton,
 		fontFamily: "Roboto",
@@ -44,12 +54,20 @@ const IOSSwitch = withStyles((theme) => ({
 		margin: theme.spacing(1),
 	},
 	switchBase: {
+		"&$checked $thumb": {
+			backgroundColor: "white",
+		},
 		padding: 1,
 		"&$checked": {
 			transform: "translateX(16px)",
 			color: theme.palette.common.white,
 			"& + $track": {
 				backgroundColor: ColourConstants.confirmButton,
+				opacity: 1,
+				border: "none",
+			},
+			"& + $thumb": {
+				backgroundColor: "blue",
 				opacity: 1,
 				border: "none",
 			},
@@ -62,11 +80,12 @@ const IOSSwitch = withStyles((theme) => ({
 	thumb: {
 		width: 24,
 		height: 24,
+		backgroundColor: "white",
 	},
 	track: {
+		backgroundColor: ColourConstants.cancelButton,
 		borderRadius: 26 / 2,
 		border: `1px solid ${theme.palette.grey[400]}`,
-		backgroundColor: ColourConstants.cancelButton,
 		opacity: 1,
 		transition: theme.transitions.create(["background-color", "border"]),
 	},
@@ -149,13 +168,16 @@ const ActionButtons = ({
 	isSaving,
 	currentStatus,
 	handleUpdateIsActive,
+	adminType,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [openDuplicateDialog, setOpenDuplicateDialog] = useState(false);
+	const dispatch = useDispatch();
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 
 	// Handlers
 	const handlePatchIsActive = async () => {
@@ -185,7 +207,7 @@ const ActionButtons = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError("Failed to update active status."));
 
 			// Removing spinner
 			setIsUpdating(false);
@@ -228,7 +250,18 @@ const ActionButtons = ({
 	};
 
 	return (
-		<AAB.ButtonContainer className="actionButtonContainer">
+		<AAB.ButtonContainer
+			className="actionButtonContainer"
+			style={{ display: "flex", alignItems: "flex-start" }}
+		>
+			<HistoryBar
+				id={id}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					getApplicationDetails(id, pageNumber, pageSize)
+				}
+			/>
 			<DuplicateApplicationDialog
 				open={openDuplicateDialog}
 				closeHandler={handleDuplicateDialogClose}
@@ -266,6 +299,7 @@ const ActionButtons = ({
 							checked={currentStatus}
 							onChange={handlePatchIsActive}
 							name="status"
+							disabled={adminType === RESELLER_ID}
 						/>
 					}
 					label={
@@ -282,16 +316,30 @@ const ActionButtons = ({
 				/>
 			)}
 
-			<AAB.GeneralButton
-				disableElevation
-				variant="contained"
-				className={`${classes.duplicateButton} actionButtonsBtn`}
-				onClick={() => {
-					handleDuplicateDialogOpen();
-				}}
+			{adminType !== RESELLER_ID && (
+				<AAB.GeneralButton
+					sx={{
+						"&.MuiButton-root": {
+							backgroundColor: ColourConstants.duplicateButton,
+							color: "#ffffff",
+						},
+					}}
+					disableElevation
+					variant="contained"
+					className={cx(classes.duplicateButton, "actionButtonsBtn")}
+					onClick={() => {
+						handleDuplicateDialogOpen();
+					}}
+				>
+					Duplicate
+				</AAB.GeneralButton>
+			)}
+			<div
+				className="restore"
+				onClick={() => dispatch(setHistoryDrawerState(true))}
 			>
-				Duplicate
-			</AAB.GeneralButton>
+				<RestoreIcon className={classes.restore} />
+			</div>
 
 			{/* Rendering button with spinner if saving currently happening */}
 			{/* {isSaving ? (

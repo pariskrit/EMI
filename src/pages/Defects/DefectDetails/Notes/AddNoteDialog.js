@@ -4,8 +4,10 @@ import {
 	DialogTitle,
 	LinearProgress,
 	TextField,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import React, { useState } from "react";
 import AddDialogStyle from "styles/application/AddDialogStyle";
@@ -21,7 +23,7 @@ const ADD = AddDialogStyle();
 const defaultData = { note: "" };
 const defaultError = { note: null };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -29,10 +31,10 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 const AddNoteDialog = ({ open, handleClose, createHandler }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -106,6 +108,11 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
 				<TextField
+					sx={{
+						"& .MuiInputBase-input.Mui-disabled": {
+							WebkitTextFillColor: "#000000",
+						},
+					}}
 					label="Note"
 					error={errors.note === null ? false : true}
 					helperText={errors.note === null ? null : errors.note}

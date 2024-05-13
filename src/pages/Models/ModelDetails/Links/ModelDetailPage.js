@@ -1,38 +1,45 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes, useOutletContext } from "react-router-dom";
 import ModelDetailContext from "contexts/ModelDetailContext";
 import ModelDetails from "..";
 import routeList from "./routeList";
 import SingleComponent from "./SingleComponent";
 import { modelDetailsPath } from "helpers/routePaths";
 
-const ModelDetailPage = ({ access }) => {
-	const { customCaptions } =
-		JSON.parse(sessionStorage.getItem("me")) ||
-		JSON.parse(localStorage.getItem("me"));
-
+const ModelDetailPage = () => {
+	const { access } = useOutletContext();
+	const {
+		customCaptions,
+		application: { showArrangements },
+		position,
+	} = JSON.parse(sessionStorage.getItem("me")) ||
+	JSON.parse(localStorage.getItem("me"));
 	return (
 		<ModelDetailContext>
 			<ModelDetails>
-				{(modelDetail) => (
-					<Switch>
-						{routeList(modelDetail, customCaptions).map((route) => (
-							<Route
-								key={route.id}
-								render={(props) => (
-									<SingleComponent
-										{...route}
-										{...props}
-										access={access}
-										customCaptions={customCaptions}
+				{(modelDetail) => {
+					return (
+						<Routes>
+							{routeList(modelDetail, customCaptions, showArrangements).map(
+								(route) => (
+									<Route
+										key={route.id}
+										element={
+											<SingleComponent
+												{...route}
+												access={access}
+												customCaptions={customCaptions}
+												position={position}
+												showArrangements={showArrangements}
+											/>
+										}
+										path={route.path}
 									/>
-								)}
-								exact
-								path={modelDetailsPath + route.path}
-							/>
-						))}
-					</Switch>
-				)}
+								)
+							)}
+						</Routes>
+					);
+				}}
 			</ModelDetails>
 		</ModelDetailContext>
 	);

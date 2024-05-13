@@ -1,14 +1,19 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import NavDetails from "components/Elements/NavDetails";
 import Icon from "components/Elements/Icon";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
+import { AccessTypes } from "helpers/constants";
+import { setHistoryDrawerState } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const AT = ActionButtonStyle();
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	restore: {
 		border: "2px solid",
 		borderRadius: "100%",
@@ -40,12 +45,16 @@ const useStyles = makeStyles({
 			flexDirection: "column",
 		},
 	},
-});
+}));
 
 function Header({ setOpenAddNoticeBoard, dataLength, noticeBoardCC }) {
 	// Init hooks
-	const classes = useStyles();
+	const { position } = sessionStorage.getItem("me")
+		? JSON.parse(sessionStorage.getItem("me"))
+		: {};
 
+	const { classes, cx } = useStyles();
+	const dispatch = useDispatch();
 	return (
 		<div className={"topContainerCustomCaptions"}>
 			<NavDetails
@@ -59,12 +68,18 @@ function Header({ setOpenAddNoticeBoard, dataLength, noticeBoardCC }) {
 				hideVersion={true}
 			/>
 			<div className={classes.wrapper}>
-				<div className={classes.buttons}>
-					<AT.GeneralButton onClick={() => setOpenAddNoticeBoard(true)}>
-						Add New
-					</AT.GeneralButton>
-				</div>
-				<div className="restore">
+				{position?.noticeboardAccess &&
+					position?.noticeboardAccess !== AccessTypes["Read-Only"] && (
+						<div className={classes.buttons}>
+							<AT.GeneralButton onClick={() => setOpenAddNoticeBoard(true)}>
+								Add New
+							</AT.GeneralButton>
+						</div>
+					)}
+				<div
+					className="restore"
+					onClick={() => dispatch(setHistoryDrawerState(true))}
+				>
 					<Icon className={classes.restore} name="Restore" />
 				</div>
 			</div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import SingleComponent from "./SingleComponent";
 import {
 	userDetailPath,
@@ -11,11 +11,11 @@ import CommonUserComponent from "components/Modules/CommonUserComponent";
 import differentUserAPIs from "helpers/differentUserAPIs";
 import { connect } from "react-redux";
 import { showError } from "redux/common/actions";
-import UserModelAccess from "../UserDetail/UserModelAccess";
-import UserSite from "../UserDetail/UserSites";
-import TabTitle from "components/Elements/TabTitle";
+import UserModelAccess from "pages/Users/UserDetail/UserModelAccess";
+import UserSite from "pages/Users/UserDetail/UserSites";
+import UserProfilePage from "../UserDetail/UserProfile";
 
-const routes = [
+export const userRoutes = [
 	{
 		id: 15,
 		name: "Details",
@@ -32,7 +32,7 @@ const routes = [
 		id: 100,
 		name: "Profile",
 		path: userProfilePath,
-		component: CommonUserComponent,
+		component: UserProfilePage,
 		showHistory: true,
 		showSwitch: false,
 		showPasswordReset: true,
@@ -70,13 +70,12 @@ const UserPage = ({ getError }) => {
 	// const detail = routes[0];
 	// const profile = routes[1];
 	return (
-		<div>
-			{routes.map((x) => (
+		<Routes>
+			{userRoutes.map((x) => (
 				<Route
 					key={x.id}
-					exact
 					path={x.path}
-					component={(props) => (
+					element={(props) => (
 						<SingleComponent {...props} {...x} getError={getError} />
 					)}
 				/>
@@ -95,7 +94,7 @@ const UserPage = ({ getError }) => {
 					<SingleComponent {...props} {...detail} getError={getError} />
 				)}
 			/> */}
-		</div>
+		</Routes>
 	);
 };
 

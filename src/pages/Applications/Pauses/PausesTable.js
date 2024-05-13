@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
@@ -14,7 +15,7 @@ import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 // Init styled components
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -57,7 +58,7 @@ const useStyles = makeStyles({
 		fontFamily: "Roboto Condensed",
 		fontSize: 14,
 	},
-});
+}));
 
 function PausesTable({
 	data,
@@ -70,9 +71,10 @@ function PausesTable({
 	setSearchedData,
 	handleEditDialogOpen,
 	handleDeleteDialogOpen,
+	isReseller,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	// Init State
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -80,7 +82,10 @@ function PausesTable({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		handleSort(data, setData, field, newMethod);
@@ -102,7 +107,7 @@ function PausesTable({
 							onClick={() => {
 								handleSortClick("name");
 							}}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.selectedTableHeadRow]: currentTableSort[0] === "name",
 								[classes.tableHeadRow]: currentTableSort[0] !== "name",
 							})}
@@ -121,7 +126,7 @@ function PausesTable({
 							onClick={() => {
 								handleSortClick("pauseSubcategories");
 							}}
-							className={clsx(classes.subcatRow, {
+							className={cx(classes.subcatRow, {
 								[classes.selectedTableHeadRow]:
 									currentTableSort[0] === "pauseSubcategories",
 								[classes.tableHeadRow]:
@@ -155,48 +160,52 @@ function PausesTable({
 											: null}
 									</AT.TableBodyText>
 
-									<AT.DotMenu
-										onClick={(e) => {
-											setAnchorEl(
-												anchorEl === e.currentTarget ? null : e.currentTarget
-											);
-											setSelectedData(
-												anchorEl === e.currentTarget ? null : index
-											);
-										}}
-									>
-										<AT.TableMenuButton>
-											<MenuIcon />
-										</AT.TableMenuButton>
-
-										<PopupMenu
-											index={index}
-											selectedData={selectedData}
-											anchorEl={anchorEl}
-											isLast={
-												searchQuery === ""
-													? index === data.length - 1
-													: index === searchedData.length - 1
-											}
-											id={d.id}
-											clickAwayHandler={() => {
-												setAnchorEl(null);
-												setSelectedData(null);
+									{!isReseller && (
+										<AT.DotMenu
+											onClick={(e) => {
+												setAnchorEl(
+													anchorEl === e.currentTarget ? null : e.currentTarget
+												);
+												setSelectedData(
+													anchorEl === e.currentTarget ? null : index
+												);
 											}}
-											menuData={[
-												{
-													name: "Edit",
-													handler: handleEditDialogOpen,
-													isDelete: false,
-												},
-												{
-													name: "Delete",
-													handler: handleDeleteDialogOpen,
-													isDelete: true,
-												},
-											]}
-										/>
-									</AT.DotMenu>
+										>
+											<AT.TableMenuButton>
+												<MenuIcon />
+											</AT.TableMenuButton>
+
+											<PopupMenu
+												index={index}
+												selectedData={selectedData}
+												anchorEl={anchorEl}
+												isLast={
+													searchQuery === ""
+														? index === data.length - 1
+														: index === searchedData.length - 1
+												}
+												id={d.id}
+												clickAwayHandler={() => {
+													setAnchorEl(null);
+													setSelectedData(null);
+												}}
+												menuData={[
+													{
+														name: "Edit",
+														handler: handleEditDialogOpen,
+														isDelete: false,
+														disabled: isReseller,
+													},
+													{
+														name: "Delete",
+														handler: handleDeleteDialogOpen,
+														isDelete: true,
+														disabled: isReseller,
+													},
+												]}
+											/>
+										</AT.DotMenu>
+									)}
 								</AT.CellContainer>
 							</AT.DataCell>
 						</TableRow>

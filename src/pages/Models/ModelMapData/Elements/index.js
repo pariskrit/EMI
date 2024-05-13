@@ -5,8 +5,10 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import Row from "./Row";
 import API from "helpers/api";
@@ -18,7 +20,7 @@ const errorColor = "#E21313";
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	box: {
 		marginTop: 16,
 	},
@@ -34,16 +36,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const header = (title, errorData, errors) => (
+const header = (title, errorData, errors, elementID) => (
 	<span>
 		{title} &nbsp;&nbsp;
-		{errors.total > 0 && (
+		{errors?.total > 0 && (
 			<span
 				style={{
 					color: errors.total === errors.resolved ? successColor : errorColor,
 				}}
 			>
-				({errorData} Errors Resolved)
+				{elementID !== "roleID" && `(${errorData} Errors Resolved)`}
 			</span>
 		)}
 	</span>
@@ -64,7 +66,7 @@ const Elements = ({
 	disableInput,
 	access,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [dropDown, setDropDown] = useState([]);
 	const [updatedDetails, setUpdatedDetails] = useState({
 		data: mainData,
@@ -103,7 +105,12 @@ const Elements = ({
 		<AccordionBox
 			accordionClass={classes.box}
 			defaultExpanded={false}
-			title={header(title, `${errors.resolved}/${errors.total}`, errors)}
+			title={header(
+				title,
+				`${errors?.resolved}/${errors?.total}`,
+				errors,
+				elementID
+			)}
 		>
 			<Table className={classes.tableContainer}>
 				<TableHead className={classes.tableHead}>
@@ -118,7 +125,7 @@ const Elements = ({
 					{mainData.map((x) => (
 						<Row
 							key={x.id}
-							dropDown={dropDown.map((x) => ({ label: x.name, value: x.id }))}
+							dropDown={dropDown.map((x) => ({ label: x.name, id: x.id }))}
 							x={x}
 							patchApi={patchApi}
 							setErrorResolve={(data) => setErrorResolve(data, x)}

@@ -6,8 +6,10 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import ColourConstants from "helpers/colourConstants";
 import KeyContactRow from "./KeyContactRow";
@@ -21,7 +23,7 @@ import {
 	getSiteAppKeyContacts,
 } from "services/clients/sites/siteApplications/siteApplicationDetails";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	noteContainer: {
 		display: "flex",
 		justifyContent: "flex-end",
@@ -61,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
 	actionButton: { padding: "0px 13px 12px 6px" },
 }));
 
-const KeyContacts = ({ data, details, loading }) => {
-	const classes = useStyles();
+const KeyContacts = ({ data, details, loading, isReadOnly }) => {
+	const { classes, cx } = useStyles();
 	const [modal, setModal] = useState({
 		openAddModal: false,
 		openDeleteModal: false,
@@ -73,7 +75,7 @@ const KeyContacts = ({ data, details, loading }) => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (data) {
+		if (Array.isArray(data)) {
 			setKeyContacts(data);
 		}
 	}, [data]);
@@ -92,8 +94,8 @@ const KeyContacts = ({ data, details, loading }) => {
 		} else {
 			dispatch(
 				showError(
-					response.data.detail ||
-						response.data.error ||
+					response?.data?.detail ||
+						response?.data?.error ||
 						"Could not add key contact"
 				)
 			);
@@ -154,7 +156,7 @@ const KeyContacts = ({ data, details, loading }) => {
 
 			<AccordionBox
 				title={`Key Contacts (${keyContact?.length})`}
-				isActionsPresent={true}
+				isActionsPresent={true && !isReadOnly}
 				buttonName="Add Key Contacts"
 				buttonAction={onOpenAddDialog}
 				accordianDetailsCss="table-container"
@@ -167,7 +169,6 @@ const KeyContacts = ({ data, details, loading }) => {
 							<TableRow>
 								<TableCell style={{ width: "170px" }}>Name</TableCell>
 								<TableCell>Email</TableCell>
-								<TableCell>Phone</TableCell>
 								<TableCell></TableCell>
 							</TableRow>
 						</TableHead>
@@ -177,6 +178,7 @@ const KeyContacts = ({ data, details, loading }) => {
 									key={row.id}
 									row={row}
 									classes={classes}
+									isReadOnly={isReadOnly}
 									onDeleteNote={onOpenDeleteDialog}
 								/>
 							))}

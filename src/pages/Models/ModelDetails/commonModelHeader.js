@@ -1,18 +1,41 @@
-import { makeStyles } from "@material-ui/core/styles";
-import RestoreIcon from "@material-ui/icons/Restore";
+import { makeStyles } from "tss-react/mui";
+import { NoReadOnly } from "helpers/constants";
+import ImportCSVFile from "components/Elements/ImportCSV/ImportCSV";
+import RestoreIcon from "@mui/icons-material/Restore";
 import NavDetails from "components/Elements/NavDetails";
 import NavButtons from "components/Elements/NavButtons";
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import "pages/Applications/CustomCaptions/customCaptions.css";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import { modelsPath } from "helpers/routePaths";
+import { appPath, modelsPath } from "helpers/routePaths";
 import { ModelContext } from "contexts/ModelDetailContext";
+import ReportDropdowns from "./ReportDropdowns";
+import AccessWrapper from "components/Modules/AccessWrapper";
+import { useLocation } from "react-router-dom";
+import {
+	DownloadCSVTemplateforModalTask,
+	getCountOfModelTaskList,
+	getModelTaskList,
+} from "services/services/serviceLists";
+import { showError } from "redux/common/actions";
+import { useUserSearch } from "hooks/useUserSearch";
+import { defaultPageSize } from "helpers/utils";
+import { getLengthOfModelTasks } from "services/models/modelDetails/modelTasks";
+import IOSSwitch from "components/Elements/IOSSwitch";
+import { patchModelChange } from "services/models/modelDetails/details";
+import { useDispatch } from "react-redux";
 const AT = ActionButtonStyle();
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	restore: {
 		border: "2px solid",
 		borderRadius: "100%",
@@ -23,9 +46,7 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		color: "#307ad6",
 	},
-	importButton: {
-		background: "#ED8738",
-	},
+
 	buttons: {
 		display: "flex",
 		marginLeft: "auto",
@@ -44,8 +65,12 @@ const useStyles = makeStyles({
 			flexDirection: "column",
 		},
 	},
-});
-
+}));
+const importButton = {
+	"&.MuiButton-root": {
+		backgroundColor: "#ED8738",
+	},
+};
 const ModelWrapper = ({
 	state,
 	lastSaved,
@@ -61,6 +86,7 @@ const ModelWrapper = ({
 	showRevert,
 	showSaveChanges,
 	showVersion,
+	showSwitch,
 	onClickSave,
 	onCLickedSaveChanges,
 	onClickPasteTask,
@@ -71,15 +97,102 @@ const ModelWrapper = ({
 	isPasteTaskDisabled,
 	isQuestionTaskDisabled,
 	customCaptions,
+	showPrint,
+	modelID,
+	currentTaskTableSort,
+	onTaskListImportSuccess,
 }) => {
-	const classes = useStyles();
+	const { classes } = useStyles();
 	let name = "Task";
+	const searchRef = useRef("");
+	const dispatchx = useDispatch();
+	const location = useLocation();
+	const isModelTaskPage = location.pathname.includes("tasks");
+	const handleSwitchChange = async () => {
+		try {
+			const res = await patchModelChange(state?.modelID, [
+				{
+					path: "active",
+					op: "replace",
+					value: !state?.active,
+				},
+			]);
+			if (res?.status) {
+				dispatch({
+					type: "UPDATE_SWITCH",
+					payload: { active: !state?.active },
+				});
+			} else {
+				dispatchx(showError(res?.data?.detail || "Failed to change status."));
+			}
+		} catch (err) {
+			dispatchx(showError(err?.response?.detail || "Failed to change status."));
+		}
+	};
 
 	if (ModelName === customCaptions.questionPlural) {
 		name = customCaptions.question;
 	}
 
-	const [modelDetail] = useContext(ModelContext);
+	const [modelDetail, dispatch] = useContext(ModelContext);
+	const [importCSV, setImportCSV] = useState(false);
+	const [totalTaskCount, setTotalTaskCount] = useState(modelDetail?.taskCount);
+	const { position } = sessionStorage.getItem("me")
+		? JSON.parse(sessionStorage.getItem("me"))
+		: {};
+	const { setAllData } = useUserSearch();
+	const [countOFTask, setCountOfTask] = useState(0);
+	const [dataForFetchingModelTask, setDataForFetchingModelTask] = useState({
+		pageNumber: 1,
+		pageSize: defaultPageSize(),
+		search: "",
+		sortField: "",
+		sort: "",
+	});
+	// attemp to fetch task list
+	const fetchModelTaskList = useCallback(
+		async ({ search = "", sortField = "", sort = "", shouldCount = true }) => {
+			try {
+				const response = await Promise.all([
+					getModelTaskList({
+						siteAppId: modelID,
+						search,
+						sortField,
+						sort,
+					}),
+				]);
+				if (response[0].status) {
+					setAllData(response?.[0]?.data);
+					const modelTaskLength = await getLengthOfModelTasks(modelID);
+					dispatch({
+						type: "TAB_COUNT",
+						payload: {
+							countTab: "taskCount",
+							data: modelTaskLength?.data,
+						},
+					});
+					response?.[1].status && setCountOfTask(response?.[1]?.data);
+					setDataForFetchingModelTask((prev) => ({ ...prev, pageNumber: 1 }));
+				} else {
+					dispatch(
+						showError(response?.data?.detail || "Failed to fetch service list")
+					);
+				}
+			} catch (error) {
+				dispatch(
+					showError(error?.response?.detail || "Failed to fetch service list")
+				);
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[
+			modelID,
+			dispatch,
+			setAllData,
+			searchRef.current,
+			dataForFetchingModelTask.pageNumber,
+		]
+	);
 	return (
 		<div className="container">
 			<div className={"topContainerCustomCaptions"}>
@@ -87,7 +200,11 @@ const ModelWrapper = ({
 					status={true}
 					lastSaved={lastSaved}
 					staticCrumbs={[
-						{ id: 1, name: "Models", url: modelsPath },
+						{
+							id: 1,
+							name: `${customCaptions?.modelPlural}`,
+							url: appPath + modelsPath,
+						},
 						{
 							id: 2,
 							name:
@@ -102,23 +219,51 @@ const ModelWrapper = ({
 					state={state}
 					hideVersion={false}
 				/>
-				<div
-					className={
-						showAdd ||
-						showSave ||
-						showPasteTask ||
-						showSaveChanges ||
-						showChangeStatus ||
-						showRevert
-							? classes.wrapper
-							: ""
-					}
-				>
+				<ImportCSVFile
+					siteAppID={modelID}
+					open={importCSV}
+					uploadApiEndPoint={"ModelVersionTasks/upload"}
+					apiEndPoints={"ModelVersionTasks/import"}
+					handleClose={() => {
+						setImportCSV(false);
+					}}
+					importSuccess={async () => {
+						await fetchModelTaskList({
+							search: "",
+							sortField: currentTaskTableSort[0],
+							sort: currentTaskTableSort[1],
+						});
+						setDataForFetchingModelTask({
+							pageNumber: 1,
+							pageSize: defaultPageSize(),
+							search: "",
+							sortField: "",
+							sort: "",
+						});
+					}}
+					downloadCSVTemplate={DownloadCSVTemplateforModalTask}
+					setTaskListImportSuccess={onTaskListImportSuccess}
+				/>
+				<div className={classes.wrapper}>
 					<div className={classes.buttons}>
+						{!state?.isPublished && isModelTaskPage && (
+							<AccessWrapper
+								access={position?.serviceAccess}
+								accessList={NoReadOnly}
+							>
+								<AT.GeneralButton
+									sx={importButton}
+									className={classes.importButton}
+									onClick={() => setImportCSV(true)}
+								>
+									Import {customCaptions?.taskPlural ?? "Tasks"}
+								</AT.GeneralButton>
+							</AccessWrapper>
+						)}
 						{showPasteTask && (
 							<AT.GeneralButton
+								sx={importButton}
 								onClick={onClickPasteTask}
-								className={classes.importButton}
 								disabled={
 									ModelName === customCaptions.questionPlural
 										? isQuestionTaskDisabled
@@ -128,27 +273,35 @@ const ModelWrapper = ({
 								Paste {name}
 							</AT.GeneralButton>
 						)}
+						{showSwitch && (
+							<div>
+								<IOSSwitch
+									currentStatus={state?.active}
+									onChange={handleSwitchChange}
+									name="status"
+									disable={position?.modelAccess === "R"}
+								/>
+							</div>
+						)}
 						{showVersion && (
-							<AT.GeneralButton
-								onClick={onClickVersion}
-								className={classes.importButton}
-							>
+							<AT.GeneralButton sx={importButton} onClick={onClickVersion}>
 								New Version
 							</AT.GeneralButton>
 						)}
 						{showChangeStatus && (
 							<AT.GeneralButton
+								sx={importButton}
 								onClick={onClickShowChangeStatus}
-								className={classes.importButton}
+								disabled={
+									modelDetail?.modelDetail?.isPublished ||
+									modelDetail?.showVersion
+								}
 							>
 								Change Status
 							</AT.GeneralButton>
 						)}
 						{showRevert && (
-							<AT.GeneralButton
-								onClick={onClickRevert}
-								className={classes.importButton}
-							>
+							<AT.GeneralButton sx={importButton} onClick={onClickRevert}>
 								Revert
 							</AT.GeneralButton>
 						)}
@@ -164,10 +317,17 @@ const ModelWrapper = ({
 							<AT.GeneralButton onClick={onClickSave}>Save</AT.GeneralButton>
 						)}
 					</div>
-					<div className="restore">
-						<RestoreIcon className={classes.restore} />
-					</div>
+
+					{current !== `${customCaptions?.service} Layout` && (
+						<button
+							className="restore"
+							onClick={() => dispatch({ type: "TOGGLE_HISTORYBAR" })}
+						>
+							<RestoreIcon className={classes.restore} />
+						</button>
+					)}
 				</div>
+				{showPrint && <ReportDropdowns customCaptions={customCaptions} />}
 			</div>
 
 			<NavButtons

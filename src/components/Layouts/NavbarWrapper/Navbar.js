@@ -1,19 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import clsx from "clsx";
-import { Link, useLocation, useHistory } from "react-router-dom";
-import { useGoogleLogout } from "react-google-login";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // Bottom Navigation
-import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Divider from "@material-ui/core/Divider";
-import SettingsIcon from "@material-ui/icons/Settings";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import { makeStyles } from "@material-ui/core/styles";
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
+import SettingsIcon from "@mui/icons-material/Settings";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import { makeStyles } from "tss-react/mui";
 import MiniLogo from "assets/EMI-symbol.png";
 
 // Importing icons
@@ -22,7 +20,7 @@ import { ReactComponent as OpenIcon } from "assets/icons/open-panel.svg";
 import { ReactComponent as UserProfileIcon } from "assets/icons/user-profile.svg";
 import { ReactComponent as Home } from "assets/icons/home.svg";
 import { ReactComponent as LogoutIcon } from "assets/icons/logoutIcon.svg";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 // Logo imports
 import LargeLogo from "assets/LargeLogoWhite.png";
 import ColourConstants from "helpers/colourConstants";
@@ -32,12 +30,17 @@ import {
 	loginPath,
 } from "helpers/routePaths";
 import navList from "./navList";
-import "./style.scss";
+import "components/Layouts/NavbarWrapper/style.scss";
 import roles from "helpers/roles";
 import { LightenDarkenColor } from "helpers/lightenDarkenColor";
 import useDidMountEffect from "hooks/useDidMountEffect";
-import SkeletonNav from "../SkeletonNav";
+import SkeletonNav from "components/Layouts/SkeletonNav";
 import { getLocalStorageData } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import { googleLogout } from "@react-oauth/google";
+import { decryptToken } from "helpers/authenticationCrypto";
 
 // Size constants
 const drawerWidth = 260;
@@ -49,6 +52,7 @@ function Navbar({
 	isLoading,
 	userDetail,
 	setUserDetail,
+	setNavState,
 }) {
 	const {
 		position,
@@ -62,6 +66,9 @@ function Navbar({
 		site,
 		siteID,
 		siteAppID,
+		customCaptions,
+		adminType,
+		isAdmin,
 	} =
 		Object.values(userDetail).length > 0
 			? userDetail
@@ -69,7 +76,16 @@ function Navbar({
 			  JSON.parse(localStorage.getItem("me")) ||
 			  {};
 
+	const [IsAppPortal, setIsAppPortal] = useState();
+
 	const anchorRef = useRef(null);
+	const supportRef = useRef(null);
+	const locations = useLocation();
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		setIsAppPortal(locations.pathname === "/app/portal");
+	}, [locations.pathname]);
 
 	React.useEffect(() => {
 		const storageSession = JSON.parse(sessionStorage.getItem("me"));
@@ -98,16 +114,40 @@ function Navbar({
 	}, []);
 
 	const colorBackground =
-		application === null ? ColourConstants.navDrawer : "#" + application?.color;
+		application === null || IsAppPortal
+			? ColourConstants.navDrawer
+			: "#" + application?.color;
 
-	const elementProps = anchorRef.current
-		? {
-				top: anchorRef.current.getBoundingClientRect().top,
-				left: anchorRef.current.getBoundingClientRect().right,
-		  }
-		: { top: 255, left: 61 };
+	// const elementProps = anchorRef.current
+	// 	? {
+	// 			top: anchorRef.current.getBoundingClientRect().top,
+	// 			left: anchorRef.current.getBoundingClientRect().right,
+	// 	  }
+	// 	: { top: 255, left: 61 };
 
-	const useStyles = makeStyles((theme) => ({
+	// intial style for settingsoptions -- settings  modal pop up
+
+	const [settingsOptions, setSettingsOptions] = useState({
+		position: "fixed",
+		zIndex: 2000,
+		right: 0,
+		left: 61,
+		top: 255,
+		width: 225,
+		backgroundColor: colorBackground,
+		borderRadius: 2,
+	});
+	const [supportOptions, setSupportOptions] = useState({
+		position: "fixed",
+		zIndex: 2000,
+		right: 0,
+		left: 61,
+		top: 255,
+		width: 225,
+		backgroundColor: colorBackground,
+		borderRadius: 2,
+	});
+	const useStyles = makeStyles()((theme) => ({
 		root: {
 			display: "flex",
 		},
@@ -125,8 +165,8 @@ function Navbar({
 			//height: "56%",
 			flex: "1",
 			"&::-webkit-scrollbar": {
-				width: 5,
-				height: 5,
+				width: 14,
+				height: 14,
 			},
 			"&::-webkit-scrollbar-track": {
 				background:
@@ -143,7 +183,6 @@ function Navbar({
 			},
 		},
 		drawerOpen: {
-			backgroundColor: colorBackground,
 			width: drawerWidth,
 			transition: theme.transitions.create("width", {
 				easing: theme.transitions.easing.sharp,
@@ -152,7 +191,6 @@ function Navbar({
 			overflow: "hidden",
 		},
 		drawerClose: {
-			backgroundColor: colorBackground,
 			transition: theme.transitions.create("width", {
 				easing: theme.transitions.easing.sharp,
 				duration: theme.transitions.duration.leavingScreen,
@@ -171,7 +209,9 @@ function Navbar({
 		miniLogo: {
 			marginTop: 30,
 			height: "33px",
-			width: "auto",
+			width: "100%",
+			maxWidth: 50,
+			objectFit: "contain",
 		},
 		miniLogoMobile: {
 			height: "33px",
@@ -179,16 +219,20 @@ function Navbar({
 		},
 		largeLogoContainer: {
 			display: "flex",
-			justifyContent: "center",
+			// justifyContent: "start",
 			marginBottom: 43,
+			padding: "0px 16px",
+			//marginLeft: "5px",
 		},
 		largeLogo: {
 			marginTop: 30,
-			maxHeight: 60,
+			maxHeight: 82,
 			// Note: width should be auto if using a different sized logo
-			width: "auto",
-			maxWidth: 210,
-			marginLeft: 35,
+			width: "100%",
+			height: "auto",
+			objectFit: "contain",
+			maxWidth: 200,
+			//marginLeft: 35,
 		},
 		toolbar: {
 			display: "flex",
@@ -211,9 +255,34 @@ function Navbar({
 			fontWeight: "bold",
 			color: "#FFFFFF",
 		},
+		secondaryText: {},
 		listItemTextSecondary: {
 			fontSize: "13px",
 			color: "#000000",
+		},
+		listItemTextSecondaryCurrent: {
+			fontSize: "13px",
+			color: "#FFFFFF",
+		},
+		listItemUserOpen: {
+			fontSize: "13px",
+			color: "#000000",
+			whiteSpace: "normal",
+		},
+		listItemUserClosed: {
+			fontSize: "13px",
+			color: "#000000",
+			whiteSpace: "inherit",
+		},
+		listItemUserOpenActive: {
+			fontSize: "13px",
+			color: "#fff",
+			whiteSpace: "normal",
+		},
+		listItemUserClosedActive: {
+			fontSize: "13px",
+			color: "#fff",
+			whiteSpace: "inherit",
 		},
 		navListContainer: {
 			// display: "flex",
@@ -222,22 +291,14 @@ function Navbar({
 		settingsContainer: {
 			position: "relative",
 		},
-		settingsOptions: {
-			position: "fixed",
-			zIndex: 2000,
-			right: 0,
-			left: elementProps.left,
-			top: elementProps.top,
-			width: 225,
-			backgroundColor: colorBackground,
-			borderRadius: 2,
-		},
+		settingsOptions: settingsOptions,
+		supportOptions: supportOptions,
 		nested: {
 			paddingLeft: "72px",
 		},
 		currentItemBackground: {
 			backgroundColor:
-				application === null
+				application === null || IsAppPortal
 					? ColourConstants.navCurrentItem
 					: LightenDarkenColor(application?.color, -20),
 		},
@@ -337,20 +398,15 @@ function Navbar({
 			backgroundColor: "black",
 		},
 	}));
+
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
-	const { signOut } = useGoogleLogout({
-		jsSrc: "https://apis.google.com/js/api.js",
-		onFailure: (res) => console.log(res),
-		clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-		redirectUri: "/",
-		onLogoutSuccess: () => history.push("/login"),
-	});
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Setting state
 	const [open, setOpen] = useState(false);
 	const [showSettingPopup, setShowSettingPopup] = useState(false);
+	const [showSupportPopup, setShowSupportPopup] = useState(false);
 
 	const settingPath = getLocalStorageData("settingType");
 
@@ -366,6 +422,33 @@ function Navbar({
 	// Handlers
 	const onHoverSettings = () => {
 		setShowSettingPopup((prev) => !prev);
+		if (anchorRef.current) {
+			const updatedElementProps = {
+				top: anchorRef.current.getBoundingClientRect().top,
+				left: anchorRef.current.getBoundingClientRect().right,
+			};
+
+			setSettingsOptions((prevSettingsOptions) => ({
+				...prevSettingsOptions,
+				left: updatedElementProps.left,
+				top: updatedElementProps.top,
+			}));
+		}
+	};
+	const onHoverSupport = () => {
+		setShowSupportPopup((prev) => !prev);
+		if (supportRef.current) {
+			const updatedElementProps = {
+				top: supportRef.current.getBoundingClientRect().top,
+				left: supportRef.current.getBoundingClientRect().right,
+			};
+
+			setSupportOptions((prevSettingsOptions) => ({
+				...prevSettingsOptions,
+				left: updatedElementProps.left,
+				top: updatedElementProps.top,
+			}));
+		}
 	};
 
 	const handleSavePath = (settingType) => {
@@ -375,6 +458,7 @@ function Navbar({
 
 	const handleDrawerChange = () => {
 		setOpen(!open);
+		setNavState(!open);
 	};
 
 	const handleLogout = async () => {
@@ -395,18 +479,22 @@ function Navbar({
 				if (loginType) {
 					if (loginType === "GOOGLE") {
 						// GOOGLE SIGNOUT
-						signOut();
+						googleLogout();
+						navigate(loginPath);
+						// history.push(loginPath);
+
 						return true;
 					}
 				}
-				setLoading(false);
 
-				history.push(loginPath);
+				navigate(loginPath);
 			} else {
 				throw new Error(logOut);
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(showError("Failed to logout."));
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -421,19 +509,19 @@ function Navbar({
 	}
 
 	// Filter which sidebar navigation is accessible
-	const navOptions = navList
+	const navOptions = navList(customCaptions)
 		.filter((x) => {
 			// // If position is null it is super admin
 			const access = position?.[x.access];
 			// If the user is SuperAdmin
 			if (role === roles.superAdmin) {
 				if (x.roles.includes(roles.superAdmin)) {
-					return true;
+					return x?.hideToReseller ? adminType !== RESELLER_ID : true;
 				} else {
 					return false;
 				}
 				// If the user is Client Administrator
-			} else if (role === roles.clientAdmin) {
+			} else if (role === roles.clientAdmin && !siteID) {
 				// If Switched as Client Admin Mode ignore position access
 				if (clientAdminMode) {
 					if (x.roles.includes(roles.clientAdmin)) {
@@ -468,7 +556,7 @@ function Navbar({
 		JSON.parse(localStorage.getItem("originalLogin"));
 
 	const pushToLogin = () => {
-		history.push(navOptions[0].path);
+		navigate(navOptions.length > 0 ? navOptions?.[0]?.path : "/app/me");
 	};
 
 	useDidMountEffect(() => {
@@ -477,13 +565,18 @@ function Navbar({
 	}, [userDetail]);
 
 	const redirectToOriginalMode = async () => {
-		sessionStorage.setItem("me", JSON.stringify(loginUser));
-		localStorage.setItem("me", JSON.stringify(loginUser));
+		//setting role to superadmin
+		const modifiedLoginData = {
+			...loginUser,
+			role: roles.superAdmin,
+		};
+		sessionStorage.setItem("me", JSON.stringify(modifiedLoginData));
+		localStorage.setItem("me", JSON.stringify(modifiedLoginData));
 		localStorage.removeItem("clientAdminMode");
 		sessionStorage.removeItem("clientAdminMode");
 
 		// Cause change in redux state
-		setUserDetail(loginUser);
+		setUserDetail(modifiedLoginData);
 	};
 
 	const removeSettingsPathFromLocalStorage = () => {
@@ -494,29 +587,49 @@ function Navbar({
 		return removeSettingsPathFromLocalStorage;
 	}, []);
 
-	const lgLogo = application === null ? LargeLogo : application?.logoURL;
+	const lgLogo =
+		application === null || locations.pathname === "/app/portal"
+			? LargeLogo
+			: application?.navigationLogoURL;
+
+	const smallLogo =
+		application === null || locations.pathname === "/app/portal"
+			? MiniLogo
+			: application?.smallLogoURL
+			? application?.smallLogoURL
+			: MiniLogo;
+
 	return (
 		<>
-			<div className={`${classes.settingsContainer} drawerDesktop`}>
+			<div
+				className={`${classes.settingsContainer} drawerDesktop ${
+					!open ? "collapse" : ""
+				}`}
+			>
 				{isLoading ? (
 					<SkeletonNav />
 				) : (
 					<Drawer
 						variant="permanent"
-						className={clsx(classes.drawer, {
+						className={cx(classes.drawer, {
 							[classes.drawerOpen]: open,
 							[classes.drawerClose]: !open,
 						})}
 						classes={{
-							paper: clsx({
+							paper: cx({
 								[classes.drawerOpen]: open,
 								[classes.drawerClose]: !open,
 							}),
 						}}
+						PaperProps={{
+							sx: {
+								backgroundColor: colorBackground,
+							},
+						}}
 					>
 						{!open ? (
 							<div className={classes.miniLogoContainer}>
-								<img src={MiniLogo} alt="Logo" className={classes.miniLogo} />
+								<img src={smallLogo} alt="Logo" className={classes.miniLogo} />
 							</div>
 						) : (
 							<div className={classes.largeLogoContainer}>
@@ -526,51 +639,33 @@ function Navbar({
 
 						{isApplicationPortal ? (
 							<List className={classes.lists}>
-								<Link to="/app/portal" className={classes.navLink}>
+								{loginUser?.isAdmin && (
 									<div
 										className={`${classes.navListContainer} mobNavListContainer`}
+										onClick={redirectToOriginalMode}
 									>
-										<ListItem button className={classes.currentItemBackground}>
+										<ListItem button className={null}>
 											<ListItemIcon className={classes.navIconContainer}>
-												<Home
-													className={classes.navIconCurrent}
+												<SettingsIcon
+													className={classes.homeIcon}
 													alt={`Home icon`}
 												/>
 											</ListItemIcon>
 											<ListItemText
 												classes={{
-													primary: classes.listItemTextPrimaryCurrent,
+													primary: classes.listItemTextPrimary,
 												}}
-												primary="Application Portal"
+												primary={
+													loginUser?.position !== null
+														? "Site App Mode"
+														: loginUser?.isAdmin
+														? "Admin Mode"
+														: "Client Admin Mode"
+												}
 											/>
 										</ListItem>
 									</div>
-								</Link>
-								<div
-									className={`${classes.navListContainer} mobNavListContainer`}
-									onClick={redirectToOriginalMode}
-								>
-									<ListItem button className={null}>
-										<ListItemIcon className={classes.navIconContainer}>
-											<SettingsIcon
-												className={classes.homeIcon}
-												alt={`Home icon`}
-											/>
-										</ListItemIcon>
-										<ListItemText
-											classes={{
-												primary: classes.listItemTextPrimary,
-											}}
-											primary={
-												loginUser?.role === roles.superAdmin
-													? "Admin Mode"
-													: loginUser?.role === roles.clientAdmin
-													? "Client Admin Mode"
-													: "Site App Mode"
-											}
-										/>
-									</ListItem>
-								</div>
+								)}
 							</List>
 						) : (
 							<List className={classes.lists}>
@@ -578,7 +673,7 @@ function Navbar({
 									// Storing SVG
 									let NavIcon = item.icon;
 
-									if (item.name === "Setting") {
+									if (item.name === "Settings") {
 										return (
 											<div
 												className={` mobNavListContainer`}
@@ -631,8 +726,9 @@ function Navbar({
 												{showSettingPopup && (
 													<List
 														component="div"
-														className={classes.settingsOptions}
+														// className={classes.settingsOptions}
 														disablePadding
+														style={settingsOptions}
 													>
 														<Link
 															to={{
@@ -666,7 +762,6 @@ function Navbar({
 															}
 														>
 															<ListItem button>
-																{" "}
 																<ListItemText
 																	classes={{
 																		primary:
@@ -678,12 +773,103 @@ function Navbar({
 																/>
 															</ListItem>
 														</Link>
+														<Link
+															to={{
+																pathname: `/app/clients/${site?.id}/sites/${siteID}/licenses`,
+																state: { isSettings: true },
+															}}
+															className={classes.navLink}
+															onClick={() => handleSavePath("site-licenses")}
+														>
+															<ListItem button>
+																<ListItemText
+																	classes={{
+																		primary:
+																			activeLink === "site-licenses"
+																				? classes.listItemTextPrimaryCurrent
+																				: classes.listItemTextPrimary,
+																	}}
+																	primary="Licenses"
+																/>
+															</ListItem>
+														</Link>
 													</List>
 												)}
 											</div>
 										);
 									}
+									if (item.name === "Support") {
+										return (
+											<div
+												className={` mobNavListContainer`}
+												onMouseEnter={onHoverSupport}
+												onMouseLeave={onHoverSupport}
+												key={item.name}
+												ref={supportRef}
+											>
+												<ListItem
+													button
+													className={`
+														 ${classes.settings}`}
+												>
+													<ListItemIcon className={classes.navIconContainer}>
+														<NavIcon
+															className={classes.navIcon}
+															alt={`${item.name} icon`}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														classes={{
+															primary: classes.listItemTextPrimary,
+														}}
+														primary={item.name}
+													/>
+													<ArrowRightIcon
+														className={classes.navIcon}
+														style={{ transform: "scale(1.2)" }}
+													/>
+												</ListItem>
 
+												{showSupportPopup && (
+													<List
+														component="div"
+														disablePadding
+														style={supportOptions}
+													>
+														<Link
+															to={`https://support.emi3.io/support/solutions`}
+															className={classes.navLink}
+															target="_blank"
+														>
+															<ListItem button>
+																<ListItemText
+																	classes={{
+																		primary: classes.listItemTextPrimary,
+																	}}
+																	primary="Knowledge Base"
+																/>
+															</ListItem>
+														</Link>
+
+														<Link
+															to={`https://support.emi3.io/support/tickets/new`}
+															target="_blank"
+															className={classes.navLink}
+														>
+															<ListItem button>
+																<ListItemText
+																	classes={{
+																		primary: classes.listItemTextPrimary,
+																	}}
+																	primary="Raise a Ticket"
+																/>
+															</ListItem>
+														</Link>
+													</List>
+												)}
+											</div>
+										);
+									}
 									return (
 										<Link
 											to={item.path}
@@ -697,11 +883,14 @@ function Navbar({
 											>
 												<ListItem
 													button
-													className={
-														item.activeName.toLowerCase() === activeLink
-															? classes.currentItemBackground
-															: null
-													}
+													sx={{
+														backgroundColor:
+															item.activeName.toLowerCase() === activeLink
+																? application === null || IsAppPortal
+																	? ColourConstants.navCurrentItem
+																	: LightenDarkenColor(application?.color, -20)
+																: null,
+													}}
 												>
 													<ListItemIcon className={classes.navIconContainer}>
 														<NavIcon
@@ -731,14 +920,14 @@ function Navbar({
 						)}
 
 						<div
-							className={clsx(classes.footerClose, {
+							className={cx(classes.footerClose, {
 								[classes.footerOpen]: open,
 								[classes.footerClose]: !open,
 							})}
 						>
 							<List>
 								<Divider
-									className={clsx(classes.null, {
+									className={cx(classes.null, {
 										[classes.expandedProfileDivider]: open,
 										[classes.miniProfileDivider]: !open,
 									})}
@@ -749,7 +938,10 @@ function Navbar({
 									<ListItem
 										button={true}
 										key="userProfileIcon"
-										onClick={() => history.push(userProfilePath)}
+										onClick={() => {
+											removeSettingsPathFromLocalStorage();
+											navigate(userProfilePath);
+										}}
 										className={
 											"me" === activeLink ? classes.currentItemBackground : null
 										}
@@ -757,13 +949,24 @@ function Navbar({
 										<ListItemIcon className={classes.navIconContainer}>
 											<UserProfileIcon
 												alt="user profile icon"
-												className={classes.navIcon}
+												className={
+													"me" === activeLink
+														? classes.navIconCurrent
+														: classes.navIcon
+												}
 											/>
 										</ListItemIcon>
 										<ListItemText
 											classes={{
-												primary: classes.listItemTextPrimary,
-												secondary: classes.listItemTextSecondary,
+												primary:
+													"me" === activeLink
+														? classes.listItemTextPrimaryCurrent
+														: classes.listItemTextPrimary,
+												secondary: open
+													? "me" === activeLink
+														? classes.listItemUserOpenActive
+														: classes.listItemUserOpen
+													: classes.listItemUserClosed,
 											}}
 											primary={`${firstName} ${lastName}`}
 											secondary={
@@ -774,34 +977,56 @@ function Navbar({
 										/>
 									</ListItem>
 								</div>
-								{(multiSiteUser || position === null) &&
-								!isApplicationPortal ? (
-									<Link to={applicationPortalPath} className={classes.navLink}>
+								{(multiSiteUser || position === null) && (
+									<Link
+										to={applicationPortalPath}
+										className={classes.navLink}
+										onClick={removeSettingsPathFromLocalStorage}
+									>
 										<div
 											className={`${classes.navListContainer} mobNavListContainer`}
+											style={{ marginLeft: "-1px" }}
 										>
 											<ListItem
 												button
-												className={
-													"portal" === activeLink
-														? classes.currentItemBackground
-														: null
-												}
+												sx={{
+													backgroundColor:
+														"portal" === activeLink
+															? application === null || IsAppPortal
+																? ColourConstants.navCurrentItem
+																: LightenDarkenColor(application?.color, -20)
+															: null,
+												}}
 											>
 												<ListItemIcon className={classes.navIconContainer}>
-													<Home className={classes.navIcon} alt={`Home icon`} />
+													<Home
+														className={
+															"portal" === activeLink
+																? classes.navIconCurrent
+																: classes.navIcon
+														}
+														alt={`Home icon`}
+													/>
 												</ListItemIcon>
 												<ListItemText
 													classes={{
-														primary: classes.listItemTextPrimary,
-														secondary: classes.listItemTextSecondary,
+														primary:
+															"portal" === activeLink
+																? classes.listItemTextPrimaryCurrent
+																: classes.listItemTextPrimary,
+
+														secondary: open
+															? "portal" === activeLink
+																? classes.listItemUserOpenActive
+																: classes.listItemUserOpen
+															: classes.listItemUserClosed,
 													}}
 													primary="Application Portal"
 												/>
 											</ListItem>
 										</div>
 									</Link>
-								) : null}
+								)}
 
 								<div>
 									<ListItem

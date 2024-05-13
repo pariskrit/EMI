@@ -5,8 +5,8 @@ import {
 	DialogTitle,
 	LinearProgress,
 	Link,
-	makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import { CSVLink } from "react-csv";
 import DropUpload from "components/Elements/DropUploadBox";
 import AddDialogStyle from "styles/application/AddDialogStyle";
@@ -14,12 +14,13 @@ import API from "helpers/api";
 import { useDispatch } from "react-redux";
 import { showNotications } from "redux/notification/actions";
 import { showError } from "redux/common/actions";
+import ColourConstants from "helpers/colourConstants";
 
 const AT = AddDialogStyle();
 
 const media = "@media (max-width:414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	content: {
 		display: "flex",
 		flexDirection: "column",
@@ -39,7 +40,7 @@ const useStyles = makeStyles({
 		left: 0,
 		top: 0,
 	},
-});
+}));
 
 const ImportContainer = ({
 	open,
@@ -50,7 +51,7 @@ const ImportContainer = ({
 	importApi,
 	handleDownloadTemplate,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	const [uploadPercentCompleted, setUploadPercentCompleted] = useState(0);
@@ -96,7 +97,7 @@ const ImportContainer = ({
 					if (!isCancellled.current) {
 						dispatch(
 							showError(
-								response.data.detail || response.data || "Failed To Import"
+								response?.data?.detail || response?.data || "Failed To Import"
 							)
 						);
 					}
@@ -166,6 +167,12 @@ const ImportContainer = ({
 							onClick={() => {
 								handleCancelFileUpload();
 								closeOverride();
+							}}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
 							}}
 						>
 							Cancel

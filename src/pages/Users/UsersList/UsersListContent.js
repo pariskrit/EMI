@@ -1,10 +1,11 @@
-import { handleSort } from "helpers/utils";
+import { defaultPageSize, handleSort } from "helpers/utils";
 import UsersListTable from "./UsersListTable";
 import { useUserSearch } from "hooks/useUserSearch";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "tss-react/mui";
+import RestoreIcon from "@mui/icons-material/Restore";
+import Typography from "@mui/material/Typography";
 import {
 	downloadUserCSVTemplate,
 	getClientAdminUserList,
@@ -13,27 +14,31 @@ import {
 	getSiteAppUserListCount,
 	getUsersList,
 	getUsersListCount,
+	resendInvitation,
 } from "services/users/usersList";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ContentStyle from "styles/application/ContentStyle";
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 
 import AddUserDialog from "./AddUserDialog";
 import DeleteDialog from "components/Elements/DeleteDialog";
 
-import { DefaultPageSize } from "helpers/constants";
 import GeneralButton from "components/Elements/GeneralButton";
 import mainAccess from "helpers/access";
 import ImportContainer from "components/Modules/ImportContainer";
 import { Apis } from "services/api";
 import TabTitle from "components/Elements/TabTitle";
+import { setHistoryDrawerState, showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { REMOVE } from "constants/UserConstants/indes";
+import roles from "helpers/roles";
 
 const AC = ContentStyle();
 
 const media = "@media(max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	listActions: {
 		marginBottom: 30,
 	},
@@ -65,12 +70,22 @@ const useStyles = makeStyles({
 		fontWeight: "bold",
 		marginRight: "10px",
 	},
-});
+	restore: {
+		border: "2px solid",
+		borderRadius: "100%",
+		height: "35px",
+		width: "35px",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		color: "#307ad6",
+	},
+}));
 
-const defaultPageProperties = { pageNo: 1, perPage: DefaultPageSize };
+const defaultPageProperties = { pageNo: 1, perPage: defaultPageSize() };
 
 const UsersListContent = ({ getError }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const {
 		position,
 		role,
@@ -79,6 +94,7 @@ const UsersListContent = ({ getError }) => {
 		isSiteUser,
 		customCaptions,
 		application,
+		adminType,
 	} =
 		JSON.parse(sessionStorage.getItem("me")) ||
 		JSON.parse(localStorage.getItem("me"));
@@ -86,7 +102,15 @@ const UsersListContent = ({ getError }) => {
 		JSON.parse(sessionStorage.getItem("clientUserId")) ||
 		JSON.parse(localStorage.getItem("clientUserId"));
 
+	const [currentTableSort, setCurrentTableSort] = useState([
+		"firstName",
+		"asc",
+	]);
+	const [searchTxt, setSearchTxt] = useState("");
+	const [user, setUser] = useState("");
+
 	const access = position?.[mainAccess.userAccess];
+	const dispatch = useDispatch();
 
 	//Init State
 	const [haveData, setHaveData] = useState(false);
@@ -99,7 +123,7 @@ const UsersListContent = ({ getError }) => {
 	const [page, setPage] = useState(defaultPageProperties);
 	const [count, setCount] = useState(null);
 
-	const searchRef = useRef("");
+	// const searchRef = useRef("");
 
 	const {
 		allData,
@@ -133,58 +157,70 @@ const UsersListContent = ({ getError }) => {
 	};
 
 	const fetchData = useCallback(
-		async (pNo, numberOfDataToGet = null, searchText) => {
+		async (pNo, numberOfDataToGet = null) => {
 			try {
 				let result = null,
-					count = null;
+					usercount = null;
 
 				// user is Site Application User
 				if (siteAppID) {
 					result = await getSiteAppUserList(
 						siteAppID,
 						pNo,
-						numberOfDataToGet ?? DefaultPageSize,
-						searchText
+						numberOfDataToGet ?? defaultPageSize(),
+						searchTxt,
+						currentTableSort[1],
+						currentTableSort[0]
 					);
-					count = await getSiteAppUserListCount(siteAppID, searchText);
+					usercount = await getSiteAppUserListCount(siteAppID, searchTxt);
 				}
+
 				// user is Client Admin
-				if (role === "ClientAdmin" && !siteAppID) {
+				if (role === roles.clientAdmin && !siteAppID) {
 					result = await getClientAdminUserList(
 						clientUserId,
 						pNo,
-						numberOfDataToGet ?? DefaultPageSize,
-						searchText
+						numberOfDataToGet ?? defaultPageSize(),
+						searchTxt,
+						currentTableSort[1],
+						currentTableSort[0]
 					);
-					count = await getClientAdminUserListCount(clientUserId, searchText);
+					usercount = await getClientAdminUserListCount(
+						clientUserId,
+						searchTxt
+					);
 				}
 
 				// user is Super Admin
-				if (role === "SuperAdmin") {
+				if (role === roles.superAdmin) {
 					result = await getUsersList(
 						pNo,
-						numberOfDataToGet ?? DefaultPageSize,
-						searchText
+						numberOfDataToGet ?? defaultPageSize(),
+						searchTxt,
+						currentTableSort[1],
+						currentTableSort[0]
 					);
-					count = await getUsersListCount(searchText);
+					usercount = await getUsersListCount(searchTxt);
 				}
 
 				if (result.status) {
 					result = result.data;
 
 					setAllData(result);
-					setCount(count.data);
+					setCount(usercount.data);
 					return true;
 				} else {
 					// Throwing error if failed
 					throw new Error(`Error: Status ${result.status}`);
 				}
 			} catch (err) {
-				console.log(err);
+				dispatch(
+					showError(`Failed to load  ${customCaptions?.userPlural || "users"}.`)
+				);
 				return err;
 			}
 		},
-		[setAllData, clientUserId, role, siteAppID]
+		[setAllData, clientUserId, role, siteAppID, currentTableSort, searchTxt]
 	);
 
 	useEffect(() => {
@@ -192,7 +228,11 @@ const UsersListContent = ({ getError }) => {
 			.then(() => {
 				setHaveData(true);
 			})
-			.catch((err) => console.log("ERROR : ", err));
+			.catch((err) =>
+				dispatch(
+					showError(`Failed to load ${customCaptions?.userPlural || "users"}.`)
+				)
+			);
 	}, [fetchData]);
 
 	const mainData = searchQuery.length === 0 ? allData : searchedData;
@@ -209,11 +249,12 @@ const UsersListContent = ({ getError }) => {
 
 	//DELETE
 	const handleDeleteDialogOpen = (rowData) => {
-		if (role === "ClientAdmin" && !isSiteUser)
+		setUser(`${rowData?.firstName} ${rowData?.lastName}`);
+		if (role === roles.clientAdmin && !isSiteUser)
 			setDeleteID(rowData.clientUserID);
 
-		if (role === "SuperAdmin") setDeleteID(rowData.id);
-		if (role === "SiteUser" || isSiteUser)
+		if (role === roles.superAdmin) setDeleteID(rowData.id);
+		if (role === roles.siteUser || isSiteUser)
 			setDeleteID(rowData.clientUserSiteAppID);
 
 		setOpenDeleteDialog(true);
@@ -223,12 +264,12 @@ const UsersListContent = ({ getError }) => {
 
 	const handleRemoveData = () => {
 		let totalData = null;
-		if (role === "ClientAdmin" && !isSiteUser)
+		if (role === roles.clientAdmin && !isSiteUser)
 			totalData = [...allData.filter((data) => data.clientUserID !== deleteID)];
 
-		if (role === "SuperAdmin")
+		if (role === roles.superAdmin)
 			totalData = [...allData.filter((data) => data.id !== deleteID)];
-		if (role === "SiteUser" || isSiteUser)
+		if (role === roles.siteUser || isSiteUser)
 			totalData = [
 				...allData.filter((data) => data.clientUserSiteAppID !== deleteID),
 			];
@@ -239,39 +280,60 @@ const UsersListContent = ({ getError }) => {
 	};
 
 	//Pagination
-	const handlePage = async (p, prevData) => {
+	const handlePage = async (
+		p,
+		prevData,
+		searchText,
+		sort = "",
+		sortField = ""
+	) => {
 		try {
 			let response = null;
 
-			if (role === "SiteUser" || isSiteUser)
+			if (role === roles.siteUser || isSiteUser)
 				response = await getSiteAppUserList(
 					siteAppID,
 					p,
-					DefaultPageSize,
-					searchRef.current
+					defaultPageSize(),
+					// searchRef.current
+					searchText,
+					sort,
+					sortField
 				);
 
-			if (role === "SuperAdmin")
-				response = await getUsersList(p, DefaultPageSize, searchRef.current);
+			if (role === roles.superAdmin)
+				response = await getUsersList(
+					p,
+					defaultPageSize(),
+					searchText,
+					sort,
+					sortField
+				);
 
-			if (role === "ClientAdmin" && !isSiteUser)
+			if (role === roles.clientAdmin && !isSiteUser)
 				response = await getClientAdminUserList(
 					clientUserId,
 					p,
-					DefaultPageSize,
-					searchRef.current
+					defaultPageSize(),
+					searchText,
+					sort,
+					sortField
 				);
 
 			if (response.status) {
 				let response2 = { data: [...prevData, ...response.data] };
-				setPage({ pageNo: p, rowsPerPage: DefaultPageSize });
+				setPage({ pageNo: p, rowsPerPage: defaultPageSize() });
 				setAllData([...prevData, ...response.data]);
 				return response2;
 			} else {
 				throw new Error(response);
 			}
 		} catch (err) {
-			console.log(err);
+			dispatch(
+				showError(
+					`Failed to load more ${customCaptions?.userPlural || "users"}.`
+				)
+			);
 			return err;
 		}
 	};
@@ -290,34 +352,54 @@ const UsersListContent = ({ getError }) => {
 			}, delay);
 		};
 	};
-
 	//handle search
 	const handleSearch = useCallback(
 		debounce((value) => {
-			if (value === "") setPage(defaultPageProperties);
-
-			searchRef.current = value;
-			fetchData(1, null, value);
+			// if (value === "") setPage(defaultPageProperties);
+			if (searchTxt !== value) {
+				setPage(defaultPageProperties);
+			}
+			setSearchTxt(value);
+			// fetchData(1, null, value);
 		}, 500),
 		[]
 	);
 
+	const handleResendInvitation = async (val) => {
+		try {
+			const result = await resendInvitation({ email: val.email });
+			if (!result.status) {
+				dispatch(showError(result.data || "Failed to send invitation"));
+			}
+		} catch (err) {
+			dispatch(showError(err?.data || "Failed to send invitation"));
+		}
+	};
+
 	const handleDownloadCsvTemplate = () => {
 		return downloadUserCSVTemplate(apis[role].downloadTemplate);
 	};
-
 	const apiByRole =
-		role === "SiteUser" || (role === "ClientAdmin" && isSiteUser)
-			? apis["SiteUser"]
-			: role === "ClientAdmin" && !isSiteUser
-			? apis["ClientAdmin"]
-			: apis["SuperAdmin"];
+		role === roles.siteUser || (role === roles.clientAdmin && isSiteUser)
+			? apis[roles.siteUser]
+			: role === roles.clientAdmin && !isSiteUser
+			? apis[roles.clientAdmin]
+			: apis[roles.superAdmin];
+
+	const userRole =
+		role === roles.superAdmin
+			? "Superadmin"
+			: role === roles.clientAdmin && !siteAppID
+			? "Client"
+			: "Application";
 	return (
 		<div className="container">
 			{!application ? (
 				<TabTitle title="Users" />
 			) : (
-				<TabTitle title={`${customCaptions?.user} | ${application?.name}`} />
+				<TabTitle
+					title={`${customCaptions?.userPlural} | ${application?.name}`}
+				/>
 			)}
 
 			<ImportContainer
@@ -341,6 +423,7 @@ const UsersListContent = ({ getError }) => {
 				siteID={siteID}
 				siteAppID={siteAppID}
 				customCaptions={customCaptions}
+				adminType={adminType}
 			/>
 
 			<DeleteDialog
@@ -350,6 +433,8 @@ const UsersListContent = ({ getError }) => {
 				deleteID={deleteID}
 				deleteEndpoint={apiByRole.delete}
 				handleRemoveData={handleRemoveData}
+				deleteButton={REMOVE}
+				deleteMsg={`${user} will lose access to this  ${userRole} Account, but they won't be deleted from EMI3.`}
 			/>
 
 			<div className={classes.listActions}>
@@ -359,15 +444,17 @@ const UsersListContent = ({ getError }) => {
 						component="h1"
 						gutterBottom
 					>
-						{allData.length === 0 ? (
-							<strong>{"Users List"}</strong>
+						{!count ? (
+							<strong>{`${customCaptions?.userPlural ?? "Users"} List`}</strong>
 						) : (
-							<strong>{`Users List (${allData.length})`}</strong>
+							<strong>{`${
+								customCaptions?.userPlural ?? "Users"
+							} List (${count})`}</strong>
 						)}
 					</Typography>
-					{haveData ? (
+					{haveData && (access === "F" || !siteAppID) ? (
 						<div className={classes.buttonContainer}>
-							{role !== "SuperAdmin" && (
+							{role !== roles.superAdmin && (
 								<GeneralButton
 									onClick={() => setModal((th) => ({ ...th, import: true }))}
 									style={{ backgroundColor: "#ed8738" }}
@@ -394,6 +481,7 @@ const UsersListContent = ({ getError }) => {
 								</Grid>
 								<Grid item>
 									<AC.SearchInput
+										variant="standard"
 										onChange={(e) => handleSearch(e.target.value)}
 										label="Search"
 									/>
@@ -406,20 +494,56 @@ const UsersListContent = ({ getError }) => {
 			{haveData ? (
 				<UsersListTable
 					data={mainData}
-					headers={["First Name", "Surname", "Email Address", "Phone"]}
-					columns={["firstName", "lastName", "email", "phone"]}
+					headers={
+						siteID
+							? [
+									"First Name",
+									"Surname",
+									"Email Address",
+									`${customCaptions?.department ?? "Department"}`,
+									`${customCaptions?.position ?? "Position"}`,
+									"Status",
+							  ]
+							: role === roles.superAdmin
+							? ["First Name", "Surname", "Email Address", "Type", "Status"]
+							: [
+									"First Name",
+									"Surname",
+									"Email Address",
+									"Status",
+									"Client Administrator",
+							  ]
+					}
+					columns={
+						siteID
+							? [
+									"firstName",
+									"lastName",
+									"email",
+									"departmentName",
+									"positionName",
+									"active",
+							  ]
+							: role === roles.superAdmin
+							? ["firstName", "lastName", "email", "Type", "active"]
+							: ["firstName", "lastName", "email", "active", "isAdmin"]
+					}
 					setData={setAllData}
 					handleSort={handleSort}
 					searchQuery={searchQuery}
 					searchedData={searchedData}
 					setSearchData={setSearchData}
 					handleDeleteDialogOpen={handleDeleteDialogOpen}
-					searchText={searchRef.current}
+					searchText={searchTxt}
 					onPageChange={handlePage}
 					page={page.pageNo}
 					count={count}
 					position={position}
 					access={access}
+					setCurrentTableSort={setCurrentTableSort}
+					currentTableSort={currentTableSort}
+					setPage={setPage}
+					handleResendInvitation={handleResendInvitation}
 				/>
 			) : (
 				<CircularProgress />

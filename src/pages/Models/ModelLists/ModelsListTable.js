@@ -1,30 +1,27 @@
-import clsx from "clsx";
 import React, { useEffect, useState } from "react";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import TableStyle from "styles/application/TableStyle";
-import { modelsPath } from "helpers/routePaths";
-
+import { appPath, modelsPath } from "helpers/routePaths";
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
-import { Link } from "@material-ui/core";
-import { isoDateWithoutTimeZone } from "helpers/utils";
-
+import { Link } from "@mui/material";
+import { NumericSort, isoDateWithoutTimeZone } from "helpers/utils";
+import { useOutletContext } from "react-router-dom";
 // Init styled components
 const AT = TableStyle();
-
 // Size constant
 const MAX_LOGO_HEIGHT = 47;
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -75,23 +72,24 @@ const useStyles = makeStyles({
 	greater: {
 		color: ColourConstants.red,
 	},
-});
+}));
 
 const UserTable = ({
+	isSharableModel,
 	data,
 	setData,
-	access,
 	columns,
 	headers,
 	handleSort,
 	handleDeleteDialogOpen,
 	handleDuplicateModalOpen,
 	handleViewVersionModalOpen,
+	handleShareModelOpen,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [convertedData, setConvertedData] = useState([]);
-
+	const { access } = useOutletContext();
 	useEffect(() => {
 		let newData = data.map((item) => {
 			let currentDate = new Date();
@@ -102,6 +100,13 @@ const UserTable = ({
 				currentDate > new Date(item?.reviewDate ? item?.reviewDate + "Z" : "");
 			return {
 				...item,
+				status: `${item?.status} ${
+					item?.activeModelVersion
+						? item?.active
+							? " (Active)"
+							: " (Inactive)"
+						: ""
+				}`,
 				reviewDate: (
 					<span className={`${isGreater ? classes.greater : ""}`}>
 						{apiDate?.split(" ")[0]}
@@ -120,14 +125,21 @@ const UserTable = ({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
 
-		handleSort(data, setData, field, newMethod);
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
+
+		if (field === "devModelVersion" || field === "activeModelVersion") {
+			NumericSort(data, setData, field, newMethod);
+		} else {
+			handleSort(data, setData, field, newMethod);
+		}
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
 	};
-
 	return (
 		<AT.TableContainer component={Paper} elevation={0}>
 			<Table aria-label="Table">
@@ -139,7 +151,7 @@ const UserTable = ({
 								onClick={() => {
 									handleSortClick(columns[i]);
 								}}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === columns[i],
 									[classes.tableHeadRow]: currentTableSort[0] !== columns[i],
@@ -167,11 +179,12 @@ const UserTable = ({
 										<AT.DataCell key={col}>
 											<AT.CellContainer key={col}>
 												<AT.TableBodyText>
-													{typeof col === "object" ? (
+													{col === "fullName" ? (
 														<Link
+															underline="none"
 															onClick={() => {
 																window.open(
-																	`${modelsPath}/${row.devModelVersionID}`
+																	`${appPath}${modelsPath}/${row.devModelVersionID}`
 																);
 															}}
 															style={{
@@ -179,10 +192,7 @@ const UserTable = ({
 																cursor: "pointer",
 															}}
 														>
-															{row?.[col?.[1]] === undefined ||
-															row?.[col?.[1]] === null
-																? row[col[0]]
-																: row[col[0]] + " " + row?.[col?.[1]]}
+															{row[col]}
 														</Link>
 													) : (
 														row[col]
@@ -226,7 +236,7 @@ const UserTable = ({
 																			: "Edit",
 																	handler: () => {
 																		window.open(
-																			`${modelsPath}/${row.devModelVersionID}`
+																			`${appPath}${modelsPath}/${row.devModelVersionID}`
 																		);
 																	},
 																	isDelete: false,
@@ -245,6 +255,18 @@ const UserTable = ({
 																	},
 																	isDelete: false,
 																	ShouldHide: false,
+																},
+																{
+																	name: "Share",
+																	handler: () => {
+																		handleShareModelOpen(row);
+																	},
+																	isDelete: false,
+																	ShouldHide: !(
+																		isSharableModel &&
+																		row.isSharable &&
+																		row.isPublish
+																	),
 																},
 																{
 																	name: "Delete",

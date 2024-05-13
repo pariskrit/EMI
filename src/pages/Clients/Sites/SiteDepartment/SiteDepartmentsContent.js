@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import { BASE_API_PATH } from "helpers/constants";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import DeleteDialog from "components/Elements/DeleteDialog";
-import ClientSiteTable from "components/Modules/ClientSiteTable";
 import ContentStyle from "styles/application/ContentStyle";
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import EditDialog from "./EditModal";
@@ -11,17 +10,24 @@ import "./site.scss";
 import { getLocalStorageData } from "helpers/utils";
 import TabTitle from "components/Elements/TabTitle";
 import { useSelector } from "react-redux";
+import ClientSiteDepartmentTable from "components/Modules/ClientSiteDepartmentTable";
 
 const AC = ContentStyle();
 
-const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
+const SiteDepartmentsContent = ({
+	data,
+	setData,
+	isLoading,
+	getError,
+	isReadOnly,
+}) => {
 	const [editData, setEditData] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [departments, setDepartments] = useState([]);
 	const [selectedID, setSelectedID] = useState(null);
 	const [openEditDialog, setOpenEditDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-	const { customCaptions } = getLocalStorageData("me");
+	const { customCaptions } = getLocalStorageData("me") || {};
 
 	useEffect(() => {
 		setDepartments(data);
@@ -110,6 +116,7 @@ const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
 							</Grid>
 							<Grid item>
 								<AC.SearchInput
+									variant="standard"
 									value={searchQuery}
 									onChange={handleSearch}
 									label={`Search ${
@@ -122,10 +129,10 @@ const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
 				</AC.SearchContainer>
 			</div>
 
-			<ClientSiteTable
+			<ClientSiteDepartmentTable
 				data={departments}
 				columns={["name", "description"]}
-				headers={["Name", "Description"]}
+				headers={["Name", `${customCaptions?.location || "Location"}`]}
 				onEdit={handleEdit}
 				onDelete={(id) => {
 					setOpenDeleteDialog(true);
@@ -134,6 +141,7 @@ const SiteDepartmentsContent = ({ data, setData, isLoading, getError }) => {
 				setData={setDepartments}
 				pagination={false}
 				isLoading={isLoading}
+				isReadOnly={isReadOnly}
 			/>
 		</div>
 	);

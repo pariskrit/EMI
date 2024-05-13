@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import Typography from "@mui/material/Typography";
 import ColourConstants from "helpers/colourConstants";
-import dayjs from "dayjs";
+import { headerDateFormat } from "helpers/date";
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	historyContainer: {
 		// marginTop: 10,
 		// marginBottom: 10,
@@ -39,7 +41,7 @@ const SaveHistory = ({
 	versionNumber,
 }) => {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// Init state
 	const [lastSave, setLastSave] = useState("");
@@ -48,10 +50,10 @@ const SaveHistory = ({
 	// NOTE: IRL this will have an API call for lastsave or get from global state or receive prop
 	useEffect(() => {
 		// Creating mock date/time
-		let date = dayjs();
+		const date = headerDateFormat(new Date());
 
 		// Updating date state to render
-		setLastSave(`${date.format("DD.MM.YYYY")} / ${date.format("HH:mm")} AEDT`);
+		setLastSave(date);
 	}, []);
 
 	return (

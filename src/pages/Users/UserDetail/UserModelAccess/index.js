@@ -1,13 +1,14 @@
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import DetailsPanel from "components/Elements/DetailsPanel";
 import React, { useEffect, useState } from "react";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
-import FilterListIcon from "@material-ui/icons/FilterList";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import Departments from "./Departments";
 import Models from "./Models";
 import Roles from "./Roles";
 import { coalesc } from "helpers/utils";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import {
 	checkUserDepartments,
 	checkUserModels,
@@ -23,9 +24,8 @@ import {
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
-import TabTitle from "components/Elements/TabTitle";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dropdown: {
 		display: "flex",
 		alignItems: "center",
@@ -41,10 +41,10 @@ const useStyles = makeStyles({
 	grid: {
 		marginTop: "20px",
 	},
-});
+}));
 
 function UserModelAccess({ data }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isLoading, setLoading] = useState(true);
 	const [tickAllLoading, setTickAllLoading] = useState(false);
 	const [departmentChangeLoading, setDepartmentChangeLoading] = useState(false);
@@ -58,17 +58,14 @@ function UserModelAccess({ data }) {
 	const [roles, setRoles] = useState([]);
 	const [models, setModels] = useState([]);
 	const [showTiles, setShowTiles] = useState(false);
+	const [clientUserSiteAppId, setClientUserSiteAppId] = useState(null);
 	const dispatch = useDispatch();
 
 	const { id } = useParams();
-	const {
-		siteAppID,
-		customCaptions,
-		site,
-		application,
-		firstName,
-		lastName,
-	} = JSON.parse(sessionStorage.getItem("me") || localStorage.getItem("me"));
+
+	const { siteAppID, customCaptions, site, application } = JSON.parse(
+		sessionStorage.getItem("me") || localStorage.getItem("me")
+	);
 
 	const onDropdownChange = async (type, item) => {
 		if (type === "site") {
@@ -84,6 +81,7 @@ function UserModelAccess({ data }) {
 		if (type === "application") {
 			if (item.id === selectedApplication.id) return;
 			setSelectedApplication(item);
+			setClientUserSiteAppId(item.id);
 			fetchModelDepartmentRole(item.clientUserSiteAppID);
 		}
 	};
@@ -115,7 +113,7 @@ function UserModelAccess({ data }) {
 						: { ...department, isDisabled: false }
 				),
 			]);
-			await fetchModelDepartmentRole(id);
+			await fetchModelDepartmentRole(siteAppID ? id : clientUserSiteAppId);
 			setDepartmentChangeLoading(false);
 		} else {
 			setDepartments([
@@ -160,7 +158,7 @@ function UserModelAccess({ data }) {
 						: { ...role, isDisabled: false }
 				),
 			]);
-			await fetchModelDepartmentRole(id);
+			await fetchModelDepartmentRole(siteAppID ? id : clientUserSiteAppId);
 			setRoleChangeLoading(false);
 		} else {
 			setRoles([...roles.map((role) => ({ ...role, isDisabled: false }))]);
@@ -171,9 +169,11 @@ function UserModelAccess({ data }) {
 
 	const tickAllModel = async () => {
 		setTickAllLoading(true);
-		const response = await deleteAtTickAll(id);
+		const response = await deleteAtTickAll(
+			siteAppID ? id : clientUserSiteAppId
+		);
 		if (response.status) {
-			await fetchModelDepartmentRole(id);
+			await fetchModelDepartmentRole(siteAppID ? id : clientUserSiteAppId);
 			setTickAllLoading(false);
 		}
 	};
@@ -231,7 +231,7 @@ function UserModelAccess({ data }) {
 
 	const displayError = (response) =>
 		dispatch(
-			showError(response.data?.detail || response.data || "Could not update")
+			showError(response?.data?.detail || response?.data || "Could not update")
 		);
 
 	const fetchSiteApplication = async (id) => {
@@ -247,6 +247,7 @@ function UserModelAccess({ data }) {
 			if (response.data.length === 1) {
 				setSelectedApplication(modifiedApplication[0]);
 				fetchModelDepartmentRole(response.data[0].clientUserSiteAppID);
+				setClientUserSiteAppId(modifiedApplication[0].clientUserSiteAppID);
 			}
 		} else displayError(response);
 	};
@@ -383,7 +384,7 @@ function UserModelAccess({ data }) {
 								customCaptions?.servicePlural,
 							]}
 							handleCheck={handleDepartmentChange}
-							name={`${firstName} ${lastName}`}
+							name={`${data?.firstName} ${data?.lastName}`}
 							departmentChangeLoading={departmentChangeLoading}
 						/>
 						<Roles
@@ -394,7 +395,7 @@ function UserModelAccess({ data }) {
 							]}
 							handleCheck={handleRoleChange}
 							roleChangeLoading={roleChangeLoading}
-							name={`${firstName} ${lastName}`}
+							name={`${data?.firstName} ${data?.lastName}`}
 						/>
 					</Grid>
 					<Grid item xs={12} md={6}>
@@ -412,7 +413,7 @@ function UserModelAccess({ data }) {
 							handleCheck={handleModelChange}
 							tickAllModel={tickAllModel}
 							dispatch={dispatch}
-							name={`${firstName} ${lastName}`}
+							name={`${data?.firstName} ${data?.lastName}`}
 							tickAllLoading={tickAllLoading}
 						/>
 					</Grid>

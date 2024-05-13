@@ -1,9 +1,9 @@
-import { CircularProgress, Grid, makeStyles } from "@material-ui/core";
+import { CircularProgress, Grid } from "@mui/material";
 import NavDetails from "components/Elements/NavDetails";
 import React, { useCallback, useEffect, useState } from "react";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
-import RestoreIcon from "@material-ui/icons/Restore";
-import { defectsPath } from "helpers/routePaths";
+import RestoreIcon from "@mui/icons-material/Restore";
+import { appPath, defectsPath } from "helpers/routePaths";
 import Notes from "./Notes";
 import { useParams } from "react-router-dom";
 import { getDefectDetail } from "services/defects/details";
@@ -15,11 +15,19 @@ import Details from "./details";
 import Audio from "./Audio";
 import Parts from "./Parts";
 import TabTitle from "components/Elements/TabTitle";
+import AccessWrapper from "components/Modules/AccessWrapper";
+import { HistoryCaptions, NoReadOnly } from "helpers/constants";
+import { READONLY_ACCESS } from "constants/AccessTypes/AccessTypes";
+import { makeStyles } from "tss-react/mui";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { useDispatch, useSelector } from "react-redux";
+import { defectsPage } from "services/History/models";
+import { setHistoryDrawerState } from "redux/common/actions";
 
 const AT = ActionButtonStyle();
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	restore: {
 		border: "2px solid",
 		borderRadius: "100%",
@@ -30,9 +38,7 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		color: "#307ad6",
 	},
-	importButton: {
-		background: "#ED8738",
-	},
+
 	buttons: {
 		display: "flex",
 		marginLeft: "auto",
@@ -51,12 +57,18 @@ const useStyles = makeStyles({
 			flexDirection: "column",
 		},
 	},
-});
+}));
 
 function DefectsDetails() {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const { id } = useParams();
-	const { customCaptions, siteAppID, application } = getLocalStorageData("me");
+	const importButton = {
+		"&.MuiButton-root": {
+			backgroundColor: "#ED8738",
+		},
+	};
+	const { customCaptions, siteAppID, application, position } =
+		getLocalStorageData("me");
 	const [showChangeStatus, setShowChangeStatus] = useState(false);
 	const [details, setDetails] = useState({});
 	const [loading, setLoading] = useState(true);
@@ -75,6 +87,9 @@ function DefectsDetails() {
 		fetchDefect(id);
 	}, [fetchDefect, id]);
 
+	const readOnly = position?.defectAccess === READONLY_ACCESS;
+	const dispatch = useDispatch();
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 	if (loading) return <CircularProgress />;
 
 	return (
@@ -87,6 +102,15 @@ function DefectsDetails() {
 				onClose={handleToggleChangeStatus}
 				setDetails={setDetails}
 			/>
+			<HistoryBar
+				id={id}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					defectsPage(id, pageNumber, pageSize)
+				}
+				origin={HistoryCaptions.defects}
+			/>
 			<div className={"topContainerCustomCaptions"}>
 				<NavDetails
 					status={true}
@@ -95,7 +119,7 @@ function DefectsDetails() {
 						{
 							id: 1,
 							name: customCaptions?.defectPlural || "Defects",
-							url: defectsPath,
+							url: `${appPath}${defectsPath}`,
 						},
 						{
 							id: 2,
@@ -116,15 +140,24 @@ function DefectsDetails() {
 					userName={details.createdUserName}
 				/>
 				<div className={classes.wrapper}>
-					<div className={classes.buttons}>
-						<AT.GeneralButton
-							onClick={handleToggleChangeStatus}
-							className={classes.importButton}
-						>
-							Change Status
-						</AT.GeneralButton>
-					</div>
-					<div className="restore">
+					<AccessWrapper
+						access={position?.defectAccess}
+						accessList={NoReadOnly}
+					>
+						<div className={classes.buttons}>
+							<AT.GeneralButton
+								sx={importButton}
+								onClick={handleToggleChangeStatus}
+								className={classes.importButton}
+							>
+								Change Status
+							</AT.GeneralButton>
+						</div>
+					</AccessWrapper>
+					<div
+						className="restore"
+						onClick={() => dispatch(setHistoryDrawerState(true))}
+					>
 						<RestoreIcon className={classes.restore} />
 					</div>
 				</div>
@@ -137,26 +170,39 @@ function DefectsDetails() {
 						captions={customCaptions}
 						defectId={id}
 						fetchDefect={fetchDefect}
+						isReadOnly={readOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} lg={6}>
 					<Grid item xs={12}>
-						<DefectImages defectId={id} captions={customCaptions} />
+						<DefectImages
+							defectId={id}
+							captions={customCaptions}
+							isReadOnly={readOnly}
+						/>
 					</Grid>
 
 					<Grid item xs={12} style={{ marginTop: "16px" }}>
-						<Notes defectId={id} />
+						<Notes defectId={id} isReadOnly={readOnly} />
 					</Grid>
 				</Grid>
 				<Grid item xs={12} lg={6}>
 					{details?.audioURL && (
 						<Grid item xs={12} style={{ marginBottom: "16px" }}>
-							<Audio src={details?.audioURL} defectId={id} />
+							<Audio
+								src={details?.audioURL}
+								defectId={id}
+								isReadOnly={readOnly}
+							/>
 						</Grid>
 					)}
 					{application?.showDefectParts && (
 						<Grid item xs={12}>
-							<Parts captions={customCaptions} defectId={id} />
+							<Parts
+								captions={customCaptions}
+								defectId={id}
+								isReadOnly={readOnly}
+							/>
 						</Grid>
 					)}
 				</Grid>

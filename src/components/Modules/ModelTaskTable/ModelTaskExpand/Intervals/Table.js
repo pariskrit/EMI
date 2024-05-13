@@ -1,14 +1,16 @@
 import React from "react";
 import TableStyle from "styles/application/TableStyle";
-import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import ColourConstants from "helpers/colourConstants";
-import clsx from "clsx";
+
 import EMICheckbox from "components/Elements/EMICheckbox";
 
 const AT = TableStyle();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -39,18 +41,17 @@ const useStyles = makeStyles({
 		borderWidth: 1,
 		borderRadius: 0,
 	},
-});
+}));
 
 function IntervalTable({ data = [], handleIntervalCheckbox, isDisabled }) {
-	const classes = useStyles();
-
+	const { classes, cx } = useStyles();
 	return (
 		<div>
 			<Table aria-label="Table" className={classes.table}>
 				<AT.TableHead>
 					<TableRow className={classes.tableHead}>
 						<TableCell
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.tableHeadRow]: true,
 							})}
 						>
@@ -58,7 +59,7 @@ function IntervalTable({ data = [], handleIntervalCheckbox, isDisabled }) {
 						</TableCell>
 						<TableCell
 							style={{ width: "auto" }}
-							className={clsx(classes.nameRow, {
+							className={cx(classes.nameRow, {
 								[classes.tableHeadRow]: true,
 							})}
 						>

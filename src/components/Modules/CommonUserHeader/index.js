@@ -1,9 +1,9 @@
 import React from "react";
-import CommonHeader from "./CommonHeader";
+import CommonHeader from "components/Modules/CommonUserHeader/CommonHeader";
 import NavButtons from "components/Elements/NavButtons";
 import Roles from "helpers/roles";
-import RoleWrapper from "../RoleWrapper";
-import { useHistory } from "react-router-dom";
+import RoleWrapper from "components/Modules/RoleWrapper";
+import { useNavigate } from "react-router-dom";
 
 const CommonUserHeader = ({
 	status,
@@ -25,10 +25,13 @@ const CommonUserHeader = ({
 	current,
 	showPasswordReset,
 	onPasswordReset,
+	createdDateTime,
+	createdUserName,
+	siteAppID,
 }) => {
-	const history = useHistory();
+	const navigate = useNavigate();
 
-	const onClick = (url) => history.push(url);
+	const onClick = (url) => navigate(url);
 
 	return (
 		<>
@@ -51,6 +54,10 @@ const CommonUserHeader = ({
 					handlePatchIsActive,
 					showPasswordReset,
 					onPasswordReset,
+					current,
+					createdDateTime,
+					createdUserName,
+					siteAppID,
 				}}
 			/>
 			<RoleWrapper roles={[Roles.siteUser, Roles.clientAdmin]}>

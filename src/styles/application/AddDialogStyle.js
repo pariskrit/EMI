@@ -1,10 +1,10 @@
-import { styled } from "@material-ui/core/styles";
+import { styled } from "@mui/styles";
 import ColourConstants from "helpers/colourConstants";
-import Typography from "@material-ui/core/Typography";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import DialogContent from "@material-ui/core/DialogContent";
-import TextField from "@material-ui/core/TextField";
+import Typography from "@mui/material/Typography";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import DialogContent from "@mui/material/DialogContent";
+import TextField from "@mui/material/TextField";
 
 const AddDialogStyle = () => {
 	const media = "@media (max-width: 414px)";
@@ -43,8 +43,12 @@ const AddDialogStyle = () => {
 			[media]: {
 				width: "100px",
 			},
+			"&.MuiButton-root:hover": {
+				backgroundColor: "#d5d5d5",
+			},
 		}),
 		ConfirmButton: styled(Button)({
+			lineHeight: "18px",
 			height: 43,
 			width: 160,
 			fontSize: 15,
@@ -53,6 +57,9 @@ const AddDialogStyle = () => {
 			fontFamily: "Roboto Condensed",
 			[media]: {
 				width: "100px",
+			},
+			"&.MuiButton-root:hover": {
+				backgroundColor: "#d5d5d5",
 			},
 		}),
 		DialogContent: styled(DialogContent)({

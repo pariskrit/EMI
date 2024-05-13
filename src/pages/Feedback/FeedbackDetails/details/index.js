@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
@@ -10,10 +10,7 @@ import { showError } from "redux/common/actions";
 import { getFeedbackClassifications } from "services/clients/sites/siteApplications/feedbackClassifications";
 import { getFeedbackPriorities } from "services/clients/sites/siteApplications/feedbackPriorities";
 import { getPositions } from "services/clients/sites/siteApplications/userPositions";
-import {
-	getSiteAssets,
-	getSiteAssetsCount,
-} from "services/clients/sites/siteAssets";
+import { getSiteAssets } from "services/clients/sites/siteAssets";
 import {
 	getPositionUsers,
 	updateFeedback,
@@ -39,7 +36,14 @@ const dropdownIdNames = {
 	zone: "ModelVersionZoneID",
 };
 
-function Details({ details, siteAppID, siteId, captions, feedbackId }) {
+function Details({
+	details,
+	siteAppID,
+	siteId,
+	captions,
+	feedbackId,
+	isReadOnly,
+}) {
 	const [selectedDropdown, setSelectedDropdown] = useState({
 		department: {},
 		riskRating: {},
@@ -114,7 +118,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 		if (!response.status)
 			dispatch(
 				showError(
-					response.data?.detail || response.data || "Could not update defect"
+					response?.data?.detail || response.data || "Could not update defect"
 				)
 			);
 	};
@@ -137,7 +141,9 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 
 		if (!response.status)
 			dispatch(
-				showError(response.data?.details || response.data || "Could not update")
+				showError(
+					response?.data?.details || response?.data || "Could not update"
+				)
 			);
 
 		setIsInputChanged(false);
@@ -182,7 +188,9 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 				setAvailableModel(newDatas);
 			} else dispatch(showError("Could not fetch Users"));
 		};
-		fetchModelAvailableAssest(modelid || details.modelID);
+		if (modelid || details?.modelID) {
+			fetchModelAvailableAssest(modelid || details.modelID);
+		}
 	}, [modelid, dispatch, details.modelID]);
 
 	useEffect(() => {
@@ -201,7 +209,10 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 				setPositionUsers(newDatas);
 			} else dispatch(showError("Could not fetch Users"));
 		};
-		fetchPositionUser();
+
+		if (positionUserID || details?.assignPositionID) {
+			fetchPositionUser();
+		}
 	}, [positionUserID, dispatch, details.assignPositionID]);
 
 	useEffect(() => {
@@ -232,7 +243,9 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 			},
 			model: {
 				id: details.modelID,
-				name: `${details?.modelName} ${details?.model ? details.model : ""}`,
+				name: details?.modelName
+					? `${details?.modelName} ${details?.model ? details.model : ""}`
+					: "",
 				activeModelVersionID: details.activeModelVersionID,
 				modelTemplateType: details.modelType,
 			},
@@ -271,6 +284,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						selectdValueToshow="name"
 						label={captions?.position}
 						fetchData={() => getPositions(siteAppID)}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -278,12 +292,27 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						isServerSide={false}
 						width="100%"
 						placeholder={`Select ${captions?.department}`}
-						columns={[{ id: 1, name: "name" }]}
+						dataHeader={[
+							{
+								id: 1,
+								name: "Name",
+							},
+							{
+								id: 2,
+								name: `${captions?.location ?? "Location"}`,
+							},
+						]}
+						showHeader
+						columns={[
+							{ id: 1, name: "name" },
+							{ id: 2, name: "description" },
+						]}
 						selectedValue={selectedDropdown.department}
 						onChange={(val) => handleDropdownChange(val, "department")}
 						selectdValueToshow="name"
 						label={captions?.department}
 						fetchData={() => getSiteDepartmentsInService(siteId)}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -297,7 +326,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						onChange={(val) => handleDropdownChange(val, "user")}
 						selectdValueToshow="name"
 						label={captions?.user}
-						isReadOnly={!selectedDropdown.position?.id}
+						isReadOnly={isReadOnly || !selectedDropdown.position?.id}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -312,6 +341,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						label={captions?.classification}
 						required
 						fetchData={() => getFeedbackClassifications(siteAppID)}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -326,6 +356,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						label={captions?.priority}
 						required
 						fetchData={() => getFeedbackPriorities(siteAppID)}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -342,7 +373,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 							{ id: 2, name: "Model" },
 						]}
 						showHeader
-						selectedValue={selectedDropdown.model}
+						selectedValue={selectedDropdown?.model}
 						onChange={(val) => {
 							handleDropdownChange(val, "model");
 							setSelectedDropdown((prev) => ({
@@ -355,6 +386,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						selectdValueToshow="name"
 						label={captions?.model}
 						fetchData={() => getPublishedModel(siteAppID)}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -372,6 +404,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						count={count}
 						handleServierSideSearch={handleServerSideSearch}
 						onPageChange={pageChange}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -391,7 +424,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						}}
 						selectdValueToshow="name"
 						label={captions?.stage}
-						isReadOnly={!selectedDropdown.model?.id}
+						isReadOnly={isReadOnly || !selectedDropdown.model?.id}
 						fetchData={() =>
 							getModelStage(selectedDropdown.model?.activeModelVersionID)
 						}
@@ -408,7 +441,9 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						selectdValueToshow="name"
 						label={captions?.zone}
 						isReadOnly={
-							!selectedDropdown.model?.id || !selectedDropdown.stage.hasZones
+							isReadOnly ||
+							!selectedDropdown.model?.id ||
+							!selectedDropdown.stage.hasZones
 						}
 						fetchData={() =>
 							getModelZonesList(selectedDropdown.model?.activeModelVersionID)
@@ -436,6 +471,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						onChange={handleInputChange}
 						name="changeRequired"
 						onBlur={handleUpdateInput}
+						disabled={isReadOnly}
 					/>
 				</Grid>
 
@@ -451,6 +487,7 @@ function Details({ details, siteAppID, siteId, captions, feedbackId }) {
 						onChange={handleInputChange}
 						name="benefit"
 						onBlur={handleUpdateInput}
+						disabled={isReadOnly}
 					/>
 				</Grid>
 			</Grid>

@@ -5,9 +5,11 @@ import {
 	DialogContent,
 	DialogContentText,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import { updateClientApplications } from "services/clients/clientDetailScreen";
 import AddDialogStyle from "styles/application/AddDialogStyle";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 
@@ -22,6 +24,7 @@ const ChangeDialog = ({
 }) => {
 	// Init state
 	const [isUpdating, setIsUpdating] = useState(false);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const handleChangeData = async () => {
@@ -42,7 +45,7 @@ const ChangeDialog = ({
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError("Failed to change status of the application."));
 
 			return false;
 		}

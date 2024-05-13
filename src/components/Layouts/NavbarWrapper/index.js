@@ -1,24 +1,16 @@
-import React, { useLayoutEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { createContext } from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Navbar from "components/Layouts/NavbarWrapper/Navbar";
-import { CssBaseline } from "@material-ui/core";
 import { connect } from "react-redux";
 import { loginWithSiteAppId } from "redux/common/actions";
 import { logOutUser } from "redux/auth/actions";
 import { authSlice } from "redux/auth/reducers";
-import "./style.scss";
+import roles from "helpers/roles";
+const theme = createTheme();
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: "flex",
-	},
-	content: {
-		flexGrow: 1,
-		padding: theme.spacing(3),
-	},
-}));
+export const NavbarStateContext = createContext({});
 
-/* Adds Navbar component  */
 function NavbarWrapper({
 	isApplicationPortal,
 	children,
@@ -28,31 +20,45 @@ function NavbarWrapper({
 	setUserDetail,
 	userDetail,
 }) {
-	// Init hooks
-	const classes = useStyles();
-
 	const siteAppId = localStorage.getItem("siteAppId");
 
-	useLayoutEffect(() => {
-		// Is called with clicking site application from Application Portal where siteAppId is set
-		if (siteAppId) {
-			loginSiteApp(siteAppId);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [siteAppId]);
+	const me =
+		JSON.parse(sessionStorage.getItem("me")) ||
+		JSON.parse(localStorage.getItem("me"));
+
+	const [navDrawerState, setNavDrawerState] = React.useState(false);
 
 	return (
-		<div className={classes.root}>
+		<ThemeProvider theme={theme}>
 			<CssBaseline />
-			<Navbar
-				isApplicationPortal={isApplicationPortal}
-				isLoading={loading}
-				userLogOut={userLogOut}
-				userDetail={userDetail}
-				setUserDetail={setUserDetail}
-			/>
-			{!siteAppId && <main className={classes.content}>{children}</main>}
-		</div>
+			<div
+				style={{
+					display: "flex",
+					backgroundColor: "#FAFAFA",
+				}}
+			>
+				<Navbar
+					isApplicationPortal={isApplicationPortal}
+					isLoading={loading}
+					userLogOut={userLogOut}
+					userDetail={userDetail}
+					setUserDetail={setUserDetail}
+					setNavState={setNavDrawerState}
+				/>
+				{(!siteAppId || me?.role === roles.clientAdmin) && (
+					<NavbarStateContext.Provider value={{ navBarState: navDrawerState }}>
+						<main
+							style={{
+								flexGrow: 1,
+								padding: theme.spacing(3),
+							}}
+						>
+							{children}
+						</main>
+					</NavbarStateContext.Provider>
+				)}
+			</div>
+		</ThemeProvider>
 	);
 }
 

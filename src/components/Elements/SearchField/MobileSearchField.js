@@ -1,6 +1,6 @@
 import React from "react";
 import ContentStyle from "styles/application/ContentStyle";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -19,6 +19,7 @@ function MobileSearchField({ searchQuery, setSearchQuery, header }) {
 						</Grid>
 						<Grid item>
 							<AC.SearchInput
+								variant="standard"
 								value={searchQuery}
 								onChange={setSearchQuery}
 								label={header ? `Search ${header}` : "Search"}

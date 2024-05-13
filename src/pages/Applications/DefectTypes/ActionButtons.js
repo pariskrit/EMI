@@ -1,5 +1,5 @@
 import React from "react";
-import ActionButtonStyle from "../../../styles/application/ActionButtonStyle";
+import ActionButtonStyle from "styles/application/ActionButtonStyle";
 
 // Init styled components
 const AAD = ActionButtonStyle();

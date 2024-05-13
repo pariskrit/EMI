@@ -1,7 +1,7 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import LaunchItem from "./LaunchItem";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 
 // MOCK DATA IMPORTS
 import zm from "assets/zm.png";

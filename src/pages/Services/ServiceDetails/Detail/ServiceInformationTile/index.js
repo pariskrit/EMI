@@ -1,24 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import AccordionBox from "components/Layouts/AccordionBox";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
 import { serviceStatus } from "constants/serviceDetails";
 import ProgressBar from "components/Elements/ProgressBar";
+import { statusOfServices } from "constants/serviceDetails";
+import CircularProgress from "@mui/material/CircularProgress";
 import CurveButton from "components/Elements/CurveButton";
-import { makeStyles } from "@material-ui/styles";
-import Button from "@material-ui/core/Button";
-import clsx from "clsx";
+import { makeStyles } from "tss-react/mui";
+
 import Icon from "components/Elements/Icon";
-import { roundedToFixed } from "helpers/utils";
+import {
+	fileDownload,
+	getFileNameFromContentDispositonHeader,
+	roundedToFixed,
+} from "helpers/utils";
 import ActionButtonStyle from "styles/application/ActionButtonStyle";
+import GeneralButton from "components/Elements/GeneralButton";
+import { findWindows } from "windows-iana";
+import { getCompletedServiceReport } from "services/reports/reports";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const AT = ActionButtonStyle();
-const useStyles = makeStyles((theme) => ({
-	labelText: {
-		fontFamily: "Roboto Condensed",
-		fontWeight: "bold",
-		fontSize: "14px",
-		marginBottom: "15px",
+const useStyles = makeStyles()((theme) => ({
+	mainContainer: {
+		display: "flex",
 	},
+
 	smallTxt: {
 		fontFamily: "Roboto Condensed",
 		fontWeight: "400",
@@ -45,27 +53,75 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: "#ED8738",
 		marginTop: "-7px",
 	},
+	customGrid: {
+		flexBasis: "60.67%",
+		maxWidth: "60.67%",
+	},
+	loaderContainer: {
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+	},
 }));
+const labelText = {
+	fontFamily: "Roboto Condensed",
+	fontWeight: "bold",
+	fontSize: "14px",
+	marginBottom: "15px",
+};
 
 function ServiceInformation({
 	classes,
 	detail,
 	customCaptions,
 	setOpenChnageStatusPopup,
+	isReadOnly,
+	serviceId,
 }) {
-	const classess = useStyles();
+	const { classes: classess, cx } = useStyles();
+
+	const [isLoading, setIsLoading] = useState(false);
+	const reduxDispatch = useDispatch();
+
+	const downloadServiceReport = async () => {
+		setIsLoading(true);
+		const time = findWindows(Intl.DateTimeFormat().resolvedOptions().timeZone);
+		try {
+			const response = await getCompletedServiceReport({
+				serviceId,
+				timeZone: time?.[0]?.toString(),
+			});
+			if (response?.status) {
+				const fileName = getFileNameFromContentDispositonHeader(response);
+				fileDownload(response, fileName);
+				setIsLoading(false);
+			} else {
+				const res = JSON.parse(await response?.data.text());
+				reduxDispatch(
+					showError(
+						res?.detail || res.errors?.message || "Failed to download report."
+					)
+				);
+			}
+		} catch (err) {
+			setIsLoading(false);
+			reduxDispatch(showError("Failed to download report."));
+		}
+	};
 
 	return (
-		<AccordionBox title={"Service Information"}>
-			<div className={classes.inputContainer}>
+		<AccordionBox title={`${customCaptions?.service} Information`}>
+			{/* <div className={classes.inputContainer}> */}
+			<div style={{ display: "flex" }}>
 				<Grid container spacing={5}>
-					<Grid item lg={5} md={6} xs={12}>
+					<Grid item lg={5} md={6} xs={12} className={classess.customGrid}>
 						<Grid container wrap="nowrap">
 							<Grid item>
 								<Typography
-									className={clsx(classess.labelText, classess.customLabelTxt)}
+									sx={labelText}
+									className={cx(classess.labelText, classess.customLabelTxt)}
 								>
-									Status:{" "}
+									Status:
 									<span style={{ display: "inline-flex", gap: 3 }}>
 										<span>
 											<Icon
@@ -77,7 +133,11 @@ function ServiceInformation({
 											className={classess.smallTxt}
 											style={{ whiteSpace: "nowrap" }}
 										>
-											{serviceStatus[detail?.status]}
+											{statusOfServices(
+												detail?.status,
+												detail?.tasksSkipped,
+												customCaptions
+											)}
 										</span>
 									</span>
 								</Typography>
@@ -85,7 +145,7 @@ function ServiceInformation({
 
 							<Grid item>
 								<Typography>
-									{detail?.status === "I" && (
+									{!isReadOnly && detail?.status === "I" && (
 										<span style={{ marginLeft: 30 }}>
 											<AT.GeneralButton
 												className={classess.resetButton}
@@ -99,8 +159,8 @@ function ServiceInformation({
 							</Grid>
 						</Grid>
 
-						<Typography className={classess.labelText}>
-							Percentage Completed:{" "}
+						<Typography className={classess.labelText} sx={labelText}>
+							Percentage Completed:
 							<span
 								className={classess.greenTxt}
 								style={{
@@ -119,6 +179,7 @@ function ServiceInformation({
 								value={detail?.percentageComplete}
 								height={"8px"}
 								isLabelVisible={false}
+								width={"150%"}
 								bgColour={
 									detail?.percentageOverTime <= 5
 										? "#23BB79"
@@ -129,8 +190,8 @@ function ServiceInformation({
 								}
 							/>
 						</Typography>
-						<Typography className={classess.labelText}>
-							Percentage Time Over/Under:{" "}
+						<Typography className={classess.labelText} sx={labelText}>
+							Percentage Time Over/Under:
 							<span
 								className={classess.greenTxt}
 								style={{
@@ -148,7 +209,7 @@ function ServiceInformation({
 									: ""}
 							</span>
 						</Typography>
-						<Typography className={classess.labelText}>
+						<Typography className={classess.labelText} sx={labelText}>
 							Time (Mins) Over/Under:{" "}
 							<span
 								className={classess.greenTxt}
@@ -165,7 +226,7 @@ function ServiceInformation({
 								{detail?.minutesOverTime}
 							</span>
 						</Typography>
-						<Typography className={classess.labelText}>
+						<Typography className={classess.labelText} sx={labelText}>
 							Remaining Minutes:{" "}
 							<span style={{ fontWeight: 400 }}>
 								{roundedToFixed(detail?.estimatedMinutes, 1)}
@@ -173,6 +234,32 @@ function ServiceInformation({
 						</Typography>
 					</Grid>
 				</Grid>
+				<div>
+					<Typography className={classess.labelText} sx={labelText}>
+						Service Report:{" "}
+						<span style={{ fontWeight: 400 }}>
+							For a full summary please download the service report below.
+						</span>
+					</Typography>
+
+					{isLoading ? (
+						<div className={classess.loaderContainer}>
+							<CircularProgress />
+						</div>
+					) : (
+						<GeneralButton
+							style={{
+								padding: "6px 22px",
+								fontSize: "12.5px",
+								width: "200px",
+								borderRadius: "18px",
+							}}
+							onClick={downloadServiceReport}
+						>
+							{`Download ${customCaptions?.service || "Service"} Report`}
+						</GeneralButton>
+					)}
+				</div>
 			</div>
 		</AccordionBox>
 	);

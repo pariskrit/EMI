@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
@@ -19,7 +19,14 @@ import AddDialogStyle from "styles/application/AddDialogStyle";
 
 const Add = AddDialogStyle();
 
-function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
+function Details({
+	details,
+	siteAppID,
+	captions,
+	defectId,
+	fetchDefect,
+	isReadOnly,
+}) {
 	const [selectedDropdown, setSelectedDropdown] = useState({
 		type: {},
 		riskRating: {},
@@ -34,7 +41,8 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 	const dispatch = useDispatch();
 	const [departments, setDepartments] = useState([]);
 	const [modelAssets, setModelAssets] = useState([]);
-
+	//state for the defect question response --new field
+	const [questionResponseOptions, setQuestionResponseOptions] = useState([]);
 	const handleDropdownChange = async (value, type) => {
 		let path = null;
 		if (type === "type") {
@@ -79,7 +87,7 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 		if (!response.status)
 			dispatch(
 				showError(
-					response.data.detail || response.data || "Could not update defect"
+					response?.data?.detail || response?.data || "Could not update defect"
 				)
 			);
 	};
@@ -110,7 +118,9 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 
 		if (!response.status)
 			dispatch(
-				showError(response.data?.details || response.data || "Could not update")
+				showError(
+					response?.data?.details || response?.data || "Could not update"
+				)
 			);
 
 		setIsInputChanged(false);
@@ -160,8 +170,20 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 			model: {
 				id: details.modelID,
 				name: details.modelModel
-					? details.modelName + " " + details.modelModel
-					: details.modelName || "",
+					? details.modelName +
+					  " " +
+					  details.modelModel +
+					  " " +
+					  `${
+							details.arrangementName ? "(" + details.arrangementName + ")" : ""
+					  }`
+					: details.modelName +
+							" " +
+							`${
+								details.arrangementName
+									? "(" + details.arrangementName + ")"
+									: ""
+							}` || "",
 			},
 			stage: {
 				name: details.stageName || "",
@@ -207,6 +229,11 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 		}
 	}, [modelAssetId, dispatch]);
 
+	useEffect(() => {
+		if (input?.questionResponseOptions) {
+			setQuestionResponseOptions(input?.questionResponseOptions);
+		}
+	}, [input]);
 	return (
 		<AccordionBox
 			title="Details"
@@ -220,12 +247,26 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 						isServerSide={false}
 						width="100%"
 						placeholder={`Select ${captions?.department}`}
-						dataHeader={[{ id: 1, name: "Department" }]}
-						columns={[{ id: 1, name: "name" }]}
+						dataHeader={[
+							{
+								id: 1,
+								name: "Department",
+							},
+							{
+								id: 2,
+								name: `${captions?.location ?? "Location"}`,
+							},
+						]}
+						showHeader
+						columns={[
+							{ id: 1, name: "name" },
+							{ id: 2, name: "description" },
+						]}
 						selectedValue={selectedDropdown.department}
 						onChange={(val) => handleDropdownChange(val, "department")}
 						selectdValueToshow="name"
 						label={captions?.department}
+						isReadOnly={isReadOnly}
 						required
 					/>
 				</Grid>
@@ -242,6 +283,7 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 						label={captions?.riskRating}
 						required
 						fetchData={() => getDefectRiskRatings(siteAppID)}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -266,6 +308,7 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 						label={captions?.defectType}
 						required
 						fetchData={() => getDefectTypes(siteAppID)}
+						isReadOnly={isReadOnly}
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -357,6 +400,7 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 						}}
 						selectdValueToshow="name"
 						label={`${captions?.asset ?? "Asset"}`}
+						isReadOnly={isReadOnly}
 						required
 					/>
 				</Grid>
@@ -389,12 +433,30 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 				</Grid>
 				<Grid item xs={12} md={6}>
 					<TextFieldContainer
-						label="Notification Number"
+						label={captions?.defectWorkOrder ?? "Defect Work Order"}
 						name="workOrder"
 						value={input?.workOrder}
 						onChange={handleInputChange}
 						onBlur={handleUpdateInput}
 						onKeyDown={handleEnterPress}
+						isRequired={false}
+						isDisabled={isReadOnly}
+					/>
+				</Grid>
+				<Grid item xs={12} md={6}>
+					<TextFieldContainer
+						label={
+							captions?.question
+								? `${captions?.question} Response`
+								: "Question Response"
+						}
+						name="questionResponse"
+						value={
+							input?.questionResponseNumeric != null
+								? input?.questionResponseNumeric
+								: questionResponseOptions[0]?.name
+						}
+						isDisabled={true}
 						isRequired={false}
 					/>
 				</Grid>
@@ -415,8 +477,10 @@ function Details({ details, siteAppID, captions, defectId, fetchDefect }) {
 								style={{
 									width: "100%",
 									fontSize: "16px",
+									color: "#000000de",
 									borderRadius: "5px",
 								}}
+								disabled={isReadOnly}
 							/>
 						</Add.FullWidthContainer>
 					</Add.InputContainer>

@@ -1,14 +1,11 @@
 import React from "react";
-import { Route } from "react-router-dom";
-import UserPage from "./UserPage";
-import UsersList from "../UsersList";
-import { usersPath } from "helpers/routePaths";
+import { Route, Routes } from "react-router-dom";
+import UsersList from "pages/Users/UsersList";
 
 export default function UsersPage() {
 	return (
-		<>
-			<Route component={UsersList} exact path={usersPath} />
-			<UserPage />
-		</>
+		<Routes>
+			<Route index element={<UsersList />} />
+		</Routes>
 	);
 }

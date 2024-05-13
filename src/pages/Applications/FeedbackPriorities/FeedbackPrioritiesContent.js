@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import API from "helpers/api";
 import ContentStyle from "styles/application/ContentStyle";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import NavDetails from "components/Elements/NavDetails";
 import ActionButtons from "./ActionButtons";
 import NavButtons from "components/Elements/NavButtons";
@@ -11,14 +11,20 @@ import FeedbackPrioritiesTable from "./FeedbackPrioritiesTable";
 import DefaultDialog from "components/Elements/DefaultDialog";
 import AddStatusDialog from "./AddDialog";
 import EditStatusDialog from "./EditDialog";
-import Grid from "@material-ui/core/Grid";
-import { handleSort } from "helpers/utils";
+import Grid from "@mui/material/Grid";
+import { getLocalStorageData, handleSort } from "helpers/utils";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import { applicationListPath } from "helpers/routePaths";
+import { appPath, applicationListPath } from "helpers/routePaths";
 import TabTitle from "components/Elements/TabTitle";
-
+import { setHistoryDrawerState, showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import { useSelector } from "react-redux";
+import RestoreIcon from "@mui/icons-material/Restore";
+import HistoryBar from "components/Modules/HistorySidebar/HistoryBar";
+import { getApplicationFeedbackPriorities } from "services/History/application";
 // Init styled components
 const AC = ContentStyle();
 
@@ -39,6 +45,8 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 	const [deleteID, setDeleteID] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchedData, setSearchedData] = useState([]);
+	const dispatch = useDispatch();
+	const { isHistoryDrawerOpen } = useSelector((state) => state.commonData);
 
 	const handleGetData = useCallback(async () => {
 		// Attempting to get data
@@ -70,7 +78,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
+			dispatch(showError("Failed to fetch feedback priority."));
 			return false;
 		}
 	}, [id, setIs404]);
@@ -121,7 +129,6 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 	const handleDefaultUpdate = async () => {
 		// Attempting to update default
 		try {
-			console.log(confirmDefault[0]);
 			// Patching change to API
 			const result = await API.patch(`/api/Applications/${id}`, [
 				{
@@ -145,8 +152,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 			}
 		} catch (err) {
 			// TODO: real error handling
-			console.log(err);
-
+			dispatch(showError("Failed to update default feedback priority."));
 			return false;
 		}
 	};
@@ -234,10 +240,12 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 					// Defaulting to asc name for sort
 					setHaveData(true);
 				} else {
-					throw new Error("Unable to get data");
+					throw new Error("Failed to fetch feedback priorities");
 				}
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				dispatch(showError("Failed to fetch feedback priorities."))
+			);
 	}, [handleGetData]);
 
 	// Fetch side effect to get application details
@@ -261,17 +269,13 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 				}
 			} catch (err) {
 				// TODO: real error handling
-				console.log(err);
+				dispatch(showError("Failed to fetch application data."));
 				return false;
 			}
 		};
 
 		// Getting application and updating state
-		getApplicationData()
-			.then(() => {
-				console.log("application name updated");
-			})
-			.catch((err) => console.log(err));
+		getApplicationData();
 		// eslint-disable-next-line
 	}, []);
 
@@ -304,10 +308,22 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 		// eslint-disable-next-line
 	}, [searchQuery]);
 
+	const { adminType } = getLocalStorageData("me");
+
+	const isReseller = adminType === RESELLER_ID;
+
 	return (
 		<div className="container">
 			<TabTitle title={`${applicationName} Feedback Priorities`} />
 			{/* START DIALOGS */}
+			<HistoryBar
+				id={id}
+				showhistorybar={isHistoryDrawerOpen}
+				dispatch={dispatch}
+				fetchdata={(id, pageNumber, pageSize) =>
+					getApplicationFeedbackPriorities(id, pageNumber, pageSize)
+				}
+			/>
 			<AddStatusDialog
 				open={openAddDialog}
 				closeHandler={handleAddDialogClose}
@@ -340,26 +356,33 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 			<div className="topContainerCustomCaptions">
 				<NavDetails
 					staticCrumbs={[
-						{ id: 1, name: "Applications", url: applicationListPath },
+						{ id: 1, name: "Applications", url: appPath + applicationListPath },
 						{
 							id: 2,
-							name:
-								state !== undefined ? state.applicationName : applicationName,
+							name: state !== null ? state?.applicationName : applicationName,
 						},
 					]}
-				/>
-				{haveData ? (
-					<div>
-						<ActionButtons addOpen={handleAddDialogOpen} />
+				/>{" "}
+				<div className="application-history-nav">
+					{haveData && !isReseller ? (
+						<div>
+							<ActionButtons addOpen={handleAddDialogOpen} />
+						</div>
+					) : null}
+					<div
+						className="restore"
+						onClick={() => dispatch(setHistoryDrawerState(true))}
+					>
+						<RestoreIcon />
 					</div>
-				) : null}
+				</div>
 			</div>
 			{haveData ? (
 				<>
 					<NavButtons
 						navigation={navigation}
 						applicationName={
-							state !== undefined ? state.applicationName : applicationName
+							state !== undefined ? state?.applicationName : applicationName
 						}
 						current="Feedback Definitions"
 					/>
@@ -382,6 +405,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 											</Grid>
 											<Grid item>
 												<AC.SearchInput
+													variant="standard"
 													value={searchQuery}
 													onChange={(e) => {
 														setSearchQuery(e.target.value);
@@ -403,6 +427,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 										</Grid>
 										<Grid item>
 											<AC.SearchInput
+												variant="standard"
 												value={searchQuery}
 												onChange={(e) => {
 													setSearchQuery(e.target.value);
@@ -429,6 +454,7 @@ const FeedbackPrioritiesContent = ({ navigation, id, setIs404, state }) => {
 						setCurrentTableSort={setCurrentTableSort}
 						searchedData={searchedData}
 						setSearchedData={setSearchedData}
+						isReadOnly={isReseller}
 					/>
 				</>
 			) : (

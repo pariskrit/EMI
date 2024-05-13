@@ -5,8 +5,8 @@ import {
 	DialogTitle,
 	Grid,
 	LinearProgress,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import ColourConstants from "helpers/colourConstants";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
@@ -14,7 +14,7 @@ import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 
 const ADD = AddDialogStyle();
 
-const useStyle = makeStyles({
+const useStyle =  makeStyles()((theme) =>({
 	input: {
 		width: "100%",
 		padding: 10,
@@ -31,7 +31,7 @@ const useStyle = makeStyles({
 	textfield: {
 		marginBottom: "0px !important",
 	},
-});
+}))
 
 function CustomDateRange({
 	open,

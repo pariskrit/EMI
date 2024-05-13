@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import DropUploadBox from "components/Elements/DropUploadBox";
 import ProvidedAssetNoImage from "components/Modules/ProvidedAsset/ProvidedAssetNoImage";
@@ -10,7 +12,9 @@ import {
 	addClientDocument,
 	getClientDocument,
 } from "services/clients/clientDetailScreen";
-const useStyles = makeStyles((theme) => ({
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+const useStyles = makeStyles()((theme) => ({
 	logoContainer: {
 		marginTop: 25,
 		display: "flex",
@@ -52,11 +56,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 function ClientDocuments({ clientId, getError }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [listOfDocuments, setListOfDocuments] = useState([]);
 	const [filesUploading, setFilesUploading] = useState(false);
 	const cancelFetch = useRef(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	const onDocumentUpload = async (key, url) => {
 		try {
@@ -110,7 +115,7 @@ function ClientDocuments({ clientId, getError }) {
 			setFilesUploading(false);
 		} catch (error) {
 			setIsLoading(false);
-			console.log(error);
+			dispatch(showError(`Failed to fetch client documents.`));
 		}
 	};
 

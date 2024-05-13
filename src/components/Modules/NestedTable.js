@@ -1,24 +1,21 @@
-import clsx from "clsx";
 import React, { useState } from "react";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import { useHistory } from "react-router-dom";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import { useNavigate } from "react-router-dom";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
 import TableStyle from "styles/application/TableStyle";
-
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { usersPath } from "helpers/routePaths";
-
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
 import NavButtons from "components/Elements/NavButtons";
 import { siteScreenNavigation } from "helpers/constants";
-import { Grid, TextField, Typography } from "@material-ui/core";
+import { Grid, TextField, Typography } from "@mui/material";
 import Dropdown from "components/Elements/Dropdown";
 
 // Init styled components
@@ -29,7 +26,7 @@ const MAX_LOGO_HEIGHT = 47;
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -80,7 +77,7 @@ const useStyles = makeStyles({
 	row: {
 		cursor: "pointer",
 	},
-});
+}));
 
 const UserTable = ({
 	data,
@@ -97,8 +94,8 @@ const UserTable = ({
 	handleDeleteDialogOpen,
 }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Init State
 	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
@@ -117,7 +114,10 @@ const UserTable = ({
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
+		const newMethod =
+			currentTableSort[0] === field && currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Sorting table
 		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
@@ -151,7 +151,7 @@ const UserTable = ({
 								onClick={() => {
 									handleSortClick(columns[i]);
 								}}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === columns[i],
 									[classes.tableHeadRow]: currentTableSort[0] !== columns[i],
@@ -225,7 +225,7 @@ const UserTable = ({
 															{
 																name: "Edit",
 																handler: () => {
-																	history.push(`${usersPath}/${row.id}`);
+																	navigate(`${usersPath}/${row.id}`);
 																},
 																isDelete: false,
 															},
@@ -266,7 +266,6 @@ const UserTable = ({
 					style={{ textAlign: "center", padding: "16px 10px" }}
 					className="flex justify-center"
 				>
-					<b>Yay! You have seen it all</b>
 					<span
 						className="link-color ml-md cursor-pointer"
 						onClick={() => gotoTop()}
@@ -282,7 +281,7 @@ const UserTable = ({
 export default UserTable;
 
 const InnerTable = () => {
-	const useStyles = makeStyles((theme) => ({
+	const useStyles = makeStyles()((theme) => ({
 		required: {
 			color: "red",
 		},
@@ -293,7 +292,7 @@ const InnerTable = () => {
 		},
 	}));
 
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<div>

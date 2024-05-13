@@ -4,9 +4,11 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { useState } from "react";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
@@ -24,7 +26,7 @@ import {
 	handleValidateObj,
 } from "helpers/utils";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 
 const ADD = AddDialogStyle();
 
@@ -34,14 +36,14 @@ const schema = yup.object({
 		.required("This field is required"),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 function ChangeStatusPopup({
 	open,
@@ -52,7 +54,7 @@ function ChangeStatusPopup({
 	fetchData,
 	setDataForFetchingService,
 }) {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [serviceStatuses, setServiceStatuses] = useState([]);
 	const [SelectedchangeStatusReason, setChnageStatusReason] = useState({});
@@ -94,7 +96,7 @@ function ChangeStatusPopup({
 				} else {
 					setDataForFetchingService({
 						pageNumber: 1,
-						pageSize: DefaultPageSize,
+						pageSize: defaultPageSize(),
 						search: "",
 						sortField: "",
 						sort: "",

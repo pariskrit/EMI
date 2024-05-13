@@ -4,21 +4,24 @@ import {
 	DialogContent,
 	DialogTitle,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
 	generateErrorState,
 	handleSort,
 	handleValidateObj,
+	isChrome,
 } from "helpers/utils";
 import { useDispatch } from "react-redux";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
 import { getPublishedModel } from "services/models/modelList";
 import ErrorInputFieldWrapper from "components/Layouts/ErrorInputFieldWrapper";
 import { showError } from "redux/common/actions";
-import { DefaultPageSize } from "helpers/constants";
+import { defaultPageSize } from "helpers/utils";
 import { getModelStage } from "services/models/modelDetails/modelStages";
 import { getModelZonesList } from "services/models/modelDetails/modelZones";
 import TextAreaInputField from "components/Elements/TextAreaInputField";
@@ -62,14 +65,14 @@ const schema = () =>
 			.required("The field is required"),
 	});
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		width: 500,
 	},
 	createButton: {
 		// width: "auto",
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -114,7 +117,7 @@ function AddNewFeedbackDetail({
 	siteID,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -126,6 +129,7 @@ function AddNewFeedbackDetail({
 		[]
 	);
 	const [positionUsers, setPositionUsers] = useState([]);
+	const [modelFocus, setModelFocus] = useState(true);
 
 	useEffect(() => {
 		if (open) {
@@ -212,7 +216,7 @@ function AddNewFeedbackDetail({
 				if (newData.status === true) {
 					setDataForFetchingFeedback({
 						pageNumber: 1,
-						pageSize: DefaultPageSize,
+						pageSize: defaultPageSize(),
 						search: "",
 						sortField: "",
 						sort: "",
@@ -225,7 +229,7 @@ function AddNewFeedbackDetail({
 
 					dispatch(
 						showError(
-							newData.data.detail ||
+							newData?.data?.detail ||
 								"Failed to add new " + customCaptions?.feedback
 						)
 					);
@@ -292,6 +296,7 @@ function AddNewFeedbackDetail({
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 				className="large-application-dailog"
+				disableEnforceFocus={isChrome() ? modelFocus : false}
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
@@ -301,7 +306,13 @@ function AddNewFeedbackDetail({
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
-							<ADD.CancelButton onClick={closeOverride} variant="contained">
+							<ADD.CancelButton
+								onClick={closeOverride}
+								variant="contained"
+								onFocus={(e) => {
+									setModelFocus(true);
+								}}
+							>
 								Cancel
 							</ADD.CancelButton>
 						</div>
@@ -365,8 +376,21 @@ function AddNewFeedbackDetail({
 									isServerSide={false}
 									width="100%"
 									placeholder={"Select " + customCaptions?.department}
-									dataHeader={[{ id: 1, name: customCaptions?.department }]}
-									columns={[{ id: 1, name: "name" }]}
+									dataHeader={[
+										{
+											id: 1,
+											name: `${customCaptions?.department ?? " Department"}`,
+										},
+										{
+											id: 2,
+											name: `${customCaptions?.location ?? "Location"}`,
+										},
+									]}
+									showHeader
+									columns={[
+										{ id: 1, name: "name" },
+										{ id: 2, name: "description" },
+									]}
 									selectedValue={{
 										...input["siteDepartmentID"],
 									}}
@@ -724,6 +748,9 @@ function AddNewFeedbackDetail({
 										fontFamily: "Roboto Condensed",
 										fontSize: "16px",
 										borderRadius: "5px",
+									}}
+									onBlur={() => {
+										setModelFocus(false);
 									}}
 								/>
 							</ErrorInputFieldWrapper>

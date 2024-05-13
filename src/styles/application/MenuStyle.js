@@ -1,7 +1,7 @@
-import { styled } from "@material-ui/core/styles";
-import ColourConstants from "../../helpers/colourConstants";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
+import { styled } from "@mui/styles";
+import ColourConstants from "helpers/colourConstants";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 
 const MenuStyle = () => {
 	return {

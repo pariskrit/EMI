@@ -3,10 +3,10 @@ import {
 	Dialog,
 	DialogTitle,
 	LinearProgress,
-	makeStyles,
 	TextField,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import CurveButton from "components/Elements/CurveButton";
 import ColourConstants from "helpers/colourConstants";
 import {
@@ -20,6 +20,8 @@ import EditDialogStyle from "styles/application/EditDialogStyle";
 import * as yup from "yup";
 import FunctionalLocations from "./FunctionalLocations";
 import NewFunctionalLocations from "./NewFunctionalLocations";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 const schema = yup.object({
 	name: yup
@@ -36,7 +38,7 @@ const defaultErrorSchema = { name: null, description: null };
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	// Override for paper used in dialog
 	paper: { minWidth: "90%" },
 	inputContainer: {
@@ -67,7 +69,7 @@ const useStyles = makeStyles({
 		marginBottom: 20,
 		flexDirection: "column",
 	},
-});
+}));
 
 const EditAssetDialog = ({
 	open,
@@ -76,13 +78,14 @@ const EditAssetDialog = ({
 	handleEditData,
 	getError,
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [loading, setLoading] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
 	const [isAddNew, setIsAddNew] = useState(false);
 	const [functionalLocations, setFunctionalLocations] = useState([]);
 	const { customCaptions } = getLocalStorageData("me");
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (open && editData !== null) {
@@ -102,8 +105,8 @@ const EditAssetDialog = ({
 					throw new Error(response);
 				}
 			} catch (err) {
-				console.log(err);
 				setLoading(false);
+				dispatch(showError(`Failed to fetch ${customCaptions?.asset}`));
 			}
 		};
 		if (editData.id) fetchFunctionalLocations();
@@ -249,6 +252,11 @@ const EditAssetDialog = ({
 									<ET.RequiredStar>*</ET.RequiredStar>
 								</ET.NameLabel>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									name="name"
 									error={errors.name === null ? false : true}
 									helperText={errors.name === null ? null : errors.name}
@@ -269,6 +277,11 @@ const EditAssetDialog = ({
 									Description<ET.RequiredStar>*</ET.RequiredStar>
 								</ET.NameLabel>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									name="description"
 									error={errors.description === null ? false : true}
 									helperText={

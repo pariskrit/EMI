@@ -1,4 +1,5 @@
-import { Grid, makeStyles } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+
 import GraphTitle from "components/Modules/GraphTitle";
 import { getLocalStorageData, toRoundoff } from "helpers/utils";
 import React, { useCallback, useEffect, useState } from "react";
@@ -20,7 +21,7 @@ import {
 import { showError } from "redux/common/actions";
 import { getServiceTimes } from "services/services/serviceTimes";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	customTooltip: {
 		background: "#e9e9e9",
 		padding: "6px 12px",
@@ -43,17 +44,17 @@ const useStyles = makeStyles({
 	label: {
 		margin: 0,
 	},
-});
+}));
 
 function Times() {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const { customCaptions } = getLocalStorageData("me");
 	const [chartData, setChartData] = useState({});
 	const [stage, setStage] = useState(null);
 	const [isTask, setIsTask] = useState(false);
 	const [isMouseHover, setIsMouseHover] = useState(null);
 	const [crumbs, setCrumbs] = useState([
-		{ id: 1, name: customCaptions.stagePlural },
+		{ id: 1, name: customCaptions?.stagePlural },
 	]);
 	const { id } = useParams();
 	const dispatch = useDispatch();
@@ -93,7 +94,7 @@ function Times() {
 		let response = null;
 
 		if (chartData.depth === "S") {
-			response = await getServiceTimes(id, data.id);
+			response = await getServiceTimes(id, data?.id);
 			setStage(data);
 			setCrumbs([
 				{ id: 1, name: data.name, depth: "S" },
@@ -107,7 +108,7 @@ function Times() {
 			]);
 		}
 		if (chartData.depth === "Z") {
-			response = await getServiceTimes(id, stage?.id, data.id);
+			response = await getServiceTimes(id, stage?.id, data?.id);
 			setCrumbs([
 				{ id: 1, name: stage?.name, depth: "S" },
 				{ id: 2, name: data?.name, depth: "Z" },
@@ -115,13 +116,13 @@ function Times() {
 			]);
 		}
 		if (response.status) {
-			if (response.data.depth === "T") setIsTask(true);
+			if (response?.data?.depth === "T") setIsTask(true);
 
 			setChartData(modifyChartData(response));
 		} else {
 			dispatch(
 				showError(
-					response.data?.details || response.data || "Could not fetch data"
+					response?.data?.details || response?.data || "Could not fetch data"
 				)
 			);
 		}
@@ -134,7 +135,7 @@ function Times() {
 			setCrumbs([{ id: 1, name: customCaptions.stagePlural, depth: "S" }]);
 		}
 		if (data.depth === "Z") {
-			response = await getServiceTimes(id, stage.id);
+			response = await getServiceTimes(id, stage?.id);
 			setCrumbs([
 				{ id: 1, name: stage?.name, depth: "S" },
 				{ id: 2, name: customCaptions.zonePlural, depth: "Z" },
@@ -149,9 +150,9 @@ function Times() {
 			data: chartData.data.data.map((d) => {
 				return {
 					...d,
-					actualMinutes: toRoundoff(d.actualMinutes),
-					estimatedMinutes: toRoundoff(d.estimatedMinutes),
-					name: d?.actionName ? `${d.actionName} ${d.name}` : `${d.name}`,
+					actualMinutes: toRoundoff(d?.actualMinutes),
+					estimatedMinutes: toRoundoff(d?.estimatedMinutes),
+					name: d?.actionName ? `${d?.actionName} ${d?.name}` : `${d?.name}`,
 				};
 			}),
 		};
@@ -165,7 +166,7 @@ function Times() {
 		} else {
 			dispatch(
 				showError(
-					response.data?.details || response.data || "Could not fetch data"
+					response?.data?.details || response?.data || "Could not fetch data"
 				)
 			);
 		}
@@ -187,7 +188,7 @@ function Times() {
 						></p>
 						<label>
 							Estimated:
-							<span className="label"> {payload[1].value}</span>
+							<span className="label"> {payload[1]?.value}</span>
 						</label>
 					</div>
 					<div className={classes.toolTipLabel}>
@@ -197,7 +198,7 @@ function Times() {
 						></p>
 						<label>
 							Actual:
-							<span className="label"> {payload[0].value}</span>
+							<span className="label"> {payload[0]?.value}</span>
 						</label>
 					</div>
 				</div>
@@ -236,7 +237,7 @@ function Times() {
 				>
 					<YAxis
 						label={{
-							value: depthNames[chartData.depth],
+							value: depthNames?.[chartData?.depth],
 							angle: -90,
 							dx: -130,
 						}}
@@ -315,7 +316,7 @@ function Times() {
 							barGap={0}
 						>
 							<XAxis
-								label={{ value: depthNames[chartData.depth], dy: 30 }}
+								label={{ value: depthNames[chartData?.depth], dy: 30 }}
 								dataKey="name"
 								scale="point"
 								type="category"

@@ -7,7 +7,7 @@ import SearchField from "components/Elements/SearchField/SearchField";
 import CommonApplicationTable from "components/Modules/CommonApplicationTable";
 import { defectStatusTypes } from "helpers/constants";
 import { useSearch } from "hooks/useSearch";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { showError } from "redux/common/actions";
 import { getDefectStatuses } from "services/clients/sites/siteApplications/defectStatuses";
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
@@ -33,11 +33,13 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openDefaultDialog, setOpenDefaultDialog] = useState(false);
 	const [confirmDefault, setConfirmDefault] = useState([]);
+	const errorDispatch = useDispatch();
 
 	const {
 		showAdd,
 		details: { data },
 		defaultCustomCaptionsData: { defectStatus, defectStatusPlural },
+		isReadOnly,
 	} = state;
 
 	const addData = (newData) => setAllData([...allData, newData]);
@@ -90,7 +92,14 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 		if (result.status) {
 			// Updating default state
 			setDefaultId(confirmDefault[0]);
-			dispatch({ type: "SET_SITE_APP_DETAIL", payload: result });
+			const res = {
+				...result,
+				data: {
+					...result.data,
+					application: data.application,
+				},
+			};
+			dispatch({ type: "SET_SITE_APP_DETAIL", payload: res });
 		} else {
 			// setError(result.data.detail);
 		}
@@ -101,7 +110,11 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 		const result = await getDefectStatuses(appId);
 
 		if (!result.status) {
-			console.log("error login again");
+			errorDispatch(
+				showError(
+					`Failed to load ${data?.defectStatusPluralCC || defectStatusPlural}.`
+				)
+			);
 		} else {
 			setAllData([
 				...result?.data?.map((res) => ({
@@ -122,7 +135,7 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 
 	return (
 		<>
-			<TabTitle title={`${data.application.name} ${defectStatusPlural}`} />
+			<TabTitle title={`${data?.application?.name} ${defectStatusPlural}`} />
 			<DefaultDialog
 				open={openDefaultDialog}
 				closeHandler={closeDefaultDialog}
@@ -183,6 +196,7 @@ function DefectStatuses({ appId, setError, state, dispatch }) {
 				searchedData={searchedData}
 				isLoading={isLoading}
 				defaultID={defaultId}
+				isReadOnly={isReadOnly}
 				menuData={[
 					{
 						name: "Edit",

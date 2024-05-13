@@ -4,10 +4,14 @@ import {
 	DialogTitle,
 	LinearProgress,
 	TextField,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import { generateErrorState, handleValidateObj } from "helpers/utils";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showError } from "redux/common/actions";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import * as yup from "yup";
 
@@ -21,7 +25,7 @@ const ADD = AddDialogStyle();
 const defaultData = { note: "" };
 const defaultError = { note: null };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -29,13 +33,14 @@ const useStyles = makeStyles({
 	createButton: {
 		width: "auto",
 	},
-});
+}));
 
 const AddNoteDialog = ({ open, handleClose, createHandler }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState(defaultData);
 	const [errors, setErrors] = useState(defaultError);
 	const [isUpdating, setIsUpdating] = useState(false);
+	const dispatch = useDispatch();
 
 	const closeOverride = () => {
 		setInput(defaultData);
@@ -55,7 +60,6 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 					setIsUpdating(false);
 					closeOverride();
 				} else {
-					console.log(newData);
 					setErrors({ ...errors, ...newData.errors });
 					setIsUpdating(false);
 				}
@@ -65,10 +69,9 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 				setIsUpdating(false);
 			}
 		} catch (err) {
-			console.log(err);
-
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError(`Failed to add note.`));
 		}
 	};
 
@@ -109,6 +112,11 @@ const AddNoteDialog = ({ open, handleClose, createHandler }) => {
 			</ADD.ActionContainer>
 			<DialogContent className={classes.dialogContent}>
 				<TextField
+					sx={{
+						"& .MuiInputBase-input.Mui-disabled": {
+							WebkitTextFillColor: "#000000",
+						},
+					}}
 					label="Note"
 					error={errors.note === null ? false : true}
 					helperText={errors.note === null ? null : errors.note}

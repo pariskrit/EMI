@@ -5,6 +5,8 @@ import {
 	servicesPath,
 	serviceTimes,
 	serviceReport,
+	appPath,
+	serviceDetailsPath,
 } from "helpers/routePaths";
 /**
  * NOTE: This is currently a helper. In production, this data may come from either the API
@@ -12,7 +14,7 @@ import {
  */
 const ServiceDetailNavigation = (id, detail, customCaptions) => {
 	// Setting navigation links with correct Model Detail ID
-	const links = `${servicesPath}/${id}`;
+	const links = `${appPath}${servicesPath}/${id}/`;
 	const navigation = [
 		{
 			name: `Details`,

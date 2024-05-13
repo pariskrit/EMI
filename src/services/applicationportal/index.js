@@ -19,3 +19,12 @@ export const getApplicationsAndSites = async (id) => {
 		return getAPIResponse(err?.response);
 	}
 };
+
+export const ClientAdminLogin = async (clientId) => {
+	try {
+		let response = await API.get(`${Apis.ClientAdmin}/${clientId}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};

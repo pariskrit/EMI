@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { CircularProgress, Grid, Typography } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import { CircularProgress, Grid, Typography } from "@mui/material";
 import Notes from "./Notes";
 import Defects from "./Defects";
 import Header from "./Header";
@@ -18,7 +20,7 @@ import { changeDate } from "helpers/date";
 import { isoDateWithoutTimeZone } from "helpers/utils";
 import ServiceStages from "components/Modules/ServiceSessions/ServiceStages";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	reportContainer: {
 		marginTop: 25,
 	},
@@ -27,12 +29,16 @@ const useStyles = makeStyles({
 		fontSize: 20,
 		marginBottom: "10px",
 	},
-});
+	printResponsive: {
+		marginTop: 25,
+		paddingLeft: 5,
+	},
+}));
 
-const ServiceReport = ({ state, serviceId, customCaptions }) => {
+const ServiceReport = ({ state, serviceId, customCaptions, isPrint }) => {
 	const redxDispatch = useDispatch();
 	const [loading, setLoading] = useState(true);
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [notes, setNotes] = useState([]);
 	const [completedService, setCompletedService] = useState([]);
 	const [IncompletedService, SetInCompletedService] = useState([]);
@@ -41,17 +47,13 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 	useEffect(() => {
 		const fetchReport = async () => {
 			try {
-				const [
-					notes,
-					defects,
-					completedService,
-					incompleteservice,
-				] = await Promise.all([
-					getServiceNotes(serviceId),
-					getServiceDefects(serviceId),
-					getCompletedService(serviceId),
-					getIncompleteService(serviceId),
-				]);
+				const [notes, defects, completedService, incompleteservice] =
+					await Promise.all([
+						getServiceNotes(serviceId),
+						getServiceDefects(serviceId),
+						getCompletedService(serviceId),
+						getIncompleteService(serviceId),
+					]);
 				if (notes.status) {
 					setNotes(notes.data);
 					setDefects(defects.data);
@@ -71,7 +73,6 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 		};
 		fetchReport();
 	}, [serviceId, redxDispatch]);
-
 	function setQuestionResponse(question) {
 		switch (question.type) {
 			case "S":
@@ -81,7 +82,7 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 				return question?.valueString || "";
 
 			case "N":
-				return question?.valueNumeric || "";
+				return question?.valueNumeric?.toString() ?? "";
 
 			case "D":
 				return question?.valueDate ? changeDate(question?.valueDate) : "";
@@ -92,18 +93,15 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 			case "O":
 				return question?.options ? commaSeperateValues(question?.options) : "";
 
-			case "B":
-				return question?.valueBoolean + "" ?? "";
-
 			case "C":
 				return question?.options ? commaSeperateValues(question?.options) : "";
 			// case "C":
-			// case "B":
-			// 	return question?.valueBoolean
-			// 		? question?.checkboxCaption || ""
-			// 		: question?.options
-			// 		? commaSeperateValues(question?.options)
-			// 		: "";
+			case "B":
+				return question?.valueBoolean
+					? question?.checkboxCaption || ""
+					: question?.options
+					? commaSeperateValues(question?.options)
+					: "";
 
 			default:
 				return question?.valueBoolean || "";
@@ -115,12 +113,13 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 		return values.join(", ");
 	}
 
-	function formatQuestion(questions) {
+	function formatQuestion(questions, name) {
 		return questions?.map((q) => {
 			return {
 				...q,
 				date: q.date ? isoDateWithoutTimeZone(q.date + "Z") : "",
 				response: setQuestionResponse(q),
+				displayName: name,
 			};
 		});
 	}
@@ -173,21 +172,27 @@ const ServiceReport = ({ state, serviceId, customCaptions }) => {
 	}
 
 	return (
-		<div className={classes.reportContainer}>
+		<div
+			className={isPrint ? classes.printResponsive : classes.reportContainer}
+		>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<Header state={state.serviceDetail} customCaptions={customCaptions} />
+					<Header
+						state={state?.serviceDetail}
+						customCaptions={customCaptions}
+					/>
 				</Grid>
 				<Grid item xs={12}>
-					<Notes data={notes} />
+					<Notes data={notes} isPrint={isPrint} />
 				</Grid>
 				<Grid item xs={12}>
 					<ServiceSession
 						completedService={completedService}
-						roleName={state.serviceDetail.role}
+						roleName={state?.serviceDetail?.role}
 						customCaptions={customCaptions}
 						formatQuestion={formatQuestion}
 						groupByStage={groupByStage}
+						isPrint={isPrint}
 					/>
 				</Grid>
 				{IncompletedService.length > 0 && (

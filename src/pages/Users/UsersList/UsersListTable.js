@@ -1,14 +1,15 @@
-import clsx from "clsx";
 import React, { useState } from "react";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import { useHistory } from "react-router-dom";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import { useNavigate } from "react-router-dom";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import ColourConstants from "helpers/colourConstants";
 import PopupMenu from "components/Elements/PopupMenu";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import TableStyle from "styles/application/TableStyle";
 
 import useInfiniteScroll from "hooks/useInfiniteScroll";
@@ -16,6 +17,8 @@ import { usersPath } from "helpers/routePaths";
 
 // Icon imports
 import { ReactComponent as MenuIcon } from "assets/icons/3dot-icon.svg";
+import { defaultPageSize } from "helpers/utils";
+import { REMOVE, SuperAdminType } from "constants/UserConstants/indes";
 
 // Init styled components
 const AT = TableStyle();
@@ -25,7 +28,7 @@ const MAX_LOGO_HEIGHT = 47;
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	tableHeadRow: {
 		borderBottomColor: ColourConstants.tableBorder,
 		borderBottomStyle: "solid",
@@ -73,11 +76,12 @@ const useStyles = makeStyles({
 	lastCell: {
 		borderBottom: "none",
 	},
-});
+}));
 
 const UserTable = ({
 	data,
 	page,
+	setPage,
 	setData,
 	columns,
 	headers,
@@ -91,40 +95,49 @@ const UserTable = ({
 	position,
 	access,
 	count,
+	setCurrentTableSort,
+	currentTableSort,
+	handleResendInvitation,
 }) => {
 	// Init hooks
-	const classes = useStyles();
-	const history = useHistory();
+	const { classes, cx } = useStyles();
+	const navigate = useNavigate();
 
 	// Init State
-	const [currentTableSort, setCurrentTableSort] = useState(["name", "asc"]);
+	// const [currentTableSort, setCurrentTableSort] = useState(["name", "desc"]);
 	const [selectedData, setSelectedData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 
 	const { hasMore, loading, gotoTop } = useInfiniteScroll(
 		data,
 		count,
-		async (pageSize, prevData) => await onPageChange(pageSize + 1, prevData),
+		async (pageSize, prevData, extraInfo, searchText) =>
+			await onPageChange(
+				pageSize + 1,
+				prevData,
+				searchText,
+				extraInfo.currentTableSort[1],
+				extraInfo.currentTableSort[0]
+			),
 		page,
-		searchText
+		searchText,
+		window,
+		{ currentTableSort }
 	);
 
 	// Handlers
 	const handleSortClick = (field) => {
 		// Flipping current method
-		const newMethod = currentTableSort[1] === "asc" ? "desc" : "asc";
-
-		// Sorting table
-		if (searchQuery.length === 0) handleSort(data, setData, field, newMethod);
-		else handleSort(searchedData, setSearchData, field, newMethod);
-
-		// Sorting searched table if present
-		if (searchQuery !== "") {
-			handleSort(searchedData, setSearchData, field, newMethod);
-		}
+		const newMethod =
+			currentTableSort[1] === "" || field !== currentTableSort[0]
+				? "asc"
+				: currentTableSort[1] === "asc"
+				? "desc"
+				: "asc";
 
 		// Updating header state
 		setCurrentTableSort([field, newMethod]);
+		setPage({ pageNo: 1, perPage: defaultPageSize() });
 	};
 
 	return (
@@ -138,7 +151,7 @@ const UserTable = ({
 								onClick={() => {
 									handleSortClick(columns[i]);
 								}}
-								className={clsx(classes.nameRow, {
+								className={cx(classes.nameRow, {
 									[classes.selectedTableHeadRow]:
 										currentTableSort[0] === columns[i],
 									[classes.tableHeadRow]: currentTableSort[0] !== columns[i],
@@ -168,7 +181,22 @@ const UserTable = ({
 												className={classes.nameLink}
 												to={`${usersPath}/${row.id}`}
 											> */}
-											{row[col]}
+											{col === "Type" &&
+												SuperAdminType.find((d) => d.id === row?.adminType)
+													?.role}
+
+											{col === "isAdmin" &&
+												(row["isAdmin"] ? (
+													<span style={{ color: "green" }}>Yes</span>
+												) : (
+													""
+												))}
+
+											{col === "active"
+												? row[col]
+													? "Active"
+													: "Inactive"
+												: row[col]}
 											{/* </Link> */}
 										</AT.TableBodyText>
 
@@ -211,8 +239,8 @@ const UserTable = ({
 														{
 															name: "Edit",
 															handler: () => {
-																history.push(
-																	`${usersPath}/${
+																navigate(
+																	`${
 																		row?.clientUserSiteAppID ||
 																		row?.clientUserID ||
 																		row?.id
@@ -222,8 +250,18 @@ const UserTable = ({
 															isDelete: false,
 															access: "E",
 														},
+														...(row?.lastLogin === null
+															? [
+																	{
+																		name: "Resend Invitation",
+																		handler: () => handleResendInvitation(row),
+																		isDelete: false,
+																		access: "F",
+																	},
+															  ]
+															: []),
 														{
-															name: "Delete",
+															name: REMOVE,
 															handler: () => handleDeleteDialogOpen(row),
 															isDelete: true,
 															access: "F",

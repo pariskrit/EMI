@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import DuplicateDialogStyle from "styles/application/DuplicateDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
 
 // Init styled components
 const ADD = DuplicateDialogStyle();
@@ -31,6 +33,7 @@ const DuplicateApplicationDialog = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -68,7 +71,7 @@ const DuplicateApplicationDialog = ({
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
+			dispatch(showError(`Failed to duplicate application.`));
 
 			setIsUpdating(false);
 			closeOverride();
@@ -90,7 +93,11 @@ const DuplicateApplicationDialog = ({
 						{<ADD.HeaderText>Duplicate Application</ADD.HeaderText>}
 					</DialogTitle>
 					<ADD.ButtonContainer>
-						<ADD.CancelButton onClick={closeOverride} variant="contained">
+						<ADD.CancelButton
+							onClick={closeOverride}
+							variant="contained"
+							
+						>
 							Cancel
 						</ADD.CancelButton>
 						<ADD.ConfirmButton

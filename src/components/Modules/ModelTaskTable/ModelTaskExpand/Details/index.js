@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { DialogContent, InputAdornment } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { DialogContent, InputAdornment } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleSort } from "helpers/utils";
 import DyanamicDropdown from "components/Elements/DyamicDropdown";
@@ -17,13 +19,12 @@ import { showError } from "redux/common/actions";
 import { patchModelTask } from "services/models/modelDetails/modelTasks";
 import TextFieldContainer from "components/Elements/TextFieldContainer";
 import { Facebook } from "react-spinners-css";
-import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
+import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import {
 	addModelVersionTaskRoles,
 	removeModelVersionTaskRole,
 } from "services/models/modelDetails/modelVersionTaskRole";
 import withMount from "components/HOC/withMount";
-import SafteryCritical from "assets/icons/safety-critical.svg";
 import ErrorMessageWithErrorIcon from "components/Elements/ErrorMessageWithErrorIcon";
 import { TaskContext } from "contexts/TaskDetailContext";
 import { getStages } from "services/models/modelDetails/modelTasks/stages";
@@ -32,7 +33,7 @@ const ADD = AddDialogStyle();
 
 const media = "@media (max-width: 414px)";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -62,9 +63,10 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		marginBottom: 20,
 	},
-});
+}));
 
 const TaskDetails = ({
+	state,
 	taskInfo,
 	setTaskInfo,
 	access,
@@ -72,7 +74,7 @@ const TaskDetails = ({
 	isFetching = false,
 	fetchFunction = () => {},
 }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	// const [loading, setLoading] = useState(false);
 	// const [dropDownDatas, setDropDownDatas] = useState({});
@@ -217,7 +219,7 @@ const TaskDetails = ({
 					setTaskInfo((prev) => ({
 						...prev,
 						roles: localTaskInfo?.roles?.map((r) =>
-							r.modelVersionRoleID === id ? { ...r, id: response.data } : r
+							r.modelVersionRoleID === id ? { ...r, id: response.data?.id } : r
 						),
 					}));
 					taskDispatch({
@@ -225,7 +227,9 @@ const TaskDetails = ({
 						payload: {
 							countTab: "roles",
 							data: localTaskInfo?.roles?.map((r) =>
-								r.modelVersionRoleID === id ? { ...r, id: response.data } : r
+								r.modelVersionRoleID === id
+									? { ...r, id: response?.data?.id }
+									: r
 							),
 						},
 					});
@@ -233,7 +237,7 @@ const TaskDetails = ({
 					setLocalTaskInfo({
 						...localTaskInfo,
 						roles: localTaskInfo?.roles?.map((r) =>
-							r.modelVersionRoleID === id ? { ...r, id: response.data } : r
+							r.modelVersionRoleID === id ? { ...r, id: response?.data?.id } : r
 						),
 					});
 
@@ -241,14 +245,7 @@ const TaskDetails = ({
 						.getElementById(`taskExpandable${taskInfo.id}`)
 						?.querySelector(`#dataCellroles > div > p`);
 					if (dataCell) {
-						dataCell.innerHTML =
-							localTaskInfo?.roles
-								?.map((r) =>
-									r.modelVersionRoleID === id ? { ...r, id: response.data } : r
-								)
-								?.filter((r) => r.id !== null)
-								?.map((r) => r.name)
-								?.join(", ") ?? "";
+						dataCell.innerHTML = response?.data?.roles;
 					}
 				} else {
 					reduxDispatch(
@@ -300,14 +297,7 @@ const TaskDetails = ({
 						.getElementById(`taskExpandable${taskInfo.id}`)
 						?.querySelector(`#dataCellroles > div > p`);
 					if (dataCell) {
-						dataCell.innerHTML =
-							localTaskInfo?.roles
-								?.map((r) =>
-									r.modelVersionRoleID === id ? { ...r, id: null } : r
-								)
-								?.filter((r) => r.id !== null)
-								?.map((r) => r.name)
-								?.join(", ") ?? "";
+						dataCell.innerHTML = response?.data?.roles;
 					}
 				} else {
 					reduxDispatch(
@@ -430,23 +420,13 @@ const TaskDetails = ({
 						data: value,
 					},
 				});
-				const dataCell = document
+
+				const rowDataCell = document
 					.getElementById(`taskExpandable${taskInfo.id}`)
 					?.querySelector(`#dataCell${name} > div`);
 
-				if (dataCell) {
-					if ("safetyCritical" === name) {
-						if (value === true) {
-							const imgEl = document.createElement("img");
-							imgEl.setAttribute("src", SafteryCritical);
-							imgEl.classList.add("white-filter");
-							dataCell.appendChild(imgEl);
-						} else {
-							dataCell.innerHTML = "";
-						}
-					} else {
-						dataCell.innerHTML = value;
-					}
+				if (rowDataCell) {
+					rowDataCell.innerHTML = value || "";
 				}
 
 				if (isFetching) {
@@ -546,7 +526,14 @@ const TaskDetails = ({
 						</ADD.RightInputContainer>
 					</ADD.InputContainer>
 					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
+						<ADD.LeftInputContainer
+							style={{
+								paddingRight: state?.data?.application?.showSystem
+									? "15px"
+									: "0px",
+								width: state?.data?.application?.showSystem ? "50%" : "100%",
+							}}
+						>
 							<TextFieldContainer
 								label="Name"
 								name="name"
@@ -560,63 +547,76 @@ const TaskDetails = ({
 								onKeyDown={(e) => handleEnterPress(e, "name")}
 							/>
 						</ADD.LeftInputContainer>
-						<ADD.RightInputContainer>
-							<DyanamicDropdown
-								isServerSide={false}
-								width="100%"
-								placeholder="Select System"
-								// dataSource={dropDownDatas?.systems}
-								dataHeader={[{ id: 1, name: "System" }]}
-								columns={[{ id: 1, name: "name" }]}
-								showHeader
-								selectedValue={{
-									name: localTaskInfo?.systemName,
-									id: localTaskInfo?.systemID,
-								}}
-								handleSort={handleSort}
-								onChange={(val) =>
-									dropdownHandleChange(val, "systemID", "systemName")
-								}
-								selectdValueToshow="name"
-								showClear
-								disabled={isUpdating.systemID}
-								label={customCaptions?.system}
-								isReadOnly={isReadOnly || isPublished}
-								fetchData={() => getSystems(siteAppID)}
-							/>
-						</ADD.RightInputContainer>
+						{state?.data?.application?.showSystem && (
+							<ADD.RightInputContainer>
+								<DyanamicDropdown
+									isServerSide={false}
+									width="100%"
+									placeholder="Select System"
+									// dataSource={dropDownDatas?.systems}
+									dataHeader={[{ id: 1, name: "System" }]}
+									columns={[{ id: 1, name: "name" }]}
+									showHeader
+									selectedValue={{
+										name: localTaskInfo?.systemName,
+										id: localTaskInfo?.systemID,
+									}}
+									handleSort={handleSort}
+									onChange={(val) =>
+										dropdownHandleChange(val, "systemID", "systemName")
+									}
+									selectdValueToshow="name"
+									showClear
+									disabled={isUpdating.systemID}
+									label={customCaptions?.system}
+									isReadOnly={isReadOnly || isPublished}
+									fetchData={() => getSystems(siteAppID)}
+								/>
+							</ADD.RightInputContainer>
+						)}
 					</ADD.InputContainer>
 					<ADD.InputContainer>
-						<ADD.LeftInputContainer>
-							<DyanamicDropdown
-								isServerSide={false}
-								width="100%"
-								placeholder="Select Operating Mode"
-								dataHeader={[{ id: 1, name: "Operating Mode" }]}
-								columns={[{ id: 1, name: "name" }]}
-								// dataSource={dropDownDatas?.operatingModes}
-								showHeader
-								selectedValue={{
-									name: localTaskInfo?.operatingModeName,
-									id: localTaskInfo?.operatingModeID,
-								}}
-								handleSort={handleSort}
-								onChange={(val) =>
-									dropdownHandleChange(
-										val,
-										"operatingModeID",
-										"operatingModeName"
-									)
-								}
-								selectdValueToshow="name"
-								isReadOnly={isReadOnly || isPublished}
-								disabled={isUpdating?.operatingModeID}
-								label={customCaptions?.operatingMode}
-								fetchData={() => getOperatingModes(siteAppID)}
-								showClear
-							/>
-						</ADD.LeftInputContainer>
-						<ADD.RightInputContainer>
+						{state?.data?.application?.showOperatingMode && (
+							<ADD.LeftInputContainer>
+								<DyanamicDropdown
+									isServerSide={false}
+									width="100%"
+									placeholder={`Select ${customCaptions?.operatingMode}`}
+									dataHeader={[{ id: 1, name: "Operating Mode" }]}
+									columns={[{ id: 1, name: "name" }]}
+									// dataSource={dropDownDatas?.operatingModes}
+									showHeader
+									selectedValue={{
+										name: localTaskInfo?.operatingModeName,
+										id: localTaskInfo?.operatingModeID,
+									}}
+									handleSort={handleSort}
+									onChange={(val) =>
+										dropdownHandleChange(
+											val,
+											"operatingModeID",
+											"operatingModeName"
+										)
+									}
+									selectdValueToshow="name"
+									isReadOnly={isReadOnly || isPublished}
+									disabled={isUpdating?.operatingModeID}
+									label={customCaptions?.operatingMode}
+									fetchData={() => getOperatingModes(siteAppID)}
+									showClear
+								/>
+							</ADD.LeftInputContainer>
+						)}
+						<ADD.RightInputContainer
+							style={{
+								paddingLeft: state?.data?.application?.showOperatingMode
+									? "15px"
+									: "0px",
+								width: state?.data?.application?.showOperatingMode
+									? "50%"
+									: "100%",
+							}}
+						>
 							<ADD.NameLabel>
 								<div className="caption-label">
 									<span>
@@ -669,6 +669,10 @@ const TaskDetails = ({
 								<EMICheckbox
 									state={localTaskInfo?.safetyCritical || false}
 									changeHandler={(e) => {
+										taskDispatch({
+											type: "SET_SAFETY",
+											payload: e.target.checked,
+										});
 										handleOnChange(e.target.checked, "safetyCritical");
 										handleOnBlur(e.target.checked, "safetyCritical");
 									}}

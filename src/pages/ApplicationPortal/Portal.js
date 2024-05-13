@@ -1,11 +1,14 @@
-import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+
 import React, { useEffect, useState } from "react";
 import {
+	ClientAdminLogin,
 	getApplicationsAndSites,
 	getClientList,
 } from "services/applicationportal";
-import { CircularProgress } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import SingleApplication from "./SingleApplication";
 import Dropdown from "components/Elements/Dropdown";
 import GeneralButton from "components/Elements/GeneralButton";
@@ -14,8 +17,10 @@ import { setMeStorage } from "helpers/storage";
 import { connect } from "react-redux";
 import { authSlice } from "redux/auth/reducers";
 import TabTitle from "components/Elements/TabTitle";
+import { encryptToken } from "helpers/authenticationCrypto";
+import { getLocalStorageData } from "helpers/utils";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	header: {
 		marginBottom: " 5px",
 	},
@@ -30,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Portal({ setUserDetail }) {
-	const styles = useStyles();
-	const history = useHistory();
+	const { classes } = useStyles();
+	const navigate = useNavigate();
 	const [listOfClients, setListOfClients] = useState([]);
 	const [selectedClient, setSelectedClient] = useState({});
 	const [isLoading, setLoading] = useState({
@@ -42,35 +47,41 @@ function Portal({ setUserDetail }) {
 	const [applicationList, setApplicationList] = useState([]);
 	const [clientId, setClientId] = useState(null);
 
-	const onInputChange = (client) => {
+	const onInputChange = async (client) => {
 		setSelectedClient(client);
-		fetchApplicationsAndSites(client.id);
-		sessionStorage.setItem("isAdmin", client.isAdmin);
-		sessionStorage.setItem("clientUserId", client.isAdmin ? client.id : null);
+		await fetchApplicationsAndSites(client?.id);
+		sessionStorage.setItem("isAdmin", client?.isAdmin);
+		sessionStorage.setItem("clientUserId", client?.isAdmin ? client?.id : null);
 	};
 
 	const fetchListOfClients = async () => {
 		const res = await getClientList();
 
 		if (res.status) {
-			setListOfClients([
-				...res.data.map((client, index) => ({
-					id: client.id,
-					label: client.name,
-					value: index,
-					isAdmin: client.isAdmin,
-				})),
-			]);
+			let clientData = res.data.map((client, index) => ({
+				id: client.id,
+				label: client.name,
+				value: index,
+				isAdmin: client.isAdmin,
+			}));
+
+			setListOfClients(clientData);
+
+			if (clientData.length === 1) {
+				await onInputChange(clientData?.[0]);
+				setLoading((prev) => ({ ...prev, initial: false }));
+				return;
+			}
 		}
-		setLoading({ ...isLoading, initial: false });
+		setLoading((prev) => ({ ...prev, initial: false }));
 	};
 
 	const fetchApplicationsAndSites = async (clientId) => {
-		setLoading({ ...isLoading, applications: true, showText: false });
+		setLoading((prev) => ({ ...prev, applications: true, showText: false }));
 		const res = await getApplicationsAndSites(clientId);
 		setApplicationList(res.data);
 		setClientId(clientId);
-		setLoading({ ...isLoading, applications: false, showText: false });
+		setLoading((prev) => ({ ...prev, applications: false, showText: false }));
 	};
 
 	useEffect(() => {
@@ -81,34 +92,44 @@ function Portal({ setUserDetail }) {
 	const setClientAdminMode = async () => {
 		async function setClientStorage() {
 			return new Promise(async (res) => {
+				const clientAdmin = await ClientAdminLogin(selectedClient?.id);
+
 				sessionStorage.setItem(
 					"clientAdminMode",
 					JSON.stringify(selectedClient)
 				);
 				localStorage.setItem("clientAdminMode", JSON.stringify(selectedClient));
-				const me =
-					JSON.parse(sessionStorage.getItem("me")) ||
-					JSON.parse(localStorage.getItem("me"));
+
+				//setting role property to clientAdmin
+				const localStorageData = getLocalStorageData("me");
+				const modifiedRoleData = {
+					...localStorageData,
+					role: roles.clientAdmin,
+				};
+				sessionStorage.setItem("me", JSON.stringify(modifiedRoleData));
+				localStorage.setItem("me", JSON.stringify(modifiedRoleData));
 
 				// Reset to client admin mode
 				const data = {
-					...me,
+					...clientAdmin?.data,
 					role: roles.clientAdmin,
-					application: null,
-					customCaptions: null,
-					siteAppID: null,
-					siteID: null,
-					siteName: null,
-					site: null,
 					isSiteUser: false,
 				};
+				sessionStorage.setItem(
+					"token",
+					encryptToken(clientAdmin?.data?.jwtToken)
+				);
+				localStorage.setItem(
+					"token",
+					encryptToken(clientAdmin?.data?.jwtToken)
+				);
 				await setMeStorage(data);
 				setUserDetail(data);
 				res(true);
 			});
 		}
 		await setClientStorage();
-		history.push(`/app/client/${selectedClient.id}`);
+		navigate(`/app/client/${selectedClient.id}`);
 	};
 
 	if (isLoading.initial) {
@@ -118,18 +139,22 @@ function Portal({ setUserDetail }) {
 			</div>
 		);
 	}
-
 	return (
 		<div>
 			<TabTitle title="Application Portal" />
-			<Grid container spacing={2} className={styles.header} alignItems="center">
+			<Grid
+				container
+				spacing={2}
+				className={classes.header}
+				alignItems="center"
+			>
 				<Grid item xs={12}>
 					<Typography variant="h6" component="h1" gutterBottom>
 						<strong>Application Portal</strong>
 					</Typography>
 				</Grid>
 				<Grid item xs={12}>
-					<div className={styles.siteContainer}>
+					<div className={classes.siteContainer}>
 						<Typography variant="subtitle2">Clients</Typography>
 						<div style={{ width: "100%", display: "flex", gap: 12 }}>
 							<Dropdown
@@ -163,7 +188,7 @@ function Portal({ setUserDetail }) {
 							variant="subtitle1"
 							gutterBottom
 							component="div"
-							className={styles.para}
+							className={classes.para}
 						>
 							Select a client to view the applications
 						</Typography>
@@ -171,7 +196,7 @@ function Portal({ setUserDetail }) {
 				) : null}
 
 				{isLoading.applications ? (
-					<Grid item xs={9} className={styles.para}>
+					<Grid item xs={9} className={classes.para}>
 						<CircularProgress />
 					</Grid>
 				) : (

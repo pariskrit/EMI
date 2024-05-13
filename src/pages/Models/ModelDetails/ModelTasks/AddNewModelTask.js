@@ -5,15 +5,18 @@ import {
 	DialogTitle,
 	InputAdornment,
 	LinearProgress,
-} from "@material-ui/core";
-import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
+} from "@mui/material";
+import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import * as yup from "yup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import {
 	generateErrorState,
 	handleSort,
 	handleValidateObj,
+	isChrome,
 	makeTableAutoScrollAndExpand,
 } from "helpers/utils";
 import Dropdown from "components/Elements/Dropdown";
@@ -45,7 +48,7 @@ const schema = yup.object({
 	safetyCritical: yup.boolean().nullable(),
 });
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme) => ({
 	dialogContent: {
 		display: "flex",
 		flexDirection: "column",
@@ -57,7 +60,7 @@ const useStyles = makeStyles({
 	inputText: {
 		fontSize: 14,
 	},
-});
+}));
 
 // Default state schemas
 const defaultErrorSchema = {
@@ -94,7 +97,7 @@ function AddNewModelTask({
 	showSave,
 }) {
 	// Init hooks
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const dispatch = useDispatch();
 
 	// Init state
@@ -106,6 +109,8 @@ function AddNewModelTask({
 	const [modelRoles, setModelRoles] = useState([]);
 	// const [actions, setActions] = useState([]);
 	const [apiRoles, setApiRoles] = useState([]);
+
+	const [modelFocus, setModelFocus] = useState(true);
 
 	const [, Ctxdispatch] = useContext(ModelContext);
 
@@ -134,34 +139,35 @@ function AddNewModelTask({
 					}
 
 					if (modelRolesResponse.status) {
-						setModelRoles(modelRolesResponse.data);
+						setModelRoles(modelRolesResponse?.data);
 
 						if (modelRolesResponse.data.length === 1) {
-							let firstData = modelRolesResponse.data[0];
+							let firstData = modelRolesResponse?.data[0];
 
 							firstData = {
 								...firstData,
-								modelVersionRoleID: firstData.id,
+								modelVersionRoleID: firstData?.id,
 							};
 
 							setApiRoles([firstData]);
 							setInput((prev) => ({
 								...prev,
-								roles: [firstData.id],
+								roles: [firstData?.id],
 							}));
 						} else {
 							setApiRoles(
-								modelRolesResponse.data.map((role) => ({
+								modelRolesResponse?.data.map((role) => ({
 									...role,
 									id: null,
-									modelVersionRoleID: role.id,
+									modelVersionRoleID: role?.id,
 								}))
 							);
 						}
 					}
 					if (siteApplications.status) {
-						const tempOperatingMode = operatingModes.data.find(
-							(mode) => mode.id === siteApplications.data.defaultOperatingModeID
+						const tempOperatingMode = operatingModes?.data.find(
+							(mode) =>
+								mode.id === siteApplications?.data?.defaultOperatingModeID
 						);
 
 						if (tempOperatingMode) {
@@ -297,6 +303,7 @@ function AddNewModelTask({
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 				className="application-dailog"
+				disableEnforceFocus={isChrome() ? modelFocus : false}
 			>
 				{isUpdating ? <LinearProgress /> : null}
 
@@ -306,7 +313,13 @@ function AddNewModelTask({
 					</DialogTitle>
 					<ADD.ButtonContainer>
 						<div className="modalButton">
-							<ADD.CancelButton onClick={closeOverride} variant="contained">
+							<ADD.CancelButton
+								onClick={closeOverride}
+								variant="contained"
+								onFocus={(e) => {
+									setModelFocus(true);
+								}}
+							>
 								{showSave ? "Cancel" : "Close"}
 							</ADD.CancelButton>
 						</div>
@@ -472,6 +485,15 @@ function AddNewModelTask({
 										});
 									}}
 									disabled={isDuplicate}
+									onBlur={() => {
+										setModelFocus(false);
+									}}
+									onKeyDown={() => {
+										setInput({
+											...input,
+											safetyCritical: !input.safetyCritical,
+										});
+									}}
 								/>
 								{customCaptions?.safetyCritical}
 							</ADD.CheckboxLabel>

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import API from "helpers/api";
 import EditDialogStyle from "styles/application/EditDialogStyle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import * as yup from "yup";
 import { handleValidateObj, generateErrorState } from "helpers/utils";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import { defectStatusTypes } from "helpers/constants";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import ColourConstants from "helpers/colourConstants";
 
 // Init styled components
 const AED = EditDialogStyle();
@@ -32,6 +35,7 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [input, setInput] = useState(defaultStateSchema);
 	const [errors, setErrors] = useState(defaultErrorSchema);
+	const dispatch = useDispatch();
 
 	// Handlers
 	const closeOverride = () => {
@@ -66,10 +70,10 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 			}
 		} catch (err) {
 			// TODO: handle non validation errors here
-			console.log(err);
 
 			setIsUpdating(false);
 			closeOverride();
+			dispatch(showError("Failed to update defect status."));
 		}
 	};
 	const handleUpdateData = async () => {
@@ -148,10 +152,28 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 						{<AED.HeaderText>Edit Defect Status</AED.HeaderText>}
 					</DialogTitle>
 					<AED.ButtonContainer>
-						<AED.CancelButton onClick={closeHandler} variant="contained">
+						<AED.CancelButton
+							onClick={closeHandler}
+							variant="contained"
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Cancel
 						</AED.CancelButton>
-						<AED.ConfirmButton variant="contained" onClick={handleSave}>
+						<AED.ConfirmButton
+							variant="contained"
+							onClick={handleSave}
+							sx={{
+								"&.MuiButton-root:hover": {
+									backgroundColor: ColourConstants.deleteDialogHover,
+									color: "#ffffff",
+								},
+							}}
+						>
 							Save
 						</AED.ConfirmButton>
 					</AED.ButtonContainer>
@@ -181,6 +203,11 @@ const EditDialog = ({ open, closeHandler, data, handleEditData }) => {
 									Type<AED.RequiredStar>*</AED.RequiredStar>
 								</AED.InputLabel>
 								<TextField
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											WebkitTextFillColor: "#000000",
+										},
+									}}
 									error={errors.type === null ? false : true}
 									helperText={errors.type === null ? null : errors.type}
 									fullWidth={true}

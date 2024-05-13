@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dialog, LinearProgress, DialogTitle } from "@material-ui/core";
+import { Dialog, LinearProgress, DialogTitle } from "@mui/material";
 import * as yup from "yup";
 import AddDialogStyle from "styles/application/AddDialogStyle";
 import { handleValidateObj, generateErrorState } from "helpers/utils";

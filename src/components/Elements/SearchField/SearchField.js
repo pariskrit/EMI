@@ -1,6 +1,6 @@
 import React from "react";
 import ContentStyle from "styles/application/ContentStyle";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 
 // Icon Import
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -8,7 +8,7 @@ import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 // Init styled components
 const AC = ContentStyle();
 
-function SearchField({ searchQuery, setSearchQuery, header }) {
+function SearchField({ searchQuery, setSearchQuery, header, ...rest }) {
 	return (
 		<div className="desktopSearchCustomCaptions">
 			<AC.SearchContainer>
@@ -20,6 +20,8 @@ function SearchField({ searchQuery, setSearchQuery, header }) {
 							</Grid>
 							<Grid item>
 								<AC.SearchInput
+									{...rest}
+									variant="standard"
 									value={searchQuery}
 									onChange={setSearchQuery}
 									label={header ? `Search ${header}` : "Search"}

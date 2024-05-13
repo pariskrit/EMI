@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Typography, TextField } from "@material-ui/core";
+import { Grid, Typography, TextField } from "@mui/material";
 import AccordionBox from "components/Layouts/AccordionBox";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import Dropdown from "components/Elements/Dropdown";
 import {
 	clientOptions,
 	siteApplicationOptions,
 	siteOptions,
 } from "helpers/constants";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Facebook } from "react-spinners-css";
 import { patchApplicationDetail } from "services/clients/sites/siteApplications/siteApplicationDetails";
 import { getLocalStorageData } from "helpers/utils";
+import { showError } from "redux/common/actions";
+import { useDispatch } from "react-redux";
+import { RESELLER_ID } from "constants/UserConstants/indes";
+import roles from "helpers/roles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	siteContainer: {
 		display: "flex",
 		flexDirection: "column",
@@ -32,47 +38,46 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function License({ details }) {
-	const classes = useStyles();
+function License({ details, adminType, isClientAdmin }) {
+	const { classes, cx } = useStyles();
 	const [input, setInput] = useState({});
 	const [isUpdating, setIsUpdating] = useState(false);
 	const { appId } = useParams();
 	const { role } = getLocalStorageData("me");
+	const dispatch = useDispatch();
 	const onInputChange = (e) =>
 		setInput({ ...input, [e.target.name]: e.target.value });
 
 	const onDropDownInputChange = async (value) => {
-		setInput({ ...input, licenseType: value.value });
+		setInput({ ...input, licenseType: value?.value });
 		try {
-			const result = await patchApplicationDetail(appId, [
+			await patchApplicationDetail(appId, [
 				{
 					op: "replace",
 					path: "licenseType",
 					value: value.value,
 				},
 			]);
-			console.log(result);
 		} catch (error) {
-			console.log(error);
+			dispatch(showError(`Failed to update license type.`));
 		}
 	};
 
 	const updateInput = async () => {
-		if (details.licenses === input.licenses) {
+		if (details?.licenses === input?.licenses) {
 			return;
 		}
 		setIsUpdating(true);
 		try {
-			const result = await patchApplicationDetail(appId, [
+			await patchApplicationDetail(appId, [
 				{
 					op: "replace",
 					path: "licenses",
 					value: input.licenses,
 				},
 			]);
-			console.log(result);
 		} catch (error) {
-			console.log(error);
+			dispatch(showError(`Failed to update license.`));
 		} finally {
 			setIsUpdating(false);
 		}
@@ -93,25 +98,25 @@ function License({ details }) {
 	// setting licensetype value to site licenseType value if client license type is equal to 'site-based' and site license type is equal to 'application-based'
 	//  else set client license type value
 	const licenseType =
-		details.clientLicenseType === 3 && details.siteLicenseType !== 3
-			? siteOptions.find((option) => option.value === details.siteLicenseType)
+		details?.clientLicenseType === 4 && details?.siteLicenseType !== 5
+			? siteOptions.find((option) => option?.value === details?.siteLicenseType)
 			: clientOptions.find(
-					(option) => option.value === details.clientLicenseType
+					(option) => option?.value === details?.clientLicenseType
 			  );
 
 	// same as licenseType Value
 	const licenseCount =
-		details.clientLicenseType === 3 && details.siteLicenseType !== 3
-			? details.siteLicenses
-			: details.clientLicenses;
+		details?.clientLicenseType === 4 && details?.siteLicenseType !== 5
+			? details?.siteLicenses
+			: details?.clientLicenses;
 	return (
 		<AccordionBox title="License">
-			{((details.clientLicenseType === 3 && details.siteLicenseType !== 3) ||
-				details.clientLicenseType !== 3) && (
+			{((details?.clientLicenseType === 4 && details?.siteLicenseType !== 5) ||
+				details?.clientLicenseType !== 4) && (
 				<section className={classes.license_container}>
 					<p className={classes.license_para}>
 						This Application is using a{" "}
-						{details.clientLicenseType === 3 && details.siteLicenseType !== 3
+						{details?.clientLicenseType === 4 && details?.siteLicenseType !== 5
 							? "Site"
 							: "Client"}{" "}
 						License.
@@ -123,7 +128,7 @@ function License({ details }) {
 							</label>
 							<span className={classes.span}>{licenseType?.label}</span>
 						</Grid>
-						{licenseType?.value !== 2 && (
+						{licenseType?.value !== 3 && (
 							<Grid item xs={12}>
 								<label>
 									<b>License Count:</b>
@@ -134,7 +139,7 @@ function License({ details }) {
 					</Grid>
 				</section>
 			)}
-			{details.clientLicenseType === 3 && details.siteLicenseType === 3 && (
+			{details?.clientLicenseType === 4 && details?.siteLicenseType === 5 && (
 				<Grid container spacing={2}>
 					<Grid item xs={6}>
 						<div className={classes.siteContainer}>
@@ -143,9 +148,15 @@ function License({ details }) {
 								options={siteApplicationOptions}
 								label=""
 								width="auto"
-								selectedValue={siteApplicationOptions[input?.licenseType]}
+								selectedValue={siteApplicationOptions.find(
+									(item) => input?.licenseType === item.value
+								)}
 								onChange={onDropDownInputChange}
-								isReadOnly={role !== "SuperAdmin"}
+								isReadOnly={
+									role !== roles.superAdmin ||
+									adminType === RESELLER_ID ||
+									isClientAdmin
+								}
 							/>
 						</div>
 					</Grid>
@@ -153,6 +164,11 @@ function License({ details }) {
 						<div className={classes.siteContainer}>
 							<Typography variant="subtitle2">Total Licence Count</Typography>
 							<TextField
+								sx={{
+									"& .MuiInputBase-input.Mui-disabled": {
+										WebkitTextFillColor: "#000000",
+									},
+								}}
 								name="licenses"
 								value={input?.licenses ?? 0}
 								InputProps={{
@@ -166,7 +182,11 @@ function License({ details }) {
 								onChange={onInputChange}
 								onBlur={updateInput}
 								onKeyDown={onEnterKeyPress}
-								disabled={role !== "SuperAdmin"}
+								disabled={
+									role !== roles.superAdmin ||
+									adminType === RESELLER_ID ||
+									isClientAdmin
+								}
 							/>
 						</div>
 					</Grid>

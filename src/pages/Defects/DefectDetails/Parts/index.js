@@ -6,8 +6,10 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
 import AccordionBox from "components/Layouts/AccordionBox";
 import ColourConstants from "helpers/colourConstants";
 import Row from "./Row";
@@ -18,7 +20,7 @@ import { showError } from "redux/common/actions";
 import DeleteDialog from "components/Elements/DeleteDialog";
 import { Apis } from "services/api";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	noteContainer: {
 		// marginTop: 25,
 		display: "flex",
@@ -60,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Notes = ({ defectId, isReadOnly, captions }) => {
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 	const [modal, setModal] = useState({
 		openAddModal: false,
 		openDeleteModal: false,
@@ -81,7 +83,9 @@ const Notes = ({ defectId, isReadOnly, captions }) => {
 			fetchDefects();
 		} else {
 			dispatch(
-				showError(response.data?.errors?.description[0] || "Could not add part")
+				showError(
+					response?.data?.errors?.description[0] || "Could not add part"
+				)
 			);
 		}
 	};
@@ -97,7 +101,7 @@ const Notes = ({ defectId, isReadOnly, captions }) => {
 		if (response.status) {
 			setParts(response.data);
 		} else {
-			dispatch(showError(response.data?.error || "Could not fetch part"));
+			dispatch(showError(response?.data?.error || "Could not fetch part"));
 		}
 		setLoading(false);
 	}, [defectId, dispatch]);

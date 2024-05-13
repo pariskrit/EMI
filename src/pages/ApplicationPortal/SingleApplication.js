@@ -1,9 +1,11 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
 import React from "react";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import { makeStyles } from "@material-ui/core/styles";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import { makeStyles } from "tss-react/mui";
+import { createTheme, ThemeProvider } from "@mui/styles";
+
+import AccordionDetails from "@mui/material/AccordionDetails";
 import ArrowIcon from "assets/icons/arrowIcon.svg";
 import RegionAndSite from "./RegionAndSite";
 
@@ -11,7 +13,7 @@ const media = "@media(max-width: 414px)";
 const mediaSmall = "@media(max-width: 376px)";
 const mediaDesktop = "@media(min-width: 1200px) and (max-width: 1440px)";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
 	itemSize: {
 		minWidth: "600px",
 		marginTop: "25px",
@@ -84,7 +86,7 @@ function SingleApplication({ data, clientId }) {
 		(acc, region) => region.sites.length + acc,
 		0
 	);
-	const classes = useStyles();
+	const { classes, cx } = useStyles();
 
 	return (
 		<Grid item className={classes.itemSize}>
