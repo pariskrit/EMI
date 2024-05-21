@@ -12,7 +12,7 @@
 # misc
 .DS_Store
 .env
-.env.development
+# .env.development
 .env.testing
 .env.staging
 

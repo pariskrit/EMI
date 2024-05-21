@@ -43,7 +43,7 @@
 		"yup": "^1.3.2"
 	},
 	"scripts": {
-		"start": "react-scripts --openssl-legacy-provider start",
+		"start": "react-scripts start",
 		"build": "react-scripts build && change-version.sh",
 		"dev": "env-cmd -f .env.development react-scripts start",
 		"predeploy:dev": "env-cmd -f .env.development react-scripts build  && change-version.sh",

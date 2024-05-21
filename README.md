@@ -1,22 +1,13 @@
 # EMI 3.0 Front-End
 
-## Deploying a live test to S3
+## Running Locally
 
-You can use the `npm run s3deploy` command to deploy a test version to an s3 bucket. To do this:
+To run the repo locally in your machine:
 
-1. Make sure you have access to the s3 bucket in AWS. You can find the bucket name in the package.json file under scripts > s3deploy.
-2. Run `npm run build` to create a deployable bundle.
-3. Run `npm run s3deploy` to push your build folder to the s3 bucket.
+1. Run `yarn` to install the packages.
+2. Run `yarn start` start development server.
 
-4. You can find the static route in your AWS Consule (under s3 > select the bucket > properties > static web hosting > Endpoint).
+## Login Credentials
 
-<br/>
-
-#### Module Paths
-
-<br/>
-
-| S.N | Module               | Path                                   | Document Path                                   |
-| --- | -------------------- | -------------------------------------- | ----------------------------------------------- |
-| 1   | Client Detail Screen | src/routes/Clients/ClientDetailScreen/ | src/routes/Clients/ClientDetailScreen/README.md |
-| 1   | Sites Screen         | src/routes/Clients/Sites/              | src/routes/Clients/Sites/README.md              |
+email: ashis.c@equipmentmanagement.com.au
+password: Ashis1234
